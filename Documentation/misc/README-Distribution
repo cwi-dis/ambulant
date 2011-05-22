@@ -92,6 +92,11 @@ Before creating the distribution
   if it has gone to rec). Finally, make sure that the DTDs have the correct names
   in Extras/DTDcache (again, no RC or WD for final recs).
   Update  Extras/DTDcache/mapping.txt, if applicable.
+- For a major distribution only: fix the 3PP cache on the webserver.
+  - Edit build-third-party-packages.py, variables MIRRORBASE and MIRRORDATE
+  - Run once with -m in the destination folder on ambulantplayer.org
+  - Check that we get the most recent versions of all packages
+  - Check that Ambulant builds with those packages
 - change the version number (and possibly year) in:
   - configure.in (2 places!)
   - include/ambulant/version.h

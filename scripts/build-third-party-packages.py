@@ -9,6 +9,14 @@ NOCHECK=False
 NORUN=False
 
 #
+# Where the mirrored copies of the Ambulant 3rd party packages for this release live.
+# Before cutting a release, update this directory name, and run
+#   python build-third-party-packages.py -m
+# in the directory on the server.
+MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror-2.3/"
+MIRRORDATE="20110522"
+
+#
 # Path names for Windows programs and such
 #
 WINDOWS_PROGRAMFILES=os.getenv("ProgramFiles", "c:\Program Files")
@@ -46,10 +54,11 @@ class TPP(CommonTPP):
     DEFAULT_BUILD_COMMAND="cd %s && ./configure && make && make install"
     DEFAULT_EXTRACT_COMMAND="tar xf %s"
     
-    def __init__(self, name, url=None, downloadedfile=None, extractcmd=None, checkcmd=None, buildcmd=None):
+    def __init__(self, name, url=None, url2=None, downloadedfile=None, extractcmd=None, checkcmd=None, buildcmd=None):
         CommonTPP.__init__(self, name)
         
         self.url = url
+        self.url2 = url2
         if url and not downloadedfile:
             _, _, path, _, _, _ = urlparse.urlparse(url)
             downloadedfile = posixpath.basename(path)
@@ -92,10 +101,21 @@ class TPP(CommonTPP):
             return False
         return self._command(self.checkcmd, force=True)
         
-    def download(self):
+    def download(self, trymirror=True):
         print >>self.output, "+ download:", self.url
         try:
             urllib.urlretrieve(self.url, self.downloadedfile)
+        except IOError, arg:
+            print >>self.output, "+ download status: error:", arg
+            if not trymirror or not self.url2:
+                return False
+        else:
+            print >>self.output, "+ download status: success"
+            return True
+        # Try the mirror
+        print >>self.output, "+ mirror download:", MIRRORBASE+self.url2
+        try:
+            urllib.urlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
         except IOError, arg:
             print >>self.output, "+ download status: error:", arg
             return False
@@ -128,12 +148,21 @@ class TPP(CommonTPP):
             print >>self.output, "+ not installed"
         self.end()
         return ok
+        
+    def mirror(self):
+        if not self.url2:
+            return True
+        self.downloadedfile = self.url2
+        return self.download(trymirror=False)
 
 class DebianTPP(CommonTPP):
     PACKAGE_INSTALL_CMD = "apt-get -y install %s"
     
     def run(self):
         return self._command(self.PACKAGE_INSTALL_CMD % self.name)
+        
+    def mirror(self):
+        return True
     
 class WinTPP(TPP):
 
@@ -277,6 +306,7 @@ third_party_packages={
     'mac10.6' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
+            url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "cd expat-2.0.1 && "
@@ -289,6 +319,7 @@ third_party_packages={
             ),
         TPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
+            url2="xerces-c-3.1.1.tar.gz",
             checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
             buildcmd=
                 "cd xerces-c-3.1.1 && "
@@ -298,6 +329,7 @@ third_party_packages={
             ),
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
+            url2="faad2-2.7.tar.gz",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd faad2-2.7 && "
@@ -308,6 +340,7 @@ third_party_packages={
 
         TPP("ffmpeg",
             url="http://ffmpeg.org/releases/ffmpeg-0.6.1.tar.gz",
+            url2="ffmpeg-0.6.1.tar.gz",
             checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
                 "mkdir ffmpeg-0.6.1-universal && "
@@ -317,6 +350,7 @@ third_party_packages={
             ),
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
@@ -328,6 +362,7 @@ third_party_packages={
             ),
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -337,6 +372,7 @@ third_party_packages={
             ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
+            url2="gettext-0.17.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd gettext-0.17 && "
@@ -345,10 +381,11 @@ third_party_packages={
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+            url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.5 && "
+                "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
@@ -431,10 +468,10 @@ third_party_packages={
                 "make install" % MAC104_COMMON_CONFIGURE
             ),
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.5 && "
+                "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
@@ -445,6 +482,7 @@ third_party_packages={
     'iOS-Device' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
+            url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "set && cd expat-2.0.1 && "
@@ -457,6 +495,7 @@ third_party_packages={
 
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
+            url2="faad2-2.7.tar.gz",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd faad2-2.7 && "
@@ -467,6 +506,7 @@ third_party_packages={
 
         TPP("ffmpeg",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
+            url2="ffmpeg-export-2010-01-22.tar.gz",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
                 "cd ffmpeg-export-2010-01-22 && "
@@ -480,6 +520,7 @@ third_party_packages={
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
@@ -492,6 +533,7 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -511,10 +553,11 @@ third_party_packages={
 ##          ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+            url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.5 && "
+                "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
@@ -524,6 +567,7 @@ third_party_packages={
     'iOS-Simulator' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
+            url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "cd expat-2.0.1 && "
@@ -536,6 +580,7 @@ third_party_packages={
 
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
+            url2="faad2-2.7.tar.gz",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd faad2-2.7 && "
@@ -546,6 +591,7 @@ third_party_packages={
 
         TPP("ffmpeg",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
+            url2="ffmpeg-export-2010-01-22.tar.gz",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
                 "cd ffmpeg-export-2010-01-22 && "
@@ -559,6 +605,7 @@ third_party_packages={
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
@@ -571,6 +618,7 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -590,10 +638,11 @@ third_party_packages={
 ##          ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+            url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.5 && "
+                "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
@@ -603,6 +652,7 @@ third_party_packages={
     'linux' : [
         TPP("libtool", 
             url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
+            url2="libtool-2.2.6a.tar.gz",
             checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd libtool-2.2.6 && "
@@ -613,6 +663,7 @@ third_party_packages={
 
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
+            url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "set -x;cd expat-2.0.1 && "
@@ -625,6 +676,7 @@ third_party_packages={
 
         TPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
+            url2="xerces-c-3.1.1.tar.gz",
             checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
             buildcmd=
                 "cd xerces-c-3.1.1 && "
@@ -635,6 +687,7 @@ third_party_packages={
 
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
+            url2="faad2-2.7.tar.gz",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd faad2-2.7 && "
@@ -645,12 +698,14 @@ third_party_packages={
 
         TPP("xulrunner-sdk",
             url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
+            url2="xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
 
         TPP("ffmpeg",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
+            url2="ffmpeg-export-2010-01-22.tar.gz",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
                 "cd ffmpeg-export-2010-01-22 && "
@@ -661,6 +716,7 @@ third_party_packages={
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
@@ -671,6 +727,7 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -681,6 +738,7 @@ third_party_packages={
 
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
+            url2="gettext-0.17.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd gettext-0.17 && "
@@ -690,10 +748,11 @@ third_party_packages={
             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+            url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.5 && "
+                "cd libxml2-2.7.7 && "
                 "%s && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
@@ -717,6 +776,7 @@ third_party_packages={
             
         WinTPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.zip",
+            url2="xerces-c-3.1.1.zip",
             checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG),
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\%s\\xerces-all && "
@@ -726,6 +786,7 @@ third_party_packages={
             
         WinTPP("xulrunner-sdk",
             url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+            url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
             ),
@@ -739,6 +800,7 @@ third_party_packages={
         #  The WINDOWS_DXSDK paths (DirectX SDK) need to be added for the SDL build to work.
         WinTPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
+            url2="SDL-1.2.14.zip",
             checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
                 "cd SDL-1.2.14 && "
@@ -752,6 +814,7 @@ third_party_packages={
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%MIRRORDATE,
             extractcmd='cmd /c "%s live555-latest.tar.gz && %s live555-latest.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
@@ -760,6 +823,7 @@ third_party_packages={
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+            url2="libxml2-2.7.7.tar.gz",
             extractcmd='cmd /c "%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
@@ -872,9 +936,24 @@ environment_checkers = {
 }
 
 def main():
+    if len(sys.argv) == 2 and sys.argv[1] == '-m':
+        good = 0
+        bad = 0
+        all = []
+        for pkglist in third_party_packages.values():
+            all += pkglist
+        for pkg in all:
+            if pkg.mirror():
+                good += 1
+            else:
+                bad += 1
+        print '+ mirrored: %d packages' % good
+        print '+ failed: %d packages' % bad
+        sys.exit(bad)
     if len(sys.argv) != 2 or sys.argv[1] not in third_party_packages:
         print "Usage: %s platform" % sys.argv[0]
         print "Platform is one of:", ' '.join(third_party_packages.keys())
+        print "%s -m to populate mirror directory" % sys.argv[0]
         return 2
     ok = environment_checkers[sys.argv[1]](sys.argv[1])
     if not ok:
