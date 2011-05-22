@@ -56,7 +56,6 @@
 #endif/*WITH_SMIL30*/
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
-#include "ambulant/gui/dx/dx_img_wic.h"
 #include "ambulant/gui/dx/dx_brush.h"
 
 #if _MSC_VER == 1500
@@ -255,9 +254,6 @@ gui::dx::dx_player::init_playable_factory()
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif
 	pf->add_factory(create_dx_brush_playable_factory(this, this));
-#ifdef WITH_WIC
-	pf->add_factory(create_dx_image_wic_playable_factory(this, this));
-#endif
 	pf->add_factory(create_dx_image_playable_factory(this, this));
 	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
 	pf->add_factory(create_dx_text_playable_factory(this, this));
