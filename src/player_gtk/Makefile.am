@@ -143,7 +143,10 @@ install-exec-hook:
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
 check-ambulantplayer_gtk:
-	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
+	if test x$$DISPLAY = x; then \
+		echo Skipping tests, DISPLAY not set; \
+	else \
+	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  cp $(top_srcdir)/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
@@ -154,7 +157,7 @@ check-ambulantplayer_gtk:
 	  else  LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $$welcomepath; \
 	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
 	  fi; \
-	)
+	fi
 
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results

@@ -139,7 +139,10 @@ uninstall-hook:
 
 check-ambulantplayer_qt:
 #	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
-	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
+	if test x$$DISPLAY = x; then \
+		echo Skipping tests, DISPLAY not set; \
+	else \
+	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) ; \
 	  cp $(top_srcdir)/src/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
@@ -151,7 +154,7 @@ check-ambulantplayer_qt:
 	  else LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.lib ./AmbulantPlayer_qt $$welcomepath; \
 	  fi; \
 	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
-	)
+	fi
 
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
