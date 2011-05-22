@@ -1,5 +1,5 @@
 #!/bin/sh
-sources=`find src -print | grep '.c$|.cpp$|.m$|.h$|.mm$'`
+sources=`find src -print | grep -P '.c$|.cpp$|.m$|.h$|.mm$'`
 includes=`find include -print | grep '.h$'`
 if [ x$1 = x ]; then
 	echo $sources $includes |
