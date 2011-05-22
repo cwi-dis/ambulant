@@ -13,7 +13,7 @@ NORUN=False
 # Before cutting a release, update this directory name, and run
 #   python build-third-party-packages.py -m
 # in the directory on the server.
-MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror-2.3/"
+MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.3/"
 MIRRORDATE="20110522"
 
 #
