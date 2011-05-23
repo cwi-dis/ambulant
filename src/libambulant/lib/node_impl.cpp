@@ -597,57 +597,40 @@ void lib::node_impl::dump(std::ostream& os) const {
 	for(it = begin(); it != e; it++) visitor(*it);
 }
 
+// Tricky methods: they are called with another node. This will
+// only work if the other node is also of our implementation class (node_impl).
 void
-lib::node_impl::down(lib::node_interface *n)
+lib::node_impl::down(lib::node *n)
 {
-#if WITH_EXTERNAL_DOM
-	down(dynamic_cast<node_impl*>(n));
-#else
-	assert(0);
-#endif
-}
-
-void
-lib::node_impl::up(lib::node_interface *n)
-{
-#if WITH_EXTERNAL_DOM
-	up(dynamic_cast<node_impl*>(n));
-#else
-	assert(0);
-#endif
+    node_impl *nn = dynamic_cast<node_impl*> (n);
+    assert(nn);
+	down(nn);
 }
 
 void
-lib::node_impl::next(lib::node_interface *n)
+lib::node_impl::up(lib::node *n)
 {
-#if WITH_EXTERNAL_DOM
-	next(dynamic_cast<node_impl*>(n));
-#else
-	assert(0);
-#endif
+    node_impl *nn = dynamic_cast<node_impl*> (n);
+    assert(nn);
+	up(nn);
 }
 
-lib::node_interface*
-lib::node_impl::append_child(lib::node_interface* child)
+void
+lib::node_impl::next(lib::node *n)
 {
-#if WITH_EXTERNAL_DOM
-	return append_child(dynamic_cast<node_impl*>(child));
-#else
-	assert(0);
-	return NULL;
-#endif
+    node_impl *nn = dynamic_cast<node_impl*> (n);
+    assert(nn);
+	next(nn);
 }
 
-#if 0
-std::ostream& operator<<(std::ostream& os, const ambulant::lib::node_impl& n) {
-	os << "node(" << (void *)&n << ", \"" << n.get_qname() << "\"";
-	std::string url = repr(n.get_url("src"));
-	if (url != "")
-		os << ", url=\"" << url << "\"";
-	os << ")";
-	return os;
+lib::node*
+lib::node_impl::append_child(lib::node* child)
+{
+    node_impl *nn = dynamic_cast<node_impl*> (child);
+    assert(nn);
+	return append_child(nn);
 }
-#endif
+
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 // Visitors implementations
@@ -751,12 +734,6 @@ class builtin_node_factory : public lib::node_factory {
 	lib::node *new_data_node(const char *data, size_t size, const lib::node_context *ctx);
 };
 
-// If we are building a player with an (optional) external DOM implementation
-// we need to define a couple more things:
-// - factory functions (which are defined inline for non-external DOM builds)
-// - a couple of methods that accept node_interface parameters and do
-//	 dynamic typechecks that the arguments are actually node_impl's.
-
 // Factory functions
 lib::node *
 builtin_node_factory::new_node(const char *local_name, const char **attrs, const lib::node_context *ctx)
@@ -786,11 +763,9 @@ builtin_node_factory::new_node(const lib::q_name_pair& qn, const lib::q_attribut
 lib::node *
 builtin_node_factory::new_node(const lib::node* other)
 {
-#if WITH_EXTERNAL_DOM
-	return new lib::node_impl(dynamic_cast<const lib::node_impl*>(other));
-#else
-	return new lib::node_impl(other);
-#endif
+    const node_impl *nn = dynamic_cast<const node_impl*> (other);
+    assert(nn);
+	return new lib::node_impl(nn);
 }
 
 // create data node
@@ -807,28 +782,3 @@ lib::node_factory *lib::get_builtin_node_factory()
 	return &nf;
 }
 
-//#define WITH_PRINT_NODE
-#ifdef	WITH_PRINT_NODE
-#include <typeinfo>
-
-extern "C" {
-	void
-	print_node(lib::node_interface* p)
-	{
-		const char* type = "", *required = "N8ambulant3lib9node_implE";
-		try {
-			type = typeid(*p).name();
-		} catch (std::bad_typeid) {
-			std::cerr << "Unable to find typeid\n";
-			return;
-		}
-		if (strcmp (type, required) == 0) {
-			lib::node_impl* node = dynamic_cast<lib::node_impl*>(p);
-			if (node) {
-				static lib::xml_string s = node->to_string();
-				std::cout << s.c_str();
-			}
-		}
-	}
-} // extern "C"
-#endif//WITH_PRINT_NODE

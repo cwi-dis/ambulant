@@ -38,7 +38,7 @@ namespace lib {
 /// The node trees are not fully DOM compliant, but should
 /// be compatible with a bit of glue code.
 /// The parent of each node is also its owner and container.
-class node_impl : public node_interface {
+class node_impl : public node {
 
   public:
 
@@ -100,19 +100,19 @@ class node_impl : public node_interface {
 	void down(node_impl *n)  { m_child = n;}
 
 	/// Set first child of this node, after dynamic typecheck
-	void down(node_interface *n);
-
-	/// Set parent of this node.
-	void up(node_impl *n)  { m_parent = n;}
+	void down(node *n);
+    
+    /// Set parent of this node.
+    void up(node_impl *n) { m_parent = n; }
 
 	/// Set parent of this node, after dynamic typecheck
-	void up(node_interface *n);
+	void up(node *n);
 
 	/// Set next sibling of this node.
 	void next(node_impl *n)  { m_next = n;}
 
 	/// Set next sibling of this node, after dynamic typecheck
-	void next(node_interface *n);
+	void next(node *n);
 
 	/// Returns the previous sibling node
 	/// or null when this is the first child.
@@ -166,7 +166,7 @@ class node_impl : public node_interface {
 	node_impl* append_child(node_impl* child);
 
 	/// Append a child node to this node, after dynamic typecheck
-	node_interface* append_child(node_interface* child);
+	node* append_child(node* child);
 
 	/// Append a new child node with the given name to this node.
 	node_impl* append_child(const char *name);

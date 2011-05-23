@@ -280,23 +280,6 @@ fi
 AC_MSG_RESULT($with_clock_sync)
 
 #
-# Do we want external DOM tree support?
-#
-test_dom=false
-AC_MSG_CHECKING(for --with-external-dom)
-AC_ARG_WITH([external-dom],
-    AS_HELP_STRING([--without-external-dom],[Use the fast DOM tree implementation only]),
-    [with_external_dom=${withval}],
-    [with_external_dom=yes])
-if test "x$with_external_dom" = xyes;
-then
-    AC_DEFINE(WITH_EXTERNAL_DOM, 1, [Define to enable external DOM tree support])
-   test_dom=true
-fi
-AM_CONDITIONAL(WITH_EXTERNAL_DOM, test x$with_dom = xyes)
-AC_MSG_RESULT($with_external_dom)
-
-#
 # Do we want overlay window support support?
 #
 test_overlay=false
@@ -1218,7 +1201,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     third party packages:           ${third_party_packages}
     compiler:                       ${CC}
 
-    Enable external DOM:            ${test_dom}
     Enable overlay window:          ${test_overlay}
     Build with seamless playback:   ${with_seamless}
     Build with audio clock sync:    ${with_clock_sync}

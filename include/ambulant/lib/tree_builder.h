@@ -120,9 +120,7 @@ class tree_builder :
 	node_factory *m_node_factory;
 	node_context *m_context;
 	std::string m_filename;		// For error messages only!
-#ifdef WITH_EXTERNAL_DOM
 	std::vector<std::pair<std::string,std::string> > m_pending_namespaces;
-#endif // WITH_EXTERNAL_DOM
 	std::vector<std::pair<std::string,node*> > m_xml_space_stack;
 	char* m_buf;
 	size_t m_bufsize;
