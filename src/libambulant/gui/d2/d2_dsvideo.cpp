@@ -202,13 +202,8 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Ren
 		} else alpha_chroma = alpha_media;
 #endif
 	}
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	img_reg_rc = m_dest->get_fit_rect(croprect, m_size, &img_rect1, m_alignment);
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(m_size, &img_rect1, m_alignment);
-#endif
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
 

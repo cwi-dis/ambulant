@@ -41,27 +41,12 @@ xerces_plugin=
 xerces_include=
 endif
 
-# The dummy SMIL 3.0 state plugin
-if WITH_SMIL30
-dummy_state_plugin = libamplugin_dummy_state.la
-libamplugin_dummy_state_la_SOURCES = dummy_stateplugin.cpp
-libamplugin_dummy_state_la_LDFLAGS = -module
-libamplugin_dummy_state_la_LIBADD = $(libambulant_core)
-else
-dummy_state_plugin=
-endif
-
 # The libxml2 XPath SMIL 3.0 state plugin
-if WITH_SMIL30
 xpath_state_plugin = libamplugin_xpath_state.la
 xpath_state_includes = `xml2-config --cflags`
 libamplugin_xpath_state_la_SOURCES = xpath_stateplugin.cpp
 libamplugin_xpath_state_la_LDFLAGS = -module `xml2-config --libs`
 libamplugin_xpath_state_la_LIBADD = $(libambulant_core)
-else
-xpath_state_plugin=
-xpath_state_includes=
-endif
 
 # The wekkit DOM implementation
 if WITH_WEBKIT_DOM

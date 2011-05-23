@@ -45,9 +45,7 @@
 //#include "ambulant/gui/d2/html_bridge.h"
 #include "ambulant/gui/d2/d2_fill.h"
 #include "ambulant/gui/d2/d2_text.h"
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/d2/d2_smiltext.h"
-#endif/*WITH_SMIL30*/
 //#include "ambulant/gui/d2/d2_html_renderer.h"
 #include "ambulant/gui/d2/d2_img.h"
 //#include "ambulant/gui/d2/d2_img_wic.h"
@@ -268,10 +266,8 @@ gui::d2::d2_player::cleanup()
 	delete pf;
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
-#ifdef WITH_SMIL30
 	common::global_state_component_factory *scf = common::get_global_state_component_factory();
 	delete scf;
-#endif
 }
 
 void

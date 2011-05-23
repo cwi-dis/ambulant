@@ -332,7 +332,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 #endif//AM_DMP
 
 
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 //	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
@@ -341,8 +340,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -350,10 +347,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
-#endif
 	img_reg_rc.translate(m_dest->get_global_topleft());
 
 	lib::rect img_rect(img_rect1);
@@ -400,7 +393,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
 		bgimage->Release();
 	} else {
-#ifdef	WITH_SMIL30
 		if (alpha_chroma != 1.0) {
 			IDirectDrawSurface* screen_ddsurf = v->get_surface();
 			IDirectDrawSurface* image_ddsurf = m_ddsurf;
@@ -417,9 +409,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		} else {
 			v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty,0 /* m_image->is_transparent()*/, tr);
 		}
-#else //WITH_SMIL30
-		v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
-#endif//WITH_SMIL30
 	}
 #endif
 	if (m_erase_never) m_dest->keep_as_background();

@@ -25,7 +25,6 @@ else:
     WITH_SDL=True
 
 DEFS =  [
-    ('WITH_SMIL30', '1'),
     ('WITH_PYTHON_PLUGIN', '1'),
     ('WITH_CLOCK_SYNC', '1'),
     ('WITH_SEAMLESS_PLAYBACK', '1'),

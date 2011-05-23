@@ -428,7 +428,6 @@ void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::g
 	D2D1_SIZE_U bmsize = bitmap->GetPixelSize();
 	lib::size srcsize(bmsize.width, bmsize.height);
 
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
@@ -437,8 +436,6 @@ void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::g
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -446,10 +443,6 @@ void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::g
 			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
-#endif
 	img_reg_rc.translate(m_dest->get_global_topleft());
 
 	lib::rect img_rect(img_rect1);

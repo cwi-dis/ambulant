@@ -138,10 +138,8 @@ d2_fill_renderer::recreate_d2d()
 	color_t color = lib::to_color(color_attr);
 	AM_DBG lib::logger::get_logger()->debug("d2_fill_renderer.redraw: clearing to 0x%x", (long)color);
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
 // CreateSolidColorBrush
 	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(color), greenf(color), bluef(color), alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
