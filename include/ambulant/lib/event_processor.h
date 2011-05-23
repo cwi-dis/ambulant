@@ -121,10 +121,8 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
 	void set_observer(event_processor_observer *obs) {m_observer = obs; };
-#ifndef NDEBUG
 	/// Debug method to dump queues.
 	void dump();
-#endif
   protected:
 	/// Called by platform-specific subclasses.
 	/// Should hold m_lock when calling.

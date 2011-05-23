@@ -609,20 +609,6 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
 
-#ifndef ENABLE_LIVE555_PTS_CORRECTION
-	// Guess frame duration. This assumes that the lowest difference between wto adjacent frames is the duration.
-	// If we ever get a stream where the duration increases (i.e. frame rate decreases) we're hosed.
-
-	// XXXJACK: I get a compiler warning here about implicit conversion of 64 to 32 bit. Need to check.
-	timestamp_t delta_pts = abs(rpts-m_context->last_pts);
-	if (m_context->frame_duration == 0
-		|| (delta_pts != 0 && delta_pts < m_context->frame_duration))
-	{
-		m_context->frame_duration = delta_pts;
-		m_context->last_emit_pts = rpts - m_context->frame_duration;
-	}
-#endif
-
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %lld us", rpts);
 
 	if(m_context->sinks[m_context->audio_stream]) {

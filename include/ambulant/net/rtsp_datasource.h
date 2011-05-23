@@ -37,7 +37,6 @@
 // Somehow, the time stamps produced by live555 are incorrect.
 // Enable the next define to try and re-create correct
 // timestamps.
-#define ENABLE_LIVE555_PTS_CORRECTION
 
 #ifdef AMBULANT_PLATFORM_MACOS
 // Both MacHeaders.h and Live typedef Boolean, but to imcompatible
@@ -59,16 +58,6 @@
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavutil/common.h"
-
-#ifdef AMBULANT_PLATFORM_UNIX
-#include "ambulant/lib/unix/unix_thread.h"
-#define BASE_THREAD lib::unix::thread
-#endif
-
-#ifdef AMBULANT_PLATFORM_WIN32
-#include "ambulant/lib/win32/win32_thread.h"
-#define BASE_THREAD lib::win32::thread
-#endif
 
 #include "ambulant/net/databuffer.h"
 //#include "ambulant/net/posix_datasource.h"
@@ -103,10 +92,7 @@ struct rtsp_context_t {
 		vbuffer(NULL),
 		vbufferlen(0),
 		last_pts(0),
-#ifdef ENABLE_LIVE555_PTS_CORRECTION
-		last_emit_pts(0),
 		frame_duration(0),
-#endif
 		need_audio(true),
 		need_video(true),
 		audio_packet(NULL),
@@ -170,10 +156,7 @@ struct rtsp_context_t {
 	unsigned char* vbuffer;		// Buffer for re-packetizing
 	size_t vbufferlen;
 	timestamp_t last_pts;		// Timestamp of packet data being accumulated in vbuffer
-#ifdef ENABLE_LIVE555_PTS_CORRECTION
-	timestamp_t last_emit_pts;  // Last timestamp emitted to higher layers
 	timestamp_t frame_duration; // Current guess at frame duration
-#endif
 	bool need_audio;			// True if we're interested in an audio packet
 	bool need_video;			// True if we're interested in a video packet
 	unsigned char* audio_packet;	// The current audio packet data (size is a parameter to after_reading_audio)

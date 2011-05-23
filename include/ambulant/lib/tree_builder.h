@@ -31,15 +31,7 @@
 #ifndef AMBULANT_LIB_TREE_BUILDER_H
 #define AMBULANT_LIB_TREE_BUILDER_H
 
-//#define WITH_XERCES
-#ifdef	WITH_XERCES
-#else /*WITH_XERCES*/
-#endif/*WITH_XERCES*/
 #include "ambulant/config/config.h"
-
-
-
-
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/net/url.h"

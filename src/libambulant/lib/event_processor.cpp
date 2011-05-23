@@ -251,10 +251,10 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 	return must_serve;
 }
 
-#ifndef NDEBUG
 void
 event_processor_impl::dump()
 {
+#ifndef NDEBUG
 //	std::queue<event*>::iterator i;
 	lib::logger::get_logger()->trace("event_processor_impl[0x%x]::dump():", (void *)this);
 	lib::logger::get_logger()->trace("high waiting:");
@@ -272,5 +272,5 @@ event_processor_impl::dump()
 //	lib::logger::get_logger()->trace("low runnable:");
 //	for (i=m_low_q.begin(); i != m_low_q.end(); i++)
 //		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
-}
 #endif
+}
