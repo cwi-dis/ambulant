@@ -453,9 +453,6 @@
 		04791B941151943B0007DD71 /* smil_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smil_handler.h; sourceTree = "<group>"; };
 		04791B951151943B0007DD71 /* trace_playable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trace_playable.h; sourceTree = "<group>"; };
 		04791B961151943B0007DD71 /* video_renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = video_renderer.h; sourceTree = "<group>"; };
-		04791B981151943B0007DD71 /* limits */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = limits; sourceTree = "<group>"; };
-		04791B991151943B0007DD71 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		04791B9A1151943B0007DD71 /* stl_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stl_config.h; sourceTree = "<group>"; };
 		04791B9D1151943B0007DD71 /* borland.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = borland.h; sourceTree = "<group>"; };
 		04791B9E1151943B0007DD71 /* comeau.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = comeau.h; sourceTree = "<group>"; };
 		04791B9F1151943B0007DD71 /* common_edg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_edg.h; sourceTree = "<group>"; };
@@ -825,6 +822,30 @@
 		04791D2D115194C10007DD71 /* timegraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timegraph.cpp; sourceTree = "<group>"; };
 		04791D2E115194C10007DD71 /* trace_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trace_player.cpp; sourceTree = "<group>"; };
 		04791D2F115194C10007DD71 /* transition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transition.cpp; sourceTree = "<group>"; };
+		049DCA07138A8DE90023DFBC /* d2_basicvideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_basicvideo.cpp; path = d2/d2_basicvideo.cpp; sourceTree = "<group>"; };
+		049DCA08138A8DE90023DFBC /* d2_d2video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_d2video.cpp; path = d2/d2_d2video.cpp; sourceTree = "<group>"; };
+		049DCA09138A8DE90023DFBC /* d2_dshowsink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_dshowsink.cpp; path = d2/d2_dshowsink.cpp; sourceTree = "<group>"; };
+		049DCA0A138A8DE90023DFBC /* d2_dsvideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_dsvideo.cpp; path = d2/d2_dsvideo.cpp; sourceTree = "<group>"; };
+		049DCA0B138A8DE90023DFBC /* d2_fill.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_fill.cpp; path = d2/d2_fill.cpp; sourceTree = "<group>"; };
+		049DCA0C138A8DE90023DFBC /* d2_img.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_img.cpp; path = d2/d2_img.cpp; sourceTree = "<group>"; };
+		049DCA0D138A8DE90023DFBC /* d2_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_player.cpp; path = d2/d2_player.cpp; sourceTree = "<group>"; };
+		049DCA0E138A8DE90023DFBC /* d2_renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_renderer.cpp; path = d2/d2_renderer.cpp; sourceTree = "<group>"; };
+		049DCA0F138A8DE90023DFBC /* d2_smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_smiltext.cpp; path = d2/d2_smiltext.cpp; sourceTree = "<group>"; };
+		049DCA10138A8DE90023DFBC /* d2_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_text.cpp; path = d2/d2_text.cpp; sourceTree = "<group>"; };
+		049DCA11138A8DE90023DFBC /* d2_transition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_transition.cpp; path = d2/d2_transition.cpp; sourceTree = "<group>"; };
+		049DCA12138A8DE90023DFBC /* d2_window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_window.cpp; path = d2/d2_window.cpp; sourceTree = "<group>"; };
+		049DCA14138A8E2B0023DFBC /* d2_basicvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_basicvideo.h; path = d2/d2_basicvideo.h; sourceTree = "<group>"; };
+		049DCA15138A8E2B0023DFBC /* d2_d2video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_d2video.h; path = d2/d2_d2video.h; sourceTree = "<group>"; };
+		049DCA16138A8E2B0023DFBC /* d2_dshowsink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_dshowsink.h; path = d2/d2_dshowsink.h; sourceTree = "<group>"; };
+		049DCA17138A8E2B0023DFBC /* d2_dsvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_dsvideo.h; path = d2/d2_dsvideo.h; sourceTree = "<group>"; };
+		049DCA18138A8E2B0023DFBC /* d2_fill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_fill.h; path = d2/d2_fill.h; sourceTree = "<group>"; };
+		049DCA19138A8E2B0023DFBC /* d2_img.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_img.h; path = d2/d2_img.h; sourceTree = "<group>"; };
+		049DCA1A138A8E2B0023DFBC /* d2_player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_player.h; path = d2/d2_player.h; sourceTree = "<group>"; };
+		049DCA1B138A8E2B0023DFBC /* d2_renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_renderer.h; path = d2/d2_renderer.h; sourceTree = "<group>"; };
+		049DCA1C138A8E2B0023DFBC /* d2_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_smiltext.h; path = d2/d2_smiltext.h; sourceTree = "<group>"; };
+		049DCA1D138A8E2B0023DFBC /* d2_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_text.h; path = d2/d2_text.h; sourceTree = "<group>"; };
+		049DCA1E138A8E2B0023DFBC /* d2_transition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_transition.h; path = d2/d2_transition.h; sourceTree = "<group>"; };
+		049DCA1F138A8E2B0023DFBC /* d2_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_window.h; path = d2/d2_window.h; sourceTree = "<group>"; };
 		04A1E87512B57DF20060F97E /* libambulantCG.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulantCG.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A1E95912B585030060F97E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
 		04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
@@ -996,7 +1017,6 @@
 			isa = PBXGroup;
 			children = (
 				04791B811151943B0007DD71 /* common */,
-				04791B971151943B0007DD71 /* compat */,
 				04791B9B1151943B0007DD71 /* config */,
 				04791BCE1151943B0007DD71 /* gui */,
 				04791C321151943B0007DD71 /* lib */,
@@ -1035,16 +1055,6 @@
 				04791B961151943B0007DD71 /* video_renderer.h */,
 			);
 			path = common;
-			sourceTree = "<group>";
-		};
-		04791B971151943B0007DD71 /* compat */ = {
-			isa = PBXGroup;
-			children = (
-				04791B981151943B0007DD71 /* limits */,
-				04791B991151943B0007DD71 /* Makefile.am */,
-				04791B9A1151943B0007DD71 /* stl_config.h */,
-			);
-			path = compat;
 			sourceTree = "<group>";
 		};
 		04791B9B1151943B0007DD71 /* config */ = {
@@ -1128,6 +1138,7 @@
 		04791BCE1151943B0007DD71 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				049DCA13138A8E030023DFBC /* d2 */,
 				04791BD81151943B0007DD71 /* cocoa */,
 				04791BE61151943B0007DD71 /* dx */,
 				04791C061151943B0007DD71 /* gstreamer */,
@@ -1469,6 +1480,7 @@
 		04791CA3115194C10007DD71 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				049DCA06138A8DBD0023DFBC /* d2 */,
 				04791CA4115194C10007DD71 /* cg */,
 				04791CAC115194C10007DD71 /* cocoa */,
 				04791CB9115194C10007DD71 /* dx */,
@@ -1701,6 +1713,44 @@
 				04791D2F115194C10007DD71 /* transition.cpp */,
 			);
 			path = smil2;
+			sourceTree = "<group>";
+		};
+		049DCA06138A8DBD0023DFBC /* d2 */ = {
+			isa = PBXGroup;
+			children = (
+				049DCA07138A8DE90023DFBC /* d2_basicvideo.cpp */,
+				049DCA08138A8DE90023DFBC /* d2_d2video.cpp */,
+				049DCA09138A8DE90023DFBC /* d2_dshowsink.cpp */,
+				049DCA0A138A8DE90023DFBC /* d2_dsvideo.cpp */,
+				049DCA0B138A8DE90023DFBC /* d2_fill.cpp */,
+				049DCA0C138A8DE90023DFBC /* d2_img.cpp */,
+				049DCA0D138A8DE90023DFBC /* d2_player.cpp */,
+				049DCA0E138A8DE90023DFBC /* d2_renderer.cpp */,
+				049DCA0F138A8DE90023DFBC /* d2_smiltext.cpp */,
+				049DCA10138A8DE90023DFBC /* d2_text.cpp */,
+				049DCA11138A8DE90023DFBC /* d2_transition.cpp */,
+				049DCA12138A8DE90023DFBC /* d2_window.cpp */,
+			);
+			name = d2;
+			sourceTree = "<group>";
+		};
+		049DCA13138A8E030023DFBC /* d2 */ = {
+			isa = PBXGroup;
+			children = (
+				049DCA14138A8E2B0023DFBC /* d2_basicvideo.h */,
+				049DCA15138A8E2B0023DFBC /* d2_d2video.h */,
+				049DCA16138A8E2B0023DFBC /* d2_dshowsink.h */,
+				049DCA17138A8E2B0023DFBC /* d2_dsvideo.h */,
+				049DCA18138A8E2B0023DFBC /* d2_fill.h */,
+				049DCA19138A8E2B0023DFBC /* d2_img.h */,
+				049DCA1A138A8E2B0023DFBC /* d2_player.h */,
+				049DCA1B138A8E2B0023DFBC /* d2_renderer.h */,
+				049DCA1C138A8E2B0023DFBC /* d2_smiltext.h */,
+				049DCA1D138A8E2B0023DFBC /* d2_text.h */,
+				049DCA1E138A8E2B0023DFBC /* d2_transition.h */,
+				049DCA1F138A8E2B0023DFBC /* d2_window.h */,
+			);
+			name = d2;
 			sourceTree = "<group>";
 		};
 		0867D691FE84028FC02AAC07 /* libambulant */ = {
