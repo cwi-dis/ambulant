@@ -26,8 +26,6 @@
 #ifndef AMBULANT_GUI_COCOA_COCOA_SMILTEXT_H
 #define AMBULANT_GUI_COCOA_COCOA_SMILTEXT_H
 
-#ifdef WITH_SMIL30
-
 #include "ambulant/gui/cocoa/cocoa_renderer.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/lib/mtsync.h"
@@ -92,7 +90,4 @@ class cocoa_smiltext_renderer :
 } // namespace gui
 
 } // namespace ambulant
-
-#endif // WITH_SMIL30
-
 #endif // AMBULANT_GUI_COCOA_COCOA_SMILTEXT_H

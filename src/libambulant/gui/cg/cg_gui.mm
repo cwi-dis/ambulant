@@ -25,9 +25,7 @@
 #include "ambulant/gui/cg/cg_fill.h"
 //#include "ambulant/gui/cg/cg_video.h"
 #include "ambulant/gui/cg/cg_dsvideo.h"
-#ifdef WITH_SMIL30
 //#include "ambulant/gui/cg/cg_smiltext.h"
-#endif
 #include "ambulant/lib/mtsync.h"
 
 //#include <CoreGraphics/CoreGraphics.h>

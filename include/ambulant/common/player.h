@@ -138,13 +138,11 @@ class player : public state_change_callback, virtual public lib::ref_counted
 	/// Call this when the user has pressed a key.
 	virtual void on_char(int ch) {}
 
-#ifdef WITH_SMIL30
 	/// Call this when a state variable has changed.
 	virtual void on_state_change(const char *ref) {}
 
 	/// Returns the SMIL State handler for the current document, or NULL.
 	virtual state_component* get_state_engine() { return NULL; }
-#endif
 
 	/// Call this to advance the focus.
 	virtual void on_focus_advance() {}

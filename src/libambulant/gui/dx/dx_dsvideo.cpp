@@ -257,13 +257,8 @@ dx_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 	lib::rect img_reg_rc;
 	// lib::size srcsize = m_image->get_size();
 
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	img_reg_rc = m_dest->get_fit_rect(croprect, m_size, &img_rect1, m_alignment);
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(m_size, &img_rect1, m_alignment);
-#endif
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
 

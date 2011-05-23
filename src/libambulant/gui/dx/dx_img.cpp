@@ -199,7 +199,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		if (m_erase_never) m_dest->keep_as_background();
 		return;
 	}
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
@@ -208,8 +207,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -217,10 +214,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
-#endif
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
 
@@ -281,7 +274,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
 		bgimage->Release();
 	} else {
-#ifdef	WITH_SMIL30
 		if (alpha_chroma != 1.0) {
 			IDirectDrawSurface* screen_ddsurf = v->get_surface();
 			IDirectDrawSurface* image_ddsurf = m_image->get_ddsurf();
@@ -298,9 +290,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		} else {
 			v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 		}
-#else //WITH_SMIL30
-		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
-#endif//WITH_SMIL30
 	}
 	if (m_erase_never) m_dest->keep_as_background();
 }

@@ -111,23 +111,15 @@ cg_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	color_t color = lib::to_color(color_attr);
 	AM_DBG lib::logger::get_logger()->debug("cg_fill_renderer.redraw: clearing to 0x%x", (long)color);
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
 	CGFloat components[] = {redf(color), greenf(color), bluef(color), alfa};
-//	CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
-
-//	PLOVER [nscolor set];
-//	PLOVER CGRectFillUsingOperation(cg_dstrect_whole, NSCompositeSourceAtop);
 	CGContextRef myContext = [view getCGContext];
-//	CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetFillColorSpace(myContext, genericColorSpace);
 	CGColorSpaceRelease(genericColorSpace);
 	CGContextSetFillColor(myContext, components);
 	CGContextFillRect(myContext, cg_dstrect_whole);
-//	CGColorRelease(cgcolor);
 	m_lock.leave();
 }
 

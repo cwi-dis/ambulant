@@ -259,27 +259,19 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-#ifdef WITH_SMIL30
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		AM_DBG logger::get_logger()->debug("cocoa_dsvideo::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 		rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
 		NSRect cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
-#else
-		rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
-#endif
 		dstrect.translate(m_dest->get_global_topleft());
 		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 		AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
-#ifdef WITH_SMIL30
+
 		double alfa = 1.0;
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
 		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: (float)alfa];
-#else
-		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
-#endif
 	} else {
 	}
 #ifdef WITH_VIDEO_TRANSITION_UNTESTED

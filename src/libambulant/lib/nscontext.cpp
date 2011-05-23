@@ -152,11 +152,8 @@ nscontext::init_supported_namespaces() {
 		"http://www.w3.org/2005/SMIL21/NestedTimeContainers",
 		"http://www.w3.org/2005/SMIL21/SMIL20DeprecatedFeatures",
 		"http://www.w3.org/2005/SMIL21/SMIL10DeprecatedFeatures",
-		// Ambulant-specific features, for use with systemRequired
-#ifdef WITH_SMIL30
-		"http://www.ambulantplayer.org/Namespaces/SMIL30-WD-20061220",
+		// SMIL 3.0
 		"http://www.w3.org/ns/SMIL",
-
 		"http://www.w3.org/2007/07/SMIL30/AccessKeyTiming",
 		"http://www.w3.org/2007/07/SMIL30/AudioLayout",
 		"http://www.w3.org/2007/07/SMIL30/BackgroundTilingLayout",
@@ -220,7 +217,6 @@ nscontext::init_supported_namespaces() {
 		"http://www.w3.org/2007/07/SMIL30/TransitionModifiers",
 		"http://www.w3.org/2007/07/SMIL30/UserState",
 		"http://www.w3.org/2007/07/SMIL30/WallclockTiming",
-#endif
 		// Ambulant-specific features, for use with systemComponent
 		NULL
 	};

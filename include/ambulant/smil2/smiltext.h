@@ -34,7 +34,6 @@
 
 #include <stack>
 
-#ifdef WITH_SMIL30
 namespace ambulant {
 
 namespace smil2 {
@@ -397,7 +396,5 @@ class smiltext_layout_engine {
 } // namespace smil2
 
 } // namespace ambulant
-
-#endif // WITH_SMIL30
 
 #endif // AMBULANT_SMIL2_SMILTEXT_H

@@ -131,11 +131,9 @@ class tree_builder :
 #ifdef WITH_EXTERNAL_DOM
 	std::vector<std::pair<std::string,std::string> > m_pending_namespaces;
 #endif // WITH_EXTERNAL_DOM
-#ifdef WITH_SMIL30
 	std::vector<std::pair<std::string,node*> > m_xml_space_stack;
 	char* m_buf;
 	size_t m_bufsize;
-#endif // WITH_SMIL30
 };
 
 

@@ -52,9 +52,7 @@ enum sync_value_type {
 	sv_repeat,
 	sv_accesskey,
 	sv_media_marker,
-#ifdef WITH_SMIL30
 	sv_state_change,
-#endif
 	sv_wallclock,
 	sv_indefinite
 };
@@ -101,9 +99,7 @@ class time_attr_parser : public time_traits {
 	bool parse_plain_offset(const std::string& s, sync_value_struct& svs);
 	bool parse_wallclock(const std::string& s, sync_value_struct& svs);
 	bool parse_accesskey(const std::string& s, sync_value_struct& svs);
-#ifdef WITH_SMIL30
 	bool parse_statechange(const std::string& s, sync_value_struct& svs);
-#endif
 	bool parse_nmtoken_offset(const std::string& s, sync_value_struct& svs);
   private:
 	const lib::node *m_node;

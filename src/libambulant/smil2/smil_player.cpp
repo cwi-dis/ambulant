@@ -56,9 +56,7 @@ common::create_smil2_player(
 
 smil_player::smil_player(lib::document *doc, common::factories *factory, common::embedder *sys)
 :
-#ifdef WITH_SMIL30
 	m_state_engine(0),
-#endif
 	m_doc(doc),
 	m_factory(factory),
 	m_system(sys),
@@ -89,9 +87,7 @@ smil_player::initialize()
 	document_loaded(m_doc);
 
 	m_event_processor = event_processor_factory(m_timer);
-#ifdef WITH_SMIL30
 	create_state_engine();
-#endif // WITH_SMIL30
 	// build the layout (we need the top-level layout)
 	build_layout();
 	// Build the timegraph using the current filter
@@ -178,7 +174,6 @@ void smil_player::build_timegraph() {
 		delete m_scheduler;
 	}
 	timegraph tg(this, m_doc, schema::get_instance());
-#ifdef WITH_SMIL30
 	// If there were any stateChange() events the timegraph builder has collected them.
 	// We pass them on to the state engine, so it can fire the required events.
 	if (m_state_engine) {
@@ -189,13 +184,11 @@ void smil_player::build_timegraph() {
 			m_state_engine->want_state_change((*i).c_str(), this);
 		}
 	}
-#endif
 	m_root = tg.detach_root();
 	m_dom2tn = tg.detach_dom2tn();
 	m_scheduler = new scheduler(m_root, m_timer);
 }
 
-#ifdef WITH_SMIL30
 void smil_player::create_state_engine() {
 	assert(m_doc);
 	if (m_state_engine) delete m_state_engine;
@@ -221,7 +214,6 @@ void smil_player::create_state_engine() {
 	m_state_engine->register_state_test_methods(smil2::test_attrs::get_state_test_methods());
 	m_doc->set_state(m_state_engine);
 }
-#endif
 
 void smil_player::schedule_event(lib::event *ev, lib::timer::time_type t, event_priority ep) {
 	m_event_processor->add_event(ev, t, ep);
@@ -924,7 +916,6 @@ smil_player::on_char_async(async_int_arg aia) {
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
-#ifdef WITH_SMIL30
 // UI notification for a char event.
 void smil_player::on_state_change(const char *ref) {
 	time_node::value_type root_time = m_root->get_simple_time();
@@ -942,7 +933,6 @@ smil_player::on_state_change_async(async_string_arg asa) {
 	asa.first->raise_state_change(asa.second);
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
-#endif // WITH_SMIL30
 
 void smil_player::on_focus_advance() {
 	AM_DBG m_logger->debug("smil_player::on_focus_advance");

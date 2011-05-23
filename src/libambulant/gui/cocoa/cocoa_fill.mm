@@ -110,7 +110,6 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	color_t color = lib::to_color(color_attr);
 	AM_DBG lib::logger::get_logger()->debug("cocoa_fill_renderer.redraw: clearing to 0x%x", (long)color);
-#ifdef WITH_SMIL30
 	double alfa = 1.0;
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
@@ -118,12 +117,6 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 			green:greenf(color)
 			blue:bluef(color)
 			alpha:(float)alfa];
-#else
-	NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(color)
-			green:greenf(color)
-			blue:bluef(color)
-			alpha:(float)1.0];
-#endif
 	[nscolor set];
 	NSRectFillUsingOperation(cocoa_dstrect_whole, NSCompositeSourceAtop);
 	m_lock.leave();

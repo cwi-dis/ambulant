@@ -33,8 +33,6 @@
 #define AM_DBG if(0)
 #endif
 
-#ifdef WITH_SMIL30
-
 namespace ambulant {
 
 using namespace lib;
@@ -667,5 +665,3 @@ cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size si
 } // namespace gui
 
 } //namespace ambulant
-
-#endif // WITH_SMIL30

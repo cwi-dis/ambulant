@@ -52,11 +52,9 @@
 
 namespace ambulant {
 
-#ifdef WITH_SMIL30
 namespace common {
 class state_component;
 };
-#endif // WITH_SMIL30
 
 namespace lib {
 
@@ -316,14 +314,11 @@ class AMBULANTAPI node_context {
 	/// Return node with a given ID.
 	virtual const node* get_node(const std::string& idd) const = 0;
 
-#ifdef WITH_SMIL30
 	/// Return the state engine.
 	virtual common::state_component *get_state() const = 0;
 
 	/// Apply Attribute Value Template expressions to attribute value, if needed.
 	virtual const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const = 0;
-
-#endif
 };
 
 /// Interface for factory class that creates node objects.

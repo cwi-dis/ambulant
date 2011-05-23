@@ -191,9 +191,8 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			// Put it in the tree
 			region_node *rn = new region_node(n, di);
 			rn->reset();
-#ifdef WITH_SMIL30
 			doc->register_for_avt_changes(n, this);
-#endif // WITH_SMIL30
+
 			if (stack.empty()) {
 				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: 0x%x is m_layout_tree", (void*)rn);
 				if(m_layout_tree != NULL) {
@@ -258,9 +257,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		region_node *parent = get_region_node_for(n, false);
 		if (parent) rn->fix_from_region_node(parent);
 		rn->reset();
-#ifdef WITH_SMIL30
 		doc->register_for_avt_changes(n, this);
-#endif // WITH_SMIL30
 		rn->set_showbackground(false);
 		rn->set_as_subregion(true);
 
@@ -474,7 +471,6 @@ smil_layout_manager::get_animation_destination(const lib::node *n) {
 	return rn?rn->get_animation_destination():NULL;
 }
 
-#ifdef WITH_SMIL30
 void
 smil_layout_manager::avt_value_changed_for(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_playout_manager::avt_values_changed_for(%s)", n->get_sig().c_str());
@@ -486,7 +482,6 @@ smil_layout_manager::avt_value_changed_for(const lib::node *n) {
 	assert(an);
 	if (an) an->animated();
 }
-#endif // WITH_SMIL30
 
 // Helper function: decode pre-defined repoint names
 static bool

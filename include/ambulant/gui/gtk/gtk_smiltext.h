@@ -26,8 +26,6 @@
 #ifndef AMBULANT_GUI_GTK_GTK_SMILTEXT_H
 #define AMBULANT_GUI_GTK_GTK_SMILTEXT_H
 
-#ifdef WITH_SMIL30
-
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
@@ -112,7 +110,4 @@ class gtk_smiltext_renderer :
 } // namespace gui
 
 } // namespace ambulant
-
-#endif // WITH_SMIL30
-
 #endif // AMBULANT_GUI_GTK_GTK_SMILTEXT_H

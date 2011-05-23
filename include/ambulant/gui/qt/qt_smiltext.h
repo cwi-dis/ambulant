@@ -26,11 +26,8 @@
 #ifndef AMBULANT_GUI_QT_SMILTEXT_H
 #define AMBULANT_GUI_QT_SMILTEXT_H
 
-#ifdef  WITH_SMIL30
-
-#include "ambulant/config/config.h"
 #include <string>
-
+#include "ambulant/config/config.h"
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/qt/qt_transition.h"
@@ -95,6 +92,5 @@ class qt_smiltext_renderer :
 } // namespace gui
 
 } // namespace ambulant
-#endif //WITH_SMIL30
 
 #endif // AMBULANT_GUI_QT_SMILTEXT_H

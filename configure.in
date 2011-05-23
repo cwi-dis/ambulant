@@ -252,23 +252,6 @@ AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
 #
-# Do we want SMIL 3.0 support?
-#
-test_smil30=true
-AC_MSG_CHECKING(for --with-smil30)
-AC_ARG_WITH([smil30],
-    AS_HELP_STRING([--with-smil30],[Enable SMIL 3.0 constructs]),
-    [with_smil30=${withval}],
-    [with_smil30=yes])
-if test "x$with_smil30" = xyes;
-then
-	AC_DEFINE(WITH_SMIL30, 1, [Define to enable SMIL 3.0 support])
-	test_smil30=true
-fi
-AM_CONDITIONAL(WITH_SMIL30, test x$with_smil30 = xyes)
-AC_MSG_RESULT($with_smil30)
-
-#
 # Do we want seamless playback support?
 #
 AC_MSG_CHECKING(for --with-seamless-playback)
@@ -1236,7 +1219,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     compiler:                       ${CC}
 
     Enable external DOM:            ${test_dom}
-    Enable SMIL 3.0:                ${test_smil30}
     Enable overlay window:          ${test_overlay}
     Build with seamless playback:   ${with_seamless}
     Build with audio clock sync:    ${with_clock_sync}

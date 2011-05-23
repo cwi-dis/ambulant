@@ -122,12 +122,10 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "color";
 	} else if (m_attrname == "soundAlign") {
 		m_attrtype = "soundAlign";
-#ifdef WITH_SMIL30
 	} else if (m_attrname == "panZoom") {
 		m_attrtype = "panZoom";
 	} else if (m_attrname == "backgroundOpacity" || m_attrname == "mediaOpacity" || m_attrname == "mediaBackgroundOpacity") {
 		m_attrtype = "opacity";
-#endif // WITH_SMIL30
 	} else {
 		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated",
 				m_tag.c_str(), m_id.c_str(), m_attrname.c_str());
@@ -514,7 +512,6 @@ void animate_attrs::get_values(std::vector<lib::point>& v) {
 	}
 }
 
-#ifdef WITH_SMIL30
 // point := S? (? x S? , S? y S? )?
 common::region_dim_spec animate_attrs::to_rds(const std::string& s) {
 	common::region_dim_spec rds;
@@ -633,4 +630,3 @@ void animate_attrs::get_values(std::vector<common::region_dim_spec>& v) {
 		assert(false);
 	}
 }
-#endif // WITH_SMIL30

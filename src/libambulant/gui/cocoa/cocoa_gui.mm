@@ -28,9 +28,7 @@
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_video.h"
 #include "ambulant/gui/cocoa/cocoa_dsvideo.h"
-#ifdef WITH_SMIL30
 #include "ambulant/gui/cocoa/cocoa_smiltext.h"
-#endif
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/common/renderer_select.h"

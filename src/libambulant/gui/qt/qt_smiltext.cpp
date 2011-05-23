@@ -20,7 +20,6 @@
 /*
  * @$Id$
  */
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_smiltext.h"
 #include "ambulant/gui/qt/qt_util.h"
@@ -396,4 +395,3 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		m_context->stopped(m_cookie);
 
 }
-#endif //WITH_SMIL30

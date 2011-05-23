@@ -107,14 +107,8 @@ class smil_player :
 	// raw notifications from the UI
 
 	virtual void on_char(int ch);
-#ifdef WITH_SMIL30
-  private:
-	void create_state_engine();
-	common::state_component *m_state_engine;
-  public:
 	virtual void on_state_change(const char *ref);
 	common::state_component *get_state_engine() { return m_state_engine;}
-#endif
 	virtual void on_focus_advance();
 	virtual void on_focus_activate();
 
@@ -184,6 +178,7 @@ class smil_player :
 
 	animation_engine* get_animation_engine() { return m_animation_engine;}
   private:
+	void create_state_engine();
 	common::playable* _new_playable(const lib::node *n);
 	void _destroy_playable(common::playable *r, const lib::node *n);
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -199,6 +194,7 @@ class smil_player :
 	void _update();
 	void _resume();
 
+	common::state_component *m_state_engine;
 	lib::document *m_doc;
 	common::factories *m_factory;
 	//common::window_factory *m_wf;

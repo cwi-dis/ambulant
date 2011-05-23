@@ -451,7 +451,6 @@ lib::node_impl::get_attribute(const char *name) const {
 	q_attributes_list::const_iterator it;
 	for(it = m_qattrs.begin(); it != m_qattrs.end(); it++)
 		if((*it).first.second == name) {
-#ifdef WITH_SMIL30
 			if (m_context) {
 				const xml_string ns = name;
 				const xml_string& attrval = (*it).second;
@@ -460,7 +459,6 @@ lib::node_impl::get_attribute(const char *name) const {
 					return rv.c_str();
 				}
 			}
-#endif
 			return (*it).second.c_str();
 		}
 	return 0;

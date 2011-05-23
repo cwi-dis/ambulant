@@ -459,61 +459,6 @@ surface_impl::clear_cache()
 	// invalidate it on the next redraw.
 }
 
-#ifndef WITH_SMIL30
-lib::rect
-surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src_rect) const
-{
-	const_cast<surface_impl*>(this)->need_bounds();
-	const int image_width = src_size.w;
-	const int image_height = src_size.h;
-	const int region_width = m_inner_bounds.width();
-	const int region_height = m_inner_bounds.height();
-	const int min_width = std::min(image_width, region_width);
-	const int min_height = std::min(image_height, region_height);
-	const double scale_width = (double)region_width / std::max((double)image_width, 0.1);
-	const double scale_height = (double)region_height / std::max((double)image_height, 0.1);
-	double scale;
-
-	fit_t fit = (m_info == NULL?fit_default : m_info->get_fit());
-	// This is a bit of a hack: if no fit value is specified we pick it up
-	// from our parent. This is needed for subregions (nodes).
-	if (fit == fit_default && m_parent && m_parent->m_info)
-		fit = m_parent->m_info->get_fit();
-	switch (fit) {
-	case fit_fill:
-		// Fill the area with the image, ignore aspect ration
-		*out_src_rect = lib::rect(lib::point(0, 0), src_size);
-		return m_inner_bounds;
-	case fit_scroll:
-	case fit_default:
-	case fit_hidden:
-		// Don't scale at all
-		*out_src_rect = lib::rect(lib::point(0, 0), lib::size(min_width, min_height));
-		return rect(lib::point(0, 0), lib::size(min_width, min_height));
-	case fit_meet:
-		// Scale to make smallest edge fit (showing some background color)
-		scale = std::min(scale_width, scale_height);
-		break;
-	case fit_meetbest:
-		// Scale to make smallest edge fit (showing some background color),
-		// but never scale up
-		scale = std::min(scale_width, scale_height);
-		if (scale > 1.0) scale = 1.0;
-		break;
-	case fit_slice:
-		// Scale to make largest edge fit (not showing the full source image)
-		scale = std::max(scale_width, scale_height);
-		break;
-	}
-	// We end up here as common case for meet and slice
-	int proposed_width = std::min((int)(scale*(image_width+0.5)), region_width);
-	int proposed_height = std::min((int)(scale*(image_height+0.5)), region_height);
-	*out_src_rect = lib::rect(lib::point(0, 0), lib::size((int)(proposed_width/scale), (int)(proposed_height/scale)));
-	return rect(lib::point(0, 0), lib::size(proposed_width, proposed_height));
-}
-#endif
-
-#ifdef WITH_SMIL30
 lib::rect
 surface_impl::get_crop_rect(const lib::size& srcsize) const
 {
@@ -533,11 +478,6 @@ lib::rect
 surface_impl::get_fit_rect(const lib::rect& src_clip_rect, const lib::size& src_real_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
 	const lib::size src_size(src_clip_rect.width(), src_clip_rect.height());
-#else
-lib::rect
-surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
-{
-#endif // WITH_SMIL30
 	const_cast<surface_impl*>(this)->need_bounds();
 	const int image_width = src_size.w;
 	const int image_height = src_size.h;
@@ -644,7 +584,6 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	int x_region_for_image_right = x_region_for_image_left + (int)((image_width * scale_horizontal) + 0.5);
 	int y_region_for_image_top = xy_region.y - y_image_scaled;
 	int y_region_for_image_bottom = y_region_for_image_top + (int)((image_height * scale_vertical) + 0.5);
-#ifdef WITH_SMIL30
 	int x_image_for_region_left = src_clip_rect.left();
 	int x_image_for_region_right = src_clip_rect.right();
 	int y_image_for_region_top = src_clip_rect.top();
@@ -669,12 +608,6 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		y_image_for_region_bottom = src_real_size.h;
 		y_region_for_image_bottom = y_region_for_image_bottom - (int)((overshoot * scale_vertical) + 0.5);
 	}
-#else
-	int x_image_for_region_left = 0;
-	int x_image_for_region_right = image_width;
-	int y_image_for_region_top = 0;
-	int y_image_for_region_bottom = image_height;
-#endif // WITH_SMIL30
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: full image would	 have region lrtb=(%d, %d, %d, %d)",
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	// Finally clamp all values

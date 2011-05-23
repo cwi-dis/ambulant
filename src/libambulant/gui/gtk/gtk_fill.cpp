@@ -248,16 +248,11 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		bgc.red = redc(bgcolor)*0x101;
 		bgc.blue = bluec(bgcolor)*0x101;
 		bgc.green = greenc(bgcolor)*0x101;
-#ifdef	WITH_SMIL30
 		if (opacity == 1.0) {
-#else // *not* WITH_SMIL30
-		if (opacity >= 0.5) {
-#endif//WITH_SMIL30
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 			gdk_gc_set_rgb_fg_color (gc, &bgc);
 			gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 			g_object_unref (G_OBJECT (gc));
-#ifdef WITH_SMIL30
 		} else {  //XXXX adapted from gtk_transition. May be some code to be factored out
 			// Method:
 			// 1. Get the current on-screen image as a pixmap
@@ -281,7 +276,6 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			g_object_unref (G_OBJECT (new_pixbuf));
 			g_object_unref (G_OBJECT (ngc));
 			g_object_unref (G_OBJECT (gc));
-#endif//WITH_SMIL30
 		}
 		//gtk_widget_modify_bg (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), GTK_STATE_NORMAL, &bgc );
 		if (m_background_pixmap) {

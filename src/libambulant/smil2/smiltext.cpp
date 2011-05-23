@@ -31,8 +31,6 @@
 #define AM_DBG if(0)
 #endif
 
-#ifdef WITH_SMIL30
-
 namespace ambulant {
 namespace smil2 {
 
@@ -1273,5 +1271,4 @@ smiltext_layout_engine::compute_rate(const smiltext_params params, const smiltex
 
 } // namespace smil2
 } // namespace ambulant
-#endif // WITH_SMIL30
 

@@ -81,7 +81,7 @@ class MyScanner(CxxScanner):
             # For get_screenshot(), the Python->C++ bridge works, but not the
             # reverse. This showed up on 64bit machines (some of the casts were
             # wrong. Need to fix later.
-            #"get_screenshot",  
+            "get_screenshot",  
             "single_playable_factory",
            
         ]
@@ -210,12 +210,6 @@ class MyScanner(CxxScanner):
             ('#ifdef WITH_AMBULANT_TEST', [
                 'new_default_subsurface',
                 
-                ]
-            ),
-            ('#ifdef WITH_SMIL30', [
-                'apply_avt',
-                'set_state',
-                'get_state',
                 ]
             ),
         ]

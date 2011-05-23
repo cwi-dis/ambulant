@@ -23,7 +23,6 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/state.h"
-#ifdef WITH_SMIL30
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -88,4 +87,3 @@ common::get_global_state_component_factory()
 #endif // WITH_STATE_COMPONENT_FACTORY_SINGLETON
 
 }
-#endif // WITH_SMIL30

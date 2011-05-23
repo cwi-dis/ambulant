@@ -38,10 +38,8 @@ using namespace ambulant;
 
 lib::document::document()
 :	m_root(NULL),
-	m_root_owned(false)
-#ifdef WITH_SMIL30
-	, m_state(NULL)
-#endif // WITH_SMIL30
+	m_root_owned(false),
+	m_state(NULL)
 {
 }
 
@@ -239,7 +237,6 @@ void lib::document::read_custom_attributes() {
 	}
 }
 
-#ifdef WITH_SMIL30
 const lib::xml_string&
 lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const
 {
@@ -353,4 +350,3 @@ lib::document::on_state_change(const char *ref)
 		handler->avt_value_changed_for(n);
 	}
 }
-#endif // WITH_SMIL30

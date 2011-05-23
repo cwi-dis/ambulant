@@ -28,11 +28,8 @@ factories::factories()
 	m_window_factory(NULL),
 	m_datasource_factory(NULL),
 	m_parser_factory(NULL),
-	m_node_factory(NULL)
-#ifdef WITH_SMIL30
-	,
+	m_node_factory(NULL),
 	m_state_component_factory(NULL)
-#endif // WITH_SMIL30
 {
 }
 
@@ -54,9 +51,7 @@ factories::init_factories()
 	init_datasource_factory();
 	init_parser_factory();
 	init_node_factory();
-#ifdef WITH_SMIL30
 	init_state_component_factory();
-#endif
 }
 
 void
@@ -84,11 +79,10 @@ factories::init_node_factory()
 {
 	m_node_factory = lib::get_builtin_node_factory();
 }
-#ifdef WITH_SMIL30
+
 void
 factories::init_state_component_factory()
 {
 	m_state_component_factory = get_global_state_component_factory();
 }
-#endif // WITH_SMIL30
 

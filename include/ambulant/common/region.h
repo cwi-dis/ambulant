@@ -68,10 +68,8 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	const rect& get_clipped_screen_rect() const;
 	virtual const point &get_global_topleft() const;
 	rect get_fit_rect(const size& src_size, rect* out_src_rect, const common::alignment *align) const;
-#ifdef WITH_SMIL30
 	rect get_fit_rect(const rect& src_clip_rect, const size& src_size, rect* out_src_rect, const common::alignment *align) const;
 	rect get_crop_rect(const size& src_size) const;
-#endif // WITH_SMIL30
 	bool is_tiled() const;
 	tile_positions get_tiles(lib::size image_size, lib::rect surface_rect) const;
 	const region_info *get_info() const { return m_info; }
@@ -97,9 +95,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
 	void need_bounds();					// recompute cached sizes
-#ifndef WITH_SMIL30
 	rect get_fit_rect_noalign(const size& src_real_size, rect* out_src_rect) const;
-#endif
 	void draw_background(const rect &r, gui_window *window);
 	bool _is_active();                  // Return true if region is active
 

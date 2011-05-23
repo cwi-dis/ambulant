@@ -109,9 +109,7 @@ cg_image_renderer::_prepare_image()
 	//
 	if (!m_data) return false;
 	
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
-#endif
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_image_renderer._prepare_image(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
@@ -142,7 +140,6 @@ cg_image_renderer::_prepare_image()
 		}
 		m_size = lib::size(CGImageGetWidth(m_image), CGImageGetHeight(m_image));
 
-#ifdef WITH_SMIL30
 		// Apply chroma keying.
 		// XXXJACK: by doing this here we disregard animation on chromaKeying
 		if (ri->is_chromakey_specified()) {
@@ -164,7 +161,6 @@ cg_image_renderer::_prepare_image()
 				m_image = new_image;
 			}
 		}
-#endif
 	}
 	assert(m_image);
 
@@ -178,14 +174,10 @@ cg_image_renderer::_prepare_image()
 		want_cglayer = true;
 	} else {
 		lib::rect srcrect;
-#ifdef WITH_SMIL30
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		AM_DBG logger::get_logger()->debug("cg_image_renderer._prepare_image, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 		lib::rect dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-#else
-		lib::rect dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
-#endif
 		if (dstrect != lib::rect(lib::point(0,0), m_size)) {
 			want_cglayer = true;
 		}
@@ -281,22 +273,16 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Determine drawing parameters
 	//
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
 
 	//
 	// Determine the source and destination rectangles
 	//
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	AM_DBG logger::get_logger()->debug("cg_image::redraw_body(0x%x): clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-#else
-	dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
-#endif
 	dstrect.translate(dest_origin);
 	cg_dstrect = CGRectFromAmbulantRect(dstrect);
 	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",

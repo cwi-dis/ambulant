@@ -303,7 +303,6 @@ struct region_dim_spec {
 
 	/// Convert all relative parameters to absolute.
 	void convert(const lib::rect& rc);
-#ifdef WITH_SMIL30
 	region_dim_spec& operator+=(const region_dim_spec& other) { ///< operator
 		left += other.left; right += other.right; top += other.top;
 		bottom += other.bottom; width += other.width; height += other.height;
@@ -339,7 +338,6 @@ struct region_dim_spec {
 	bool operator<(const region_dim_spec& other) const { ///< operator
 		abort();
 	}
-#endif // WITH_SMIL30
 };
 
 
@@ -354,13 +352,11 @@ inline region_dim_spec::region_dim_spec(const std::string& coords, const char *s
 		top = region_dim(*it++);
 		width = region_dim(*it++) - left;
 		height = region_dim(*it++) - top;
-#ifdef WITH_SMIL30
 	} else if(((shape && strcmp(shape, "panZoomRect")==0)) && list.size() == 4) {
 		left = region_dim(*it++);
 		top = region_dim(*it++);
 		width = region_dim(*it++);
 		height = region_dim(*it++);
-#endif // WITH_SMIL30
 	} else if((shape && strcmp(shape, "circle")==0) && list.size() == 3) {
 		region_dim x(*it++);
 		region_dim y(*it++);

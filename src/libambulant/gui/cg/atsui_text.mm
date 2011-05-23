@@ -135,10 +135,8 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (m_text_storage && !m_layout_manager) {
 		// Only now can we set the color: the alfa comes from the region.
 		double alfa = 1.0;
-#ifdef WITH_SMIL30
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
-#endif
 		ATSURGBAlphaColor acolor = {redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa};
 		tags[0] = kATSURGBAlphaColorTag;
 		sizes[0] = sizeof(ATSURGBAlphaColor);

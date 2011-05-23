@@ -26,28 +26,6 @@
 #ifndef AMBULANT_SMIL2_STATE_H
 #define AMBULANT_SMIL2_STATE_H
 
-#ifndef WITH_SMIL30
-// We declare an empty class state_test_methods. This is because
-// the Python interface expects it, and this is the easiest way
-// to satisfy that.
-namespace ambulant {
-namespace common {
-class state_test_methods {
-	int dummy;
-};
-class state_component {
-	int dummy;
-};
-class state_component_factory {
-	int dummy;
-};
-class global_state_component_factory {
-	int dummy;
-};
-}
-}
-
-#else
 #include "ambulant/lib/node.h"
 
 namespace ambulant {
@@ -185,5 +163,4 @@ AMBULANTAPI global_state_component_factory *get_global_state_component_factory()
 } // namespace common
 
 } // namespace ambulant
-#endif
 #endif // AMBULANT_SMIL2_STATE_H

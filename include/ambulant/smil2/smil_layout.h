@@ -62,9 +62,7 @@ class smil_layout_manager :
 	common::animation_notification *get_animation_notification(const lib::node *node);
 	common::animation_destination *get_animation_destination(const lib::node *node);
 	common::surface_template *get_region(const lib::node *n);
-#ifdef WITH_SMIL30
 	void avt_value_changed_for(const lib::node *n);
-#endif // WITH_SMIL30
 
   private:
 	lib::node *get_document_layout(lib::document *doc);

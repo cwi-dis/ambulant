@@ -936,8 +936,6 @@ static PyObject *node_contextObj_get_node(node_contextObject *_self, PyObject *_
 	return _res;
 }
 
-#ifdef WITH_SMIL30
-
 static PyObject *node_contextObj_get_state(node_contextObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -950,9 +948,6 @@ static PyObject *node_contextObj_get_state(node_contextObject *_self, PyObject *
 	                     state_componentObj_New, _rv);
 	return _res;
 }
-#endif
-
-#ifdef WITH_SMIL30
 
 static PyObject *node_contextObj_apply_avt(node_contextObject *_self, PyObject *_args)
 {
@@ -978,7 +973,6 @@ static PyObject *node_contextObj_apply_avt(node_contextObject *_self, PyObject *
 	                     _rv.c_str());
 	return _res;
 }
-#endif
 
 static PyMethodDef node_contextObj_methods[] = {
 	{"set_prefix_mapping", (PyCFunction)node_contextObj_set_prefix_mapping, 1,
@@ -993,16 +987,10 @@ static PyMethodDef node_contextObj_methods[] = {
 	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
 	{"get_node", (PyCFunction)node_contextObj_get_node, 1,
 	 PyDoc_STR("(std::string idd) -> (const ambulant::lib::node* _rv)")},
-
-#ifdef WITH_SMIL30
 	{"get_state", (PyCFunction)node_contextObj_get_state, 1,
 	 PyDoc_STR("() -> (ambulant::common::state_component* _rv)")},
-#endif
-
-#ifdef WITH_SMIL30
 	{"apply_avt", (PyCFunction)node_contextObj_apply_avt, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::xml_string attrname, ambulant::lib::xml_string attrvalue) -> (const ambulant::lib::xml_string& _rv)")},
-#endif
 	{NULL, NULL, 0}
 };
 
@@ -2483,8 +2471,6 @@ static PyObject *documentObj_set_src_url(documentObject *_self, PyObject *_args)
 	return _res;
 }
 
-#ifdef WITH_SMIL30
-
 static PyObject *documentObj_get_state(documentObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -2497,9 +2483,6 @@ static PyObject *documentObj_get_state(documentObject *_self, PyObject *_args)
 	                     state_componentObj_New, _rv);
 	return _res;
 }
-#endif
-
-#ifdef WITH_SMIL30
 
 static PyObject *documentObj_set_state(documentObject *_self, PyObject *_args)
 {
@@ -2515,9 +2498,6 @@ static PyObject *documentObj_set_state(documentObject *_self, PyObject *_args)
 	_res = Py_None;
 	return _res;
 }
-#endif
-
-#ifdef WITH_SMIL30
 
 static PyObject *documentObj_apply_avt(documentObject *_self, PyObject *_args)
 {
@@ -2543,7 +2523,6 @@ static PyObject *documentObj_apply_avt(documentObject *_self, PyObject *_args)
 	                     _rv.c_str());
 	return _res;
 }
-#endif
 
 static PyObject *documentObj_on_state_change(documentObject *_self, PyObject *_args)
 {
@@ -2587,21 +2566,12 @@ static PyMethodDef documentObj_methods[] = {
 	 PyDoc_STR("(std::string idd) -> (const ambulant::lib::node* _rv)")},
 	{"set_src_url", (PyCFunction)documentObj_set_src_url, 1,
 	 PyDoc_STR("(ambulant::net::url u) -> None")},
-
-#ifdef WITH_SMIL30
 	{"get_state", (PyCFunction)documentObj_get_state, 1,
 	 PyDoc_STR("() -> (ambulant::common::state_component* _rv)")},
-#endif
-
-#ifdef WITH_SMIL30
 	{"set_state", (PyCFunction)documentObj_set_state, 1,
 	 PyDoc_STR("(ambulant::common::state_component* state) -> None")},
-#endif
-
-#ifdef WITH_SMIL30
 	{"apply_avt", (PyCFunction)documentObj_apply_avt, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::xml_string attrname, ambulant::lib::xml_string attrvalue) -> (const ambulant::lib::xml_string& _rv)")},
-#endif
 	{"on_state_change", (PyCFunction)documentObj_on_state_change, 1,
 	 PyDoc_STR("(char* ref) -> None")},
 	{NULL, NULL, 0}
@@ -5810,32 +5780,9 @@ static PyObject *gui_screenObj_get_size(gui_screenObject *_self, PyObject *_args
 	return _res;
 }
 
-static PyObject *gui_screenObj_get_screenshot(gui_screenObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	char* type;
-	char *out_data__out__;
-	size_t out_data__len__;
-	if (!PyArg_ParseTuple(_args, "s",
-	                      &type))
-		return NULL;
-	out_data__out__ = NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	bool _rv = _self->ob_itself->get_screenshot(type,
-	                                            &out_data__out__, &out_data__len__);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&z#",
-	                     bool_New, _rv,
-	                     out_data__out__, (int)out_data__len__);
-	if( out_data__out__ ) free(out_data__out__);
-	return _res;
-}
-
 static PyMethodDef gui_screenObj_methods[] = {
 	{"get_size", (PyCFunction)gui_screenObj_get_size, 1,
 	 PyDoc_STR("() -> (int width, int height)")},
-	{"get_screenshot", (PyCFunction)gui_screenObj_get_screenshot, 1,
-	 PyDoc_STR("(char* type, Buffer out_data) -> (bool _rv, Buffer out_data)")},
 	{NULL, NULL, 0}
 };
 

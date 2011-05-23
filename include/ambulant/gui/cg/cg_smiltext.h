@@ -26,8 +26,6 @@
 #ifndef AMBULANT_GUI_CG_CG_SMILTEXT_H
 #define AMBULANT_GUI_CG_CG_SMILTEXT_H
 
-#ifdef WITH_SMIL30
-
 #include "ambulant/gui/cg/cg_renderer.h"
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/lib/mtsync.h"
@@ -108,7 +106,5 @@ class cg_smiltext_renderer :
 } // namespace gui
 
 } // namespace ambulant
-
-#endif // WITH_SMIL30
 
 #endif // AMBULANT_GUI_CG_CG_SMILTEXT_H

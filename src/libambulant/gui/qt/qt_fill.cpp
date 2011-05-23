@@ -251,11 +251,7 @@ qt_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: clearing to %x, local_ltwh(%d,%d,%d,%d)",(long)bgcolor,L,T,W,H);
 		QColor bgc = QColor(lib::redc(bgcolor),lib::greenc(bgcolor),lib::bluec(bgcolor));
-#ifdef	WITH_SMIL30
 		if (opacity == 1.0) {
-#else // +not* WITH_SMIL30
-		if (opacity >= 0.5) {
-#endif//WITH_SMIL30
 			paint.setPen(Qt::NoPen);
 			paint.setBrush(bgc);
 			paint.drawRect(L,T,W,H);
@@ -265,7 +261,6 @@ qt_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 			}
 			paint.flush();
 			paint.end();
-#ifdef	WITH_SMIL30
 		} else { // Blending
 			//XXXX adapted from gtk_fill. May be not optimal.
 			// Method:
@@ -294,8 +289,6 @@ qt_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 			QPixmap new_pixmap(W,H);
 			new_pixmap.convertFromImage(screen_image);
 			bitBlt(aqw->get_ambulant_pixmap(), L, T, &new_pixmap, L, T, W, H);
-
-#endif//WITH_SMIL30
 		}
 	}
 }

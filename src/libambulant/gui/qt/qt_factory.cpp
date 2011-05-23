@@ -29,9 +29,7 @@
 #ifdef	WITH_QT_HTML_WIDGET
 #include "ambulant/gui/qt/qt_html_renderer.h"
 #endif/*WITH_QT_HTML_WIDGET*/
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/qt/qt_smiltext.h"
-#endif/*WITH_SMIL30*/
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/gui/qt/qt_util.h"
 #include "ambulant/gui/qt/qt_video_renderer.h"

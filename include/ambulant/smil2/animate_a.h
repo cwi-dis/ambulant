@@ -80,9 +80,7 @@ class animate_attrs {
 	void get_values(std::vector<lib::color_t>& v);
 	void get_values(std::vector<lib::point>& v);
 	void get_values(std::vector<common::sound_alignment>& v);
-#ifdef WITH_SMIL30
 	void get_values(std::vector<common::region_dim_spec>& v);
-#endif // WITH_SMIL30
 
   private:
 
@@ -96,9 +94,7 @@ class animate_attrs {
 	double safeatof(const char *p);
 	common::region_dim to_region_dim(const std::string& s);
 	lib::point to_point(const std::string& s);
-#ifdef WITH_SMIL30
 	common::region_dim_spec to_rds(const std::string& s);
-#endif // WITH_SMIL30
 
 	const lib::node *m_node;
 	const lib::node *m_tparent;

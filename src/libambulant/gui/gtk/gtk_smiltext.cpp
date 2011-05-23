@@ -35,8 +35,6 @@
 #define AM_DBG if(0)
 #endif
 
-#ifdef WITH_SMIL30
-
 namespace ambulant {
 
 using namespace lib;
@@ -740,5 +738,3 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 } // namespace gui
 
 } //namespace ambulant
-
-#endif // WITH_SMIL30

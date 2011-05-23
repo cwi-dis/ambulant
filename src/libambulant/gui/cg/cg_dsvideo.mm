@@ -191,10 +191,8 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		CGImageRef cropped_image = m_image;
 		CGContextRef myContext = [view getCGContext];
 		double alfa = 1.0;
-#ifdef WITH_SMIL30
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
-#endif
 		AM_DBG lib::logger::get_logger()->debug("0x%x: drawImage(0x%x)", this, cropped_image);
 		CGContextSaveGState(myContext);
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG

@@ -154,9 +154,7 @@ class time_node : public schedulable {
 	virtual void raise_focusout_event(qtime_type timestamp);
 	virtual void raise_accesskey(std::pair<qtime_type, int> accesskey);
 	virtual void raise_marker_event(std::pair<qtime_type, std::string> args);
-#ifdef WITH_SMIL30
 	virtual void raise_state_change(std::pair<qtime_type, std::string> statearg);
-#endif
 	virtual void raise_update_event(qtime_type timestamp);
 
 	// Interval manipulators
@@ -197,10 +195,8 @@ class time_node : public schedulable {
 	// Animations are special internal playables
 	void start_animation(time_type offset);
 	void stop_animation();
-#ifdef WITH_SMIL30
 	// State commands (setvalue, send) are special internal playables
 	void start_statecommand(time_type offset);
-#endif // WITH_SMIL30
 #ifdef WITH_SEAMLESS_PLAYBACK
 	// Prefetch is special internal playables
 	void start_prefetch(time_type offset = 0);
@@ -284,9 +280,7 @@ class time_node : public schedulable {
 	bool is_a() const { return m_attrs.get_tag() == "a";}
 	bool is_link() const { return is_area() || is_a();}
 	bool is_animation() const;
-#ifdef WITH_SMIL30
 	bool is_statecommand() const;
-#endif
 	bool is_prefetch() const;
 	bool is_playable() const;
 

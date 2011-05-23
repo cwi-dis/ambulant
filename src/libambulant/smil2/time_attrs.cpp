@@ -81,7 +81,6 @@ bool time_attr_parser::parse_wallclock(const std::string& s, sync_value_struct& 
 	return false;
 }
 
-#ifdef WITH_SMIL30
 // statechange-value  ::= "stateChange(" ref ")"
 bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct& svs) {
 	// state-change-value
@@ -105,7 +104,6 @@ bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.sparam.c_str());
 	return true;
 }
-#endif // WITH_SMIL30
 
 // Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )?
 bool time_attr_parser::parse_accesskey(const std::string& s, sync_value_struct& svs) {
@@ -258,10 +256,8 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 		svs.base = nmtoken.substr(0, last_dot_ix);
 		event = nmtoken.substr(last_dot_ix+1);
 	}
-#ifdef WITH_SMIL30
 	if(starts_with(event, "stateChange"))
 		return parse_statechange(s, svs);
-#endif // WITH_SMIL30
 
 #ifdef CHECK_EVENT_NAMES
 	if(events.find(event) == events.end()) {
@@ -723,9 +719,7 @@ std::string repr(smil2::sync_value_type sv) {
 		case sv_repeat: return "repeat";
 		case sv_accesskey: return "accesskey";
 		case sv_media_marker: return "marker";
-#ifdef WITH_SMIL30
 		case sv_state_change: return "statechange";
-#endif
 		case sv_wallclock: return "wallclock";
 		case sv_indefinite: return "indefinite";
 	}

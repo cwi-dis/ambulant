@@ -425,7 +425,6 @@ inline double dist(const ambulant::common::region_dim& rd1, const ambulant::comm
 	return 0;
 }
 
-#ifdef WITH_SMIL30
 template <>
 inline double dist(const ambulant::common::region_dim_spec& rds1, const ambulant::common::region_dim_spec& rds2) {
 	double dx = dist(rds1.left, rds2.left);
@@ -434,7 +433,6 @@ inline double dist(const ambulant::common::region_dim_spec& rds1, const ambulant
 	double dh = dist(rds1.height, rds2.height);
 	return std::max(std::max(dx, dy), std::max(dw, dh));
 }
-#endif // WITH_SMIL30
 
 // Distance specialization for lib::point
 template <>

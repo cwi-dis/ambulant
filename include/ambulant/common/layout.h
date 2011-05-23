@@ -220,7 +220,6 @@ class surface {
 	/// to display it. The renderer must do the scaling.
 	virtual lib::rect get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const alignment *align) const = 0;
 
-#ifdef WITH_SMIL30
 	/// Determine where to draw an image.
 	/// For a given image size, return portion of source image to display, and where
 	/// to display it. The renderer must do the scaling.
@@ -229,7 +228,6 @@ class surface {
     /// Determine source rectangle to draw.
     /// Applies panzoom attributes to the source image and returns resulting rect.
 	virtual lib::rect get_crop_rect(const lib::size& src_size) const = 0;
-#endif
 
 	/// Get object holding SMIL region parameters for querying.
 	virtual const region_info *get_info() const = 0;

@@ -20,7 +20,6 @@
 /*
  * @$Id$
  */
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_smiltext.h"
@@ -633,5 +632,4 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_get_ddsurf(common::gui_window *windo
 		m_viewport->copy_surface(m_region_dds, dst_rc, m_viewport->get_surface(), src_rc);
 	}
 }
-#endif //WITH_SMIL30
 

@@ -33,10 +33,7 @@ static const char* time_containers[] = {
 	"body", "seq", "par", "excl"
 };
 static const char* discrete_leafs[] = {
-	"text", "img", "ref", "brush"
-#ifdef WITH_SMIL30
-	, "smilText"
-#endif
+	"text", "img", "ref", "brush", "smilText"
 };
 
 static const char* continuous_leafs[] = {
@@ -51,11 +48,9 @@ static const char* layout_elements[] = {
 	"root-layout", "topLayout", "region"
 };
 
-#ifdef WITH_SMIL30
 static const char* statecommand_elements[] = {
 	"setvalue", "newvalue", "delvalue", "send"
 };
-#endif // WITH_SMIL30
 
 #ifdef WITH_SEAMLESS_PLAYBACK
 static const char* prefetch_elements[] = {
@@ -108,14 +103,12 @@ schema::schema() {
 		m_animations.insert(animate_elements[i]);
 	}
 
-#ifdef WITH_SMIL30
 	n = sizeof(statecommand_elements)/sizeof(const char *);
 	for(i =0;i<n;i++) {
 		m_time_elements.insert(statecommand_elements[i]);
 		m_discrete.insert(statecommand_elements[i]);
 		m_statecommands.insert(statecommand_elements[i]);
 	}
-#endif // WITH_SMIL30
 
 #ifdef WITH_SEAMLESS_PLAYBACK
 	n = sizeof(prefetch_elements)/sizeof(const char *);
@@ -154,11 +147,9 @@ bool schema::is_animation(const lib::xml_string& tag) const {
 	return m_animations.find(tag) != m_animations.end();
 }
 
-#ifdef WITH_SMIL30
 bool schema::is_statecommand(const lib::xml_string& tag) const {
 	return m_statecommands.find(tag) != m_statecommands.end();
 }
-#endif // WITH_SMIL30
 
 #ifdef WITH_SEAMLESS_PLAYBACK
 bool schema::is_prefetch(const lib::xml_string& tag) const {

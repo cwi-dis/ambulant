@@ -101,9 +101,7 @@ common::playable_factory *create_cocoa_fill_playable_factory(common::factories *
 common::playable_factory *create_cocoa_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cocoa_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cocoa_ink_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#ifdef WITH_SMIL30
 common::playable_factory *create_cocoa_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#endif
 common::playable_factory *create_cocoa_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cocoa_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 

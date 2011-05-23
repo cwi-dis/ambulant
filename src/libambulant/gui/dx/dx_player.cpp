@@ -51,9 +51,7 @@
 #include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/gui/dx/dx_bgrenderer.h"
 #include "ambulant/gui/dx/dx_text.h"
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/dx/dx_smiltext.h"
-#endif/*WITH_SMIL30*/
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_brush.h"
@@ -234,10 +232,8 @@ gui::dx::dx_player::cleanup()
 	delete pf;
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
-#ifdef WITH_SMIL30
 	common::global_state_component_factory *scf = common::get_global_state_component_factory();
 	delete scf;
-#endif
 }
 
 void

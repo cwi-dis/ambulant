@@ -52,11 +52,9 @@ bool active_test_attrs_map_inited;
 static
 std::map<std::string, bool> active_custom_tests_attrs_map;
 
-#ifdef WITH_SMIL30
 // The current set of numeric language preferences
 static
 std::map<std::string, float> active_language_map;
-#endif
 
 inline std::string get_test_attribute(const std::string& attr) {
 	std::map<std::string, std::string>::iterator it = active_tests_attrs_map.find(attr);
@@ -162,19 +160,7 @@ bool test_attrs::selected() const {
 // systemLanguage ::= (languageTag (S? ',' S? languageTag)*)?
 // return true when any in the list stars with the argument
 bool test_attrs::test_system_language(const char *value) {
-#ifdef WITH_SMIL30
 	return get_system_language_weight(value) > 0;
-#else
-	std::string langs = get_test_attribute("systemLanguage");
-	if(langs.empty()) return false;
-	std::list<std::string> list;
-	lib::split_trim_list(langs, list);
-	std::list<std::string>::const_iterator it;
-	for(it = list.begin(); it!=list.end();it++) {
-		if(lib::starts_with(*it, value)) return true;
-	}
-	return false;
-#endif
 }
 
 bool test_attrs::test_system_component(const char *value) {
@@ -329,11 +315,8 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 				active_tests_attrs_map[name] = value;
 				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
 				if (std::string(name) == "systemLanguage") {
-
-#ifdef WITH_SMIL30
 					clear_languages();
 					add_language(value, 1.0f);
-#endif
 				}
 			}
 		} else if(tag == "customTest") {
@@ -377,9 +360,7 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemCPU"] = "unknown";
 #endif
 	active_tests_attrs_map["systemLanguage"] = "en";
-#ifdef WITH_SMIL30
 	add_language("en",1.0f);
-#endif
 #if defined(AMBULANT_PLATFORM_MACOS)
 	active_tests_attrs_map["systemOperatingSystem"] = "macos";
 #elif defined(AMBULANT_PLATFORM_WIN32)
@@ -399,8 +380,6 @@ void test_attrs::set_default_tests_attrs() {
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("SeamlessPlayback"), true);
 #endif
 }
-
-#ifdef WITH_SMIL30
 
 class smil2::state_test_methods_impl : public common::state_test_methods {
   public:
@@ -469,7 +448,6 @@ test_attrs::get_state_test_methods()
 	}
 	return singleton;
 }
-#endif // WITH_SMIL30
 
 // API for embedders and extenders that want to fiddle with components and
 // custom tests
@@ -534,7 +512,6 @@ test_attrs::set_current_screen_size(int height, int width)
 	// XXX should raise contentControlChange
 }
 
-#ifdef WITH_SMIL30
 void
 test_attrs::clear_languages()
 {
@@ -567,5 +544,4 @@ test_attrs::get_system_language_weight(std::string lang)
 	AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s') -> %f", lang.c_str(), active_language_map[lang]);
 	return active_language_map[lang];
 }
-#endif
 

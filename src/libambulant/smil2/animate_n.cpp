@@ -567,7 +567,6 @@ soundalign_animation::apply_self_effect(animate_registers& regs) const
 	regs.sa = m_values[0];
 }
 
-#ifdef WITH_SMIL30
 ////////////////////////////////////
 // regdim_animation
 //
@@ -701,7 +700,6 @@ class underlying_to_opacity_animation : public underlying_to_animation<double> {
 		regs.dv = dv; // override
 	}
 };
-#endif // WITH_SMIL30
 
 ////////////////////////////////////
 // animate_node factory functions
@@ -765,7 +763,6 @@ animate_node* animate_node::new_position_animation(context_type *ctx, const node
 	return new values_motion_animation<F>(ctx, n, aattrs);
 }
 
-#ifdef WITH_SMIL30
 // private static
 animate_node* animate_node::new_panzoom_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef common::region_dim_spec attr_t;
@@ -791,8 +788,6 @@ animate_node* animate_node::new_opacity_animation(context_type *ctx, const node 
 	typedef linear_map_f<attr_t> F;
 	return new opacity_animation<F>(ctx, n, aattrs);
 }
-#endif // WITH_SMIL30
-
 
 // public static
 animate_node* animate_node::new_instance(context_type *ctx, const node *n, const node* tparent) {
@@ -813,12 +808,10 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		return new_position_animation(ctx, n, aattrs);
 	} else if(aattrs->get_target_attr() == "soundAlign") {
 		return new_soundalign_animation(ctx, n, aattrs);
-#ifdef WITH_SMIL30
 	} else if (aattrs->get_target_attr() == "panZoom") {
 		return new_panzoom_animation(ctx, n, aattrs);
 	} else if (aattrs->get_target_attr_type() == "opacity" ) {
 		return new_opacity_animation(ctx, n, aattrs);
-#endif // WITH_SMIL30
 	}
 
 	// Not implemented
