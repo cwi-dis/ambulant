@@ -217,7 +217,7 @@ toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
 libambulant_ffmpeg_la_LDFLAGS = $(FFMPEG_LIBS) $(libambulant_core)
 libambulant_ffmpeg_la_DEPENDENCIES=libambulant.la
 
-ffmpegincludes = -DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
+ffmpegincludes = -DWITH_FFMPEG $(FFMPEG_CFLAGS)
 
 libambulant_ffmpeg_la_SOURCES = \
     net/ffmpeg_common.cpp \
