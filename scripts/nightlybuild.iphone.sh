@@ -50,7 +50,8 @@ touch .empty
 echo If the following command fails you have no SSH key that matches the destination
 scp .empty $DESTINATION/.empty
 
-ls -t | tail +6 | grep ambulant- | xargs rm -rf
+ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w
+ls -t | tail -n +6 | grep ambulant- | xargs rm -rf
 hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 #
 # We are building a binary distribution, so we want to completely ignore any
