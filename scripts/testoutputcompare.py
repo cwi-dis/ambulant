@@ -21,6 +21,9 @@ def parse(filename):
         if fields[0] == 'TEST':
             value = float(fields[1])
             key = ' '.join(fields[2:])
+            if key in rv:
+                print 'Duplicate event in %s: %s' % (filename, key)
+                sys.exit(1)
             rv[key] = value
     return rv
     
