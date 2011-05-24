@@ -71,10 +71,8 @@ class AMBULANTAPI plugin_engine {
 	/// Get extra-data for a named plugin, if available.
 	void *get_extra_data(std::string name);
 
-#ifdef WITH_PYTHON_PLUGIN
 	/// Get list of plugins that need the Python plugin.
-	const std::vector<std::string>& get_python_plugins() const { return m_python_plugins; }
-#endif
+	const std::vector<std::string>& get_python_plugins() const;
   private:
 
 	plugin_engine();

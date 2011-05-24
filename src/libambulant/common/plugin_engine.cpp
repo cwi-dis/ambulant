@@ -496,3 +496,15 @@ plugin_engine::get_extra_data(std::string name)
 		return NULL;
 	return m_extra_data[name]->m_plugin_extra;
 }
+
+const std::vector<std::string>& 
+plugin_engine::get_python_plugins() const
+{
+#ifdef WITH_PYTHON_PLUGIN
+	return m_python_plugins;
+#else
+	static std::vector<std::string> empty;
+	return empty;
+#endif // WITH_PYTHON_PLUGIN
+}
+
