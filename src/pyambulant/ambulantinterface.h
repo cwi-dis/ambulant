@@ -3,8 +3,6 @@
 
 #include "Python.h"
 
-
-#define WITH_EXTERNAL_DOM 1
 #include "ambulant/lib/amstream.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"

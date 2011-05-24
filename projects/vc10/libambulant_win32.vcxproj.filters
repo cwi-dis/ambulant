@@ -216,7 +216,7 @@
     <ClCompile Include="..\..\src\libambulant\lib\nfa.cpp">
       <Filter>Source Files\lib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\lib\node.cpp">
+    <ClCompile Include="..\..\src\libambulant\lib\node_impl.cpp">
       <Filter>Source Files\lib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\libambulant\lib\nscontext.cpp">

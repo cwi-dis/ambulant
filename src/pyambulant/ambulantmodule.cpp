@@ -6,7 +6,6 @@
 
 
 /*AMBULANT_FOREIGN_INDENT_RULES*/
-#define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
 #include "ambulant/lib/amstream.h"

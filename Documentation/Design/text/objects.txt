@@ -284,12 +284,9 @@ attributes and data pertaining to the XML node. There are basic methods
 to access the parent, next sibling and first child, to insert or remove nodes into a tree
 and more.
 
-In the actual code there is a compile-time switch ``WITH_EXTERNAL_DOM`` that governs
-whether the ``node`` class is abstract or not. If defined, ``node`` is
-equivalent to ``node_interface``, the abstract API, and ``node_impl`` is one possible
-implementation of it. If not defined ``node`` is equivalent to ``node_impl``, which
-leads to a more efficient implementation with inline methods and such. This
-helps on low-power machines.
+The ``node`` class is an abstract interface, and ``node_impl`` is one possible
+implementation of it. There is a bit of trickery in the implementation so you can
+set ``node`` children and such to ``node_impl`` objects (after dynamic type checking).
 
 There are two auxiliary classes that augment the node functionality using only
 these interfaces:

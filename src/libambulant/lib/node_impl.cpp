@@ -763,7 +763,7 @@ builtin_node_factory::new_node(const lib::q_name_pair& qn, const lib::q_attribut
 lib::node *
 builtin_node_factory::new_node(const lib::node* other)
 {
-    const node_impl *nn = dynamic_cast<const node_impl*> (other);
+    const lib::node_impl *nn = dynamic_cast<const lib::node_impl*> (other);
     assert(nn);
 	return new lib::node_impl(nn);
 }

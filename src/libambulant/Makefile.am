@@ -298,7 +298,7 @@ libambulant_la_SOURCES = \
 	lib/gpaths.cpp \
 	lib/logger.cpp \
 	lib/nfa.cpp \
-	lib/node.cpp \
+	lib/node_impl.cpp \
 	lib/nscontext.cpp \
 	lib/parselets.cpp \
 	lib/string_util.cpp \

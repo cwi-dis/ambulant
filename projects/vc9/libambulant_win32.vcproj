@@ -1180,7 +1180,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\libambulant\lib\node.cpp"
+					RelativePath="..\..\src\libambulant\lib\node_impl.cpp"
 					>
 				</File>
 				<File
