@@ -102,9 +102,9 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 #
 # Build plugin installer, upload
 #
-cd src/npambulant
-make installer
-mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
+#X cd src/npambulant
+#X make installer
+#X mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
 #X scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION_NPAMBULANT
 cd ../..
 #

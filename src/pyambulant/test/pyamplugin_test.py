@@ -6,7 +6,7 @@
 # args (which may contain spaces) is any additional information
 #
 import sys
-sys.stderr = sys.stdout = open('AM_TEST-output.txt', 'a')
+sys.stderr = sys.stdout = open('AM_TEST-output.txt', 'w')
 import ambulant
 import time
 import datetime
