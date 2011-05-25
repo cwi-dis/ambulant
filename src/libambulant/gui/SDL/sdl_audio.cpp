@@ -309,10 +309,8 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_intransition(NULL),
 	m_outtransition(NULL),
 	m_transition_engine(NULL),
-	m_previous_clip_position(-1)
-#ifdef WITH_CLOCK_SYNC
-	, m_audio_clock(0)
-#endif
+	m_previous_clip_position(-1),
+    m_audio_clock(0)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_audio_renderer() -> 0x%x",	 this);
 	if (init() != 0)
@@ -359,10 +357,8 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_volcount(0),
 	m_intransition(NULL),
 	m_outtransition(NULL),
-	m_transition_engine(NULL)
-#ifdef WITH_CLOCK_SYNC
-	, m_audio_clock(0)
-#endif
+	m_transition_engine(NULL),
+    m_audio_clock(0)
 {
 	net::audio_format_choices supported(s_ambulant_format);
 	net::url url = node->get_url("src");
@@ -445,7 +441,6 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source");
 	} else {
 
-#ifdef WITH_CLOCK_SYNC
 		// XXXJACK Note that the following code is incorrect: we assume that the time samples arrive here (from
 		// our audio datasource) they are immedeately played out. We should probably add a slight delay, because
 		// the samples will take some time to traverse SDL, and then the audio hardware. If ever we see a systematic
@@ -472,6 +467,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 			m_audio_clock += 1;
 			clock_drift = 0;
 		}
+
 		// Now communicate it to the clock.
 		if (clock_drift) {
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: audio clock %dms ahead of document clock", clock_drift);
@@ -497,30 +493,28 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 		// Update the audio clock
 		lib::timer::time_type delta = (lib::timer::time_type)((bytes_wanted * 1000) / (44100*2*2)); // Warning: rounding error possible
 		m_audio_clock += delta;
-#endif
 
-	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
-	m_read_ptr_called = true;
-	rv = m_audio_src->size();
-	*ptr = (Uint8 *) m_audio_src->get_read_ptr();
-	if (rv) assert(*ptr);
-	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: %d bytes available", rv);
-	if (rv > bytes_wanted)
-		rv = bytes_wanted;
-#ifdef WITH_CLOCK_SYNC
-	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio-clock=%d, wanted %d bytes, returning %d bytes", m_audio_clock, bytes_wanted, rv);
-	// if rv < bytes_wanted, we should also adjust m_audio_clock (thereby essentially stopping the system clock, until the audio
-	// data has had a chance to catch up).
-	if (rv < bytes_wanted) {
-		lib::timer::time_type pushback_audio_clock = (lib::timer::time_type)(((bytes_wanted-rv) * 1000) / (44100*2*2));
-		m_audio_clock -= pushback_audio_clock;
-	}
-#endif
-	// Also set volume(s)
-	m_volcount = 0;
-	if (m_dest) {
-		const common::region_info *info = m_dest->get_info();
-		double level = info ? info->get_soundlevel() : 1.0;
+        AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: m_audio_src->get_read_ptr(), m_audio_src=0x%x, this=0x%x", (void*) m_audio_src, (void*) this);
+        m_read_ptr_called = true;
+        rv = m_audio_src->size();
+        *ptr = (Uint8 *) m_audio_src->get_read_ptr();
+        if (rv) assert(*ptr);
+        AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: %d bytes available", rv);
+        if (rv > bytes_wanted)
+            rv = bytes_wanted;
+        AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio-clock=%d, wanted %d bytes, returning %d bytes", m_audio_clock, bytes_wanted, rv);
+        // if rv < bytes_wanted, we should also adjust m_audio_clock (thereby essentially stopping the system clock, until the audio
+        // data has had a chance to catch up).
+        if (rv < bytes_wanted) {
+            lib::timer::time_type pushback_audio_clock = (lib::timer::time_type)(((bytes_wanted-rv) * 1000) / (44100*2*2));
+            m_audio_clock -= pushback_audio_clock;
+        }
+
+        // Also set volume(s)
+        m_volcount = 0;
+        if (m_dest) {
+            const common::region_info *info = m_dest->get_info();
+            double level = info ? info->get_soundlevel() : 1.0;
 			if (m_intransition || m_outtransition) {
 				level = m_transition_engine->get_volume(level);
 			}
@@ -690,9 +684,7 @@ gui::sdl::sdl_audio_renderer::init_with_node(const lib::node *n)
 	renderer_playable::init_with_node(n);
 
 	if (m_audio_src) {
-#ifdef WITH_CLOCK_SYNC
 		m_audio_clock = 0;
-#endif
 #ifdef WITH_SEAMLESS_PLAYBACK
 		// For "fill=continue", we pass -1 to the datasource classes, as we want to continue to receive
 		// audio after clip end.

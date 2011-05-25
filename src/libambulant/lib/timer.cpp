@@ -47,11 +47,8 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
 	m_speed(speed),
-	m_running(run)
-#ifdef WITH_CLOCK_SYNC
-	,
+	m_running(run),
 	m_drift(0)
-#endif
 {
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }
@@ -79,9 +76,7 @@ lib::timer_control_impl::_elapsed() const
 {
 	if(!m_running) return m_local_epoch;
 	lib::timer_control_impl::time_type pt = m_parent->elapsed();
-#ifdef WITH_CLOCK_SYNC
 	if (pt < m_parent_epoch) return m_local_epoch;
-#endif
 	return m_local_epoch + _apply_speed_manip(pt - m_parent_epoch);
 }
 
@@ -99,9 +94,7 @@ lib::timer_control_impl::time_type
 lib::timer_control_impl::_elapsed(time_type pt) const
 {
 	if(!m_running) return m_local_epoch;
-#ifdef WITH_CLOCK_SYNC
 	if (pt < m_parent_epoch) return m_local_epoch;
-#endif
 	return m_local_epoch + _apply_speed_manip(pt - m_parent_epoch);
 }
 
@@ -215,7 +208,6 @@ lib::timer_control_impl::_apply_speed_manip(lib::timer::time_type dt) const
 	return time_type(::floor(m_speed*dt + 0.5));
 }
 
-#ifdef WITH_CLOCK_SYNC
 void
 lib::timer_control_impl::skew(signed_time_type skew_) {
 	m_lock.enter();
@@ -240,4 +232,3 @@ lib::timer_control_impl::skew(signed_time_type skew_) {
 	}
 	m_lock.leave();
 }
-#endif // WITH_CLOCK_SYNC

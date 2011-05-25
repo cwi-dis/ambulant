@@ -294,12 +294,12 @@ cocoa_video_renderer::start(double where)
 	}
 	m_paused = false;
 	m_dest->show(this); // XXX Do we need this?
-#ifdef WITH_CLOCK_SYNC
+
 	Movie mov = [m_movie quickTimeMovie];
 	if (GetMovieRate(mov) == 0) {
 		_fix_video_epoch();
 	}
-#endif
+
 	[(MovieCreator *)m_mc performSelectorOnMainThread: @selector(movieStart:) withObject: nil waitUntilDone: YES];
 	m_previous_clip_position = -1;
 	// And start the poll task
@@ -371,9 +371,7 @@ cocoa_video_renderer::resume()
 		if ([m_movie_view isHidden]) [m_movie_view setHidden: NO];
 		[m_movie_view play: NULL];
 	}
-#ifdef WITH_CLOCK_SYNC
 	_fix_video_epoch();
-#endif
 	[pool release];
 	m_lock.leave();
 }
@@ -417,9 +415,7 @@ cocoa_video_renderer::_poll_playing()
 	}
 
 	if (!is_stopped) {
-#ifdef WITH_CLOCK_SYNC
 		_fix_clock_drift();
-#endif
 		// schedule another call in a while
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::_poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
@@ -483,7 +479,6 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 	m_lock.leave();
 }
 
-#ifdef WITH_CLOCK_SYNC
 void
 cocoa_video_renderer::_fix_video_epoch()
 {
@@ -518,8 +513,6 @@ cocoa_video_renderer::_fix_clock_drift()
 		// XXX For now, assume residual_clock_drift always zero.
 	}
 }
-#endif
-
 
 } // namespace cocoa
 

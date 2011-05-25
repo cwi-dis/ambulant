@@ -137,7 +137,6 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 	AM_DBG	if(!queue.empty()) write_trace();
 }
 
-#ifdef WITH_CLOCK_SYNC
 lib::timer::time_type lib::delta_timer::next_event_time() const
 {
 	std::list<timeout_event>::const_iterator it = m_events.begin();
@@ -145,7 +144,6 @@ lib::timer::time_type lib::delta_timer::next_event_time() const
 		return 1000000;
 	return (*it).second;
 }
-#endif
 
 
 void lib::delta_timer::write_trace() {

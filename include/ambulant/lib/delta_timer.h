@@ -77,10 +77,8 @@ class delta_timer {
 	/// Clear all events.
 	void clear();
 
-#ifdef WITH_CLOCK_SYNC
 	/// Return the delay until the next event, or a large number.
 	time_type next_event_time() const;
-#endif
 
 	/// debug output.
 	void write_trace();

@@ -194,7 +194,7 @@ event_processor_impl::_serve_events()
 		// it must be a low priority event
 		(void) _serve_event(m_low_delta_timer, &m_low_q);
 	}
-#ifdef WITH_CLOCK_SYNC
+
 	timer::signed_time_type drift = m_timer->get_drift();
 	if (drift > 0) {
 		// If the clock is behind, we set it forward. But we don't advance it past the
@@ -210,8 +210,6 @@ event_processor_impl::_serve_events()
 	}
 	AM_DBG if (drift) lib::logger::get_logger()->debug("event_processor: adjust clock %d ms (positive is forward)", drift);
 	m_timer->skew(drift);
-#endif
-
 
 	if (m_observer) {
 		m_lock.leave();

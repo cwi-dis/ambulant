@@ -56,13 +56,11 @@ lib::win32::win32_timer::elapsed() const {
 	return time_type(dt);
 }
 
-#ifdef WITH_CLOCK_SYNC
 void
 lib::win32::win32_timer::skew(signed_time_type skew)
 {
 	assert(skew==0);
 }
-#endif // WITH_CLOCK_SYNC
 
 // Factory routine for the machine-independent
 // timer class

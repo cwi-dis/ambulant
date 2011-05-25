@@ -40,13 +40,11 @@ lib::unix::unix_timer::set_speed(double speed)
 	lib::logger::get_logger()->fatal("unix_timer: cannot set speed of realtime timer");
 }
 
-#ifdef WITH_CLOCK_SYNC
 void
 lib::unix::unix_timer::skew(signed_time_type sk)
 {
 	assert(sk == 0);
 }
-#endif
 
 lib::unix::unix_timer::time_type
 lib::unix::unix_timer::os_millitime()
