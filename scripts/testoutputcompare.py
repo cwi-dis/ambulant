@@ -15,6 +15,8 @@ def parse(filename):
     rv = {}
     fp = open(filename)
     for line in fp:
+        if line[0] == '#':
+            continue
         fields = line.strip().split(' ')
         if DEBUG:
             print fields
