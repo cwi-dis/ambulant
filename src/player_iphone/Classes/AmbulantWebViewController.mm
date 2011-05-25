@@ -30,7 +30,6 @@
 	if (urlField == nil) {
 		NSBundle* thisBundle = [NSBundle bundleForClass:[self class]];
 		urlstring = [thisBundle pathForResource:@"AmbulantHelp-iOS" ofType:@"html"];
-//		urlstring = [@"file://" stringByAppendingString:urlstring];
 		url = [[NSURL alloc] initFileURLWithPath: urlstring];
 	} else {
 		urlstring = [NSString stringWithString: urlField];
@@ -38,13 +37,9 @@
 	}
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
 	[webView loadRequest: request]; 
-//	[request release];
-//	[url release];
-//	[urlstring release];
 	[pool release];
 }
-/* */
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+
 - (void)viewDidLoad {
 	NSLog(@"AmbulantWebViewController: viewDidLoad");
     [super viewDidLoad];
@@ -65,7 +60,6 @@
 //	[self dismissModalViewControllerAnimated:YES];
 }
 
-// Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return [delegate canShowRotatedUIViews];

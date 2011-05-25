@@ -33,7 +33,7 @@
 @interface PresentationViewController : UITableViewController < UITableViewDataSource, UITableViewDelegate > {
 	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
-	UITableViewCell* nibLoadedCell;
+	UITableViewCell* nibLoadedCell; // XXXJACK thinks this isn't neeeded: it isn't initializaed anywhere...
 	Presentation* selectedPresentation;
 	NSInteger currentIndex;
 	BOOL isHistory;

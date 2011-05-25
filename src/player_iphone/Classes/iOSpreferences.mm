@@ -18,22 +18,22 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/net/url.h"
-
 #include "iOSpreferences.h"
+#import <ImageIO/ImageIO.h>
 
 using namespace ambulant;
 
 iOSpreferences*  iOSpreferences::s_preferences = 0;
 
 iOSpreferences::iOSpreferences()
-	:	common::preferences(),
-		m_loaded(false),
-		m_auto_center(true),
-		m_auto_resize(true),
-		m_normal_exit(false),
-		m_favorites(NULL),
-		m_history(NULL)
-		{}
+:	common::preferences(),
+    m_loaded(false),
+    m_auto_center(true),
+    m_auto_resize(true),
+    m_normal_exit(false),
+    m_favorites(NULL),
+    m_history(NULL)
+    {}
 
 iOSpreferences::~iOSpreferences()
 {
@@ -215,6 +215,7 @@ iOSpreferences::repr()
 	rv += common::preferences::repr();
 	return rv;
 }
+
 @implementation PlaylistItem
 @synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
 @synthesize ns_image_data;
@@ -249,7 +250,6 @@ iOSpreferences::repr()
 	return rv; 
 }
 	
-#import <ImageIO/ImageIO.h>
 - (void) encodeWithCoder: (NSCoder*) encoder	
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];

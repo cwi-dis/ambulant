@@ -62,7 +62,7 @@ namespace ambulant {
 	
 	
 class Playlist {
-public:
+  public:
 	Playlist(NSArray* ansarray);
 	~Playlist();
 	
@@ -78,7 +78,7 @@ public:
 	void remove_last_item();
 	void replace_last_item(PlaylistItem* new_last_item);
 	
-private:
+  private:
 	NSString* am_ios_version;
 	NSMutableArray* am_ios_playlist; // PlaylistItem* objects
 };
@@ -87,10 +87,10 @@ private:
 
 class iOSpreferences : public common::preferences {
 
-protected:
+  protected:
 	iOSpreferences();
 
-public:
+  public:
 	~iOSpreferences();
 	static void install_singleton();
 	
@@ -106,20 +106,15 @@ public:
 	
 	bool m_loaded;
 	
-	/// iOs player auto center
-	bool m_auto_center;
-	/// iOs player auto resize
-	bool m_auto_resize;
-	/// crash protector
-	bool m_normal_exit;
-	/// HUD auto hide
-	bool m_hud_auto_hide;
-	/// HUD short tap
-	bool m_hud_short_tap;
+	bool m_auto_center;     // Center the player on the screen
+	bool m_auto_resize;     // Resize the player to fit the screen
+	bool m_normal_exit;     // True if previous exit was normal, used for crash prevention
+	bool m_hud_auto_hide;   // Does the HUD controls disappear automatically?
+	bool m_hud_short_tap;   // Flip meaning of short and long tap
 	Playlist* m_favorites;
 	Playlist* m_history;
 	
-private:
+  private:
 	static iOSpreferences* s_preferences; // singleton
 
 }; // class iOSpreferences

@@ -28,40 +28,12 @@
 
 @implementation EditViewController
 
-/*
-// The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView {
-}
-*/
-
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)
 viewDidLoad
 {
     [super viewDidLoad];
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x)", self);
-#ifdef JNK
-    // Is there a good reason to initialize the URL field with the URL of the
-    // currently playing presentation? Unsure... If there is we need to re-instate
-    // that interface
-	NSString* url = [delegate playURL];
-	if (url != NULL) {
-		textField.text = [NSString stringWithString: url];
-	}
-#endif
-//	[pool release];
 }
 
 // Allow orientations other than the default portrait orientation.

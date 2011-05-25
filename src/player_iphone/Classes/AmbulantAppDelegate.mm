@@ -20,18 +20,6 @@
 //#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
-#define DBG_ADD(_x)
-#define DBG_ADD_NSSTRING(_x)
-#else //AM_DBG is set
-#define GLOB_DBG if(1)
-#ifdef	GLOB_DBG
-// Debugging without debugger from traces in memory stored in a global array of char*.
-// Next code is used to inspect program sections only used when it is not started from debugger, but e.g. by Safari
-// When the programs has been launched, then XCode can attach to it and display the global string array 'DBG'
-char* DBG[80]; int DBGi = 0;
-#define DBG_ADD(_x)  { DBG[DBGi++] = strdup(_x); }
-#define DBG_ADD_NSSTRING(_x) { const char*s = [_x cStringUsingEncoding: NSUTF8StringEncoding]; DBG_ADD(s); }
-#endif//GLOB_DBG
 #endif//AM_DBG
 #import "AmbulantAppDelegate.h"
 #import "AmbulantViewController.h"
@@ -47,6 +35,10 @@ char* DBG[80]; int DBGi = 0;
 
 #ifndef NDEBUG
 #define WITH_CONSOLE_LOGGING
+#endif
+// Define WITH_CONSOLE_LOGGING to have Ambulant logger output go to the iOS system console.
+// This allows it to be read in the debugger. But: it will also be saved on the device,
+// so it should not be enabled for production builds.
 #ifdef WITH_CONSOLE_LOGGING
 #include <syslog.h>
 class nslog_ostream : public ambulant::lib::ostream {
@@ -73,8 +65,6 @@ class nslog_ostream : public ambulant::lib::ostream {
 	void flush() {}
 };
 #endif // WITH_CONSOLE_LOGGING
-#endif // NDEBUG
-
 
 static void
 show_message(int level, const char *format)
@@ -138,8 +128,6 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
     // Add the view controller's view to the window and display.
 
 	AM_DBG NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions: %@", launchOptions);
-//	AM_DBG [DBG addObject: [NSString stringWithString: @"didFinishLaunchingWithOptions"]]; 
-	AM_DBG DBG_ADD("didFinishLaunchingWithOptions");
 	// Install ambulent preferences handler
 	ambulant::iOSpreferences::install_singleton();
 	
@@ -176,8 +164,6 @@ applicationWillResignActive:(UIApplication *)application {
 
 - (BOOL)
 isValid: (NSURL*) url {
-	/* Validate the given 'url'
-	 */
 	return YES;
 }
 
@@ -187,9 +173,6 @@ isValid: (NSURL*) url {
 application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
 	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantAppDelegate handleOpenURL: %s", [[url absoluteString] UTF8String]);
-	AM_DBG DBG_ADD("handleOpenURL");
-//	const char*s = [[url absoluteString] cStringUsingEncoding: NSUTF8StringEncoding];
-	AM_DBG DBG_ADD_NSSTRING([url absoluteString]);
 	
 	BOOL validated = NO;
 	if ([self isValid:url] && viewController != NULL) { 
@@ -199,43 +182,12 @@ application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
             urlstr = [urlstr substringFromIndex: 9]; // Length of "ambulant:"
         }
         [viewController doPlayURL: urlstr fromNode: nil];
-#ifdef JNK
-		char* s2;
-		if (viewController == NULL)
-			s2 = (char*) "viewController == NULL";
-		else if (viewController.playURL == NULL)
-			s2 =  (char*) "viewController.playURL == NULL";
-		else s2 =  (char*) [viewController.playURL cStringUsingEncoding: NSUTF8StringEncoding];
-		AM_DBG DBG_ADD(s2);
-		if (viewController.myMainloop) {
-//XXXX		viewController.myMainloop->stop();
-		delete viewController.myMainloop;
-			viewController.myMainloop = NULL;
-		}
-#endif
 	}
 	return validated;
 }
 
 - (void)
 applicationWillEnterForeground:(UIApplication *)application {
-#ifdef JNK
-    /*
-     Called as part of  transition from the background to the inactive state:
-	 here you can undo many of the changes made on entering the background.
-	 */
-	AM_DBG ambulant::lib::logger::get_logger()->trace(@"AmbulantAppDelegate applicationWillEnterForeground");
-	// restore state
-	// ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	NSString* ns_node_repr = NULL;// [prefs->m_history->get_last_item m_last_node];
-	if (viewController != NULL && viewController.myMainloop != NULL) {
-		viewController.myMainloop->play();
-	} else {
-		if (viewController != NULL) {
-			[self.viewController doPlayURL: ns_node_repr];
-		}
-	}
-#endif // JNK
 	ambulant::iOSpreferences::delete_preferences_singleton();
 }
 
@@ -248,7 +200,6 @@ applicationDidBecomeActive:(UIApplication *)application {
     // 3. The most recent history item was unfinished, and we didn't crash on
     //    the previous run. Show it.
     // 4. Otherwise we show the history.
-    // XXX To be implemented.
     bool showPlayer = [viewController canPlay];
 
     if (!showPlayer) {
@@ -298,14 +249,12 @@ applicationDidBecomeActive:(UIApplication *)application {
 
 - (void)
 applicationDidEnterBackground:(UIApplication *)application {
-    /*
-     Use this method to release shared resources, save user data, invalidate timers,
-	 and store enough application state information to restore your application to its current state
-	 in case it is terminated later. 
-     If your application supports background execution, called instead of applicationWillTerminate:
-	 when the user quits.
-     */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
+    // Use this method to release shared resources, save user data, invalidate timers,
+	// and store enough application state information to restore your application to its current state
+	// in case it is terminated later. 
+    // If your application supports background execution, called instead of applicationWillTerminate:
+	// when the user quits.
+ 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
 	// save current state
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->save_preferences();
@@ -316,10 +265,8 @@ applicationDidEnterBackground:(UIApplication *)application {
 
 - (void)
 applicationWillTerminate:(UIApplication *)application {
-    /*
-     Called when the application is about to terminate.
-     See also applicationDidEnterBackground:.
-     */
+    // Called when the application is about to terminate.
+    // See also applicationDidEnterBackground:.
 	/*AM_DBG*/ NSLog(@"AmbulantAppDelegate applicationWillTerminate: viewController.retainCount()=%d", [viewController retainCount]);
     [viewController willTerminate];
     [viewController release];
@@ -343,12 +290,14 @@ applicationWillTerminate:(UIApplication *)application {
 - (void) showPresentationViews: (id)sender
 {
 	[viewController pause];
-	[ UIView animateWithDuration: 1.0 animations: ^
-	 {
-		 tabBarController.view.hidden = false;
-		 tabBarController.view.alpha = 1.0;
-		 viewController.view.alpha = 0.0;
-	 } ];
+	[UIView animateWithDuration: 1.0
+        animations:
+        ^{
+            tabBarController.view.hidden = false;
+            tabBarController.view.alpha = 1.0;
+            viewController.view.alpha = 0.0;
+        }
+    ];
 }
 
 - (void)
@@ -363,21 +312,6 @@ openWebLink: (NSString*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate openWebLink: %@", url);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[viewController pause];
-#ifdef JNK
-	webViewController = [[AmbulantWebViewController alloc]
-	 initWithNibName: @"AmbulantWebView"
-			  bundle: nil];
-	webViewController.urlField = url;
-	[window addSubview:webViewController.view];
-	webViewController.modalTransitionStyle = 
-	UIModalTransitionStyleFlipHorizontal;
-	
-	[viewController presentModalViewController: webViewController animated: YES];
-	
-//	[[viewController navigationController] pushViewController:
-//	 webViewController animated:YES];
-	[webViewController release];
-#endif//JNK
 	if (url != NULL) {
 		NSURL* nsurl = [NSURL URLWithString: url];
 		if ([[UIApplication sharedApplication] canOpenURL: nsurl]) {
@@ -504,9 +438,7 @@ document_stopped: (id) sender
 
 - (void)
 applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    /*
-     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
-     */
+    // Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidReceiveMemoryWarning");
 	if (viewController) [viewController pause];
 	ambulant::lib::logger::get_logger()->error("Memory low, try reboot iPhone");

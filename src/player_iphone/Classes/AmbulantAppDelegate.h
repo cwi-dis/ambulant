@@ -20,7 +20,6 @@
  */
 
 #import <UIKit/UIKit.h>
-//JNK #import "AmbulantWebViewController.h"
 #import "PresentationViewController.h"
 #import "SettingsViewController.h"
 
@@ -74,9 +73,3 @@
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application;
 - (void) dealloc;
 @end
-#ifdef GLOB_DBG
-extern char* DBG[];
-extern int DBGi;
-#define DBG_ADD(_x)  { DBG[DBGi++] = strdup(_x); }
-#define DBG_ADD_NSSTRING(_x) { const char*s = [_x cStringUsingEncoding: NSUTF8StringEncoding]; DBG_ADD(s); }
-#endif//GLOB_DBG

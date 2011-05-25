@@ -23,8 +23,6 @@
 
 @implementation SettingsViewController
 
-//@synthesize delegate, autoCenterSwitch, autoResizeSwitch, nativeRendererSwitch;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// initialize to values taken from AmbulantView
@@ -64,26 +62,26 @@
 - (IBAction) handleHideChanged {
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	switch (HUDhide.selectedSegmentIndex) {
-		default:
-		case 0:
-			prefs->m_hud_auto_hide = true;
-			break;
-		case 1:
-			prefs->m_hud_auto_hide = false;			
-			break;
+    default:
+    case 0:
+        prefs->m_hud_auto_hide = true;
+        break;
+    case 1:
+        prefs->m_hud_auto_hide = false;			
+        break;
 	}
 }
 
 - (IBAction) handleTapChanged {
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	switch (HUDtap.selectedSegmentIndex) {
-		default:
-		case 0:
-			prefs->m_hud_short_tap = false;
-			break;
-		case 1:
-			prefs->m_hud_short_tap = true;			
-			break;
+    default:
+    case 0:
+        prefs->m_hud_short_tap = false;
+        break;
+    case 1:
+        prefs->m_hud_short_tap = true;			
+        break;
 	}
 }
 
@@ -109,19 +107,7 @@
 	// e.g. self.myOutlet = nil;
 }
 
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
-
 - (void)dealloc {
     [super dealloc];
 }
-
-
 @end

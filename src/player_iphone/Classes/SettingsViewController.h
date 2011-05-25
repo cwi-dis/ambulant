@@ -39,10 +39,5 @@
 - (IBAction) handleHideChanged;
 - (IBAction) handleTapChanged;
 
-//@property(nonatomic,assign) id <PlaylistViewControllerDelegate> delegate;
-//@property(nonatomic,retain) IBOutlet UISwitch* autoCenterSwitch;
-//@property(nonatomic,retain) IBOutlet UISwitch* autoResizeSwitch;
-//@property(nonatomic,retain) IBOutlet UISwitch* nativeRendererSwitch;
-
 @end
 
