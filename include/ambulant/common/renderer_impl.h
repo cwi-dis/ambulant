@@ -75,13 +75,11 @@ class AMBULANTAPI playable_imp : public playable {
 	void preroll(double when, double where, double how_much) {}
 	void post_stop() {};
 	void init_with_node(const lib::node *n) {};
-#ifdef WITH_SEAMLESS_PLAYBACK
 	/// Return true if we are rendering for a node with fill="ambulant:continue"
 	bool is_fill_continue_node() const {
 		const char * fb = m_node->get_attribute("fill");
 		return fb != NULL && strcmp(fb, "ambulant:continue") == 0;
 	}
-#endif
 	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
 	std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; }

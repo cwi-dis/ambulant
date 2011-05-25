@@ -42,11 +42,7 @@ bool
 gstreamer_renderer_factory::supports(common::renderer_select *rs)
 {
 	const lib::xml_string& tag = rs->get_tag();
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if (tag != "" && tag != "ref" && tag != "audio") return false;
-#else
 	if (tag != "" && tag != "ref" && tag != "audio" && tag != "prefetch") return false;
-#endif
 	const char *renderer_uri = rs->get_renderer_uri();
 	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererGstreamer")) != 0 &&

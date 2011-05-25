@@ -70,15 +70,9 @@ enum endsync_rule {esr_first, esr_last, esr_all, esr_media, esr_id};
 
 // The last three values are intermediate values
 // and don't represent a final fill_behavior.
-#ifndef WITH_SEAMLESS_PLAYBACK
-enum fill_behavior {fill_remove, fill_freeze, fill_hold,
-	fill_transition,
-	fill_auto, fill_default, fill_inherit};
-#else
 enum fill_behavior {fill_remove, fill_freeze, fill_hold, fill_continue,
 	fill_transition,
 	fill_auto, fill_default, fill_inherit};
-#endif
 
 // The last two values are intermediate values
 // and don't represent a restart_behavior.

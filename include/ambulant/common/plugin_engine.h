@@ -25,11 +25,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
-#if defined(WITH_SEAMLESS_PLAYBACK)
 #define AMBULANT_PLUGIN_API_VERSION 6
-#else
-#define AMBULANT_PLUGIN_API_VERSION 5
-#endif
 
 namespace ambulant {
 

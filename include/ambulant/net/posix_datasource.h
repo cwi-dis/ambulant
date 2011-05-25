@@ -62,9 +62,7 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 	~posix_datasource();
 
 	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void start_prefetch(ambulant::lib::event_processor *evp){};
-#endif
 	void stop();
 	void readdone(size_t len);
 	bool end_of_file();

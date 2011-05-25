@@ -2484,7 +2484,6 @@
 					"WITH_EXPAT=1",
 					"WITH_PYTHON_PLUGIN=1",
 					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_UIKIT=1",
 				);
 				INSTALL_PATH = /usr/local/lib;

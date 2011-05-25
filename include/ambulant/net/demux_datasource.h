@@ -60,10 +60,8 @@ class demux_audio_datasource:
 	void stop();
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 	timestamp_t get_elapsed() { assert(0); /* XXXJACK Should be based on pts in head of queue */ return 0; }
-#endif
 	bool push_data(timestamp_t pts, const uint8_t *data, size_t size);
 	bool end_of_file();
 	timestamp_t get_clip_end();
@@ -111,10 +109,8 @@ class demux_video_datasource:
 	void set_pixel_layout(pixel_order l) { assert(l == pixel_unknown); }
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 	void start_prefetch(lib::event_processor *evp){};
-#endif
 	void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
 	void stop();
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep);

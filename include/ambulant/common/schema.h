@@ -91,11 +91,8 @@ class schema {
 	/// Return true if an element with tag qname is a state command.
 	bool is_statecommand(const lib::xml_string& qname) const;
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	/// Return true if an element with tag qname is a prefetch.
 	bool is_prefetch(const lib::xml_string& qname) const;
-
-#endif // WITH_SEAMLESS_PLAYBACK
 
 	schema();
 	~schema();
@@ -107,9 +104,7 @@ class schema {
 	std::set<std::string> m_animations;
 	std::set<std::string> m_layout_elements;
 	std::set<std::string> m_statecommands;
-#ifdef WITH_SEAMLESS_PLAYBACK
 	std::set<std::string> m_prefetch;
-#endif // WITH_SEAMLESS_PLAYBACK
 };
 
 } // namespace common

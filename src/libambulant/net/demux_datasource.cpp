@@ -195,7 +195,6 @@ demux_audio_datasource::seek(timestamp_t time)
 	//m_thread->seek(time);
 }
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 void
 demux_audio_datasource::set_clip_end(timestamp_t clip_end)
 {
@@ -204,7 +203,6 @@ demux_audio_datasource::set_clip_end(timestamp_t clip_end)
 	// thread trying to deliver new data to this demux_datasource.
 	m_thread->set_clip_end(clip_end);
 }
-#endif
 
 void
 demux_audio_datasource::read_ahead(timestamp_t time)
@@ -488,14 +486,12 @@ demux_video_datasource::seek(timestamp_t time)
 #endif
 }
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 void
 demux_video_datasource::set_clip_end(timestamp_t clip_end)
 {
 	m_lock.enter();
 	m_thread->set_clip_end(clip_end);
 }
-#endif
 
 void
 demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
@@ -513,26 +509,6 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 		lib::logger::get_logger()->debug("demux_video_datasource::start(): m_client_callback already set!");
 	}
 
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
-		// We have data (or EOF) available. Don't bother starting up our source again, in stead
-		// immedeately signal our client again
-		if (callbackk) {
-			assert(evp);
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start: trigger client callback");
-			evp->add_event(callbackk, MIN_EVENT_DELAY, ambulant::lib::ep_med);
-		} else {
-			lib::logger::get_logger()->debug("Internal error: demux_video_datasource::start(): no client callback!");
-			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-		}
-	} else {
-		// We have no data available. Start our source, and in our data available callback we
-		// will signal the client.
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start: remembering callback");
-		m_client_callback = callbackk;
-		m_event_processor = evp;
-	}
-#else
 	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
@@ -552,7 +528,6 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 		m_event_processor = evp;
 	}
 
-#endif
 	m_lock.leave();
 }
 

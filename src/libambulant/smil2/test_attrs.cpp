@@ -376,9 +376,7 @@ void test_attrs::set_default_tests_attrs() {
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version2.0"), true);
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION), true);
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION "Exact"), true);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("SeamlessPlayback"), true);
-#endif
 }
 
 class smil2::state_test_methods_impl : public common::state_test_methods {

@@ -111,16 +111,15 @@ smil_player::terminate()
 			m_logger->trace("smil_player::terminate: playable(0x%x) %s still has refcount of %d", (*it).second, (*it).second->get_sig().c_str(), rem);
 	}
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	// clean up the playable cache as well
 	std::map<const std::string, common::playable *>::iterator it_url_based;
-	for(it_url_based = m_playables_url_based.begin();it_url_based!=m_playables_url_based.end();it_url_based++) {
+	for(it_url_based = m_cached_playables.begin();it_url_based!=m_cached_playables.end();it_url_based++) {
 		(*it_url_based).second->post_stop();
 		long rem = (*it_url_based).second->release();
 		if (rem > 0)
 			m_logger->trace("smil_player::terminate: url_based_playable(0x%x) %s still has refcount of %d)", (*it_url_based).second, (*it_url_based).second->get_sig().c_str(), rem);
 	}
-#endif
+
 	m_playables_cs.leave();
 	cancel_all_events();
 	// XXXJACK Note by Jack and Kees: it may be unsafe to destroy the event processor here,
@@ -238,19 +237,18 @@ void smil_player::start() {
 // Command to stop playback
 void smil_player::stop() {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
-#ifdef WITH_SEAMLESS_PLAYBACK
+
 	m_playables_cs.enter();
-	while (!m_playables_url_based.empty()) {
-		std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.begin();
+	while (!m_cached_playables.empty()) {
+		std::map<const std::string, common::playable *>::iterator it_url_based = m_cached_playables.begin();
 		lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
 		(*it_url_based).second->post_stop();
 		(*it_url_based).second->release();
-		m_playables_url_based.erase(it_url_based);
+		m_cached_playables.erase(it_url_based);
 	}
-	assert(m_playables_url_based.empty());
+	assert(m_cached_playables.empty());
 	m_playables_cs.leave();
 
-#endif
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
 		m_timer->pause();
@@ -321,44 +319,30 @@ void smil_player::done_playback() {
 common::playable *smil_player::create_playable(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)", (void*)n);
 	assert(n);
-#ifndef WITH_SEAMLESS_PLAYBACK
-	std::map<const lib::node*, common::playable *>::iterator it =
-		m_playables.find(n);
-	common::playable *np = (it != m_playables.end())?(*it).second:0;
-	if(np == NULL) {
-		np = _new_playable(n);
-		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
-		m_playables_cs.enter();
-		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x) new playable np(0x%x) %s",this,np,np->get_sig().c_str());
-		m_playables[n] = np;
-		m_playables_cs.leave();
-		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
-	}
-#else
+
 	common::playable *np = NULL;
 	if (n->get_attribute("src")) {
 		// It may be in the URL-based playable cache. Let us look.
 		std::map<const std::string, common::playable *>::iterator it_url_based =
-			m_playables_url_based.find(n->get_url("src").get_url());
-		if (it_url_based != m_playables_url_based.end()) {
+			m_cached_playables.find(n->get_url("src").get_url());
+		if (it_url_based != m_cached_playables.end()) {
 			np = (*it_url_based).second;
 			m_playables_cs.enter();
-			m_playables_url_based.erase(it_url_based);
-			// In case of prefetch, there are more than one playables( for example, one for audio,
+			m_cached_playables.erase(it_url_based);
+			// In case of prefetch, there may be more than one playable (for example, one for audio,
 			// the second one for prefetch) stored in the map, so this assert is not true any more.
-			//assert(m_playables_url_based.empty());
+			//assert(m_cached_playables.empty());
 			m_playables_cs.leave();
-			// xxxx copy code from _new_playable to call set_surface()
-
-			assert(np);
+			
+            // xxxx copied code from _new_playable to call set_surface()
+            assert(np);
 			surface *surf = m_layout_manager->get_surface(n);
 			assert(surf);	// XXXJACK: at least, I think it cannot be NULL....
 			common::renderer *rend = np->get_renderer();
-//			assert(rend);	// Assert can fail if the playable failed to create fully (incorrect url, for example)
+
 			// XXXJACK: Dirty hack, for now: we don't want prefetch to render to a surface so we zap it. Need to fix.
 			if (n->get_local_name() == "prefetch") surf = NULL;
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: cached playable 0x%x, renderer 0x%x, surface 0x%x", n, n->get_sig().c_str(), np, rend, surf);
-			//xxxbo 15-april-2010
 
 			if (rend && surf) {
 				// XXXJACK: if rend->get_surface() == surf, couldn't we skip re-setting it?
@@ -394,7 +378,6 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 		// Update the context info of np, for example, clipbegin, clipend, and cookie according to the node
 		np->init_with_node(n);
 	}
-#endif
 
 	// We also need to remember any accesskey attribute (as opposed to accesskey
 	// value for a timing attribute) because these are global.
@@ -478,16 +461,15 @@ void smil_player::stop_playable(const lib::node *n) {
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
-// Kees found that AmbulantPlayer_gtk NYC-StateTest.smil always asserts here
-//		assert(victim.second); // Jack thinks we should always have a playable when we get here. Remove assert if untrue:-)
+    // XXXKEES found that AmbulantPlayer_gtk NYC-StateTest.smil always asserts here
+    // assert(victim.second); // Jack thinks we should always have a playable when we get here. Remove assert if untrue:-)
 
 	if (victim.second == NULL) return;
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	// There are now three possibilities:
-	// 1. Destroy. Not cachable, or no URL.
-	// 2. Store in cache, don't stop playback (cachable, fill=continue)
-	// 3. Store in cache, but stop playback (cachable, no fill=continue)
+	// 1. Not cachable, or no URL. Destroy. 
+	// 2. Cachable, fill=continue. Store in cache, don't stop playback.
+	// 3. Cachable, no fill=continue. Store in cache, but stop playback.
 	bool can_cache = true;
 	bool must_post_stop;
 
@@ -497,8 +479,8 @@ void smil_player::stop_playable(const lib::node *n) {
 	} else {
 		// See if there is one in the cache already
 		std::map<const std::string, common::playable *>::iterator it_url_based =
-		m_playables_url_based.find((victim.first->get_url("src")).get_url());
-		common::playable *np = (it_url_based != m_playables_url_based.end())?(*it_url_based).second:0;
+		m_cached_playables.find((victim.first->get_url("src")).get_url());
+		common::playable *np = (it_url_based != m_cached_playables.end())?(*it_url_based).second:0;
 		if( np != NULL ) {
 			lib::logger::get_logger()->debug("smil_player::stop_playable: destroying, cache entry occupied for %s", victim.first->get_url("src").get_url().c_str());
 			can_cache = false;
@@ -519,7 +501,7 @@ void smil_player::stop_playable(const lib::node *n) {
 	if (can_cache) {
 		AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer", victim.first->get_sig().c_str());
 		m_playables_cs.enter();
-		m_playables_url_based[(victim.first->get_url("src")).get_url()] = victim.second;
+		m_cached_playables[(victim.first->get_url("src")).get_url()] = victim.second;
 		m_playables_cs.leave();
 		//xxxbo: if this playable is created for prefetch, we don't destroy it.
 		//xxxbo: we use node id as the index to find the corresponding time_node in time graph for each node in dom tree.
@@ -540,11 +522,6 @@ void smil_player::stop_playable(const lib::node *n) {
 		}
 		return;
 	}
-#else // WITH_SEAMLESS_PLAYBACK
-	// Otherwise we destroy the whole renderer.
-	if (!victim.second->stop())
-		victim.second->post_stop();
-#endif
 	_destroy_playable(victim.second, victim.first);
 }
 
@@ -1032,7 +1009,6 @@ void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 		m_logger->debug("smil_player::_destroy_playable: playable(0x%x) %s still has refcount of %ld", np, np->get_sig().c_str(), rem);
 }
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim) {
 	AM_DBG m_logger->debug("smil_player::destroy_playable_in_cache: playable(0x%x) %s", victim.second, victim.second->get_sig().c_str());
 	m_lock.enter();
@@ -1046,15 +1022,15 @@ void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::
 
 	std::string url = victim.first->get_url("src").get_url();
 	m_playables_cs.enter();
-	std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.find(url);
-	if (it_url_based != m_playables_url_based.end()) {
+	std::map<const std::string, common::playable *>::iterator it_url_based = m_cached_playables.find(url);
+	if (it_url_based != m_cached_playables.end()) {
 		if ((*it_url_based).second != victim.second) {
 			AM_DBG lib::logger::get_logger()->debug("smil_player::destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
 			m_playables_cs.leave();
 			m_lock.leave();
 			return;
 		}
-		m_playables_url_based.erase(it_url_based);
+		m_cached_playables.erase(it_url_based);
 		m_playables_cs.leave();
 		AM_DBG lib::logger::get_logger()->debug("smil_player::destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
 		victim.second->post_stop();
@@ -1067,7 +1043,6 @@ void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::
 	}
 	m_lock.leave();
 }
-#endif
 
 void smil_player::show_link(const lib::node *n, const net::url& href,
 	src_playstate srcstate, dst_playstate dststate, const char *target)

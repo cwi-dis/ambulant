@@ -68,9 +68,7 @@ class win32_datasource : virtual public datasource, virtual public lib::ref_coun
 	char* get_read_ptr();
 	size_t size() const;
 	void read(char *data, size_t size);
-  #ifdef WITH_SEAMLESS_PLAYBACK
 	void start_prefetch(ambulant::lib::event_processor *evp){};
-#endif
 
   protected:
 	bool _end_of_file();
