@@ -97,9 +97,10 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	AM_DBG NSLog(@"cg_smiltext_renderer::_select_font(%s) font=0x%x font_descr=0x%x#%ld", family, font, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
 	if (font != NULL) {
 		CTFontRef desired_font = CTFontCreateCopyWithSymbolicTraits(font, 0.0, NULL, value, mask);
-#if 0 // releasing `font_descr` here, where we don't use anymore, will cause a crash; thus, it is returned 
-	  // and to be CFRelease'd after the 'kCTFontAttributeName' value is stored in a 'CFMutableDictionary' or when
-	  // it is no longer used by the caller.
+#if 0
+		// releasing `font_descr` here, where we don't use anymore, will cause a crash; thus, it is returned 
+		// and to be CFRelease'd after the 'kCTFontAttributeName' value is stored in a 'CFMutableDictionary' or when
+		// it is no longer used by the caller.
 		CFRelease(font_descr);
 #endif	
 		if (desired_font != NULL) {
@@ -334,9 +335,9 @@ cg_smiltext_renderer::smiltext_changed()
 				// Prepare for setting the attribute info
 				CFMutableDictionaryRef attrs =
 				CFDictionaryCreateMutable(kCFAllocatorDefault,
-										  0/*inifite*/,
-										  &kCFTypeDictionaryKeyCallBacks,
-										  &kCFTypeDictionaryValueCallBacks);
+					0/*inifite*/,
+					&kCFTypeDictionaryKeyCallBacks,
+					&kCFTypeDictionaryValueCallBacks);
 				// Find font info
 				CTFont_info text_font = {NULL, NULL};
 				std::vector<std::string>::const_iterator fi;
@@ -466,7 +467,6 @@ cg_smiltext_renderer::smiltext_changed()
 				CFDictionaryRemoveAllValues(attrs);
 				CFRelease(attrs);
 			} // attributes_changed || newrange > 0
-											 
 			i++;
 		} // loop over smiltext_runs
 		CFAttributedStringEndEditing(m_text_storage);
@@ -684,7 +684,7 @@ cg_smiltext_renderer::measure_frame(CTFrameRef frame, CGContext* cgContext, int*
 	// discrepencies.
 	return CGSizeMake(ceil(maxWidth), ceil(textHeight));
 }
-																												   
+
 CTFrameRef
 cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) {
 	CTFrameRef frame = NULL;
@@ -709,7 +709,7 @@ cg_smiltext_renderer::attributes_are_changed(common::surface* surf) {
 	// check ALL animatable attributes for changes, and remember ALL current attributes as member variables.
 	// return true if ANY attribute value was changed.
 	bool rv = false;
-	 
+
 	if (surf == NULL) {
 		assert(surf == NULL);
 		return rv;

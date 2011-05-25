@@ -612,7 +612,7 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 		
 		rv = true;
 
-	  cleanup:
+cleanup:
 
 		// Rest
 		SafeRelease(&wicStream);

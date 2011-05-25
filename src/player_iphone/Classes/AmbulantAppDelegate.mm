@@ -88,8 +88,8 @@ show_message(int level, const char *format)
 	// do not repeat the same error succesively
 	if (old_message == NULL || ! [old_message isEqualToString:message]) {
 		[appDelegate performSelectorOnMainThread: @selector(showAlert:)
-								   withObject: message
-								waitUntilDone: NO];
+			withObject: message
+			waitUntilDone: NO];
 		if (old_message != NULL) {
 			[old_message release];
 		}

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -695,11 +695,11 @@ timestamp_t
 ffmpeg_decoder_datasource::get_elapsed()
 {
 	m_lock.enter();
-   	_need_fmt_uptodate();
-    int bps = m_fmt.samplerate* m_fmt.channels * m_fmt.bits;
-    timestamp_t buffer_duration = 0;
-    if (bps != 0)
-        buffer_duration = 1000000LL * (m_buffer.size() * 8) / bps;
+	_need_fmt_uptodate();
+	int bps = m_fmt.samplerate* m_fmt.channels * m_fmt.bits;
+	timestamp_t buffer_duration = 0;
+	if (bps != 0)
+		buffer_duration = 1000000LL * (m_buffer.size() * 8) / bps;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_elapsed: m_elapsed %ld, buffer %ld", m_elapsed, buffer_duration);
 	timestamp_t	 elapsed =	m_elapsed - buffer_duration;
 	m_lock.leave();
@@ -934,10 +934,10 @@ ffmpeg_resample_datasource::data_avail()
 		if (insamples * m_in_fmt.channels * sizeof(short) != cursize) {
 			lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: warning: incomplete samples: %d", cursize);
 		}
-        assert (m_in_fmt.samplerate);
-        timestamp_t tmp = (timestamp_t)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
-        size_t outsz = (size_t)tmp;
-        assert(tmp == (timestamp_t)outsz); // Check for silly type mismatches
+		assert (m_in_fmt.samplerate);
+		timestamp_t tmp = (timestamp_t)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
+		size_t outsz = (size_t)tmp;
+		assert(tmp == (timestamp_t)outsz); // Check for silly type mismatches
 
 		if (!cursize && !m_src->end_of_file()) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(0x%x): no data available, not end-of-file!", (void*)this);

@@ -40,13 +40,13 @@
 
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
-							url: (NSURL*) ansurl
-					 image_data: (NSData*) ans_image_data
-					description: (NSString*) ans_description
-					   duration: (NSString*) ans_dur
-				 last_node_repr: (NSString*) alast_node_repr
-					   position: (NSUInteger) aposition;
-
+	url: (NSURL*) ansurl
+	image_data: (NSData*) ans_image_data
+	description: (NSString*) ans_description
+	duration: (NSString*) ans_dur
+	last_node_repr: (NSString*) alast_node_repr
+	position: (NSUInteger) aposition;
+	
 // compare with another PlaylistItem
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem;
 

@@ -52,7 +52,7 @@ class tree_builder :
 
   ///////////////
   public:
-  	/// Constructor, only initializes various internal variables.
+	/// Constructor, only initializes various internal variables.
 	tree_builder(node_factory *nf, node_context *context = 0, const char *filename = "");
 	//tree_builder() {};
 	~tree_builder();

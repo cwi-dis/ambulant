@@ -29,9 +29,9 @@
 	NSString* description;
 }
 -(id)initWithTitle:(NSString*) newTitle
-	   poster_data:(NSData*) newPoster_data
-		  duration:(NSString*) newDuration
-	   description:(NSString*) newDescription;
+	poster_data:(NSData*) newPoster_data
+	duration:(NSString*) newDuration
+	description:(NSString*) newDescription;
 
 @property(nonatomic, copy) 	NSString* title;
 @property(nonatomic, copy) 	NSData* poster_data;

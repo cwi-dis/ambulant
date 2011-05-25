@@ -53,7 +53,7 @@ class global_playable_factory;
 /// Use this class as a baseclass for your renderer/playable.
 class AMBULANTAPI playable_imp : public playable {
   public:
-  	/// Constructor.
+	/// Constructor.
 	playable_imp(
 		playable_notification *context,
 		cookie_type cookie,
@@ -97,7 +97,7 @@ class AMBULANTAPI playable_imp : public playable {
 /// also provides default implementations of the renderer interface.
 class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
   public:
-  	/// Constructor.
+	/// Constructor.
 	renderer_playable(
 		playable_notification *context,
 		cookie_type cookie,
@@ -138,7 +138,7 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 /// User event handling is also taken care of.
 class AMBULANTAPI renderer_playable_ds : public renderer_playable {
   public:
-  	/// Constructor.
+	/// Constructor.
 	renderer_playable_ds(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -175,7 +175,7 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 /// Hence, when you subclass this class you only need to provide a redraw() method.
 class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
   public:
-  	/// Constructor.
+	/// Constructor.
 	renderer_playable_dsall(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -263,7 +263,7 @@ class empty_playable_notification : public playable_notification {
 /// Additionally, they should override the keep_as_background method.
 class background_renderer : public bgrenderer {
   public:
-  	/// Constructor.
+	/// Constructor.
 	background_renderer(const region_info *src)
 	:   m_src(src),
 		m_dst(NULL) {}

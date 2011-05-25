@@ -52,7 +52,7 @@ namespace common {
 /// and a redraw function.
 class video_renderer : public common::renderer_playable {
   public:
-  	/// Constructor.
+	/// Constructor.
 	video_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,

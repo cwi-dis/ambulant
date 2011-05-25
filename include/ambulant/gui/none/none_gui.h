@@ -39,7 +39,7 @@ namespace none {
 /// Dummy implementation of gui_window.
 class none_window : public common::gui_window {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
 	:	common::gui_window(handler)
 	{};
@@ -61,7 +61,7 @@ class AMBULANTAPI none_window_factory : public common::window_factory {
 /// Dummy implementation of playable.
 class none_playable : public common::playable_imp {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -79,7 +79,7 @@ class none_playable : public common::playable_imp {
 /// Dummy implementation of background_renderer.
 class none_background_renderer : public common::background_renderer {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_background_renderer(const common::region_info *src)
 	:   background_renderer(src) {}
 	~none_background_renderer() {}
@@ -91,7 +91,7 @@ class none_background_renderer : public common::background_renderer {
 /// Implementation of playable_factory that returns none_playable objects.
 class none_playable_factory : public common::playable_factory {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_playable_factory() {}
 
 	/// The none_renderer supports any node, so always return true.

@@ -25,9 +25,9 @@
 @synthesize title, duration, description, poster_data;
 
 -(id)initWithTitle:(NSString*) newTitle
-	   poster_data:(NSData*) newPoster_data
-		  duration:(NSString*) newDuration
-	   description:(NSString*) newDescription
+	poster_data:(NSData*) newPoster_data
+	duration:(NSString*) newDuration
+	description:(NSString*) newDescription
 {
 	self = [super init];
 	if (self != nil) {

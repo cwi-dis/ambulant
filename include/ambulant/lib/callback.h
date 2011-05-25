@@ -103,7 +103,7 @@ class scalar_arg_callback_event : public event {
 	A m_arg;
 
   public:
-  	/// Constructor.
+	/// Constructor.
 	scalar_arg_callback_event(T* obj, void (T::*mf)(A a), A arg)
 	:	m_obj(obj), m_mf(mf), m_arg(arg) {}
 
@@ -127,7 +127,7 @@ class scalar_arg2_callback_event : public event {
 	B m_b;
 
   public:
-  	/// Constructor.
+	/// Constructor.
 	scalar_arg2_callback_event(T* obj, void (T::*mf)(A, B), A a, B b)
 	:	m_obj(obj), m_mf(mf), m_a(a), m_b(b) {}
 
@@ -160,7 +160,7 @@ class event_callback : public event {
 	T *m_obj;
 	void (T::*m_mf)(E *e);
   public:
-  	/// Constructor.
+	/// Constructor.
 	event_callback(T* obj, void (T::*mf)(E *e))
 	:	m_obj(obj), m_mf(mf) {}
 
@@ -180,7 +180,7 @@ template <class T, class A>
 class callback : public event,
 	private callback_struct<T, A> {
   public:
-  	/// Constrructor.
+	/// Constrructor.
 	/// 'obj' is the target object having a member function 'mf' accepting 'arg'
 	callback(T* obj, void (T::*mf)(A *a), A* arg);
 
@@ -204,7 +204,7 @@ class scalar_arg_callback : public event {
 	A m_arg;
 
   public:
-  	/// Constructor.
+	/// Constructor.
 	scalar_arg_callback(T* obj, void (T::*mf)(A a), A arg)
 	:	m_obj(obj), m_mf(mf), m_arg(arg) {
 		if(m_obj) m_obj->add_ref();

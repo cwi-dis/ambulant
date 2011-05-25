@@ -80,7 +80,7 @@ class sax_content_handler {
 /// const char *what() const;
 class sax_error : public std::runtime_error {
   public:
-  	/// Construct with given message and position information.
+	/// Construct with given message and position information.
 	sax_error(const std::string& message, int line, int column)
 	:	std::runtime_error(message), m_line(line), m_column(column) {
 	}

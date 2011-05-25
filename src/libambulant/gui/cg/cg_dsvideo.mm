@@ -88,7 +88,7 @@ cg_dsvideo_renderer::cg_dsvideo_renderer(
 	m_image(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer(): 0x%x created", (void*)this);
- }
+}
 
 cg_dsvideo_renderer::~cg_dsvideo_renderer()
 {

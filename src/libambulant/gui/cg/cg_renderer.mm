@@ -377,7 +377,7 @@ cg_transition_renderer::redraw_post(gui_window *window)
 		AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw_post: drawing to view");
 		if (m_fullscreen)
 			[view screenTransitionStep: m_trans_engine
-							   elapsed: m_event_processor->get_timer()->elapsed()];
+				elapsed: m_event_processor->get_timer()->elapsed()];
 		else {
 			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		}

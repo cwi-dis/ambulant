@@ -52,7 +52,7 @@ class AMBULANTAPI event_processor_observer {
 /// Interface to be provided by an event scheduler.
 class event_processor {
   public:
-  	/// How this event_processor represents time.
+	/// How this event_processor represents time.
 	typedef timer::time_type time_type;
 
 	virtual ~event_processor() {}
@@ -109,7 +109,7 @@ namespace lib {
 /// and three priority queues to execute events.
 class event_processor_impl : public event_processor, public BASE_THREAD {
   public:
-  	/// Constructor.
+	/// Constructor.
 	event_processor_impl(timer *t);
 	~event_processor_impl();
 

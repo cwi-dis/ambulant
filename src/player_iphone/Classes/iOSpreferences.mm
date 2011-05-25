@@ -89,28 +89,28 @@ iOSpreferences::load_preferences()
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	NSDictionary *defaultDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-									 @"any", @"parser_id",
-									 @"auto", @"validation_scheme",
-									 [NSNumber numberWithBool: true], @"do_namespaces",
-									 [NSNumber numberWithBool: false], @"do_schema",
-									 [NSNumber numberWithBool: false], @"validation_schema_full_checking",
-									 [NSNumber numberWithInt: 2], @"log_level",
-									 [NSNumber numberWithBool: true], @"use_plugins",
-									 [NSNumber numberWithBool: true], @"prefer_ffmpeg",
-									 [NSNumber numberWithBool: false], @"prefer_rtsp_tcp",
-									 [NSNumber numberWithBool: false], @"strict_url_parsing",
-									 [NSNumber numberWithBool: false], @"tabbed_links",
-									 [NSNumber numberWithBool: false], @"fullScreen",
-									 [NSNumber numberWithBool: true], @"autoCenter",
-									 [NSNumber numberWithBool: true], @"autoResize",
-									 [NSNumber numberWithBool: true], @"HUDautoHide",
-									 [NSNumber numberWithBool: true], @"HUDshortTap",
-									 [NSNumber numberWithBool: true], @"normalExit",
-									 @"", @"plugin_dir",
-									 [NSNumber numberWithBool: false], @"dynamic_content_control",
-									 AM_IOS_PLAYLISTVERSION, @"version",
-									 [NSData dataWithBytes:"X" length:1], @"history",
-									 nil];
+		@"any", @"parser_id",
+		@"auto", @"validation_scheme",
+		[NSNumber numberWithBool: true], @"do_namespaces",
+		[NSNumber numberWithBool: false], @"do_schema",
+		[NSNumber numberWithBool: false], @"validation_schema_full_checking",
+		[NSNumber numberWithInt: 2], @"log_level",
+		[NSNumber numberWithBool: true], @"use_plugins",
+		[NSNumber numberWithBool: true], @"prefer_ffmpeg",
+		[NSNumber numberWithBool: false], @"prefer_rtsp_tcp",
+		[NSNumber numberWithBool: false], @"strict_url_parsing",
+		[NSNumber numberWithBool: false], @"tabbed_links",
+		[NSNumber numberWithBool: false], @"fullScreen",
+		[NSNumber numberWithBool: true], @"autoCenter",
+		[NSNumber numberWithBool: true], @"autoResize",
+		[NSNumber numberWithBool: true], @"HUDautoHide",
+		[NSNumber numberWithBool: true], @"HUDshortTap",
+		[NSNumber numberWithBool: true], @"normalExit",
+		@"", @"plugin_dir",
+		[NSNumber numberWithBool: false], @"dynamic_content_control",
+		AM_IOS_PLAYLISTVERSION, @"version",
+		[NSData dataWithBytes:"X" length:1], @"history",
+		nil];
 	[prefs registerDefaults: defaultDefaults];
 	m_parser_id = [[prefs stringForKey: @"parser_id"] UTF8String];
 	m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] UTF8String];
@@ -220,12 +220,12 @@ iOSpreferences::repr()
 @synthesize ns_image_data;
 
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
-							url: (NSURL*) ans_url
-					image_data: (NSData*) ans_image_data
-					description: (NSString*) ans_description
-					   duration: (NSString*) ans_dur
-				 last_node_repr: (NSString*) alast_node_repr
-					   position: (NSUInteger) aposition
+	url: (NSURL*) ans_url
+	image_data: (NSData*) ans_image_data
+	description: (NSString*) ans_description
+	duration: (NSString*) ans_dur
+	last_node_repr: (NSString*) alast_node_repr
+	position: (NSUInteger) aposition
 {
 	ns_title = atitle;
 	ns_url = [ans_url retain];

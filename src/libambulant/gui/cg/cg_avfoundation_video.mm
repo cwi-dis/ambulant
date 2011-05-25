@@ -166,10 +166,10 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	mAVPlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 	// prepare to react on end of media data 
 	[[NSNotificationCenter defaultCenter]
-	 addObserver:self
-	 selector:@selector(handlePlayerItemDidReachEnd:)
-	 name:AVPlayerItemDidPlayToEndTimeNotification
-	 object: [[self mAVPlayer] currentItem]];
+		addObserver:self
+		selector:@selector(handlePlayerItemDidReachEnd:)
+		name:AVPlayerItemDidPlayToEndTimeNotification
+		object: [[self mAVPlayer] currentItem]];
 	
 	mStatus = [[self mAVPlayer] status];
 //	call_C_function((void*)"dit werkt\n", (void*(*)(void*)) printf);
@@ -189,9 +189,9 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 //	[mAVPlayer removeTimeObserver:timeObserver];
 //	[timeObserver release];
 	[[NSNotificationCenter defaultCenter]
-	 removeObserver:self
-	 name:AVPlayerItemDidPlayToEndTimeNotification
-	 object: [[self mAVPlayer] currentItem]];
+		removeObserver:self
+		name:AVPlayerItemDidPlayToEndTimeNotification
+		object: [[self mAVPlayer] currentItem]];
 	if (mStatusObserver) {
 		[mAVPlayer removeObserver:self forKeyPath:@"status"];
 	}
@@ -484,8 +484,8 @@ cg_avfoundation_video_renderer::get_dur() {
 		if (cm_duration.flags = kCMTimeFlags_Valid)
 			rv = common::duration(true, (double) cm_duration.value * (double) cm_duration.timescale);
 	}
-	 AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::get_dur returns: %d, %lf " , this, (bool) rv.first, (double) rv.second);
-	 return rv;
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::get_dur returns: %d, %lf " , this, (bool) rv.first, (double) rv.second);
+	return rv;
 }
 	
 void*

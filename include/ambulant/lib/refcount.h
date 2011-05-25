@@ -67,7 +67,7 @@ class AMBULANTAPI ref_counted {
 template <class T>
 class basic_atomic_count {
   public:
-  	/// Construct with given initial value.
+	/// Construct with given initial value.
 	explicit basic_atomic_count(long v): m_value(v){}
 
 	/// Increment the counter.
@@ -174,7 +174,7 @@ class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
 template<class T>
 class auto_ref : public ref_counted_obj {
   public:
-  	/// Construct for a given object.
+	/// Construct for a given object.
 	auto_ref(T* ptr = 0) : m_ptr(ptr) {}
 	~auto_ref() { delete m_ptr;}
 

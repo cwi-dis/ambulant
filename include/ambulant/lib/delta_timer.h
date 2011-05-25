@@ -48,7 +48,7 @@ namespace lib {
 /// Uses delta timer pattern.
 class delta_timer {
   public:
-  	/// A type defining how this timer represents time.
+	/// A type defining how this timer represents time.
 	typedef timer::time_type time_type;
 	/// An event plus the delta-time it should fire.
 	typedef std::pair<event*, time_type> timeout_event;
