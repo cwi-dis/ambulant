@@ -171,11 +171,14 @@ FIREFOXENV=
 
 BUILDLIBDIR=
 check-npambulant:
-	( a=`cd $(ambulantlibdir); pwd` ; \
-	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
-	)
-
+	if test x$$DISPLAY = x; then \
+		echo Skipping tests, DISPLAY not set; \
+	else \
+		a=`cd $(ambulantlibdir); pwd` ; \
+		cd $(srcdir) ; \
+		LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
+	fi
+	
 testplay:
 	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html
 
