@@ -1004,6 +1004,18 @@ CreateBitmapContext (CGSize size)
 	return transition_surface;
 }
 
+#if	JNK		
+- (CGLayerRef) getTransitionTmpSurface
+{
+	if (transition_tmpsurface == NULL) {
+		// It does not exist yet. Create it.
+		CGContextRef ctxr = [self getCGContext];
+		transition_tmpsurface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
+	}
+	return transition_tmpsurface;
+}
+#endif//JNK
+
 - (void) releaseTransitionSurfaces
 {
 	if (transition_surface != NULL) {
