@@ -170,7 +170,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifdef	WITH_UIKIT
 - (BOOL) tappedAtPoint:(CGPoint) location;
-- (void) drawTestRect:(CGRect)rect;
 
 #endif//WITH_UIKIT
 

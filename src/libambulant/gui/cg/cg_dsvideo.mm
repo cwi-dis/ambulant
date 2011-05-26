@@ -17,10 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_dsvideo.h"
 #include "ambulant/common/region_info.h"
@@ -146,7 +142,6 @@ cg_dsvideo_renderer::_push_frame(char* frame, size_t size)
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::push_frame: created CGImage 0x%x", m_image);
-//	if (m_dest) m_dest->need_redraw();
 	m_lock.leave();
 }
 

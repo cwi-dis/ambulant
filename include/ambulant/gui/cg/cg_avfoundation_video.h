@@ -54,6 +54,7 @@
 	ambulant::net::timestamp_t position_wanted;
 }
 
+// XXXJACK Do these really need to be properties?
 @property (nonatomic, retain) AVPlayer *mAVPlayer;
 @property (nonatomic, assign) CMTime duration;
 @property (nonatomic, assign, readonly) BOOL durationIsKnown;

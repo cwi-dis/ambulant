@@ -843,7 +843,7 @@
 		049DCA1D138A8E2B0023DFBC /* d2_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_text.h; path = d2/d2_text.h; sourceTree = "<group>"; };
 		049DCA1E138A8E2B0023DFBC /* d2_transition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_transition.h; path = d2/d2_transition.h; sourceTree = "<group>"; };
 		049DCA1F138A8E2B0023DFBC /* d2_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_window.h; path = d2/d2_window.h; sourceTree = "<group>"; };
-		04A1E87512B57DF20060F97E /* libambulantCG.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulantCG.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		04A1E87512B57DF20060F97E /* libambulantCG */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.dylib"; path = libambulantCG; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A1E95912B585030060F97E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
 		04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
@@ -869,7 +869,7 @@
 		93C8CE9F13166F130085212A /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		93C8CEA113166F360085212A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		D2A6134D07B89F6200DD23D3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		D2AAC0C705546C1D00DB518D /* libambulant.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulant.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC0C705546C1D00DB518D /* libambulant */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.dylib"; path = libambulant; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -951,8 +951,8 @@
 		034768DFFF38A50411DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC0C705546C1D00DB518D /* libambulant.dylib */,
-				04A1E87512B57DF20060F97E /* libambulantCG.dylib */,
+				D2AAC0C705546C1D00DB518D /* libambulant */,
+				04A1E87512B57DF20060F97E /* libambulantCG */,
 				04D71F8312B628210064FBCB /* libambulantCGstatic.a */,
 				040DAB3812B790BB002C4DFD /* libambulantIPhone.a */,
 			);
@@ -1887,7 +1887,7 @@
 			);
 			name = libambulantCG;
 			productName = libambulantCG;
-			productReference = 04A1E87512B57DF20060F97E /* libambulantCG.dylib */;
+			productReference = 04A1E87512B57DF20060F97E /* libambulantCG */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		04D71F8212B628210064FBCB /* libambulantCGstatic */ = {
@@ -1923,7 +1923,7 @@
 			);
 			name = libambulant;
 			productName = libambulant;
-			productReference = D2AAC0C705546C1D00DB518D /* libambulant.dylib */;
+			productReference = D2AAC0C705546C1D00DB518D /* libambulant */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */

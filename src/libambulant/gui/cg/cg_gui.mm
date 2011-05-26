@@ -19,18 +19,18 @@
 
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_text.h"
-//#include "ambulant/gui/cg/cg_html.h"
 #include "ambulant/gui/cg/cg_image.h"
-//#include "ambulant/gui/cg/cg_ink.h"
 #include "ambulant/gui/cg/cg_fill.h"
-//#include "ambulant/gui/cg/cg_video.h"
 #include "ambulant/gui/cg/cg_dsvideo.h"
-//#include "ambulant/gui/cg/cg_smiltext.h"
 #include "ambulant/lib/mtsync.h"
-
-//#include <CoreGraphics/CoreGraphics.h>
+//#include "ambulant/gui/cg/cg_html.h"
+//#include "ambulant/gui/cg/cg_ink.h"
+//#include "ambulant/gui/cg/cg_video.h"
+//#include "ambulant/gui/cg/cg_smiltext.h"
 
 #ifdef WITH_UIKIT
+// These functions do something for AppKit, but for UIKit we the corresponding types
+// are actually identical. The code becomes more beautiful if we call the functions always.
 #define NSSizeToCGSize(x) (x)
 #define NSRectToCGRect(x) (x)
 #define NSSizeFromCGSize(x) (x)
@@ -240,10 +240,9 @@ bad:
 
 } //namespace ambulant
 
-#ifdef __OBJC__
 #ifdef	WITH_UIKIT
 #import <QuartzCore/CALayer.h>
-#endif//WITH_UIKIT
+#endif //WITH_UIKIT
 
 // Helper class: NSRect as an object
 @implementation NSRectHolder
@@ -268,20 +267,15 @@ bad:
 	self = [super initWithFrame: NSRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 	transition_surface = NULL;
-//	transition_tmpsurface = NULL;
+//	transition_tmpsurface = NULL; // XXXJACK Why don't we initialize these?
 	transition_count = 0;
 	fullscreen_count = 0;
-//	fullscreen_previmage = NULL;
-//	fullscreen_oldimage = NULL;
+//	fullscreen_previmage = NULL; // XXXJACK Why don't we initialize these?
+//	fullscreen_oldimage = NULL; // XXXJACK Why don't we initialize these?
 	fullscreen_engine = NULL;
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
 	fullscreen_ended = NO;
-//	overlay_window = NULL;
-//	overlay_window_needs_unlock = NO;
-//	overlay_window_needs_reparent = NO;
-//	overlay_window_needs_flush = NO;
-//	overlay_window_needs_clear = NO;
 	return self;
 }
 
@@ -300,15 +294,11 @@ bad:
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
 	fullscreen_ended = NO;
-//	overlay_window = NULL;
-//	overlay_window_needs_unlock = NO;
-//	overlay_window_needs_reparent = NO;
-//	overlay_window_needs_flush = NO;
-//	overlay_window_needs_clear = NO;
 	return self;
 }
 
 - (void)dealloc {
+// XXXJACK Don't we need these deallocs?
 //	if (transition_surface) [transition_surface release];
 //	transition_surface = NULL;
 //	if (transition_tmpsurface) [transition_tmpsurface release];
@@ -372,6 +362,9 @@ bad:
 #endif//WITH_UIKIT
 }
 
+// drawRect has different signatures in AppKit and UIKit. Hence the ugly
+// c preprocessor constructs here.
+
 #ifdef WITH_UIKIT
 - (void)drawRect:(CGRect)rect
 {
@@ -380,7 +373,6 @@ bad:
 {
 	CGRect rect = NSRectToCGRect(_rect);
 #endif // WITH_UIKIT
-//DBG	[AmbulantView dumpScreenWithId: @"rd0"];
 
     CGContextRef myContext = [self getCGContext];
     CGContextSaveGState(myContext);
@@ -401,27 +393,6 @@ bad:
 #endif// WITH_UIKIT
     
 	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
-#undef CG_REDRAW_DEBUG
-#ifdef CG_REDRAW_DEBUG
-	{
-		CGFloat components[] = { 0, 1, 1, 1};
-		CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
-		CGContextSetStrokeColorSpace(myContext, genericColorSpace);
-		CGColorSpaceRelease(genericColorSpace);
-		CGContextSetStrokeColor(myContext, components);
-        CGPoint points[] = {
-            rect.origin,
-            {rect.origin.x + rect.size.width, rect.origin.y},
-            {rect.origin.x, rect.origin.y + rect.size.height},
-            {rect.origin.x + rect.size.width, rect.origin.y + rect.size.height},
-            rect.origin};
-        CGContextAddLines(myContext, points, sizeof(points)/sizeof(points[0]));
-        CGContextStrokePath(myContext);
-//		CGContextSynchronize(myContext);
-//		CGContextFlush(myContext);
-//		sleep(1);
-	}
-#endif//CG_REDRAW_DEBUG
 
 	if (!ambulant_window) {
 		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
@@ -438,23 +409,7 @@ bad:
 //		[self _releaseTransitionSurface];
 	}
 
-#ifdef CG_REDRAW_DEBUG
-	{
-		CGFloat components[] = { 1, 0, 1, 0.2};
-		CGContextSetStrokeColor(myContext, components);
-        CGPoint points[] = {
-            rect.origin,
-            {rect.origin.x + rect.size.width, rect.origin.y},
-            {rect.origin.x, rect.origin.y + rect.size.height},
-            {rect.origin.x + rect.size.width, rect.origin.y + rect.size.height},
-            rect.origin};
-        CGContextAddLines(myContext, points, sizeof(points)/sizeof(points[0]));
-        CGContextStrokePath(myContext);
-	}
-#endif// CG_REDRAW_DEBUG
     CGContextRestoreGState(myContext);
-//	int idx = [AmbulantView dumpUIView: self withId: @"rdw"];
-//	AM_DBG NSLog(@"ambulantView drawRect: idx=%d", idx);	
 }
 
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
@@ -490,47 +445,12 @@ bad:
     self.frame = NSRectFromCGRect(newFrame);
     self.bounds = NSRectFromCGRect(newBounds);
     AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
-	if ([[self superview] respondsToSelector:@selector(recomputeZoom)])
+	if ([[self superview] respondsToSelector:@selector(recomputeZoom)]) {
 		[[self superview] recomputeZoom];
+    }
 
     AM_DBG NSLog(@"setSize after aDAR: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
 }
-
-#ifdef WITH_UIKIT
-// Equivalent of mouse move/click on iPhone
-- (BOOL) tappedAtPoint:(CGPoint) location {
-// NSLog(@"tappedAtPoint: x=%f y=%f", location.x, location.y);
-	[self setNeedsDisplay];
-	ambulant::lib::point amwhere = ambulant::lib::point(
-							(int) location.x, (int) location.y);
-	if (ambulant_window) {
-		return ambulant_window->user_event(amwhere, 0);
-	}
-	return false;
-}
-
-- (void)drawTestRect:(CGRect)rect;
-{   
-    CGContextRef context = UIGraphicsGetCurrentContext(); 
-    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 0.0, 1.0); // yellow line
-	
-    CGContextBeginPath(context);
-	
-    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y); //start point
-    CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y+rect.size.height);
-    CGContextAddLineToPoint(context, rect.origin.x+rect.size.width, rect.origin.y+rect.size.height);
-    CGContextAddLineToPoint(context, rect.origin.x+rect.size.width, rect.origin.y); // end path
-	
-    CGContextClosePath(context); // close path
-	
-    CGContextSetLineWidth(context, 8.0); // this is set from now on until you explicitly change it
-	
-    CGContextStrokePath(context); // do actual stroking
-	
-	CGContextSetRGBFillColor(context, 0.0, 1.0, 0.0, 0.5); // green color, half transparent
-	CGContextFillRect(context, CGRectMake(rect.origin.x, rect.origin.y, rect.size.width/4, rect.size.height/4)); // a square at the bottom left-hand corner
-}
-#endif//WITH_UIKIT
 
 - (void)ambulantNeedEvents: (bool)want
 {
@@ -550,13 +470,34 @@ bad:
 #endif
 }
 
-#ifndef WITH_UIKIT
+#ifdef WITH_UIKIT
+// A couple of methods that are UIKit specific
+
+// XXXJACK thinks this method can go.
+- (void)tappedWithPoint: (CGPoint) where
+{
+	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+	AM_DBG NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	if (ambulant_window) ambulant_window->user_event(amwhere);
+}
+
+// Equivalent of mouse move/click on iPhone
+- (BOOL) tappedAtPoint:(CGPoint) location {
+// NSLog(@"tappedAtPoint: x=%f y=%f", location.x, location.y);
+	[self setNeedsDisplay];
+	ambulant::lib::point amwhere = ambulant::lib::point((int) location.x, (int) location.y);
+	if (ambulant_window) {
+		return ambulant_window->user_event(amwhere, 0);
+	}
+	return false;
+}
+#else // WITH_UIKIT
+// A couple of methods that are AppKit-specific
 - (BOOL)isFlipped
 {
 	return true;
 }
 
-#ifndef JNK
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize
 {
     /*AM_DBG*/ NSLog(@"resizeWithOldSuperviewSize: %@", self);
@@ -565,26 +506,7 @@ bad:
     [super resizeWithOldSuperviewSize: oldBoundsSize];
     NSSize realSize = {original_bounds.w, original_bounds.h};
     [self setBoundsSize: realSize];
-#if 0
-    float xscale = self.bounds.size.width / self.frame.size.width;
-    float yscale = self.bounds.size.height / self.frame.size.height;
-    float scale = (xscale < yscale) ? xscale : yscale;
-    NSSize realFrameSize = { self.bounds.size.width * scale, self.bounds.size.height * scale};
-    [self setFrameSize: realFrameSize];
-#endif
-        
 }
-#endif // JNK
-#endif // WITH_UIKIT
-
-#ifdef WITH_UIKIT
-- (void)tappedWithPoint: (CGPoint) where
-{
-	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	AM_DBG NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
-	if (ambulant_window) ambulant_window->user_event(amwhere);
-}
-#else// ! WITH_UIKIT
 
 - (void)mouseDown: (NSEvent *)theEvent
 {
@@ -609,7 +531,6 @@ bad:
 	}
 	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-//  AM_DBG { id target=[[NSApplication sharedApplication] targetForAction: @selector(resetMouse:) ]; if(!target) { NSLog(@"No target for resetMouse: ??"); dumpResponderChain([[self window] firstResponder]);}}
 	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
@@ -633,7 +554,7 @@ bad:
 	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
 }
 
-#endif// ! WITH_UIKIT
+#endif// WITH_UIKIT
 
 - (BOOL)wantsDefaultClipping
 {
@@ -656,6 +577,7 @@ bad:
 }
 
 #ifndef	WITH_UIKIT
+// Transition implementation methods for AppKit
 - (NSImage *)getTransitionSurface
 {
 	if (!transition_surface) {
@@ -806,8 +728,6 @@ bad:
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
 	[[self getTransitionSurface] unlockFocus];
-//	/*DBG*/ [self dump: [self getTransitionOldSource] toImageID: "fsold"];
-//	/*DBG*/ [self dump: [self getTransitionNewSource] toImageID: "fsnew"];
 	CGRect bounds = NSRectToCGRect([self bounds]);
 	if (fullscreen_engine) {
 		[[self getTransitionOldSource] drawInRect: NSRectFromCGRect(bounds)
@@ -817,8 +737,6 @@ bad:
 		fullscreen_engine->step(fullscreen_now);
 	} else {
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
-//		[[self getTransitionNewSource] compositeToPoint: NSZeroPoint
-//			operation: NSCompositeCopy];
 		[[self getTransitionNewSource] drawInRect: NSRectFromCGRect(bounds)
 			fromRect: NSRectFromCGRect(bounds)
 			operation: NSCompositeCopy
@@ -835,6 +753,7 @@ bad:
 }
 
 #else// ! WITH_UIKIT
+// Transition implementation methods for UIKit
 
 // Get an UIImage of the iPhone/iPad screen
 // From: http://developer.apple.com/library/ios/#qa/qa2010/qa1703.html
@@ -904,11 +823,10 @@ bad:
 		CGContextTranslateCTM(context, [view center].x, [view center].y);
 		// Apply the view's transform about the anchor point
 		CGContextConcatCTM(context, CGAffineTransformMakeScale(1.0, -1.0));
-//		CGContextConcatCTM(context, [view transform]);
 		// Offset by the portion of the bounds left of and above the anchor point
 		CGContextTranslateCTM(context,
-							  -[view bounds].size.width * [[view layer] anchorPoint].x,
-							  -[view bounds].size.height * [[view layer] anchorPoint].y);
+            -[view bounds].size.width * [[view layer] anchorPoint].x,
+            -[view bounds].size.height * [[view layer] anchorPoint].y);
 		// Render the layer hierarchy to the current context
 		[[view layer] renderInContext:context];
 		
@@ -929,23 +847,22 @@ bad:
 + (UIImage*) UIImageFromCGLayer: (CGLayerRef) layer
 {
 	// Create the bitmap context
-	CGContextRef    bitmapContext = NULL;
-	void *          bitmapData;
-	int             bitmapByteCount;
-	int             bitmapBytesPerRow;
-	CGSize          size = CGLayerGetSize(layer);
+	CGContextRef bitmapContext = NULL;
+	void * bitmapData;
+	int bitmapByteCount;
+	int bitmapBytesPerRow;
+	CGSize size = CGLayerGetSize(layer);
 	
 	// Declare the number of bytes per row. Each pixel in the bitmap in this
 	// example is represented by 4 bytes; 8 bits each of red, green, blue, and
 	// alpha.
-	bitmapBytesPerRow   = (size.width * 4);
-	bitmapByteCount     = (bitmapBytesPerRow * size.height);
+	bitmapBytesPerRow = (size.width * 4);
+	bitmapByteCount = (bitmapBytesPerRow * size.height);
 	
 	// Allocate memory for image data. This is the destination in memory
 	// where any drawing to the bitmap context will be rendered.
-	bitmapData = malloc( bitmapByteCount );
-	if (bitmapData == NULL)
-	{
+	bitmapData = malloc(bitmapByteCount);
+	if (bitmapData == NULL) {
 		return nil;
 	}
 	
@@ -954,7 +871,7 @@ bad:
 	// (CMYK, Grayscale, and so on) it will be converted over to the format
 	// specified here by CGBitmapContextCreate.
 	bitmapContext = CGBitmapContextCreate (bitmapData, size.width, size.height,8,bitmapBytesPerRow,
-										   CGColorSpaceCreateDeviceRGB(),kCGImageAlphaNoneSkipFirst);
+        CGColorSpaceCreateDeviceRGB(),kCGImageAlphaNoneSkipFirst);
 	if (bitmapContext == NULL) {
 		// error creating context
 		free(bitmapData);
@@ -968,8 +885,8 @@ bad:
 	// allocated for the context for rendering will then contain the
 	// raw image data in the specified color space.
 	CGContextDrawLayerAtPoint(bitmapContext, CGPointZero, layer);
-	CGImageRef   img = CGBitmapContextCreateImage(bitmapContext);
-	UIImage*     ui_img = [UIImage imageWithCGImage: img];
+	CGImageRef img = CGBitmapContextCreateImage(bitmapContext);
+	UIImage* ui_img = [UIImage imageWithCGImage: img];
 	
 	CGImageRelease(img);
 	CGContextRelease(bitmapContext);
@@ -1047,31 +964,31 @@ bad:
 
 // From: http://developer.apple.com/library/ios/#documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html%23//apple_ref/doc/uid/TP30001066-CH203-TPXREF101
 // Quartz 2D Programming Guide, Graphics Contexts, Create Bitmap Graphics Context
-CGContextRef CreateBitmapContext (CGSize size)
+CGContextRef
+CreateBitmapContext (CGSize size)
 {
 	CGContextRef context = NULL;
 	CGColorSpaceRef colorSpace; 
 	void* bitmapData; 
 	int bitmapByteCount, bitmapBytesPerRow;
 	
-	bitmapBytesPerRow	= (size.width * 4);
+	bitmapBytesPerRow = (size.width * 4);
 	bitmapByteCount	= (bitmapBytesPerRow * size.height);
 	colorSpace = CGColorSpaceCreateDeviceRGB(); 
 
 	context = CGBitmapContextCreate (NULL,
-									 size.width,
-									 size.height,
-									 8,      // bits per component
-									 bitmapBytesPerRow,
-									 colorSpace,
-									 kCGImageAlphaPremultipliedLast);
-    if (context== NULL)
-    {
+        size.width,
+        size.height,
+        8,      // bits per component
+        bitmapBytesPerRow,
+        colorSpace,
+        kCGImageAlphaPremultipliedLast);
+    if (context== NULL) {
         free (bitmapData);
         NSLog(@"CreateBitmapContext: Context not created");
         return NULL;
     }
-    CGColorSpaceRelease( colorSpace );
+    CGColorSpaceRelease(colorSpace);
 	
     return context;
 }	
@@ -1085,18 +1002,6 @@ CGContextRef CreateBitmapContext (CGSize size)
 	}
 	return transition_surface;
 }
-
-#if	JNK		
-- (CGLayerRef) getTransitionTmpSurface
-{
-	if (transition_tmpsurface == NULL) {
-		// It does not exist yet. Create it.
-		CGContextRef ctxr = [self getCGContext];
-		transition_tmpsurface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
-	}
-	return transition_tmpsurface;
-}
-#endif//JNK
 
 - (void) releaseTransitionSurfaces
 {
@@ -1115,11 +1020,11 @@ CGContextRef CreateBitmapContext (CGSize size)
 	AM_DBG NSLog(@"pushTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
 	if ( ! transition_pushed) {
 		CGLayerRef surf = [self getTransitionSurface];
-//DBG	[AmbulantView dumpScreenWithId: @"pre"];
 		UIGraphicsPushContext(CGLayerGetContext(surf));
 		transition_pushed = YES;
 	} else { // programmer error
-//		assert ( ! transition_pushed);
+        // XXXJACK why is this assert disabled?
+        //		assert ( ! transition_pushed);
 	}
 
 }
@@ -1147,11 +1052,9 @@ CGContextRef CreateBitmapContext (CGSize size)
 	if (fullscreen_oldimage == NULL && ! isOuttrans) {
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
 		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage.CGImage];
-//DBG	[AmbulantView dumpCGLayer: fullscreen_oldimage withId: @"scr"];
 		CFRetain(fullscreen_oldimage);
 	}
 	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, fullscreen_oldimage);
-//DBG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
 	[pool release];
 }
 
@@ -1161,13 +1064,10 @@ CGContextRef CreateBitmapContext (CGSize size)
 	assert(fullscreen_count > 0);
 	fullscreen_count--;
 	fullscreen_ended = YES; // let the drawing thread fix-up
-//	[self releaseTransitionSurfaces];
-//	ambulant::lib::rect r = ambulant::gui::cg::ambulantRectFromCGRect([self bounds]);
-//	ambulant_window->need_redraw(r);
 }
 
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
-					  elapsed: (ambulant::lib::transition_info::time_type)now
+    elapsed: (ambulant::lib::transition_info::time_type)now
 {
 	AM_DBG NSLog(@"screenTransitionStep %d engine=0x%x", (int)now, engine);
 	assert(fullscreen_count > 0);
@@ -1194,21 +1094,13 @@ CGContextRef CreateBitmapContext (CGSize size)
 	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
 		// Neither in fullscreen transition nor winding one down.
 		// Take a snapshot of the screen and return.
-//XXX No idea yet what to do here
-/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
+        //XXX No idea yet what to do here
+        /*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
 	if (transition_pushed) {
 		[self popTransitionSurface];
 	}
-//X	if (fullscreen_oldimage == NULL) {
-//XXX No idea yet what to do here
-		// Just starting a new fullscreen transition. Get the
-		// background bits from the snapshot saved during the previous
-		// redraw.
-//X		fullscreen_oldimage = fullscreen_previmage;
-//X		fullscreen_previmage = NULL;
-//X	}
 	
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
@@ -1229,12 +1121,10 @@ CGContextRef CreateBitmapContext (CGSize size)
 	
 	if (fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
-//XXX No idea yet what to do here
+        //XXX No idea yet what to do here
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: cleanup after transition done");
 		fullscreen_engine = NULL;
 	}
-//DBG	[AmbulantView dumpScreenWithId: @"pst"];
 }
 #endif // ! WITH_UIKIT
 @end
-#endif // __OBJC__

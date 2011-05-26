@@ -17,17 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #ifdef WITH_AVFOUNDATION
 
-
-extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
-	return fun(args);
-};
-						
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_avfoundation_video.h"
 #include "ambulant/common/region_info.h"
@@ -38,12 +29,13 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 #ifndef NS_DBG
 #define NS_DBG if(0)
 #endif
+
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-#ifdef	__OBJC__
+// this is basically a re-implementation of the C++ std::pair in ObjC
 @interface pair : NSObject
 {
 	NSObject* first;
@@ -71,6 +63,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 
 @implementation CGVideoAVPlayerManager
 
+// XXXJACK Do these really need to be properties?
 @synthesize timeObserver, duration, durationIsKnown, mNSURL;
 
 - (AVPlayer*) mAVPlayer {
@@ -101,7 +94,6 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	duration = mAVPlayer.currentItem.asset.duration;
 	NS_DBG { NSLog(@"handleDurationDidChange(0x%x) duration changed to:", self); CMTimeShow(duration); }
 	[self updatePlayState];
-//X	[self updateControls];
 }
 
 - (void) handlePlayerStatusDidChange {
@@ -128,7 +120,6 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	NSError* error = self.mAVPlayer.currentItem.error;
 	if (error != NULL) {
 		NS_DBG NSLog(@"Error is0: %@", error);
-//		[error release];
 	}
 }
 
@@ -144,7 +135,6 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	NS_DBG NSLog(@"addTimeObserver(0x%x)", self);
 	[self removeTimeObserver];
 	timeObserver = [mAVPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
-//X		[updateControls];
 //TBD	[checkIfAtEndOfMovie];
 	}];
 	
@@ -164,6 +154,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	mDurationObserver = false;
 	mWantToPlay = false;
 	mAVPlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
+
 	// prepare to react on end of media data 
 	[[NSNotificationCenter defaultCenter]
 		addObserver:self
@@ -172,11 +163,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 		object: [[self mAVPlayer] currentItem]];
 	
 	mStatus = [[self mAVPlayer] status];
-//	call_C_function((void*)"dit werkt\n", (void*(*)(void*)) printf);
-//	[self handleDurationDidChange];
-//	[self handlePlayerStatusDidChange];
 	mNSURL = nsurl;
-//	[self addTimeObserver];
 	
 	[pool release];
 	return self;
@@ -186,8 +173,6 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	NS_DBG NSLog(@"dealloc(0x%x)", self);
-//	[mAVPlayer removeTimeObserver:timeObserver];
-//	[timeObserver release];
 	[[NSNotificationCenter defaultCenter]
 		removeObserver:self
 		name:AVPlayerItemDidPlayToEndTimeNotification
@@ -290,7 +275,6 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	[pool release];
 }
 @end
-#endif//__OBJC__
 										  
 // These two constants should match. Moreover, the optimal setting may depend on the
 // specific hardware.
@@ -311,9 +295,9 @@ namespace gui {
 namespace cg {
 
 extern const char cg_avfoundation_video_playable_tag[] = "video";
-	extern const char cg_avfoundation_video_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
-	extern const char cg_avfoundation_video_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererAVFoundation");
-	extern const char cg_avfoundation_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererVideo");
+extern const char cg_avfoundation_video_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
+extern const char cg_avfoundation_video_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererAVFoundation");
+extern const char cg_avfoundation_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererVideo");
 
 common::playable_factory *
 create_cg_avfoundation_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
@@ -415,7 +399,6 @@ cg_avfoundation_video_renderer::start(double where) {
 		[m_avplayer_manager play];
 		m_renderer_state = rs_playing;
 		m_context->started(m_cookie, where);
-//		m_dest->need_redraw();
 	}
 
 	m_lock.leave();
@@ -425,18 +408,15 @@ bool
 cg_avfoundation_video_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::stop, [m_avplayer_manager avplayer]=0x%x, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager mAVPlayer],  [m_avplayer_manager retainCount]);
 	m_lock.enter();
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	bool rv = true;
 	if (m_avplayer_manager && m_renderer_state != rs_error_state) {
 		m_context->stopped(m_cookie);
 		m_renderer_state = rs_stopping;
 	}
-//	[pool release];
 	m_lock.leave();
 	return rv;
 }
 
-// #ifdef	JNK
 void
 cg_avfoundation_video_renderer::post_stop() {
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::post_stop, [m_avplayer_manager mAVPlayer]=0x%x, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager mAVPlayer], [m_avplayer_manager retainCount]);
@@ -448,7 +428,6 @@ cg_avfoundation_video_renderer::post_stop() {
 	}
 	m_lock.leave();
 }
-// #endif//JNK
 
 void
 cg_avfoundation_video_renderer::resume() {
@@ -556,7 +535,6 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		m_visible = false;
 		[m_avplayer_manager release];
 		m_avplayer_manager = NULL;
-//#ifdef	JNK
 	} else if (m_renderer_state == rs_fullstopped) {
 		if (m_visible && m_avplayer_layer != NULL) {
 			[m_avplayer_layer removeFromSuperlayer];
@@ -566,7 +544,6 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		}
 		[m_avplayer_manager release];
 		m_avplayer_manager = NULL;
-//#endif//JNK
 	}
 
 	[pool release];

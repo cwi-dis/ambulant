@@ -17,10 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/gui/cg/cg_smiltext.h"
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/common/region_info.h"
@@ -112,7 +108,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	rv.font = font;
 	rv.font_descr = font_descr;
 	return rv;
-} // _select_font
+}
 
 common::playable_factory *
 create_cg_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
@@ -137,8 +133,6 @@ cg_smiltext_renderer::cg_smiltext_renderer(
 :	cg_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
 	m_text_storage(NULL),
 	m_frame(NULL),
-//JNK m_layout_manager(NULL),
-//JNK m_text_container(NULL),
 	m_rgb_colorspace(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_needs_conditional_newline(false),
@@ -154,7 +148,6 @@ cg_smiltext_renderer::cg_smiltext_renderer(
 {
 	m_text_storage = CFAttributedStringCreateMutable(NULL, 0);
 	m_rgb_colorspace = CGColorSpaceCreateDeviceRGB();
-//JNK m_text_storage = [[NSTextStorage alloc] initWithString:@""];
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 }
 
@@ -196,11 +189,9 @@ cg_smiltext_renderer::start(double t)
 void
 cg_smiltext_renderer::seek(double t)
 {
-//	assert( t >= 0);
 	if (t >= 0 ) {
-	m_engine.seek(t);
+        m_engine.seek(t);
 	}
-//renderer_playable::seek(t);
 }
 
 bool
@@ -388,7 +379,7 @@ cg_smiltext_renderer::smiltext_changed()
 					CFDictionaryAddValue (attrs, kCTBackgroundColorAttributeName, run_bg_color);
 					CGColorRelease(run_bg_color);
 				}
-#endif// kCTBackgroundColorAttributeName
+#endif // kCTBackgroundColorAttributeName
 			
 				// Finally do paragraph settings (which are cached)
 				if (m_cur_paragraph_style == NULL ||
@@ -541,18 +532,18 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		bool has_hmovement = false;
 		bool has_vmovement = false;
 		switch(m_params.m_mode) {
-			case smil2::stm_scroll:
-			case smil2::stm_jump:
-				has_vmovement = true;
-				break;
-			case smil2::stm_crawl:
-				cg_layout_size.height = cg_firstlineheight;
-				has_hmovement = true;
-				break;
-			case smil2::stm_replace:
-			case smil2::stm_append:
-				// Normal cases
-				break;
+        case smil2::stm_scroll:
+        case smil2::stm_jump:
+            has_vmovement = true;
+            break;
+        case smil2::stm_crawl:
+            cg_layout_size.height = cg_firstlineheight;
+            has_hmovement = true;
+            break;
+        case smil2::stm_replace:
+        case smil2::stm_append:
+            // Normal cases
+            break;
 		}
 		CGSize old_layout_size;
 		// If the layout size has changed (due to smil animation or so) change it
@@ -574,17 +565,17 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 			// For scroll and jump, textConceal and textPlace determine vertical position
 			if (m_params.m_text_conceal == smil2::stc_none || m_params.m_text_conceal == smil2::stc_final) {
 				switch (m_params.m_text_place) {
-					case smil2::stp_from_start:
-						m_cg_origin.y -= cg_frame_rect.size.height - cg_final_dst_rect.size.height;
-						break;
-					case smil2::stp_from_center:
-						m_cg_origin.y -= cg_frame_rect.size.height - cg_final_dst_rect.size.height/2;
-						break;
-					case smil2::stp_from_end:
-						m_cg_origin.y -= cg_frame_rect.size.height - cg_firstlineheight;
-						break;
-					default:
-						break;
+                case smil2::stp_from_start:
+                    m_cg_origin.y -= cg_frame_rect.size.height - cg_final_dst_rect.size.height;
+                    break;
+                case smil2::stp_from_center:
+                    m_cg_origin.y -= cg_frame_rect.size.height - cg_final_dst_rect.size.height/2;
+                    break;
+                case smil2::stp_from_end:
+                    m_cg_origin.y -= cg_frame_rect.size.height - cg_firstlineheight;
+                    break;
+                default:
+                    break;
 				}
 			} else if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
 				m_cg_origin.y -= cg_frame_rect.size.height; // ignore textPlace, SMIL 3.0 par.8.5.1
@@ -620,13 +611,10 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-//		static double now = 0; // Sometimes useable when debugging i.o. real time
-//		now += 1000;
 		cg_origin.y += float(now * m_params.m_rate / 1000);
-			AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw: now=%lf, cg_origin.y=%f", now, cg_origin.y);
+        AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw: now=%lf, cg_origin.y=%f", now, cg_origin.y);
 	}
 	CGContextClipToRect(context, cg_final_dst_rect);
-//	CGAffineTransform CTM = CGContextGetCTM(context);
 	CGContextTranslateCTM(context, cg_origin.x, cg_origin.y);
 	CTFrameDraw (m_frame, context);
 	CGContextRestoreGState(context);
@@ -661,9 +649,6 @@ cg_smiltext_renderer::measure_frame(CTFrameRef frame, CGContext* cgContext, int*
 			maxWidth = width;
 		}
 		if (index == 0 & first_line_height != NULL) {
-//			CGPoint first_line_origin;
-//			CTFrameGetLineOrigins(frame, CFRangeMake(0, 1), &first_line_origin);			
-//			*first_line_height = CGRectGetMaxY(frameRect) - first_line_origin.y + descent;
 			*first_line_height = (int) ceil (ascent+descent+leading);
 		}
 		if(index == lastLineIndex) {
