@@ -446,6 +446,7 @@ bad:
     self.bounds = NSRectFromCGRect(newBounds);
     AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
 	if ([[self superview] respondsToSelector:@selector(recomputeZoom)]) {
+        // We get a warning here that is difficult to forestall...
 		[[self superview] recomputeZoom];
     }
 

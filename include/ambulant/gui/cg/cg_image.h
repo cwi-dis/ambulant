@@ -52,9 +52,6 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 	:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 		m_nsdata(NULL),
 		m_image(NULL),
-#ifdef WITH_OLD_CROP_CODE
-        m_image_cropped(NULL),
-#endif
 		m_cglayer(NULL) {};
 	~cg_image_renderer();
 
