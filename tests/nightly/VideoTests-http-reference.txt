@@ -1,0 +1,30 @@
+# http://ambulantplayer.org/Demos/VideoTests/VideoTests.smil
+NOTE 0 test_framework_imported 2.3 on:  2011-05-25
+TEST 7.00950622559e-05 document_started
+TEST 0.0115461349487 node_started <body> 1
+TEST 0.011626958847 node_started <par> 1
+TEST 0.011668920517 node_started <smilText> 1
+TEST 0.0119860172272 node_started <seq> 1
+TEST 0.0120160579681 node_started <par> 2
+TEST 0.0120410919189 node_started <video id="v1"> 1
+TEST 0.0612900257111 node_started <smilText> 2
+TEST 0.167272090912 node_stopped <smilText> 3
+TEST 5.06179213524 node_stopped <video id="v1"> 2
+TEST 5.18402099609 node_stopped <smilText> 4
+TEST 5.18445396423 node_started <par> 3
+TEST 5.18449997902 node_started <video id="v2"> 1
+TEST 5.19411492348 node_started <smilText> 5
+TEST 5.1945540905 node_stopped <par> 4
+TEST 9.68174600601 node_stopped <video id="v2"> 2
+TEST 10.2786500454 node_stopped <smilText> 6
+TEST 10.2790400982 node_started <par> 5
+TEST 10.2790849209 node_started <video id="v3"> 1
+TEST 10.2936570644 node_started <smilText> 7
+TEST 10.2941820621 node_stopped <par> 6
+TEST 14.7906699181 node_stopped <video id="v3"> 2
+TEST 15.3514370918 node_stopped <smilText> 8
+TEST 15.3515369892 node_stopped <par> 7
+TEST 15.3515849113 node_stopped <seq> 2
+TEST 15.3516309261 node_stopped <par> 8
+TEST 15.3516740799 document_stopped
+Python exception during player_feedback::document_stopped() callback:

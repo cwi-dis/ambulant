@@ -1,0 +1,13 @@
+
+NOTE 0 test_framework_imported 2.3 on:  2011-05-24
+TEST 7.41481781006e-05 document_started
+TEST 0.000117063522339 node_started <body> 1
+TEST 0.000187158584595 node_started <par> 1
+TEST 0.000229120254517 node_started <smilText> 1
+TEST 0.000493049621582 node_started <seq> 1
+TEST 0.000532150268555 node_started <par> 2
+TEST 0.000564098358154 node_started <video id="v1"> 1
+TEST 0.0335710048676 node_started <smilText> 2
+TEST 0.135442018509 node_stopped <smilText> 3
+TEST 2.856757164 document_stopped
+Python exception during player_feedback::document_stopped() callback:

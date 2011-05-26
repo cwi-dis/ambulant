@@ -1,0 +1,28 @@
+# ../../Extras/Welcome/Welcome.smil
+NOTE 0 test_framework_imported 2.3 on:  2011-05-25
+TEST 6.91413879395e-05 document_started
+TEST 0.000113964080811 node_started <body> 1
+TEST 0.000180959701538 node_started <par> 1
+TEST 0.000223159790039 node_started <img src="data/background.png"> 1
+TEST 0.00147604942322 node_started <audio src="data/AmbulantTune.mp3"> 1
+TEST 0.0606949329376 node_started <par> 2
+TEST 0.0607781410217 node_started <img src="data/ambulant.png"> 1
+TEST 0.160246133804 node_stopped <img src="data/background.png"> 2
+TEST 0.170473098755 node_stopped <img src="data/ambulant.png"> 2
+TEST 1.87832999229 node_started <img src="data/extensible.png"> 1
+TEST 2.00869512558 node_stopped <img src="data/extensible.png"> 2
+TEST 2.42624616623 node_started <img src="data/fast.png"> 1
+TEST 2.49656915665 node_stopped <img src="data/fast.png"> 2
+TEST 2.93652105331 node_started <img src="data/portable.png"> 1
+TEST 3.02807593346 node_stopped <img src="data/portable.png"> 2
+TEST 3.40703201294 node_started <img src="data/opensource.png"> 1
+TEST 3.49729704857 node_stopped <img src="data/opensource.png"> 2
+TEST 3.95769810677 node_started <img src="data/visit.png"> 1
+TEST 3.95850205421 node_started <area> 1
+TEST 3.96877408028 node_stopped <area> 2
+TEST 3.96883606911 node_stopped <img src="data/visit.png"> 2
+TEST 3.96895694733 node_stopped <par> 3
+TEST 7.86115598679 node_stopped <audio src="data/AmbulantTune.mp3"> 2
+TEST 16.0728430748 node_stopped <par> 4
+TEST 16.072920084 document_stopped
+Python exception during player_feedback::document_stopped() callback:

@@ -1,0 +1,4 @@
+SUBDIRS = nightly
+DIST_SUBDIRS = nightly
+EXTRA_DIST = \
+	README
