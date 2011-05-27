@@ -1257,33 +1257,9 @@ void gui::d2::d2_player::_schedule_update() {
 	evp->add_event(m_update_event, 50, lib::ep_high);
 }
 
-////////////////////////
-// Layout helpers with a lot of hacks
-
-typedef common::surface_template iregion;
-typedef common::surface_impl region;
-
-static const region*
-get_top_layout(smil2::smil_layout_manager *layout, const lib::node* n) {
-	iregion *ir = layout->get_region(n);
-	if(!ir) return 0;
-	const region *r = (const region*) ir;
-	while(r->get_parent()) r = r->get_parent();
-	return r;
-}
-
-static const char*
-get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
-	const region* r = get_top_layout(layout, n);
-	if(!r) return 0;
-	const common::region_info *ri = r->get_info();
-	return ri?ri->get_name().c_str():0;
-}
-
 void gui::d2::d2_player::show_file(const net::url& href) {
 	ShellExecute(GetDesktopWindow(), text_str("open"), lib::textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
 }
-
 
 void gui::d2::d2_player::done(common::player *p) {
 	assert(p == m_player);
