@@ -1148,12 +1148,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     compiler:                       ${CC}
 
     Enable overlay window:          ${test_overlay}
-<<<<<<< local
-    Build with seamless playback:   ${with_seamless}
-    Build with audio clock sync:    ${with_clock_sync}
-=======
-    Enable SMIL test layout:        ${test_smil_test}
->>>>>>> other
     Build with Python support:      ${with_python}
     Build with Python plugin:       ${with_python_plugin}
 
