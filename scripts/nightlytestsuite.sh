@@ -11,18 +11,18 @@
 # <URLs> in the  TESTSUITE array defined here and compare the output
 # from ./AM_TEST-output.txt with the corresponding file (if it exists) 
 # in the TESTRESULTS array
-if [ $DEBUG -ne "" ]; then set -x; fi
-if [ $TOP_DIR -eq "" ]; then TOP_DIR=../..;fi
-COMPARESCRIPT=$TOP_DIR/scripts/testoutputcompare.py
+if [ x$DEBUG != x ]; then set -x; fi
+if [ x$AMBULANT_TOP_DIR != x ]; then AMBULANT_TOP_DIR=../..;fi
+COMPARESCRIPT=$AMBULANT_TOP_DIR/scripts/testoutputcompare.py
 # Note: when adding an entry in TESTSUITE, a corresponding entry is to be
 # added in TESTRESULTS, use 'void' if not available
 TESTSUITE=(
-	$TOP_DIR/Extras/Welcome/Welcome.smil
+	$AMBULANT_TOP_DIR/Extras/Welcome/Welcome.smil
 	http://ambulantplayer.org/Demos/VideoTests/VideoTests.smil
 )
 TESTRESULTS=(\
-	$TOP_DIR/tests/nightly/Welcome-reference.txt \
-	$TOP_DIR/tests/nightly/VideoTests-http-reference.txt \
+	$AMBULANT_TOP_DIR/tests/nightly/Welcome-reference.txt \
+	$AMBULANT_TOP_DIR/tests/nightly/VideoTests-http-reference.txt \
 )
 program=AmbulantPlayer
 #set -x

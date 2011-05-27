@@ -150,7 +150,7 @@ check-ambulantplayer_gtk:
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  cp $(top_srcdir)/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
-	  welcomepath=$$PWD/$(top_srcdir)/Extras/Welcome/Welcome.smil; \
+	  welcomepath=$$AMBULANT_TOP_DIR/Extras/Welcome/Welcome.smil; \
 	  echo PWD=$$PWD top_srcdir=$(top_srcdir) srcdir=$(srcdir) welcomepath=$$welcomepath; \
 	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
 	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs  $(top_srcdir)/scripts/nightlytestsuite.sh ./AmbulantPlayer_gtk $$welcomepath;  \

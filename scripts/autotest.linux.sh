@@ -85,7 +85,7 @@ then
 # third party packages include files for compile (-Iflags), binaries 
 # for linkage (-Lflag) and for running (LD_LIBRARY_PATH environment variable)
 # Xvfb is needed to enable X server protocol from a cron-driven script
-    ((Xvfb  :1& DISPLAY=:1 DISTCHECK_CONFIGURE_FLAGS=--with-python\ --with-python-plugin\ CFLAGS=$LIVE_INCLUDES\ LDFLAGS=$LIVE_LIBRARIES\ PKG_CONFIG_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib/pkgconfig LD_LIBRARY_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib:$LD_LIBRARY_PATH make $MAKEOPTS distcheck); killall -15 Xvfb) #X
+    ((Xvfb  :1& DISPLAY=:1 AMBULANT_TOP_DIR=$PWD DISTCHECK_CONFIGURE_FLAGS=--with-python\ --with-python-plugin\ CFLAGS=$LIVE_INCLUDES\ LDFLAGS=$LIVE_LIBRARIES\ PKG_CONFIG_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib/pkgconfig LD_LIBRARY_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib:$LD_LIBRARY_PATH make $MAKEOPTS distcheck); killall -15 Xvfb) #X
 else 
     echo "Xvfb not installed, skipping make check"
 fi
