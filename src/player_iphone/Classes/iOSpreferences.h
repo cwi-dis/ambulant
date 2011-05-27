@@ -1,10 +1,23 @@
-//
-//  iOSpreferences.h
-//  player_iphone
-//
-//  Created by Kees Blom on 10/5/10.
-//  Copyright 2010 Stg.CWI. All rights reserved.
-//
+/*
+ * This file is part of Ambulant Player, www.ambulantplayer.org.
+ *
+ * Copyright (C) 2003-2011 Stichting CWI, 
+ * Science Park 123, 1098 XG Amsterdam, The Netherlands.
+ *
+ * Ambulant Player is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * Ambulant Player is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Ambulant Player; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #include "ambulant/common/preferences.h"
 
@@ -27,13 +40,13 @@
 
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
-							url: (NSURL*) ansurl
-					 image_data: (NSData*) ans_image_data
-					description: (NSString*) ans_description
-					   duration: (NSString*) ans_dur
-				 last_node_repr: (NSString*) alast_node_repr
-					   position: (NSUInteger) aposition;
-
+	url: (NSURL*) ansurl
+	image_data: (NSData*) ans_image_data
+	description: (NSString*) ans_description
+	duration: (NSString*) ans_dur
+	last_node_repr: (NSString*) alast_node_repr
+	position: (NSUInteger) aposition;
+	
 // compare with another PlaylistItem
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem;
 
@@ -49,7 +62,7 @@ namespace ambulant {
 	
 	
 class Playlist {
-public:
+  public:
 	Playlist(NSArray* ansarray);
 	~Playlist();
 	
@@ -65,7 +78,7 @@ public:
 	void remove_last_item();
 	void replace_last_item(PlaylistItem* new_last_item);
 	
-private:
+  private:
 	NSString* am_ios_version;
 	NSMutableArray* am_ios_playlist; // PlaylistItem* objects
 };
@@ -74,10 +87,10 @@ private:
 
 class iOSpreferences : public common::preferences {
 
-protected:
+  protected:
 	iOSpreferences();
 
-public:
+  public:
 	~iOSpreferences();
 	static void install_singleton();
 	
@@ -93,20 +106,15 @@ public:
 	
 	bool m_loaded;
 	
-	/// iOs player auto center
-	bool m_auto_center;
-	/// iOs player auto resize
-	bool m_auto_resize;
-	/// crash protector
-	bool m_normal_exit;
-	/// HUD auto hide
-	bool m_hud_auto_hide;
-	/// HUD short tap
-	bool m_hud_short_tap;
+	bool m_auto_center;     // Center the player on the screen
+	bool m_auto_resize;     // Resize the player to fit the screen
+	bool m_normal_exit;     // True if previous exit was normal, used for crash prevention
+	bool m_hud_auto_hide;   // Does the HUD controls disappear automatically?
+	bool m_hud_short_tap;   // Flip meaning of short and long tap
 	Playlist* m_favorites;
 	Playlist* m_history;
 	
-private:
+  private:
 	static iOSpreferences* s_preferences; // singleton
 
 }; // class iOSpreferences

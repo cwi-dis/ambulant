@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -54,6 +54,7 @@
 	ambulant::net::timestamp_t position_wanted;
 }
 
+// XXXJACK Do these really need to be properties?
 @property (nonatomic, retain) AVPlayer *mAVPlayer;
 @property (nonatomic, assign) CMTime duration;
 @property (nonatomic, assign, readonly) BOOL durationIsKnown;
@@ -141,11 +142,9 @@ private:
 	CGVideoAVPlayerManager *m_avplayer_manager;	// The helper ObjC class to control AVPlayer using observers
 	bool m_visible;					// Flag indicating whether the player layer is added on the layer stack
 	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
-#ifdef WITH_CLOCK_SYNC
 	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
 	void _fix_video_epoch();    // Set m_video_epoch according to current movie time
 	void _fix_clock_drift();    // Synchronise movie clock and ambulant clock
-#endif
 	critical_section m_lock;
 };
 

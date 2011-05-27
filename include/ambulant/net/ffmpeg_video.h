@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -98,10 +98,8 @@ class ffmpeg_video_decoder_datasource:
 	void frame_processed(timestamp_t timestamp);
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 	void start_prefetch(lib::event_processor *evp);
-#endif
 	void data_avail();
 	bool buffer_full();
 	timestamp_t get_clip_end() { return m_src->get_clip_end(); };

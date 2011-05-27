@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -52,7 +52,7 @@ class tree_builder :
 
   ///////////////
   public:
-  	/// Constructor, only initializes various internal variables.
+	/// Constructor, only initializes various internal variables.
 	tree_builder(node_factory *nf, node_context *context = 0, const char *filename = "");
 	//tree_builder() {};
 	~tree_builder();

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -81,10 +81,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool buffer_full();
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 	void start_prefetch(lib::event_processor *evp);
-#endif
 
 	char* get_read_ptr();
 	size_t size() const;
@@ -93,9 +91,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
-#ifdef WITH_SEAMLESS_PLAYBACK
 	timestamp_t get_elapsed();
-#endif
 
   protected:
 	bool _select_decoder(const char* file_ext);
@@ -130,11 +126,9 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	void stop();
 	void read_ahead(timestamp_t time);
 	void seek(timestamp_t time);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 	void start_prefetch(lib::event_processor *evp);
 	timestamp_t get_elapsed();
-#endif
 	void readdone(size_t len);
 	void data_avail();
 

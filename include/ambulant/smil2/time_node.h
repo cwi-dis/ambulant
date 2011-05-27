@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -197,10 +197,8 @@ class time_node : public schedulable {
 	void stop_animation();
 	// State commands (setvalue, send) are special internal playables
 	void start_statecommand(time_type offset);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	// Prefetch is special internal playables
 	void start_prefetch(time_type offset = 0);
-#endif // WITH_SEAMLESS_PLAYBACK
 
 	// Std xml tree navigation interface
 	const time_node *down() const { return m_child;}

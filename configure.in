@@ -252,34 +252,6 @@ AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
 #
-# Do we want seamless playback support?
-#
-AC_MSG_CHECKING(for --with-seamless-playback)
-AC_ARG_WITH([seamless-playback],
-    AS_HELP_STRING([--with-seamless-playback],[Enable seamless audio/video playback]),
-    [with_seamless=${withval}],
-    [with_seamless=yes])
-if test "x$with_seamless" = xyes;
-then
-    AC_DEFINE(WITH_SEAMLESS_PLAYBACK, 1, [Define to enable seamless playback support])
-fi
-AC_MSG_RESULT($with_seamless)
-
-#
-# Do we want clock resynchronisation?
-#
-AC_MSG_CHECKING(for --with-clock-sync)
-AC_ARG_WITH([clock-sync],
-    AS_HELP_STRING([--with-clock-sync],[Resynchronise presentation clock to audio clock]),
-    [with_clock_sync=${withval}],
-    [with_clock_sync=yes])
-if test "x$with_clock_sync" = xyes;
-then
-    AC_DEFINE(WITH_CLOCK_SYNC, 1, [Define to enable resyncing presentation clock to audio clock])
-fi
-AC_MSG_RESULT($with_clock_sync)
-
-#
 # Do we want overlay window support support?
 #
 test_overlay=false
@@ -1176,8 +1148,12 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     compiler:                       ${CC}
 
     Enable overlay window:          ${test_overlay}
+<<<<<<< local
     Build with seamless playback:   ${with_seamless}
     Build with audio clock sync:    ${with_clock_sync}
+=======
+    Enable SMIL test layout:        ${test_smil_test}
+>>>>>>> other
     Build with Python support:      ${with_python}
     Build with Python plugin:       ${with_python_plugin}
 

@@ -1,10 +1,21 @@
+// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-//  PresentationViewController.m
-//  PresentationView
+// Copyright (C) 2003-2011 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
-//  Created by Kees Blom on 10/31/10.
-//  Copyright Stg.CWI 2010. All rights reserved.
+// Ambulant Player is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2.1 of the License, or
+// (at your option) any later version.
 //
+// Ambulant Player is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Ambulant Player; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #import "PresentationViewController.h"
 
@@ -16,21 +27,6 @@
 @implementation PresentationViewController
 
 @synthesize nibLoadedCell;
-/*
-// The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView {
-}
-*/
 
 - (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem*) item {
 	Presentation* aPresentation = [ [ Presentation alloc ] init ];
@@ -84,7 +80,7 @@ isHistory {
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
 	self.tableView.rowHeight = 60;
 	if (presentationsArray == NULL) {
-		presentationsArray = [ [ NSMutableArray alloc ] init ];
+		presentationsArray = [[NSMutableArray alloc] init];
 	}
 	[self updatePlaylist];
 }
@@ -129,7 +125,7 @@ isHistory {
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	AM_DBG NSLog(@"tableView:0x%x numberOfRowsInSection(0x%x) section=%d", self, section);
-    return [ presentationsArray count ];
+    return [presentationsArray count];
 }
 
 // Customize the appearance of table view cells.
@@ -140,7 +136,6 @@ isHistory {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-//      cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		[ [ NSBundle mainBundle ] loadNibNamed: @"PresentationTableCell" owner: self options: NULL ];
 		cell = nibLoadedCell;
     }
@@ -156,7 +151,6 @@ isHistory {
 		label.text = aPresentation.title;
 		label = (UILabel*) [ cell viewWithTag: 2];
 		label.text = aPresentation.duration;
-//		[ duration release ];
 		label = (UILabel*) [ cell viewWithTag: 3];
 		label.text = aPresentation.description;
 	}
@@ -193,7 +187,7 @@ isHistory {
 
 // Support editing the table view (deletion only, adding is automatic).
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyleArg 
-											 forRowAtIndexPath:(NSIndexPath *)indexPath
+    forRowAtIndexPath:(NSIndexPath *)indexPath
 {    
 	NSUInteger playlistIndex = indexPath.row;
     if (editingStyleArg == UITableViewCellEditingStyleDelete) {
@@ -204,7 +198,7 @@ isHistory {
 		playlist->remove_playlist_item_at_index(playlistIndex);
 		[presentationsArray removeObjectAtIndex: indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-						 withRowAnimation:UITableViewRowAnimationMiddle];
+            withRowAnimation:UITableViewRowAnimationMiddle];
 		prefs->save_preferences();
 // correct currentIndex for this deletion s.t. selectNextPresentation will select the same presentation as before
 		if (playlistIndex <= currentIndex) {
@@ -223,12 +217,12 @@ isHistory {
 - (IBAction) toggleEditMode
 {
 	switch (editingStyle) {
-		case UITableViewCellEditingStyleNone:
-			editingStyle = UITableViewCellEditingStyleDelete;
-			break;
-		default:
-			editingStyle = UITableViewCellEditingStyleNone;
-			break;
+    case UITableViewCellEditingStyleNone:
+        editingStyle = UITableViewCellEditingStyleDelete;
+        break;
+    default:
+        editingStyle = UITableViewCellEditingStyleNone;
+        break;
 	}
 	[[self tableView] setEditing: editingStyle != UITableViewCellEditingStyleNone animated: YES];
 }
@@ -271,15 +265,17 @@ isHistory {
 		BOOL found = NO;
 		BOOL* found_ref = &found;
 		NSArray* items = playlist->get_playlist();
-		[items enumerateObjectsWithOptions: nil usingBlock:
-		 ^(id obj, NSUInteger idx, BOOL *stop)
-		 {
-			 PlaylistItem* item = (PlaylistItem*) obj;
-			 AM_DBG NSLog(@"item.ns_url=0x%x: %@", item.ns_url, item.ns_url != NULL ? [item.ns_url absoluteString]:@"<nil>");
-			 if ([new_item.ns_url isEqual: (id) item.ns_url]) {
-				 *found_ref = YES;
-			 }
-		 }];
+		[items enumerateObjectsWithOptions: nil
+            usingBlock:
+            ^(id obj, NSUInteger idx, BOOL *stop)
+            {
+                PlaylistItem* item = (PlaylistItem*) obj;
+                AM_DBG NSLog(@"item.ns_url=0x%x: %@", item.ns_url, item.ns_url != NULL ? [item.ns_url absoluteString]:@"<nil>");
+                if ([new_item.ns_url isEqual: (id) item.ns_url]) {
+                    *found_ref = YES;
+                }
+            }
+        ];
 		if (found) {
 			return;
 		}
@@ -310,14 +306,16 @@ isHistory {
 	}
 	[presentationsArray removeAllObjects];
 	// populate the table view with objects in 'playlist'
-	[playlist enumerateObjectsWithOptions: nil usingBlock:
-	 ^(id obj, NSUInteger idx, BOOL *stop)
-	 {
-		 PlaylistItem* item = (PlaylistItem*) obj;
-		 Presentation* presentation = [self getPresentationFromPlaylistItem: item];
-		 [presentationsArray addObject: presentation];
-		 [presentation release]; // the array now has ownership
-	}];
+	[playlist enumerateObjectsWithOptions: nil
+        usingBlock:
+        ^(id obj, NSUInteger idx, BOOL *stop)
+        {
+            PlaylistItem* item = (PlaylistItem*) obj;
+            Presentation* presentation = [self getPresentationFromPlaylistItem: item];
+            [presentationsArray addObject: presentation];
+            [presentation release]; // the array now has ownership
+        }
+    ];
 	[[self tableView] reloadData];
 }
 

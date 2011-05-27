@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -80,7 +80,7 @@ class sax_content_handler {
 /// const char *what() const;
 class sax_error : public std::runtime_error {
   public:
-  	/// Construct with given message and position information.
+	/// Construct with given message and position information.
 	sax_error(const std::string& message, int line, int column)
 	:	std::runtime_error(message), m_line(line), m_column(column) {
 	}

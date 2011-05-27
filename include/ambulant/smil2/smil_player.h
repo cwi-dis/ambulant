@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -181,9 +181,7 @@ class smil_player :
 	void create_state_engine();
 	common::playable* _new_playable(const lib::node *n);
 	void _destroy_playable(common::playable *r, const lib::node *n);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim);
-#endif
 	common::playable* _get_playable(const lib::node *n) {
 		std::map<const lib::node*, common::playable *>::iterator it =
 			m_playables.find(n);
@@ -213,10 +211,7 @@ class smil_player :
 	const time_node *m_pointed_node;
 	bool m_wait_for_eom_flag;
 	std::map<const lib::node*, common::playable *> m_playables;
-#ifdef WITH_SEAMLESS_PLAYBACK
-	std::map<const std::string, common::playable *> m_playables_url_based;
-
-#endif
+	std::map<const std::string, common::playable *> m_cached_playables;
 
 	critical_section m_playables_cs;
 	std::map<const node*, double> m_playables_dur;

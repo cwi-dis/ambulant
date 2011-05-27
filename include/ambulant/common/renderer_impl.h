@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -53,7 +53,7 @@ class global_playable_factory;
 /// Use this class as a baseclass for your renderer/playable.
 class AMBULANTAPI playable_imp : public playable {
   public:
-  	/// Constructor.
+	/// Constructor.
 	playable_imp(
 		playable_notification *context,
 		cookie_type cookie,
@@ -75,13 +75,11 @@ class AMBULANTAPI playable_imp : public playable {
 	void preroll(double when, double where, double how_much) {}
 	void post_stop() {};
 	void init_with_node(const lib::node *n) {};
-#ifdef WITH_SEAMLESS_PLAYBACK
 	/// Return true if we are rendering for a node with fill="ambulant:continue"
 	bool is_fill_continue_node() const {
 		const char * fb = m_node->get_attribute("fill");
 		return fb != NULL && strcmp(fb, "ambulant:continue") == 0;
 	}
-#endif
 	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
 	std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; }
@@ -99,7 +97,7 @@ class AMBULANTAPI playable_imp : public playable {
 /// also provides default implementations of the renderer interface.
 class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
   public:
-  	/// Constructor.
+	/// Constructor.
 	renderer_playable(
 		playable_notification *context,
 		cookie_type cookie,
@@ -140,7 +138,7 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 /// User event handling is also taken care of.
 class AMBULANTAPI renderer_playable_ds : public renderer_playable {
   public:
-  	/// Constructor.
+	/// Constructor.
 	renderer_playable_ds(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -177,7 +175,7 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 /// Hence, when you subclass this class you only need to provide a redraw() method.
 class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
   public:
-  	/// Constructor.
+	/// Constructor.
 	renderer_playable_dsall(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -265,7 +263,7 @@ class empty_playable_notification : public playable_notification {
 /// Additionally, they should override the keep_as_background method.
 class background_renderer : public bgrenderer {
   public:
-  	/// Constructor.
+	/// Constructor.
 	background_renderer(const region_info *src)
 	:   m_src(src),
 		m_dst(NULL) {}

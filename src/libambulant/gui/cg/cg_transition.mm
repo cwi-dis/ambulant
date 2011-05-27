@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,9 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
 #ifdef	WITH_UIKIT
 #include <UIKit/UIKit.h>
 #else	WITH_UIKIT
@@ -28,6 +25,7 @@
 #include "ambulant/gui/cg/cg_transition.h"
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/lib/logger.h"
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -38,7 +36,8 @@ namespace ambulant {
 namespace gui {
 
 namespace cg {
-#ifdef	WITH_UIKIT
+
+#ifdef WITH_UIKIT
 // Helper functions to setup and finalize transitions
 static CGLayer*
 setup_transition (bool outtrans, AmbulantView *view)
@@ -46,35 +45,17 @@ setup_transition (bool outtrans, AmbulantView *view)
 	CGLayer* rv = NULL;
 	if (outtrans) {
 		rv = [view getTransitionTmpSurface];
-//		 *rv = NULL; //[view getTransitionOldSource];
-//		[[view getTransitionSurface] lockFocus];
 		return rv;
 	} else {
 		rv = [view getTransitionSurface];
-//		return [view getTransitionNewSource];
-//		rv = UIGraphicsGetImageFromCurrentImageContext().CGImage;
-//		CALayer* cal = 
 	}
 	return rv;
 }
-#endif//WITH_UIKIT
+#endif //WITH_UIKIT
+
 static void
 finalize_transition(bool outtrans, common::surface *dst)
 {
-/*XX
-	if (outtrans) {
-		cg_window *window = (cg_window *)dst->get_gui_window();
-		AmbulantView *view = (AmbulantView *)window->view();
-//XX	[[view getTransitionSurface] unlockFocus];
-
-		const lib::rect& dstrect_whole = dst->get_clipped_screen_rect();
-		CGRect cg_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-		[[view getTransitionNewSource] drawInRect: cg_dstrect_whole
-			fromRect: cg_dstrect_whole
-			operation: NSCompositeSourceOver
-			fraction: 1.0f];
-	}
-XX*/
 }
 	
 // Helper function: add a clockwise defined rectangle to the path of a CGContext
@@ -156,7 +137,6 @@ cg_transition_blitclass_r1r2r3r4::update()
 	CGContextSaveGState(ctx);
 	if (m_outtrans) {
 		dx = m_newdstrect.width() * m_progress;
-//		dy = m_newdstrect.height() * m_progress;
 	} else {
 		dx = m_newdstrect.left() - m_newsrcrect.left();
 		dy = m_newdstrect.top() - m_newsrcrect.top();
@@ -171,48 +151,6 @@ cg_transition_blitclass_r1r2r3r4::update()
 	lib::logger::get_logger()->debug("cg_transition_blitclass_r1r2r3r4::update(%f): TBD for AppKit", m_progress);
 #endif//WITH_UIKIT
 	CGContextRestoreGState(ctx);
-/*XX*
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
-	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-	lib::rect oldsrcrect_whole = m_oldsrcrect;
-	lib::rect olddstrect_whole = m_olddstrect;
-	lib::rect newsrcrect_whole = m_newsrcrect;
-	lib::rect newdstrect_whole = m_newdstrect;
-	oldsrcrect_whole.translate(m_dst->get_global_topleft());
-	oldsrcrect_whole &= m_dst->get_clipped_screen_rect();
-	olddstrect_whole.translate(m_dst->get_global_topleft());
-	olddstrect_whole &= m_dst->get_clipped_screen_rect();
-	newsrcrect_whole.translate(m_dst->get_global_topleft());
-	newsrcrect_whole &= m_dst->get_clipped_screen_rect();
-	newdstrect_whole.translate(m_dst->get_global_topleft());
-	newdstrect_whole &= m_dst->get_clipped_screen_rect();
-	NSRect cg_oldsrcrect_whole = [view NSRectForAmbulantRect: &oldsrcrect_whole];
-	NSRect cg_olddstrect_whole = [view NSRectForAmbulantRect: &olddstrect_whole];
-	NSRect cg_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
-	NSRect cg_newdstrect_whole = [view NSRectForAmbulantRect: &newdstrect_whole];
-	if (m_outtrans) {
-		[newsrc drawInRect: cg_olddstrect_whole
-			fromRect: cg_oldsrcrect_whole
-			operation: NSCompositeCopy
-			fraction: 1.0f];
-
-		[oldsrc drawInRect: cg_newdstrect_whole
-			fromRect: cg_newsrcrect_whole
-			operation: NSCompositeSourceOver
-			fraction: 1.0f];
-	} else {
-		[oldsrc drawInRect: cg_olddstrect_whole
-			fromRect: cg_oldsrcrect_whole
-			operation: NSCompositeCopy
-			fraction: 1.0f];
-
-		[newsrc drawInRect: cg_newdstrect_whole
-			fromRect: cg_newsrcrect_whole
-			operation: NSCompositeSourceOver
-			fraction: 1.0f];
-	}
-*XX*/
 }
 
 void
@@ -247,7 +185,7 @@ cg_transition_blitclass_rectlist::update()
 		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 #else //WITH_UIKIT
 		lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKIT
+#endif //WITH_UIKIT
 	} else if (m_outtrans) {
 #ifdef	WITH_UIKIT
 		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
@@ -285,52 +223,9 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 		}
 	}
 	CGPathCloseSubpath(path);
-//	[path closePath];
 	return path;
 }
-/*XX
-// Helper function: compositing newsrc onto screen with respect
-// to a path
-static void
-composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, bool outtrans)
-{
-	NSImage *newsrc = [view getTransitionNewSource];
-	NSImage *tmpsrc = [view getTransitionTmpSurface];
-	NSRect cg_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 
-	// First, we fill the temporary bitmap with transparent white
-	float oldalpha, newalpha;
-	if (outtrans) {
-		oldalpha = 1.0F;
-		newalpha = 0.0F;
-	} else {
-		oldalpha = 0.0F;
-		newalpha = 1.0F;
-	}
-	[tmpsrc lockFocus];
-	[[NSColor colorWithDeviceWhite: 1.0f alpha: (float)oldalpha] set];
-	NSRectFill(cg_dstrect_whole);
-
-	// Now we fill draw the path on the temp bitmap, with opaque white
-	[[NSColor colorWithDeviceWhite: 1.0f alpha: (float)newalpha] set];
-	[path fill];
-
-	// Next we composit the source image onto the temp bitmap, but only where
-	// the temp bitmap is opaque (the path we just painted there)
-	[newsrc drawInRect: cg_dstrect_whole
-		fromRect: cg_dstrect_whole
-		operation: NSCompositeSourceIn
-		fraction: 1.0f];
-
-	// Finally we put the opaque bits of the temp image onto the destination
-	// image
-	[tmpsrc unlockFocus];
-	[tmpsrc drawInRect: cg_dstrect_whole
-		fromRect: cg_dstrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0f];
-}
-XX*/
 void
 cg_transition_blitclass_poly::update()
 {
@@ -347,6 +242,7 @@ cg_transition_blitclass_poly::update()
 	if (m_outtrans) {
 		add_clockwise_rectangle(ctx, CGRectFromAmbulantRect(dstrect_whole));
 	}
+
 	// Define the clipping path
 	CGPathRef path = polygon2path(dst_global_topleft, m_newpolygon);
 	CGContextAddPath(ctx, path);
@@ -379,22 +275,15 @@ cg_transition_blitclass_polylist::update()
 	if (m_outtrans) {
 		add_clockwise_rectangle(ctx, CGRectFromAmbulantRect(dstrect_whole));
 	}
+
 	// First we create the path
 	std::vector< std::vector<lib::point> >::iterator partpolygon;
-	AM_DBG {
-	int n = 0;
-	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-		lib::logger::get_logger()->debug("partpolygon: %d", n++);
-			for (std::vector<lib::point>::iterator i=(*partpolygon).begin(); i != (*partpolygon).end(); i++) {
-				lib::logger::get_logger()->debug("\tx=%d, y=%d", (*i).x, (*i).y);
-			}
-	}
-	}//AM_DBG
 	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
 		CGPathRef path = polygon2path(dst_global_topleft, *partpolygon);
 		CGContextAddPath(ctx, path);
 		CFRelease(path);
 	}
+
 	// Then we composite it onto the screen
 	CGContextClip(ctx);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -128,9 +128,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	const lib::transition_info* m_outtransition;
 	smil2::audio_transition_engine* m_transition_engine;
 	net::timestamp_t m_previous_clip_position;
-#ifdef WITH_CLOCK_SYNC
 	lib::timer::time_type m_audio_clock;
-#endif
 	// class methods and attributes:
 	static int init();
 	static void register_renderer(sdl_audio_renderer *rnd);

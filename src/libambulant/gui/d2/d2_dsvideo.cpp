@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -238,7 +238,7 @@ d2_dsvideo_renderer::recreate_d2d()
 	D2D1_SIZE_U size = {m_size.w, m_size.h};
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	props.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE);
- 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
+	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
 	HRESULT hr = rt->CreateBitmap(size, m_frame, m_size.w*4, props, &m_d2bitmap);
 	if (!SUCCEEDED(hr))

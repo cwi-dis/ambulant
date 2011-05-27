@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -52,7 +52,7 @@ class AMBULANTAPI event_processor_observer {
 /// Interface to be provided by an event scheduler.
 class event_processor {
   public:
-  	/// How this event_processor represents time.
+	/// How this event_processor represents time.
 	typedef timer::time_type time_type;
 
 	virtual ~event_processor() {}
@@ -109,7 +109,7 @@ namespace lib {
 /// and three priority queues to execute events.
 class event_processor_impl : public event_processor, public BASE_THREAD {
   public:
-  	/// Constructor.
+	/// Constructor.
 	event_processor_impl(timer *t);
 	~event_processor_impl();
 

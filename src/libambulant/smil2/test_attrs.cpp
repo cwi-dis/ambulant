@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -376,9 +376,7 @@ void test_attrs::set_default_tests_attrs() {
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version2.0"), true);
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION), true);
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION "Exact"), true);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	set_current_system_component_value(AM_SYSTEM_COMPONENT("SeamlessPlayback"), true);
-#endif
 }
 
 class smil2::state_test_methods_impl : public common::state_test_methods {

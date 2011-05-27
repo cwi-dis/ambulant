@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -56,13 +56,11 @@ lib::win32::win32_timer::elapsed() const {
 	return time_type(dt);
 }
 
-#ifdef WITH_CLOCK_SYNC
 void
 lib::win32::win32_timer::skew(signed_time_type skew)
 {
 	assert(skew==0);
 }
-#endif // WITH_CLOCK_SYNC
 
 // Factory routine for the machine-independent
 // timer class

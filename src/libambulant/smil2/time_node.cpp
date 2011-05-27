@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -722,14 +722,12 @@ void time_node::activate(qtime_type timestamp) {
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}
-#ifdef WITH_SEAMLESS_PLAYBACK
 		else if (is_prefetch()) {
 			start_prefetch(sd_offset);
 			assert(m_state->ident() == ts_active);
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}
-#endif
 		else start_playable(sd_offset);
 		if(m_timer) m_timer->resume();
 	}
@@ -816,7 +814,6 @@ void time_node::start_statecommand(time_type offset) {
 	}
 }
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 void time_node::start_prefetch(time_type offset) {
 	if(m_ffwd_mode) {
 		AM_DBG m_logger->debug("start_prefetch(%ld): ffwd skip %s", offset(), get_sig().c_str());
@@ -832,7 +829,6 @@ void time_node::start_prefetch(time_type offset) {
 		np->preroll(time_type_to_secs(offset()));
 	}
 }
-#endif //WITH_SEAMLESS_PLAYBACK
 
 // Returns true when this node is associated with a playable
 bool time_node::is_playable() const {
@@ -859,15 +855,11 @@ bool time_node::is_statecommand() const {
 
 // Returns true when this node is a prefetch
 bool time_node::is_prefetch() const {
-#ifdef WITH_SEAMLESS_PLAYBACK
 	const common::schema *sch = common::schema::get_instance();
 	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s\n", m_node, m_node->get_sig().c_str());
 	const lib::xml_string& qn = m_node->get_local_name();
 	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_prefetch(qn);
-#else
-	return false;
-#endif // WITH_SEAMLESS_PLAYBACK
 }
 //////////////////////////
 // Playables shell
@@ -1482,9 +1474,6 @@ void time_node::fill(qtime_type timestamp) {
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
 		}
-#ifndef WITH_SEAMLESS_PLAYBACK
-		if(is_playable()) pause_playable();
-#else
 		if (fb != fill_continue && is_playable()) {
 			pause_playable();
 		} else {
@@ -1495,7 +1484,6 @@ void time_node::fill(qtime_type timestamp) {
 				m_logger->debug("%s.continue() ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(), timestamp.as_time_value_down_to(this), timestamp.second(), timestamp.as_doc_time_value());
 			}
 		}
-#endif
 		if(m_timer) {
 			m_timer->pause();
 			m_timer->set_time(m_interval.end());

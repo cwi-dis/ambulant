@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,13 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 
 #include <math.h>
 #include <map>
@@ -352,8 +351,6 @@ ffmpeg_demux::seek(timestamp_t time)
 	m_lock.leave();
 }
 
-#ifdef WITH_SEAMLESS_PLAYBACK
-
 void
 ffmpeg_demux::set_clip_end(timestamp_t clip_end)
 {
@@ -362,7 +359,6 @@ ffmpeg_demux::set_clip_end(timestamp_t clip_end)
 	m_clip_end = clip_end;
 	m_lock.leave();
 }
-#endif // WITH_SEAMLESS_PLAYBACK
 
 void
 ffmpeg_demux::remove_datasink(int stream_index)
@@ -405,9 +401,7 @@ ffmpeg_demux::run()
 	pkt_nr = 0;
 	assert(m_con);
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	bool eof_sent_to_clients = false;
-#endif
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: started");
 	while (!exit_requested()) {
 		AVPacket pkt1, *pkt = &pkt1;
@@ -416,9 +410,7 @@ ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_clip_begin_changed) {
-#ifdef WITH_SEAMLESS_PLAYBACK
 			eof_sent_to_clients = false;
-#endif
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld", m_clip_begin );
 			int64_t seektime = m_clip_begin;
 #define SEEK_ALL_STREAMS
@@ -467,9 +459,7 @@ ffmpeg_demux::run()
 		int ret = av_read_frame(m_con, pkt);
 		m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%d, 0x%x, %d, %d)", ret, (int)pkt->pts ,pkt->data, pkt->size, pkt->stream_index);
-#ifndef WITH_SEAMLESS_PLAYBACK
-		if (ret < 0) break;
-#else
+
 		if (ret < 0) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: eof encountered (%d), wait some time before continuing the while loop", ret);
 			if (!eof_sent_to_clients) {
@@ -488,7 +478,6 @@ ffmpeg_demux::run()
 			m_lock.enter();
 			continue;
 		}
-#endif // WITH_SEAMLESS_PLAYBACK
 
 		pkt_nr++;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
@@ -550,9 +539,7 @@ ffmpeg_demux::run()
 			}
 			// We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
 			// we have already sent one earlier.
-#ifdef WITH_SEAMLESS_PLAYBACK
 			eof_sent_to_clients = false;
-#endif
 			bool accepted = false;
 
 			// NOTE: Without checking the value of m_cli_begin_changed will possibly

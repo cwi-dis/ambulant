@@ -1,10 +1,21 @@
+// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-//  AmbulantViewController.mm
-//  Ambulant
+// Copyright (C) 2003-2011 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
-//  Created by Kees Blom on 7/12/10.
-//  Copyright CWI 2010. All rights reserved.
+// Ambulant Player is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2.1 of the License, or
+// (at your option) any later version.
 //
+// Ambulant Player is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Ambulant Player; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #import "AmbulantViewController.h"
 #import "AmbulantAppDelegate.h"
@@ -15,17 +26,6 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-
-#if 1
-static void dumpView(const char *label, UIView *v) {
-    std::string indent = "";
-    while (v) {
-        NSLog(@"%s %s%@ bounds=(%f,%f,%f,%f) anchor=%f,%f center=%f,%f", label, indent.c_str(), v, v.bounds.origin.x, v.bounds.origin.y, v.bounds.size.width, v.bounds.size.height, v.layer.anchorPoint.x, v.layer.anchorPoint.y, v.center.x, v.center.y);
-        indent = indent + "-> ";
-        v = [v superview];
-    }
-}
-#endif // 1
 
 #pragma mark -
 #pragma mark document_embedder
@@ -56,8 +56,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *str_url = [NSString stringWithUTF8String: newdoc.get_url().c_str()];
 	id appDelegate = [[UIApplication sharedApplication] delegate];
-	[appDelegate performSelectorOnMainThread: @selector(openWebLink:)
-							   withObject: str_url	waitUntilDone: NO];
+	[appDelegate performSelectorOnMainThread: @selector(openWebLink:) withObject: str_url	waitUntilDone: NO];
 	
 	[pool release];
 }
@@ -208,7 +207,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			myMainloop->goto_node_repr(node_repr);
 		}
 		[self showInteractionView: NO];
-//		[self play]; // This will be done in viewDidAppear
+        // play will be called in viewDidAppear
 	}
 }
 
@@ -250,13 +249,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG NSLog(@"AmbulantViewController isSupportedOrientation(0x%x) orientation=%d", self, orientation);
 	return 
 		orientation == UIDeviceOrientationPortrait
-	||	orientation == UIDeviceOrientationPortraitUpsideDown
-	||	orientation == UIDeviceOrientationLandscapeLeft
-	||	orientation == UIDeviceOrientationLandscapeRight;
+        ||	orientation == UIDeviceOrientationPortraitUpsideDown
+        ||	orientation == UIDeviceOrientationLandscapeLeft
+        ||	orientation == UIDeviceOrientationLandscapeRight;
 }
 
-/* */
-// Override to allow orientations other than the default portrait orientation.
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
 	AM_DBG NSLog(@"AmbulantViewController shouldAutorotateToInterfaceOrientation(0x%x): interfaceOrientation=%d", self, interfaceOrientation);
 	return [self isSupportedOrientation:(UIDeviceOrientation) interfaceOrientation];
@@ -432,9 +429,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @implementation AmbulantContainerView
 - (void) layoutSubviews {
-    AM_DBG dumpView("layoutSubviews container before", [[self subviews] objectAtIndex: 0]);
     [super layoutSubviews];
-    AM_DBG dumpView("layoutSubviews container after", [[self subviews] objectAtIndex: 0]);
 }
 
 @end
@@ -464,7 +459,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) layoutSubviews {
-    AM_DBG dumpView("layoutSubviews before", [[self subviews] objectAtIndex: 0]);
     UIView *playerView = [[self subviews] objectAtIndex: 0];
     assert(playerView);
     if (!playerView) return;
@@ -523,7 +517,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		// aspect ratio and maintain the center.
 		// XXX to be done
 	}
-    AM_DBG dumpView("layoutSubviews after", [[self subviews] objectAtIndex: 0]);
 }
 
 - (void) zoomWithScale: (float) scale  inState: (UIGestureRecognizerState) state {
@@ -558,7 +551,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     // Advance to "next" zoomstate, currently only fill-screen and natural-size.
     // Eventually we will add zoom-to-region here.
-    AM_DBG dumpView("autoZoomAtPoint", [[self subviews] objectAtIndex: 0]);
     zoomState = (ZoomState)(zoomState + 1);
     if (zoomState >= zoomUser) zoomState = zoomFillScreen;
     [self setNeedsLayout];
