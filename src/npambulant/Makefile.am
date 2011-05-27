@@ -144,7 +144,8 @@ uninstall-local:
 	-rm -rf $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 else
 mostlyclean-local:
-	rm -fr .libs *o $(NPAMBULANT) npambulant_plugin_dir
+	-rm -fr .libs *o $(NPAMBULANT) npambulant_plugin_dir
+	-rm -fr mozilla npambulant
 
 uninstall-local:
 	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
