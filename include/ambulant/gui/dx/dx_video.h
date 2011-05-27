@@ -69,10 +69,6 @@ class dx_video_renderer : public dx_renderer_playable {
 	lib::event *m_update_event;
 	lib::event_processor::time_type m_frametime;
 	lib::critical_section m_cs;
-
-	// for debugging
-	lib::rect m_msg_rect;
-
 };
 
 } // namespace dx

@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_IMG_H
 #define AMBULANT_GUI_D2_IMG_H
 
@@ -53,7 +49,6 @@ class d2_img_renderer : public d2_renderer<renderer_playable> {
 		common::playable_factory_machdep *mdp);
 	~d2_img_renderer();
 	void start(double t);
-	//void stop();
 	bool stop();
 	void seek(double t) {}
 	bool user_event(const lib::point& pt, int what);
@@ -66,9 +61,8 @@ class d2_img_renderer : public d2_renderer<renderer_playable> {
 	static IWICImagingFactory *s_wic_factory;
 	IWICBitmapSource *m_original;	// The original image data reader
 	ID2D1Bitmap *m_d2bitmap;		// The bitmap in Direct2D form
-	char *m_databuf;		// For non-local-url based images.
+	char *m_databuf;				// Buffered image data, unless the image comes from local file.
 	common::factories *m_factory;
-	lib::rect m_msg_rect;
 };
 
 } // namespace d2

@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_PLAYER_H
 #define AMBULANT_GUI_D2_PLAYER_H
 
@@ -64,12 +60,13 @@ template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange
 
 #include <d2d1.h>
 #include <wincodec.h>
+
+// Convenience macro to release an object if it is non-NULL
 #define SafeRelease(x) {if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}}
+// Convenience macro to print an error and goto a cleanup label.
 #define OnErrorGoto_cleanup(x,id) if(FAILED(x)) {ambulant::lib::win32::win_trace_error(id, x); goto cleanup;}
 
 namespace ambulant {
-
-// classes used by d2_player
 
 namespace lib {
 	class event_processor;
@@ -85,7 +82,6 @@ namespace smil2 {
 namespace gui {
 
 namespace d2 {
-
 
 class d2_window;
 class d2_transition;
@@ -124,7 +120,6 @@ class AMBULANTAPI d2_player :
 	public lib::event_processor_observer,
 	public d2_capture_callback
 {
-
   public:
 	d2_player(d2_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
 	~d2_player();
@@ -176,20 +171,18 @@ class AMBULANTAPI d2_player :
 	html_browser_factory *get_html_browser_factory() { return &m_hoster; }
 
 	////////////////////
-	// Implementation specific artifacts
+	// Event handling and such
 
 	void on_char(int ch);
 	void on_click(int x, int y, HWND hwnd);
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
-//	const net::url& get_url() const { return m_url;}
 	void on_done();
 
 	common::window_factory *get_window_factory() { return this;}
 
 	RECT screen_rect(const d2_window *w, const lib::rect &r);
 	void redraw(HWND hwnd, HDC hdc, RECT *dirty=NULL);
-
 
 	///////////////////
 	// Timeslices services and transitions
@@ -198,7 +191,6 @@ class AMBULANTAPI d2_player :
 	void resumed(common::playable *p);
 	void set_intransition(common::playable *p, const lib::transition_info *info);
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
-//	void set_transition_surface(common::surface* surf) { m_transition_surface = surf; }
 
 	// Full screen transition support
 	void start_screen_transition(bool outtrans);
@@ -211,6 +203,7 @@ class AMBULANTAPI d2_player :
 	ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() {return m_fullscreen_ended ? NULL : m_fullscreen_rendertarget; }
 	void take_fullscreen_shot (ID2D1RenderTarget* rt) { _set_fullscreen_old_bitmap(rt); }
 
+	// event_processor_observer implementation
 	void lock_redraw();
 	void unlock_redraw();
 
@@ -218,7 +211,7 @@ class AMBULANTAPI d2_player :
 	void register_resources(d2_resources *resource);
 	void unregister_resources(d2_resources *resource);
 
-	// Schedule a capture of the output are
+	// Schedule a capture of the output pixels
 	void schedule_capture(lib::rect area, d2_capture_callback *cb);
 
 	// Global capture-callback: saves snapshots, keeps bitmap for transitions, etc.
@@ -227,10 +220,12 @@ class AMBULANTAPI d2_player :
 	// Get current rendertarget, used while redrawing transitions
 	ID2D1HwndRenderTarget* get_rendertarget() {return m_cur_wininfo ? m_cur_wininfo->m_rendertarget : NULL; }
 	ID2D1BitmapRenderTarget* get_transition_rendertarget() {return m_transition_rendertarget; }
-	// Get current hwnd, only valid while redrawing
+	
+	// Get current hwnd
 	HWND get_hwnd() {
 		return m_cur_wininfo?m_cur_wininfo->m_hwnd:_get_main_window();
 	}
+	// Get global Direct2D factory
 	ID2D1Factory* get_D2D1Factory() { return m_d2d; };
   private:
 	bool _calc_fit(const RECT& dstrect, const lib::size& srcsize, float& xoff, float& yoff, float& fac);
@@ -242,7 +237,8 @@ class AMBULANTAPI d2_player :
 		ID2D1HwndRenderTarget *m_rendertarget;
 		d2_window *m_window;
 	};
-	// Valid only during redraw():
+
+	// Valid only during redraw:
 	wininfo* m_cur_wininfo;
 	wininfo* _get_wininfo(HWND hwnd);
 	wininfo* _get_wininfo(const d2_window *window);
@@ -253,7 +249,7 @@ class AMBULANTAPI d2_player :
     ID2D1Factory *m_d2d;
 	void _recreate_d2d(wininfo *wi);
 	void _discard_d2d();
-	// and the WIC (Windows Imaging Component)
+	// and the WIC factory
 	IWICImagingFactory* m_WICFactory;
 
 	// Transition handling
@@ -267,7 +263,7 @@ class AMBULANTAPI d2_player :
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
 	ID2D1BitmapRenderTarget* m_transition_rendertarget; // managed by d2_renderer (for use by d2_transition*update())
 
-	// full screen transitions
+	// fullscreen transitions
 	int m_fullscreen_count;
 	smil2::transition_engine* m_fullscreen_engine;
 	ID2D1BitmapRenderTarget* m_fullscreen_rendertarget;
@@ -308,6 +304,7 @@ class AMBULANTAPI d2_player :
 	std::map<std::string, wininfo*> m_windows;
 	std::stack<frame*> m_frames;
 
+	// transition storage
 	typedef std::map<common::playable *, d2_transition*> trmap_t;
 	trmap_t m_trmap;
 	lib::critical_section m_trmap_cs;
@@ -321,24 +318,11 @@ class AMBULANTAPI d2_player :
 	lib::critical_section m_resources_lock;
 
 	// Only one redraw should be active at the same time (again due to resource
-	// management
+	// management)
 	lib::critical_section m_redraw_lock;
 
 	// The logger
 	lib::logger *m_logger;
-
-//#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
-#ifdef	AM_DMP
-  public:
-// write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is
-// a generated numeric string circular variying between "0000" and "9999", which is returned as an int.   
-	int dump (ID2D1RenderTarget* rt, std::string id);
-
-	// write the contents of the (ID2D1Bitmap* <bmp> associated with ID2D1RenderTarget* <rt> to the file:
-// ".\<number>.<id>.png" where number is a generated numeric string circular variying between
-//	"0000" and "9999", which is returned as an int.   
-	int dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id);
-#endif//AM_DMP
 };
 
 } // namespace d2

@@ -19,15 +19,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_DSHOWSINK_H
 #define AMBULANT_GUI_D2_DSHOWSINK_H
 
 #include "ambulant/config/config.h"
-//Every windows application needs to include this
+
 #include <windows.h>
 #include <dshow.h>
 // NOTE: The next include file comes from sdkdir\Samples\multimedia\directshow\baseclasses.
@@ -36,48 +32,50 @@
 
 interface ID2D1RenderTarget;
 interface ID2D1Bitmap;
-
 class CVideoD2DBitmapRenderer;
 
+/// Data availability callback interface.
+/// Renderers that use CVideoD2DBitmapRenderer must implement this interface, it
+/// will be used to inform the client when a new video frame is available.
 class AMBULANTAPI IVideoD2DBitmapRendererCallback
 {
   public:
 	virtual void BitmapAvailable(CVideoD2DBitmapRenderer *caller) = 0;
 };
 
+/// DirectX renderer that produces bitmaps.
+/// Instances of this class can be used at the end of a DirectShow pipeline. There, bitmaps
+/// will be collected which can then be processed further by the application.
 class AMBULANTAPI CVideoD2DBitmapRenderer : public CBaseVideoRenderer
 {
-
-public:
-
-	//-----------------------------------------------------------------------------
-	// Define GUID for Texture Renderer {AB1B2AB5-18A0-49D5-814F-E2CB454D5D28}
-	//-----------------------------------------------------------------------------
-//	struct __declspec(uuid("{AB1B2AB5-18A0-49D5-814F-E2CB454D5D28}")) CLSID_TextureRenderer;
-
+  public:
 	CVideoD2DBitmapRenderer(LPUNKNOWN pUnk, HRESULT *phr);
-
 	~CVideoD2DBitmapRenderer();
 
+	// Methods required by DirectShow.
 	HRESULT CheckMediaType(const CMediaType *pmt);
-	
 	HRESULT SetMediaType(const CMediaType *pmt);
-
 	HRESULT DoRenderSample(IMediaSample * pSample);
-
 	HRESULT ShouldDrawSampleNow(IMediaSample *pMediaSample,
             __inout REFERENCE_TIME *ptrStart,
             __inout REFERENCE_TIME *ptrEnd);
 
+	/// Signals that bitmaps created are compatible with the given Direct2D RenderTarget.
 	void SetRenderTarget(ID2D1RenderTarget *rt);
 
+	/// Set the callback handler, called when new bitmaps are available.
 	void SetCallback(IVideoD2DBitmapRendererCallback *callback);
+
+	/// Should the bitmap renderer honour timestamps (delaying bitmaps) or not?
 	void SetIgnoreTimestamps(bool ignore) { m_ignore_timestamps = ignore; }
-	
+
+	/// Obtain a reference to the most recently decoded bitmap.
 	ID2D1Bitmap *LockBitmap();
 
+	/// Release the reference to the bitmap obtained with LockBitmap previously.
 	void UnlockBitmap(ID2D1Bitmap *bitmap);
 
+	/// Free the current bitmap.
 	void DestroyBitmap();
 private:
 	ID2D1RenderTarget *m_rt;

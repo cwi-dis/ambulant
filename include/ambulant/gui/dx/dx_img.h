@@ -59,7 +59,6 @@ class dx_img_renderer : public dx_renderer_playable {
 	void redraw(const lib::rect &dirty, common::gui_window *window);
   private:
 	image_renderer *m_image;
-	lib::rect m_msg_rect;
 	dx_gui_region *m_rgn;
 	common::factories *m_factory;
 };

@@ -246,9 +246,6 @@ void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_wind
 	lib::point pt = m_dest->get_global_topleft();
 	vid_reg_rc_dirty.translate(pt);
 
-	// keep debug message area
-	m_msg_rect |= vid_reg_rc_dirty;
-
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);

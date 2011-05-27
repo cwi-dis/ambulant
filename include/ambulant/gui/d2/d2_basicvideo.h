@@ -95,11 +95,6 @@ class d2_basicvideo_renderer : public common::renderer_playable {
 
 	d2_player *m_d2player;
 	lib::critical_section m_cs;
-
-	// for debugging
-	lib::rect m_msg_rect;
-	DWORD m_rot_index;
-
 };
 
 } // namespace d2

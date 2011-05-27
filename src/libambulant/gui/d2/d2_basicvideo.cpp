@@ -82,8 +82,7 @@ gui::d2::d2_basicvideo_renderer::d2_basicvideo_renderer(
 	m_evr_control(NULL),
 	m_evr_hwnd(NULL),
 	m_update_event(0),
-	m_d2player(dynamic_cast<d2_player*>(mdp)),
-	m_rot_index(0)
+	m_d2player(dynamic_cast<d2_player*>(mdp))
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_basicvideo_renderer(0x%x)", this);
 }

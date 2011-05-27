@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_D2_FILL_H
 #define AMBULANT_GUI_D2_D2_FILL_H
 
@@ -59,7 +55,6 @@ class d2_fill_renderer : public d2_renderer<renderer_playable> {
 	{};
 	~d2_fill_renderer();
 
-//	void freeze() {}
 	void start(double where);
 	void seek(double t) {}
 
@@ -88,6 +83,7 @@ class d2_background_renderer : public background_renderer, public d2_resources {
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void keep_as_background();
 	void highlight(common::gui_window *window);
+	
 	void recreate_d2d();
 	void discard_d2d();
   private:

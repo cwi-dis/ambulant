@@ -237,9 +237,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	lib::point topleft = m_dest->get_global_topleft();
 	img_reg_rc_dirty.translate(topleft);
 
-	// keep rect for debug messages
-	m_msg_rect |= img_reg_rc_dirty;
-
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 

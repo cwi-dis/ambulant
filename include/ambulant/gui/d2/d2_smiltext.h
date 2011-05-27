@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_SMILTEXT_H
 #define AMBULANT_GUI_D2_SMILTEXT_H
 
@@ -31,7 +27,6 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/textptr.h"
 #include "ambulant/smil2/smiltext.h"
-
 
 interface IDWriteFactory;
 interface IDWriteTextFormat;
@@ -71,10 +66,12 @@ class d2_smiltext_renderer :
 	bool stop();
 	void pause(pause_display d=display_show);
 	void resume();
-	// Callbacks from the engine
+
+	// Callbacks from the SMILText engine
 	void smiltext_changed();
 	void marker_seen(const char *name);
 
+	// Direct2D resource management
 	void recreate_d2d();
 	void discard_d2d();
   private:

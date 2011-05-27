@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_D2VIDEO_H
 #define AMBULANT_GUI_D2_D2VIDEO_H
 
@@ -66,7 +62,6 @@ class d2_d2video_renderer
 	~d2_d2video_renderer();
 	common::duration get_dur();
 	void start(double t);
-	//void stop();
 	bool stop();
 	void pause(common::pause_display d=common::display_show);
 	void seek(double t);
@@ -101,11 +96,6 @@ class d2_d2video_renderer
 
 	d2_player *m_d2player;
 	lib::critical_section m_cs;
-
-	// for debugging
-	lib::rect m_msg_rect;
-	DWORD m_rot_index;
-
 };
 
 } // namespace d2
