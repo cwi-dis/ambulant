@@ -41,13 +41,8 @@ namespace common {
 using namespace ambulant::lib;
 
 class surface_impl : public surface_template, public surface, public gui_events {
-#ifdef	WITH_SMIL_TEST
-  // The only constructor is NOT protected:
-  public:
-#else/*WITH_SMIL_TEST*/
   // The only constructor is protected:
   protected:
-#endif/*WITH_SMIL_TEST*/
 	surface_impl(const std::string &name, surface_impl *parent, rect bounds,
 		const region_info *info, bgrenderer *bgrenderer);
   public:
@@ -88,9 +83,6 @@ class surface_impl : public surface_template, public surface, public gui_events 
 
 	// Win32 code needs this, but I don't like it:
 	const surface_impl *get_parent() const { return m_parent; }
-#ifdef	WITH_SMIL_TEST
-	common::surface * new_default_subsurface();
-#endif/*WITH_SMIL_TEST*/
 
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
@@ -145,11 +137,6 @@ class toplevel_surface_impl : public surface_impl {
 	void transition_done(lib::rect area) { transition_freeze_end(area); }
     
   private:
-#ifdef	WITH_SMIL_TEST
-	common::surface * new_default_subsurface();
-	int m_level;
-	const region_info* m_info;
-#endif/*WITH_SMIL_TEST*/
 	gui_window *m_gui_window;
 };
 

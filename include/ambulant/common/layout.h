@@ -293,9 +293,6 @@ class surface_template : public animation_notification {
 
 	/// Get the surface corresponding to this region.
 	virtual surface *activate() = 0;
-#ifdef	WITH_SMIL_TEST
-	virtual common::surface * new_default_subsurface() = 0;
-#endif/*WITH_SMIL_TEST*/
 };
 
 

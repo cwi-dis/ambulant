@@ -125,15 +125,6 @@ surface_impl::activate()
 	return this;
 }
 
-#ifdef	WITH_SMIL_TEST
-common::surface *
-surface_impl::new_default_subsurface()
-{
-	assert(0);
-	return this;
-}
-#endif/*WITH_SMIL_TEST*/
-
 void
 surface_impl::animated()
 {
@@ -793,10 +784,6 @@ surface_impl::highlight(bool onoff)
 
 toplevel_surface_impl::toplevel_surface_impl(const region_info *info, lib::size bounds, bgrenderer *bgrenderer, window_factory *wf)
 :
-#ifdef	WITH_SMIL_TEST
-	m_info(info),
-	m_level(0),
-#endif/*WITH_SMIL_TEST*/
 	surface_impl(info?info->get_name():"topLayout", NULL, rect(point(0, 0), bounds), info, bgrenderer)
 {
 	m_gui_window = wf->new_window(m_name, bounds, this);
@@ -832,25 +819,5 @@ toplevel_surface_impl::need_events(bool want)
 		lib::logger::get_logger()->warn(gettext("Programmer error encountered, will attempt to continue"));
 	}
 }
-
-#ifdef	WITH_SMIL_TEST
-
-common::surface *
-toplevel_surface_impl::new_default_subsurface()
-{
-	lib::size size(300,400);
-	point p(m_level*100, m_level*100);
-	m_level++;
-	lib::rect bounds(p, size);
-	zindex_t z = 0;
-	surface_impl *rv = new surface_impl("default_subsurface", this, bounds, m_info, NULL);
-//	AM_DBG lib::logger::get_logger()->debug("new_default_subsurface: returning 0x%x", (void*)rv);
-	m_children_cs.enter();
-	m_active_children[zindex_t(z)].push_back(rv);
-	m_children_cs.leave();
-	need_redraw(bounds);
-	return rv->activate();
-}
-#endif/*WITH_SMIL_TEST*/
 
 

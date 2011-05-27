@@ -619,11 +619,7 @@ common::surface *
 smil_layout_manager::get_default_rendering_surface(const lib::node *n) {
 	const char *nid = n->get_attribute("id");
 	lib::logger::get_logger()->trace("Returning default rendering surface for node %s", (nid?nid:""));
-#ifdef	WITH_SMIL_TEST
-	return m_rootsurfaces[0]->new_default_subsurface();
-#else /*WITH_SMIL_TEST*/
 	return m_rootsurfaces[0]->activate();
-#endif/*WITH_SMIL_TEST*/
 }
 
 class bgimage_loader : public lib::ref_counted_obj, public common::playable_notification {
