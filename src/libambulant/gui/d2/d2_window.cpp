@@ -24,7 +24,6 @@
 #include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/common/region.h"
-
 #include "ambulant/lib/logger.h"
 
 #ifndef AM_DBG
@@ -92,7 +91,6 @@ void gui::d2::d2_window::redraw(const lib::rect &r) {
 }
 
 void gui::d2::d2_window::redraw_now() {
-#if 1 // #ifdef JNK
 	m_redraw_rect_lock.enter();
 	int keep_lock = m_locked;
 	m_locked = 0;
@@ -101,7 +99,6 @@ void gui::d2::d2_window::redraw_now() {
 	m_redraw_rect_valid = false;
 	m_locked = keep_lock;
 	m_redraw_rect_lock.leave();
-#endif
 }
 
 void gui::d2::d2_window::redraw() {

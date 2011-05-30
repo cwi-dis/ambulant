@@ -74,12 +74,16 @@ d2_transition_renderer::get_d2player()
 }
 
 ID2D1RenderTarget*
-d2_transition_renderer::get_current_rendertarget ()
+d2_transition_renderer::get_current_rendertarget()
 {
 	d2_player* d2player = get_d2player();
-	ID2D1RenderTarget*	rv = d2player->get_fullscreen_rendertarget(); // fullscreen trans. active
-	if (rv == NULL)		rv = this->m_transition_rendertarget;		  // normal transition active
-	if (rv == NULL)		rv = d2player->get_rendertarget();			  // no transition active
+	ID2D1RenderTarget* rv = d2player->get_fullscreen_rendertarget(); // fullscreen trans. active
+	if (rv == NULL)	{
+		rv = this->m_transition_rendertarget;		  // normal transition active
+	}
+	if (rv == NULL) {
+		rv = d2player->get_rendertarget();			  // no transition active
+	}
 	return rv;
 }
 
@@ -93,8 +97,9 @@ d2_transition_renderer::get_transition_rendertarget ()
 			HRESULT hr = rt->CreateCompatibleRenderTarget(&m_transition_rendertarget);
 			if (FAILED(hr)) {
 				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
+			} else {
+				m_transition_rendertarget->BeginDraw();
 			}
-			else m_transition_rendertarget->BeginDraw();
 		}
 		return m_transition_rendertarget;
 	}
@@ -108,7 +113,7 @@ d2_transition_renderer::set_surface(common::surface *dest)
 
 	if (m_transition_dest) {
 		if ((m_intransition && m_intransition->m_scope == scope_screen)
-			|| (m_outtransition && m_outtransition->m_scope == scope_screen)) {
+				|| (m_outtransition && m_outtransition->m_scope == scope_screen)) {
 			m_transition_dest = m_transition_dest->get_top_surface();
 		}
 	}
@@ -117,8 +122,9 @@ d2_transition_renderer::set_surface(common::surface *dest)
 void
 d2_transition_renderer::set_intransition(const lib::transition_info *info) {
 	m_intransition = info;
-	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
+	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen) {
 		m_transition_dest = m_transition_dest->get_top_surface();
+	}
 }
 
 void
@@ -141,7 +147,7 @@ d2_transition_renderer::start(double where)
 }
 
 void
-d2_transition_renderer::check_fullscreen_outtrans(/*common::surface surf, */const lib::node* node)
+d2_transition_renderer::check_fullscreen_outtrans(const lib::node* node)
 {
 	if (m_fullscreen_checked) return;
 	const char* id = node->get_attribute("transOut");
@@ -267,8 +273,9 @@ d2_transition_renderer::redraw_post(gui_window *window)
 		lib::event *ev = new stop_transition_callback(this, &d2_transition_renderer::stop);
 		m_event_processor->add_event(ev, 0, lib::ep_med);
 	}
-	if ( ! m_fullscreen)
+	if (!m_fullscreen) {
 		SafeRelease(&m_transition_rendertarget);
+	}
 	m_lock.leave();
 }
 
@@ -286,4 +293,3 @@ d2_transition_renderer::transition_step()
 } // namespace gui
 
 } //namespace ambulant
-

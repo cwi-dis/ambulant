@@ -34,11 +34,6 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/common/region.h"
 
-namespace ambulant {
-namespace common {
-class passive_region;
-}}
-
 typedef ambulant::common::gui_events region; // XXX Or should it be surface??
 
 namespace ambulant {
@@ -72,8 +67,6 @@ class dx_window : public common::gui_window {
   private:
 	void _need_redraw(const lib::rect& r);
 
-	// gui_window:
-	// passive_region *m_region;
 	common::gui_events *m_handler;
 	std::string m_name; // for easy access
 	lib::rect m_viewrc;

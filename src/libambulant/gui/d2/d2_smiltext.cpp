@@ -68,12 +68,12 @@ create_d2_smiltext_playable_factory(common::factories *factory, common::playable
 
 
 d2_smiltext_renderer::d2_smiltext_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp,
-		common::factories *factory,
-		common::playable_factory_machdep *mdp)
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
+	const lib::node *node,
+	event_processor *evp,
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
 :	d2_renderer<renderer_playable>(context, cookie, node, evp, factory, mdp),
 	m_text_format(NULL),
 	m_text_layout(NULL),
@@ -88,9 +88,6 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 	m_cur_para_wrap(true),
 	m_any_semiopaque_bg(false)
 {
-#ifdef PARALLELS_MACPRO_BUG_WORKAROUND
-	lib::logger::get_logger()->trace("DirectWrite disabled, bug workaround by Jack");
-#else
 	if (s_write_factory == NULL) {
 		HRESULT hr;
 		hr = DWriteCreateFactory(
@@ -101,7 +98,6 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 			lib::logger::get_logger()->error("Cannot create DirectWrite factory: error 0x%x", hr);
 		}
 	}
-#endif
 }
 
 void

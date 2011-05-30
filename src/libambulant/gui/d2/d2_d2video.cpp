@@ -23,7 +23,6 @@
 
 #include "ambulant/gui/d2/d2_d2video.h"
 #include "ambulant/gui/d2/d2_dshowsink.h"
-//#include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
@@ -34,12 +33,10 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/test_attrs.h"
 
-
 #include <control.h>
 #include <strmif.h>
 #include <uuids.h>
 #include <vfwmsgs.h>
-
 #include <d2d1.h>
 #include <d2d1helper.h>
 
@@ -161,9 +158,7 @@ void gui::d2::d2_d2video_renderer::start(double t) {
 	r.translate(surf->get_global_topleft());
 	// Has this been activated
 	if(m_activated) {
-		// repeat
 		_start(t + (m_clip_begin / 1000000.0));
-//XXXJACK		m_player->update();
 		m_dest->need_redraw();
 		_schedule_update();
 		return;
@@ -177,7 +172,6 @@ void gui::d2::d2_d2video_renderer::start(double t) {
 
 	// Start the underlying player
 	_start(t + (m_clip_begin / 1000000.0));
-//XXXJACK	m_player->update();
 
 	// Request a redraw
 	m_dest->need_redraw();

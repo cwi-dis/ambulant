@@ -35,11 +35,6 @@
 #include "ambulant/common/region.h"
 
 namespace ambulant {
-namespace common {
-class passive_region;
-}}
-
-namespace ambulant {
 
 namespace gui {
 

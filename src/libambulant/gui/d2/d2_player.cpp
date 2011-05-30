@@ -42,13 +42,12 @@
 #include "ambulant/smil2/test_attrs.h"
 
 // Renderer playables
-//#include "ambulant/gui/d2/html_bridge.h"
 #include "ambulant/gui/d2/d2_fill.h"
 #include "ambulant/gui/d2/d2_text.h"
 #include "ambulant/gui/d2/d2_smiltext.h"
-//#include "ambulant/gui/d2/d2_html_renderer.h"
 #include "ambulant/gui/d2/d2_img.h"
-//#include "ambulant/gui/d2/d2_img_wic.h"
+//#include "ambulant/gui/d2/html_bridge.h"
+//#include "ambulant/gui/d2/d2_html_renderer.h"
 
 // Select audio renderer to use.
 // Multiple selections are possible.
@@ -204,14 +203,7 @@ gui::d2::d2_player::d2_player(
 
 	if (feedback) m_player->set_feedback(feedback);
 	m_player->initialize();
-#if 0
-	// Seems to cause crashes (maybe because we are not fully initialized yet?)
-	lib::event_processor *evp = m_player->get_evp();
-	assert(evp);
-	evp->set_observer(this);
-#endif
 
-	// Create a worker processor instance
 }
 
 gui::d2::d2_player::~d2_player() {
@@ -525,9 +517,10 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 	if(rt == NULL || !rt->IsSupported(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE))) {
 		// We are rendering to a hardware rendertarget. We create a temporary software target
 		// and mmick a redraw.
+
 		m_redraw_lock.enter();
 		_discard_d2d();
-//		m_redraw_lock.leave();
+
 		RECT rc;
 		GetClientRect(wi->m_hwnd, &rc);
 		D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
@@ -547,9 +540,10 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 		// 100ms.
 		redraw(hwnd, NULL, NULL);
 		bitmap = _capture_wic(r, rt);
-//		m_redraw_lock.enter();
+
 		_discard_d2d();
 		m_redraw_lock.leave();
+
 	} else {
 		bitmap = _capture_wic(r, rt);
 	}
@@ -754,7 +748,6 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		if (memcmp(&oldTransform, &transform, sizeof(D2D1_MATRIX_3X2_F)) != 0) {
 			rt->SetTransform(transform);
 		}
-#if 1
 		if (dirty) {
 			dirtyMod = *dirty;
 			dirtyMod.left -= xoff;
@@ -767,11 +760,6 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 			dirtyMod.bottom /= factor;
 			dirty = &dirtyMod;
 		}
-#else
-		// Lazy programmer alert: we cannot use the dirty rect as-is, 
-		// need to do the transform, at some time. For now we clear it.
-		dirty = NULL;
-#endif
 	} else {
 		rt->SetTransform(D2D1::Matrix3x2F::Identity());
 	}
@@ -927,13 +915,6 @@ gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 
 
 void gui::d2::d2_player::on_done() {
-#ifdef JNK
-	std::map<std::string, wininfo*>::iterator it;
-	for(it=m_windows.begin();it!=m_windows.end();it++) {
-		(*it).second->v->clear();
-		(*it).second->v->redraw();
-	}
-#endif
 }
 
 void gui::d2::d2_player::lock_redraw() {
@@ -981,17 +962,12 @@ gui::d2::d2_player::new_window(const std::string &name,
 	// Create an os window
 	winfo->m_hwnd = m_hoster.new_os_window();
 	assert(winfo->m_hwnd);
-#if 1
+
 	// Set "old" rect to empty, so the first redraw will recalculate the matrix
 	SetRectEmpty(&winfo->m_rect);
-#else
-	GetClientRect(winfo->m_hwnd, &winfo->m_rect);
-#endif
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
-	// Region?
-//xyzzy	common::gui_events *rgn = (region *) src;
 	bool is_fullscreen = false;
 	HWND parent_hwnd = GetParent(winfo->m_hwnd);
 	if (parent_hwnd) {
@@ -1007,11 +983,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 		int borders_h = 60; // XXXX
 		float factor = 1.0;
 		RECT desktop_rect;
-#if 0
-		GetWindowRect(::GetDesktopWindow(), &desktop_rect);
-#else
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &desktop_rect, 0);
-#endif
 		if (w > desktop_rect.right-desktop_rect.left - borders_w) {
 			factor = float(desktop_rect.right-desktop_rect.left - borders_w) / w;
 		}
@@ -1045,11 +1017,6 @@ gui::d2::d2_player::window_done(const std::string &name) {
 	assert(it != m_windows.end());
 	wininfo *wi = (*it).second;
 	m_windows.erase(it);
-#ifdef JNK
-	wi->v->clear();
-	wi->v->redraw();
-	delete wi->v;
-#endif
 	if (wi->m_rendertarget) {
 		wi->m_rendertarget->Release();
 		wi->m_rendertarget = NULL;
@@ -1274,7 +1241,6 @@ void gui::d2::d2_player::done(common::player *p) {
 		m_player = pf->player;
 		m_doc = pf->doc;
 		delete pf;
-//XXXJACK No idea why this assert was here...		assert(0); // resume();
 		std::map<std::string, wininfo*>::iterator it;
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			d2_window *d2win = (*it).second->m_window;
@@ -1341,7 +1307,6 @@ gui::d2::d2_player::start_screen_transition(bool outtrans)
 void
 gui::d2::d2_player::end_screen_transition()
 {
-//	assert(m_fullscreen_count > 0);
 	if (m_fullscreen_count == 0) {
 		return;
 	}
@@ -1369,9 +1334,6 @@ gui::d2::d2_player::_screenTransitionPreRedraw(ID2D1RenderTarget* rt)
 void
 gui::d2::d2_player::_screenTransitionPostRedraw(ambulant::lib::rect* r)
 {
-//	if (m_fullscreen_count == 0 /*&& fullscreen_oldimage == NULL*/) {
-//		return;
-//	}
 	if (r == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("d2_player::_screenTransitionPostRedraw() r=<NULL>");
 	} else {
@@ -1383,11 +1345,6 @@ gui::d2::d2_player::_screenTransitionPostRedraw(ambulant::lib::rect* r)
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("_screenTransitionPostRedraw: no screen transition engine");
 		if (m_fullscreen_ended) { // fix-up interrupted transition step
-//			ambulant::lib::rect fullsrcrect = ambulant::lib::rect(ambulant::lib::point(0, 0), ambulant::lib::size(self.bounds.size.width,self.bounds.size.height));  // Original image size
-//			CGRect cg_fullsrcrect = ambulant::gui::cg::CGRectFromAmbulantRect(fullsrcrect);
-//			CGContextRef ctx = UIGraphicsGetCurrentContext();	
-//			CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [self getTransitionSurface]);
-//			[self releaseTransitionSurfaces];
 			set_fullscreen_rendertarget(NULL);
 		}		
 	}
@@ -1405,7 +1362,6 @@ void
 gui::d2::d2_player::screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now)
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_player::screen_transition_step()");
-//	assert(m_fullscreen_count > 0);
 	if ( ! (m_fullscreen_count > 0)) {
 		return;
 	}
@@ -1440,6 +1396,7 @@ cleanup:
 	SafeRelease(&rv);
 	return rv;
 }
+
 // screen capture support
 void
 gui::d2::d2_player::captured(IWICBitmap *bitmap)
@@ -1453,13 +1410,6 @@ gui::d2::d2_player::_set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt)
 {
 	SafeRelease(&this->m_fullscreen_cur_bitmap);
 	this->m_fullscreen_cur_bitmap = this->_get_bitmap_from_render_target(rt);
-#ifdef	AM_DMP
-//	int idx = dump(d2_player->get_fullscreen_rendertarget(), "res");
-	int idx = dump_bitmap(this->m_fullscreen_cur_bitmap, rt, "rdr");
-	lib::logger::get_logger()->debug("d2_player.redraw_pre(0x%x) bitmap: idx=%d", this, idx);
-#endif//AM_DMP
-
-
 }
 
 void
@@ -1554,51 +1504,28 @@ gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id)
 	return rv;
 }
 
-
-
 int
-
 gui::d2::d2_player::dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id)
-
 {
-
 	if (bmp == NULL || rt == NULL) {
-
 		return -1;
-
 	}
-
  	int rv = -1;
-
  	D2D1_SIZE_F size_f = bmp->GetSize();
-
  	D2D1_RECT_F rect_f = D2D1::RectF(0.0F, 0.0F, size_f.width, size_f.height);
-
  	ID2D1BitmapRenderTarget* bmrt = NULL;
-
  	HRESULT hr = rt->CreateCompatibleRenderTarget(size_f, &bmrt);
-
 	OnErrorGoto_cleanup(hr, "dump_bitmap() CreateCompatibleRenderTarget");
 
 	bmrt->BeginDraw();
-
 	bmrt->DrawBitmap(bmp, rect_f);
-
 	hr = bmrt->EndDraw();
-
 	OnErrorGoto_cleanup(hr, "dump_bitmap() DrawBitmap");
 
 	rv = this->dump(rt, id);
 
-
-
 cleanup:
-
 	SafeRelease(&bmrt);
-
 	return rv;
-
 }
-
-
-#endif 
+#endif // AM_DMP

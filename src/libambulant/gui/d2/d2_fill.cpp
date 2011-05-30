@@ -128,7 +128,8 @@ d2_fill_renderer::recreate_d2d()
 	HRESULT hr = S_OK;
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-	// Fill with  color
+
+	// Get color and alpha info from the SMIL node
 	const char *color_attr = m_node->get_attribute("color");
 	if (!color_attr) {
 		lib::logger::get_logger()->trace("<brush> element without color attribute");
@@ -140,7 +141,8 @@ d2_fill_renderer::recreate_d2d()
 	double alfa = 1.0;
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-// CreateSolidColorBrush
+
+	// Create the corresponding D2D brush
 	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(color), greenf(color), bluef(color), alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
 	m_lock.leave();
@@ -185,10 +187,10 @@ d2_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-//	D2D1_RECT_F rr = D2D1::RectF(dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
 	D2D1_RECT_F rr = d2_rectf(dstrect);
 	rt->FillRectangle(rr, m_brush);
 #ifdef D2D_NOTYET
+	// background images not yet implemented
 	if (m_bgimage) {
 		AM_DBG lib::logger::get_logger()->debug("d2_background_renderer::redraw(): drawing image");
 		NSSize srcsize = [m_bgimage size];
@@ -203,6 +205,7 @@ void
 d2_background_renderer::highlight(common::gui_window *window)
 {
 #ifdef D2D_NOTYET
+	// Highlighting not yet implemented
 	const rect &r =	 m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("d2_bg_renderer::highlight(0x%x)", (void *)this);
 
@@ -231,7 +234,8 @@ d2_background_renderer::keep_as_background()
 		m_bgimage = NULL;
 	}
 	d2_window *cwindow = (d2_window *)m_dst->get_gui_window();
-#ifdef JNK
+#ifdef D2D_NOTYET
+	// keep_as_background not yet implemented
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());

@@ -19,7 +19,6 @@ CVideoD2DBitmapRenderer::CVideoD2DBitmapRenderer(LPUNKNOWN pUnk, HRESULT *phr)
 :	CBaseVideoRenderer(__uuidof(CLSID_TextureRenderer), NAME("Texture Renderer"), pUnk, phr),
 	m_rt(NULL),
 	m_d2bitmap(NULL),
-//	m_d2bitmap_next(NULL),
 	m_callback(NULL),
 	m_width(0),
 	m_height(0),
@@ -36,12 +35,6 @@ CVideoD2DBitmapRenderer::CVideoD2DBitmapRenderer(LPUNKNOWN pUnk, HRESULT *phr)
 //-----------------------------------------------------------------------------
 CVideoD2DBitmapRenderer::~CVideoD2DBitmapRenderer()
 {
-#if 0
-	if (m_d2bitmap_next && m_d2bitmap_next != m_d2bitmap) {
-		m_d2bitmap_next->Release();
-		m_d2bitmap_next = NULL;
-	}
-#endif
 	if (m_d2bitmap) {
 		m_d2bitmap->Release();
 		m_d2bitmap = NULL;
@@ -67,7 +60,6 @@ ID2D1Bitmap *
 CVideoD2DBitmapRenderer::LockBitmap()
 {
 	// XXX Lock it.
-//	assert(m_d2bitmap_next == NULL);
 	if (m_d2bitmap) m_d2bitmap->AddRef();
 	return m_d2bitmap;
 }
@@ -102,7 +94,7 @@ HRESULT CVideoD2DBitmapRenderer::CheckMediaType(const CMediaType *pmt)
 		return E_INVALIDARG;
 	}
 
-	// Only accept RGB24 video
+	// Only accept 24 or 32bit RGB[A] video
 	pvi = (VIDEOINFO *)pmt->Format();
 
 	if (IsEqualGUID(*pmt->Type(), MEDIATYPE_Video)) {

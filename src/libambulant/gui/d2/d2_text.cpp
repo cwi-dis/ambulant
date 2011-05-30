@@ -66,7 +66,6 @@ create_d2_text_playable_factory(common::factories *factory, common::playable_fac
 		d2_text_playable_renderer_uri2>(factory, mdp);
 }
 
-
 d2_text_renderer::d2_text_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -77,11 +76,7 @@ d2_text_renderer::d2_text_renderer(
 :	d2_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_text_format(NULL),
 	m_brush(NULL)
-
 {
-#ifdef PARALLELS_MACPRO_BUG_WORKAROUND
-	lib::logger::get_logger()->trace("DirectWrite disabled, bug workaround by Jack");
-#else
 	if (s_write_factory == NULL) {
 		HRESULT hr;
 		hr = DWriteCreateFactory(
@@ -92,7 +87,6 @@ d2_text_renderer::d2_text_renderer(
 			lib::logger::get_logger()->error("Cannot create DirectWrite factory: error 0x%x", hr);
 		}
 	}
-#endif
 }
 
 void
@@ -187,7 +181,6 @@ d2_text_renderer::recreate_d2d()
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
 	m_lock.leave();
 }
-
 
 void
 d2_text_renderer::discard_d2d()
