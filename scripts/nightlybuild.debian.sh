@@ -13,7 +13,9 @@ set -x
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
 case x$1 in
-x)	;;
+x)	
+	BRANCH=default
+	;;
 *)	BRANCH=$1
 esac
 
