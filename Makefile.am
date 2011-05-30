@@ -3,6 +3,7 @@ EXTRA_DIST = \
 	projects \
 	installers \
 	scripts \
+	tests \
 	ambulant.spec \
 	libambulant.pc \
 	autogen.sh \

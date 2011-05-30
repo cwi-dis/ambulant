@@ -37,6 +37,7 @@ rem Other settable parameters
 rem
 
 set AMBULANTVERSION=2.3
+set BRANCH=default
 set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
 set HGCLONEPRIVARGS="ssh://hg@ambulantplayer.org/hgpriv/ambulant-private"
@@ -46,9 +47,9 @@ rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
 set Win7 Jack: TODAY=%date%
 set VERSIONSUFFIX=.%TODAY%
-set BUILDDIR=build-%TODAY%
+set BUILDDIR=build-%TODAY%-%BRANCH%
 set BUILD3PPARGS=win32
-set DESTINATION="sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/"
+set DESTINATION="sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/%BRANCH%"
 set DESTINATIONDESKTOP="%DESTINATION%/win32-intel-desktop/"
 set DESTINATIONNP="%DESTINATION%/win32-intel-firefoxplugin/"
 set DESTINATIONIE="%DESTINATION%/win32-intel-ieplugin/"
@@ -82,7 +83,9 @@ rem
 rem  Prepare the tree
 rem 
 
-cd %builddir%\third_party_packages
+cd %builddir%
+hg up -r %BRANCH%
+cd third_party_packages
 %python% ..\scripts\build-third-party-packages.py %BUILD3PPARGS%
 if %errorlevel% neq 0 pause
 cd ..

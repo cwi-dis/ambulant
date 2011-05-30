@@ -144,7 +144,8 @@ uninstall-local:
 	-rm -rf $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 else
 mostlyclean-local:
-	rm -fr .libs *o $(NPAMBULANT) npambulant_plugin_dir
+	-rm -fr .libs *o $(NPAMBULANT) npambulant_plugin_dir
+	-rm -fr mozilla npambulant
 
 uninstall-local:
 	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
@@ -171,11 +172,14 @@ FIREFOXENV=
 
 BUILDLIBDIR=
 check-npambulant:
-	( a=`cd $(ambulantlibdir); pwd` ; \
-	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
-	)
-
+	if test x$$DISPLAY = x; then \
+		echo Skipping tests, DISPLAY not set; \
+	else \
+		a=`cd $(ambulantlibdir); pwd` ; \
+		cd $(srcdir) ; \
+		LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
+	fi
+	
 testplay:
 	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html
 

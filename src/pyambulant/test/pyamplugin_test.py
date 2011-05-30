@@ -6,18 +6,29 @@
 # args (which may contain spaces) is any additional information
 #
 import sys
-sys.stderr = sys.stdout = open('AM_TEST-output.txt', 'a')
+sys.stderr = sys.stdout = open('AM_TEST-output.txt', 'w')
 import ambulant
 import time
 import datetime
 
 # First check: the ambulant glue works.
 today = datetime.date.today()
-print 'TEST', 0, 'test_framework_imported', ambulant.get_version(), 'on: ', today
+print 'NOTE', 0, 'test_framework_imported', ambulant.get_version(), 'on: ', today
 
 class Reporting_feedback(ambulant.player_feedback):
     def __init__(self):
         self.old_time = time.time()
+        self.seqno = {}
+        
+    def signature(self, node):
+        sig = node.get_sig()
+        if sig in self.seqno:
+            num = self.seqno[sig]
+        else:
+            num = 1
+        self.seqno[sig] = num + 1
+        return '%s %d' % (sig, num)
+            
         
     def document_loaded(self):
         t = time.time()
@@ -34,11 +45,11 @@ class Reporting_feedback(ambulant.player_feedback):
 
     def node_started(self, node):
         t = time.time()
-        print 'TEST', t-self.old_time, 'node_started', node.get_sig()
+        print 'TEST', t-self.old_time, 'node_started', self.signature(node)
 
     def node_stopped(self, node):
         t = time.time()
-        print 'TEST', t-self.old_time, 'node_stopped', node.get_sig()
+        print 'TEST', t-self.old_time, 'node_stopped', self.signature(node)
 
     def node_focussed(self, node):
         pass # We are not interested in these, for now.
@@ -89,7 +100,6 @@ class GlueEmbedder(ambulant.embedder):
 def initialize(apiversion, factories, gui_player):
     # if gui_player is None there is no document open yet. We will be called again.
     if not gui_player:
-        print 'TEST', 0, 'test_framework_initialized'
         return
     embedder = GlueEmbedder(gui_player.get_embedder())
     gui_player.set_embedder(embedder)

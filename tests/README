@@ -1,0 +1,11 @@
+This directory is intended for groups of test files and
+reference output files for use with (automatic) regression testing.
+The group 'nightly' contains those needed for nightly builds.
+For a file 'x.smil', a file 'x-reference.txt' (in the same directory)
+should contain the expected in AM_TEST-output.txt output when 
+AmbulantPlayer plays 'x.smil' as argument on command-line.
+If an 'x-reference.txt' exists without a corresponding .smil file
+(e.g. for with http URLs, or .smil files stored elsewhere), then
+an URL is expected to be present as comment in the 'x-reference.txt'  
+to regenerate this file.
+
