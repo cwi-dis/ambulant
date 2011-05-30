@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 // Ambulant standard base (ASB) compatibility interface
 
 #ifndef AMBULANT_LIB_WIN32_ASB_H

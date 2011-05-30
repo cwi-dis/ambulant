@@ -17,10 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/posix_datasource.h"

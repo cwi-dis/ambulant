@@ -17,9 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_smiltext.h"
 #include "ambulant/gui/qt/qt_util.h"

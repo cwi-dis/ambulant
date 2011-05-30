@@ -20,10 +20,6 @@
  */
 
 /*
- * @$Id$
- */
-
-/*
  * A socket is an endpoint for communication
  * between two machines.
  *

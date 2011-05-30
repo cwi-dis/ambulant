@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 // A utility for building a dom tree
 // from a file or a string.
 // Uses expat parser as the xml parser

@@ -17,10 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/smil2/animate_n.h"
 #include "ambulant/smil2/animate_f.h"
 #include "ambulant/lib/document.h"

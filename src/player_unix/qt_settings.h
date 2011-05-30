@@ -19,9 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
 #ifndef __QT_SETTINGS_H__
 #define __QT_SETTINGS_H__
 

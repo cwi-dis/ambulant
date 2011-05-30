@@ -17,9 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
 // Implementation notes for d2 transitions:
 // ----------------------------------------
 // All out transitions (except fade and push/slide) work via polylist drawn into a

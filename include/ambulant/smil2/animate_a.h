@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_SMIL2_ANIMATE_A_H
 #define AMBULANT_SMIL2_ANIMATE_A_H
 

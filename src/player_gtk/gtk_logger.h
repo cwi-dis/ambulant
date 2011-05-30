@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef __GTK_LOGGER_H__
 #define __GTK_LOGGER_H__
 //#include <qfeatures.h>

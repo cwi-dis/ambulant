@@ -20,9 +20,6 @@
  */
 
 /*
-* @$Id$
-*/
-/*
 * Basic input and output stream interfaces.
 */
 

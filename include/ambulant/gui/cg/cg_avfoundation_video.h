@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_CG_CG_AVFOUNDATION_VIDEO_H
 #define AMBULANT_GUI_CG_CG_AVFOUNDATION_VIDEO_H
 //XXXX #define WITH_AVFOUNDATION 1

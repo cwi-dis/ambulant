@@ -20,10 +20,6 @@
  */
 
 /*
- * @$Id$
- */
-
-/*
  * Callback mechanism implementation.
  *
  * See lib/win32/win32_test_processor.h

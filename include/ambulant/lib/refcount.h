@@ -20,9 +20,6 @@
  */
 
 /*
- * @$Id$
- */
-/*
  * Ref-counted mechanism implementation.
  *
  */

@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_COMMON_VIDEO_RENDERER_H
 #define AMBULANT_COMMON_VIDEO_RENDERER_H
 

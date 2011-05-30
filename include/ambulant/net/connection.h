@@ -20,10 +20,6 @@
  */
 
 /*
- * @$Id$
- */
-
-/*
  * A connection represent a communications link between the
  * application and a URL.
  *
