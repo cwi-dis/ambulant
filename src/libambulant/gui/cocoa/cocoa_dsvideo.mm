@@ -28,24 +28,16 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-
-// There are two ways to render images: through CGImage or directly manipulating the NSBitmapImageRep. The former should
-// be more efficient.
-#define ENABLE_COCOA_CGIMAGE
-
 static bool pixel_info_initialized = false;
 static ambulant::net::pixel_order pixel_info_order;
 static NSBitmapFormat pixel_info_format;
 static int pixel_info_bpp;
-#ifdef ENABLE_COCOA_CGIMAGE
 static CGBitmapInfo pixel_info_bminfo;
-#endif
 
 static void
 init_pixel_info() {
 	if (pixel_info_initialized) return;
 	pixel_info_initialized = true;
-#ifdef ENABLE_COCOA_CGIMAGE
 	if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
 		// Only supported on 10.5, so fallback for 10.4
 #if defined(__POWERPC__)
@@ -61,7 +53,6 @@ init_pixel_info() {
 		pixel_info_bminfo = (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host);
 		return;
 	}
-#endif
 	pixel_info_order = ambulant::net::pixel_rgb;
 	pixel_info_format = (NSBitmapFormat)0;
 	pixel_info_bpp = 3;
@@ -152,7 +143,7 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, size_t size)
 		return;
 	}
 	NSBitmapImageRep *bitmaprep;
-#ifdef ENABLE_COCOA_CGIMAGE
+
 	if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
 		// Step 1 - setup a data provider that reads our in-core image data
 		CGDataProviderRef provider = CGDataProviderCreateWithData(frame, frame, size, my_free_frame);
@@ -188,10 +179,8 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, size_t size)
 			return;
 		}
 		// Note that we do not free(frame), that happens when the provider calls my_free_frame.
-	} else
-#endif // ENABLE_COCOA_CGIMAGE
-	{
-		// On 10.4 or earlier (or if ENABLE_COCOA_CGIMAGE is not enabled) we go the old route with
+	} else {
+		// On 10.4 or earlier we go the old route with
 		// an extra memcpy().
 		bitmaprep = [[NSBitmapImageRep alloc]
 			initWithBitmapDataPlanes: NULL

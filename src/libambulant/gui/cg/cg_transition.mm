@@ -435,5 +435,3 @@ cg_transition_engine(common::surface *dst, bool is_outtrans, const lib::transiti
 } // namespace gui
 
 } //namespace ambulant
-
-//#endif//JNK

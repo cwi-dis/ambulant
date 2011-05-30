@@ -413,8 +413,7 @@ ffmpeg_demux::run()
 			eof_sent_to_clients = false;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld", m_clip_begin );
 			int64_t seektime = m_clip_begin;
-#define SEEK_ALL_STREAMS
-#ifdef SEEK_ALL_STREAMS
+
 			// Seeking in ffmpeg seems to cause no end to problems. The previous code, which seeked only one
 			// of the streams, seems to (sometimes? always?) leave the other stream positioned where it was.
 			// We work around this by seeking all streams.
@@ -432,24 +431,7 @@ ffmpeg_demux::run()
 			if (seekresult >= 0 && video_streamnr >= 0)
 				seekresult = av_seek_frame(m_con, video_streamnr, seektime_v, AVSEEK_FLAG_BACKWARD);
 			m_lock.enter();
-#else // SEEK_ALL_STREAMS
-			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
-			int seek_streamnr = -1;
 
-			// Open question: should we seek on the audio stream, the video stream
-			// or the default stream? Originally, we preferred the video stream
-			// Bo noticed (march 2010) that audio seems to work better for some files.
-			// But: there is no real reasoning behind this choice...
-
-			// We use the default stream to conduct seek since it is not clear which one
-			// should have priority and the default value is good enough for Laiola's
-			// sample smil for MyVideo ---Bo 08-April-2010
-
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
-			m_lock.leave();
-			int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
-			m_lock.enter();
-#endif // SEEK_ALL_STREAMS
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}

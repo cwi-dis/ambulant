@@ -66,12 +66,7 @@ class d2_dsvideo_renderer :
 	char *m_frame;				// Current frame
 	size_t m_frame_size;			// Size of current frame
 	ID2D1Bitmap *m_d2bitmap;		// The bitmap in Direct2D form
-//JNK	HBITMAP m_bitmap;			// Bitmap to hold the image (if needed)
 	char *m_bitmap_dataptr;		// Pointer to actual data inside bitmap (if needed)
-//JNK	IDirectDrawSurface *m_ddsurf;	// DD surface, for scaling and such
-#ifdef ENABLE_FAST_DDVIDEO
-//JNK	IDirectDrawSurface7 *m_ddsurf7;	// Same, for replacing the underlying storage
-#endif
 };
 
 } // namespace d2

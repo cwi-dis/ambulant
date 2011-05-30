@@ -94,7 +94,6 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 
 	gui::qt::qt_renderer<common::renderer_playable>::start(t);
 	m_lock.enter();
-//JNK?	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_layout_engine.start(t);
 	renderer_playable::start(t);
 	m_layout_engine.set_dest_rect(m_rect = m_dest->get_rect());
