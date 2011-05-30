@@ -39,7 +39,7 @@ namespace common {
 class passive_region;
 }}
 
-typedef ambulant::common::surface_impl region; // XXX Or should it be surface??
+typedef ambulant::common::gui_events region; // XXX Or should it be surface??
 
 namespace ambulant {
 
@@ -64,7 +64,7 @@ class dx_window : public common::gui_window {
 	void redraw_now();
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
-	region *get_region() { return m_rgn;}
+	common::gui_events *get_gui_events() { return m_handler;}
 	void lock_redraw();
 	void unlock_redraw();
 
@@ -74,7 +74,7 @@ class dx_window : public common::gui_window {
 
 	// gui_window:
 	// passive_region *m_region;
-	region *m_rgn;
+	common::gui_events *m_handler;
 	std::string m_name; // for easy access
 	lib::rect m_viewrc;
 	common::window_factory *m_wf;

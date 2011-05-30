@@ -466,7 +466,7 @@ void gui::d2::d2_player::on_click(int x, int y, HWND hwnd) {
 	lib::point pt(x, y);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return;
-	region *r = d2win->get_region();
+	common::gui_events *r = d2win->get_gui_events();
 	if(r)
 		r->user_event(pt, common::user_event_click);
 }
@@ -476,7 +476,7 @@ int gui::d2::d2_player::get_cursor(int x, int y, HWND hwnd) {
 	lib::point pt(x, y);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return 0;
-	region *r = d2win->get_region();
+	common::gui_events *r = d2win->get_gui_events();
 	m_player->before_mousemove(0);
 	if(r) r->user_event(pt, common::user_event_mouse_over);
 	return m_player->after_mousemove();
@@ -991,7 +991,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
 	// Region?
-	region *rgn = (region *) src;
+//xyzzy	common::gui_events *rgn = (region *) src;
 	bool is_fullscreen = false;
 	HWND parent_hwnd = GetParent(winfo->m_hwnd);
 	if (parent_hwnd) {
@@ -1028,7 +1028,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 	}
 
 	// Create a concrete gui_window
-	winfo->m_window = new d2_window(name, bounds, rgn, this, winfo->m_hwnd);
+	winfo->m_window = new d2_window(name, bounds, src, this, winfo->m_hwnd);
 
 	// Store the wininfo struct
 	m_windows[name] = winfo;

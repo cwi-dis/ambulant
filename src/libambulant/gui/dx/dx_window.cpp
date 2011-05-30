@@ -35,11 +35,11 @@ using namespace ambulant;
 
 gui::dx::dx_window::dx_window(const std::string& name,
 	lib::size bounds,
-	region *rgn,
+	common::gui_events *handler,
 	common::window_factory *wf,
 	viewport* v)
-:	common::gui_window(rgn),
-	m_rgn(rgn),
+:	common::gui_window(handler),
+	m_handler(handler),
 	m_name(name),
 	m_viewrc(lib::point(0, 0), lib::size(bounds.w, bounds.h)),
 	m_wf(wf),
@@ -68,7 +68,7 @@ void gui::dx::dx_window::_need_redraw(const lib::rect &r) {
 		//assert(!m_redraw_rect_valid);
 		m_viewport->set_fullscreen_transition(NULL);
 		m_viewport->clear(rc, GetSysColor(COLOR_WINDOW), 1.0);
-		m_rgn->redraw(rc, this);
+		m_handler->redraw(rc, this);
 		m_viewport->schedule_redraw(rc);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("dx_window::need_redraw(%d,%d,%d,%d): queueing", rc.left(), rc.top(), rc.width(), rc.height());
