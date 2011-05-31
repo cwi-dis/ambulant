@@ -32,7 +32,6 @@ TODAY=`date +%Y%m%d`
 case x$BRANCH in
 x)	;;
 *)
-	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
 esac
 CLDATE=`date --rfc-2822`
