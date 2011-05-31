@@ -735,9 +735,6 @@ public:
 
 	ambulant::common::surface_template* new_subsurface(const ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend);
 	ambulant::common::surface* activate();
-#ifdef WITH_AMBULANT_TEST
-	ambulant::common::surface* new_default_subsurface();
-#endif
 	void animated() { abort(); }
   private:
 	PyObject *py_surface_template;

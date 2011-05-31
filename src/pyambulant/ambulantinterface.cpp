@@ -4672,7 +4672,6 @@ surface_template::surface_template(PyObject *itself)
 	{
 		if (!PyObject_HasAttrString(itself, "new_subsurface")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: new_subsurface");
 		if (!PyObject_HasAttrString(itself, "activate")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: activate");
-		if (!PyObject_HasAttrString(itself, "new_default_subsurface")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: new_default_subsurface");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -4741,32 +4740,6 @@ ambulant::common::surface* surface_template::activate()
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-
-#ifdef WITH_AMBULANT_TEST
-ambulant::common::surface* surface_template::new_default_subsurface()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::common::surface* _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_surface_template, "new_default_subsurface", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during surface_template::new_default_subsurface() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", surfaceObj_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during surface_template::new_default_subsurface() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-#endif
 
 /* --------------------- Class surface_factory ---------------------- */
 

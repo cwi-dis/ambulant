@@ -207,11 +207,6 @@ class MyScanner(CxxScanner):
                 
                 ]
             ),
-            ('#ifdef WITH_AMBULANT_TEST', [
-                'new_default_subsurface',
-                
-                ]
-            ),
         ]
 
     def makerepairinstructions(self):

@@ -8580,32 +8580,11 @@ static PyObject *surface_templateObj_activate(surface_templateObject *_self, PyO
 	return _res;
 }
 
-#ifdef WITH_AMBULANT_TEST
-
-static PyObject *surface_templateObj_new_default_subsurface(surface_templateObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::common::surface* _rv = _self->ob_itself->new_default_subsurface();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     surfaceObj_New, _rv);
-	return _res;
-}
-#endif
-
 static PyMethodDef surface_templateObj_methods[] = {
 	{"new_subsurface", (PyCFunction)surface_templateObj_new_subsurface, 1,
 	 PyDoc_STR("(ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend) -> (ambulant::common::surface_template* _rv)")},
 	{"activate", (PyCFunction)surface_templateObj_activate, 1,
 	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
-
-#ifdef WITH_AMBULANT_TEST
-	{"new_default_subsurface", (PyCFunction)surface_templateObj_new_default_subsurface, 1,
-	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
-#endif
 	{NULL, NULL, 0}
 };
 
