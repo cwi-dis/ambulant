@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/logger.h"
 //#include "ambulant/lib/transition_info.h"
@@ -58,9 +54,7 @@ video_renderer::video_renderer(
 	m_frame_duplicate(0),
 	m_frame_early(0),
 	m_frame_late(0),
-#ifdef WITH_SEAMLESS_PLAYBACK
 	m_previous_clip_position(-1),
-#endif
 	m_frame_missing(0)
 {
 	m_lock.enter();
@@ -108,11 +102,6 @@ video_renderer::init_with_node(const lib::node *n)
 {
 	m_lock.enter();
 	renderer_playable::init_with_node(n);
-#ifndef WITH_SEAMLESS_PLAYBACK
-	m_lock.leave();
-	seek(m_clip_begin);
-	m_lock.enter();
-#endif // WITH_SEAMLESS_PLAYBACK
 	if (m_audio_renderer) {
 		m_audio_renderer->init_with_node(n);
 	}
@@ -176,10 +165,9 @@ video_renderer::start (double where)
 		m_audio_renderer->start(where);
 	}
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	// We now no longer know where we are (until we get to end-of-clip).
 	m_previous_clip_position = -1;
-#endif
+
 	m_lock.leave();
 
 	// Note by Jack: I'm not 100% sure that calling show() after releasing the lock is safe, but (a)
@@ -191,7 +179,6 @@ video_renderer::start (double where)
 void
 video_renderer::preroll(double when, double where, double how_much)
 {
-#ifdef WITH_SEAMLESS_PLAYBACK
 	m_lock.enter();
 	if (m_clip_end != -1 && m_clip_end < m_clip_begin) {
 		m_lock.leave();
@@ -234,9 +221,7 @@ video_renderer::preroll(double when, double where, double how_much)
 		m_audio_renderer->preroll(0, where, 0);
 
 	m_lock.leave();
-#endif // WITH_SEAMLESS_PLAYBACK
 }
-
 
 bool
 video_renderer::stop()
@@ -250,11 +235,9 @@ video_renderer::stop()
 		m_context->stopped(m_cookie, 0);
 	}
 
-#ifdef	WITH_SEAMLESS_PLAYBACK
 	if (!is_fill_continue_node()) {
 		m_activated = false;
 	}
-#endif // WITH_SEAMLESS_PLAYBACK
 
 	m_lock.leave();
 	return false; // note, "false" means this renderer is reusable (and still running, needing post_stop() to actually stop)
@@ -271,13 +254,6 @@ video_renderer::post_stop()
 		if (m_audio_renderer) m_audio_renderer->post_stop();
 		lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL", m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
 	}
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if (m_src) {
-		m_src->stop();
-		m_src->release();
-		m_src = NULL;
-	}
-#endif // !WITH_SEAMLESS_PLAYBACK
 	m_lock.leave();
 }
 
@@ -416,20 +392,6 @@ video_renderer::data_avail()
 	net::timestamp_t frame_duration = m_src->frameduration(); // XXX For now: assume 30fps
 
 	// If we are at the end of the clip we stop and signal the scheduler..
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if (m_src->end_of_file() || (m_clip_end > 0 && frame_ts_micros > m_clip_end)) {
-		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: stopping playback. eof=%d, ts=%lld, now=%lld, clip_end=%lld ", (int)m_src->end_of_file(), frame_ts_micros, now_micros, m_clip_end );
-		if (m_src) {
-			m_src->stop();
-			m_src->release();
-			m_src = NULL;
-		}
-		m_lock.leave();
-		// If we have an audio renderer we should let it do the stopped() callback.
-		if (m_audio_renderer == NULL) m_context->stopped(m_cookie, 0);
-		return;
-	}
-#else
 	AM_DBG {
 		std::string tag = m_node->get_local_name();
 		assert(tag != "prefetch");
@@ -452,7 +414,6 @@ video_renderer::data_avail()
 			return;
 		}
 	}
-#endif
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: buf=0x%x, size=%d, ts=%d, now=%d", (void *) buf, size, (int)frame_ts_micros, (int)now_micros);
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);

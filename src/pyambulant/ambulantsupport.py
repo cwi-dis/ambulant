@@ -20,7 +20,6 @@ CXX2PYDECLFILE = MODNAME + "interface.h"     # The C++ to Python declarations
 
 includestuff = """
 /*AMBULANT_FOREIGN_INDENT_RULES*/
-#define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
 """
@@ -385,10 +384,7 @@ audio_format_choices_ptr = OpaqueByValueType('ambulant::net::audio_format_choice
 const_audio_format_choices_ptr = OpaqueByValueType('const ambulant::net::audio_format_choices*', 'audio_format_choicesObj')
 
 # Some type synonyms
-node_interface_ptr = node_ptr
 lib_node_ptr = node_ptr
-const_node_interface_ptr = const_node_ptr
-methods_node_interface = methods_node
 
 lib_event_processor_ptr = event_processor_ptr
 ambulant_lib_event_processor_ptr = event_processor_ptr
@@ -500,9 +496,7 @@ class BackVarInputBufferType(VarInputBufferType):
 
 InBuffer = BackVarInputBufferType('char', 'size_t', 'l')
 
-includestuff = """
-#define WITH_EXTERNAL_DOM 1
-"""
+includestuff = ""
 finalstuff = ""
 execfile("ambulantincludegen.py")
 includestuff += """
@@ -545,10 +539,7 @@ execfile("ambulantobjgen.py")
 
 print "=== declaring more types for callbacks ==="
 # Some type synonyms
-node_interface_ptr = node_ptr
 lib_node_ptr = node_ptr
-const_node_interface_ptr = const_node_ptr
-methods_node_interface = methods_node
 
 lib_event_processor_ptr = event_processor_ptr
 
@@ -581,9 +572,9 @@ for name, object in locals().items():
             object.add(f)
 
 # Dummy versions of methods we cannot support:
-##gui_screen_object.othermethods = [
-##    "bool get_screenshot(const char*, char**, size_t*) { return false; }",
-##]
+gui_screen_object.othermethods = [
+    "bool get_screenshot(const char*, char**, size_t*) { return false; }",
+]
 
 node_context_object.othermethods = [
     "const custom_test_map* get_custom_tests() const { return NULL; }",

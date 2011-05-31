@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -16,10 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/unix/unix_timer.h"
 #include "ambulant/lib/logger.h"
@@ -40,13 +36,11 @@ lib::unix::unix_timer::set_speed(double speed)
 	lib::logger::get_logger()->fatal("unix_timer: cannot set speed of realtime timer");
 }
 
-#ifdef WITH_CLOCK_SYNC
 void
 lib::unix::unix_timer::skew(signed_time_type sk)
 {
 	assert(sk == 0);
 }
-#endif
 
 lib::unix::unix_timer::time_type
 lib::unix::unix_timer::os_millitime()

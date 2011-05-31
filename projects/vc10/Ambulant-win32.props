@@ -5,7 +5,7 @@
 	Set global_ambulant_defines to the build-time options that influence all products (shared lib, plugins, browser plugins, etc) built. Picked up by many projects inside Ambulant_win32.sln.
 -->
 
-    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM</global_ambulant_defines>
+    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN</global_ambulant_defines>
 <!--
 	Set the following variables to the locations where you downloaded the various
 	third party libraries. Building Ambulant without these will be disappointing.

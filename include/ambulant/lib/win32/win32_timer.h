@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_LIB_WIN32_TIMER_H
@@ -68,11 +64,9 @@ class win32_timer : public ambulant::lib::timer  {
 	// Gets the realtime speed of this
 	// timer as modulated by its parent
 	double get_realtime_speed() const { return 1.0;}
-#ifdef WITH_CLOCK_SYNC
 	signed_time_type set_drift(signed_time_type drift) { return drift; };
 	signed_time_type get_drift() const { return 0; };
 	void skew(signed_time_type skew);
-#endif
   private:
 	ULONGLONG m_epoch;
 

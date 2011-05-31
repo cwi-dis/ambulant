@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_CG_CG_GUI_H
@@ -168,12 +164,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #endif// ! WITH_UIKIT
 }
 
-#ifdef	WITH_UIKIT
-- (BOOL) tappedAtPoint:(CGPoint) location;
-- (void) drawTestRect:(CGRect)rect;
-
-#endif//WITH_UIKIT
-
 - (id)initWithFrame:(CGRect)frameRect;
 - (id)initWithCoder:(NSCoder *)aDecoder;
 - (void)dealloc;
@@ -182,10 +172,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void)ambulantWindowClosed;
 - (bool)isAmbulantWindowInUse;
 - (bool)ignoreResize;
-#ifndef WITH_UIKIT
-- (BOOL)isFlipped;
-- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
-#endif
 
 - (void)ambulantSetSize: (ambulant::lib::size) bounds;
 - (void)ambulantNeedEvents: (bool) want;
@@ -198,7 +184,10 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifdef WITH_UIKIT
 - (void) tappedWithPoint: (CGPoint)where;
+- (BOOL) tappedAtPoint:(CGPoint) location;
 #else // ! WITH_UIKIT
+- (BOOL)isFlipped;
+- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;
 - (void)pseudoMouseMove: (id)dummy;
@@ -256,6 +245,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // path or something like that) getTransitionTmpSurface will return one.
 - (CGLayerRef) getTransitionTmpSurface;
 
+#if 0
 // while in a transition, getTransitionOldSource will return the old pixels,
 // i.e. the pixels "behind" the transitioning element.
 - (CGLayerRef) getTransitionOldSource; // Not used
@@ -269,6 +259,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 // Return part of the onscreen image, does not cater for AVFoundation
 - (CGImageRef) getOnScreenImageForRect: (CGRect)bounds; //TBD
+#endif // 0
 
 // pushes the context associated with transition_surface on the CGContext stack
 // this has the effect that subsequents drawings will be done on transition_surface

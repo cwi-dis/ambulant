@@ -719,26 +719,6 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\src\libambulant\gui\dx\dx_img_wic.cpp"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_player.cpp"
 						>
 						<FileConfiguration
@@ -1129,6 +1109,14 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="DebugShlibDX|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\d2\d2_window.cpp"
@@ -1192,7 +1180,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\libambulant\lib\node.cpp"
+					RelativePath="..\..\src\libambulant\lib\node_impl.cpp"
 					>
 				</File>
 				<File
@@ -1469,10 +1457,6 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_img.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_img_wic.h"
 							>
 						</File>
 						<File

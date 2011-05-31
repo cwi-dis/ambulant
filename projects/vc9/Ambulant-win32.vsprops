@@ -8,7 +8,7 @@
 	products (shared lib, plugins, browser plugins, etc) built.
 	Picked up by many projects inside Ambulant_win32.sln.
 -->
-<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM" PerformEnvironmentSet="false"/>
+<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN" PerformEnvironmentSet="false"/>
 
 <!--
 	Set the following variables to the locations where you downloaded the various

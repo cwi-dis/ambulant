@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,35 +19,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_SMIL2_STATE_H
 #define AMBULANT_SMIL2_STATE_H
 
-#ifndef WITH_SMIL30
-// We declare an empty class state_test_methods. This is because
-// the Python interface expects it, and this is the easiest way
-// to satisfy that.
-namespace ambulant {
-namespace common {
-class state_test_methods {
-	int dummy;
-};
-class state_component {
-	int dummy;
-};
-class state_component_factory {
-	int dummy;
-};
-class global_state_component_factory {
-	int dummy;
-};
-}
-}
-
-#else
 #include "ambulant/lib/node.h"
 
 namespace ambulant {
@@ -185,5 +159,4 @@ AMBULANTAPI global_state_component_factory *get_global_state_component_factory()
 } // namespace common
 
 } // namespace ambulant
-#endif
 #endif // AMBULANT_SMIL2_STATE_H

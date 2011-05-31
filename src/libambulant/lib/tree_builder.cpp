@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,13 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
@@ -42,28 +39,23 @@ lib::tree_builder::tree_builder(node_factory *nf, node_context *context, const c
 	m_well_formed(false),
 	m_node_factory(nf),
 	m_context(context),
-#ifdef WITH_SMIL30
 	m_bufsize(1024),
-#endif // WITH_SMIL30
 	m_filename(id)
 {
 	assert(m_node_factory);
-#ifndef WITH_EXTERNAL_DOM
+#if 0
+    // XXXJACK Unsure why this assert would be needed, disabling it for now (untested)
 	assert(m_node_factory == get_builtin_node_factory());
 #endif
-#ifdef WITH_SMIL30
 	m_buf = (char*) malloc(m_bufsize);
 	assert(m_buf);
-#endif // WITH_SMIL30
 	reset();
 }
 
 lib::tree_builder::~tree_builder()
 {
-#ifdef WITH_SMIL30
 	if (m_buf != NULL)
 		free(m_buf);
-#endif // WITH_SMIL30
 	if(m_xmlparser != 0)
 		delete m_xmlparser;
 	if(m_root != 0)
@@ -117,9 +109,7 @@ lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
 
 void
 lib::tree_builder::reset() {
-#ifdef WITH_SMIL30
 	m_xml_space_stack.clear();
-#endif // WITH_SMIL30
 	global_parser_factory* pf;
 	pf = lib::global_parser_factory::get_parser_factory();
 	if(m_xmlparser != 0) {
@@ -164,16 +154,14 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 		p = m_node_factory->new_node(qn, qattrs, m_context);
 		m_current->append_child(p);
 		m_current = p;
-	} else
+	} else {
 		m_well_formed = false;
-#ifdef WITH_EXTERNAL_DOM
+    }
 	while (m_pending_namespaces.size()) {
 		std::pair<std::string, std::string>& item = m_pending_namespaces.back();
 		m_current->set_prefix_mapping(item.first, item.second);
 		m_pending_namespaces.pop_back();
 	}
-#endif // WITH_EXTERNAL_DOM
-#ifdef WITH_SMIL30
 	q_attributes_list::const_iterator it;
 	for(it = qattrs.begin(); it != qattrs.end(); it++) {
 		if((*it).first.second == "space") {
@@ -182,15 +170,12 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 			break;
 		}
 	}
-#endif // WITH_SMIL30
 }
 
 void
 lib::tree_builder::end_element(const q_name_pair& qn) {
-#ifdef WITH_SMIL30
 	if (m_xml_space_stack.size() > 0 &&	 m_xml_space_stack.back().second == m_current)
 		m_xml_space_stack.pop_back();
-#endif // WITH_SMIL30
 	if(m_current != 0)
 		m_current = m_current->up();
 	else
@@ -200,7 +185,6 @@ lib::tree_builder::end_element(const q_name_pair& qn) {
 void
 lib::tree_builder::characters(const char *buf, size_t len) {
 	if(m_current != 0) {
-#ifdef WITH_SMIL30
 		// The <smiltext> tag has embedded data and tags
 		lib::node* n = NULL;
 		if (m_xml_space_stack.size() > 0
@@ -234,13 +218,8 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 				n = m_node_factory->new_data_node(m_buf, d-m_buf, m_context);
 		}
 		if (n) m_current->append_child(n);
-#else
-		m_current->append_data(buf, len);
-#endif // WITH_SMIL30
 	} else
 		m_well_formed = false;
-#ifdef WITH_SMIL30
-#endif // WITH_SMIL30
 }
 
 void
@@ -248,10 +227,8 @@ lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::st
 	AM_DBG lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
 	if(m_context)
 		m_context->set_prefix_mapping(prefix, uri);
-#ifdef WITH_EXTERNAL_DOM
 	std::pair<std::string,std::string> item(prefix, uri);
 	m_pending_namespaces.push_back(item);
-#endif // WITH_EXTERNAL_DOM
 }
 
 void

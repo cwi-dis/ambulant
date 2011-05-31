@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/delta_timer.h"
 
@@ -137,7 +133,6 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 	AM_DBG	if(!queue.empty()) write_trace();
 }
 
-#ifdef WITH_CLOCK_SYNC
 lib::timer::time_type lib::delta_timer::next_event_time() const
 {
 	std::list<timeout_event>::const_iterator it = m_events.begin();
@@ -145,7 +140,6 @@ lib::timer::time_type lib::delta_timer::next_event_time() const
 		return 1000000;
 	return (*it).second;
 }
-#endif
 
 
 void lib::delta_timer::write_trace() {

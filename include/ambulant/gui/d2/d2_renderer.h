@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_D2_D2_RENDERER_H
@@ -51,7 +47,8 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 		m_transition_rendertarget(NULL),
 		m_fullscreen(false),
 		m_fullscreen_checked(false),
-		m_trans_engine(NULL) {}
+		m_trans_engine(NULL)
+	{}
 	~d2_transition_renderer();
 
 	void set_surface(common::surface *dest);
@@ -63,7 +60,7 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void start_outtransition(const lib::transition_info *info);
 	ID2D1RenderTarget* get_current_rendertarget();
 	ID2D1BitmapRenderTarget* get_transition_rendertarget();
-	void check_fullscreen_outtrans(/*common::surface surf, */const lib::node* node);
+	void check_fullscreen_outtrans(const lib::node* node);
 
   protected:
 	d2_player* m_d2player;
@@ -95,11 +92,8 @@ class d2_renderer : public d2_resources, public RP_Base {
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
 	:	RP_Base(context, cookie, node, evp, factory, mdp),
-		m_d2player(dynamic_cast<d2_player*>(mdp))
-//#ifdef D2D_NOTYET
-		,
+		m_d2player(dynamic_cast<d2_player*>(mdp)),
 		m_transition_renderer(new d2_transition_renderer(evp))
-//#endif
 	{
 		assert(m_d2player);
 		m_d2player->register_resources(this);
@@ -108,8 +102,6 @@ class d2_renderer : public d2_resources, public RP_Base {
 		if(m_d2player)
 			m_d2player->unregister_resources(this);
 		m_transition_renderer->release();
-//JNK	if (m_transition_rendertarget != NULL)
-//JNK		m_transition_rendertarget->Release();
 	}
 
 	void set_surface(common::surface *dest) {

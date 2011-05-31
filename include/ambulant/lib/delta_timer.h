@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_LIB_DELTA_TIMER_H
@@ -48,7 +44,7 @@ namespace lib {
 /// Uses delta timer pattern.
 class delta_timer {
   public:
-  	/// A type defining how this timer represents time.
+	/// A type defining how this timer represents time.
 	typedef timer::time_type time_type;
 	/// An event plus the delta-time it should fire.
 	typedef std::pair<event*, time_type> timeout_event;
@@ -77,10 +73,8 @@ class delta_timer {
 	/// Clear all events.
 	void clear();
 
-#ifdef WITH_CLOCK_SYNC
 	/// Return the delay until the next event, or a large number.
 	time_type next_event_time() const;
-#endif
 
 	/// debug output.
 	void write_trace();

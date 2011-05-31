@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,9 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
 /*
  * Ref-counted mechanism implementation.
  *
@@ -67,7 +64,7 @@ class AMBULANTAPI ref_counted {
 template <class T>
 class basic_atomic_count {
   public:
-  	/// Construct with given initial value.
+	/// Construct with given initial value.
 	explicit basic_atomic_count(long v): m_value(v){}
 
 	/// Increment the counter.
@@ -174,7 +171,7 @@ class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
 template<class T>
 class auto_ref : public ref_counted_obj {
   public:
-  	/// Construct for a given object.
+	/// Construct for a given object.
 	auto_ref(T* ptr = 0) : m_ptr(ptr) {}
 	~auto_ref() { delete m_ptr;}
 

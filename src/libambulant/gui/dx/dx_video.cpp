@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/dx/dx_video.h"
 #include "ambulant/gui/dx/dx_viewport.h"
@@ -245,9 +241,6 @@ void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_wind
 	// Translate vid_reg_rc_dirty to viewport coordinates
 	lib::point pt = m_dest->get_global_topleft();
 	vid_reg_rc_dirty.translate(pt);
-
-	// keep debug message area
-	m_msg_rect |= vid_reg_rc_dirty;
 
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {

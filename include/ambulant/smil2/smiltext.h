@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_SMIL2_SMILTEXT_H
 #define AMBULANT_SMIL2_SMILTEXT_H
 
@@ -34,7 +30,6 @@
 
 #include <stack>
 
-#ifdef WITH_SMIL30
 namespace ambulant {
 
 namespace smil2 {
@@ -397,7 +392,5 @@ class smiltext_layout_engine {
 } // namespace smil2
 
 } // namespace ambulant
-
-#endif // WITH_SMIL30
 
 #endif // AMBULANT_SMIL2_SMILTEXT_H

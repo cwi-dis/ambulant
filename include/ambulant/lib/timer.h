@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_LIB_TIMER_H
@@ -54,7 +50,6 @@ class timer {
 	/// Gets the realtime speed of this timer as modulated by its parent.
 	virtual double get_realtime_speed() const = 0;
 
-#ifdef WITH_CLOCK_SYNC
 	/// Signals that some realtime renderer has detected a clock drift.
 	/// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
 	/// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
@@ -66,7 +61,6 @@ class timer {
 
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
-#endif
 };
 
 /// Controller interface to timer objects.
@@ -119,7 +113,6 @@ class timer_control : public timer {
 	/// Returns the realtime speed of this timer relative to the wallclock timer.
 	virtual double get_realtime_speed() const = 0;
 
-#ifdef WITH_CLOCK_SYNC
 	/// Signals that some realtime renderer has detected a clock drift.
 	/// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
 	/// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
@@ -131,7 +124,6 @@ class timer_control : public timer {
 
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
-#endif
 
 };
 
@@ -191,7 +183,6 @@ class timer_control_impl : public timer_control {
 	/// as modulated by its parent.
 	double get_realtime_speed() const ;
 
-#ifdef WITH_CLOCK_SYNC
 	/// Signals that some realtime renderer has detected a clock drift.
 	/// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
 	signed_time_type set_drift(signed_time_type drift) {
@@ -211,7 +202,6 @@ class timer_control_impl : public timer_control {
 
 	/// Skew the clock.
 	void skew(signed_time_type skew_);
-#endif
 
   private:
 	void _start(time_type t = 0);
@@ -228,9 +218,7 @@ class timer_control_impl : public timer_control {
 	time_type m_local_epoch;
 	double m_speed;
 	bool m_running;
-#ifdef WITH_CLOCK_SYNC
 	signed_time_type m_drift;
-#endif
 	critical_section m_lock;
 };
 

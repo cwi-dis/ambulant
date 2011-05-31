@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,18 +19,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_QT_SMILTEXT_H
 #define AMBULANT_GUI_QT_SMILTEXT_H
 
-#ifdef  WITH_SMIL30
-
-#include "ambulant/config/config.h"
 #include <string>
-
+#include "ambulant/config/config.h"
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/qt/qt_transition.h"
@@ -95,6 +88,5 @@ class qt_smiltext_renderer :
 } // namespace gui
 
 } // namespace ambulant
-#endif //WITH_SMIL30
 
 #endif // AMBULANT_GUI_QT_SMILTEXT_H

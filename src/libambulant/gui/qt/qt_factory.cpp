@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,13 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 
 //#define AM_DBG if(1)
 #ifndef AM_DBG
@@ -29,9 +28,7 @@
 #ifdef	WITH_QT_HTML_WIDGET
 #include "ambulant/gui/qt/qt_html_renderer.h"
 #endif/*WITH_QT_HTML_WIDGET*/
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/qt/qt_smiltext.h"
-#endif/*WITH_SMIL30*/
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/gui/qt/qt_util.h"
 #include "ambulant/gui/qt/qt_video_renderer.h"

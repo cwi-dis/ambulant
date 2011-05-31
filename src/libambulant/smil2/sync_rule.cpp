@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -16,10 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/smil2/sync_rule.h"
@@ -312,10 +308,8 @@ ambulant::smil2::sync_event_from_str(const std::string& s) {
 		events[st("outOfBoundsEvent")] = tn_outofbounds_event;
 		events[st("click")] = tn_activate_event;
 		events[st("marker")] = tn_marker_event;
-#ifdef WITH_SMIL30
 		events[st("stateChange")] = state_change_event;
 		events[st("tevEvent")] = tev_event;
-#endif
 		events[st("accesskey")] = accesskey_event;
 	}
 	std::map<std::string, sync_event>::iterator it = events.find(s);
@@ -340,10 +334,8 @@ ambulant::smil2::sync_event_str(sync_event ev) {
 		case tn_inbounds_event: return "inBoundsEvent";
 		case tn_outofbounds_event: return "outOfBoundsEvent";
 		case tn_marker_event: return "marker";
-#ifdef WITH_SMIL30
 		case state_change_event: return "stateChange";
 		case tev_event: return "tevEvent";
-#endif
 		case accesskey_event: return "accesskey";
 		case tn_dom_call: return "beginElement()";
 		case tn_unknown_event: break;

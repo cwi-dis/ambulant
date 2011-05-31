@@ -1,31 +1,27 @@
-    //
-//  AmbulantWebViewController.mm
-//  player_iphone
+// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-//  Created by Kees Blom on 8/7/10.
-//  Copyright 2010 CWI. All rights reserved.
+// Copyright (C) 2003-2011 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
+// Ambulant Player is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2.1 of the License, or
+// (at your option) any later version.
+//
+// Ambulant Player is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Ambulant Player; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #import "AmbulantWebViewController.h"
 
 
 @implementation AmbulantWebViewController
 
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView {
-}
-*/
 -(void) loadURL {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString* urlstring;
@@ -34,7 +30,6 @@
 	if (urlField == nil) {
 		NSBundle* thisBundle = [NSBundle bundleForClass:[self class]];
 		urlstring = [thisBundle pathForResource:@"AmbulantHelp-iOS" ofType:@"html"];
-//		urlstring = [@"file://" stringByAppendingString:urlstring];
 		url = [[NSURL alloc] initFileURLWithPath: urlstring];
 	} else {
 		urlstring = [NSString stringWithString: urlField];
@@ -42,13 +37,9 @@
 	}
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
 	[webView loadRequest: request]; 
-//	[request release];
-//	[url release];
-//	[urlstring release];
 	[pool release];
 }
-/* */
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+
 - (void)viewDidLoad {
 	NSLog(@"AmbulantWebViewController: viewDidLoad");
     [super viewDidLoad];
@@ -69,7 +60,6 @@
 //	[self dismissModalViewControllerAnimated:YES];
 }
 
-// Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return [delegate canShowRotatedUIViews];

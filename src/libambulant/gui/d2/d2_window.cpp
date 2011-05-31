@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,14 +17,9 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/common/region.h"
-
 #include "ambulant/lib/logger.h"
 
 #ifndef AM_DBG
@@ -35,11 +30,11 @@ using namespace ambulant;
 
 gui::d2::d2_window::d2_window(const std::string& name,
 	lib::size bounds,
-	region *rgn,
+	common::gui_events *handler,
 	d2_player *player,
 	HWND hwnd)
-:	common::gui_window(rgn),
-	m_rgn(rgn),
+:	common::gui_window(handler),
+	m_handler(handler),
 	m_name(name),
 	m_hwnd(hwnd),
 	m_viewrc(lib::point(0, 0), lib::size(bounds.w, bounds.h)),
@@ -88,11 +83,10 @@ void gui::d2::d2_window::redraw(const lib::rect &r) {
 	rc &= m_viewrc;
 	AM_DBG lib::logger::get_logger()->debug("d2_window::redraw(%d,%d,%d,%d): drawing", rc.left(), rc.top(), rc.width(), rc.height());
 	//assert(!m_redraw_rect_valid);
-	m_rgn->redraw(rc, this);
+	m_handler->redraw(rc, this);
 }
 
 void gui::d2::d2_window::redraw_now() {
-#if 1 // #ifdef JNK
 	m_redraw_rect_lock.enter();
 	int keep_lock = m_locked;
 	m_locked = 0;
@@ -101,7 +95,6 @@ void gui::d2::d2_window::redraw_now() {
 	m_redraw_rect_valid = false;
 	m_locked = keep_lock;
 	m_redraw_rect_lock.leave();
-#endif
 }
 
 void gui::d2::d2_window::redraw() {

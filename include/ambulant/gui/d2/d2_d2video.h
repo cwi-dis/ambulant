@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_D2_D2VIDEO_H
@@ -66,7 +62,6 @@ class d2_d2video_renderer
 	~d2_d2video_renderer();
 	common::duration get_dur();
 	void start(double t);
-	//void stop();
 	bool stop();
 	void pause(common::pause_display d=common::display_show);
 	void seek(double t);
@@ -101,11 +96,6 @@ class d2_d2video_renderer
 
 	d2_player *m_d2player;
 	lib::critical_section m_cs;
-
-	// for debugging
-	lib::rect m_msg_rect;
-	DWORD m_rot_index;
-
 };
 
 } // namespace d2

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/schema.h"
 #include <cmath>
@@ -33,10 +29,7 @@ static const char* time_containers[] = {
 	"body", "seq", "par", "excl"
 };
 static const char* discrete_leafs[] = {
-	"text", "img", "ref", "brush"
-#ifdef WITH_SMIL30
-	, "smilText"
-#endif
+	"text", "img", "ref", "brush", "smilText"
 };
 
 static const char* continuous_leafs[] = {
@@ -51,17 +44,13 @@ static const char* layout_elements[] = {
 	"root-layout", "topLayout", "region"
 };
 
-#ifdef WITH_SMIL30
 static const char* statecommand_elements[] = {
 	"setvalue", "newvalue", "delvalue", "send"
 };
-#endif // WITH_SMIL30
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 static const char* prefetch_elements[] = {
 	"prefetch"
 };
-#endif // WITH_SEAMLESS_PLAYBACK
 
 // Create the smplest possible schema factory
 // Its sole purpose is to create privately the schema singleton.
@@ -108,23 +97,18 @@ schema::schema() {
 		m_animations.insert(animate_elements[i]);
 	}
 
-#ifdef WITH_SMIL30
 	n = sizeof(statecommand_elements)/sizeof(const char *);
 	for(i =0;i<n;i++) {
 		m_time_elements.insert(statecommand_elements[i]);
 		m_discrete.insert(statecommand_elements[i]);
 		m_statecommands.insert(statecommand_elements[i]);
 	}
-#endif // WITH_SMIL30
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	n = sizeof(prefetch_elements)/sizeof(const char *);
 	for(i =0;i<n;i++) {
 		m_time_elements.insert(prefetch_elements[i]);
 		m_prefetch.insert(prefetch_elements[i]);
 	}
-
-#endif // WITH_SEAMLESS_PLAYBACK
 
 	n = sizeof(layout_elements)/sizeof(const char *);
 	for(i=0; i<n; i++) {
@@ -154,17 +138,13 @@ bool schema::is_animation(const lib::xml_string& tag) const {
 	return m_animations.find(tag) != m_animations.end();
 }
 
-#ifdef WITH_SMIL30
 bool schema::is_statecommand(const lib::xml_string& tag) const {
 	return m_statecommands.find(tag) != m_statecommands.end();
 }
-#endif // WITH_SMIL30
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 bool schema::is_prefetch(const lib::xml_string& tag) const {
 	return m_prefetch.find(tag) != m_prefetch.end();
 }
-#endif //WITH_SEAMLESS_PLAYBACK
 
 const char*
 ambulant::common::time_container_type_as_str(time_container_type t) {

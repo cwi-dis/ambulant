@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TIME_ATTRS_H
@@ -52,9 +48,7 @@ enum sync_value_type {
 	sv_repeat,
 	sv_accesskey,
 	sv_media_marker,
-#ifdef WITH_SMIL30
 	sv_state_change,
-#endif
 	sv_wallclock,
 	sv_indefinite
 };
@@ -72,15 +66,9 @@ enum endsync_rule {esr_first, esr_last, esr_all, esr_media, esr_id};
 
 // The last three values are intermediate values
 // and don't represent a final fill_behavior.
-#ifndef WITH_SEAMLESS_PLAYBACK
-enum fill_behavior {fill_remove, fill_freeze, fill_hold,
-	fill_transition,
-	fill_auto, fill_default, fill_inherit};
-#else
 enum fill_behavior {fill_remove, fill_freeze, fill_hold, fill_continue,
 	fill_transition,
 	fill_auto, fill_default, fill_inherit};
-#endif
 
 // The last two values are intermediate values
 // and don't represent a restart_behavior.
@@ -101,9 +89,7 @@ class time_attr_parser : public time_traits {
 	bool parse_plain_offset(const std::string& s, sync_value_struct& svs);
 	bool parse_wallclock(const std::string& s, sync_value_struct& svs);
 	bool parse_accesskey(const std::string& s, sync_value_struct& svs);
-#ifdef WITH_SMIL30
 	bool parse_statechange(const std::string& s, sync_value_struct& svs);
-#endif
 	bool parse_nmtoken_offset(const std::string& s, sync_value_struct& svs);
   private:
 	const lib::node *m_node;

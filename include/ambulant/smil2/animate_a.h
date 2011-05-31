@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_ANIMATE_A_H
@@ -80,9 +76,7 @@ class animate_attrs {
 	void get_values(std::vector<lib::color_t>& v);
 	void get_values(std::vector<lib::point>& v);
 	void get_values(std::vector<common::sound_alignment>& v);
-#ifdef WITH_SMIL30
 	void get_values(std::vector<common::region_dim_spec>& v);
-#endif // WITH_SMIL30
 
   private:
 
@@ -96,9 +90,7 @@ class animate_attrs {
 	double safeatof(const char *p);
 	common::region_dim to_region_dim(const std::string& s);
 	lib::point to_point(const std::string& s);
-#ifdef WITH_SMIL30
 	common::region_dim_spec to_rds(const std::string& s);
-#endif // WITH_SMIL30
 
 	const lib::node *m_node;
 	const lib::node *m_tparent;

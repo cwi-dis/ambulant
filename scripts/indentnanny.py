@@ -130,6 +130,8 @@ class IndentNanny:
                     dirs.remove('.svn')
                 if 'CVS' in dirs:
                     dirs.remove('CVS')
+                if '.hg' in dirs:
+                    dirs.remove('.hg')
             return rv
         else:
             return self.check_file(filename)
@@ -146,7 +148,7 @@ def main():
     parser.add_option("-t", "--tabs", dest="tab_only", action="store_true",
         help="allow only tab-based indentation (except for 2 spaces)" )
     parser.add_option("-s", "--skip", dest="skip_patterns", action="append", metavar="STR",
-        help="skip filenames or dirs that contain STR. CVS and .svn are automatically skipped")
+        help="skip filenames or dirs that contain STR. CVS, .svn and .hg are automatically skipped")
     options, args = parser.parse_args()
     
     allok = True

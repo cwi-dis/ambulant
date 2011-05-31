@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TIMEGRAPH_H
@@ -57,9 +53,7 @@ class timegraph : public time_traits {
 
 	time_node* get_root() { return m_root;}
 	const time_node* get_root() const { return m_root;}
-#ifdef WITH_SMIL30
 	const std::set<std::string>& get_state_change_args() {return m_state_change_args; }
-#endif // WITH_SMIL30
 
 	time_node* detach_root();
 	std::map<int, time_node*>* detach_dom2tn();
@@ -90,9 +84,7 @@ class timegraph : public time_traits {
 	std::map<std::string, time_node*> m_id2tn;
 	std::map<int, time_node*> *m_dom2tn;
 	lib::logger *m_logger;
-#ifdef WITH_SMIL30
 	std::set<std::string> m_state_change_args;
-#endif // WITH_SMIL30
 };
 
 

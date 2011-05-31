@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/config/config.h"
 #include "ambulant/gui/dx/dx_player.h"
@@ -51,12 +47,9 @@
 #include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/gui/dx/dx_bgrenderer.h"
 #include "ambulant/gui/dx/dx_text.h"
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/dx/dx_smiltext.h"
-#endif/*WITH_SMIL30*/
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
-#include "ambulant/gui/dx/dx_img_wic.h"
 #include "ambulant/gui/dx/dx_brush.h"
 
 #if _MSC_VER == 1500
@@ -65,10 +58,10 @@
 // See <http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4bc93a16-4ad5-496c-954c-45efbe4b180b>
 // for details.
 namespace std {
- // TEMPLATE FUNCTION _Swap_adl
- template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange values stored at _Left and _Right, using ADL
-  swap(_Left, _Right);
- }
+// TEMPLATE FUNCTION _Swap_adl
+template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange values stored at _Left and _Right, using ADL
+	swap(_Left, _Right);
+}
 }
 #endif 
 
@@ -235,10 +228,8 @@ gui::dx::dx_player::cleanup()
 	delete pf;
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
-#ifdef WITH_SMIL30
 	common::global_state_component_factory *scf = common::get_global_state_component_factory();
 	delete scf;
-#endif
 }
 
 void
@@ -255,9 +246,6 @@ gui::dx::dx_player::init_playable_factory()
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif
 	pf->add_factory(create_dx_brush_playable_factory(this, this));
-#ifdef WITH_WIC
-	pf->add_factory(create_dx_image_wic_playable_factory(this, this));
-#endif
 	pf->add_factory(create_dx_image_playable_factory(this, this));
 	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
 	pf->add_factory(create_dx_text_playable_factory(this, this));
@@ -394,7 +382,7 @@ void gui::dx::dx_player::on_click(int x, int y, HWND hwnd) {
 	lib::point pt(x, y);
 	dx_window *dxwin = (dx_window *) get_window(hwnd);
 	if(!dxwin) return;
-	region *r = dxwin->get_region();
+	common::gui_events *r = dxwin->get_gui_events();
 	if(r)
 		r->user_event(pt, common::user_event_click);
 }
@@ -404,7 +392,7 @@ int gui::dx::dx_player::get_cursor(int x, int y, HWND hwnd) {
 	lib::point pt(x, y);
 	dx_window *dxwin = (dx_window *) get_window(hwnd);
 	if(!dxwin) return 0;
-	region *r = dxwin->get_region();
+	common::gui_events *r = dxwin->get_gui_events();
 	m_player->before_mousemove(0);
 	if(r) r->user_event(pt, common::user_event_mouse_over);
 	return m_player->after_mousemove();
@@ -469,16 +457,12 @@ gui::dx::dx_player::new_window(const std::string &name,
 	// Create the associated dx viewport
 	winfo->v = create_viewport(bounds.w, bounds.h, winfo->h);
 
-	// Region?
-	region *rgn = (region *) src;
-
 	// Clear the viewport
-	const common::region_info *ri = rgn->get_info();
-	winfo->v->set_background(ri?ri->get_bgcolor():dxparams::I()->invalid_color());
+	winfo->v->set_background(dxparams::I()->invalid_color());
 	winfo->v->clear();
 
 	// Create a concrete gui_window
-	winfo->w = new dx_window(name, bounds, rgn, this, winfo->v);
+	winfo->w = new dx_window(name, bounds, src, this, winfo->v);
 	winfo->f = 0;
 
 	// Store the wininfo struct
@@ -681,33 +665,9 @@ void gui::dx::dx_player::schedule_update() {
 	evp->add_event(m_update_event, 50, lib::ep_high);
 }
 
-////////////////////////
-// Layout helpers with a lot of hacks
-
-typedef common::surface_template iregion;
-typedef common::surface_impl region;
-
-static const region*
-get_top_layout(smil2::smil_layout_manager *layout, const lib::node* n) {
-	iregion *ir = layout->get_region(n);
-	if(!ir) return 0;
-	const region *r = (const region*) ir;
-	while(r->get_parent()) r = r->get_parent();
-	return r;
-}
-
-static const char*
-get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
-	const region* r = get_top_layout(layout, n);
-	if(!r) return 0;
-	const common::region_info *ri = r->get_info();
-	return ri?ri->get_name().c_str():0;
-}
-
 void gui::dx::dx_player::show_file(const net::url& href) {
 	ShellExecute(GetDesktopWindow(), text_str("open"), lib::textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
 }
-
 
 void gui::dx::dx_player::done(common::player *p) {
 	m_update_event = 0;

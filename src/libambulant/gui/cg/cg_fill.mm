@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_fill.h"
@@ -67,7 +63,6 @@ cg_fill_renderer::~cg_fill_renderer()
 void
 cg_fill_renderer::start(double where)
 {
-//	start_transition(where);
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cg_fill_renderer.start(0x%x)", (void *)this);
 	if (m_activated) {
@@ -111,23 +106,15 @@ cg_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	color_t color = lib::to_color(color_attr);
 	AM_DBG lib::logger::get_logger()->debug("cg_fill_renderer.redraw: clearing to 0x%x", (long)color);
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
 	CGFloat components[] = {redf(color), greenf(color), bluef(color), alfa};
-//	CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
-
-//	PLOVER [nscolor set];
-//	PLOVER CGRectFillUsingOperation(cg_dstrect_whole, NSCompositeSourceAtop);
 	CGContextRef myContext = [view getCGContext];
-//	CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetFillColorSpace(myContext, genericColorSpace);
 	CGColorSpaceRelease(genericColorSpace);
 	CGContextSetFillColor(myContext, components);
 	CGContextFillRect(myContext, cg_dstrect_whole);
-//	CGColorRelease(cgcolor);
 	m_lock.leave();
 }
 
@@ -147,7 +134,6 @@ cg_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	CGContextRef myContext = [view getCGContext];
-//	CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
 	AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)m_src->get_bgcolor(), m_src->get_bgopacity());
 	rect dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
@@ -159,23 +145,15 @@ cg_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 		color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)bgcolor, opacity);
 		CGFloat components[] = {redf(bgcolor), greenf(bgcolor), bluef(bgcolor), opacity};
-//		CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
-//		PLOVER [cg_bgcolor set];
-//		PLOVER CGRectFillUsingOperation(cg_dstrect_whole, NSCompositeSourceAtop);
 		CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 		CGContextSetFillColorSpace(myContext, genericColorSpace);
 		CGColorSpaceRelease(genericColorSpace);
 		CGContextSetFillColor(myContext, components);
 		CGContextFillRect(myContext, cg_dstrect_whole);
-//		CGColorRelease(cgcolor);
 	}
 	if (m_bgimage) {
 		AM_DBG lib::logger::get_logger()->debug("cg_background_renderer::redraw(): drawing image");
-//		CGRect srcrect = CGRectMake(0, 0,
-//			CGImageGetWidth(m_bgimage), CGImageGetHeight(m_bgimage));
-//		PLOVER [m_bgimage drawInRect: cg_dstrect_whole fromRect: srcrect
-//			operation: NSCompositeSourceAtop fraction: 1.0];
-		CGContextDrawImage (myContext, cg_dstrect_whole, m_bgimage);
+		CGContextDrawImage(myContext, cg_dstrect_whole, m_bgimage);
 	}
 }
 
@@ -193,17 +171,12 @@ cg_background_renderer::highlight(common::gui_window *window)
 	color_t hicolor = 0x0000ff;
 	AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::highlight: framing with color 0x%x", (long)hicolor);
 	CGFloat components[] = {redf(hicolor), greenf(hicolor), bluef(hicolor), 1.0};
-//	CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
-//	PLOVER [cgcolor set];
-//	PLOVER NSFrameRect(cg_dstrect_whole);
 	CGContextRef myContext = [view getCGContext];
-//	CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetStrokeColorSpace(myContext, genericColorSpace);
 	CGColorSpaceRelease(genericColorSpace);
 	CGContextSetStrokeColor(myContext, components);
 	CGContextStrokeRect(myContext, cg_dstrect_whole);
-//	CGColorRelease(cgcolor);
 }
 
 void
@@ -218,8 +191,6 @@ cg_background_renderer::keep_as_background()
 	rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
-
-//	XYZZY m_bgimage = [[view getOnScreenImageForRect: cg_dstrect_whole] retain];
 }
 
 } // namespace cg

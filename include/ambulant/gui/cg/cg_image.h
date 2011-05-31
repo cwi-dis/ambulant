@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_CG_CG_IMAGE_H
 #define AMBULANT_GUI_CG_CG_IMAGE_H
 
@@ -30,8 +26,6 @@
 //#include "ambulant/smil2/transition.h"
 //#include "ambulant/lib/mtsync.h"
 //#include <CoreGraphics/CoreGraphics.h>
-
-#undef WITH_OLD_CROP_CODE
 
 namespace ambulant {
 
@@ -54,9 +48,6 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 	:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 		m_nsdata(NULL),
 		m_image(NULL),
-#ifdef WITH_OLD_CROP_CODE
-        m_image_cropped(NULL),
-#endif
 		m_cglayer(NULL) {};
 	~cg_image_renderer();
 
@@ -66,10 +57,6 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 
 	CFDataRef m_nsdata;
 	CGImageRef m_image;
-#ifdef WITH_OLD_CROP_CODE
-    CGImageRef m_image_cropped;
-    CGImage *_cropped_image(const lib::rect& rect);
-#endif
 	lib::size m_size;
 	CGLayerRef m_cglayer;
 	lib::rect m_rect_cropped;

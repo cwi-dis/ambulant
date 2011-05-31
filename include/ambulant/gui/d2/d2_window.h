@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_D2_WINDOW_H
 #define AMBULANT_GUI_D2_WINDOW_H
 
@@ -33,13 +29,6 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/common/region.h"
-
-namespace ambulant {
-namespace common {
-class passive_region;
-}}
-
-typedef ambulant::common::surface_impl region; // XXX Or should it be surface??
 
 namespace ambulant {
 
@@ -53,7 +42,7 @@ class d2_window : public common::gui_window {
   public:
 	d2_window(const std::string& name,
 		lib::size bounds,
-		region *rgn,
+		common::gui_events *handler,
 		d2_player *player,
 		HWND hwnd);
 	~d2_window();
@@ -65,7 +54,7 @@ class d2_window : public common::gui_window {
 	void redraw_now();
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
-	region *get_region() { return m_rgn;}
+	common::gui_events *get_gui_events() { return m_handler;}
 	const lib::rect& get_rect() { return m_viewrc; }
 	void lock_redraw();
 	void unlock_redraw();
@@ -74,11 +63,11 @@ class d2_window : public common::gui_window {
   private:
 	void _need_redraw(const lib::rect& r);
 
-	region *m_rgn;	// Ambulant window
-	HWND m_hwnd;	// Windows window
-	std::string m_name; // for easy access
+	common::gui_events *m_handler;	// Ambulant window
+	HWND m_hwnd;					// Windows window
+	std::string m_name;				// for easy access
 	lib::rect m_viewrc;
-	d2_player *m_player;	// Link back to our owning player
+	d2_player *m_player;			// Link back to our owning player
 
 	// lock/unlock redraw
 	lib::critical_section m_redraw_rect_lock;

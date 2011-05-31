@@ -337,7 +337,6 @@ const ambulant::lib::node* node_context::get_node(const std::string& idd) const
 	return _rv;
 }
 
-#ifdef WITH_SMIL30
 ambulant::common::state_component* node_context::get_state() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -361,9 +360,7 @@ ambulant::common::state_component* node_context::get_state() const
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-#endif
 
-#ifdef WITH_SMIL30
 const ambulant::lib::xml_string& node_context::apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -396,7 +393,6 @@ const ambulant::lib::xml_string& node_context::apply_avt(const ambulant::lib::no
 	const_cast<node_context *>(this)->apply_avt_rvkeepref = apply_avt;
 	return apply_avt_rvkeepref;
 }
-#endif
 
 /* --------------------------- Class node --------------------------- */
 
@@ -2909,7 +2905,6 @@ gui_screen::gui_screen(PyObject *itself)
 	if (itself)
 	{
 		if (!PyObject_HasAttrString(itself, "get_size")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: get_size");
-		if (!PyObject_HasAttrString(itself, "get_screenshot")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: get_screenshot");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2946,39 +2941,6 @@ void gui_screen::get_size(int* width, int* height)
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-}
-
-bool gui_screen::get_screenshot(const char* type, char* *out_data__out__, size_t* out_data__len__)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-#if 1
-	// XXXJACK: MManual hack: disable this method for C++ -> Python calls.
-	_rv = false;
-#else
-	PyObject *py_type = Py_BuildValue("s", type);
-	PyObject *py_out_data = Py_BuildValue("z#", out_data__out__, (int)out_data__len__);
-
-	PyObject *py_rv = PyObject_CallMethod(py_gui_screen, "get_screenshot", "(OO)", py_type, py_out_data);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during gui_screen::get_screenshot() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during gui_screen::get_screenshot() return:\n");
-		PyErr_Print();
-	}
-
-	out_data__out__ = NULL;
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_type);
-	Py_XDECREF(py_out_data);
-#endif
-	PyGILState_Release(_GILState);
-	return _rv;
 }
 
 /* ------------------------ Class gui_player ------------------------ */
@@ -4710,7 +4672,6 @@ surface_template::surface_template(PyObject *itself)
 	{
 		if (!PyObject_HasAttrString(itself, "new_subsurface")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: new_subsurface");
 		if (!PyObject_HasAttrString(itself, "activate")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: activate");
-		if (!PyObject_HasAttrString(itself, "new_default_subsurface")) PyErr_Warn(PyExc_Warning, "surface_template: missing attribute: new_default_subsurface");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -4779,32 +4740,6 @@ ambulant::common::surface* surface_template::activate()
 	PyGILState_Release(_GILState);
 	return _rv;
 }
-
-#ifdef WITH_AMBULANT_TEST
-ambulant::common::surface* surface_template::new_default_subsurface()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::common::surface* _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_surface_template, "new_default_subsurface", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during surface_template::new_default_subsurface() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", surfaceObj_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during surface_template::new_default_subsurface() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-#endif
 
 /* --------------------- Class surface_factory ---------------------- */
 

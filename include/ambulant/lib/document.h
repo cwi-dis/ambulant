@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_LIB_DOCUMENT_H
@@ -40,7 +36,6 @@ namespace ambulant {
 
 namespace lib {
 
-#ifdef WITH_SMIL30
 /// Interface for getting callbacks if underlying values used in an Attribute Value Template have changed.
 class AMBULANTAPI avt_change_notification {
   public:
@@ -48,7 +43,6 @@ class AMBULANTAPI avt_change_notification {
 	/// Called when any attribute of the given node has seen an AVT change.
 	virtual void avt_value_changed_for(const lib::node *n) = 0;
 };
-#endif // WITH_SMIL30
 
 /// Information on custom test used in the document.
 class custom_test {
@@ -65,10 +59,7 @@ class custom_test {
 /// This class is reachable from node objects.
 /// and provides context services to them.
 class AMBULANTAPI document :
-	public node_context
-#ifdef WITH_SMIL30
-	, public common::state_change_callback
-#endif
+	public node_context, public common::state_change_callback
 {
 
   public:
@@ -131,7 +122,6 @@ class AMBULANTAPI document :
 	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
 
-#ifdef WITH_SMIL30
 	/// Return the state engine.
 	common::state_component *get_state() const { return m_state;}
 
@@ -146,8 +136,6 @@ class AMBULANTAPI document :
 
 	/// Forward state changes to entities that requested AVT change notification
 	void on_state_change(const char *ref);
-
-#endif // WITH_SMIL30
 
   protected:
 	document();
@@ -191,7 +179,6 @@ class AMBULANTAPI document :
 	// map of id to nodes
 	std::map<std::string, const node*> m_id2node;
 
-#ifdef WITH_SMIL30
 	// Implementation of state document
 	common::state_component *m_state;
 
@@ -204,8 +191,6 @@ class AMBULANTAPI document :
 	void _register_node_avt_dependence(const node *n, const xml_string& expr);
 	// Cache of per-expression avt values.
 	std::map<const node *, std::map<xml_string, xml_string> > m_avtcache;
-
-#endif // WITH_SMIL30
 
 #ifdef _MSC_VER
 #pragma warning(pop)

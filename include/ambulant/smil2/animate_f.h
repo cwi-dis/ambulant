@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_ANIMATE_F_H
@@ -425,7 +421,6 @@ inline double dist(const ambulant::common::region_dim& rd1, const ambulant::comm
 	return 0;
 }
 
-#ifdef WITH_SMIL30
 template <>
 inline double dist(const ambulant::common::region_dim_spec& rds1, const ambulant::common::region_dim_spec& rds2) {
 	double dx = dist(rds1.left, rds2.left);
@@ -434,7 +429,6 @@ inline double dist(const ambulant::common::region_dim_spec& rds1, const ambulant
 	double dh = dist(rds1.height, rds2.height);
 	return std::max(std::max(dx, dy), std::max(dw, dh));
 }
-#endif // WITH_SMIL30
 
 // Distance specialization for lib::point
 template <>

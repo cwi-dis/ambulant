@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -281,7 +281,6 @@ ambulant::net::rtsp_demux::seek(timestamp_t time)
 	m_critical_section.leave();
 }
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 void
 ambulant::net::rtsp_demux::set_clip_end(timestamp_t clip_end)
 {
@@ -290,7 +289,6 @@ ambulant::net::rtsp_demux::set_clip_end(timestamp_t clip_end)
 	m_clip_end = clip_end;
 	m_critical_section.leave();
 }
-#endif
 
 static unsigned char* parseH264ConfigStr(char const* configStr, size_t& configSize);
 
@@ -608,20 +606,6 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
 
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
-
-#ifndef ENABLE_LIVE555_PTS_CORRECTION
-	// Guess frame duration. This assumes that the lowest difference between wto adjacent frames is the duration.
-	// If we ever get a stream where the duration increases (i.e. frame rate decreases) we're hosed.
-
-	// XXXJACK: I get a compiler warning here about implicit conversion of 64 to 32 bit. Need to check.
-	timestamp_t delta_pts = abs(rpts-m_context->last_pts);
-	if (m_context->frame_duration == 0
-		|| (delta_pts != 0 && delta_pts < m_context->frame_duration))
-	{
-		m_context->frame_duration = delta_pts;
-		m_context->last_emit_pts = rpts - m_context->frame_duration;
-	}
-#endif
 
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %lld us", rpts);
 

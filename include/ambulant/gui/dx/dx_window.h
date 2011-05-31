@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_GUI_DX_WINDOW_H
 #define AMBULANT_GUI_DX_WINDOW_H
 
@@ -34,12 +30,7 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/common/region.h"
 
-namespace ambulant {
-namespace common {
-class passive_region;
-}}
-
-typedef ambulant::common::surface_impl region; // XXX Or should it be surface??
+typedef ambulant::common::gui_events region; // XXX Or should it be surface??
 
 namespace ambulant {
 
@@ -64,7 +55,7 @@ class dx_window : public common::gui_window {
 	void redraw_now();
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
-	region *get_region() { return m_rgn;}
+	common::gui_events *get_gui_events() { return m_handler;}
 	void lock_redraw();
 	void unlock_redraw();
 
@@ -72,9 +63,7 @@ class dx_window : public common::gui_window {
   private:
 	void _need_redraw(const lib::rect& r);
 
-	// gui_window:
-	// passive_region *m_region;
-	region *m_rgn;
+	common::gui_events *m_handler;
 	std::string m_name; // for easy access
 	lib::rect m_viewrc;
 	common::window_factory *m_wf;

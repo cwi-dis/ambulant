@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_LIB_TRANSITION_INFO_H
@@ -85,9 +81,11 @@ enum transition_scope {
 /// Stores all information regarind a specific transition.
 class AMBULANTAPI transition_info {
   public:
-	typedef timer::time_type time_type;	///< How a transition represents time
-	typedef double progress_type;	///< How a transition represents progress (value between 0 and 1).
-
+	/// How a transition represents time
+	typedef timer::time_type time_type;
+	/// How a transition represents progress (value between 0 and 1).
+	typedef double progress_type;
+	
 	transition_type m_type;    ///< SMIL 2.1 transition type.
 	std::string m_subtype;     ///< SMIL 2.1 transition subtype.
 	time_type m_dur;           ///< Transition duration (Unit???)

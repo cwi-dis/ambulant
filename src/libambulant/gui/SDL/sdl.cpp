@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -52,11 +52,7 @@ bool
 sdl_renderer_factory::supports(common::renderer_select *rs)
 {
 	const lib::xml_string& tag = rs->get_tag();
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if (tag != "" && tag != "ref" && tag != "audio") return false;
-#else
 	if (tag != "" && tag != "ref" && tag != "audio" && tag != "prefetch") return false;
-#endif
 	const char *renderer_uri = rs->get_renderer_uri();
 #if 1
 	// Stopgap for MyVideos: We don't want the SDL renderer to
@@ -84,15 +80,6 @@ sdl_renderer_factory::new_playable(
 	common::playable *rv;
 	lib::xml_string tag = node->get_local_name();
 	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if ( tag == "audio") {
-		rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
-		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: returning sdl_audio_renderer 0x%x", (void *)node, (void *)rv);
-	} else {
-		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
-		return NULL;
-	}
-#else
 	if ( tag == "audio" || tag == "prefetch") {
 		rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_audio_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
@@ -100,8 +87,6 @@ sdl_renderer_factory::new_playable(
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
 		return NULL;
 	}
-
-#endif
 	return rv;
 }
 

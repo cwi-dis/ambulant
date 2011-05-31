@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_dsvideo.h"
@@ -32,24 +28,16 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-
-// There are two ways to render images: through CGImage or directly manipulating the NSBitmapImageRep. The former should
-// be more efficient.
-#define ENABLE_COCOA_CGIMAGE
-
 static bool pixel_info_initialized = false;
 static ambulant::net::pixel_order pixel_info_order;
 static NSBitmapFormat pixel_info_format;
 static int pixel_info_bpp;
-#ifdef ENABLE_COCOA_CGIMAGE
 static CGBitmapInfo pixel_info_bminfo;
-#endif
 
 static void
 init_pixel_info() {
 	if (pixel_info_initialized) return;
 	pixel_info_initialized = true;
-#ifdef ENABLE_COCOA_CGIMAGE
 	if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
 		// Only supported on 10.5, so fallback for 10.4
 #if defined(__POWERPC__)
@@ -65,7 +53,6 @@ init_pixel_info() {
 		pixel_info_bminfo = (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host);
 		return;
 	}
-#endif
 	pixel_info_order = ambulant::net::pixel_rgb;
 	pixel_info_format = (NSBitmapFormat)0;
 	pixel_info_bpp = 3;
@@ -156,7 +143,7 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, size_t size)
 		return;
 	}
 	NSBitmapImageRep *bitmaprep;
-#ifdef ENABLE_COCOA_CGIMAGE
+
 	if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
 		// Step 1 - setup a data provider that reads our in-core image data
 		CGDataProviderRef provider = CGDataProviderCreateWithData(frame, frame, size, my_free_frame);
@@ -192,10 +179,8 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, size_t size)
 			return;
 		}
 		// Note that we do not free(frame), that happens when the provider calls my_free_frame.
-	} else
-#endif // ENABLE_COCOA_CGIMAGE
-	{
-		// On 10.4 or earlier (or if ENABLE_COCOA_CGIMAGE is not enabled) we go the old route with
+	} else {
+		// On 10.4 or earlier we go the old route with
 		// an extra memcpy().
 		bitmaprep = [[NSBitmapImageRep alloc]
 			initWithBitmapDataPlanes: NULL
@@ -259,27 +244,19 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		NSSize cocoa_srcsize = [m_image size];
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
-#ifdef WITH_SMIL30
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		AM_DBG logger::get_logger()->debug("cocoa_dsvideo::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 		rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
 		NSRect cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
-#else
-		rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
-#endif
 		dstrect.translate(m_dest->get_global_topleft());
 		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 		AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
-#ifdef WITH_SMIL30
+
 		double alfa = 1.0;
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
 		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: (float)alfa];
-#else
-		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
-#endif
 	} else {
 	}
 #ifdef WITH_VIDEO_TRANSITION_UNTESTED

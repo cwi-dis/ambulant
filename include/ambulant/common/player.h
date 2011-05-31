@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_PLAYER_H
@@ -138,13 +134,11 @@ class player : public state_change_callback, virtual public lib::ref_counted
 	/// Call this when the user has pressed a key.
 	virtual void on_char(int ch) {}
 
-#ifdef WITH_SMIL30
 	/// Call this when a state variable has changed.
 	virtual void on_state_change(const char *ref) {}
 
 	/// Returns the SMIL State handler for the current document, or NULL.
 	virtual state_component* get_state_engine() { return NULL; }
-#endif
 
 	/// Call this to advance the focus.
 	virtual void on_focus_advance() {}

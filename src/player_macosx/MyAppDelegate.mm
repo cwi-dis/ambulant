@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -41,9 +41,7 @@
 #ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
 #endif
-#ifdef WITH_SMIL30
 #include "ambulant/smil2/test_attrs.h"
-#endif
 #include <stdarg.h>
 
 #ifndef NSINTEGER_DEFINED
@@ -181,7 +179,6 @@ initialize_logger()
 #if ENABLE_NLS
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif
-#ifdef WITH_SMIL30
 	// Initialize ordered list of language preferences
 	ambulant::smil2::test_attrs::clear_languages();
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
@@ -200,7 +197,6 @@ initialize_logger()
 		ambulant::smil2::test_attrs::add_language(cLang, float(1.0-(factor*i)));
 	}
 	[langNames release];
-#endif // WITH_SMIL30
 
 	// Initialize the plugins, so we can parser the system test settings file
 	{

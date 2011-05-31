@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/d2/d2_img.h"
 #include "ambulant/lib/node.h"
@@ -205,7 +201,6 @@ void gui::d2::d2_img_renderer::start(double t) {
 
 	// Get access to the converter as a bitmap source, and keep this
 	// for future reference.
-//	assert(m_original == NULL);
 	hr = converter->QueryInterface(IID_PPV_ARGS(&m_original));
 	if (!SUCCEEDED(hr)) {
 		lib::logger::get_logger()->trace("WIC image renderer: FormatConverter::QueryInterface() returned 0x%x", hr);
@@ -213,9 +208,6 @@ void gui::d2::d2_img_renderer::start(double t) {
 		goto fail;
 	}
 	
-	// Make sure the DD surface is created, next redraw
-//	assert(m_d2bitmap == NULL);
-
 	// Inform the scheduler, ask for a redraw
 	m_context->started(m_cookie);
 	m_dest->show(this);
@@ -264,12 +256,6 @@ gui::d2::d2_img_renderer::recreate_d2d()
 	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
-#ifdef	AM_DMP
-
-	m_d2player->dump (rt, "d2_image-recreate2");
-
-#endif//AM_DMP
-
 }
 
 void
@@ -325,24 +311,14 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		if (m_erase_never) m_dest->keep_as_background();
 		return;
 	}
-#ifdef	AM_DMP
 
-//	m_d2player->dump (rt, "d2_image-redraw2");
-
-#endif//AM_DMP
-
-
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
-//	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -350,10 +326,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
-#endif
 	img_reg_rc.translate(m_dest->get_global_topleft());
 
 	lib::rect img_rect(img_rect1);
@@ -364,63 +336,5 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
 		d2_rectf(img_rect));
 
-
-#ifdef NOTYET
-	dx_transition *tr = get_transition();
-	if (tr && tr->is_fullscreen()) {
-		v->set_fullscreen_transition(tr);
-		tr = NULL;
-	}
-
-	if(tr && tr->is_outtrans() && m_original) {
-		// First draw the background color, if applicable
-		const common::region_info *ri = m_dest->get_info();
-		if(ri)
-			v->clear(img_reg_rc_dirty,ri->get_bgcolor(), ri->get_bgopacity());
-		// Next, take a snapshot of the relevant pixels as they are now, before we draw the image
-		UINT w, h;
-		HRESULT hr = m_original->GetSize(&w, &h);
-		assert(hr == 0);
-		lib::size image_size(w, h);
-		IDirectDrawSurface *bgimage = v->create_surface(image_size);
-		lib::rect dirty_screen = img_rect_dirty;
-		dirty_screen.translate(topleft);
-		RECT bgrect_image, bgrect_screen;
-		set_rect(img_rect_dirty, &bgrect_image);
-		set_rect(dirty_screen, &bgrect_screen);
-#ifdef DDBLT_WAIT
-#define WAITFLAG DDBLT_WAIT
-#else
-#define WAITFLAG DDBLT_WAITNOTBUSY
-#endif
-		bgimage->Blt(&bgrect_image, m_ddsurf, &bgrect_screen, WAITFLAG, NULL);
-		// Then draw the image
-		v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty, 0 /*m_image->is_transparent()*/, (dx_transition*)0);
-		// And finally transition in the background bits saved previously
-		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
-		bgimage->Release();
-	} else {
-#ifdef	WITH_SMIL30
-		if (alpha_chroma != 1.0) {
-			IDirectDrawSurface* screen_ddsurf = v->get_surface();
-			IDirectDrawSurface* image_ddsurf = m_ddsurf;
-			lib::rect rct0 (lib::point(0, 0), img_reg_rc_dirty.size());
-			v->blend_surface(
-				img_reg_rc_dirty,
-				image_ddsurf,
-				rct0,
-				0 /*m_image->is_transparent()*/,
-				alpha_chroma,
-				alpha_media,
-				chroma_low,
-				chroma_high);
-		} else {
-			v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty,0 /* m_image->is_transparent()*/, tr);
-		}
-#else //WITH_SMIL30
-		v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
-#endif//WITH_SMIL30
-	}
-#endif
 	if (m_erase_never) m_dest->keep_as_background();
 }

@@ -1,6 +1,6 @@
-	// This file is part of Ambulant Player, www.ambulantplayer.org.
+// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_dsvideo.h"
@@ -88,7 +84,7 @@ cg_dsvideo_renderer::cg_dsvideo_renderer(
 	m_image(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer(): 0x%x created", (void*)this);
- }
+}
 
 cg_dsvideo_renderer::~cg_dsvideo_renderer()
 {
@@ -146,7 +142,6 @@ cg_dsvideo_renderer::_push_frame(char* frame, size_t size)
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::push_frame: created CGImage 0x%x", m_image);
-//	if (m_dest) m_dest->need_redraw();
 	m_lock.leave();
 }
 
@@ -191,10 +186,8 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		CGImageRef cropped_image = m_image;
 		CGContextRef myContext = [view getCGContext];
 		double alfa = 1.0;
-#ifdef WITH_SMIL30
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
-#endif
 		AM_DBG lib::logger::get_logger()->debug("0x%x: drawImage(0x%x)", this, cropped_image);
 		CGContextSaveGState(myContext);
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG

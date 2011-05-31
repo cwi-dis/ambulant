@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
@@ -152,7 +148,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	}
 	srcrect = rect(size(0,0));
 
-#ifdef	WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
@@ -160,8 +155,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -169,9 +162,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else //WITH_SMIL30
-	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-#endif//WITH_SMIL30
 	dstrect.translate(m_dest->get_global_topleft());
 	// S_ for source image coordinates
 	// D_ for destination coordinates
@@ -201,7 +191,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	GdkPixbuf* new_image_pixbuf =  gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
 	g_object_unref(G_OBJECT(partial_pixbuf));
 	N_L = N_T = 0;
-#ifdef	WITH_SMIL30
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (
@@ -239,16 +228,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			D_W, D_H,
 			GDK_RGB_DITHER_NONE, 0, 0);
 	}
-#else //WITH_SMIL30
-	gdk_draw_pixbuf(
-		GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
-		gc,
-		new_image_pixbuf,
-		N_L, N_T,
-		D_L, D_T,
-		D_W, D_H,
-		GDK_RGB_DITHER_NONE, 0, 0);
-#endif//WITH_SMIL30
 	g_object_unref(G_OBJECT (new_image_pixbuf));
 	g_object_unref(G_OBJECT (gc));
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);

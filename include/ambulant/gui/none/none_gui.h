@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_NONE_NONE_GUI_H
@@ -39,7 +35,7 @@ namespace none {
 /// Dummy implementation of gui_window.
 class none_window : public common::gui_window {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
 	:	common::gui_window(handler)
 	{};
@@ -61,7 +57,7 @@ class AMBULANTAPI none_window_factory : public common::window_factory {
 /// Dummy implementation of playable.
 class none_playable : public common::playable_imp {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -79,7 +75,7 @@ class none_playable : public common::playable_imp {
 /// Dummy implementation of background_renderer.
 class none_background_renderer : public common::background_renderer {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_background_renderer(const common::region_info *src)
 	:   background_renderer(src) {}
 	~none_background_renderer() {}
@@ -91,7 +87,7 @@ class none_background_renderer : public common::background_renderer {
 /// Implementation of playable_factory that returns none_playable objects.
 class none_playable_factory : public common::playable_factory {
   public:
-  	/// Constructor.
+	/// Constructor.
 	none_playable_factory() {}
 
 	/// The none_renderer supports any node, so always return true.

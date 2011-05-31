@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
@@ -121,7 +117,6 @@ qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	}
 
 	srcrect = rect(size(0,0));
-#ifdef	WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
@@ -129,8 +124,6 @@ qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -138,9 +131,6 @@ qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else //WITH_SMIL30
-	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-#endif//WITH_SMIL30
 	dstrect.translate(m_dest->get_global_topleft());
 	// O_ for original image coordinates
 	// S_ for source image coordinates
@@ -185,7 +175,6 @@ qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	DUMPIMAGE(&scaledimage, "scaledimage");
 #endif//WITH_DUMPIMAGES
 
-#ifdef	WITH_SMIL30
 	if (alpha_chroma != 1.0) {
 		QImage screen_img = aqw->get_ambulant_pixmap()->convertToImage();
 		lib::rect rct0 (lib::point(0, 0), lib::size(N_W, N_H));
@@ -196,9 +185,6 @@ qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	} else {
 		paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
 	}
-#else //WITH_SMIL30
-	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
-#endif//WITH_SMIL30
 	paint.flush();
 	paint.end();
 

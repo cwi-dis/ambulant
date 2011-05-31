@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -87,9 +87,7 @@ class ffmpeg_demux : public abstract_demux {
 	double duration();
 	int nstreams();
 	void seek(timestamp_t time);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
-#endif
 	void read_ahead(timestamp_t time);
 	audio_format& get_audio_format();
 	video_format& get_video_format();

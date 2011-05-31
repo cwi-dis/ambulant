@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_REGION_INFO_H
@@ -97,7 +93,6 @@ class region_info {
 	/// Return the background image
 	virtual const char *get_bgimage() const = 0;
 
-#ifdef WITH_SMIL30
 	/// Return the image crop area
 	virtual rect get_crop_rect(const size& srcsize) const = 0;
 
@@ -118,7 +113,6 @@ class region_info {
 
 	/// Return the chromakey opacity of the region.
 	virtual double get_chromakeyopacity() const = 0;
-#endif
 };
 
 /// Interface to animate region information.
@@ -155,7 +149,6 @@ class animation_destination : public region_info {
 	/// value (as animated by previous set_ calls).
 	virtual sound_alignment get_region_soundalign(bool fromdom = false) const = 0;
 
-#ifdef WITH_SMIL30
 	/// Get the region image cropping parameters.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
@@ -165,7 +158,7 @@ class animation_destination : public region_info {
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
 	virtual double get_region_opacity(const std::string& which, bool fromdom = false) const = 0;
-#endif
+
 	/// Set one of the six dimensions of a region to a new value.
 	/// The name which is the SMIL attribute name.
 	virtual void set_region_dim(const std::string& which, const region_dim& rd) = 0;
@@ -183,13 +176,11 @@ class animation_destination : public region_info {
 	/// Set the region audio volume to a new value.
 	virtual void set_region_soundalign(sound_alignment sa) = 0;
 
-#ifdef WITH_SMIL30
 	/// Set the region image cropping parameters
 	virtual void set_region_panzoom(const region_dim_spec& rds) = 0;
 
 	/// Set the region background opacity to a new value.
 	virtual void set_region_opacity(const std::string& which, double level) = 0;
-#endif
 };
 
 } // namespace common

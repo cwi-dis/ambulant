@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
@@ -91,7 +87,6 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		// Now we need to remember the real image size, which will be trampled soon.
 		NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
 		assert(bestrep);
-#ifdef WITH_SMIL30
 		// If we need to do chroma keying we do it now. We have to go via a CGImage to do it, though...
 		// XXX By doing it here and not later we disable animation on the chromakey attributes...
 		if (ri->is_chromakey_specified()) {
@@ -121,7 +116,6 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 				[m_image addRepresentation: bestrep];
 			}
 		}
-#endif
 		m_size = lib::size((int)[bestrep pixelsWide], (int)[bestrep pixelsHigh]);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer: image size in pixels: %d x %d", m_size.w, m_size.h);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer: image size in units: %f x %f", [bestrep size].width, [bestrep size].height);
@@ -167,28 +161,19 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	AM_DBG logger::get_logger()->debug("cocoa_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
 	cocoa_srcrect = NSMakeRect(srcrect.left()*x_factor, srcrect.top()*y_factor, srcrect.width()*x_factor, srcrect.height()*y_factor);
-#else
-	dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
-	cocoa_srcrect = NSMakeRect(0, 0, srcrect.width()*x_factor, srcrect.height()*y_factor);
-#endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
 		NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
 		NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
-#ifdef WITH_SMIL30
 	double alfa = 1.0;
 	if (ri) alfa = ri->get_mediaopacity();
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: (float)alfa];
-#else
-	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0f];
-#endif
 
 	m_lock.leave();
 }

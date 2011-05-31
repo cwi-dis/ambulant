@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_SCHEMA_H
@@ -88,16 +84,11 @@ class schema {
 	/// Return true if an element with tag qname is an animation.
 	bool is_animation(const lib::xml_string& qname) const;
 
-#ifdef WITH_SMIL30
 	/// Return true if an element with tag qname is a state command.
 	bool is_statecommand(const lib::xml_string& qname) const;
-#endif // WITH_SMIL30
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 	/// Return true if an element with tag qname is a prefetch.
 	bool is_prefetch(const lib::xml_string& qname) const;
-
-#endif // WITH_SEAMLESS_PLAYBACK
 
 	schema();
 	~schema();
@@ -108,12 +99,8 @@ class schema {
 	std::set<std::string> m_continuous;
 	std::set<std::string> m_animations;
 	std::set<std::string> m_layout_elements;
-#ifdef WITH_SMIL30
 	std::set<std::string> m_statecommands;
-#endif // WITH_SMIL30
-#ifdef WITH_SEAMLESS_PLAYBACK
 	std::set<std::string> m_prefetch;
-#endif // WITH_SEAMLESS_PLAYBACK
 };
 
 } // namespace common

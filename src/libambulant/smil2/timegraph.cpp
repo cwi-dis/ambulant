@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -16,10 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
@@ -338,7 +334,6 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 			sync_event event = sync_event_from_str(svs.event);
 			time_node *base = svs.base.empty()?tn:get_node_with_id(svs.base, tn);
 			if(!base) {
-#ifdef WITH_SMIL30
 				// Special case code for beginEvent on interior smiltext nodes:
 				// these are implemented as marker events (because interior smiltext
 				// nodes have no corresponding time_node).
@@ -364,7 +359,6 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 					tn->add_begin_rule(sr);
 					continue;
 				}
-#endif
 				continue;
 			}
 			if(event == tn_activate_event)
@@ -388,13 +382,11 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 			tn->want_accesskey(true);
 			sync_rule *sr = new event_rule(m_root, accesskey_event, svs.offset, svs.iparam);
 			tn->add_begin_rule(sr);
-#ifdef WITH_SMIL30
 		} else if(svs.type == sv_state_change) {
 			AM_DBG m_logger->debug("Adding state change event to 0x%x\n", m_root);
 			m_state_change_args.insert(svs.sparam);
 			sync_rule *sr = new event_rule(m_root, state_change_event, svs.offset, svs.sparam);
 			tn->add_begin_rule(sr);
-#endif // WITH_SMIL30
 		} else if(svs.type == sv_media_marker) {
 			sync_rule *sr = new event_rule(tn, tn_marker_event, svs.offset, svs.sparam);
 			tn->add_begin_rule(sr);
@@ -447,7 +439,6 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			sync_event event = sync_event_from_str(svs.event);
 			time_node *base = svs.base.empty()?tn:get_node_with_id(svs.base, tn);
 			if(!base) {
-#ifdef WITH_SMIL30
 				// Special case code for beginEvent on interior smiltext nodes:
 				// these are implemented as marker events (because interior smiltext
 				// nodes have no corresponding time_node).
@@ -473,7 +464,6 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 					tn->add_end_rule(sr);
 					continue;
 				}
-#endif
 				continue;
 			}
 			if(event == tn_activate_event)
@@ -497,13 +487,11 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			tn->want_accesskey(true);
 			sync_rule *sr = new event_rule(m_root, accesskey_event, svs.offset, svs.iparam);
 			tn->add_end_rule(sr);
-#ifdef WITH_SMIL30
 		} else if(svs.type == sv_state_change) {
 			AM_DBG m_logger->debug("Adding state change event to 0x%x\n", m_root);
 			m_state_change_args.insert(svs.sparam);
 			sync_rule *sr = new event_rule(m_root, state_change_event, svs.offset, svs.sparam);
 			tn->add_end_rule(sr);
-#endif
 		} else if(svs.type == sv_media_marker) {
 			sync_rule *sr = new event_rule(tn, tn_marker_event, svs.offset, svs.sparam);
 			tn->add_end_rule(sr);
@@ -573,7 +561,6 @@ timegraph::get_node_with_id(const std::string& ident, time_node *tn) const {
 	return 0;
 }
 
-#ifdef WITH_SMIL30
 static bool
 nodeLangSortPredicate(const node* lhs, const node* rhs)
 {
@@ -593,7 +580,6 @@ nodeLangSortPredicate(const node* lhs, const node* rhs)
 
 	return lhsPrio >= rhsPrio;
 }
-#endif
 
 const lib::node*
 timegraph::select_switch_child(const node* sn) const {
@@ -603,7 +589,6 @@ timegraph::select_switch_child(const node* sn) const {
 	std::list<const node*> cl;
 	std::list<const node*>::const_iterator it;
 	sn->get_children(cl);
-#ifdef WITH_SMIL30
 	// If allowReorder is true we reorder the children based on language
 	// preference.
 	const char *reorder = sn->get_attribute("allowReorder");
@@ -611,7 +596,6 @@ timegraph::select_switch_child(const node* sn) const {
 		AM_DBG lib::logger::get_logger()->debug("select_switch_child(%s): reordering children", sn->get_sig().c_str());
 		cl.sort(nodeLangSortPredicate);
 	}
-#endif
 	for(it=cl.begin();it!=cl.end();it++) {
 		if ((*it)->is_data_node()) continue;
 		test_attrs ta(*it);

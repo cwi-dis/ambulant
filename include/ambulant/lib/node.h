@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_LIB_NODE_H
@@ -52,30 +48,21 @@
 
 namespace ambulant {
 
-#ifdef WITH_SMIL30
 namespace common {
 class state_component;
 };
-#endif // WITH_SMIL30
 
 namespace lib {
 
 class custom_test;
 class node_context;
-class node_interface;
-class node_impl;
-#if WITH_EXTERNAL_DOM
-typedef node_interface node;
-#else
-typedef node_impl node;
-#endif
 
 /// Simple tree node with tag, data and attributes.
 /// The node trees are not fully DOM compliant, but should
 /// be compatible with a bit of glue code.
 /// The parent of each node is also its owner and container.
 
-class node_interface {
+class node {
 
   public:
 
@@ -85,52 +72,51 @@ class node_interface {
 	// tree iterators
 
 	/// Iterates over all nodes in a subtree.
-	typedef tree_iterator<node_interface> iterator;
+	typedef tree_iterator<node> iterator;
 
 	/// Iterates over all nodes in a subtree.
-	typedef const_tree_iterator<node_interface> const_iterator;
+	typedef const_tree_iterator<node> const_iterator;
 
 	/// Destruct this node and its contents.
 	/// If this node is part of a tree, detach it first
 	/// and then delete the node and its contents.
-	virtual ~node_interface() {}
+	virtual ~node() {}
 
 
 	/// Return first child of this node.
-	virtual const node_interface *down() const = 0;
+	virtual const node *down() const = 0;
 
 	/// Return parent of this node.
-	virtual const node_interface *up() const = 0;
+	virtual const node *up() const = 0;
 
 	/// Return next sibling of this node.
-	virtual const node_interface *next() const = 0;
+	virtual const node *next() const = 0;
 
 	/// Return first child of this node.
-	virtual node_interface *down()  = 0;
+	virtual node *down()  = 0;
 
 	/// Return parent of this node.
-	virtual node_interface *up()  = 0;
+	virtual node *up()  = 0;
 
 	/// Return next sibling of this node.
-	virtual node_interface *next()  = 0;
-
+	virtual node *next()  = 0;
 
 	/// Set first child of this node.
-	virtual void down(node_interface *n)  = 0;
+	virtual void down(node *n)  = 0;
 
 	/// Set parent of this node.
-	virtual void up(node_interface *n)  = 0;
+	virtual void up(node *n)  = 0;
 
 	/// Set next sibling of this node.
-	virtual void next(node_interface *n)  = 0;
+	virtual void next(node *n)  = 0;
 
 	/// Returns the previous sibling node
 	/// or null when this is the first child.
-	virtual const node_interface* previous() const = 0;
+	virtual const node* previous() const = 0;
 
 	/// Returns the last child
 	/// or null when this has not any children.
-	virtual const node_interface* get_last_child() const = 0;
+	virtual const node* get_last_child() const = 0;
 
 	/// Appends the children of this node (if any) to the provided list.
 	virtual void get_children(const_node_list& l) const = 0;
@@ -140,16 +126,16 @@ class node_interface {
 	// this section should be extented to allow for XPath selectors
 
 	/// Find a node given an xpath expresssion of the form /tag/tag[2]/tag[3] as from get_xpath().
-	virtual node_interface* locate_node(const char *path) = 0;
+	virtual node* locate_node(const char *path) = 0;
 
 	/// Find the first direct child with the given tag.
-	virtual node_interface *get_first_child(const char *name) = 0;
+	virtual node *get_first_child(const char *name) = 0;
 
 	/// Find the first direct child with the given tag.
-	virtual const node_interface *get_first_child(const char *name) const = 0;
+	virtual const node *get_first_child(const char *name) const = 0;
 
 	/// Find the root of the tree to which this node belongs.
-	virtual node_interface* get_root() = 0;
+	virtual node* get_root() = 0;
 
 	/// Get an attribute from this node or its nearest ancestor that has the attribute.
 	virtual const char *get_container_attribute(const char *name) const = 0;
@@ -169,16 +155,16 @@ class node_interface {
 	// build tree functions
 
 	/// Append a child node to this node.
-	virtual node_interface* append_child(node_interface* child) = 0;
+	virtual node* append_child(node* child) = 0;
 
 	/// Append a new child node with the given name to this node.
-	virtual node_interface* append_child(const char *name) = 0;
+	virtual node* append_child(const char *name) = 0;
 
 	/// Detach this node and its subtree from its parent tree.
-	virtual node_interface* detach() = 0;
+	virtual node* detach() = 0;
 
 	/// Create a deep copy of this node and its subtree.
-	virtual node_interface* clone() const = 0;
+	virtual node* clone() const = 0;
 
 	/// Append data to the data of this node.
 	virtual void append_data(const char *data, size_t len) = 0;
@@ -273,21 +259,6 @@ class node_interface {
 	};
 };
 
-// Typedef trickery. Most of the code refers to "node", but this can be one of two things:
-// - If we're not using an external DOM they get "node_impl", with inline methods and other
-//   performance optimizations
-// - If we are using an external DOM they get the abstract node_interface.
-#if WITH_EXTERNAL_DOM
-typedef node_interface node;
-#else
-} // namespace lib
-} // namespace ambulant
-#include "ambulant/lib/node_impl.h"
-namespace ambulant {
-namespace lib {
-typedef node_impl node;
-#endif
-
 /// Interface of document class accesible to nodes.
 class AMBULANTAPI node_context {
   public:
@@ -316,14 +287,11 @@ class AMBULANTAPI node_context {
 	/// Return node with a given ID.
 	virtual const node* get_node(const std::string& idd) const = 0;
 
-#ifdef WITH_SMIL30
 	/// Return the state engine.
 	virtual common::state_component *get_state() const = 0;
 
 	/// Apply Attribute Value Template expressions to attribute value, if needed.
 	virtual const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const = 0;
-
-#endif
 };
 
 /// Interface for factory class that creates node objects.

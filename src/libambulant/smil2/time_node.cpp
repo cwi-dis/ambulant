@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,13 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/smil2/animate_n.h"
 #include "ambulant/smil2/animate_e.h"
@@ -715,7 +712,6 @@ void time_node::activate(qtime_type timestamp) {
 	// Start node
 	if(!paused()) {
 		if(is_animation()) start_animation(sd_offset);
-#ifdef WITH_SMIL30
 		else if(is_statecommand()) {
 			start_statecommand(sd_offset);
 			// State commands finish immediately, make it so.
@@ -723,15 +719,12 @@ void time_node::activate(qtime_type timestamp) {
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}
-#endif // WITH_SMIL30
-#ifdef WITH_SEAMLESS_PLAYBACK
 		else if (is_prefetch()) {
 			start_prefetch(sd_offset);
 			assert(m_state->ident() == ts_active);
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}
-#endif
 		else start_playable(sd_offset);
 		if(m_timer) m_timer->resume();
 	}
@@ -754,7 +747,6 @@ void time_node::stop_animation() {
 	ae->stopped((animate_node*)this);
 }
 
-#ifdef WITH_SMIL30
 void time_node::start_statecommand(time_type offset) {
 	qtime_type timestamp(this, offset);
 	AM_DBG m_logger->debug("%s[%s].start_statecommand(%ld) DT:%ld", m_attrs.get_tag().c_str(),
@@ -818,9 +810,7 @@ void time_node::start_statecommand(time_type offset) {
 		assert(0);
 	}
 }
-#endif // WITH_SMIL30
 
-#ifdef WITH_SEAMLESS_PLAYBACK
 void time_node::start_prefetch(time_type offset) {
 	if(m_ffwd_mode) {
 		AM_DBG m_logger->debug("start_prefetch(%ld): ffwd skip %s", offset(), get_sig().c_str());
@@ -836,15 +826,10 @@ void time_node::start_prefetch(time_type offset) {
 		np->preroll(time_type_to_secs(offset()));
 	}
 }
-#endif //WITH_SEAMLESS_PLAYBACK
 
 // Returns true when this node is associated with a playable
 bool time_node::is_playable() const {
-#ifdef WITH_SMIL30
 	return !is_time_container() && !is_animation() && !is_statecommand() && !is_prefetch();
-#else
-	return !is_time_container() && !is_animation();
-#endif
 }
 
 // Returns true when this node is an animation
@@ -856,7 +841,6 @@ bool time_node::is_animation() const {
 	return sch->is_animation(qn);
 }
 
-#ifdef WITH_SMIL30
 // Returns true when this node is a state command
 bool time_node::is_statecommand() const {
 	const common::schema *sch = common::schema::get_instance();
@@ -865,19 +849,14 @@ bool time_node::is_statecommand() const {
 	AM_DBG lib::logger::get_logger()->debug("is_statecommand: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_statecommand(qn);
 }
-#endif // WITH_SMIL30
 
 // Returns true when this node is a prefetch
 bool time_node::is_prefetch() const {
-#ifdef WITH_SEAMLESS_PLAYBACK
 	const common::schema *sch = common::schema::get_instance();
 	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s\n", m_node, m_node->get_sig().c_str());
 	const lib::xml_string& qn = m_node->get_local_name();
 	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_prefetch(qn);
-#else
-	return false;
-#endif // WITH_SEAMLESS_PLAYBACK
 }
 //////////////////////////
 // Playables shell
@@ -1153,14 +1132,10 @@ bool time_node::end_cond(qtime_type timestamp) {
 	// e) due to not controled delays the video is still playing
 
 	bool specified_dur = m_attrs.specified_dur() || m_attrs.specified_rdur();
-#ifdef WITH_SMIL30
 	if (!specified_dur && (is_statecommand() || is_prefetch())) tc = true;
-#endif
 	if(is_cmedia() && !is_animation()
-#ifdef WITH_SMIL30
 			&& !is_statecommand()
 			&& !is_prefetch()
-#endif
 			&& tc && !specified_dur && m_time_calc->uses_dur()) {
 		if(m_context->wait_for_eom() && !m_eom_flag) {
 			tc = false;
@@ -1496,9 +1471,6 @@ void time_node::fill(qtime_type timestamp) {
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
 		}
-#ifndef WITH_SEAMLESS_PLAYBACK
-		if(is_playable()) pause_playable();
-#else
 		if (fb != fill_continue && is_playable()) {
 			pause_playable();
 		} else {
@@ -1509,7 +1481,6 @@ void time_node::fill(qtime_type timestamp) {
 				m_logger->debug("%s.continue() ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(), timestamp.as_time_value_down_to(this), timestamp.second(), timestamp.as_doc_time_value());
 			}
 		}
-#endif
 		if(m_timer) {
 			m_timer->pause();
 			m_timer->set_time(m_interval.end());
@@ -1897,7 +1868,6 @@ void time_node::raise_marker_event(std::pair<qtime_type, std::string> arg) {
 	on_add_instance(timestamp, tn_marker_event, timestamp.second, name);
 }
 
-#ifdef WITH_SMIL30
 void time_node::raise_state_change(std::pair<qtime_type, std::string> statearg) {
 	qtime_type timestamp = statearg.first;
 	std::string statevar = statearg.second;
@@ -1911,7 +1881,6 @@ void time_node::raise_state_change(std::pair<qtime_type, std::string> statearg) 
 		timestamp.as_doc_time_value());
 	on_add_instance(timestamp, state_change_event, timestamp.second, statevar);
 }
-#endif
 
 void time_node::raise_update_event(qtime_type timestamp) {
 	m_update_event.first = true;

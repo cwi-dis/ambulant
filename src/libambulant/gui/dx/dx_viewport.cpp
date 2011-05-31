@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 
 #include "ambulant/config/config.h"
@@ -161,8 +157,6 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 	HRESULT hr = DD_OK;
 	int retries = MAX_RETRIES;
 	while (retries--) {
-#define CONSTRAIN_CROP_TO_SCREEN
-#ifdef CONSTRAIN_CROP_TO_SCREEN
 		// Workaround by Jack for the problem that, under
 		// Parallels and other virtual machines, and possibly also sometimes
 		// on a real machine, content is drawn at the topleft of the scree
@@ -187,7 +181,6 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 		}
 		if (lpDestRect->left >= lpDestRect->right) return;
 		if (lpDestRect->top >= lpDestRect->bottom) return;
-#endif // CONSTRAIN_CROP_TO_SCREEN
 
 		hr = primary_surface->Blt(lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags, lpDDBltFX);
 		if (hr == DDERR_NOTFOUND) return; // XXXJACK
@@ -245,19 +238,12 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 
 	// create primary surface
 	DDSURFACEDESC sd;
-#if 0
-	dxparams::I()->fill_ddsd(sd, DDSD_CAPS);
-	sd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-	sd.dwWidth = m_width;
-	sd.dwHeight = m_height;
-#else
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_CAPS;
 	sd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
-#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_primary_surface, NULL);
 	if (FAILED(hr)) {
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -265,8 +251,6 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	}
 
 	get_pixel_format();
-#define WITH_DDCLIPPER
-#ifdef	WITH_DDCLIPPER
 	// Clip output to the provided window
 	if(m_hwnd) {
 		IDirectDrawClipper *clipper = NULL;
@@ -283,9 +267,6 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		}
 		clipper->Release();
 	}
-#endif//WITH_DDCLIPPER
-#define WITH_WIN7_WORKAROUND
-#ifdef WITH_WIN7_WORKAROUND
 	{
 		// Here follows a bit of magic code. As explained in bug #2996614,
 		// in some situations on Win7 (and vista) Ambulant can black out the whole
@@ -303,22 +284,12 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		hr = m_primary_surface->Lock(&r, &desc, AM_DDLOCK_WAIT|DDLOCK_READONLY, NULL);
 		hr = m_primary_surface->Unlock(0);
 	}
-#endif // WITH_WIN7_WORKAROUND
 
 	// create drawing surface
-#if 1
 	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
-#else
-	memset(&sd, 0, sizeof(DDSURFACEDESC));
-	sd.dwSize = sizeof(DDSURFACEDESC);
-	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	sd.dwWidth = m_width;
-	sd.dwHeight = m_height;
-#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_surface, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -332,38 +303,20 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 
 	// create shared transition surface
 	IDirectDrawSurface* surf;
-#if 1
 	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
-#else
-	memset(&sd, 0, sizeof(DDSURFACEDESC));
-	sd.dwSize = sizeof(DDSURFACEDESC);
-	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	sd.dwWidth = m_width;
-	sd.dwHeight = m_height;
-#endif
 	hr = m_direct_draw->CreateSurface(&sd, &surf, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
 	m_surfaces.push_back(surf);
-#if 1
 	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
-#else
-	memset(&sd, 0, sizeof(DDSURFACEDESC));
-	sd.dwSize = sizeof(DDSURFACEDESC);
-	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	sd.dwWidth = m_width;
-	sd.dwHeight = m_height;
-#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_fstr_surface, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -397,19 +350,10 @@ IDirectDrawSurface*
 gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	IDirectDrawSurface* surface = 0;
 	DDSURFACEDESC sd;
-#if 1
 	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
 	sd.dwWidth = w;
 	sd.dwHeight = h;
-#else
-	memset(&sd, 0, sizeof(DDSURFACEDESC));
-	sd.dwSize = sizeof(DDSURFACEDESC);
-	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-	sd.dwWidth = w;
-	sd.dwHeight = h;
-#endif
 
 	HRESULT hr = m_direct_draw->CreateSurface(&sd, &surface, NULL);
 	if (FAILED(hr)){
@@ -625,23 +569,13 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 	}
 }
 
-//#define DO_REDRAW_WITH_EVENTS
 void
 gui::dx::viewport::schedule_redraw() {
-#ifdef DO_REDRAW_WITH_EVENTS
-	::InvalidateRect(m_hwnd, NULL, 0);
-#else
 	redraw();
-#endif // DO_REDRAW_WITHOUT_EVENTS
 }
 void
 gui::dx::viewport::schedule_redraw(const lib::rect& rc) {
-#ifdef DO_REDRAW_WITH_EVENTS
-	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
-	::InvalidateRect(m_hwnd, &src_rc, 0);
-#else
 	redraw(rc);
-#endif // DO_REDRAW_WITHOUT_EVENTS
 }
 
 // Clears the back buffer using this viewport bgd color
@@ -766,13 +700,6 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
 	if (opacity != 1.0) {
-#ifdef XXXX
-		// this code should just work, but since alpha blending is currently
-		// ignored by DirectX, we just do it pixel by pixel in blt_blend()
-		dwFlags |= DDBLT_ALPHASRCCONSTOVERRIDE;
-		bltfx.dwAlphaSrcConstBitDepth = 8;
-		bltfx.dwAlphaSrcConst = opacity*255.0;
-#endif//XXXX
 		IDirectDrawSurface* colorsurf = create_surface();
 		hr = colorsurf->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
 		if (SUCCEEDED(hr)) {
@@ -911,33 +838,12 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	smil2::blitter_type bt = tr->get_blitter_type();
 
 	if(bt == smil2::bt_r1r2r3r4) {
-#ifdef XXXX
 // r.1.40 leads to #1619481
-		smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
-		r1r2r3r4_adapter *r1r2r3r4 = (r1r2r3r4_adapter*)p;
-		assert(r1r2r3r4);
-		// copy rectangle of old pixels away were the new ones go
-		lib::rect old_src = r1r2r3r4->get_old_src_rect();
-		old_src.translate(r1r2r3r4->get_dst()->get_global_topleft());
-		lib::rect old_dst = r1r2r3r4->get_old_dst_rect();
-		old_dst.translate(r1r2r3r4->get_dst()->get_global_topleft());
-		draw(m_surface, old_src, old_dst, keysrc, m_surface);
-		// copy new pixels in place of the old pixels
-		lib::rect new_src = r1r2r3r4->get_src_rect();
-		lib::rect new_dst = r1r2r3r4->get_dst_rect();
-		lib::rect src_rc_v = src_rc;
-		lib::rect dst_rc_v = dst_rc;
-		src_rc_v &= new_src;
-		dst_rc_v &= new_dst;
-		dst_rc_v.w = src_rc_v.w; //XXXX
-		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
-#else /*XXXX*/
 // r.1.39 doesn't have the problem
 		lib::rect src_rc_v = src_rc;
 		lib::rect dst_rc_v = dst_rc;
 		clipto_r1r2r3r4(tr, src_rc_v, dst_rc_v);
 		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
-#endif/*XXXX*/
 		return;
 	} else if(bt == smil2::bt_fade) {
 		blend_surface(dst_rc, src, src_rc, keysrc, tr->get_progress(), 0xFFFFFF, lib::color_t(0x000000), lib::color_t(0xFFFFFF));

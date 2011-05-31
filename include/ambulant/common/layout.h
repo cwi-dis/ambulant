@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_LAYOUT_H
@@ -220,7 +216,6 @@ class surface {
 	/// to display it. The renderer must do the scaling.
 	virtual lib::rect get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const alignment *align) const = 0;
 
-#ifdef WITH_SMIL30
 	/// Determine where to draw an image.
 	/// For a given image size, return portion of source image to display, and where
 	/// to display it. The renderer must do the scaling.
@@ -229,7 +224,6 @@ class surface {
     /// Determine source rectangle to draw.
     /// Applies panzoom attributes to the source image and returns resulting rect.
 	virtual lib::rect get_crop_rect(const lib::size& src_size) const = 0;
-#endif
 
 	/// Get object holding SMIL region parameters for querying.
 	virtual const region_info *get_info() const = 0;
@@ -295,9 +289,6 @@ class surface_template : public animation_notification {
 
 	/// Get the surface corresponding to this region.
 	virtual surface *activate() = 0;
-#ifdef	WITH_SMIL_TEST
-	virtual common::surface * new_default_subsurface() = 0;
-#endif/*WITH_SMIL_TEST*/
 };
 
 

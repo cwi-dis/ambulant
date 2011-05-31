@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,20 +10,15 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/gui/d2/d2_d2video.h"
 #include "ambulant/gui/d2/d2_dshowsink.h"
-//#include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
@@ -34,12 +29,10 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/test_attrs.h"
 
-
 #include <control.h>
 #include <strmif.h>
 #include <uuids.h>
 #include <vfwmsgs.h>
-
 #include <d2d1.h>
 #include <d2d1helper.h>
 
@@ -49,57 +42,10 @@
 #pragma comment (lib,"uuid.lib")
 
 //#define AM_DBG if(1)
-
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-// AddToRot adds the filtergraph to the Running Object Table, for debugging
-// purposes. The ROT can be inspected with GraphEdit, see
-// <http://msdn.microsoft.com/en-us/library/dd390650(VS.85).aspx> for details.
-// Also note that under Win7 you may not see the graph. Run both graphedit
-// and asmbulant as admin (from cmd).
-#ifdef NDEBUG
-#define AddToRot(x, y) do { *y = 0; } while (0)
-#define RemoveFromRot(y) do { assert(y == 0); } while (0)
-#else
-static HRESULT
-AddToRot(IUnknown *pUnkGraph, DWORD *pdwRegister)
-{
-	HRESULT hr;
-    IMoniker * pMoniker;
-    IRunningObjectTable *pROT;
-    if (FAILED(GetRunningObjectTable(0, &pROT)))
-	{
-        return E_FAIL;
-    }
-	wchar_t wsz[256];
-
-    swprintf_s(wsz, L"FilterGraph %08x pid %08x", (DWORD_PTR)pUnkGraph,
-		GetCurrentProcessId());
-//	MultiByteToWideChar( CP_ACP, 0, str, strlen(str)+1, wsz, sizeof(wsz)/sizeof(wsz[0]) );
-
-	hr = CreateItemMoniker(L"!", wsz, &pMoniker);
-    if (SUCCEEDED(hr))
-	{
-        hr = pROT->Register(ROTFLAGS_REGISTRATIONKEEPSALIVE, pUnkGraph, pMoniker, pdwRegister);
-		if (pMoniker) pMoniker->Release();
-    }
-    if (pROT) pROT->Release();
-    return hr;
-}
-
-static void
-RemoveFromRot(DWORD pdwRegister)
-{
-    IRunningObjectTable *pROT;
-    if (SUCCEEDED(GetRunningObjectTable(0, &pROT)))
-	{
-        pROT->Revoke(pdwRegister);
-        pROT->Release();
-    }
-}
-#endif
 using namespace ambulant;
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
@@ -137,8 +83,7 @@ gui::d2::d2_d2video_renderer::d2_d2video_renderer(
 	m_graph_builder(NULL),
 	m_video_sink(NULL),
 	m_update_event(0),
-	m_d2player(dynamic_cast<d2_player*>(mdp)),
-	m_rot_index(0)
+	m_d2player(dynamic_cast<d2_player*>(mdp))
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_d2video_renderer(0x%x)", this);
 }
@@ -171,7 +116,6 @@ gui::d2::d2_d2video_renderer::~d2_d2video_renderer() {
 	}
 #endif
 	if(m_graph_builder) {
-		RemoveFromRot(m_rot_index);
 		m_graph_builder->Release();
 		m_graph_builder = 0;
 	}
@@ -210,9 +154,7 @@ void gui::d2::d2_d2video_renderer::start(double t) {
 	r.translate(surf->get_global_topleft());
 	// Has this been activated
 	if(m_activated) {
-		// repeat
 		_start(t + (m_clip_begin / 1000000.0));
-//XXXJACK		m_player->update();
 		m_dest->need_redraw();
 		_schedule_update();
 		return;
@@ -226,7 +168,6 @@ void gui::d2::d2_d2video_renderer::start(double t) {
 
 	// Start the underlying player
 	_start(t + (m_clip_begin / 1000000.0));
-//XXXJACK	m_player->update();
 
 	// Request a redraw
 	m_dest->need_redraw();
@@ -245,7 +186,6 @@ bool gui::d2::d2_d2video_renderer::_open(const std::string& url) {
 		lib::win32::win_report_error("CoCreateInstance(CLSID_FilterGraph, ...)", hr);
 		return false;
 	}
-	AddToRot(m_graph_builder, &m_rot_index);
 	// We now optionally add a specific output handler.
 	m_video_sink = new CVideoD2DBitmapRenderer(NULL, &hr);
 	if(FAILED(hr)) {
@@ -428,7 +368,6 @@ void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::g
 	D2D1_SIZE_U bmsize = bitmap->GetPixelSize();
 	lib::size srcsize(bmsize.width, bmsize.height);
 
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
@@ -437,8 +376,6 @@ void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::g
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -446,10 +383,6 @@ void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::g
 			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
-#endif
 	img_reg_rc.translate(m_dest->get_global_topleft());
 
 	lib::rect img_rect(img_rect1);

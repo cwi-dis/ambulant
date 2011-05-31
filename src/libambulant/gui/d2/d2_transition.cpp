@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,9 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
 // Implementation notes for d2 transitions:
 // ----------------------------------------
 // All out transitions (except fade and push/slide) work via polylist drawn into a
@@ -34,14 +31,10 @@
 // To achieve this, all drawables are checked at first redraw whether they will eventually
 // disappear in fullscreen mode d2_transition_renderer::check_fullscreen_outtrans(lib::node).
 
-#ifdef	WITH_D2
-#undef	WITH_D2
-#endif//WITH_D2
 #include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/lib/logger.h"
-
 
 #include <wincodec.h>
 #include <d2d1.h>
@@ -60,16 +53,27 @@ namespace gui {
 
 namespace d2 {
 
-inline D2D1_RECT_F d2_rectf(lib::rect r) {
+inline D2D1_RECT_F
+d2_rectf(lib::rect r)
+{
 	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
-inline D2D1_RECT_U d2_rectu(lib::rect r) {
+
+inline D2D1_RECT_U
+d2_rectu(lib::rect r)
+{
 	return D2D1::RectU((UINT32) r.left(), (UINT32) r.top(), (UINT32) r.right(), (UINT32) r.bottom());
 }
-inline D2D1_SIZE_F d2_sizef(lib::rect r) {
+
+inline D2D1_SIZE_F
+d2_sizef(lib::rect r)
+{
 	return D2D1::SizeF((float) r.width(), (float) r.height());
 }
-inline D2D1_SIZE_U d2_sizeu(lib::rect r) {
+
+inline D2D1_SIZE_U
+d2_sizeu(lib::rect r)
+{
 	return D2D1::SizeU((UINT32) r.width(), (UINT32) r.height());
 }
 
@@ -78,7 +82,7 @@ inline D2D1_SIZE_U d2_sizeu(lib::rect r) {
 // by enclosing them in a counter clockwise defined rectangle for the whole region using the
 // non-zero winding rule
 void
-add_counter_clockwise_rect (ID2D1GeometrySink* sink, D2D1_RECT_U rect)
+add_counter_clockwise_rect(ID2D1GeometrySink* sink, D2D1_RECT_U rect)
 {	
 	UINT32 minX = rect.left, maxX = rect.right, minY = rect.bottom, maxY = rect.top;
 	sink->BeginFigure(D2D1::Point2F((float) minX, (float) minY), D2D1_FIGURE_BEGIN_FILLED);
@@ -88,8 +92,11 @@ add_counter_clockwise_rect (ID2D1GeometrySink* sink, D2D1_RECT_U rect)
 	sink->AddLine( D2D1::Point2F((float) minX, (float) minX));
 	sink->EndFigure(D2D1_FIGURE_END_CLOSED);
 }
+
 // Helper function: convert a lib::rect into a polyon (std::vector of lib::points)
-std::vector<lib::point> polygon_from_rect(lib::rect rect) {
+std::vector<lib::point>
+polygon_from_rect(lib::rect rect)
+{
 	lib::point right_top = lib::point(rect.right(), rect.top());
 	lib::point left_bottom = lib::point(rect.left(), rect.bottom());
 	std::vector <lib::point> rv = std::vector <lib::point>();
@@ -99,8 +106,11 @@ std::vector<lib::point> polygon_from_rect(lib::rect rect) {
 	rv.push_back(left_bottom);
 	return rv;
 }
+
 // Helper function: convert a std::list of lib::rect into a polyon list (std::list of std::vector of lib::points)
-std::vector<std::vector<lib::point>> polygon_list_from_rect_list(std::vector<lib::rect>* rect_list) {
+std::vector<std::vector<lib::point>>
+polygon_list_from_rect_list(std::vector<lib::rect>* rect_list)
+{
 	std::vector<std::vector<lib::point>> rv =  std::vector<std::vector<lib::point>>();
 	for (std::vector<lib::rect>::iterator it = rect_list->begin(); it != rect_list->end(); it++) {
 		rv.push_back(polygon_from_rect(*it));
@@ -133,7 +143,12 @@ cleanup:
 
 // Helper function: add clipping path from the list of polygons
 ID2D1PathGeometry*
-path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vector< std::vector<lib::point> > polygon_list, bool outtrans, lib::rect whole_rect)
+path_from_polygon_list(
+	ID2D1Factory* factory,
+	const lib::point& origin,
+	std::vector< std::vector<lib::point> > polygon_list,
+	bool outtrans,
+	lib::rect whole_rect)
 {
 	ID2D1PathGeometry* path = NULL;
 	ID2D1GeometrySink* sink = NULL;
@@ -178,7 +193,11 @@ cleanup:
 // Helper function: draw the current render target (from 'dst') using 'polyon list' as a clipping path
 // This function does all the work necessary, including the EndDraw() of the bitmap render target (back buffer)
 static void
-_d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::point> > polygon_list, bool outtrans, lib::rect whole_rect)
+_d2_polygon_list_update(
+	common::surface* dst,
+	std::vector< std::vector<lib::point> > polygon_list,
+	bool outtrans,
+	lib::rect whole_rect)
 {
 	gui_window *window = dst->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
@@ -219,12 +238,6 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	rt->PopLayer();
 	hr = rt->Flush();
 	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() rt->Flush()");
-#ifdef	AM_DMP
-//	int idx = d2_player->dump(d2_player->get_fullscreen_rendertarget(), "res");
-//	idx = d2_player->dump_bitmap(bitmap, brt, "bmp");
-//	lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) DrawBitmap(bitmap) idx=%d", this, idx);
-#endif//AM_DMP
-
 cleanup:
 	SafeRelease(&layer);
 	SafeRelease(&path);
@@ -473,7 +486,6 @@ d2_transition_blitclass_rectlist::update()
 		AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rectlist::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
 	}
 }
-	
 
 void
 d2_transition_blitclass_poly::update()

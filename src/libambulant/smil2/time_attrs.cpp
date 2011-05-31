@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -16,10 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/smil2/time_attrs.h"
 #include "ambulant/lib/node.h"
@@ -81,7 +77,6 @@ bool time_attr_parser::parse_wallclock(const std::string& s, sync_value_struct& 
 	return false;
 }
 
-#ifdef WITH_SMIL30
 // statechange-value  ::= "stateChange(" ref ")"
 bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct& svs) {
 	// state-change-value
@@ -105,7 +100,6 @@ bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.sparam.c_str());
 	return true;
 }
-#endif // WITH_SMIL30
 
 // Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )?
 bool time_attr_parser::parse_accesskey(const std::string& s, sync_value_struct& svs) {
@@ -258,10 +252,8 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 		svs.base = nmtoken.substr(0, last_dot_ix);
 		event = nmtoken.substr(last_dot_ix+1);
 	}
-#ifdef WITH_SMIL30
 	if(starts_with(event, "stateChange"))
 		return parse_statechange(s, svs);
-#endif // WITH_SMIL30
 
 #ifdef CHECK_EVENT_NAMES
 	if(events.find(event) == events.end()) {
@@ -543,9 +535,7 @@ void time_attrs::parse_fill() {
 	if(fill == "remove") m_fill = fill_remove;
 	else if(fill == "freeze") m_fill = fill_freeze;
 	else if(fill == "hold") m_fill = fill_hold;
-#ifdef WITH_SEAMLESS_PLAYBACK
 	else if(fill == "ambulant:continue") m_fill = fill_continue;
-#endif
 	else if(fill == "transition") m_fill = fill_transition;
 	else if(fill == "auto") m_fill = fill_auto;
 	// else default or invalid
@@ -576,9 +566,7 @@ fill_behavior time_attrs::get_default_fill() {
 			if(fill == "remove") {retfb = fill_remove; break;}
 			else if(fill == "freeze") {retfb = fill_freeze; break;}
 			else if(fill == "hold") {retfb = fill_hold; break;}
-#ifdef WITH_SEAMLESS_PLAYBACK
 			else if(fill == "ambulant:continue") {retfb = fill_continue; break;}
-#endif
 			else if(fill == "transition") {retfb = fill_transition; break;}
 			else if(fill == "auto") {retfb = fill_auto; break;}
 			// else inherit or invalid e.g. continue
@@ -723,9 +711,7 @@ std::string repr(smil2::sync_value_type sv) {
 		case sv_repeat: return "repeat";
 		case sv_accesskey: return "accesskey";
 		case sv_media_marker: return "marker";
-#ifdef WITH_SMIL30
 		case sv_state_change: return "statechange";
-#endif
 		case sv_wallclock: return "wallclock";
 		case sv_indefinite: return "indefinite";
 	}
@@ -767,9 +753,7 @@ std::string repr(smil2::fill_behavior f) {
 		case fill_remove: return "remove";
 		case fill_freeze: return "freeze";
 		case fill_hold: return "hold";
-#ifdef WITH_SEAMLESS_PLAYBACK
 		case fill_continue: return "ambulant:continue";
-#endif
 		case fill_transition: return "transition";
 		case fill_auto: return "auto";
 		case fill_default: return "default";

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -18,7 +18,6 @@
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #ifndef AMBULANT_LIB_PROFILE_H
 #define AMBULANT_LIB_PROFILE_H
@@ -49,38 +48,29 @@ namespace lib {
 
 namespace profile {
 
+inline void initialize() {
 #if defined(WITH_PROFILE_CHUD)
-inline void initialize() {
 	chudAcquireRemoteAccess();
-}
-
-inline void terminate() {
-	chudReleaseRemoteAccess();
-}
-
-inline void start() {
-	chudStartRemotePerfMonitor("ambulant-profile");
-}
-
-inline void stop() {
-	chudStopRemotePerfMonitor();
-}
-#else
-inline void initialize() {
-}
-
-inline void terminate() {
-}
-
-inline void start() {
-	lib::logger::get_logger()->debug("profile::start() called, but no profiler selected");
-}
-
-inline void stop() {
-	lib::logger::get_logger()->debug("profile::stop() called, but no profiler selected");
-}
 #endif
+}
 
+inline void terminate() {
+#if defined(WITH_PROFILE_CHUD)
+	chudReleaseRemoteAccess();
+#endif
+}
+
+inline void start() {
+#if defined(WITH_PROFILE_CHUD)
+	chudStartRemotePerfMonitor("ambulant-profile");
+#endif
+}
+
+inline void stop() {
+#if defined(WITH_PROFILE_CHUD)
+	chudStopRemotePerfMonitor();
+#endif
+}
 
 } // end namespace profile
 

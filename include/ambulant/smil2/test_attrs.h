@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,19 +19,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 #ifndef AMBULANT_SMIL2_TEST_ATTRS_H
 #define AMBULANT_SMIL2_TEST_ATTRS_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
-#ifdef WITH_SMIL30
 #include "ambulant/common/state.h"
-#endif
 
 #include <string>
 #include <map>
@@ -64,9 +58,7 @@ class AMBULANTAPI test_attrs {
 	const std::string& get_tag() const { return m_tag;}
 	const std::string& get_id() const { return m_id;}
 
-#ifdef WITH_SMIL30
 	static common::state_test_methods *get_state_test_methods();
-#endif // WITH_SMIL30
 
 	// API for embedders and extenders that want to fiddle with components and
 	// custom tests
@@ -80,16 +72,12 @@ class AMBULANTAPI test_attrs {
 	static void set_current_system_component_value(std::string name, bool enabled);
 	/// Set the current screen size
 	static void set_current_screen_size(int height, int width);
-#ifdef WITH_SMIL30
 	/// Clear the list of user-preferred languages
 	static void clear_languages();
 	/// Add a language, with weight, to the list of user-preferred languages
 	static void add_language(std::string langname, float weight);
-#endif
-
-#ifdef WITH_SMIL30
+	/// Return a preference factor [0.0,1.0] for the given language
 	static float get_system_language_weight(std::string lang);
-#endif
 
   protected:
 	typedef std::string::size_type size_type;

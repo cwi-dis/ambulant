@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_VIDEO_H
@@ -69,10 +65,6 @@ class dx_video_renderer : public dx_renderer_playable {
 	lib::event *m_update_event;
 	lib::event_processor::time_type m_frametime;
 	lib::critical_section m_cs;
-
-	// for debugging
-	lib::rect m_msg_rect;
-
 };
 
 } // namespace dx

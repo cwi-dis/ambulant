@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 /////////////////////////////
@@ -109,7 +105,6 @@ class region_node : public common::animation_destination {
 	common::sound_alignment get_soundalign() const { return m_display_soundalign; }
 	const char *get_bgimage() const;
 	common::tiling get_tiling() const;
-#ifdef WITH_SMIL30
 	lib::rect get_crop_rect(const lib::size& srcsize) const;
 	double get_mediaopacity() const;
 	double get_mediabgopacity() const;
@@ -117,7 +112,6 @@ class region_node : public common::animation_destination {
 	double get_chromakeyopacity() const;
 	lib::color_t get_chromakey() const;
 	lib::color_t get_chromakeytolerance() const;
-#endif
 
 	// And corresponding setting interface
 	void reset() {(void)fix_from_dom_node(); };
@@ -128,7 +122,6 @@ class region_node : public common::animation_destination {
 	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
 	void set_soundlevel(double l) { m_soundlevel = l; m_display_soundlevel = l; }
 	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; m_display_soundalign = sa; }
-#ifdef WITH_SMIL30
 	void set_panzoom(const common::region_dim_spec& rds_) { m_panzoom = rds_; m_display_panzoom = rds_; }
 	void set_bgopacity(double l) { m_bgopacity = l; m_display_bgopacity = l; }
 	void set_mediaopacity(double l) { m_mediaopacity = l; m_display_mediaopacity = l; }
@@ -136,7 +129,6 @@ class region_node : public common::animation_destination {
 	void set_chromakeyopacity(double l) { m_chromakeyopacity = l; m_display_chromakeyopacity = l; }
 	void set_chromakey(lib::color_t c) { m_chromakey = c; m_display_chromakey = c; };
 	void set_chromakeytolerance(lib::color_t ct) { m_chromakeytolerance = ct; m_display_chromakeytolerance = ct;};
-#endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 
 	// animation_destination interface
@@ -145,20 +137,16 @@ class region_node : public common::animation_destination {
 	common::zindex_t get_region_zindex(bool fromdom = false) const;
 	double get_region_soundlevel(bool fromdom = false) const;
 	common::sound_alignment get_region_soundalign(bool fromdom = false) const;
-#ifdef WITH_SMIL30
 	const common::region_dim_spec& get_region_panzoom(bool fromdom = false) const;
 	double get_region_opacity(const std::string& which, bool fromdom = false) const;
-#endif
 
 	void set_region_dim(const std::string& which, const common::region_dim& rd);
 	void set_region_color(const std::string& which, lib::color_t clr);
 	void set_region_zindex(common::zindex_t z);
 	void set_region_soundlevel(double level);
 	void set_region_soundalign(common::sound_alignment sa);
-#ifdef WITH_SMIL30
 	void set_region_panzoom(const common::region_dim_spec& rds);
 	void set_region_opacity(const std::string& which, double level);
-#endif // WITH_SMIL30
 
 	// sets explicitly the dimensions of this region
 	template <class L, class W, class R, class T, class H, class B>
@@ -221,7 +209,6 @@ class region_node : public common::animation_destination {
 	lib::color_t m_bgcolor;
 	double m_soundlevel;
 	common::sound_alignment m_soundalign;
-#ifdef WITH_SMIL30
 	common::region_dim_spec m_panzoom;
 	double m_mediaopacity;
 	double m_mediabgopacity;
@@ -229,7 +216,6 @@ class region_node : public common::animation_destination {
 	double m_chromakeyopacity;
 	lib::color_t m_chromakey;
 	lib::color_t m_chromakeytolerance;
-#endif // WITH_SMIL30
 	const char *m_bgimage;
 	common::tiling m_tiling;
 	bool m_inherit_bgrepeat;
@@ -246,7 +232,6 @@ class region_node : public common::animation_destination {
 	lib::color_t m_display_color;
 	double m_display_soundlevel;
 	common::sound_alignment m_display_soundalign;
-#ifdef WITH_SMIL30
 	common::region_dim_spec m_display_panzoom;
 	double m_display_bgopacity;
 	double m_display_mediaopacity;
@@ -254,7 +239,6 @@ class region_node : public common::animation_destination {
 	double m_display_chromakeyopacity;
 	lib::color_t m_display_chromakey;
 	lib::color_t m_display_chromakeytolerance;
-#endif // WITH_SMIL30
 
 	// verifier
 	static int node_counter;

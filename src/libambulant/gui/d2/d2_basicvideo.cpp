@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,19 +10,14 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/gui/d2/d2_basicvideo.h"
-//#include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
@@ -38,14 +33,10 @@
 #include <uuids.h>
 #include <vfwmsgs.h>
 #include <tchar.h>
-
-#ifdef WITH_DX_EVR
 #include <mfidl.h>
 #include <evr.h>
+
 #pragma comment (lib,"mfuuid.lib")
-
-#endif
-
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"amstrmid.lib")
 #pragma comment (lib,"strmiids.lib")
@@ -57,52 +48,6 @@
 #define AM_DBG if(0)
 #endif
 
-// AddToRot adds the filtergraph to the Running Object Table, for debugging
-// purposes. The ROT can be inspected with GraphEdit, see
-// <http://msdn.microsoft.com/en-us/library/dd390650(VS.85).aspx> for details.
-// Also note that under Win7 you may not see the graph. Run both graphedit
-// and asmbulant as admin (from cmd).
-#ifdef NDEBUG
-#define AddToRot(x, y) do { *y = 0; } while (0)
-#define RemoveFromRot(y) do { assert(y == 0); } while (0)
-#else
-static HRESULT
-AddToRot(IUnknown *pUnkGraph, DWORD *pdwRegister)
-{
-	HRESULT hr;
-    IMoniker * pMoniker;
-    IRunningObjectTable *pROT;
-    if (FAILED(GetRunningObjectTable(0, &pROT)))
-	{
-        return E_FAIL;
-    }
-	wchar_t wsz[256];
-
-    _stprintf_s(wsz, TEXT("FilterGraph %08x pid %08x"), (DWORD_PTR)pUnkGraph,
-		GetCurrentProcessId());
-//	MultiByteToWideChar( CP_ACP, 0, str, strlen(str)+1, wsz, sizeof(wsz)/sizeof(wsz[0]) );
-
-	hr = CreateItemMoniker(L"!", wsz, &pMoniker);
-    if (SUCCEEDED(hr))
-	{
-        hr = pROT->Register(ROTFLAGS_REGISTRATIONKEEPSALIVE, pUnkGraph, pMoniker, pdwRegister);
-		if (pMoniker) pMoniker->Release();
-    }
-    if (pROT) pROT->Release();
-    return hr;
-}
-
-static void
-RemoveFromRot(DWORD pdwRegister)
-{
-    IRunningObjectTable *pROT;
-    if (SUCCEEDED(GetRunningObjectTable(0, &pROT)))
-	{
-        pROT->Revoke(pdwRegister);
-        pROT->Release();
-    }
-}
-#endif
 using namespace ambulant;
 extern const char d2_basicvideo_playable_tag[] = "video";
 extern const char d2_basicvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectXBasicVideo");
@@ -133,14 +78,11 @@ gui::d2::d2_basicvideo_renderer::d2_basicvideo_renderer(
 	m_basic_audio(NULL),
 	m_video_window(NULL),
 	m_graph_builder(NULL),
-#ifdef WITH_DX_EVR
 	m_evr(NULL),
 	m_evr_control(NULL),
 	m_evr_hwnd(NULL),
-#endif
 	m_update_event(0),
-	m_d2player(dynamic_cast<d2_player*>(mdp)),
-	m_rot_index(0)
+	m_d2player(dynamic_cast<d2_player*>(mdp))
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_basicvideo_renderer(0x%x)", this);
 }
@@ -168,7 +110,6 @@ gui::d2::d2_basicvideo_renderer::~d2_basicvideo_renderer() {
 		m_video_window->Release();
 		m_video_window = 0;
 	}
-#ifdef WITH_DX_EVR
 	if (m_evr) {
 		m_evr->Release();
 		m_evr = NULL;
@@ -181,9 +122,7 @@ gui::d2::d2_basicvideo_renderer::~d2_basicvideo_renderer() {
 		DestroyWindow(m_evr_hwnd);
 		m_evr_hwnd = NULL;
 	}
-#endif
 	if(m_graph_builder) {
-		RemoveFromRot(m_rot_index);
 		m_graph_builder->Release();
 		m_graph_builder = 0;
 	}
@@ -215,19 +154,14 @@ void gui::d2::d2_basicvideo_renderer::start(double t) {
 
 	lib::rect r = surf->get_rect();
 	r.translate(surf->get_global_topleft());
-#ifdef WITH_DX_EVR
 	MFVideoNormalizedRect src_rect = {0.0f, 0.0f, 1.0f, 1.0f};
 	RECT dst_rect = { 0, 0, r.right(), r.bottom() };
 	SetWindowPos(m_evr_hwnd, 0, r.left(), r.top(), r.right(), r.bottom(), SWP_SHOWWINDOW);
 	m_evr_control->SetVideoPosition(&src_rect, &dst_rect); 
-#else
-//TODO	m_player->setrect(r);
-#endif
 	// Has this been activated
 	if(m_activated) {
 		// repeat
 		_start(t + (m_clip_begin / 1000000.0));
-//XXXJACK		m_player->update();
 		m_dest->need_redraw();
 		_schedule_update();
 		return;
@@ -241,7 +175,6 @@ void gui::d2::d2_basicvideo_renderer::start(double t) {
 
 	// Start the underlying player
 	_start(t + (m_clip_begin / 1000000.0));
-//XXXJACK	m_player->update();
 
 	// Request a redraw
 	m_dest->need_redraw();
@@ -260,9 +193,7 @@ bool gui::d2::d2_basicvideo_renderer::_open(const std::string& url, HWND parent)
 		lib::win32::win_report_error("CoCreateInstance(CLSID_FilterGraph, ...)", hr);
 		return false;
 	}
-	AddToRot(m_graph_builder, &m_rot_index);
 	// We now optionally add a specific output handler.
-#ifdef WITH_DX_EVR
 	hr = CoCreateInstance(CLSID_EnhancedVideoRenderer, 0, CLSCTX_INPROC_SERVER,
 		IID_IBaseFilter, (void**)&m_evr);
 	if (FAILED(hr)) {
@@ -270,7 +201,6 @@ bool gui::d2::d2_basicvideo_renderer::_open(const std::string& url, HWND parent)
 		return false;
 	}
 	m_graph_builder->AddFilter(m_evr, _T("Enhanced Video Renderer"));
-#endif
 	WCHAR wsz[MAX_PATH];
 	MultiByteToWideChar(CP_ACP,0, url.c_str(), -1, wsz, MAX_PATH);
 	hr = m_graph_builder->RenderFile(wsz, 0);
@@ -304,7 +234,6 @@ bool gui::d2::d2_basicvideo_renderer::_open(const std::string& url, HWND parent)
 	if(FAILED(hr)) {
 		lib::win32::win_report_error("QueryInterface(IID_IBasicAudio, ...)", hr);
 	}
-#ifdef WITH_DX_EVR
 	IMFGetService *get_service;
 	hr = m_evr->QueryInterface(IID_IMFGetService, (void**)&get_service);
 	if (FAILED(hr)) {
@@ -327,36 +256,7 @@ bool gui::d2::d2_basicvideo_renderer::_open(const std::string& url, HWND parent)
 		lib::win32::win_report_error("SetVideoWindow(...)", hr);
 	}
 
-#else
-	hr = m_graph_builder->QueryInterface(IID_IVideoWindow, (void **) &m_video_window);
-	if(FAILED(hr)) {
-		lib::win32::win_report_error("QueryInterface(IID_IVideoWindow, ...)", hr);
-	}
 
-	// Reposition output window
-	if (m_video_window) {
-		hr = m_video_window->put_Owner((OAHWND)parent);
-		if (FAILED(hr)) {
-			lib::win32::win_report_error("put_Owner()", hr);
-		}
-		long style;
-		hr = m_video_window->get_WindowStyle(&style);
-		if (FAILED(hr)) {
-			lib::win32::win_report_error("get_WindowStyle()", hr);
-		}
-		lib::logger::get_logger()->debug("basicvideo_player: windowStyle was 0x%x", style);
-		style |= WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS;
-		style &= ~(WS_CAPTION|WS_BORDER|WS_DLGFRAME|WS_SYSMENU|WS_SIZEBOX|WS_MINIMIZEBOX);
-		hr = m_video_window->put_WindowStyle(style);
-		if (FAILED(hr)) {
-			lib::win32::win_report_error("put_WindowStyle()", hr);
-		}
-		hr = m_video_window->put_MessageDrain((OAHWND)parent);
-		if (FAILED(hr)) {
-			lib::win32::win_report_error("put_MessageDrain()", hr);
-		}
-	}
-#endif
 	return true;
 }
 

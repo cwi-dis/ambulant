@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -25,16 +25,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
-#ifdef WITH_SMIL30
-// Version 3: SMIL 3.0 WD
-#if defined(WITH_CLOCK_SYNC) && defined(WITH_SEAMLESS_PLAYBACK)
 #define AMBULANT_PLUGIN_API_VERSION 6
-#else
-#define AMBULANT_PLUGIN_API_VERSION 5
-#endif
-#else
-#define AMBULANT_PLUGIN_API_VERSION 2
-#endif
 
 namespace ambulant {
 
@@ -76,10 +67,8 @@ class AMBULANTAPI plugin_engine {
 	/// Get extra-data for a named plugin, if available.
 	void *get_extra_data(std::string name);
 
-#ifdef WITH_PYTHON_PLUGIN
 	/// Get list of plugins that need the Python plugin.
-	const std::vector<std::string>& get_python_plugins() const { return m_python_plugins; }
-#endif
+	const std::vector<std::string>& get_python_plugins() const;
   private:
 
 	plugin_engine();

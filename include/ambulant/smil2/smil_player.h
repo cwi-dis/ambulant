@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_SMIL_PLAYER_H
@@ -107,14 +103,8 @@ class smil_player :
 	// raw notifications from the UI
 
 	virtual void on_char(int ch);
-#ifdef WITH_SMIL30
-  private:
-	void create_state_engine();
-	common::state_component *m_state_engine;
-  public:
 	virtual void on_state_change(const char *ref);
 	common::state_component *get_state_engine() { return m_state_engine;}
-#endif
 	virtual void on_focus_advance();
 	virtual void on_focus_activate();
 
@@ -184,11 +174,10 @@ class smil_player :
 
 	animation_engine* get_animation_engine() { return m_animation_engine;}
   private:
+	void create_state_engine();
 	common::playable* _new_playable(const lib::node *n);
 	void _destroy_playable(common::playable *r, const lib::node *n);
-#ifdef WITH_SEAMLESS_PLAYBACK
 	void destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim);
-#endif
 	common::playable* _get_playable(const lib::node *n) {
 		std::map<const lib::node*, common::playable *>::iterator it =
 			m_playables.find(n);
@@ -199,6 +188,7 @@ class smil_player :
 	void _update();
 	void _resume();
 
+	common::state_component *m_state_engine;
 	lib::document *m_doc;
 	common::factories *m_factory;
 	//common::window_factory *m_wf;
@@ -217,10 +207,7 @@ class smil_player :
 	const time_node *m_pointed_node;
 	bool m_wait_for_eom_flag;
 	std::map<const lib::node*, common::playable *> m_playables;
-#ifdef WITH_SEAMLESS_PLAYBACK
-	std::map<const std::string, common::playable *> m_playables_url_based;
-
-#endif
+	std::map<const std::string, common::playable *> m_cached_playables;
 
 	critical_section m_playables_cs;
 	std::map<const node*, double> m_playables_dur;

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -196,9 +196,6 @@ CWnd* topView = NULL;
 IMPLEMENT_DYNCREATE(MmView, CView)
 
 BEGIN_MESSAGE_MAP(MmView, CView)
-#ifdef not_WITH_D2D
-	ON_WM_PAINT()
-#endif
 	ON_WM_DESTROY()
 	ON_COMMAND(ID_FILE_PLAY, OnFilePlay)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
@@ -264,8 +261,8 @@ MmView::MmView()
 #ifdef AMBULANT_USE_DLL
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: using AmbulantPlayer in DLL"));
 #endif
-#ifdef AM_PLAYER_DG
-	lib::logger::get_logger()->debug("Ambulant Player: using DG Player");
+#ifdef WITH_D2D
+	lib::logger::get_logger()->debug("Ambulant Player: using D2D Player");
 #else
 	lib::logger::get_logger()->debug("Ambulant Player: using DX Player");
 #endif
@@ -343,11 +340,6 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		LocateWelcomeDoc(TEXT("Welcome.smil"))){;}
 #endif
 
-#if 0
-	// This interferes with starting up in fullscreen mode
-	PostMessage(WM_SET_CLIENT_RECT,
-		common::default_layout_width, ambulant::common::default_layout_height);
-#endif
 #ifdef WITH_SPLASH_SCREEN
 	PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 #else
@@ -626,9 +618,6 @@ void MmView::OnOpenFilter() {
 		CString str = dlg.GetPathName();
 		m_curFilter = str;
 		smil2::test_attrs::load_test_attrs(lib::textptr(LPCTSTR(str)).c_str());
-#ifndef AM_PLAYER_DG
-		if(player) player->restart();
-#endif
 	}
 }
 

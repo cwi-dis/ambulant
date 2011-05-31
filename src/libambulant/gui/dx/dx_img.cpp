@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_viewport.h"
@@ -199,7 +195,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		if (m_erase_never) m_dest->keep_as_background();
 		return;
 	}
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
@@ -208,8 +203,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
-//???		alpha_media_bg = ri->get_mediabgopacity();
-//???		m_bgopacity = ri->get_bgopacity();
 		if (ri->is_chromakey_specified()) {
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
@@ -217,10 +210,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-#else
-	// Get fit rectangles
-	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
-#endif
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
 
@@ -243,9 +232,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	// Translate img_reg_rc_dirty to viewport coordinates
 	lib::point topleft = m_dest->get_global_topleft();
 	img_reg_rc_dirty.translate(topleft);
-
-	// keep rect for debug messages
-	m_msg_rect |= img_reg_rc_dirty;
 
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
@@ -281,7 +267,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
 		bgimage->Release();
 	} else {
-#ifdef	WITH_SMIL30
 		if (alpha_chroma != 1.0) {
 			IDirectDrawSurface* screen_ddsurf = v->get_surface();
 			IDirectDrawSurface* image_ddsurf = m_image->get_ddsurf();
@@ -298,9 +283,6 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		} else {
 			v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 		}
-#else //WITH_SMIL30
-		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
-#endif//WITH_SMIL30
 	}
 	if (m_erase_never) m_dest->keep_as_background();
 }

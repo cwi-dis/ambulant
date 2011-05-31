@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,21 +10,13 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-#ifdef	WITH_IPHONE
-//void* _CFXMLNodeGetInfoPtr = NULL;
-#include <CoreGraphics/CoreGraphics.h>
-#include <ImageIO/ImageIO.h>
-#endif//WITH_IPHONE
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_image.h"
 #include "ambulant/gui/cg/cg_transition.h"
@@ -80,43 +72,21 @@ cg_image_renderer::~cg_image_renderer()
 	m_lock.leave();
 }
 
-#ifdef WITH_OLD_CROP_CODE
-CGImage *
-cg_image_renderer::_cropped_image(const lib::rect& rect)
-{
-	if (!m_image) return NULL;
-	if (rect == lib::rect(lib::point(0,0), m_size)) return m_image;
-	if (m_image_cropped && rect == m_rect_cropped) return m_image_cropped;
-	CGImageRelease(m_image_cropped);
-	m_image_cropped = NULL;
-	m_rect_cropped = rect;
-	CGRect cg_rect = CGRectMake(rect.left(), rect.top(), rect.width(), rect.height());
-    AM_DBG lib::logger::get_logger()->debug("cg_image_renderer: crop to (%d, %d, %d, %d)", rect.left(), rect.top(), rect.width(), rect.height());
-	m_image_cropped = CGImageCreateWithImageInRect(m_image, cg_rect);
-	return m_image_cropped;
-}
-#endif
-
 bool
 cg_image_renderer::_prepare_image()
 {
-	//
 	// If we already have a cglayer we have done everything we can.
-	//
 	if (m_cglayer) return true;
-	//
+
 	// If we have no data yet we cannot do anything
-	//
 	if (!m_data) return false;
 	
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
-#endif
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_image_renderer._prepare_image(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	//
-	// First we load the image data into m_image.
+	// First we load the image data into m_image, if not done previously.
 	//
 	if (!m_image) {
 		AM_DBG logger::get_logger()->debug("cg_image_renderer._prepare_image: creating image");
@@ -142,7 +112,6 @@ cg_image_renderer::_prepare_image()
 		}
 		m_size = lib::size(CGImageGetWidth(m_image), CGImageGetHeight(m_image));
 
-#ifdef WITH_SMIL30
 		// Apply chroma keying.
 		// XXXJACK: by doing this here we disregard animation on chromaKeying
 		if (ri->is_chromakey_specified()) {
@@ -164,55 +133,27 @@ cg_image_renderer::_prepare_image()
 				m_image = new_image;
 			}
 		}
-#endif
 	}
 	assert(m_image);
 
-	//
-	// Next, we check whether it is worth it to cache the image in a CGlayer (if we draw it multiple
-	// times, or if we need to crop. Alternatively, we could always do this.
-	//
-	assert(!m_cglayer);
-	bool want_cglayer = false;
-	if (m_node->get_attribute("backgroundImage") && m_dest->is_tiled()) {
-		want_cglayer = true;
-	} else {
-		lib::rect srcrect;
-#ifdef WITH_SMIL30
-		lib::rect croprect = m_dest->get_crop_rect(m_size);
-		AM_DBG logger::get_logger()->debug("cg_image_renderer._prepare_image, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
-
-		lib::rect dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-#else
-		lib::rect dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
-#endif
-		if (dstrect != lib::rect(lib::point(0,0), m_size)) {
-			want_cglayer = true;
-		}
-	}
-#ifdef WITH_OLD_CROP_CODE
-	want_cglayer = false; // XXXJACK
-#else
-	want_cglayer = true; // XXXJACK
-#endif
-	if (want_cglayer) {
-		AM_DBG lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
-		
-		// Create the layer, initially with the same parameters as the current context.
+    AM_DBG lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
+    
+    // Create the layer, initially with the same parameters as the current context.
 #ifdef WITH_UIKIT
-		CGContextRef myContext = UIGraphicsGetCurrentContext();
+    CGContextRef myContext = UIGraphicsGetCurrentContext();
 #else
-		CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 #endif
-		CGRect layer_rect = CGRectMake(0, 0, m_size.w, m_size.h);
-		m_cglayer = CGLayerCreateWithContext(myContext, layer_rect.size, NULL);
-		assert(m_cglayer);
-		// Draw the image in the layer
-		myContext = CGLayerGetContext(m_cglayer);
-		assert(myContext);
-		CGContextDrawImage(myContext, layer_rect, m_image);
-	}
-	return true;
+    CGRect layer_rect = CGRectMake(0, 0, m_size.w, m_size.h);
+    m_cglayer = CGLayerCreateWithContext(myContext, layer_rect.size, NULL);
+    assert(m_cglayer);
+
+    // Draw the image in the layer
+    myContext = CGLayerGetContext(m_cglayer);
+    assert(myContext);
+    CGContextDrawImage(myContext, layer_rect, m_image);
+    
+    return true;
 }
 
 void
@@ -281,22 +222,16 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Determine drawing parameters
 	//
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
 
 	//
 	// Determine the source and destination rectangles
 	//
-#ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	AM_DBG logger::get_logger()->debug("cg_image::redraw_body(0x%x): clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-#else
-	dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
-#endif
 	dstrect.translate(dest_origin);
 	cg_dstrect = CGRectFromAmbulantRect(dstrect);
 	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",
@@ -339,12 +274,8 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	} else {
 		// No prerendering done so we render direct. This should only
 		// happen if the pixels can be deposited as-is.
-#ifdef WITH_OLD_CROP_CODE
-        CGImage *imageToDraw = _cropped_image(srcrect);
-#else
         CGImage *imageToDraw = m_image;
 		assert(dstrect.size() == srcrect.size());
-#endif
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG
         // We need to mirror the image, because CGImage uses bottom-left coordinates.
 		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
@@ -352,6 +283,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		matrix = CGContextGetCTM(myContext);
 		CGContextDrawImage(myContext, cg_dstrect, imageToDraw);
 	}
+
     CGContextRestoreGState(myContext);
 	m_lock.leave();
 }

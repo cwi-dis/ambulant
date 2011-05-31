@@ -1,27 +1,39 @@
+// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-//  iOSpreferences.mm
-//  player_iphone
+// Copyright (C) 2003-2011 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
-//  Created by Kees Blom on 10/5/10.
-//  Copyright 2010 Stg.CWI. All rights reserved.
+// Ambulant Player is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2.1 of the License, or
+// (at your option) any later version.
 //
-#include "ambulant/net/url.h"
+// Ambulant Player is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Ambulant Player; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+#include "ambulant/net/url.h"
 #include "iOSpreferences.h"
+#import <ImageIO/ImageIO.h>
 
 using namespace ambulant;
 
 iOSpreferences*  iOSpreferences::s_preferences = 0;
 
 iOSpreferences::iOSpreferences()
-	:	common::preferences(),
-		m_loaded(false),
-		m_auto_center(true),
-		m_auto_resize(true),
-		m_normal_exit(false),
-		m_favorites(NULL),
-		m_history(NULL)
-		{}
+:	common::preferences(),
+    m_loaded(false),
+    m_auto_center(true),
+    m_auto_resize(true),
+    m_normal_exit(false),
+    m_favorites(NULL),
+    m_history(NULL)
+    {}
 
 iOSpreferences::~iOSpreferences()
 {
@@ -77,28 +89,28 @@ iOSpreferences::load_preferences()
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	NSDictionary *defaultDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
-									 @"any", @"parser_id",
-									 @"auto", @"validation_scheme",
-									 [NSNumber numberWithBool: true], @"do_namespaces",
-									 [NSNumber numberWithBool: false], @"do_schema",
-									 [NSNumber numberWithBool: false], @"validation_schema_full_checking",
-									 [NSNumber numberWithInt: 2], @"log_level",
-									 [NSNumber numberWithBool: true], @"use_plugins",
-									 [NSNumber numberWithBool: true], @"prefer_ffmpeg",
-									 [NSNumber numberWithBool: false], @"prefer_rtsp_tcp",
-									 [NSNumber numberWithBool: false], @"strict_url_parsing",
-									 [NSNumber numberWithBool: false], @"tabbed_links",
-									 [NSNumber numberWithBool: false], @"fullScreen",
-									 [NSNumber numberWithBool: true], @"autoCenter",
-									 [NSNumber numberWithBool: true], @"autoResize",
-									 [NSNumber numberWithBool: true], @"HUDautoHide",
-									 [NSNumber numberWithBool: true], @"HUDshortTap",
-									 [NSNumber numberWithBool: true], @"normalExit",
-									 @"", @"plugin_dir",
-									 [NSNumber numberWithBool: false], @"dynamic_content_control",
-									 AM_IOS_PLAYLISTVERSION, @"version",
-									 [NSData dataWithBytes:"X" length:1], @"history",
-									 nil];
+		@"any", @"parser_id",
+		@"auto", @"validation_scheme",
+		[NSNumber numberWithBool: true], @"do_namespaces",
+		[NSNumber numberWithBool: false], @"do_schema",
+		[NSNumber numberWithBool: false], @"validation_schema_full_checking",
+		[NSNumber numberWithInt: 2], @"log_level",
+		[NSNumber numberWithBool: true], @"use_plugins",
+		[NSNumber numberWithBool: true], @"prefer_ffmpeg",
+		[NSNumber numberWithBool: false], @"prefer_rtsp_tcp",
+		[NSNumber numberWithBool: false], @"strict_url_parsing",
+		[NSNumber numberWithBool: false], @"tabbed_links",
+		[NSNumber numberWithBool: false], @"fullScreen",
+		[NSNumber numberWithBool: true], @"autoCenter",
+		[NSNumber numberWithBool: true], @"autoResize",
+		[NSNumber numberWithBool: true], @"HUDautoHide",
+		[NSNumber numberWithBool: true], @"HUDshortTap",
+		[NSNumber numberWithBool: true], @"normalExit",
+		@"", @"plugin_dir",
+		[NSNumber numberWithBool: false], @"dynamic_content_control",
+		AM_IOS_PLAYLISTVERSION, @"version",
+		[NSData dataWithBytes:"X" length:1], @"history",
+		nil];
 	[prefs registerDefaults: defaultDefaults];
 	m_parser_id = [[prefs stringForKey: @"parser_id"] UTF8String];
 	m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] UTF8String];
@@ -203,17 +215,18 @@ iOSpreferences::repr()
 	rv += common::preferences::repr();
 	return rv;
 }
+
 @implementation PlaylistItem
 @synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
 @synthesize ns_image_data;
 
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
-							url: (NSURL*) ans_url
-					image_data: (NSData*) ans_image_data
-					description: (NSString*) ans_description
-					   duration: (NSString*) ans_dur
-				 last_node_repr: (NSString*) alast_node_repr
-					   position: (NSUInteger) aposition
+	url: (NSURL*) ans_url
+	image_data: (NSData*) ans_image_data
+	description: (NSString*) ans_description
+	duration: (NSString*) ans_dur
+	last_node_repr: (NSString*) alast_node_repr
+	position: (NSUInteger) aposition
 {
 	ns_title = atitle;
 	ns_url = [ans_url retain];
@@ -237,7 +250,6 @@ iOSpreferences::repr()
 	return rv; 
 }
 	
-#import <ImageIO/ImageIO.h>
 - (void) encodeWithCoder: (NSCoder*) encoder	
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];

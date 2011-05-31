@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * @$Id$
- */
-
 // A utility for building a dom tree
 // from a file or a string.
 // Uses expat parser as the xml parser
@@ -31,15 +27,7 @@
 #ifndef AMBULANT_LIB_TREE_BUILDER_H
 #define AMBULANT_LIB_TREE_BUILDER_H
 
-//#define WITH_XERCES
-#ifdef	WITH_XERCES
-#else /*WITH_XERCES*/
-#endif/*WITH_XERCES*/
 #include "ambulant/config/config.h"
-
-
-
-
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/net/url.h"
@@ -60,7 +48,7 @@ class tree_builder :
 
   ///////////////
   public:
-  	/// Constructor, only initializes various internal variables.
+	/// Constructor, only initializes various internal variables.
 	tree_builder(node_factory *nf, node_context *context = 0, const char *filename = "");
 	//tree_builder() {};
 	~tree_builder();
@@ -128,14 +116,10 @@ class tree_builder :
 	node_factory *m_node_factory;
 	node_context *m_context;
 	std::string m_filename;		// For error messages only!
-#ifdef WITH_EXTERNAL_DOM
 	std::vector<std::pair<std::string,std::string> > m_pending_namespaces;
-#endif // WITH_EXTERNAL_DOM
-#ifdef WITH_SMIL30
 	std::vector<std::pair<std::string,node*> > m_xml_space_stack;
 	char* m_buf;
 	size_t m_bufsize;
-#endif // WITH_SMIL30
 };
 
 

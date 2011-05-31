@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -204,9 +204,7 @@ AMBULANTAPI common::window_factory *create_gtk_window_factory_unsafe(void* gtk_p
 // Playable factories
 AMBULANTAPI common::playable_factory *create_gtk_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_gtk_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#ifdef WITH_SMIL30
 AMBULANTAPI common::playable_factory *create_gtk_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#endif
 AMBULANTAPI common::playable_factory *create_gtk_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_gtk_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 

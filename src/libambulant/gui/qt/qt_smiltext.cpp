@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,17 +10,13 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-#ifdef	WITH_SMIL30
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_smiltext.h"
 #include "ambulant/gui/qt/qt_util.h"
@@ -98,7 +94,6 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 
 	gui::qt::qt_renderer<common::renderer_playable>::start(t);
 	m_lock.enter();
-//JNK?	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_layout_engine.start(t);
 	renderer_playable::start(t);
 	m_layout_engine.set_dest_rect(m_rect = m_dest->get_rect());
@@ -396,4 +391,3 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		m_context->stopped(m_cookie);
 
 }
-#endif //WITH_SMIL30

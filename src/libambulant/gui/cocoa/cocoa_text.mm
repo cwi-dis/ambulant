@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -151,7 +147,6 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		assert(the_string);
 		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
 		if (m_text_color) {
-#ifdef WITH_SMIL30
 			// XXXJACK will not work, too early for m_dest to be set
 			double alfa = 1.0;
 			const common::region_info *ri = m_dest->get_info();
@@ -160,12 +155,6 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 					green:greenf(m_text_color)
 					blue:bluef(m_text_color)
 					alpha:(float)alfa];
-#else
-			NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(m_text_color)
-					green:greenf(m_text_color)
-					blue:bluef(m_text_color)
-					alpha:1.0];
-#endif
 			[m_text_storage setForegroundColor: nscolor];
 		}
 		if (m_text_font)

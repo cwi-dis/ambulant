@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/gui/d2/d2_smiltext.h"
 #include "ambulant/common/region_info.h"
@@ -68,12 +64,12 @@ create_d2_smiltext_playable_factory(common::factories *factory, common::playable
 
 
 d2_smiltext_renderer::d2_smiltext_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp,
-		common::factories *factory,
-		common::playable_factory_machdep *mdp)
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
+	const lib::node *node,
+	event_processor *evp,
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
 :	d2_renderer<renderer_playable>(context, cookie, node, evp, factory, mdp),
 	m_text_format(NULL),
 	m_text_layout(NULL),
@@ -88,9 +84,6 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 	m_cur_para_wrap(true),
 	m_any_semiopaque_bg(false)
 {
-#ifdef PARALLELS_MACPRO_BUG_WORKAROUND
-	lib::logger::get_logger()->trace("DirectWrite disabled, bug workaround by Jack");
-#else
 	if (s_write_factory == NULL) {
 		HRESULT hr;
 		hr = DWriteCreateFactory(
@@ -101,7 +94,6 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 			lib::logger::get_logger()->error("Cannot create DirectWrite factory: error 0x%x", hr);
 		}
 	}
-#endif
 }
 
 void
@@ -673,11 +665,8 @@ d2_smiltext_renderer::recreate_d2d()
 	assert(rt);
 
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
-// CreateSolidColorBrush
 	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
 	m_lock.leave();

@@ -1,17 +1,27 @@
+// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-//  SettingsViewController.m
+// Copyright (C) 2003-2011 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
-//  Created by Kees Blom on 7/31/10.
-//  Copyright CWI 2010. All rights reserved.
+// Ambulant Player is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2.1 of the License, or
+// (at your option) any later version.
 //
+// Ambulant Player is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Ambulant Player; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #import "SettingsViewController.h"
 #import "AmbulantViewController.h"
 #include "ambulant/common/preferences.h"
 
 @implementation SettingsViewController
-
-//@synthesize delegate, autoCenterSwitch, autoResizeSwitch, nativeRendererSwitch;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -52,26 +62,26 @@
 - (IBAction) handleHideChanged {
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	switch (HUDhide.selectedSegmentIndex) {
-		default:
-		case 0:
-			prefs->m_hud_auto_hide = true;
-			break;
-		case 1:
-			prefs->m_hud_auto_hide = false;			
-			break;
+    default:
+    case 0:
+        prefs->m_hud_auto_hide = true;
+        break;
+    case 1:
+        prefs->m_hud_auto_hide = false;			
+        break;
 	}
 }
 
 - (IBAction) handleTapChanged {
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	switch (HUDtap.selectedSegmentIndex) {
-		default:
-		case 0:
-			prefs->m_hud_short_tap = false;
-			break;
-		case 1:
-			prefs->m_hud_short_tap = true;			
-			break;
+    default:
+    case 0:
+        prefs->m_hud_short_tap = false;
+        break;
+    case 1:
+        prefs->m_hud_short_tap = true;			
+        break;
 	}
 }
 
@@ -97,19 +107,7 @@
 	// e.g. self.myOutlet = nil;
 }
 
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
-
 - (void)dealloc {
     [super dealloc];
 }
-
-
 @end

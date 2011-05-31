@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_COCOA_COCOA_GUI_H
@@ -101,9 +97,7 @@ common::playable_factory *create_cocoa_fill_playable_factory(common::factories *
 common::playable_factory *create_cocoa_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cocoa_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cocoa_ink_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#ifdef WITH_SMIL30
 common::playable_factory *create_cocoa_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#endif
 common::playable_factory *create_cocoa_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cocoa_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 

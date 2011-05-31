@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -118,9 +118,7 @@ mainloop::init_playable_factory()
 //	pf->add_factory(gui::cg::create_cg_html_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_image_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
-#ifdef WITH_SMIL30
 	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
-#endif
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
 #else
 	pf->add_factory(gui::cocoa::create_cocoa_audio_playable_factory(this, NULL));
@@ -129,9 +127,7 @@ mainloop::init_playable_factory()
 	pf->add_factory(gui::cocoa::create_cocoa_html_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_image_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_ink_playable_factory(this, NULL));
-#ifdef WITH_SMIL30
 	pf->add_factory(gui::cocoa::create_cocoa_smiltext_playable_factory(this, NULL));
-#endif
 	pf->add_factory(gui::cocoa::create_cocoa_text_playable_factory(this, NULL));
 #ifndef __LP64__
 	pf->add_factory(gui::cocoa::create_cocoa_video_playable_factory(this, NULL));

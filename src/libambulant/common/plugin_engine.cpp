@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -496,3 +496,15 @@ plugin_engine::get_extra_data(std::string name)
 		return NULL;
 	return m_extra_data[name]->m_plugin_extra;
 }
+
+const std::vector<std::string>& 
+plugin_engine::get_python_plugins() const
+{
+#ifdef WITH_PYTHON_PLUGIN
+	return m_python_plugins;
+#else
+	static std::vector<std::string> empty;
+	return empty;
+#endif // WITH_PYTHON_PLUGIN
+}
+

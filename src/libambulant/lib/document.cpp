@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/tree_builder.h"
@@ -38,10 +34,8 @@ using namespace ambulant;
 
 lib::document::document()
 :	m_root(NULL),
-	m_root_owned(false)
-#ifdef WITH_SMIL30
-	, m_state(NULL)
-#endif // WITH_SMIL30
+	m_root_owned(false),
+	m_state(NULL)
 {
 }
 
@@ -239,7 +233,6 @@ void lib::document::read_custom_attributes() {
 	}
 }
 
-#ifdef WITH_SMIL30
 const lib::xml_string&
 lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const
 {
@@ -353,4 +346,3 @@ lib::document::on_state_change(const char *ref)
 		handler->avt_value_changed_for(n);
 	}
 }
-#endif // WITH_SMIL30

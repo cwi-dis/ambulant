@@ -3,8 +3,6 @@
 
 #include "Python.h"
 
-
-#define WITH_EXTERNAL_DOM 1
 #include "ambulant/lib/amstream.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"
@@ -98,12 +96,8 @@ public:
 	ambulant::net::url resolve_url(const ambulant::net::url& rurl) const;
 	const ambulant::lib::node* get_root() const;
 	const ambulant::lib::node* get_node(const std::string& idd) const;
-#ifdef WITH_SMIL30
 	ambulant::common::state_component* get_state() const;
-#endif
-#ifdef WITH_SMIL30
 	const ambulant::lib::xml_string& apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const;
-#endif
 	const custom_test_map* get_custom_tests() const { return NULL; }
   private:
 	PyObject *py_node_context;
@@ -458,7 +452,7 @@ public:
 	virtual ~gui_screen();
 
 	void get_size(int* width, int* height);
-	bool get_screenshot(const char* type, char* *out_data__out__, size_t* out_data__len__);
+	bool get_screenshot(const char*, char**, size_t*) { return false; }
   private:
 	PyObject *py_gui_screen;
 
@@ -741,9 +735,6 @@ public:
 
 	ambulant::common::surface_template* new_subsurface(const ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend);
 	ambulant::common::surface* activate();
-#ifdef WITH_AMBULANT_TEST
-	ambulant::common::surface* new_default_subsurface();
-#endif
 	void animated() { abort(); }
   private:
 	PyObject *py_surface_template;

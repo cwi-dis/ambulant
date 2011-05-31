@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -262,16 +262,14 @@ gui_player::create_document(const net::url& url)
 		rv->set_src_url(m_url);
 		// Check that the <smil> tag does not use unsupported features
 		const lib::node *root = rv->get_root();
-#ifdef WITH_SMIL30
+
 		const char *version = root->get_attribute("version");
 		if (version && strcmp(version, "3.0") != 0) {
 			lib::logger::get_logger()->trace("%s: document is SMIL version \"%s\", not 3.0", m_url.get_url().c_str(), version);
 			lib::logger::get_logger()->warn(gettext("%s: document is SMIL version \"%s\", not 3.0, will attempt to continue anyway"),
 				m_url.get_url().c_str(), version);
 		}
-#ifdef WITHOUT_EXTERNAL_DOM
-		// DBG root->dump(std::cout);
-#endif // WITHOUT_EXTERNAL_DOM
+
 		const char *profile = root->get_attribute("baseProfile");
 		if (profile &&
 				strcmp(profile, "Language") != 0 &&
@@ -283,7 +281,6 @@ gui_player::create_document(const net::url& url)
 				m_url.get_url().c_str(), profile);
 		}
 
-#endif // WITH_SMIL30
 		smil2::test_attrs ta(root);
 		if (!ta.selected()) {
 			lib::logger::get_logger()->trace("%s: systemTest attributes on <smil> node not satisfied", m_url.get_url().c_str());

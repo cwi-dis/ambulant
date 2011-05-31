@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_REGION_H
@@ -41,13 +37,8 @@ namespace common {
 using namespace ambulant::lib;
 
 class surface_impl : public surface_template, public surface, public gui_events {
-#ifdef	WITH_SMIL_TEST
-  // The only constructor is NOT protected:
-  public:
-#else/*WITH_SMIL_TEST*/
   // The only constructor is protected:
   protected:
-#endif/*WITH_SMIL_TEST*/
 	surface_impl(const std::string &name, surface_impl *parent, rect bounds,
 		const region_info *info, bgrenderer *bgrenderer);
   public:
@@ -68,10 +59,8 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	const rect& get_clipped_screen_rect() const;
 	virtual const point &get_global_topleft() const;
 	rect get_fit_rect(const size& src_size, rect* out_src_rect, const common::alignment *align) const;
-#ifdef WITH_SMIL30
 	rect get_fit_rect(const rect& src_clip_rect, const size& src_size, rect* out_src_rect, const common::alignment *align) const;
 	rect get_crop_rect(const size& src_size) const;
-#endif // WITH_SMIL30
 	bool is_tiled() const;
 	tile_positions get_tiles(lib::size image_size, lib::rect surface_rect) const;
 	const region_info *get_info() const { return m_info; }
@@ -90,16 +79,11 @@ class surface_impl : public surface_template, public surface, public gui_events 
 
 	// Win32 code needs this, but I don't like it:
 	const surface_impl *get_parent() const { return m_parent; }
-#ifdef	WITH_SMIL_TEST
-	common::surface * new_default_subsurface();
-#endif/*WITH_SMIL_TEST*/
 
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
 	void need_bounds();					// recompute cached sizes
-#ifndef WITH_SMIL30
 	rect get_fit_rect_noalign(const size& src_real_size, rect* out_src_rect) const;
-#endif
 	void draw_background(const rect &r, gui_window *window);
 	bool _is_active();                  // Return true if region is active
 
@@ -149,11 +133,6 @@ class toplevel_surface_impl : public surface_impl {
 	void transition_done(lib::rect area) { transition_freeze_end(area); }
     
   private:
-#ifdef	WITH_SMIL_TEST
-	common::surface * new_default_subsurface();
-	int m_level;
-	const region_info* m_info;
-#endif/*WITH_SMIL_TEST*/
 	gui_window *m_gui_window;
 };
 

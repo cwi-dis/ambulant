@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
@@ -194,7 +190,7 @@ event_processor_impl::_serve_events()
 		// it must be a low priority event
 		(void) _serve_event(m_low_delta_timer, &m_low_q);
 	}
-#ifdef WITH_CLOCK_SYNC
+
 	timer::signed_time_type drift = m_timer->get_drift();
 	if (drift > 0) {
 		// If the clock is behind, we set it forward. But we don't advance it past the
@@ -210,8 +206,6 @@ event_processor_impl::_serve_events()
 	}
 	AM_DBG if (drift) lib::logger::get_logger()->debug("event_processor: adjust clock %d ms (positive is forward)", drift);
 	m_timer->skew(drift);
-#endif
-
 
 	if (m_observer) {
 		m_lock.leave();
@@ -251,10 +245,10 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 	return must_serve;
 }
 
-#ifndef NDEBUG
 void
 event_processor_impl::dump()
 {
+#ifndef NDEBUG
 //	std::queue<event*>::iterator i;
 	lib::logger::get_logger()->trace("event_processor_impl[0x%x]::dump():", (void *)this);
 	lib::logger::get_logger()->trace("high waiting:");
@@ -272,5 +266,5 @@ event_processor_impl::dump()
 //	lib::logger::get_logger()->trace("low runnable:");
 //	for (i=m_low_q.begin(); i != m_low_q.end(); i++)
 //		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
-}
 #endif
+}

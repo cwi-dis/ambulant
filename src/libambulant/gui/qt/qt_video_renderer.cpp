@@ -2,7 +2,7 @@
 
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -114,12 +114,8 @@ qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	if ( m_image ) {
 		lib::size srcsize = lib::size(m_size.w, m_size.h);
 		lib::rect srcrect;
-#ifdef WITH_SMIL30
 		lib::rect croprect = m_dest->get_crop_rect(srcsize);
 		lib::rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
-#else
-		lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-#endif // WITH_SMIL30
 		dstrect.translate(m_dest->get_global_topleft());
 #if ONLY_FOR_QT4
 		QRect q_srcrect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,16 +10,12 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-/*
- * @$Id$
- */
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/schema.h"
@@ -44,7 +40,6 @@ static const char *subregionattrs[] = {
 	"fit",
 	"soundLevel",
 	"soundAlign",
-#ifdef WITH_SMIL30
 	"panZoom",
 	"backgroundOpacity",
 	"mediaOpacity",
@@ -52,7 +47,6 @@ static const char *subregionattrs[] = {
 	"chromaKeyOpacity",
 	"chromaKey",
 	"chromaKeyTolerance",
-#endif
 	NULL
 };
 
@@ -109,14 +103,12 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_transparent(true),
 	m_soundlevel(1.0),
 	m_soundalign(common::sa_default),
-#ifdef WITH_SMIL30
 	m_mediaopacity(1.0),
 	m_mediabgopacity(1.0),
 	m_chromakey_specified(false),
 	m_chromakeyopacity(0.0),
 	m_chromakey(lib::to_color(0,0,0)),
 	m_chromakeytolerance(lib::to_color(0,0,0)),
-#endif
 	m_bgimage(NULL),
 	m_tiling(common::tiling_default),
 	m_bgopacity(1.0),
@@ -140,13 +132,11 @@ region_node::fix_from_region_node(const region_node *parent)
 //XXX Wrong ! This will not work for animation.
 	set_soundlevel(parent->get_soundlevel());
 	set_soundalign(parent->get_soundalign());
-#ifdef WITH_SMIL30
 	set_mediaopacity(parent->get_mediaopacity());
 	set_mediabgopacity(parent->get_mediabgopacity());
 	set_chromakey(parent->get_chromakey());
 	set_chromakeyopacity(parent->get_chromakeyopacity());
 	set_chromakeytolerance(parent->get_chromakeytolerance());
-#endif//WITH_SMIL30
 }
 
 bool
@@ -301,7 +291,6 @@ region_node::fix_from_dom_node()
 		set_soundalign(sa);
 	}
 
-#ifdef WITH_SMIL30
 	{
 		// panZoom
 		const char *panzoom_attr = m_node->get_attribute("panZoom");
@@ -410,7 +399,6 @@ region_node::fix_from_dom_node()
 		}
 		set_chromakeytolerance(chromakeytolerance);
 	}
-#endif // WITH_SMIL30
 	// backgroundImage
 
 	// Note: we simply share a reference to the char* in the DOM tree,
@@ -507,14 +495,9 @@ region_node::get_bgcolor() const
 double
 region_node::get_bgopacity() const
 {
-#ifdef WITH_SMIL30
 	return m_display_bgopacity;
-#else
-	return m_bgopacity;
-#endif
 }
 
-#ifdef WITH_SMIL30
 double
 region_node::get_mediaopacity() const
 {
@@ -550,7 +533,6 @@ region_node::get_chromakeytolerance() const
 {
 	return m_display_chromakeytolerance;
 }
-#endif // WITH_SMIL30
 
 bool
 region_node::get_showbackground() const
@@ -575,7 +557,6 @@ region_node::get_tiling() const
 	return m_tiling;
 }
 
-#ifdef WITH_SMIL30
 lib::rect
 region_node::get_crop_rect(const lib::size& srcsize) const
 {
@@ -588,7 +569,7 @@ region_node::get_crop_rect(const lib::size& srcsize) const
 	if (rdspec.height.defined()) croprect.h = rdspec.height.get_as_int();
 	return croprect;
 }
-#endif // WITH_SMIL30
+
 const char *
 region_node::get_bgimage() const
 {
@@ -667,10 +648,8 @@ lib::color_t region_node::get_region_color(const std::string& which, bool fromdo
 	if(which == "backgroundColor") {
 		return fromdom?m_bgcolor:m_display_bgcolor;
 	}
-#ifdef WITH_SMIL30
 	if (which == "chromaKey")
 		return fromdom?m_chromakey:m_display_chromakey;
-#endif // WITH_SMIL30
 	return 0;
 }
 
@@ -686,7 +665,6 @@ common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
 	return fromdom?m_soundalign:m_display_soundalign;
 }
 
-#ifdef WITH_SMIL30
 const common::region_dim_spec& region_node::get_region_panzoom(bool fromdom) const {
 	return fromdom?m_panzoom:m_display_panzoom;
 }
@@ -705,7 +683,6 @@ double region_node::get_region_opacity(const std::string& which, bool fromdom) c
 	assert(0);
 	return 1.0;
 }
-#endif // WITH_SMIL30
 
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
@@ -723,12 +700,10 @@ void region_node::set_region_dim(const std::string& which, const common::region_
 void region_node::set_region_color(const std::string& which, lib::color_t clr) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_color(\"%s\", \"%s\")", m_node->get_attribute("id"), which.c_str());
 	if(which == "backgroundColor") m_display_bgcolor = clr;
-#ifdef WITH_SMIL30
 	else if (which == "chromaKey")
 		m_display_chromakey = clr;
 	else if (which == "chromaKeyTolerance")
 		m_display_chromakeytolerance = clr;
-#endif // WITH_SMIL30
 	//else if(which == "color") set_fgcolor(clr);
 }
 
@@ -749,7 +724,6 @@ void region_node::set_region_soundalign(common::sound_alignment sa) {
 	m_display_soundalign = sa;
 }
 
-#ifdef WITH_SMIL30
 void region_node::set_region_panzoom(const common::region_dim_spec& rds_) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_panzoom()");
 	m_display_panzoom = rds_;
@@ -768,4 +742,3 @@ void region_node::set_region_opacity(const std::string& which, double level) {
 	else
 		assert(0);
 }
-#endif // WITH_SMIL30

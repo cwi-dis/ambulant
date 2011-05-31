@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI,
+// Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -10,24 +10,18 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/*
- * @$Id$
- */
-
 #include "ambulant/gui/cg/cg_text.h"
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
-
-//#include <CoreGraphics/CoreGraphics.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -61,12 +55,12 @@ create_cg_text_playable_factory(common::factories *factory, common::playable_fac
 
 
 cg_text_renderer::cg_text_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp,
-		common::factories *factory,
-		common::playable_factory_machdep *mdp)
+    playable_notification *context,
+    playable_notification::cookie_type cookie,
+    const lib::node *node,
+    event_processor *evp,
+    common::factories *factory,
+    common::playable_factory_machdep *mdp)
 :	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_font_name(NULL),
 	m_font_size(0.0)
@@ -94,7 +88,6 @@ cg_text_renderer::~cg_text_renderer()
 void
 cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
-
 	m_lock.enter();
 	if (!m_data) {
 		m_lock.leave();
@@ -109,27 +102,31 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	CGRect cg_dstrect = CGRectFromAmbulantRect(dstrect);
+
 	// Set the text matrix. 
 	CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
 	CGContextSetTextMatrix(ctx, matrix);
+
 	// Set the color
 	double alfa = 1.0;
-#ifdef WITH_SMIL30
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-#endif
 	CGFloat components[] = {redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa};
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetFillColorSpace(ctx, genericColorSpace);
 	CGContextSetFillColor(ctx, components);
+
 	// Set the font
 	AM_DBG lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
 	CGContextSelectFont(ctx, m_font_name, m_font_size, kCGEncodingMacRoman);
+
 	// Calculate sizes
 	float lineheight = m_font_size;
 	float x = CGRectGetMinX(cg_dstrect);
 	float y = CGRectGetMinY(cg_dstrect) + lineheight;
 	float w = CGRectGetWidth(cg_dstrect);
+
+    // Now loop, computing how many characters fit and then drawing them on a line.
 	size_t lbegin, lend;
 	const char *cdata = (char *)m_data;
 	lbegin = 0;
@@ -144,6 +141,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		lbegin = lend;
 		y += lineheight;
 	}
+    
 	CGColorSpaceRelease(genericColorSpace);
 	m_lock.leave();
 }
@@ -152,11 +150,18 @@ bool
 cg_text_renderer::_calc_fit(CGContextRef ctx, float width, size_t& lbegin, size_t& lend)
 {
 	const char *cdata = (const char *)m_data;
-	// Find beginning point
+
+	// Find beginning point: we skip spacing characters at begin-of-line
+    // XXXJACK is this correct according to the SMIL spec?
 	if (lbegin > 0)
 		while (lbegin < m_data_size && isspace(cdata[lbegin])) lbegin++;
 	if (cdata[lbegin] == '\0' || lbegin >= m_data_size) return false;
+    
+    // We will draw at least one character per line
 	lend = lbegin+1;
+    
+    // We search for the next space, and if the text up to there still fits on the line
+    // we will draw at least up to there. Loop until it no longer fits.
 	int lendcand = lend;
 	do {
 		while (cdata[lendcand] != '\0' && lendcand < m_data_size && !isspace(cdata[lendcand])) lendcand++;
@@ -167,12 +172,15 @@ cg_text_renderer::_calc_fit(CGContextRef ctx, float width, size_t& lbegin, size_
 			return true;
 		while (isspace(cdata[lendcand]) && lendcand < m_data_size) lendcand++;
 	} while(cdata[lendcand] != '\0' && lendcand < m_data_size);
+    
 	return true;
 }
 
 bool
 cg_text_renderer::_fits(CGContextRef ctx, float maxwidth, const char *data, size_t datalen)
 {
+    // Compute whether the text fits by drawing it invisibly and checking that it doesn't
+    // extend past maxwidth. 
 	CGPoint beginpos = CGContextGetTextPosition(ctx);
 	CGContextSetTextDrawingMode(ctx, kCGTextInvisible);
 	CGContextShowText(ctx, data, datalen);

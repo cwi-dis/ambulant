@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI,
+ * Copyright (C) 2003-2011 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- * @$Id$
  */
 
 #ifndef AMBULANT_GUI_COCOA_COCOA_VIDEO_H
@@ -77,11 +73,9 @@ class cocoa_video_renderer :
 	void *m_mc;                 // Our helper ObjC class to run methods in the main thread
 	bool m_paused;
 	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
-#ifdef WITH_CLOCK_SYNC
 	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
 	void _fix_video_epoch();    // Set m_video_epoch according to current movie time
 	void _fix_clock_drift();    // Synchronise movie clock and ambulant clock
-#endif
 
 	critical_section m_lock;
 };
