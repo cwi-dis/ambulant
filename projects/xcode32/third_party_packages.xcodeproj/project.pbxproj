@@ -114,6 +114,7 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "third_party_packages" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -181,7 +182,7 @@
 			buildSettings = {
 				AMBULANT_3PP = "../../build-iOS/third_party_packages";
 				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";
@@ -209,7 +210,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DSTROOT = /;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/usr/local/bin:$(PATH)";
 				PRODUCT_NAME = third_party_packages_iOS_Fat;
