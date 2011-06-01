@@ -274,5 +274,8 @@ check-ambulantplayer_macos:
 # This also causes exit-on-stop to happen. It's output will be written on AM_TEST-output.txt, which
 # we will parse later.
 	AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test \
-		./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
+		arch -i386 ./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
+			./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil
+	AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test \
+		arch -x86_64 ./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
 			./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil
