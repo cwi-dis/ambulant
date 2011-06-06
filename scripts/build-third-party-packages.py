@@ -513,7 +513,7 @@ third_party_packages={
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk --cpu=arm1176jzf-s "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
-                "--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib' "
+                "--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system'"
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm;"
                 "make clean;make ${MAKEFLAGS}; make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
