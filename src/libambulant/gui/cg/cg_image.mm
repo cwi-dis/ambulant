@@ -164,7 +164,6 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-
 	rect srcrect;
 	rect dstrect;
 	CGRect cg_dstrect;
@@ -224,20 +223,6 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	double alfa = 1.0;
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-
-	//
-	// Determine the source and destination rectangles
-	//
-	lib::rect croprect = m_dest->get_crop_rect(m_size);
-	AM_DBG logger::get_logger()->debug("cg_image::redraw_body(0x%x): clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
-
-	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-	dstrect.translate(dest_origin);
-	cg_dstrect = CGRectFromAmbulantRect(dstrect);
-	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",
-		srcrect.left(), srcrect.top(), srcrect.right(), srcrect.bottom(),
-		CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
-
 	//
 	// Setup drawing parameters and draw
 	//
@@ -248,6 +233,14 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	
 	if (m_cglayer) {
 		// Draw the pre-rendered image in cglayer. First setup the destination parameters.
+		lib::rect croprect = m_dest->get_crop_rect(m_size);
+		AM_DBG logger::get_logger()->debug("cg_image::redraw(0x%x), clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+		
+		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
+		CGFloat x_factor = 1.0, y_factor = 1.0;
+		CGRect cg_srcrect = CGRectMake(srcrect.left()*x_factor, srcrect.top()*y_factor, srcrect.width()*x_factor, srcrect.height()*y_factor);
+		dstrect.translate(m_dest->get_global_topleft());
+		cg_dstrect = CGRectFromAmbulantRect(dstrect);
 		CGContextClipToRect(myContext, cg_dstrect);
 		// First setup the matrix so that drawing at point (0,0) will appear at the topleft of the destination
 		// rectangle.
@@ -265,8 +258,8 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
 		fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
 		CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
-			CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
+		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw(0x%x): draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
+			this, CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
 			CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
 			x_scale, y_scale);
 

@@ -28,7 +28,7 @@
 typedef float CGFloat;
 #endif
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -86,6 +86,9 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		// XXXX Could free data and m_data again here...
 		// Now we need to remember the real image size, which will be trampled soon.
 		NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
+		// bestRepresentationForDevice is deprecated, found this alternative at:
+		// http://stackoverflow.com/questions/4748846/nsimage-dpi-question
+		//NSImageRep *bestrep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]]
 		assert(bestrep);
 		// If we need to do chroma keying we do it now. We have to go via a CGImage to do it, though...
 		// XXX By doing it here and not later we disable animation on the chromakey attributes...

@@ -1000,6 +1000,11 @@ CreateBitmapContext (CGSize size)
 		// It does not exist yet. Create it.
 		CGContextRef ctxr = [self getCGContext];
 		transition_surface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
+		// clear the surface
+		CGContextRef ts_ctxr = CGLayerGetContext(transition_surface);
+		CGSize s = CGLayerGetSize(transition_surface);
+		CGRect r = CGRectMake(0.0, 0.0, s.width, s.height); 
+		CGContextClearRect(ts_ctxr, r);
 	}
 	return transition_surface;
 }

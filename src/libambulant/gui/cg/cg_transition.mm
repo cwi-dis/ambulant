@@ -80,8 +80,8 @@ cg_transition_blitclass_fade::update()
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_fade::update(%f)", m_progress);
+	// the transition surface is a transparent layer over the full screen
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = [view getCGContext];
 	CGContextSetAlpha (ctx, m_outtrans ? 1.0 - m_progress : m_progress);
