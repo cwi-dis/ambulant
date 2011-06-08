@@ -59,11 +59,7 @@ class mainloop :
 	NSURL* m_nsurl;
 	PlaylistItem* m_current_item;
 	ambulant::common::gui_screen *m_gui_screen;
-#ifdef KEES_LASTNODE_CODE
-	std::list<const ambulant::lib::node*> m_nodes;
-#else
     const ambulant::lib::node *m_last_node_started;
-#endif
 	void print_nodes();
 	bool m_restarting; // during the 'restart' operation 'document_stopped' is disabled
 	NSString* get_meta_content(const char* name);
