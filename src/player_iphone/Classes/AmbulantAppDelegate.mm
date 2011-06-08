@@ -96,7 +96,7 @@ initialize_logger()
 {
 	// Connect logger to our message displayer and output processor
 	ambulant::lib::logger::get_logger()->set_show_message(show_message);
-	ambulant::lib::logger::get_logger()->trace("starting:%s", "player_iphone");
+	ambulant::lib::logger::get_logger()->trace("starting:%s", "iAmbulant");
 #ifdef WITH_CONSOLE_LOGGING
 	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
 #endif
