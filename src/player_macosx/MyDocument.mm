@@ -212,18 +212,17 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void) resizeWithOldSuperviewSize:(NSSize)oldSize
 {
-    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: y=%f", self.frame.origin.y);
-    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: oldsize %f,%f newsize %f,%f", oldSize.width, oldSize.height, self.bounds.size.width, self.bounds.size.height);
+    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: y=%f", self.frame.origin.y);
+    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: oldsize %f,%f newsize %f,%f", oldSize.width, oldSize.height, self.bounds.size.width, self.bounds.size.height);
 	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
 	if (playerView && !resizingWindow) {
-        [self setBounds: playerView.frame];
+//        [self setBounds: playerView.frame];
     }
     [super resizeWithOldSuperviewSize: oldSize];
-    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: new newsize %f,%f", self.bounds.size.width, self.bounds.size.height);
-    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: new framesize %f,%f", self.frame.size.width, self.frame.size.height);
+    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: new newsize %f,%f", self.bounds.size.width, self.bounds.size.height);
+    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: new framesize %f,%f", self.frame.size.width, self.frame.size.height);
 #if 0
 //	[self recomputeZoom];
-	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
 	if (playerView == nil) return;
 	CGFloat scaleX = self.frame.size.width / playerView.bounds.size.width;
 	CGFloat scaleY = self.frame.size.height / playerView.bounds.size.height;

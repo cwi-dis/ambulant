@@ -214,7 +214,7 @@
 						</object>
 						<object class="NSCustomView" id="208305770">
 							<reference key="NSNextResponder" ref="470053447"/>
-							<int key="NSvFlags">36</int>
+							<int key="NSvFlags">54</int>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSCustomView" id="470041376">
