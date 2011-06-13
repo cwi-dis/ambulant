@@ -160,6 +160,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		resizeWindow = false;
 	if (resizeWindow) {
         // We are in window mode. We want to resize the window to fit the document.
+        // First, we want to determine how many pixels are used in the window that are not part of this view,
+        // this is the area used for buttons and such.
+		NSView* contentView = [window contentView];
+		CGFloat extraWidth = contentView.bounds.size.width - self.frame.size.width;
+		CGFloat extraHeight = contentView.bounds.size.height - self.frame.size.height;
         // We expect here that the player view is rooted at (0,0). We also make its frame equal to its bounds.
         // Note that I'm not 100% sure these asserts are needed: we could just assume that the player view takes
         // care of its bounds/frame factors, and we only look at frame
@@ -168,15 +173,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
  		[playerView setFrame: playerView.bounds];
         [self setFrameSize: playerView.bounds.size];
         [self setBounds: playerView.bounds];
+ 		[playerView setFrame: playerView.bounds];
         
         // Reset the scale factor to 1
         scaleFactor = 1.0;
        
 		// Compute the new window size and set it. We need to cater for the extra pixels that are part of
         // the content view but not part of us (toolbars and such).
-		NSView* contentView = [window contentView];
-		CGFloat extraWidth = contentView.bounds.size.width - self.frame.size.width;
-		CGFloat extraHeight = contentView.bounds.size.height - self.frame.size.height;
         CGFloat windowWidth = playerView.frame.size.width*scaleFactor + extraWidth;
         CGFloat windowHeight = playerView.frame.size.height*scaleFactor + extraHeight;
 		CGSize newWindowSize = CGSizeMake(windowWidth, windowHeight);
@@ -209,14 +212,15 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void) resizeWithOldSuperviewSize:(NSSize)oldSize
 {
-    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: oldsize %f,%f newsize %f,%f", oldSize.width, oldSize.height, self.bounds.size.width, self.bounds.size.height);
+    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: y=%f", self.frame.origin.y);
+    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: oldsize %f,%f newsize %f,%f", oldSize.width, oldSize.height, self.bounds.size.width, self.bounds.size.height);
 	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
 	if (playerView && !resizingWindow) {
         [self setBounds: playerView.frame];
     }
     [super resizeWithOldSuperviewSize: oldSize];
-    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: new newsize %f,%f", self.bounds.size.width, self.bounds.size.height);
-    /*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize: new framesize %f,%f", self.frame.size.width, self.frame.size.height);
+    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: new newsize %f,%f", self.bounds.size.width, self.bounds.size.height);
+    AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: new framesize %f,%f", self.frame.size.width, self.frame.size.height);
 #if 0
 //	[self recomputeZoom];
 	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
