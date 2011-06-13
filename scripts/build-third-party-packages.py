@@ -483,7 +483,7 @@ third_party_packages={
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
-            checkcmd="pkg-config --atleast-version=2.0.0 expatFat",
+            checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "set && cd expat-2.0.1 && "
                 "patch --forward < %s/third_party_packages/expat.patch && "
