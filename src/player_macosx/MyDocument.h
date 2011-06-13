@@ -55,7 +55,10 @@ class document_embedder : public ambulant::common::embedder {
 	BOOL autoScale;
 	BOOL autoCenter;
 	CGFloat scaleFactor;
+    BOOL resizingWindow;    // True while we are resizing the window because of SMIL changes
 }
+/// Adapt GUI to the bounds and frame of the player view having been changed (for example
+/// because a new document was opened).
 - (void)recomputeZoom;
 
 @end

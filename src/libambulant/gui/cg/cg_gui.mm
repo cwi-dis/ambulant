@@ -445,6 +445,8 @@ bad:
     self.frame = NSRectFromCGRect(newFrame);
     self.bounds = NSRectFromCGRect(newBounds);
     AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+    // Now we need to adapt the toplevel UI to our new document size. This could mean changing the
+    // zoom factor and positioning (iPhone/iPad) or changing the toplevel window size (Mac)
 	if ([[self superview] respondsToSelector:@selector(recomputeZoom)]) {
         // We get a warning here that is difficult to forestall...
 		[[self superview] recomputeZoom];
