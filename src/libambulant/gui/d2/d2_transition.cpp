@@ -403,7 +403,15 @@ d2_transition_blitclass_r1r2r3r4::update()
 	hr = old_rt->CreateBitmap(d2_sizeu(oldsrcrect), props, &bitmap_old);
 	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 old_rt->CreateBitmap");
 	// copy the bits of the old stuff (from 'old_rt') to the new destination
+	// to use CopyFromRenderTarget, the current cliprect must be temporary popped.
+	D2D1_RECT_F cliprect = d2_player->get_current_clip_rect();
+	if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F && cliprect.right == 0.0F && cliprect.left ==0.0F)) {
+		old_rt->PopAxisAlignedClip();
+	}
 	hr = bitmap_old->CopyFromRenderTarget(NULL, old_rt, &d2_rectu(oldsrcrect));
+	if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F && cliprect.right == 0.0F && cliprect.left ==0.0F)) {
+		old_rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
+	}
 	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_old->CopyFromRenderTarget");
 	dst_rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
 	// likewise create a compatible bitmap for the new stuff
