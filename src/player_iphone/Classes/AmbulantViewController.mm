@@ -462,8 +462,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     UIView *playerView = [[self subviews] objectAtIndex: 0];
     assert(playerView);
     if (!playerView) return;
- 
-	   // Initialize the zoomState, if not done already
+
+    // Initialize the zoomState, if not done already
     if (zoomState == zoomUnknown) {
         // adapt the ambulant window needed (bounds) in the current View
         ambulant::iOSpreferences *prefs = ambulant::iOSpreferences::get_preferences();

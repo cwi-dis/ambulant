@@ -762,9 +762,9 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	// Set the correct clipping mask
 	if (dirty != NULL) {
 		// Note that by the time we get here, the dirty rect is converted to our coordinates.
-		D2D1_RECT_F d2rectf = D2D1::RectF( (FLOAT)dirty->left,(FLOAT)dirty->top,(FLOAT)dirty->right,(FLOAT)dirty->bottom);
-		rt->PushAxisAlignedClip(d2rectf, D2D1_ANTIALIAS_MODE_ALIASED);
-	}
+		m_current_clip_rectf = D2D1::RectF( (FLOAT)dirty->left,(FLOAT)dirty->top,(FLOAT)dirty->right,(FLOAT)dirty->bottom);
+		rt->PushAxisAlignedClip(m_current_clip_rectf, D2D1_ANTIALIAS_MODE_ALIASED);
+	} else m_current_clip_rectf = D2D1::RectF(0.0F, 0.0F, 0.0F, 0.0F);
 
 	// Do the redraw
 	_screenTransitionPreRedraw(rt);

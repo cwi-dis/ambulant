@@ -292,7 +292,10 @@ cg_transition_renderer::stop()
 	[view decrementTransitionCount];
 	if (m_fullscreen) {
 		[view endScreenTransition];
+	} else {
+		[view releaseTransitionSurfaces];
 	}
+
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
 	if (m_old_screen_image != NULL) {

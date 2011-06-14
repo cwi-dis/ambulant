@@ -191,6 +191,7 @@ class AMBULANTAPI d2_player :
 	void resumed(common::playable *p);
 	void set_intransition(common::playable *p, const lib::transition_info *info);
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
+	D2D1_RECT_F get_current_clip_rect() { return m_current_clip_rectf; }
 
 	// Full screen transition support
 	void start_screen_transition(bool outtrans);
@@ -262,6 +263,7 @@ class AMBULANTAPI d2_player :
 	d2_transition *_get_transition(common::playable *p);
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
 	ID2D1BitmapRenderTarget* m_transition_rendertarget; // managed by d2_renderer (for use by d2_transition*update())
+	D2D1_RECT_F m_current_clip_rectf; // needed during some transitions
 
 	// fullscreen transitions
 	int m_fullscreen_count;

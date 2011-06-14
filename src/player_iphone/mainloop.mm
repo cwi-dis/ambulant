@@ -203,9 +203,7 @@ mainloop::init_factories()
 	init_datasource_factory();
 	init_parser_factory();
 	init_node_factory();
-#ifdef WITH_SMIL30
 	init_state_component_factory();
-#endif
 }
 
 void
@@ -220,9 +218,7 @@ mainloop::init_playable_factory()
 //	pf->add_factory(gui::cg::create_cg_html_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_image_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
-#ifdef WITH_SMIL30
 	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
-#endif//WITH_SMIL30
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
 //XXXX #define WITH_AVFOUNDATION
 #ifdef	WITH_AVFOUNDATION
@@ -235,9 +231,7 @@ mainloop::init_playable_factory()
 	pf->add_factory(gui::cocoa::create_cocoa_html_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_image_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_ink_playable_factory(this, NULL));
-#ifdef WITH_SMIL30
 	pf->add_factory(gui::cocoa::create_cocoa_smiltext_playable_factory(this, NULL));
-#endif
 	pf->add_factory(gui::cocoa::create_cocoa_text_playable_factory(this, NULL));
 #ifndef __LP64__
 	pf->add_factory(gui::cocoa::create_cocoa_video_playable_factory(this, NULL));
@@ -311,24 +305,8 @@ mainloop::~mainloop()
 {
 	lib::logger::get_logger()->debug("mainloop::~mainloop: %s", m_url.get_url().c_str());
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	// We need to delete gui_player::m_player before deleting m_doc, because the
-	// timenode graph in the player has referrences to the node graph in m_doc.
-#ifdef KEES_LASTNODE_CODE
 
-	std::list<const lib::node*>::iterator nodes_iterator = m_nodes.end();
-	if (nodes_iterator != m_nodes.begin()) {
-		nodes_iterator--;	// need the one just before end()
-		const ambulant::lib::node* last_active_node = *nodes_iterator;
-		AM_DBG lib::logger::get_logger()->debug("last_active_node(%s)", last_active_node->get_sig().c_str());
-		lib::xml_string last_node_repr = last_active_node->get_xpath();
-		NSString* ns_last_node_repr = [NSString stringWithUTF8String: last_node_repr.c_str()];
-		PlaylistItem* last_item = iOSpreferences::get_preferences()->m_history->get_last_item();
-		if (last_item != NULL) {
-			last_item.ns_last_node_repr = ns_last_node_repr;
-			prefs->m_history->replace_last_item(last_item);
-		}
-	}
-#else
+	// update the last_item pointer in the history
     PlaylistItem* last_item = iOSpreferences::get_preferences()->m_history->get_last_item();
     if (last_item) {
         if (m_last_node_started) {
@@ -339,8 +317,8 @@ mainloop::~mainloop()
             last_item.ns_last_node_repr = NULL;
         }
     }
-#endif
-	
+	// We need to delete gui_player::m_player before deleting m_doc, because the
+	// timenode graph in the player has referrences to the node graph in m_doc.
     if (m_player) {
         m_player->terminate();
         m_player->release();
