@@ -20,6 +20,10 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
+//#define GB_GCD_WIN
+#ifdef GB_GCD_WIN
+#include <xdispatch/dispatch>
+#endif
 #include <map>
 
 #if defined(AMBULANT_PLATFORM_WIN32)
@@ -227,6 +231,21 @@ event_processor_impl::_events_available(delta_timer& dt, std::queue<event*> *qp)
 	return !qp->empty();
 }
 
+#ifdef GB_GCD_WIN
+class InnerCalculation : public xdispatch::iteration_operation {
+       
+       event* gcd_e;
+       
+public:
+       InnerCalculation(event* e) : gcd_e(e) {}
+       
+       void operator()(size_t i){
+             gcd_e->fire();
+       }
+
+};
+#endif
+
 bool
 event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 // serve a single event from a delta_timer run queue
@@ -238,8 +257,14 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 		AM_DBG logger::get_logger()->debug("serve_event(0x%x)",e);
 		qp->pop();
 		m_lock.leave();
+#ifdef GB_GCD_WIN
+		  xdispatch::global_queue().apply(new InnerCalculation(e),1);
+		  logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",e);
+#else
 		e->fire();
+#endif
 		delete e;
+
 		m_lock.enter();
 	}
 	return must_serve;
