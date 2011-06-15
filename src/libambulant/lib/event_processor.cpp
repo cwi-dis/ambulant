@@ -20,9 +20,15 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
-//#define GB_GCD_WIN
+#define GB_GCD_WIN
+//#define X_DISPATCH
 #ifdef GB_GCD_WIN
-#include <xdispatch/dispatch>
+#ifdef X_DISPATCH
+#include "xdispatch/xdispatch/dispatch.h"
+#else
+#include "config/config.h"
+#include "dispatch/dispatch.h"
+#endif
 #endif
 #include <map>
 
@@ -232,6 +238,7 @@ event_processor_impl::_events_available(delta_timer& dt, std::queue<event*> *qp)
 }
 
 #ifdef GB_GCD_WIN
+#if 0
 class InnerCalculation : public xdispatch::iteration_operation {
        
        event* gcd_e;
@@ -244,6 +251,13 @@ public:
        }
 
 };
+#else
+void gb_serve_event(event *gb_e)
+{
+	gb_e->fire();
+	delete gb_e;
+}
+#endif
 #endif
 
 bool
@@ -258,12 +272,21 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 		qp->pop();
 		m_lock.leave();
 #ifdef GB_GCD_WIN
-		  xdispatch::global_queue().apply(new InnerCalculation(e),1);
-		  logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",e);
+		 // xdispatch::global_queue().apply(new InnerCalculation(e),1);
+#ifdef X_DISPATCH
+		xdispatch::global_queue().async(${
+			e->fire();
+			delete e;
+			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",e);
+		});
+#else
+		dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), e, (dispatch_function_t)gb_serve_event);
+#endif
+		 
 #else
 		e->fire();
-#endif
 		delete e;
+#endif
 
 		m_lock.enter();
 	}
