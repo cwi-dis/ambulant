@@ -152,12 +152,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	/*AM_DBG*/ NSLog(@"recomputeZoom,  playerview.frame %f,%f,%f,%f",
 		playerView.frame.origin.x, playerView.frame.origin.y, playerView.frame.size.width, playerView.frame.size.height);
 
-#if 1
+	// Two possibilities: either we resize the window to match the player view size, or we
+	// scale the player view to match our size. Find out which is the case.
 	bool resizeWindow = true;
 	NSWindow *window = [self window];
 	int32_t shieldLevel = CGShieldingWindowLevel();
 	if ([window level] >= shieldLevel)
 		resizeWindow = false;
+		
 	if (resizeWindow) {
         // We are in window mode. We want to resize the window to fit the document.
         // First, we want to determine how many pixels are used in the window that are not part of this view,
@@ -199,15 +201,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
         
 		[window makeKeyAndOrderFront: self];
 
-        /*AM_DBG*/ NSLog(@"recomputeZoom after, self.bounds %f,%f,%f,%f",
+        AM_DBG NSLog(@"recomputeZoom after, self.bounds %f,%f,%f,%f",
             self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
-        /*AM_DBG*/ NSLog(@"recomputeZoom after,  self.frame %f,%f,%f,%f",
+        AM_DBG NSLog(@"recomputeZoom after,  self.frame %f,%f,%f,%f",
             self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
 	} else {
         // We're in full-screen mode (or some other mode where our size is determined by
         // somethings outside our control). We adapt our scaling.
     }
-#endif
 #if 0
 //	[playerView setFrameSize: self.bounds.size];
 	CGFloat scaleX = self.frame.size.width / playerView.bounds.size.width;
@@ -229,37 +230,47 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
     AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: y=%f", self.frame.origin.y);
     AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: oldsize %f,%f bounds.size %f,%f", oldSize.width, oldSize.height, self.bounds.size.width, self.bounds.size.height);
-	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
-	NSRect origPlayerBounds = playerView.bounds;
 	if (resizingWindow) {
         // The very first call to this method, during recomputeZoom, should *not* recompute our frame.
         return;
     }
+	
+	// First thing to do is remember the player view inner coordinates (the SMIL coordinate system),
+	// because resizeWithOldSuperviewSize: will muck with it.
+	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
+	NSRect origPlayerBounds = playerView.bounds;
+	
+	// Now we let Apple do its stuff so our NSView is resized correctlty wrt. our parent view
     [super resizeWithOldSuperviewSize: oldSize];
     AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: new bounds.size %f,%f", self.bounds.size.width, self.bounds.size.height);
     AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize: new frame.size %f,%f", self.frame.size.width, self.frame.size.height);
-//	[self recomputeZoom];
 	if (playerView == nil) return;
+	
+	// Compute the aspect-ratio-maintaing scale factor that is needed to make the content as big as possible
+	// given our size.
 	CGFloat scaleX = self.bounds.size.width / playerView.bounds.size.width;
 	CGFloat scaleY = self.bounds.size.height / playerView.bounds.size.height;
 	CGFloat scale = fmin(scaleX, scaleY);
     NSLog(@"scale is %f", scale);
-#if 1
+
+	// Set the frame of the player view to the new size, while maintaing the inner coordinate
+	// system of the player view.
     CGSize newPlayerFrame = CGSizeMake(playerView.bounds.size.width*scale, playerView.bounds.size.height*scale);
     [playerView setFrameSize: NSSizeFromCGSize(newPlayerFrame)];
-	[playerView setFrameOrigin: NSMakePoint(0, 0)];
 	[playerView setBounds: origPlayerBounds];
-//	self.bounds = playerView.bounds;
-//	[self scaleUnitSquareToSize:NSSizeFromCGSize(CGSizeMake(scale, scale))];
-	/*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize after, self.bounds %f,%f,%f,%f",
+	
+	// Center the player view within our bounds.
+	CGFloat extraX = self.bounds.size.width - playerView.frame.size.width;
+	CGFloat extraY = self.bounds.size.height - playerView.frame.size.height;
+	[playerView setFrameOrigin: NSMakePoint(extraX/2, extraY/2)];
+	AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize after, self.bounds %f,%f,%f,%f",
 		self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
-	/*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize after,  self.frame %f,%f,%f,%f",
+	AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize after,  self.frame %f,%f,%f,%f",
 		self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-	/*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize after, playerview.bounds %f,%f,%f,%f",
+	AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize after, playerview.bounds %f,%f,%f,%f",
 		playerView.bounds.origin.x, playerView.bounds.origin.y, playerView.bounds.size.width, playerView.bounds.size.height);
-	/*AM_DBG*/ NSLog(@"ScalerView.resizeWithOldSuperviewSize after,  playerview.frame %f,%f,%f,%f",
+	AM_DBG NSLog(@"ScalerView.resizeWithOldSuperviewSize after,  playerview.frame %f,%f,%f,%f",
 		playerView.frame.origin.x, playerView.frame.origin.y, playerView.frame.size.width, playerView.frame.size.height);
-#endif
 }
 
 - (BOOL)acceptsFirstResponder
