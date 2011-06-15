@@ -60,6 +60,9 @@ class document_embedder : public ambulant::common::embedder {
 /// Adapt GUI to the bounds and frame of the player view having been changed (for example
 /// because a new document was opened).
 - (void)recomputeZoom;
+- (IBAction) zoomImageToActualSize:(id)dummy;
+- (IBAction) zoomOut:(id)dummy;
+- (IBAction) zoomIn:(id)dummy;
 
 @end
 

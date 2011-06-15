@@ -54,7 +54,6 @@
 #include "ambulant/net/rtsp_factory.h"
 #endif
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

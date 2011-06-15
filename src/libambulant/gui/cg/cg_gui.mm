@@ -37,7 +37,6 @@
 #define NSRectFromCGRect(x) (x)
 #endif
 
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif//AM_DBG
@@ -723,6 +722,7 @@ bad:
 
 - (void) _screenTransitionPostRedraw
 {
+#if 0 // XXXJACK temporarily disabled
 	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
@@ -764,6 +764,7 @@ bad:
 		fullscreen_oldimage = NULL;
 		fullscreen_engine = NULL;
 	}
+#endif
 }
 
 #else// WITH_UIKIT
