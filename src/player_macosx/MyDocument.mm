@@ -212,17 +212,23 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	} else {
         // We're in full-screen mode (or some other mode where our size is determined by
         // somethings outside our control). We adapt our scaling.
+        float x_factor = self.bounds.size.width / playerView.bounds.size.width;
+        float y_factor = self.bounds.size.height / playerView.bounds.size.height;
+        float factor = fmin(x_factor, y_factor);
+        NSRect playerBounds = playerView.bounds;
+        NSRect playerFrame = playerView.bounds;
+        playerFrame.size.width *= factor;
+        playerFrame.size.height *= factor;
+ 		[playerView setFrame: playerFrame];
+		[playerView setBounds: playerBounds];
+		assert(playerView.bounds.origin.x == playerView.frame.origin.x);
+		assert(playerView.bounds.origin.y == playerView.frame.origin.y);
+		assert(fabs(playerView.bounds.size.width*scaleFactor-playerView.frame.size.width) < 2.0);
+		assert(fabs(playerView.bounds.size.height*scaleFactor-playerView.frame.size.height) < 2.0);
+        float x = (self.bounds.size.width - playerView.frame.size.width) / 2;
+        float y = (self.bounds.size.height - playerView.frame.size.height) / 2;
+        [playerView setFrameOrigin: NSMakePoint(x, y)];
     }
-#if 0
-//	[playerView setFrameSize: self.bounds.size];
-	CGFloat scaleX = self.frame.size.width / playerView.bounds.size.width;
-	CGFloat scaleY = self.frame.size.height / playerView.bounds.size.height;
-	CGFloat scale = fmin(scaleX, scaleY);
-//	self.bounds = playerView.bounds;
-    NSSize oldSize = self.bounds.size;
-	[self scaleUnitSquareToSize:NSSizeFromCGSize(CGSizeMake(scale, scale))];
-    [self resizeWithOldSuperviewSize: oldSize];
-#endif
 }
 
 - (IBAction) zoomImageToActualSize: (id) sender
@@ -683,13 +689,18 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// And clear saved_window, which signals we're in normal mode again.
 	[saved_window release];
 	saved_window = nil;
+#ifdef XXXJACK_RESIZE_FULLSCREEN
+    if (scaler_view) [scaler_view recomputeZoom];
+#endif
 }
 
 - (IBAction)goFullScreen:(id)sender
 {
+#ifdef SAVE_FULLSCREEN_IN_PREFS
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_fullscreen = true;
 	prefs->save_preferences();
+#endif
 	if (saved_window) {
 		NSLog(@"goFullScreen: already in fullscreen mode");
 		return;
@@ -736,8 +747,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// ambulant view within it.
 	NSView *fsmainview = [[NSView alloc] initWithFrame: winRect];
 
-	id contentview = view;
-    if (scaler_view) contentview = scaler_view; // For CG-based player
+	NSView *contentview = view;
+    if (scaler_view) {
+        // For CG-based player
+        contentview = scaler_view;
+#ifdef XXXJACK_RESIZE_FULLSCREEN
+        contentview.frame = scaler_view.bounds;
+#endif
+    }
 	saved_view_rect = [contentview frame];
 	[fsmainview addSubview: contentview];
 	NSRect contentRect = [contentview frame];
@@ -764,6 +781,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 	// Show the window.
 	[mScreenWindow makeKeyAndOrderFront:self];
+#ifdef XXXJACK_RESIZE_FULLSCREEN
+    if (scaler_view) [scaler_view recomputeZoom];
+#endif
 }
 
 - (IBAction) toggleFullScreen: (id)sender
@@ -772,7 +792,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
         [hud_controls removeFromSuperview];
 		[self goWindowMode: sender];
 	} else {
-		[self goFullScreen:sender];
+		[self goFullScreen: sender];
     }
 }
 
