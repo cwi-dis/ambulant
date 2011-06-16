@@ -167,33 +167,37 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		NSView* contentView = [window contentView];
 		CGFloat extraWidth = contentView.bounds.size.width - self.frame.size.width;
 		CGFloat extraHeight = contentView.bounds.size.height - self.frame.size.height;
+        
         // We expect here that the player view is rooted at (0,0). We also make its frame equal to its bounds.
         // Note that I'm not 100% sure these asserts are needed: we could just assume that the player view takes
-        // care of its bounds/frame factors, and we only look at frame
+        // care of its bounds/frame factors, and we only look at frame.
+        // For now, we set the player view frame to be identical to its bounds*scale.
         assert(playerView.bounds.origin.x == 0);
         assert(playerView.bounds.origin.y == 0);
 		NSRect playerBounds = playerView.bounds;
- 		[playerView setFrame: playerBounds];
+        NSRect playerFrame = playerView.bounds;
+        playerFrame.size.width *= scaleFactor;
+        playerFrame.size.height *= scaleFactor;
+ 		[playerView setFrame: playerFrame];
 		[playerView setBounds: playerBounds];
 		assert(playerView.bounds.origin.x == playerView.frame.origin.x);
 		assert(playerView.bounds.origin.y == playerView.frame.origin.y);
-		assert(playerView.bounds.size.width == playerView.frame.size.width);
-		assert(playerView.bounds.size.height == playerView.frame.size.height);
-        [self setFrameSize: playerView.bounds.size];
-        [self setBounds: playerView.bounds];
- 		[playerView setFrame: playerView.bounds];
+		assert(fabs(playerView.bounds.size.width*scaleFactor-playerView.frame.size.width) < 2.0);
+		assert(fabs(playerView.bounds.size.height*scaleFactor-playerView.frame.size.height) < 2.0);
+        
+        // Now we set our own size
+        [self setFrameSize: playerFrame.size];
+ 		[playerView setFrame: playerFrame];
+        [self setBounds: playerFrame];
 		assert(playerView.bounds.origin.x == playerView.frame.origin.x);
 		assert(playerView.bounds.origin.y == playerView.frame.origin.y);
-		assert(playerView.bounds.size.width == playerView.frame.size.width);
-		assert(playerView.bounds.size.height == playerView.frame.size.height);
+		assert(fabs(playerView.bounds.size.width*scaleFactor-playerView.frame.size.width) < 2.0);
+		assert(fabs(playerView.bounds.size.height*scaleFactor-playerView.frame.size.height) < 2.0);
         
-        // Reset the scale factor to 1
-        scaleFactor = 1.0;
-       
 		// Compute the new window size and set it. We need to cater for the extra pixels that are part of
         // the content view but not part of us (toolbars and such).
-        CGFloat windowWidth = playerView.frame.size.width*scaleFactor + extraWidth;
-        CGFloat windowHeight = playerView.frame.size.height*scaleFactor + extraHeight;
+        CGFloat windowWidth = self.frame.size.width + extraWidth;
+        CGFloat windowHeight = self.frame.size.height + extraHeight;
 		CGSize newWindowSize = CGSizeMake(windowWidth, windowHeight);
         resizingWindow = true;
 		[window setContentSize: NSSizeFromCGSize(newWindowSize)];
@@ -223,6 +227,25 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction) zoomImageToActualSize: (id) sender
 {
+    // Reset the scale factor to 1
+    scaleFactor = 1.0;
+       
+	[self recomputeZoom];
+}
+
+- (IBAction) zoomOut: (id) sender
+{
+    scaleFactor /= 1.1892;
+    if (scaleFactor < 0.1) scaleFactor = 0.1;
+       
+	[self recomputeZoom];
+}
+
+- (IBAction) zoomIn: (id) sender
+{
+    scaleFactor *= 1.1892;
+    if(scaleFactor > 10) scaleFactor = 10;
+       
 	[self recomputeZoom];
 }
 
