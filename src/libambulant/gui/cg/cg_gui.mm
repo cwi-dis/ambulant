@@ -513,9 +513,9 @@ bad:
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize
 {
-    /*AM_DBG*/ NSLog(@"resizeWithOldSuperviewSize: %@", self);
-    /*AM_DBG*/ NSLog(@"frame: %f, %f, %f, %f", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-    /*AM_DBG*/ NSLog(@"bounds: old %f,%f new %f, %f, %f, %f", oldBoundsSize.width, oldBoundsSize.height, self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
+    AM_DBG NSLog(@"resizeWithOldSuperviewSize: %@", self);
+    AM_DBG NSLog(@"frame: %f, %f, %f, %f", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+    AM_DBG NSLog(@"bounds: old %f,%f new %f, %f, %f, %f", oldBoundsSize.width, oldBoundsSize.height, self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
     [super resizeWithOldSuperviewSize: oldBoundsSize];
     NSSize realSize = {original_bounds.w, original_bounds.h};
     [self setBoundsSize: realSize];

@@ -147,9 +147,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
 	if (playerView == nil) return;
-	/*AM_DBG*/ NSLog(@"recomputeZoom, self.bounds %f,%f,%f,%f",
+	AM_DBG NSLog(@"recomputeZoom, self.bounds %f,%f,%f,%f",
 		self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
-	/*AM_DBG*/ NSLog(@"recomputeZoom,  playerview.frame %f,%f,%f,%f",
+	AM_DBG NSLog(@"recomputeZoom,  playerview.frame %f,%f,%f,%f",
 		playerView.frame.origin.x, playerView.frame.origin.y, playerView.frame.size.width, playerView.frame.size.height);
 
 	// Two possibilities: either we resize the window to match the player view size, or we
@@ -589,9 +589,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #endif
 	if (ml) ml->before_mousemove(0);
     if (saved_window) {
-        [[[view window] contentView] addSubview:hud_controls];
-        NSLog(@"Showing HUD");
-        // XXXX Schedule for disappearance...
+        // If we are in fullscreen mode we want to show the HUD.
+        [self showHUD: self];
     }
 }
 
@@ -839,4 +838,25 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
 }
 #endif // WITH_OVERLAY_WINDOW
+
+- (IBAction)showHUD: (id)sender
+{
+    if (hud_controls == nil) return;
+    
+    NSView *container = [[view window] contentView];
+    if (hud_controls.superview != container) {
+        AM_DBG NSLog(@"Showing HUD");
+        float x_pos = (container.bounds.size.width- hud_controls.frame.size.width) / 2;
+        float y_pos = 20;
+        [hud_controls setFrameOrigin: NSMakePoint(x_pos, y_pos)];
+        [container addSubview:hud_controls];
+    }
+    [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(hideHUD:) object: self];
+    [self performSelector: @selector(hideHUD:) withObject: self afterDelay: 5.0];
+}
+
+- (IBAction)hideHUD: (id)sender
+{
+    [hud_controls removeFromSuperview];
+}
 @end

@@ -122,6 +122,8 @@ class document_embedder : public ambulant::common::embedder {
 - (BOOL)openAuxDocument: (NSURL *)auxUrl;
 - (void)closeAuxDocument;
 #endif
+- (IBAction)showHUD: (id)sender;
+- (IBAction)hideHUD: (id)sender;
 @end
 
 @interface NSDocumentController(MyDocumentControllerCategory)
