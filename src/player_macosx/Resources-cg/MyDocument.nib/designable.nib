@@ -3,18 +3,18 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
 		<string key="IBDocument.SystemVersion">10J869</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">823</string>
+			<string key="NS.object.0">851</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="40"/>
-			<integer value="70"/>
 			<integer value="5"/>
+			<integer value="40"/>
+			<integer value="69"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -111,7 +111,7 @@
 										<reference key="NSControlView" ref="931437032"/>
 										<int key="NSButtonFlags">-2033434369</int>
 										<int key="NSButtonFlags2">163</int>
-										<object class="NSCustomResource" key="NSNormalImage" id="923717312">
+										<object class="NSCustomResource" key="NSNormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">NSEnterFullScreenTemplate</string>
 										</object>
@@ -357,7 +357,7 @@
 								<object class="NSButton" id="141495199">
 									<reference key="NSNextResponder" ref="205699001"/>
 									<int key="NSvFlags">268</int>
-									<string key="NSFrame">{{156, 29}, {36, 25}}</string>
+									<string key="NSFrame">{{160, 29}, {36, 25}}</string>
 									<reference key="NSSuperview" ref="205699001"/>
 									<int key="NSViewLayerContentsRedrawPolicy">2</int>
 									<bool key="NSEnabled">YES</bool>
@@ -369,7 +369,10 @@
 										<reference key="NSControlView" ref="141495199"/>
 										<int key="NSButtonFlags">-2033958657</int>
 										<int key="NSButtonFlags2">163</int>
-										<reference key="NSNormalImage" ref="923717312"/>
+										<object class="NSCustomResource" key="NSNormalImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">NSExitFullScreenTemplate</string>
+										</object>
 										<string key="NSAlternateContents"/>
 										<string key="NSKeyEquivalent"/>
 										<int key="NSPeriodicDelay">400</int>
@@ -379,7 +382,7 @@
 								<object class="NSButton" id="725961410">
 									<reference key="NSNextResponder" ref="205699001"/>
 									<int key="NSvFlags">293</int>
-									<string key="NSFrame">{{31, 29}, {39, 25}}</string>
+									<string key="NSFrame">{{28, 29}, {39, 25}}</string>
 									<reference key="NSSuperview" ref="205699001"/>
 									<int key="NSViewLayerContentsRedrawPolicy">2</int>
 									<bool key="NSEnabled">YES</bool>
@@ -403,7 +406,7 @@
 								<object class="NSButton" id="670501574">
 									<reference key="NSNextResponder" ref="205699001"/>
 									<int key="NSvFlags">293</int>
-									<string key="NSFrame">{{114, 29}, {39, 25}}</string>
+									<string key="NSFrame">{{116, 29}, {39, 25}}</string>
 									<reference key="NSSuperview" ref="205699001"/>
 									<int key="NSViewLayerContentsRedrawPolicy">2</int>
 									<bool key="NSEnabled">YES</bool>
@@ -1885,6 +1888,14 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">NSController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBFrameworkSource</string>
+						<string key="minorKey">AppKit.framework/Headers/NSController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NSDocument</string>
 					<string key="superclassName">NSObject</string>
 					<object class="NSMutableDictionary" key="actions">
@@ -2367,6 +2378,7 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>Background_iPhone</string>
 				<string>NSEnterFullScreenTemplate</string>
+				<string>NSExitFullScreenTemplate</string>
 				<string>NSMenuCheckmark</string>
 				<string>NSMenuMixedState</string>
 				<string>pause</string>
@@ -2377,6 +2389,7 @@
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{314, 93}</string>
+				<string>{16, 15}</string>
 				<string>{16, 15}</string>
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>

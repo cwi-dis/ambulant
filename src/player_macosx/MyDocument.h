@@ -63,7 +63,8 @@ class document_embedder : public ambulant::common::embedder {
 - (IBAction) zoomImageToActualSize:(id)dummy;
 - (IBAction) zoomOut:(id)dummy;
 - (IBAction) zoomIn:(id)dummy;
-
+- (void) viewDidMoveToSuperview;
+- (MyAmbulantView *) getPlayer;
 @end
 
 // MyDocument also implements part of thhe NSWindowDelegate protocol, but how do I state that if

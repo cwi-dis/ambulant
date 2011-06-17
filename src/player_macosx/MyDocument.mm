@@ -143,9 +143,43 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	return true;
 }
 
+- (MyAmbulantView *)getPlayer
+{
+	if ([[self subviews] count] == 0) return nil;
+	return [[self subviews] objectAtIndex: 0];
+}
+
+- (void) viewDidMoveToSuperview
+{
+	AM_DBG NSLog(@"ScalerView %@ moved to superview %@", self, self.superview);
+	// Resize the player view (if it exists) to fit our size
+	
+	MyAmbulantView *playerView = [self getPlayer];
+	if (playerView == nil) return;
+	NSRect origPlayerBounds = playerView.bounds;
+	
+	// Compute the aspect-ratio-maintaing scale factor that is needed to make the content as big as possible
+	// given our size.
+	CGFloat scaleX = self.bounds.size.width / playerView.bounds.size.width;
+	CGFloat scaleY = self.bounds.size.height / playerView.bounds.size.height;
+	scaleFactor = fmin(scaleX, scaleY);
+    AM_DBG NSLog(@"scale is %f", scaleFactor);
+
+	// Set the frame of the player view to the new size, while maintaing the inner coordinate
+	// system of the player view.
+    CGSize newPlayerFrame = CGSizeMake(playerView.bounds.size.width*scaleFactor, playerView.bounds.size.height*scaleFactor);
+    [playerView setFrameSize: NSSizeFromCGSize(newPlayerFrame)];
+	[playerView setBounds: origPlayerBounds];
+	
+	// Center the player view within our bounds.
+	CGFloat extraX = self.bounds.size.width - playerView.frame.size.width;
+	CGFloat extraY = self.bounds.size.height - playerView.frame.size.height;
+	[playerView setFrameOrigin: NSMakePoint(extraX/2, extraY/2)];
+}
+
 - (void) recomputeZoom
 {
-	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
+	MyAmbulantView *playerView = [self getPlayer];
 	if (playerView == nil) return;
 	AM_DBG NSLog(@"recomputeZoom, self.bounds %f,%f,%f,%f",
 		self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
@@ -214,11 +248,12 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
         // somethings outside our control). We adapt our scaling.
         float x_factor = self.bounds.size.width / playerView.bounds.size.width;
         float y_factor = self.bounds.size.height / playerView.bounds.size.height;
-        float factor = fmin(x_factor, y_factor);
+        float max_factor = fmin(x_factor, y_factor);
+		if (scaleFactor > max_factor) scaleFactor = max_factor;
         NSRect playerBounds = playerView.bounds;
         NSRect playerFrame = playerView.bounds;
-        playerFrame.size.width *= factor;
-        playerFrame.size.height *= factor;
+        playerFrame.size.width *= scaleFactor;
+        playerFrame.size.height *= scaleFactor;
  		[playerView setFrame: playerFrame];
 		[playerView setBounds: playerBounds];
 		assert(playerView.bounds.origin.x == playerView.frame.origin.x);
@@ -266,7 +301,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	
 	// First thing to do is remember the player view inner coordinates (the SMIL coordinate system),
 	// because resizeWithOldSuperviewSize: will muck with it.
-	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
+	MyAmbulantView *playerView = [self getPlayer];
 	NSRect origPlayerBounds = playerView.bounds;
 	
 	// Now we let Apple do its stuff so our NSView is resized correctlty wrt. our parent view
@@ -531,9 +566,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)close
 {
 	[self stop: self];
-	if (saved_window) {
-		[self _goWindowMode];
-	}
 	play_button = nil;
 	stop_button = nil;
 	pause_button = nil;
@@ -672,8 +704,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// Attach our view to the normal window.
 	NSWindow *mScreenWindow = [ourView window];
 	NSView *savedcontentview = [saved_window contentView];
-	[savedcontentview addSubview: ourView];
 	[ourView setFrame: saved_view_rect];
+	[savedcontentview addSubview: ourView];
 	[savedcontentview setNeedsDisplay:YES];
 	[saved_window makeFirstResponder: view];
 	[saved_window setAcceptsMouseMovedEvents: YES];
@@ -684,6 +716,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 	// Get rid of the fullscreen window
 	[mScreenWindow close];
+	mScreenWindow = nil;
 	[saved_window makeKeyAndOrderFront:self];
 
 	// And clear saved_window, which signals we're in normal mode again.
@@ -748,14 +781,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	NSView *fsmainview = [[NSView alloc] initWithFrame: winRect];
 
 	NSView *contentview = view;
+	saved_view_rect = [contentview frame];
     if (scaler_view) {
         // For CG-based player
         contentview = scaler_view;
-#ifdef XXXJACK_RESIZE_FULLSCREEN
-        contentview.frame = scaler_view.bounds;
-#endif
+		saved_view_rect = [contentview frame];
+        contentview.frame = winRect;
     }
-	saved_view_rect = [contentview frame];
 	[fsmainview addSubview: contentview];
 	NSRect contentRect = [contentview frame];
 	CGFloat xExtra = NSWidth(winRect) - NSWidth(contentRect);
