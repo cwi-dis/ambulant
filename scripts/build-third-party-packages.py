@@ -945,6 +945,10 @@ def checkenv_iphone(target):
     if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
         print '** PKG_CONFIG_LIBDIR must be set for cross-development'
         rv = False
+    # We need gas-preprocessor, for ffmpeg
+    if os.system("gas-preprocessor.pl 2>&1 | grep Unrecognized >/dev/null") != 0:
+        print '** Need gas-preprocessor.pl on $PATH. See https://github.com/yuvi/gas-preprocessor'
+        rv = False
     return rv
         
 environment_checkers = {
