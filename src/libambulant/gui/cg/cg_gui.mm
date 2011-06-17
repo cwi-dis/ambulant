@@ -37,7 +37,6 @@
 #define NSRectFromCGRect(x) (x)
 #endif
 
-//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif//AM_DBG
@@ -456,6 +455,8 @@ bad:
     self.frame = NSRectFromCGRect(newFrame);
     self.bounds = NSRectFromCGRect(newBounds);
     AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+    // Now we need to adapt the toplevel UI to our new document size. This could mean changing the
+    // zoom factor and positioning (iPhone/iPad) or changing the toplevel window size (Mac)
 	if ([[self superview] respondsToSelector:@selector(recomputeZoom)]) {
         // We get a warning here that is difficult to forestall...
 		[[self superview] recomputeZoom];
@@ -512,9 +513,9 @@ bad:
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize
 {
-    /*AM_DBG*/ NSLog(@"resizeWithOldSuperviewSize: %@", self);
-    /*AM_DBG*/ NSLog(@"frame: %f, %f, %f, %f", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-    /*AM_DBG*/ NSLog(@"bounds: old %f,%f new %f, %f, %f, %f", oldBoundsSize.width, oldBoundsSize.height, self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
+    AM_DBG NSLog(@"resizeWithOldSuperviewSize: %@", self);
+    AM_DBG NSLog(@"frame: %f, %f, %f, %f", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+    AM_DBG NSLog(@"bounds: old %f,%f new %f, %f, %f, %f", oldBoundsSize.width, oldBoundsSize.height, self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
     [super resizeWithOldSuperviewSize: oldBoundsSize];
     NSSize realSize = {original_bounds.w, original_bounds.h};
     [self setBoundsSize: realSize];
@@ -721,6 +722,7 @@ bad:
 
 - (void) _screenTransitionPostRedraw
 {
+#if 0 // XXXJACK temporarily disabled
 	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
@@ -762,6 +764,7 @@ bad:
 		fullscreen_oldimage = NULL;
 		fullscreen_engine = NULL;
 	}
+#endif
 }
 
 #else// WITH_UIKIT
