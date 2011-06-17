@@ -429,6 +429,7 @@
     <ClCompile Include="..\..\src\libambulant\lib\event_processor.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\expat_parser.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\gpaths.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\lib_gcd_event_processor_impl.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\logger.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\memfile.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\nfa.cpp" />
@@ -483,6 +484,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\lib_gcd_event_processor_impl.h" />
     <ClInclude Include="..\..\include\ambulant\version.h" />
     <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\bmp_decoder.h" />

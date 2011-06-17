@@ -252,7 +252,7 @@ public:
 
 };
 #else
-void gb_serve_event(event *gb_e)
+void gb_serve_event_1(event *gb_e)
 {
 	gb_e->fire();
 	delete gb_e;
@@ -280,7 +280,7 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",e);
 		});
 #else
-		dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), e, (dispatch_function_t)gb_serve_event);
+		dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), e, (dispatch_function_t)gb_serve_event_1);
 #endif
 		 
 #else

@@ -363,6 +363,9 @@
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_transition.cpp">
       <Filter>Source Files\gui\d2</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\lib\lib_gcd_event_processor_impl.cpp">
+      <Filter>Source Files\lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ambulant\version.h">
@@ -880,6 +883,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h">
       <Filter>Header Files\ambulant\gui\d2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ambulant\lib\lib_gcd_event_processor_impl.h">
+      <Filter>Header Files\ambulant\lib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

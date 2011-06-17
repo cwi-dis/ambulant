@@ -488,7 +488,11 @@ datasource_reader::datasource_reader(datasource *src)
 	m_data(NULL),
 	m_size(0)
 {
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	m_event_processor = lib::gcd_event_processor_factory(m_timer);
+#else
 	m_event_processor = lib::event_processor_factory(m_timer);
+#endif
 }
 
 datasource_reader::~datasource_reader()

@@ -86,7 +86,11 @@ smil_player::initialize()
 	assert(m_doc);
 	document_loaded(m_doc);
 
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	m_event_processor = gcd_event_processor_factory(m_timer);
+#else
 	m_event_processor = event_processor_factory(m_timer);
+#endif
 	create_state_engine();
 	// build the layout (we need the top-level layout)
 	build_layout();

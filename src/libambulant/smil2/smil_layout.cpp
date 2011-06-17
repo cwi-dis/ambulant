@@ -664,7 +664,11 @@ bgimage_loader::bgimage_loader(const lib::node *layout_root, common::factories *
 	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 1.0, false, true)),
 	m_event_processor(NULL)
 {
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	m_event_processor = gcd_event_processor_factory(m_timer);
+#else
 	m_event_processor = event_processor_factory(m_timer);
+#endif
 }
 
 bgimage_loader::~bgimage_loader()
