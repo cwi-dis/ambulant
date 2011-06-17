@@ -235,6 +235,7 @@ class AMBULANTAPI d2_player :
 		HWND m_hwnd;
 		RECT m_rect;
 		ID2D1HwndRenderTarget *m_rendertarget;
+		ID2D1SolidColorBrush *m_bgbrush;
 		d2_window *m_window;
 	};
 
