@@ -26,8 +26,13 @@
 #include "ambulant/lib/logger.h"
 #include <map>
 #ifdef AMBULANT_PLATFORM_WIN32
+#define X_DISPATCH
+#ifdef X_DISPATCH
+#include "xdispatch/xdispatch/dispatch.h"
+#else
 #include "config/config.h"
 #include "dispatch/dispatch.h"
+#endif
 #else
 #include <dispatch/dispatch.h>
 #endif
@@ -86,7 +91,15 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 		case ep_high: {
 			// t is in milliseconds and dispatch_time is expecting time instant in nanoseconds
 #ifdef AMBULANT_PLATFORM_WIN32
+#ifdef X_DISPATCH
+			xdispatch::global_queue(xdispatch::HIGH).async(${
+			pe->fire();
+			delete pe;
+			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+		});
+#else
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0),pe, (dispatch_function_t)gb_serve_event);
+#endif
 #else
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 				AM_DBG logger::get_logger()->debug("I am in global queue and serve_envet(0x%x)",pe);
@@ -98,7 +111,15 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 			break;
 		case ep_med: {
 #ifdef AMBULANT_PLATFORM_WIN32
+#ifdef X_DISPATCH
+			xdispatch::global_queue(xdispatch::DEFAULT).async(${
+			pe->fire();
+			delete pe;
+			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+		});
+#else
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),pe, (dispatch_function_t)gb_serve_event);
+#endif
 #else
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				AM_DBG logger::get_logger()->debug("I am in global queue and serve_envet(0x%x)",pe);
@@ -110,7 +131,15 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 			break;
 		case ep_low: {
 #ifdef AMBULANT_PLATFORM_WIN32
+#ifdef X_DISPATCH
+			xdispatch::global_queue(xdispatch::LOW).async(${
+			pe->fire();
+			delete pe;
+			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+		});
+#else
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),pe, (dispatch_function_t)gb_serve_event);
+#endif
 #else
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 				AM_DBG logger::get_logger()->debug("I am in global queue and serve_envet(0x%x)",pe);
