@@ -31,6 +31,9 @@
 #define AM_DBG if(0)
 #endif
 
+// "infinite" width or height for text layout
+#define INFINITE_SIZE 1000000
+
 namespace ambulant {
 
 using namespace lib;
@@ -187,6 +190,7 @@ void
 d2_smiltext_renderer::smiltext_changed()
 {
 	m_lock.enter();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_smiltext_renderer::smiltext_changed");
 	m_engine.lock();
 	if (_collect_text())
 		_recreate_layout();
@@ -285,6 +289,21 @@ d2_smiltext_renderer::_recreate_layout()
 	rect destrect = m_dest->get_rect();
 	FLOAT w = (float) destrect.width();
 	FLOAT h = (float) destrect.height();
+
+	// Set width (or height) to pretty much infinite forcrawl or scroll
+	if (m_params.m_mode == smil2::stm_crawl) {
+
+		w = INFINITE_SIZE;
+
+	}
+
+	if (m_params.m_mode == smil2::stm_scroll) {
+
+		h = INFINITE_SIZE;
+
+	}
+
+
 	HRESULT hr;
 	if (s_write_factory == NULL) return;
 	hr = s_write_factory->CreateTextLayout(m_data.c_str(), m_data.length(), m_text_format, w, h, &m_text_layout);
@@ -485,6 +504,15 @@ d2_smiltext_renderer::_recreate_layout()
 //JNK		[m_text_storage endEditing];
 	m_engine.done();
 #endif JNK
+	if (m_engine.is_auto_rate()) {
+		DWRITE_TEXT_METRICS textMetrics;
+		m_text_layout->GetMetrics(&textMetrics);
+		unsigned int dur = 11; // XXXX
+		smil2::smiltext_align align = m_cur_para_align;
+		lib::size full_size(textMetrics.width, textMetrics.height);
+		unsigned int rate = _compute_rate(align, full_size, m_dest->get_rect(), dur);
+		m_engine.set_rate(rate);
+	}
 }
 
 void
@@ -506,8 +534,27 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Re
 
 	destrect.translate(m_dest->get_global_topleft());
 
-	D2D1_POINT_2F origin = { (float) destrect.left(), (float) destrect.top() };
-	rt->DrawTextLayout(origin, m_text_layout, m_brush);
+	// Find where we should draw things, taking crawl/scroll into account
+	D2D1_POINT_2F visible_origin = { (float) destrect.left(), (float) destrect.top() };
+	D2D1_POINT_2F logical_origin = visible_origin;
+	if (m_params.m_mode == smil2::stm_crawl) {
+
+		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
+
+		logical_origin.x -= float(now * m_params.m_rate / 1000);
+
+	}
+
+	if (m_params.m_mode == smil2::stm_scroll) {
+
+		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
+
+		logical_origin.y -= float(now * m_params.m_rate / 1000);
+
+	}
+
+	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_smiltext_renderer::redraw_body: visible (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
+	rt->DrawTextLayout(logical_origin, m_text_layout, m_brush);
 
 #ifdef JNK
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];

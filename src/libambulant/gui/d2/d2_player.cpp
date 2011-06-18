@@ -352,9 +352,12 @@ gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 #endif//AM_DMP
 		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
 		&wi->m_rendertarget);
-
 	if (!SUCCEEDED(hr))
 		lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+
+	// Create the corresponding D2D brush
+	hr = wi->m_rendertarget->CreateSolidColorBrush(D2D1::ColorF(GetSysColor(COLOR_WINDOW), 1.0), &wi->m_bgbrush);
+	if (!SUCCEEDED(hr)) lib::win32::win_trace_error("CreateSolidColorBrush", hr);
 }
 
 void
@@ -367,6 +370,10 @@ gui::d2::d2_player::_discard_d2d()
 		if (wi->m_rendertarget) {
 			wi->m_rendertarget->Release();
 			wi->m_rendertarget = NULL;
+		}
+		if (wi->m_bgbrush) {
+			wi->m_bgbrush->Release();
+			wi->m_bgbrush = NULL;
 		}
 	}
 	std::set<d2_resources*>::iterator rit;
@@ -772,9 +779,13 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		AM_DBG lib::logger::get_logger()->debug("d2_player::redraw() ambulant coordinates (%d, %d, %d, %d))", 
 		dirty->left, dirty->top, dirty->right, dirty->bottom);
 		lib::rect r(lib::point(dirty->left, dirty->top), lib::size(dirty->right-dirty->left, dirty->bottom-dirty->top));
+		D2D1_RECT_F rr = d2_rectf(r);
+		rt->FillRectangle(rr, wi->m_bgbrush);
 		wi->m_window->redraw(r);
 		_screenTransitionPostRedraw(&r);
 	} else {
+		D2D1_RECT_F rr = d2_rectf(wanted_rect);
+		rt->FillRectangle(rr, wi->m_bgbrush);
 		wi->m_window->redraw();
 		_screenTransitionPostRedraw(NULL);
 	}
