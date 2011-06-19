@@ -110,7 +110,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;avutil.lib;liveMedia.lib;BasicUsageEnvironment.lib;UsageEnvironment.lib;groupsock.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;avutil.lib;liveMediaD.lib;BasicUsageEnvironmentD.lib;UsageEnvironmentD.lib;groupsockD.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;libcmt.lib;libcpmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
