@@ -706,7 +706,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	HRESULT hr = S_OK;
 	// Create the Direct2D resources, in case they were lost
 	wininfo *wi = _get_wininfo(hwnd);
-	assert(wi);
+	// assert(wi); This assert can fail if the document isn't open.
 	if (wi == NULL) {
 		m_redraw_lock.leave();
 		return;
