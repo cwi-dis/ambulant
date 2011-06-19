@@ -292,17 +292,12 @@ d2_smiltext_renderer::_recreate_layout()
 
 	// Set width (or height) to pretty much infinite forcrawl or scroll
 	if (m_params.m_mode == smil2::stm_crawl) {
-
 		w = INFINITE_SIZE;
-
 	}
 
 	if (m_params.m_mode == smil2::stm_scroll) {
-
 		h = INFINITE_SIZE;
-
 	}
-
 
 	HRESULT hr;
 	if (s_write_factory == NULL) return;

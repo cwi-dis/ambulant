@@ -92,7 +92,7 @@ class d2_smiltext_renderer :
 	smil2::smiltext_engine m_engine;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
-	smil2::smiltext_params m_params;
+	const smil2::smiltext_params &m_params;
 	void *m_cur_paragraph_style;
 	smil2::smiltext_align m_cur_para_align;
 	smil2::smiltext_writing_mode m_cur_para_writing_mode;
