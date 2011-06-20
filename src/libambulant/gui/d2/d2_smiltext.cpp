@@ -76,7 +76,7 @@ d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run
 	fgcolor(D2D1::ColorF(redf(run.m_color), greenf(run.m_color), bluef(run.m_color))),
 	fgbrush(NULL),
 	bgcolor(D2D1::ColorF(redf(run.m_bg_color), greenf(run.m_bg_color), bluef(run.m_bg_color))),
-	bgtransparent(run.m_transparent),
+	bgtransparent(run.m_bg_transparent),
 	bgbrush(NULL)
 {
 	if (run.m_font_weight == smil2::stw_bold)
@@ -150,6 +150,9 @@ d2_range_params::apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, 
 	DWRITE_TEXT_RANGE range = {begin, end};
 
 	HRESULT hr;
+	// Apparently, a SetDrawingEffect will not only affect the given range, but also
+	// any characters after it (despite what the MS documentation states). For this
+	// reason we create a brush for every single range.
 	if (/*fgcolor &&*/ fgbrush == NULL) {
 		hr = rt->CreateSolidColorBrush(fgcolor, &fgbrush);
 		if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
@@ -160,6 +163,31 @@ d2_range_params::apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, 
 		if (!SUCCEEDED(hr)) {
 			lib::logger::get_logger()->trace("SMILText: SetDrawingEffect: error 0x%x", hr);
 		}
+	}
+	
+	// Should we draw background boxes?
+	if (bgtransparent) return;
+	if (/*fgcolor &&*/ bgbrush == NULL) {
+		hr = rt->CreateSolidColorBrush(bgcolor, &bgbrush);
+		if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
+
+	}
+	if (bgbrush == NULL) return;
+	DWRITE_HIT_TEST_METRICS boxes[10];
+	UINT32 nboxes;
+	hr = engine->HitTestTextRange(begin, end-begin, origin.x, origin.y, boxes, 10, &nboxes);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: HitTestTextRange: error 0x%x", hr);
+		return;
+	}
+	int i;
+	for(i=0; i<nboxes; i++) {
+		D2D1_RECT_F rect = {
+			boxes[i].left, 
+			boxes[i].top, 
+			boxes[i].left+boxes[i].width, 
+			boxes[i].top+boxes[i].height};
+		rt->FillRectangle(rect, bgbrush);
 	}
 }
 
