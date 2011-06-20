@@ -71,7 +71,7 @@ d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run
 	end(end_),
 	weight(DWRITE_FONT_WEIGHT_NORMAL),
 	style(DWRITE_FONT_STYLE_NORMAL),
-	fontsize(run.m_font_size),
+	fontsize((float)run.m_font_size),
 	fontfamily(L""),
 	fgcolor(D2D1::ColorF(redf(run.m_color), greenf(run.m_color), bluef(run.m_color))),
 	fgbrush(NULL),
@@ -180,7 +180,7 @@ d2_range_params::apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, 
 		lib::logger::get_logger()->trace("SMILText: HitTestTextRange: error 0x%x", hr);
 		return;
 	}
-	int i;
+	UINT32 i;
 	for(i=0; i<nboxes; i++) {
 		D2D1_RECT_F rect = {
 			boxes[i].left, 
@@ -440,6 +440,7 @@ d2_smiltext_renderer::_collect_text()
 		}
 		// Handle override textDirection here, by inserting the magic unicode
 		// commands
+#pragma setlocale("C")
 		if ((*i).m_direction == smil2::stw_ltro) {
 			lib::logger::get_logger()->debug("cocoa_smiltext: should do ltro text");
 			newdata = "\u202d" + newdata + "\u202c";
@@ -500,7 +501,7 @@ d2_smiltext_renderer::_recreate_layout()
 		m_text_layout->GetMetrics(&textMetrics);
 		unsigned int dur = 11; // XXXX
 		smil2::smiltext_align align = m_cur_para_align;
-		lib::size full_size(textMetrics.width, textMetrics.height);
+		lib::size full_size((int)textMetrics.width, (int)textMetrics.height);
 		unsigned int rate = _compute_rate(align, full_size, m_dest->get_rect(), dur);
 		m_engine.set_rate(rate);
 	}
@@ -537,7 +538,7 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Re
 		logical_origin.y -= float(now * m_params.m_rate / 1000);
 	}
 
-	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_smiltext_renderer::redraw_body: visible (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
+	AM_DBG lib::logger::get_logger()->debug("d2_smiltext_renderer::redraw_body: visible (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
 	// Set the color parameters
 	std::vector<d2_range_params *>::iterator i;
 	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
@@ -545,7 +546,6 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Re
 	}
 	// Draw the whole thing
 	rt->DrawTextLayout(logical_origin, m_text_layout, m_brush);
-
 
 	m_lock.leave();
 }
@@ -562,11 +562,10 @@ d2_smiltext_renderer::recreate_d2d()
 	double alfa = 1.0;
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa), &m_brush);
+	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(m_text_color), greenf(m_text_color), bluef(m_text_color), (float)alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
 	m_lock.leave();
 }
-
 
 void
 d2_smiltext_renderer::discard_d2d()
@@ -580,7 +579,6 @@ d2_smiltext_renderer::discard_d2d()
 	}
 
 }
-
 
 unsigned int
 d2_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {
