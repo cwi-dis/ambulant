@@ -47,28 +47,53 @@ class d2_range_params
 {
 public:
 	d2_range_params(int begin_, int end_, const smil2::smiltext_run& run);
+	~d2_range_params();
 	void apply(IDWriteTextLayout *engine);
 	int begin;
 	int end;
 	DWRITE_FONT_WEIGHT weight;
+	DWRITE_FONT_STYLE style;
+	float fontsize;
 };
 
 d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run& run)
 :	begin(begin_),
 	end(end_),
-	weight(DWRITE_FONT_WEIGHT_NORMAL)
+	weight(DWRITE_FONT_WEIGHT_NORMAL),
+	style(DWRITE_FONT_STYLE_NORMAL),
+	fontsize(run.m_font_size)
 {
 	if (run.m_font_weight == smil2::stw_bold)
 		weight = DWRITE_FONT_WEIGHT_BOLD;
+
+	if (run.m_font_style == smil2::sts_italic)
+		style = DWRITE_FONT_STYLE_ITALIC;
+	else if (run.m_font_style == smil2::sts_oblique)
+		style = DWRITE_FONT_STYLE_OBLIQUE;
+}
+
+d2_range_params::~d2_range_params()
+{
 }
 
 void
 d2_range_params::apply(IDWriteTextLayout *engine)
 {
 	DWRITE_TEXT_RANGE range = {begin, end};
+
 	HRESULT hr = engine->SetFontWeight(weight, range);
 	if (!SUCCEEDED(hr)) {
 		lib::logger::get_logger()->trace("SMILText: SetFontWeight: error 0x%x", hr);
+	}
+
+	hr = engine->SetFontStyle(style, range);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: SetFontStyle: error 0x%x", hr);
+	}
+
+	hr = engine->SetFontSize(fontsize, range);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: SetFontSize: error 0x%x", hr);
 	}
 }
 
