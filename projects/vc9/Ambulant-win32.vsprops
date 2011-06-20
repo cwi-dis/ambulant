@@ -24,7 +24,7 @@
 	You can disable this in the solution, but you will miss SMIL 3.0 State.
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
-<UserMacro Name="libxml2_dir" Value="..\..\third_party_packages\libxml2-2.7.7" PerformEnvironmentSet="true"/>
+<UserMacro Name="libxml2_dir" Value="..\..\third_party_packages\libxml2-2.7.8" PerformEnvironmentSet="true"/>
 <!--
 	Third party libraries used by plugin_ffmpeg.
 	If you disable this in the solution you will have only DirectShow
