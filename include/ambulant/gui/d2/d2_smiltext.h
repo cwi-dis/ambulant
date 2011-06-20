@@ -31,6 +31,7 @@
 interface IDWriteFactory;
 interface IDWriteTextFormat;
 interface IDWriteTextLayout;
+interface IDWriteFontCollection;
 interface ID2D1SolidColorBrush;
 
 namespace ambulant {

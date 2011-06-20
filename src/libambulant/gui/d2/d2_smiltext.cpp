@@ -42,6 +42,8 @@ namespace gui {
 
 namespace d2 {
 
+IDWriteFontCollection *s_font_collection = NULL;
+
 // Per-range parameter storage helper class.
 class d2_range_params
 {
@@ -49,11 +51,17 @@ public:
 	d2_range_params(int begin_, int end_, const smil2::smiltext_run& run);
 	~d2_range_params();
 	void apply(IDWriteTextLayout *engine);
+	void apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, D2D1_POINT_2F origin);
 	int begin;
 	int end;
 	DWRITE_FONT_WEIGHT weight;
 	DWRITE_FONT_STYLE style;
 	float fontsize;
+	std::wstring fontfamily;
+	lib::color_t fgcolor;
+	ID2D1SolidColorBrush *fgbrush;
+	lib::color_t bgcolor;
+	ID2D1SolidColorBrush *bgbrush;
 };
 
 d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run& run)
@@ -61,7 +69,12 @@ d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run
 	end(end_),
 	weight(DWRITE_FONT_WEIGHT_NORMAL),
 	style(DWRITE_FONT_STYLE_NORMAL),
-	fontsize(run.m_font_size)
+	fontsize(run.m_font_size),
+	fontfamily(L""),
+	fgcolor(run.m_color),
+	fgbrush(NULL),
+	bgcolor(run.m_transparent?0:run.m_bg_color),
+	bgbrush(NULL)
 {
 	if (run.m_font_weight == smil2::stw_bold)
 		weight = DWRITE_FONT_WEIGHT_BOLD;
@@ -70,10 +83,33 @@ d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run
 		style = DWRITE_FONT_STYLE_ITALIC;
 	else if (run.m_font_style == smil2::sts_oblique)
 		style = DWRITE_FONT_STYLE_OBLIQUE;
+
+	std::vector<std::string>::const_iterator i;
+	for (i=run.m_font_families.begin(); i!=run.m_font_families.end(); i++) {
+		lib::textptr familyname((*i).c_str());
+		// Cater for generic type names
+		if (*i == "serif")
+			familyname = "Times New Roman";
+		else if (*i == "monospace")
+			familyname = "Courier New";
+		else if (*i == "sansSerif")
+			familyname = "Arial";
+		UINT32 dummy;
+		BOOL exists = false;
+		(void)s_font_collection->FindFamilyName(familyname.c_wstr(), &dummy, &exists);
+		if (exists) {
+			fontfamily = familyname.c_wstr();
+			break;
+		}
+	}
 }
 
 d2_range_params::~d2_range_params()
 {
+	if (fgbrush)
+		fgbrush->Release();
+	if (bgbrush)
+		bgbrush->Release();
 }
 
 void
@@ -94,6 +130,33 @@ d2_range_params::apply(IDWriteTextLayout *engine)
 	hr = engine->SetFontSize(fontsize, range);
 	if (!SUCCEEDED(hr)) {
 		lib::logger::get_logger()->trace("SMILText: SetFontSize: error 0x%x", hr);
+	}
+
+	if (fontfamily != L"") {
+		hr = engine->SetFontFamilyName(fontfamily.c_str(), range);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->trace("SMILText: SetFontFamilyName: error 0x%x", hr);
+		}
+	}
+}
+
+	
+void
+d2_range_params::apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, D2D1_POINT_2F origin)
+{
+	DWRITE_TEXT_RANGE range = {begin, end};
+
+	HRESULT hr;
+	if (fgcolor && fgbrush == NULL) {
+		hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(fgcolor), greenf(fgcolor), bluef(fgcolor)), &fgbrush);
+		if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
+
+	}
+	if (fgbrush) {
+		hr = engine->SetDrawingEffect(fgbrush, range);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->trace("SMILText: SetDrawingEffect: error 0x%x", hr);
+		}
 	}
 }
 
@@ -142,14 +205,20 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 	m_cur_para_wrap(true),
 	m_any_semiopaque_bg(false)
 {
+	HRESULT hr;
 	if (s_write_factory == NULL) {
-		HRESULT hr;
 		hr = DWriteCreateFactory(
 			DWRITE_FACTORY_TYPE_SHARED,
 			__uuidof(s_write_factory),
 			reinterpret_cast<IUnknown**>(&s_write_factory));
 		if (!SUCCEEDED(hr)) {
 			lib::logger::get_logger()->error("Cannot create DirectWrite factory: error 0x%x", hr);
+		}
+	}
+	if (s_font_collection == NULL && s_write_factory) {
+		hr = s_write_factory->GetSystemFontCollection(&s_font_collection, false);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->error("Cannot GetSystemFontCollection: error 0x%x", hr);
 		}
 	}
 }
@@ -612,22 +681,21 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Re
 	D2D1_POINT_2F visible_origin = { (float) destrect.left(), (float) destrect.top() };
 	D2D1_POINT_2F logical_origin = visible_origin;
 	if (m_params.m_mode == smil2::stm_crawl) {
-
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-
 		logical_origin.x -= float(now * m_params.m_rate / 1000);
-
 	}
-
 	if (m_params.m_mode == smil2::stm_scroll) {
-
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-
 		logical_origin.y -= float(now * m_params.m_rate / 1000);
-
 	}
 
 	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_smiltext_renderer::redraw_body: visible (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
+	// Set the color parameters
+	std::vector<d2_range_params *>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		(*i)->apply_colors(m_text_layout, rt, logical_origin);
+	}
+	// Draw the whole thing
 	rt->DrawTextLayout(logical_origin, m_text_layout, m_brush);
 
 #ifdef JNK
