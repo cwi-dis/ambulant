@@ -42,6 +42,36 @@ namespace gui {
 
 namespace d2 {
 
+// Per-range parameter storage helper class.
+class d2_range_params
+{
+public:
+	d2_range_params(int begin_, int end_, const smil2::smiltext_run& run);
+	void apply(IDWriteTextLayout *engine);
+	int begin;
+	int end;
+	DWRITE_FONT_WEIGHT weight;
+};
+
+d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run& run)
+:	begin(begin_),
+	end(end_),
+	weight(DWRITE_FONT_WEIGHT_NORMAL)
+{
+	if (run.m_font_weight == smil2::stw_bold)
+		weight = DWRITE_FONT_WEIGHT_BOLD;
+}
+
+void
+d2_range_params::apply(IDWriteTextLayout *engine)
+{
+	DWRITE_TEXT_RANGE range = {begin, end};
+	HRESULT hr = engine->SetFontWeight(weight, range);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: SetFontWeight: error 0x%x", hr);
+	}
+}
+
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
 	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
@@ -140,7 +170,19 @@ d2_smiltext_renderer::init_with_node(const lib::node *node)
 d2_smiltext_renderer::~d2_smiltext_renderer()
 {
 	m_lock.enter();
+	_discard_range_params();
 	m_lock.leave();
+}
+
+void
+d2_smiltext_renderer::_discard_range_params()
+{
+	std::vector<d2_range_params*>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		// Clear out any objects
+		delete *i;
+	}
+	m_range_params.clear();
 }
 
 void
@@ -206,10 +248,12 @@ d2_smiltext_renderer::smiltext_changed()
 bool
 d2_smiltext_renderer::_collect_text()
 {
+	// XXXJACK: should also recreate if we cleared out our parameters
 	if (!m_engine.is_changed()) return false;
 	m_data = L"";
 	lib::xml_string newdata;
 	m_run_begins.clear();
+	_discard_range_params();
 	m_run_begins.push_back(0);
 	smil2::smiltext_runs::const_iterator i;
 	
@@ -271,10 +315,15 @@ d2_smiltext_renderer::_collect_text()
 		}
 		lib::textptr convert(newdata.c_str());
 		const wchar_t *wnewdata = convert.c_wstr();
+		int oldpos = m_data.length();
 		m_data = m_data + wnewdata;
+		int newpos = m_data.length();
 		m_run_begins.push_back(m_data.length());
+		if (oldpos != newpos) {
+			d2_range_params *p = new d2_range_params(oldpos, newpos, *i);
+			m_range_params.push_back(p);
+		}
 	}
-
 	m_engine.done();
 	return true;
 }
@@ -305,6 +354,11 @@ d2_smiltext_renderer::_recreate_layout()
 	if (!SUCCEEDED(hr)) {
 		lib::logger::get_logger()->trace("d2_smiltext: Cannot CreateTextLayout: error 0x%x", hr);
 		return;
+	}
+	// Set the parameters
+	std::vector<d2_range_params *>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		(*i)->apply(m_text_layout);
 	}
 #ifdef JNK
 	//JNK	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
