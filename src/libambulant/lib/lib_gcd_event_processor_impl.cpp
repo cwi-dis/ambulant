@@ -93,9 +93,9 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 #ifdef AMBULANT_PLATFORM_WIN32
 #ifdef X_DISPATCH
 			xdispatch::global_queue(xdispatch::HIGH).after(${
-			pe->fire();
-			delete pe;
-			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+				pe->fire();
+				delete pe;
+				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
 			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
 #else
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0),pe, (dispatch_function_t)gb_serve_event);
@@ -113,9 +113,9 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 #ifdef AMBULANT_PLATFORM_WIN32
 #ifdef X_DISPATCH
 			xdispatch::global_queue(xdispatch::DEFAULT).after(${
-			pe->fire();
-			delete pe;
-			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+				pe->fire();
+				delete pe;
+				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
 			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
 #else
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),pe, (dispatch_function_t)gb_serve_event);
@@ -133,9 +133,9 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 #ifdef AMBULANT_PLATFORM_WIN32
 #ifdef X_DISPATCH
 			xdispatch::global_queue(xdispatch::LOW).after(${
-			pe->fire();
-			delete pe;
-			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+				pe->fire();
+				delete pe;
+				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
 			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
 #else
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),pe, (dispatch_function_t)gb_serve_event);
