@@ -2,19 +2,19 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10H574</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">132</string>
+			<string key="NS.object.0">141</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="12"/>
-			<integer value="54"/>
 			<integer value="10"/>
+			<integer value="12"/>
+			<integer value="55"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -633,11 +633,11 @@
 					<string>UIApplication</string>
 					<string>UIResponder</string>
 					<string>AmbulantViewController</string>
-					<string>{{1, 338}, {320, 480}}</string>
+					<string>{{246, 269}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{2, 338}, {320, 480}}</string>
+					<string>{{292, 161}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{1, 338}, {320, 480}}</string>
+					<string>{{288, 217}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>SettingsViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -785,7 +785,7 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">AmbulantContainerView</string>
+					<string key="className">AmbulantScalerView</string>
 					<string key="superclassName">UIView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="296151638">
 						<string key="majorKey">IBProjectSource</string>
@@ -805,10 +805,10 @@
 							<string>doPlaylists:</string>
 							<string>doRestartTapped:</string>
 							<string>handleDoubleTapGesture:</string>
-							<string>handleLongPressGesture:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePinchGesture:</string>
-							<string>handleTapGesture:</string>
+							<string>selectPointGesture:</string>
+							<string>showHUDGesture:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -818,9 +818,9 @@
 							<string>id</string>
 							<string>id</string>
 							<string>UITapGestureRecognizer</string>
-							<string>UILongPressGestureRecognizer</string>
 							<string>UIPanGestureRecognizer</string>
 							<string>UIGestureRecognizer</string>
+							<string>UILongPressGestureRecognizer</string>
 							<string>UITapGestureRecognizer</string>
 						</object>
 					</object>
@@ -834,10 +834,10 @@
 							<string>doPlaylists:</string>
 							<string>doRestartTapped:</string>
 							<string>handleDoubleTapGesture:</string>
-							<string>handleLongPressGesture:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePinchGesture:</string>
-							<string>handleTapGesture:</string>
+							<string>selectPointGesture:</string>
+							<string>showHUDGesture:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -866,10 +866,6 @@
 								<string key="candidateClassName">UITapGestureRecognizer</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">handleLongPressGesture:</string>
-								<string key="candidateClassName">UILongPressGestureRecognizer</string>
-							</object>
-							<object class="IBActionInfo">
 								<string key="name">handlePanGesture:</string>
 								<string key="candidateClassName">UIPanGestureRecognizer</string>
 							</object>
@@ -878,7 +874,11 @@
 								<string key="candidateClassName">UIGestureRecognizer</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">handleTapGesture:</string>
+								<string key="name">selectPointGesture:</string>
+								<string key="candidateClassName">UILongPressGestureRecognizer</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">showHUDGesture:</string>
 								<string key="candidateClassName">UITapGestureRecognizer</string>
 							</object>
 						</object>
@@ -891,7 +891,7 @@
 							<string>interactionView</string>
 							<string>playPauseButton</string>
 							<string>playerView</string>
-							<string>view</string>
+							<string>scalerView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -899,7 +899,7 @@
 							<string>UIView</string>
 							<string>UIButton</string>
 							<string>AmbulantView</string>
-							<string>AmbulantContainerView</string>
+							<string>AmbulantScalerView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -910,7 +910,7 @@
 							<string>interactionView</string>
 							<string>playPauseButton</string>
 							<string>playerView</string>
-							<string>view</string>
+							<string>scalerView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -931,8 +931,8 @@
 								<string key="candidateClassName">AmbulantView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">view</string>
-								<string key="candidateClassName">AmbulantContainerView</string>
+								<string key="name">scalerView</string>
+								<string key="candidateClassName">AmbulantScalerView</string>
 							</object>
 						</object>
 					</object>
@@ -1664,6 +1664,6 @@
 				<string>{30, 30}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">132</string>
+		<string key="IBCocoaTouchPluginVersion">141</string>
 	</data>
 </archive>

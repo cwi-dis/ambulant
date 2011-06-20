@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10H574</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">132</string>
+			<string key="NS.object.0">141</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -219,7 +219,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrameSize">{320, 460}</string>
 								<reference key="NSSuperview" ref="714822777"/>
-								<reference key="IBUIBackgroundColor" ref="286202398"/>
+								<reference key="IBUIBackgroundColor" ref="1018753779"/>
 								<int key="IBUIContentMode">4</int>
 								<bool key="IBUIMultipleTouchEnabled">YES</bool>
 								<int key="IBUITag">1</int>
@@ -491,7 +491,7 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABC+AAAw4EAAA</bytes>
 					</object>
 					<string>AmbulantContainerView</string>
-					<string>{{299, 676}, {320, 480}}</string>
+					<string>{{27, 627}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>AmbulantScalerView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -649,10 +649,10 @@
 							<string>doPlaylists:</string>
 							<string>doRestartTapped:</string>
 							<string>handleDoubleTapGesture:</string>
-							<string>handleLongPressGesture:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePinchGesture:</string>
-							<string>handleTapGesture:</string>
+							<string>selectPointGesture:</string>
+							<string>showHUDGesture:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -662,9 +662,9 @@
 							<string>id</string>
 							<string>id</string>
 							<string>UITapGestureRecognizer</string>
-							<string>UILongPressGestureRecognizer</string>
 							<string>UIPanGestureRecognizer</string>
 							<string>UIGestureRecognizer</string>
+							<string>UILongPressGestureRecognizer</string>
 							<string>UITapGestureRecognizer</string>
 						</object>
 					</object>
@@ -678,10 +678,10 @@
 							<string>doPlaylists:</string>
 							<string>doRestartTapped:</string>
 							<string>handleDoubleTapGesture:</string>
-							<string>handleLongPressGesture:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePinchGesture:</string>
-							<string>handleTapGesture:</string>
+							<string>selectPointGesture:</string>
+							<string>showHUDGesture:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -710,10 +710,6 @@
 								<string key="candidateClassName">UITapGestureRecognizer</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">handleLongPressGesture:</string>
-								<string key="candidateClassName">UILongPressGestureRecognizer</string>
-							</object>
-							<object class="IBActionInfo">
 								<string key="name">handlePanGesture:</string>
 								<string key="candidateClassName">UIPanGestureRecognizer</string>
 							</object>
@@ -722,7 +718,11 @@
 								<string key="candidateClassName">UIGestureRecognizer</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">handleTapGesture:</string>
+								<string key="name">selectPointGesture:</string>
+								<string key="candidateClassName">UILongPressGestureRecognizer</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">showHUDGesture:</string>
 								<string key="candidateClassName">UITapGestureRecognizer</string>
 							</object>
 						</object>
@@ -1073,6 +1073,6 @@
 				<string>{29, 28}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">132</string>
+		<string key="IBCocoaTouchPluginVersion">141</string>
 	</data>
 </archive>
