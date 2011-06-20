@@ -26,7 +26,7 @@
 #include "ambulant/lib/logger.h"
 #include <map>
 #ifdef AMBULANT_PLATFORM_WIN32
-#define X_DISPATCH
+//#define X_DISPATCH
 #ifdef X_DISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
 #else

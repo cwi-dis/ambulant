@@ -223,7 +223,7 @@
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;d2d1.lib;dwrite.lib;strmbasd.lib;dispatch.lib;xdispatch.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;d2d1.lib;dwrite.lib;strmbasd.lib;libdispatch.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;$(WindowsSDKDir)\Samples\multimedia\directshow\baseclasses\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>

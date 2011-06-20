@@ -21,7 +21,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #define GB_GCD_WIN
-#define X_DISPATCH
+//#define X_DISPATCH
 #ifdef GB_GCD_WIN
 #ifdef X_DISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
