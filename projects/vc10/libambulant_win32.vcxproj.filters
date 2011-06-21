@@ -129,9 +129,6 @@
     <ClCompile Include="..\..\src\libambulant\gui\dx\dx_img.cpp">
       <Filter>Source Files\gui\dx</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_img_wic.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\dx\dx_player.cpp">
       <Filter>Source Files\gui\dx</Filter>
     </ClCompile>
