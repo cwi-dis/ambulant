@@ -63,6 +63,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	m_gui_screen(NULL),
 	m_nsurl(NULL),
 	m_current_item(NULL),
+	m_last_node_started(NULL),
 	m_restarting(false)
 {
 
