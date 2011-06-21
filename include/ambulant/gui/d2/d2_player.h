@@ -238,6 +238,8 @@ class AMBULANTAPI d2_player :
 		ID2D1HwndRenderTarget *m_rendertarget;
 		ID2D1SolidColorBrush *m_bgbrush;
 		d2_window *m_window;
+		D2D1::Matrix3x2F m_mouse_matrix;
+
 	};
 
 	// Valid only during redraw:

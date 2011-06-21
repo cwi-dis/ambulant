@@ -458,9 +458,12 @@ void gui::d2::d2_player::restart(bool reparse) {
 
 void gui::d2::d2_player::on_click(int x, int y, HWND hwnd) {
 	if(!m_player) return;
-	lib::point pt(x, y);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return;
+	wininfo *wi = _get_wininfo(hwnd);
+	D2D1_POINT_2F oldpt = {x, y};
+	D2D1_POINT_2F newpt = wi->m_mouse_matrix.TransformPoint(oldpt);
+	lib::point pt((int)newpt.x, (int)newpt.y);
 	common::gui_events *r = d2win->get_gui_events();
 	if(r)
 		r->user_event(pt, common::user_event_click);
@@ -468,9 +471,12 @@ void gui::d2::d2_player::on_click(int x, int y, HWND hwnd) {
 
 int gui::d2::d2_player::get_cursor(int x, int y, HWND hwnd) {
 	if(!m_player) return 0;
-	lib::point pt(x, y);
+	wininfo *wi = _get_wininfo(hwnd);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return 0;
+	D2D1_POINT_2F oldpt = {x, y};
+	D2D1_POINT_2F newpt = wi->m_mouse_matrix.TransformPoint(oldpt);
+	lib::point pt((int)newpt.x, (int)newpt.y);
 	common::gui_events *r = d2win->get_gui_events();
 	m_player->before_mousemove(0);
 	if(r) r->user_event(pt, common::user_event_mouse_over);
@@ -656,7 +662,7 @@ bool gui::d2::d2_player::_calc_fit(
 	if (h / srcsize.h < fac) fac = h / srcsize.h;
 
 	// Now check whether we should scale at all
-	bool scale_up = false;
+	bool scale_up = true;
 	bool scale_down = true;
 	if (!scale_up && fac > 1) {
 		fac = 1;
@@ -750,6 +756,8 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		rt->GetTransform(&oldTransform);
 		if (memcmp(&oldTransform, &transform, sizeof(D2D1_MATRIX_3X2_F)) != 0) {
 			rt->SetTransform(transform);
+			wi->m_mouse_matrix = *D2D1::Matrix3x2F::ReinterpretBaseType(&transform);
+			wi->m_mouse_matrix.Invert();
 		}
 		if (dirty) {
 			dirtyMod = *dirty;
@@ -765,6 +773,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		}
 	} else {
 		rt->SetTransform(D2D1::Matrix3x2F::Identity());
+		wi->m_mouse_matrix = D2D1::Matrix3x2F::Identity();
 	}
 	// Set the correct clipping mask
 	if (dirty != NULL) {
@@ -975,6 +984,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
+	winfo->m_mouse_matrix = D2D1::Matrix3x2F::Identity();
 	bool is_fullscreen = false;
 	HWND parent_hwnd = GetParent(winfo->m_hwnd);
 	if (parent_hwnd) {
