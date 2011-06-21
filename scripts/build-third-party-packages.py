@@ -844,10 +844,10 @@ third_party_packages={
             
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.8.tar.gz",
-            url2="libxml2-2.7.8.tar.gz",
-            extractcmd='cmd /c "%s libxml2-2.7.8.tar.gz && %s libxml2-2.7.8.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
-            checkcmd="if not exist libxml2-2.7.8\\xml2-config.in exit 1",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+            url2="libxml2-2.7.7.tar.gz",
+            extractcmd='cmd /c "%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
+            checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
             
