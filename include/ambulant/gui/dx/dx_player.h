@@ -134,6 +134,7 @@ class AMBULANTAPI dx_player :
 	std::string get_pointed_node_str();
 //	const net::url& get_url() const { return m_url;}
 	void on_done();
+	void on_zoom(double factor, HWND hwnd) {}; // Not implemented for dx
 
 	common::window_factory *get_window_factory() { return this;}
 	viewport* create_viewport(int w, int h, HWND hwnd);

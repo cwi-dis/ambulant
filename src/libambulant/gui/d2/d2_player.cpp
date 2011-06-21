@@ -469,6 +469,24 @@ void gui::d2::d2_player::on_click(int x, int y, HWND hwnd) {
 		r->user_event(pt, common::user_event_click);
 }
 
+void gui::d2::d2_player::on_zoom(double factor, HWND hwnd)
+{
+	lib::logger::get_logger()->debug("on_zoom(%f)", factor);
+	wininfo *wi = _get_wininfo(hwnd);
+	if (wi == NULL) return;
+	if (wi->m_window == NULL) return;
+	lib::rect r = wi->m_window->get_rect();
+	lib::size bounds(r.w*factor, r.h*factor);
+	// For the time being, we only implement this for non-fulllscreen windows.
+	HWND parent_hwnd = GetParent(wi->m_hwnd);
+	if (parent_hwnd) {
+		long parent_style = GetWindowLong(parent_hwnd, GWL_STYLE);
+		if ( (parent_style & WS_CAPTION) == 0) 
+			return;
+	}
+	_fix_window_size(bounds, wi);
+}
+
 int gui::d2::d2_player::get_cursor(int x, int y, HWND hwnd) {
 	if(!m_player) return 0;
 	wininfo *wi = _get_wininfo(hwnd);
@@ -993,27 +1011,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 			is_fullscreen = true;
 	}
 	if  (!is_fullscreen) {
-		// Set window size
-		int w = bounds.w;
-		int h = bounds.h;
-		int borders_w = 20; // XXXX
-		int borders_h = 60; // XXXX
-		float factor = 1.0;
-		RECT desktop_rect;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &desktop_rect, 0);
-		if (w > desktop_rect.right-desktop_rect.left - borders_w) {
-			factor = float(desktop_rect.right-desktop_rect.left - borders_w) / w;
-		}
-		if (h > desktop_rect.bottom - desktop_rect.top - borders_h) {
-			float f2 = float(desktop_rect.bottom - desktop_rect.top - borders_h) / h;
-			if (f2 < factor) factor = f2;
-		}
-		if (factor < 1.0) {
-			w = int(w*factor);
-			h = int(h*factor);
-			// XXX To DO: position correctly on screen too.
-		}
-		PostMessage(winfo->m_hwnd, WM_SET_CLIENT_RECT, w, h);
+		_fix_window_size(bounds, winfo);
 	}
 
 	// Create a concrete gui_window
@@ -1025,6 +1023,36 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Return gui_window
 	return winfo->m_window;
+}
+
+void
+gui::d2::d2_player::_fix_window_size(const lib::size& bounds, wininfo *winfo)
+{
+	// Set window size
+	int w = bounds.w;
+	int h = bounds.h;
+	int borders_w = 20; // XXXX
+	int borders_h = 60; // XXXX
+	float factor = 1.0;
+	RECT desktop_rect;
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &desktop_rect, 0);
+	if (w > desktop_rect.right-desktop_rect.left - borders_w) {
+		factor = float(desktop_rect.right-desktop_rect.left - borders_w) / w;
+	}
+	if (h > desktop_rect.bottom - desktop_rect.top - borders_h) {
+		float f2 = float(desktop_rect.bottom - desktop_rect.top - borders_h) / h;
+		if (f2 < factor) factor = f2;
+	}
+	if (factor < 1.0) {
+		w = int(w*factor);
+		h = int(h*factor);
+		// XXX To DO: position correctly on screen too.
+	}
+	PostMessage(winfo->m_hwnd, WM_SET_CLIENT_RECT, w, h);
+
+	// Set "old" rect to empty, so the first redraw will recalculate the matrix
+	SetRectEmpty(&winfo->m_rect);
+
 }
 
 void
