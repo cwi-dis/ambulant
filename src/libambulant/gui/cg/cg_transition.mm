@@ -159,7 +159,6 @@ cg_transition_blitclass_rectlist::update()
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = [view getCGContext];
 	CGContextSaveGState(ctx);
@@ -172,7 +171,7 @@ cg_transition_blitclass_rectlist::update()
 			continue;
 		}
 		is_clipped = true;
-		newrect_whole.translate(m_dst->get_global_topleft());
+		newrect_whole.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
 		newrect_whole &= m_dst->get_clipped_screen_rect();
 		CGContextAddRect(ctx, CGRectFromAmbulantRect(newrect_whole));
 	}
