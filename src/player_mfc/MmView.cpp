@@ -228,6 +228,7 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_MESSAGE(WM_REPLACE_DOC, OnReplaceDoc)
 #ifdef WITH_D2D
 	ON_MESSAGE(WM_ERASEBKGND, OnMyEraseBkgnd)
+	ON_COMMAND(ID_VIEW_NORMALSIZE, OnViewNormalSize)
 #endif
 END_MESSAGE_MAP()
 
@@ -282,7 +283,6 @@ BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.style |= WS_CLIPCHILDREN; // reduce flicker
 	return CView::PreCreateWindow(cs);
 }
-
 // MmView drawing
 void MmView::OnDraw(CDC* pDC)
 {
@@ -298,7 +298,15 @@ void MmView::OnDraw(CDC* pDC)
 		player->redraw(m_hWnd, pDC->m_hDC, pRect);
 
 }
+#ifdef WITH_D2D
+// MmView resizing
+void MmView::OnViewNormalSize()
+{
+	if(player)
+		player->on_zoom(1.0, m_hWnd);
 
+}
+#endif
 
 // MmView diagnostics
 

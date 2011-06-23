@@ -53,13 +53,14 @@
 #define ID_VIEW_FULLSCREEN              32790
 #define ID_PLAY_ADVANCEFOCUS            32793
 #define ID_PLAY_ACTIVATEFOCUS           32794
+#define ID_VIEW_NORMALSIZE              32795
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        141
-#define _APS_NEXT_COMMAND_VALUE         32795
+#define _APS_NEXT_COMMAND_VALUE         32798
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
