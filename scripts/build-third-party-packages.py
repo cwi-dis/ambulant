@@ -32,6 +32,22 @@ if not os.path.exists(WINDOWS_DXSDK_PATH) and os.path.exists(WINDOWS_PROGRAMFILE
     WINDOWS_DXSDK_PATH="%s\\Microsoft DirectX SDK (February 2010)" % WINDOWS_PROGRAMFILES32
 WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
+#
+# urlretrieve silently ignores 404 errors. We want them, so we can download
+# our shadow copies.
+class MyURLOpener(urllib.FancyURLopener):
+    def http_error_default(self, url, fp, errcode, errmsg, headers):
+        """Default error handling -- raise an exception."""
+        raise IOError, ('HTTP Error', errcode)
+
+_urlopener=None
+
+def myurlretrieve(url, filename=None, reporthook=None, data=None):
+    global _urlopener
+    if not _urlopener:
+        _urlopener = MyURLOpener()
+    return _urlopener.retrieve(url, filename, reporthook, data)
+
 class CommonTPP:
     def __init__(self, name):
         self.name = name
@@ -104,7 +120,7 @@ class TPP(CommonTPP):
     def download(self, trymirror=True):
         print >>self.output, "+ download:", self.url
         try:
-            urllib.urlretrieve(self.url, self.downloadedfile)
+            myurlretrieve(self.url, self.downloadedfile)
         except IOError, arg:
             print >>self.output, "+ download status: error:", arg
             if not trymirror or not self.url2:
@@ -115,7 +131,7 @@ class TPP(CommonTPP):
         # Try the mirror
         print >>self.output, "+ mirror download:", MIRRORBASE+self.url2
         try:
-            urllib.urlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
+            myurlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
         except IOError, arg:
             print >>self.output, "+ download status: error:", arg
             return False
