@@ -37,7 +37,6 @@ namespace gui {
 
 namespace cg {
 
-#ifdef WITH_UIKIT
 // Helper functions to setup and finalize transitions
 static CGLayer*
 setup_transition (bool outtrans, AmbulantView *view)
@@ -51,7 +50,6 @@ setup_transition (bool outtrans, AmbulantView *view)
 	}
 	return rv;
 }
-#endif //WITH_UIKIT
 
 static void
 finalize_transition(bool outtrans, common::surface *dst)
@@ -85,11 +83,7 @@ cg_transition_blitclass_fade::update()
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = [view getCGContext];
 	CGContextSetAlpha (ctx, m_outtrans ? 1.0 - m_progress : m_progress);
-#ifdef	WITH_UIKIT
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#else //WITH_UIKIT
-	lib::logger::get_logger()->debug("cg_transition_blitclass_fade::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKIT
 }
 
 void
@@ -97,9 +91,7 @@ cg_transition_blitclass_rect::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-#ifdef	WITH_UIKIT
 	CGLayerRef cg_layer = setup_transition(false, view);
-#endif//WITH_UIKIT
 	lib::rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	newrect_whole &= m_dst->get_clipped_screen_rect();
@@ -115,11 +107,7 @@ cg_transition_blitclass_rect::update()
 	}
 	CGContextAddRect(ctx, cg_clipped_rect);
 	CGContextClip(ctx);
-#ifdef	WITH_UIKIT
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
-#else //WITH_UIKIT
-	lib::logger::get_logger()->debug("cg_transition_blitclass_rect::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKIT
 }
 
 void
@@ -135,21 +123,28 @@ cg_transition_blitclass_r1r2r3r4::update()
 	int dy = 0;
 	CGContextRef ctx = [view getCGContext];
 	CGContextSaveGState(ctx);
-	if (m_outtrans) {
-		dx = m_newdstrect.width() * m_progress;
-	} else {
+	if ( ! m_outtrans) {
 		dx = m_newdstrect.left() - m_newsrcrect.left();
 		dy = m_newdstrect.top() - m_newsrcrect.top();
 	}
 	CGContextTranslateCTM (ctx, dx, dy);
+	AM_DBG NSLog(@"m_oldsrcrect=(%d,%d,%d,%d)",m_oldsrcrect.left(),m_oldsrcrect.top(),m_oldsrcrect.width(),m_oldsrcrect.height());
+	AM_DBG NSLog(@"m_olddstrect=(%d,%d,%d,%d)",m_olddstrect.left(),m_olddstrect.top(),m_olddstrect.width(),m_olddstrect.height());
+	AM_DBG NSLog(@"m_newsrcrect=(%d,%d,%d,%d)",m_newsrcrect.left(),m_newsrcrect.top(),m_newsrcrect.width(),m_newsrcrect.height());
+	AM_DBG NSLog(@"m_newdstrect=(%d,%d,%d,%d)",m_newdstrect.left(),m_newdstrect.top(),m_newdstrect.width(),m_newdstrect.height());
+	AM_DBG NSLog(@"dx=%d, dy=%d",dx,dy);
 
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-#ifdef	WITH_UIKIT
+	if (m_outtrans) {
+		lib::rect r(m_olddstrect);
+		r.translate(m_dst->get_global_topleft());
+		CGContextClipToRect(ctx, CGRectFromAmbulantRect(r));
+	} else {
+		CGContextClipToRect(ctx, CGRectFromAmbulantRect(newrect_whole));
+	}
+
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#else //WITH_UIKIT
-	lib::logger::get_logger()->debug("cg_transition_blitclass_r1r2r3r4::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKIT
 	CGContextRestoreGState(ctx);
 }
 
@@ -180,17 +175,9 @@ cg_transition_blitclass_rectlist::update()
 			add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
 		}		
 		CGContextClip(ctx);
-#ifdef	WITH_UIKIT
 		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#else //WITH_UIKIT
-		lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f): TBD for AppKit", m_progress);
-#endif //WITH_UIKIT
 	} else if (m_outtrans) {
-#ifdef	WITH_UIKIT
 		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#else //WITH_UIKIT
-		lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKIT
 	}
 	
 	CGContextRestoreGState(ctx);
@@ -249,11 +236,7 @@ cg_transition_blitclass_poly::update()
 								
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-#ifdef	WITH_UIKIT
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#else //WITH_UIKIT
-	lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKI
 	CGContextRestoreGState(ctx);
 	CFRelease(path);
 }
@@ -287,11 +270,7 @@ cg_transition_blitclass_polylist::update()
 	CGContextClip(ctx);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-#ifdef	WITH_UIKIT
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#else //WITH_UIKIT
-	lib::logger::get_logger()->debug("cg_transition_blitclass_polylist::update(%f): TBD for AppKit", m_progress);
-#endif//WITH_UIKIT
 	CGContextRestoreGState(ctx);
 }
 

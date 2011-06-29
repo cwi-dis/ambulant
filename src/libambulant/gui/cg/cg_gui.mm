@@ -591,15 +591,7 @@ bad:
 
 #ifndef	WITH_UIKIT
 // Transition implementation methods for AppKit
-- (NSImage *)getTransitionSurface
-{
-	if (!transition_surface) {
-		// It does not exist yet. Create it.
-		transition_surface = [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
-		[transition_surface retain];
-	}
-	return transition_surface;
-}
+#ifdef	JNK
 
 - (void)_releaseTransitionSurface
 {
@@ -619,7 +611,8 @@ bad:
 	}
 	return transition_tmpsurface;
 }
-
+#endif//JNK
+	
 - (NSImage *)_getOnScreenImage
 {
 	NSView *src_view = self;
@@ -674,9 +667,7 @@ bad:
 	CGSize size = CGSizeMake(bounds.size.width, bounds.size.height);
 	NSImage *rv = [[NSImage alloc] initWithSize: NSSizeFromCGSize(size)];
 	[rv setFlipped: YES];
-	[transition_surface lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
-	[transition_surface unlockFocus];
 	[rv addRepresentation: [bits autorelease]];
 #ifdef DUMP_TRANSITION
 	[self dump: rv toImageID: "newsrc"];
@@ -717,7 +708,6 @@ bad:
 	if (fullscreen_count == 0) return;
 	// XXX setup drawing to transition surface
 	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
-	[[self getTransitionSurface] lockFocus];
 }
 
 - (void) _screenTransitionPostRedraw
@@ -741,7 +731,6 @@ bad:
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
-	[[self getTransitionSurface] unlockFocus];
 	CGRect bounds = NSRectToCGRect([self bounds]);
 	if (fullscreen_engine) {
 		[[self getTransitionOldSource] drawInRect: NSRectFromCGRect(bounds)
@@ -1007,71 +996,6 @@ CreateBitmapContext (CGSize size)
 	
     return context;
 }	
-
-- (CGLayerRef) getTransitionSurface
-{
-	if (transition_surface == NULL) {
-		// It does not exist yet. Create it.
-		CGContextRef ctxr = [self getCGContext];
-		transition_surface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
-		// clear the surface
-		CGContextRef ts_ctxr = CGLayerGetContext(transition_surface);
-		CGSize s = CGLayerGetSize(transition_surface);
-		CGRect r = CGRectMake(0.0, 0.0, s.width, s.height); 
-		CGContextClearRect(ts_ctxr, r);
-	}
-	return transition_surface;
-}
-
-#if	JNK		
-- (CGLayerRef) getTransitionTmpSurface
-{
-	if (transition_tmpsurface == NULL) {
-		// It does not exist yet. Create it.
-		CGContextRef ctxr = [self getCGContext];
-		transition_tmpsurface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
-	}
-	return transition_tmpsurface;
-}
-#endif//JNK
-
-- (void) releaseTransitionSurfaces
-{
-	if (transition_surface != NULL) {
-		CFRelease(transition_surface);
-		transition_surface = NULL;
-	}
-	if (fullscreen_oldimage != NULL) {
-		CFRelease(fullscreen_oldimage);
-		fullscreen_oldimage = NULL;
-	}
-}
-
-- (void) pushTransitionSurface
-{
-	AM_DBG NSLog(@"pushTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
-	if ( ! transition_pushed) {
-		CGLayerRef surf = [self getTransitionSurface];
-		UIGraphicsPushContext(CGLayerGetContext(surf));
-		transition_pushed = YES;
-	} else { // programmer error
-        // XXXJACK why is this assert disabled?
-        //		assert ( ! transition_pushed);
-	}
-
-}
-
-- (void) popTransitionSurface
-{
-	AM_DBG NSLog(@"popTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
-	if (transition_pushed) {
-		UIGraphicsPopContext();
-		transition_pushed = NO;
-	} else { // programmer error
-		assert (transition_pushed);
-	}
-}
-
 - (void) startScreenTransition: (BOOL) isOuttrans
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -1159,4 +1083,83 @@ CreateBitmapContext (CGSize size)
 	}
 }
 #endif // WITH_UIKIT
+	
+- (CGLayerRef) getTransitionSurface
+{
+	if (transition_surface == NULL) {
+		// It does not exist yet. Create it.
+		CGContextRef ctxr = [self getCGContext];
+		transition_surface = CGLayerCreateWithContext(ctxr, NSSizeToCGSize(self.bounds.size), NULL);
+		assert(transition_surface);
+		// clear the surface
+		CGContextRef ts_ctxr = CGLayerGetContext(transition_surface);
+		CGSize s = CGLayerGetSize(transition_surface);
+		CGRect r = CGRectMake(0.0, 0.0, s.width, s.height); 
+		CGContextClearRect(ts_ctxr, r);
+	}
+	return transition_surface;
+}
+	
+#if	JNK		
+- (CGLayerRef) getTransitionTmpSurface
+{
+	if (transition_tmpsurface == NULL) {
+		// It does not exist yet. Create it.
+		CGContextRef ctxr = [self getCGContext];
+		transition_tmpsurface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
+	}
+	return transition_tmpsurface;
+}
+#endif//JNK
+	
+- (void) releaseTransitionSurfaces
+{
+	if (transition_surface != NULL) {
+		CFRelease(transition_surface);
+		transition_surface = NULL;
+	}
+	if (fullscreen_oldimage != NULL) {
+		CFRelease(fullscreen_oldimage);
+		fullscreen_oldimage = NULL;
+	}
+}
+	
+- (void) pushTransitionSurface
+{
+	AM_DBG NSLog(@"pushTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
+	if ( ! transition_pushed) {
+#ifdef	WITH_UIKIT
+		CGLayerRef surf = [self getTransitionSurface];
+		UIGraphicsPushContext(CGLayerGetContext(surf));
+#else// ! WITH_UIKIT
+		old_context = [NSGraphicsContext currentContext];
+		[[NSGraphicsContext currentContext] saveGraphicsState];
+		CGContextRef ts_ctxr = CGLayerGetContext([self getTransitionSurface]);
+		NSGraphicsContext* gc = 
+			[NSGraphicsContext graphicsContextWithGraphicsPort: (void*) ts_ctxr
+													   flipped: false]; 
+		[NSGraphicsContext setCurrentContext:gc];																			 
+#endif// ! WITH_UIKIT
+		transition_pushed = YES;
+	} else { // programmer error
+		// XXXJACK why is this assert disabled?
+		//		assert ( ! transition_pushed);
+	}
+}
+	
+- (void) popTransitionSurface
+{
+	AM_DBG NSLog(@"popTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
+	if (transition_pushed) {
+#ifdef	WITH_UIKIT
+		UIGraphicsPopContext();
+#else// ! WITH_UIKIT
+		[NSGraphicsContext setCurrentContext: old_context];
+		[[NSGraphicsContext currentContext] restoreGraphicsState];
+#endif// ! WITH_UIKIT
+		transition_pushed = NO;
+	} else { // programmer error
+		assert (transition_pushed);
+	}
+}
 @end

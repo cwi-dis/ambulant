@@ -149,19 +149,19 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	BOOL transition_pushed;
 	BOOL fullscreen_ended;
 	BOOL has_drawn; // Indicates whether something has been draw in the view
-#ifdef	WITH_UIKIT
 	CGLayerRef transition_surface;
+#ifdef	WITH_UIKIT
 	CGLayerRef fullscreen_oldimage;
 //	CGLayerRef transition_tmpsurface;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #else // ! WITH_UIKIT
-	NSImage *transition_surface;
 	NSImage *transition_tmpsurface;
 	NSImage *fullscreen_previmage;
 	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
+	NSGraphicsContext* old_context;
 #endif// ! WITH_UIKIT
 }
 
@@ -199,6 +199,58 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void) incrementTransitionCount;
 - (void) decrementTransitionCount;
 
+
+// pushes the context associated with transition_surface on the CGContext stack
+// this has the effect that subsequents drawings will be done on transition_surface
+- (void) pushTransitionSurface;
+
+// pops the context associated with transition_surface from the CGContext stack
+// this has the effect that subsequents drawings will be done on screen back buffer
+- (void) popTransitionSurface;
+
+- (void) startScreenTransition: (BOOL) isOuttrans;
+- (void) endScreenTransition;
+- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
+		elapsed: (ambulant::lib::transition_info::time_type)now;
+
+- (void) _screenTransitionPreRedraw;
+- (void) _screenTransitionPostRedraw;
+
+// while in a transition, getTransitionSurface returns the surface that the
+// transitioning element should be drawn to.
+- (CGLayerRef) getTransitionSurface;
+
+// internal: release the transition surfaces when we're done with it.
+- (void) releaseTransitionSurfaces;
+
+// while in a transition, if we need an auxiliary surface (to draw a clipping
+// path or something like that) getTransitionTmpSurface will return one.
+- (CGLayerRef) getTransitionTmpSurface;
+
+#ifndef WITH_UIKIT
+// while in a transition, getTransitionOldSource will return the old pixels,
+// i.e. the pixels "behind" the transitioning element.
+- (NSImage *)getTransitionOldSource;
+
+// while in a transition, getTransitionNewSource will return the new pixels,
+// i.e. the pixels the transitioning element drew into getTransitionSurface.
+- (NSImage *)getTransitionNewSource;
+
+// Return the current on-screen image, caters for quicktime movies
+- (NSImage *)_getOnScreenImage;
+
+// Return part of the onscreen image, does not cater for quicktime
+- (NSImage *)getOnScreenImageForRect: (CGRect)bounds;
+
+- (void) startScreenTransition;
+- (void) endScreenTransition;
+- (void) screenTransitionStep: (ambulant::smil2::transition_engine*) engine
+					  elapsed: (ambulant::lib::transition_info::time_type) now;
+
+- (void) _screenTransitionPreRedraw;
+- (void) _screenTransitionPostRedraw;
+
+#endif // ! WITH_UIKIT
 #ifdef WITH_UIKIT
 
 // Graphics debugging routines
@@ -235,16 +287,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // circular variying between "0000" and "9999", which is returned as an int.   
 + (int) dumpScreenWithId: (NSString*) id;
 
-// while in a transition, getTransitionSurface returns the surface that the
-// transitioning element should be drawn to.
-- (CGLayerRef) getTransitionSurface;
-
-// internal: release the transition surfaces when we're done with it.
-- (void) releaseTransitionSurfaces;
-
-// while in a transition, if we need an auxiliary surface (to draw a clipping
-// path or something like that) getTransitionTmpSurface will return one.
-- (CGLayerRef) getTransitionTmpSurface;
 
 #if 0
 // while in a transition, getTransitionOldSource will return the old pixels,
@@ -261,59 +303,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // Return part of the onscreen image, does not cater for AVFoundation
 - (CGImageRef) getOnScreenImageForRect: (CGRect)bounds; //TBD
 #endif // 0
-
-// pushes the context associated with transition_surface on the CGContext stack
-// this has the effect that subsequents drawings will be done on transition_surface
-- (void) pushTransitionSurface;
-
-// pops the context associated with transition_surface from the CGContext stack
-// this has the effect that subsequents drawings will be done on screen back buffer
-- (void) popTransitionSurface;
-
-- (void) startScreenTransition: (BOOL) isOuttrans;
-- (void) endScreenTransition;
-- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
-		elapsed: (ambulant::lib::transition_info::time_type)now;
-
-- (void) _screenTransitionPreRedraw;
-- (void) _screenTransitionPostRedraw;
-
-#else // ! WITH_UIKIT
-
-// while in a transition, getTransitionSurface returns the surface that the
-// transitioning element should be drawn to.
-- (NSImage *)getTransitionSurface;
-
-// internal: release the transition surface when we're done with it.
-- (void)_releaseTransitionSurface;
-
-// while in a transition, if we need an auxiliary surface (to draw a clipping
-// path or something like that) getTransitionTmpSurface will return one.
-- (NSImage *)getTransitionTmpSurface;
-
-// while in a transition, getTransitionOldSource will return the old pixels,
-// i.e. the pixels "behind" the transitioning element.
-- (NSImage *)getTransitionOldSource;
-
-// while in a transition, getTransitionNewSource will return the new pixels,
-// i.e. the pixels the transitioning element drew into getTransitionSurface.
-- (NSImage *)getTransitionNewSource;
-
-// Return the current on-screen image, caters for quicktime movies
-- (NSImage *)_getOnScreenImage;
-
-// Return part of the onscreen image, does not cater for quicktime
-- (NSImage *)getOnScreenImageForRect: (CGRect)bounds;
-
-- (void) startScreenTransition;
-- (void) endScreenTransition;
-- (void) screenTransitionStep: (ambulant::smil2::transition_engine*) engine
-					  elapsed: (ambulant::lib::transition_info::time_type) now;
-
-- (void) _screenTransitionPreRedraw;
-- (void) _screenTransitionPostRedraw;
-
-#endif // ! WITH_UIKIT
+#endif// WITH_UIKIT
 @end
 
 #endif // __OBJC__
