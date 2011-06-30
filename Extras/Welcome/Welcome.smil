@@ -23,9 +23,7 @@
   <body>
     <par dur="16s">
       <img src="data/background.png" region="background"/>
-      <!--
       <audio src="data/AmbulantTune.mp3" dur="7.9" region="audio"/>
-      -->
       <par>
       	<img src="data/ambulant.png" begin="0s" region="title"/>
       	<img src="data/extensible.png" begin="2s" region="subtitle"/>
