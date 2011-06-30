@@ -37,6 +37,8 @@
 #include <dispatch/dispatch.h>
 #endif
 
+#define WINDOWS_THREAD_ID
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -74,7 +76,12 @@ event_processor_impl_gcd::get_timer() const
 #ifdef AMBULANT_PLATFORM_WIN32
 void gb_serve_event(event *gb_e)
 {
+#ifdef WINDOWS_THREAD_ID
+	logger::get_logger()->debug("serve_event: ThreadId=0x%x pe=0x%x", GetCurrentThreadId(), gb_e);
+#endif
+	AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
 	gb_e->fire();
+	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
 	delete gb_e;
 }
 #endif
@@ -98,6 +105,10 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
 			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
 #else
+			AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
+#ifdef WINDOWS_THREAD_ID
+			logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
+#endif
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0),pe, (dispatch_function_t)gb_serve_event);
 #endif
 #else
@@ -118,6 +129,10 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
 			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
 #else
+			AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
+#ifdef WINDOWS_THREAD_ID
+			logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
+#endif
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),pe, (dispatch_function_t)gb_serve_event);
 #endif
 #else
@@ -138,6 +153,10 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
 			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
 #else
+			AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
+#ifdef WINDOWS_THREAD_ID
+			logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
+#endif
 			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),pe, (dispatch_function_t)gb_serve_event);
 #endif
 #else
@@ -165,5 +184,12 @@ void
 event_processor_impl_gcd::cancel_all_events()
 {
 	AM_DBG logger::get_logger()->debug("cancel_all_events()");
+	// Your application does not need to retain or release the global (main and concurrent) dispatch queues; 
+	// calling this function on global dispatch queues has no effect.
+#if 0
+	dispatch_release(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	dispatch_release(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+	dispatch_release(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
+#endif
 }
 
