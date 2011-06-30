@@ -37,7 +37,7 @@
 #define NSRectFromCGRect(x) (x)
 #endif
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif//AM_DBG
@@ -70,6 +70,7 @@ create_cg_window_factory(void *view)
 
 cg_window::~cg_window()
 {
+	AM_DBG logger::get_logger()->debug("cg_window::~cg_window(0x%x)", (void *)this);
 	if (m_view) {
 		AmbulantView *my_view = (AmbulantView *)m_view;
 		[my_view ambulantWindowClosed];
@@ -263,7 +264,7 @@ bad:
 
 - (id)initWithFrame:(CGRect)frameRect
 {
-	/*AM_DBG*/ NSLog(@"AmbulantView.initWithFrame(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantView.initWithFrame(0x%x)", self);
 	self = [super initWithFrame: NSRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 	transition_surface = NULL;
@@ -276,6 +277,7 @@ bad:
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
 	fullscreen_ended = NO;
+	has_drawn = NO;
 	return self;
 }
 
@@ -294,11 +296,13 @@ bad:
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
 	fullscreen_ended = NO;
+	has_drawn = NO;
 	return self;
 }
 
 - (void)dealloc {
-// XXXJACK Don't we need these deallocs?
+	AM_DBG NSLog(@"AmbulantView.dealloc(0x%x)", self);
+	// XXXJACK Don't we need these deallocs?
 //	if (transition_surface) [transition_surface release];
 //	transition_surface = NULL;
 //	if (transition_tmpsurface) [transition_tmpsurface release];
@@ -402,10 +406,16 @@ bad:
 		// is completely untested, and probably broken.
 		if (transition_count) rect = NSRectToCGRect([self bounds]);
 		ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
-		[self _screenTransitionPreRedraw];
+		if (has_drawn) {
+			[self _screenTransitionPreRedraw];
+		}
 		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
 		ambulant_window->redraw(arect);
-		[self _screenTransitionPostRedraw];
+		if (has_drawn) {
+			[self _screenTransitionPostRedraw];
+		} else {
+			has_drawn = YES;
+		}
 //		[self _releaseTransitionSurface];
 	}
 
@@ -421,6 +431,7 @@ bad:
 {
 	AM_DBG NSLog(@"ambulantWindowClosed called");
 	ambulant_window = NULL;
+	has_drawn = NO;
 	// XXXX Should we close the window too? Based on preference?
 }
 
@@ -492,7 +503,7 @@ bad:
 	}
 	return false;
 }
-#else // WITH_UIKIT
+#else // ! WITH_UIKIT
 // A couple of methods that are AppKit-specific
 - (BOOL)isFlipped
 {
@@ -555,7 +566,7 @@ bad:
 	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
 }
 
-#endif// WITH_UIKIT
+#endif// ! WITH_UIKIT
 
 - (BOOL)wantsDefaultClipping
 {
@@ -753,7 +764,7 @@ bad:
 	}
 }
 
-#else// ! WITH_UIKIT
+#else// WITH_UIKIT
 // Transition implementation methods for UIKit
 
 // Get an UIImage of the iPhone/iPad screen
@@ -1144,5 +1155,5 @@ CreateBitmapContext (CGSize size)
 		fullscreen_engine = NULL;
 	}
 }
-#endif // ! WITH_UIKIT
+#endif // WITH_UIKIT
 @end

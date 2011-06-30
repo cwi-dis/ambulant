@@ -148,6 +148,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	BOOL fullscreen_outtrans;
 	BOOL transition_pushed;
 	BOOL fullscreen_ended;
+	BOOL has_drawn; // Indicates whether something has been draw in the view
 #ifdef	WITH_UIKIT
 	CGLayerRef transition_surface;
 	CGLayerRef fullscreen_oldimage;

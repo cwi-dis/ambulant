@@ -641,7 +641,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[mScreenWindow setContentView: fsmainview];
 	[fsmainview setNeedsDisplay:YES];
 	[fsmainview release];
-	[mScreenWindow makeFirstResponder: contentview];
+	[mScreenWindow makeFirstResponder: view];
 	[mScreenWindow setAcceptsMouseMovedEvents: YES];
 
 	// Make the screen window the current document window.
