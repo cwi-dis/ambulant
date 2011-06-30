@@ -178,6 +178,7 @@ class AMBULANTAPI d2_player :
 	int get_cursor(int x, int y, HWND hwnd);
 	std::string get_pointed_node_str();
 	void on_done();
+	void on_zoom(double factor, HWND hwnd);
 
 	common::window_factory *get_window_factory() { return this;}
 
@@ -236,7 +237,10 @@ class AMBULANTAPI d2_player :
 		HWND m_hwnd;
 		RECT m_rect;
 		ID2D1HwndRenderTarget *m_rendertarget;
+		ID2D1SolidColorBrush *m_bgbrush;
 		d2_window *m_window;
+		D2D1::Matrix3x2F m_mouse_matrix;
+
 	};
 
 	// Valid only during redraw:
@@ -245,6 +249,7 @@ class AMBULANTAPI d2_player :
 	wininfo* _get_wininfo(const d2_window *window);
 	common::gui_window* _get_window(HWND hwnd);
 	HWND _get_main_window();
+	void _fix_window_size(const lib::size& bounds, wininfo *winfo);
 
     // Our Direct2D glue
     ID2D1Factory *m_d2d;

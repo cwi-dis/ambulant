@@ -352,9 +352,12 @@ gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 #endif//AM_DMP
 		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
 		&wi->m_rendertarget);
-
 	if (!SUCCEEDED(hr))
 		lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+
+	// Create the corresponding D2D brush
+	hr = wi->m_rendertarget->CreateSolidColorBrush(D2D1::ColorF(GetSysColor(COLOR_WINDOW), 1.0), &wi->m_bgbrush);
+	if (!SUCCEEDED(hr)) lib::win32::win_trace_error("CreateSolidColorBrush", hr);
 }
 
 void
@@ -367,6 +370,10 @@ gui::d2::d2_player::_discard_d2d()
 		if (wi->m_rendertarget) {
 			wi->m_rendertarget->Release();
 			wi->m_rendertarget = NULL;
+		}
+		if (wi->m_bgbrush) {
+			wi->m_bgbrush->Release();
+			wi->m_bgbrush = NULL;
 		}
 	}
 	std::set<d2_resources*>::iterator rit;
@@ -451,19 +458,43 @@ void gui::d2::d2_player::restart(bool reparse) {
 
 void gui::d2::d2_player::on_click(int x, int y, HWND hwnd) {
 	if(!m_player) return;
-	lib::point pt(x, y);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return;
+	wininfo *wi = _get_wininfo(hwnd);
+	D2D1_POINT_2F oldpt = {x, y};
+	D2D1_POINT_2F newpt = wi->m_mouse_matrix.TransformPoint(oldpt);
+	lib::point pt((int)newpt.x, (int)newpt.y);
 	common::gui_events *r = d2win->get_gui_events();
 	if(r)
 		r->user_event(pt, common::user_event_click);
 }
 
+void gui::d2::d2_player::on_zoom(double factor, HWND hwnd)
+{
+	lib::logger::get_logger()->debug("on_zoom(%f)", factor);
+	wininfo *wi = _get_wininfo(hwnd);
+	if (wi == NULL) return;
+	if (wi->m_window == NULL) return;
+	lib::rect r = wi->m_window->get_rect();
+	lib::size bounds(r.w*factor, r.h*factor);
+	// For the time being, we only implement this for non-fulllscreen windows.
+	HWND parent_hwnd = GetParent(wi->m_hwnd);
+	if (parent_hwnd) {
+		long parent_style = GetWindowLong(parent_hwnd, GWL_STYLE);
+		if ( (parent_style & WS_CAPTION) == 0) 
+			return;
+	}
+	_fix_window_size(bounds, wi);
+}
+
 int gui::d2::d2_player::get_cursor(int x, int y, HWND hwnd) {
 	if(!m_player) return 0;
-	lib::point pt(x, y);
+	wininfo *wi = _get_wininfo(hwnd);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return 0;
+	D2D1_POINT_2F oldpt = {x, y};
+	D2D1_POINT_2F newpt = wi->m_mouse_matrix.TransformPoint(oldpt);
+	lib::point pt((int)newpt.x, (int)newpt.y);
 	common::gui_events *r = d2win->get_gui_events();
 	m_player->before_mousemove(0);
 	if(r) r->user_event(pt, common::user_event_mouse_over);
@@ -649,7 +680,7 @@ bool gui::d2::d2_player::_calc_fit(
 	if (h / srcsize.h < fac) fac = h / srcsize.h;
 
 	// Now check whether we should scale at all
-	bool scale_up = false;
+	bool scale_up = true;
 	bool scale_down = true;
 	if (!scale_up && fac > 1) {
 		fac = 1;
@@ -699,7 +730,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	HRESULT hr = S_OK;
 	// Create the Direct2D resources, in case they were lost
 	wininfo *wi = _get_wininfo(hwnd);
-	assert(wi);
+	// assert(wi); This assert can fail if the document isn't open.
 	if (wi == NULL) {
 		m_redraw_lock.leave();
 		return;
@@ -743,6 +774,8 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		rt->GetTransform(&oldTransform);
 		if (memcmp(&oldTransform, &transform, sizeof(D2D1_MATRIX_3X2_F)) != 0) {
 			rt->SetTransform(transform);
+			wi->m_mouse_matrix = *D2D1::Matrix3x2F::ReinterpretBaseType(&transform);
+			wi->m_mouse_matrix.Invert();
 		}
 		if (dirty) {
 			dirtyMod = *dirty;
@@ -758,6 +791,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		}
 	} else {
 		rt->SetTransform(D2D1::Matrix3x2F::Identity());
+		wi->m_mouse_matrix = D2D1::Matrix3x2F::Identity();
 	}
 	// Set the correct clipping mask
 	if (dirty != NULL) {
@@ -772,9 +806,13 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		AM_DBG lib::logger::get_logger()->debug("d2_player::redraw() ambulant coordinates (%d, %d, %d, %d))", 
 		dirty->left, dirty->top, dirty->right, dirty->bottom);
 		lib::rect r(lib::point(dirty->left, dirty->top), lib::size(dirty->right-dirty->left, dirty->bottom-dirty->top));
+		D2D1_RECT_F rr = d2_rectf(r);
+		rt->FillRectangle(rr, wi->m_bgbrush);
 		wi->m_window->redraw(r);
 		_screenTransitionPostRedraw(&r);
 	} else {
+		D2D1_RECT_F rr = d2_rectf(wanted_rect);
+		rt->FillRectangle(rr, wi->m_bgbrush);
 		wi->m_window->redraw();
 		_screenTransitionPostRedraw(NULL);
 	}
@@ -964,6 +1002,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
+	winfo->m_mouse_matrix = D2D1::Matrix3x2F::Identity();
 	bool is_fullscreen = false;
 	HWND parent_hwnd = GetParent(winfo->m_hwnd);
 	if (parent_hwnd) {
@@ -972,27 +1011,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 			is_fullscreen = true;
 	}
 	if  (!is_fullscreen) {
-		// Set window size
-		int w = bounds.w;
-		int h = bounds.h;
-		int borders_w = 20; // XXXX
-		int borders_h = 60; // XXXX
-		float factor = 1.0;
-		RECT desktop_rect;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &desktop_rect, 0);
-		if (w > desktop_rect.right-desktop_rect.left - borders_w) {
-			factor = float(desktop_rect.right-desktop_rect.left - borders_w) / w;
-		}
-		if (h > desktop_rect.bottom - desktop_rect.top - borders_h) {
-			float f2 = float(desktop_rect.bottom - desktop_rect.top - borders_h) / h;
-			if (f2 < factor) factor = f2;
-		}
-		if (factor < 1.0) {
-			w = int(w*factor);
-			h = int(h*factor);
-			// XXX To DO: position correctly on screen too.
-		}
-		PostMessage(winfo->m_hwnd, WM_SET_CLIENT_RECT, w, h);
+		_fix_window_size(bounds, winfo);
 	}
 
 	// Create a concrete gui_window
@@ -1004,6 +1023,36 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Return gui_window
 	return winfo->m_window;
+}
+
+void
+gui::d2::d2_player::_fix_window_size(const lib::size& bounds, wininfo *winfo)
+{
+	// Set window size
+	int w = bounds.w;
+	int h = bounds.h;
+	int borders_w = 20; // XXXX
+	int borders_h = 60; // XXXX
+	float factor = 1.0;
+	RECT desktop_rect;
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &desktop_rect, 0);
+	if (w > desktop_rect.right-desktop_rect.left - borders_w) {
+		factor = float(desktop_rect.right-desktop_rect.left - borders_w) / w;
+	}
+	if (h > desktop_rect.bottom - desktop_rect.top - borders_h) {
+		float f2 = float(desktop_rect.bottom - desktop_rect.top - borders_h) / h;
+		if (f2 < factor) factor = f2;
+	}
+	if (factor < 1.0) {
+		w = int(w*factor);
+		h = int(h*factor);
+		// XXX To DO: position correctly on screen too.
+	}
+	PostMessage(winfo->m_hwnd, WM_SET_CLIENT_RECT, w, h);
+
+	// Set "old" rect to empty, so the first redraw will recalculate the matrix
+	SetRectEmpty(&winfo->m_rect);
+
 }
 
 void

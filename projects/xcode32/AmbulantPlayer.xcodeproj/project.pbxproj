@@ -86,6 +86,7 @@
 		042ADB0C1152DE69009CA791 /* libamplugin_python(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python(Cocoa).so */; };
 		04428EBE11577E960067C868 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
 		04428EC011577EC30067C868 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
+		0471A09613AAADE2000E2F17 /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 0471A09513AAADE2000E2F17 /* Background_iPhone.png */; };
 		04A1E97B12B585D80060F97E /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
 		04A1E97C12B585D80060F97E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
 		04A1E97D12B585D80060F97E /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047D115266B40094FB0B /* playactive.png */; };
@@ -358,6 +359,7 @@
 		042ADB061152DE65009CA791 /* plugin_python.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_python.xcodeproj; sourceTree = "<group>"; };
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
+		0471A09513AAADE2000E2F17 /* Background_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Background_iPhone.png; path = ../../src/player_iphone/Resources/Background_iPhone.png; sourceTree = SOURCE_ROOT; };
 		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CE00CB132EC5130079553C /* systemTestSettings.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = systemTestSettings.xml; path = ../../src/player_macosx/systemTestSettings.xml; sourceTree = SOURCE_ROOT; };
 		04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
@@ -471,6 +473,7 @@
 		0418D23A12DA5E0900C56DCE /* Resources-cg */ = {
 			isa = PBXGroup;
 			children = (
+				0471A09513AAADE2000E2F17 /* Background_iPhone.png */,
 				0418D23F12DA5E4C00C56DCE /* Log.nib */,
 				0418D24012DA5E4C00C56DCE /* MainMenu.nib */,
 				0418D24112DA5E4C00C56DCE /* MyDocument.nib */,
@@ -927,6 +930,7 @@
 				0418D25312DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
 				04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */,
 				04CE00CD132EC5130079553C /* systemTestSettings.xml in Resources */,
+				0471A09613AAADE2000E2F17 /* Background_iPhone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

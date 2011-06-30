@@ -31,6 +31,9 @@
 #define AM_DBG if(0)
 #endif
 
+// "infinite" width or height for text layout
+#define INFINITE_SIZE 1000000
+
 namespace ambulant {
 
 using namespace lib;
@@ -38,6 +41,164 @@ using namespace lib;
 namespace gui {
 
 namespace d2 {
+
+IDWriteFontCollection *s_font_collection = NULL;
+
+// Per-range parameter storage helper class.
+class d2_range_params
+{
+public:
+	d2_range_params(int begin_, int end_, const smil2::smiltext_run& run);
+	~d2_range_params();
+	void apply(IDWriteTextLayout *engine);
+	void apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, D2D1_POINT_2F origin);
+	void discard_d2d();
+	int begin;
+	int end;
+	DWRITE_FONT_WEIGHT weight;
+	DWRITE_FONT_STYLE style;
+	float fontsize;
+	std::wstring fontfamily;
+	D2D1::ColorF fgcolor;
+	ID2D1SolidColorBrush *fgbrush;
+	D2D1::ColorF bgcolor;
+	bool bgtransparent;
+	ID2D1SolidColorBrush *bgbrush;
+};
+
+d2_range_params::d2_range_params(int begin_, int end_, const smil2::smiltext_run& run)
+:	begin(begin_),
+	end(end_),
+	weight(DWRITE_FONT_WEIGHT_NORMAL),
+	style(DWRITE_FONT_STYLE_NORMAL),
+	fontsize((float)run.m_font_size),
+	fontfamily(L""),
+	fgcolor(D2D1::ColorF(redf(run.m_color), greenf(run.m_color), bluef(run.m_color))),
+	fgbrush(NULL),
+	bgcolor(D2D1::ColorF(redf(run.m_bg_color), greenf(run.m_bg_color), bluef(run.m_bg_color))),
+	bgtransparent(run.m_bg_transparent),
+	bgbrush(NULL)
+{
+	if (run.m_font_weight == smil2::stw_bold)
+		weight = DWRITE_FONT_WEIGHT_BOLD;
+
+	if (run.m_font_style == smil2::sts_italic)
+		style = DWRITE_FONT_STYLE_ITALIC;
+	else if (run.m_font_style == smil2::sts_oblique)
+		style = DWRITE_FONT_STYLE_OBLIQUE;
+
+	std::vector<std::string>::const_iterator i;
+	for (i=run.m_font_families.begin(); i!=run.m_font_families.end(); i++) {
+		lib::textptr familyname((*i).c_str());
+		// Cater for generic type names
+		if (*i == "serif")
+			familyname = "Times New Roman";
+		else if (*i == "monospace")
+			familyname = "Courier New";
+		else if (*i == "sansSerif")
+			familyname = "Arial";
+		UINT32 dummy;
+		BOOL exists = false;
+		(void)s_font_collection->FindFamilyName(familyname.c_wstr(), &dummy, &exists);
+		if (exists) {
+			fontfamily = familyname.c_wstr();
+			break;
+		}
+	}
+}
+
+d2_range_params::~d2_range_params()
+{
+	if (fgbrush)
+		fgbrush->Release();
+	if (bgbrush)
+		bgbrush->Release();
+}
+
+void
+d2_range_params::apply(IDWriteTextLayout *engine)
+{
+	DWRITE_TEXT_RANGE range = {begin, end};
+
+	HRESULT hr = engine->SetFontWeight(weight, range);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: SetFontWeight: error 0x%x", hr);
+	}
+
+	hr = engine->SetFontStyle(style, range);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: SetFontStyle: error 0x%x", hr);
+	}
+
+	hr = engine->SetFontSize(fontsize, range);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: SetFontSize: error 0x%x", hr);
+	}
+
+	if (fontfamily != L"") {
+		hr = engine->SetFontFamilyName(fontfamily.c_str(), range);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->trace("SMILText: SetFontFamilyName: error 0x%x", hr);
+		}
+	}
+}
+
+	
+void
+d2_range_params::apply_colors(IDWriteTextLayout *engine, ID2D1RenderTarget* rt, D2D1_POINT_2F origin)
+{
+	DWRITE_TEXT_RANGE range = {begin, end};
+
+	HRESULT hr;
+	// Apparently, a SetDrawingEffect will not only affect the given range, but also
+	// any characters after it (despite what the MS documentation states). For this
+	// reason we create a brush for every single range.
+	if (/*fgcolor &&*/ fgbrush == NULL) {
+		hr = rt->CreateSolidColorBrush(fgcolor, &fgbrush);
+		if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
+
+	}
+	if (fgbrush) {
+		hr = engine->SetDrawingEffect(fgbrush, range);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->trace("SMILText: SetDrawingEffect: error 0x%x", hr);
+		}
+	}
+	
+	// Should we draw background boxes?
+	if (bgtransparent) return;
+	if (/*fgcolor &&*/ bgbrush == NULL) {
+		hr = rt->CreateSolidColorBrush(bgcolor, &bgbrush);
+		if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
+
+	}
+	if (bgbrush == NULL) return;
+	DWRITE_HIT_TEST_METRICS boxes[10];
+	UINT32 nboxes;
+	hr = engine->HitTestTextRange(begin, end-begin, origin.x, origin.y, boxes, 10, &nboxes);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("SMILText: HitTestTextRange: error 0x%x", hr);
+		return;
+	}
+	UINT32 i;
+	for(i=0; i<nboxes; i++) {
+		D2D1_RECT_F rect = {
+			boxes[i].left, 
+			boxes[i].top, 
+			boxes[i].left+boxes[i].width, 
+			boxes[i].top+boxes[i].height};
+		rt->FillRectangle(rect, bgbrush);
+	}
+}
+
+void
+d2_range_params::discard_d2d()
+{
+	if (fgbrush) fgbrush->Release();
+	fgbrush = NULL;
+	if (bgbrush) bgbrush->Release();
+	bgbrush = NULL;
+}
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
 	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
@@ -84,14 +245,20 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 	m_cur_para_wrap(true),
 	m_any_semiopaque_bg(false)
 {
+	HRESULT hr;
 	if (s_write_factory == NULL) {
-		HRESULT hr;
 		hr = DWriteCreateFactory(
 			DWRITE_FACTORY_TYPE_SHARED,
 			__uuidof(s_write_factory),
 			reinterpret_cast<IUnknown**>(&s_write_factory));
 		if (!SUCCEEDED(hr)) {
 			lib::logger::get_logger()->error("Cannot create DirectWrite factory: error 0x%x", hr);
+		}
+	}
+	if (s_font_collection == NULL && s_write_factory) {
+		hr = s_write_factory->GetSystemFontCollection(&s_font_collection, false);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->error("Cannot GetSystemFontCollection: error 0x%x", hr);
 		}
 	}
 }
@@ -137,7 +304,19 @@ d2_smiltext_renderer::init_with_node(const lib::node *node)
 d2_smiltext_renderer::~d2_smiltext_renderer()
 {
 	m_lock.enter();
+	_discard_range_params();
 	m_lock.leave();
+}
+
+void
+d2_smiltext_renderer::_discard_range_params()
+{
+	std::vector<d2_range_params*>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		// Clear out any objects
+		delete *i;
+	}
+	m_range_params.clear();
 }
 
 void
@@ -187,6 +366,7 @@ void
 d2_smiltext_renderer::smiltext_changed()
 {
 	m_lock.enter();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_smiltext_renderer::smiltext_changed");
 	m_engine.lock();
 	if (_collect_text())
 		_recreate_layout();
@@ -202,10 +382,12 @@ d2_smiltext_renderer::smiltext_changed()
 bool
 d2_smiltext_renderer::_collect_text()
 {
+	// XXXJACK: should also recreate if we cleared out our parameters
 	if (!m_engine.is_changed()) return false;
 	m_data = L"";
 	lib::xml_string newdata;
 	m_run_begins.clear();
+	_discard_range_params();
 	m_run_begins.push_back(0);
 	smil2::smiltext_runs::const_iterator i;
 	
@@ -258,6 +440,7 @@ d2_smiltext_renderer::_collect_text()
 		}
 		// Handle override textDirection here, by inserting the magic unicode
 		// commands
+#pragma setlocale("C")
 		if ((*i).m_direction == smil2::stw_ltro) {
 			lib::logger::get_logger()->debug("cocoa_smiltext: should do ltro text");
 			newdata = "\u202d" + newdata + "\u202c";
@@ -267,10 +450,15 @@ d2_smiltext_renderer::_collect_text()
 		}
 		lib::textptr convert(newdata.c_str());
 		const wchar_t *wnewdata = convert.c_wstr();
+		int oldpos = m_data.length();
 		m_data = m_data + wnewdata;
+		int newpos = m_data.length();
 		m_run_begins.push_back(m_data.length());
+		if (oldpos != newpos) {
+			d2_range_params *p = new d2_range_params(oldpos, newpos, *i);
+			m_range_params.push_back(p);
+		}
 	}
-
 	m_engine.done();
 	return true;
 }
@@ -285,6 +473,16 @@ d2_smiltext_renderer::_recreate_layout()
 	rect destrect = m_dest->get_rect();
 	FLOAT w = (float) destrect.width();
 	FLOAT h = (float) destrect.height();
+
+	// Set width (or height) to pretty much infinite forcrawl or scroll
+	if (m_params.m_mode == smil2::stm_crawl) {
+		w = INFINITE_SIZE;
+	}
+
+	if (m_params.m_mode == smil2::stm_scroll) {
+		h = INFINITE_SIZE;
+	}
+
 	HRESULT hr;
 	if (s_write_factory == NULL) return;
 	hr = s_write_factory->CreateTextLayout(m_data.c_str(), m_data.length(), m_text_format, w, h, &m_text_layout);
@@ -292,199 +490,21 @@ d2_smiltext_renderer::_recreate_layout()
 		lib::logger::get_logger()->trace("d2_smiltext: Cannot CreateTextLayout: error 0x%x", hr);
 		return;
 	}
-#ifdef JNK
-	//JNK	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	lib::xml_string data;
-	smil2::smiltext_runs::const_iterator i;
-//JNK		[m_text_storage beginEditing];
-	if (m_engine.is_cleared()) {
-		// Completely new text. Clear our copy and render everything.
-		m_needs_conditional_space = false;
-		m_needs_conditional_newline = false;
-//JNK			NSRange all;
-//JNK			all.location = 0;
-//JNK			all.length = [m_text_storage length];
-//JNK			if (all.length);
-//JNK				[m_text_storage deleteCharactersInRange:all];
-		i = m_engine.begin();
-	} else {
-		// Only additions. Don't clear and only render the new stuff.
-		i = m_engine.newbegin();
+	// Set the parameters
+	std::vector<d2_range_params *>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		(*i)->apply(m_text_layout);
 	}
-	while (i != m_engine.end()) {
-		AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: another run");
-//JNK			NSRange newrange;
-//JNK			// Add the new characters
-//JNK			newrange.location = [m_text_storage length];
-//JNK			newrange.length = 0;
-//JNK			NSMutableString *newdata = [NSMutableString stringWithUTF8String:""];
-		switch((*i).m_command) {
-		case smil2::stc_break:
-//JNK				newdata = [NSMutableString stringWithUTF8String:"\n\n"];
-			m_needs_conditional_space = false;
-			m_needs_conditional_newline = false;
-			break;
-		case smil2::stc_condbreak:
-			if (m_needs_conditional_newline) {
-//JNK					newdata = [NSMutableString stringWithUTF8String:"\n"];
-				m_needs_conditional_space = false;
-				m_needs_conditional_newline = false;
-			}
-			break;
-		case smil2::stc_condspace:
-			if (m_needs_conditional_space) {
-//JNK					newdata = [NSMutableString stringWithUTF8String:" "];
-				m_needs_conditional_newline = true;
-				m_needs_conditional_space = false;
-			}
-			break;
-		case smil2::stc_data:
-			if ( (*i).m_data == "") {
-				// I think we leave the conditionals alone, for an empty block.
-			} else {
-				char lastch = *((*i).m_data.rbegin());
-				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
-					m_needs_conditional_newline = false;
-					m_needs_conditional_space = false;
-				} else
-				if (lastch == ' ' || lastch == '\t') {
-					m_needs_conditional_newline = true;
-					m_needs_conditional_space = false;
-				} else {
-					m_needs_conditional_newline = true;
-					m_needs_conditional_space = true;
-				}
-//JNK					newdata = [NSMutableString stringWithUTF8String:(*i).m_data.c_str()];
-			}
-			break;
-		default:
-			assert(0);
-		}
-		// Handle override textDirection here, by inserting the magic unicode
-		// commands
-		if ((*i).m_direction == smil2::stw_ltro) {
-			lib::logger::get_logger()->debug("cocoa_smiltext: should do ltro text");
-//JNK				[newdata insertString: @"\u202d" atIndex: 0]; // LEFT-TO-RIGHT OVERRIDE
-//JNK				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
-		} else if ((*i).m_direction == smil2::stw_rtlo) {
-			lib::logger::get_logger()->debug("cocoa_smiltext: should do rtlo text");
-//JNK				[newdata insertString: @"\u202e" atIndex: 0]; // RIGHT-TO-LEFT OVERRIDE
-//JNK				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
-		}
-//JNK			[m_text_storage replaceCharactersInRange:newrange withString:newdata];
 
-		// Prepare for setting the attribute info
-//JNK			NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
-//JNK			newrange.length = [newdata length];
-		// Find font info
-//JNK			NSFont *text_font = NULL;
-		std::vector<std::string>::const_iterator fi;
-		for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
-			AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: look for font '%s'", (*fi).c_str());
-//JNK				text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
-//JNK				if (text_font) break;
-			AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: not found, try next");
-		}
-//JNK			if (!text_font) {
-//JNK				text_font = [NSFont userFontOfSize: (*i).m_font_size];
-//JNK			}
-
-//JNK			[attrs setValue:text_font forKey:NSFontAttributeName];
-
-#ifdef JNK
-		if (!(*i).m_transparent) {
-			// Find color info
-			double alfa = 1.0;
-			const common::region_info *ri = m_dest->get_info();
-			if (ri) alfa = ri->get_mediaopacity();
-			NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_color)
-					green:greenf((*i).m_color)
-					blue:bluef((*i).m_color)
-					alpha:(float)alfa];
-			[attrs setValue:color forKey:NSForegroundColorAttributeName];
-		}
-		if (!(*i).m_bg_transparent) {
-			// Find background color info
-			double alfa = 1.0;
-			const common::region_info *ri = m_dest->get_info();
-			if (ri) alfa = ri->get_mediabgopacity();
-			if (alfa != 1.0)
-				m_any_semiopaque_bg = true;
-			NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
-					green:greenf((*i).m_bg_color)
-					blue:bluef((*i).m_bg_color)
-					alpha:(float)alfa];
-			[attrs setValue:color forKey:NSBackgroundColorAttributeName];
-		}
-#endif // JNK
-		// Finally do paragraph settings (which are cached)
-		if (m_cur_paragraph_style == NULL ||
-				m_cur_para_align != (*i).m_align ||
-				m_cur_para_writing_mode != (*i).m_writing_mode ||
-				m_cur_para_wrap != (*i).m_wrap) {
-			// Delete the old one, if needed
-//JNK				if (m_cur_paragraph_style)
-//JNK					[m_cur_paragraph_style release];
-			// Remember the values
-			m_cur_para_align = (*i).m_align;
-			m_cur_para_writing_mode = (*i).m_writing_mode;
-			m_cur_para_wrap = (*i).m_wrap;
-			// Allocate the new one
-//JNK				NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
-//JNK				m_cur_paragraph_style = [ps retain];
-			// Set the paragraph writing direction
-			if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-//JNK					[ps setBaseWritingDirection: NSWritingDirectionRightToLeft];
-			} else {
-				// All other directions are treated as left-to-right
-//JNK					[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
-			}
-			if (m_params.m_mode != smil2::stm_crawl) {
-				// Set the paragraph text alignment, unless we have moving text
-				switch (m_cur_para_align) {
-				case smil2::sta_start:
-					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-//JNK							[ps setAlignment: NSRightTextAlignment];
-					} else {
-						// All other directions are treated as left-to-right
-//JNK							[ps setAlignment: NSLeftTextAlignment];
-					}
-					break;
-				case smil2::sta_end:
-					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-//JNK							[ps setAlignment: NSLeftTextAlignment];
-					} else {
-						// All other directions are treated as left-to-right
-//JNK							[ps setAlignment: NSRightTextAlignment];
-					}
-					break;
-				case smil2::sta_left:
-//JNK						[ps setAlignment: NSLeftTextAlignment];
-					break;
-				case smil2::sta_right:
-//JNK						[ps setAlignment: NSRightTextAlignment];
-					break;
-				case smil2::sta_center:
-//JNK						[ps setAlignment: NSCenterTextAlignment];
-					break;
-				}
-			}
-			// Set the paragraph wrap option
-//JNK				if (m_cur_para_wrap)
-//JNK					[ps setLineBreakMode: NSLineBreakByWordWrapping];
-//JNK				else
-//JNK					[ps setLineBreakMode: NSLineBreakByClipping];
-		}
-//JNK			[attrs setValue:m_cur_paragraph_style forKey:NSParagraphStyleAttributeName];
-
-		// Set the attributes
-//JNK			[m_text_storage setAttributes:attrs range:newrange];
-
-		i++;
+	if (m_engine.is_auto_rate()) {
+		DWRITE_TEXT_METRICS textMetrics;
+		m_text_layout->GetMetrics(&textMetrics);
+		unsigned int dur = 11; // XXXX
+		smil2::smiltext_align align = m_cur_para_align;
+		lib::size full_size((int)textMetrics.width, (int)textMetrics.height);
+		unsigned int rate = _compute_rate(align, full_size, m_dest->get_rect(), dur);
+		m_engine.set_rate(rate);
 	}
-//JNK		[m_text_storage endEditing];
-	m_engine.done();
-#endif JNK
 }
 
 void
@@ -506,152 +526,27 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Re
 
 	destrect.translate(m_dest->get_global_topleft());
 
-	D2D1_POINT_2F origin = { (float) destrect.left(), (float) destrect.top() };
-	rt->DrawTextLayout(origin, m_text_layout, m_brush);
-
-#ifdef JNK
-	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	NSPoint visible_origin = NSMakePoint(NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect));
-	NSSize visible_size = NSMakeSize(NSWidth(cocoa_dstrect), NSHeight(cocoa_dstrect));
-
-// Determine text container layout size. This depends on the type of container.
-#define INFINITE_WIDTH 1000000
-#define INFINITE_HEIGHT 1000000
-	NSSize layout_size = visible_size;
-	bool has_hmovement = false;
-	bool has_vmovement = false;
-	switch(m_params.m_mode) {
-	case smil2::stm_scroll:
-	case smil2::stm_jump:
-		layout_size.height = INFINITE_HEIGHT;
-		has_vmovement = true;
-		break;
-	case smil2::stm_crawl:
-		layout_size.width = INFINITE_WIDTH;
-		has_hmovement = true;
-		break;
-	case smil2::stm_replace:
-	case smil2::stm_append:
-		// Normal cases
-		break;
-	}
-
-	NSSize old_layout_size;
-	// Initialize the text engine if we have not already done so.
-	if (!m_layout_manager) {
-		// Initialize the text engine
-		m_layout_manager = [[NSLayoutManager alloc] init];
-		m_text_container = [[NSTextContainer alloc] initWithContainerSize: layout_size];
-		old_layout_size = layout_size;	// Force resize
-		[m_text_container setHeightTracksTextView: false];
-		[m_text_container setWidthTracksTextView: false];
-		[m_layout_manager addTextContainer:m_text_container];
-		[m_text_container release]; // The layoutManager will retain the textContainer
-		[m_text_storage addLayoutManager:m_layout_manager];
-		[m_layout_manager release]; // The textStorage will retain the layoutManager
-	} else {
-		old_layout_size = [m_text_container containerSize];
-	}
-	assert(m_layout_manager);
-	assert(m_text_container);
-	assert(m_text_storage);
-
-	// If the layout size has changed (due to smil animation or so) change it
-	if (!NSEqualSizes(old_layout_size, layout_size)) {
-		[m_text_container setContainerSize: layout_size];
-	}
-	// Now determine text placement (visible_origin)
-	int firstlineheight = 14; // XXXJACK: should compute this...
-	if (has_hmovement) {
-		// For crawl, textConceal and textPlace determine horizontal position
-		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
-			visible_origin.x += visible_size.width;
-		} else if (m_cur_para_align == smil2::sta_right || m_cur_para_align == smil2::sta_end) {
-			// XXX Incorrect: should look at writing direction...
-			visible_origin.x += visible_size.width;
-		} else if (m_cur_para_align == smil2::sta_center) {
-			visible_origin.x += visible_size.width / 2;
-		}
-	} else if (has_vmovement) {
-		// For scroll and jump, textConceal and textAlign determine vertical position
-		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
-			visible_origin.y += visible_size.height;
-		} else if (m_params.m_text_place == smil2::stp_from_end) {
-			visible_origin.y += (visible_size.height - firstlineheight);
-		} else if (m_params.m_text_place == smil2::stp_from_center) {
-			visible_origin.y += (visible_size.height - firstlineheight) / 2;
-		}
-	} else {
-		// For stationary text, textPlace determines vertical position
-		if (m_params.m_text_place == smil2::stp_from_end) {
-			visible_origin.y += (visible_size.height - firstlineheight);
-		} else if (m_params.m_text_place == smil2::stp_from_center) {
-			visible_origin.y += (visible_size.height - firstlineheight) / 2;
-		}
-
-	}
-	// If we do auto-scrolling we should now layout the text, so we can determine the rate
-	if (m_engine.is_auto_rate()) {
-		(void)[m_layout_manager glyphRangeForTextContainer: m_text_container];
-		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
-		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
-		unsigned int dur = 11; // XXXX
-		smil2::smiltext_align align = m_cur_para_align;
-		unsigned int rate = _compute_rate(align, full_size, r, dur);
-		m_engine.set_rate(rate);
-		m_params = m_engine.get_params();
-	}
-	// Next compute the layout position of what we want to draw at visible_origin
-	NSPoint logical_origin = NSMakePoint(0, 0);
+	// Find where we should draw things, taking crawl/scroll into account
+	D2D1_POINT_2F visible_origin = { (float) destrect.left(), (float) destrect.top() };
+	D2D1_POINT_2F logical_origin = visible_origin;
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.x += float(now * m_params.m_rate / 1000);
-		visible_origin.x -= float(now * m_params.m_rate / 1000);
-		// XXX see below
+		logical_origin.x -= float(now * m_params.m_rate / 1000);
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		visible_origin.y -= float(now * m_params.m_rate / 1000);
-		if (visible_origin.y < 0) {
-			logical_origin.y -= visible_origin.y;
-			// visible_origin.y = 0;
-		}
+		logical_origin.y -= float(now * m_params.m_rate / 1000);
 	}
-	AM_DBG logger::get_logger()->debug("d2_smiltext_renderer.redraw at Cocoa-point (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
-	if (m_render_offscreen) {
-	}
-	// Now we need to determine which glyphs to draw. Unfortunately glyphRangeForBoundingRect gives us
-	// full lines (which is apparently more efficient, google for details) which is not good enough
-	// for ticker tape, so we adjust.
-	NSRect logical_rect = NSMakeRect(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
-	NSRange glyph_range = [m_layout_manager glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
-	AM_DBG NSLog(@"Glyph range was %d, %d, origin-x %f", glyph_range.location, glyph_range.length, logical_origin.x);
-	if (glyph_range.location >= 0 && glyph_range.length > 0) {
-		if (m_any_semiopaque_bg) {
-			// Background opacity 1.0 is implemented correctly in NSLayoutManager, but intermediate
-			// values are a bit funny: they still override the underlying image (i.e. they don't
-			// use NSCompositeSourceOver or something similar. Therefore, if this is the case we
-			// draw the background color to a separate buffer and bitblit this onto the existing
-			// bits.
-			NSImage *tmpsrc = [view getTransitionTmpSurface];
-			[tmpsrc lockFocus];
-			[[NSColor colorWithDeviceWhite: 1.0f alpha: 0.0f] set];
-			NSRectFill(cocoa_dstrect);
-			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
-			[tmpsrc unlockFocus];
-			[tmpsrc drawInRect: cocoa_dstrect fromRect: cocoa_dstrect operation: NSCompositeSourceOver fraction: 1.0f];
-		} else {
-			// Otherwise we simply let NSLayoutManager do the work
-			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
-		}
-		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: visible_origin];
-	}
-	layout_size = [m_text_container containerSize];
-	if (m_render_offscreen) {
-	}
-	[view unlockFocus];
 
-#endif // JNK
+	AM_DBG lib::logger::get_logger()->debug("d2_smiltext_renderer::redraw_body: visible (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
+	// Set the color parameters
+	std::vector<d2_range_params *>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		(*i)->apply_colors(m_text_layout, rt, logical_origin);
+	}
+	// Draw the whole thing
+	rt->DrawTextLayout(logical_origin, m_text_layout, m_brush);
+
 	m_lock.leave();
 }
 
@@ -667,23 +562,23 @@ d2_smiltext_renderer::recreate_d2d()
 	double alfa = 1.0;
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
-	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa), &m_brush);
+	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(m_text_color), greenf(m_text_color), bluef(m_text_color), (float)alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
 	m_lock.leave();
 }
 
-
 void
 d2_smiltext_renderer::discard_d2d()
 {
-#ifdef JNK
-	if (m_d2bitmap) {
-//		m_d2bitmap->Release();
-		m_d2bitmap = NULL;
+	if (m_brush) m_brush->Release();
+	m_brush = NULL;
+	std::vector<d2_range_params*>::iterator i;
+	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
+		// Clear out any objects
+		(*i)->discard_d2d();
 	}
-#endif // JNK
-}
 
+}
 
 unsigned int
 d2_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {

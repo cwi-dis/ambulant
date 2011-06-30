@@ -31,6 +31,7 @@
 interface IDWriteFactory;
 interface IDWriteTextFormat;
 interface IDWriteTextLayout;
+interface IDWriteFontCollection;
 interface ID2D1SolidColorBrush;
 
 namespace ambulant {
@@ -43,6 +44,8 @@ namespace gui {
 namespace d2 {
 
 common::playable_factory *create_d2_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
+class d2_range_params;
 
 class d2_smiltext_renderer : 
 	public d2_renderer<renderer_playable>,
@@ -77,22 +80,24 @@ class d2_smiltext_renderer :
   private:
     bool _collect_text();
 	void _recreate_layout();
+	void _discard_range_params();
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
 
 	lib::color_t m_text_color;
 
 	static IDWriteFactory *s_write_factory;
 
-	IDWriteTextFormat *m_text_format;
-	std::wstring m_data;
-	IDWriteTextLayout *m_text_layout;
-	std::vector<int> m_run_begins;
-	ID2D1SolidColorBrush *m_brush;
+	IDWriteTextFormat *m_text_format;	// The default formatting instructions
+	std::wstring m_data;	// The text to show
+	std::vector<d2_range_params*> m_range_params;	// Per-range parameters
+	IDWriteTextLayout *m_text_layout;	// The layout engine
+	std::vector<int> m_run_begins;	// Starting point of each run
+	ID2D1SolidColorBrush *m_brush;	// Default brush
 	
 	smil2::smiltext_engine m_engine;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
-	smil2::smiltext_params m_params;
+	const smil2::smiltext_params &m_params;
 	void *m_cur_paragraph_style;
 	smil2::smiltext_align m_cur_para_align;
 	smil2::smiltext_writing_mode m_cur_para_writing_mode;

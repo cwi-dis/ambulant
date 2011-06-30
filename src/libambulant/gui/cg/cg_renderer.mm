@@ -34,7 +34,7 @@ namespace gui {
 
 namespace cg {
 
-#ifndef WITH_UIKIT
+#ifdef JNK
 // cg_transition_renderer implementation for AppKit.
 
 cg_transition_renderer::~cg_transition_renderer()
@@ -139,11 +139,12 @@ cg_transition_renderer::redraw_pre(gui_window *window)
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
 	// See whether we're in a transition
-	NSImage *surf = NULL;
+//JNK NSImage *surf = NULL;
+	CGLayerRef surf = NULL;
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
-		if (surf && [surf isValid]) {
-			[surf lockFocus];
+		if (surf) {//JNK && [surf isValid]) {
+//JNK		[surf lockFocus];
 			AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw: drawing to transition surface");
 		} else {
 			lib::logger::get_logger()->trace("cg_transition_renderer.redraw: cannot lockFocus for transition");
@@ -159,13 +160,14 @@ cg_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	NSImage *surf = NULL;
+//JNK NSImage *surf = NULL;
+	CGLayerRef surf = NULL;
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
-		if (![surf isValid]) surf = NULL;
+//JNK	if (![surf isValid]) surf = NULL;
 	}
 	if (surf) {
-		[surf unlockFocus];
+//JNK		[surf unlockFocus];
 		AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw: drawing to view");
 		if (m_fullscreen)
 			[view screenTransitionStep: m_trans_engine
@@ -201,9 +203,9 @@ cg_transition_renderer::transition_step()
 	if (m_transition_dest) m_transition_dest->need_redraw();
 	m_lock.leave();
 }
+#endif //JNK
 
-#else
-// cg_transition_renderer implementation for UIKit.
+// cg_transition_renderer implementation for AppKit/UIKit.
 
 cg_transition_renderer::~cg_transition_renderer()
 {
@@ -382,7 +384,7 @@ cg_transition_renderer::transition_step()
 	if (m_transition_dest) m_transition_dest->need_redraw();
 	m_lock.leave();
 }
-#endif //WITH_UIKIT
+//JNK #endif //WITH_UIKIT
 
 } // namespace cg
 

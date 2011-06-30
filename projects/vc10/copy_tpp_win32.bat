@@ -26,8 +26,8 @@ REM JPEG static library
 copy %jpeg_dir%\win32\Release\libjpeg.lib %AMB_HOME%\lib\win32\libjpeg.lib
 
 REM Xerces lib, if it exists.
-set XER_BUILD=%xerces_dir%\Build\Win32\VC9\Release
-set XERD_BUILD=%xerces_dir%\Build\Win32\VC9\Debug
+set XER_BUILD=%xerces_dir%\Build\Win32\VC10\Release
+set XERD_BUILD=%xerces_dir%\Build\Win32\VC10\Debug
 if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_%xerces_major%.lib %AMB_HOME%\lib\win32\xerces-c_%xerces_major%.lib
 if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_%xerces_major%_%xerces_minor%.dll %AMB_HOME%\bin\win32\xerces-c_%xerces_major%_%xerces_minor%.dll
 if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%D.lib %AMB_HOME%\lib\win32\xerces-c_%xerces_major%D.lib
@@ -53,15 +53,15 @@ if exist %sdl_dir%\VisualC\SDL\Release copy %sdl_dir%\VisualC\SDL\Release\SDL.li
 if exist %sdl_dir%\VisualC\SDLmain\Release copy %sdl_dir%\VisualC\SDLmain\Release\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
 
 REM Live555
-copy %TPP_HOME%\live_VC9\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib
-copy %TPP_HOME%\live_VC9\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\win32\groupsock.lib
-copy %TPP_HOME%\live_VC9\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
-copy %TPP_HOME%\live_VC9\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
+copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib
+copy %TPP_HOME%\live_VC10\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\win32\groupsock.lib
+copy %TPP_HOME%\live_VC10\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
+copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
 
-copy %TPP_HOME%\live_VC9\BUILD\BasicUsageEnvironment-Debug\BasicUsageEnvironmentD.lib %AMB_HOME%\lib\win32\BasicUsageEnvironmentD.lib
-copy %TPP_HOME%\live_VC9\BUILD\groupsock-Debug\groupsockD.lib %AMB_HOME%\lib\win32\groupsockD.lib
-copy %TPP_HOME%\live_VC9\BUILD\liveMedia-Debug\liveMediaD.lib %AMB_HOME%\lib\win32\liveMediaD.lib
-copy %TPP_HOME%\live_VC9\BUILD\UsageEnvironment-Debug\UsageEnvironmentD.lib %AMB_HOME%\lib\win32\UsageEnvironmentD.lib
+copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Debug\BasicUsageEnvironmentD.lib %AMB_HOME%\lib\win32\BasicUsageEnvironmentD.lib
+copy %TPP_HOME%\live_VC10\BUILD\groupsock-Debug\groupsockD.lib %AMB_HOME%\lib\win32\groupsockD.lib
+copy %TPP_HOME%\live_VC10\BUILD\liveMedia-Debug\liveMediaD.lib %AMB_HOME%\lib\win32\liveMediaD.lib
+copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Debug\UsageEnvironmentD.lib %AMB_HOME%\lib\win32\UsageEnvironmentD.lib
 
 REM libxml2
 copy %libxml2_dir%\win32\bin.msvc\libxml2_a.lib %AMB_HOME%\lib\win32\libxml2_a.lib

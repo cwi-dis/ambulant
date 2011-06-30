@@ -55,9 +55,16 @@ class document_embedder : public ambulant::common::embedder {
 	BOOL autoScale;
 	BOOL autoCenter;
 	CGFloat scaleFactor;
+    BOOL resizingWindow;    // True while we are resizing the window because of SMIL changes
 }
+/// Adapt GUI to the bounds and frame of the player view having been changed (for example
+/// because a new document was opened).
 - (void)recomputeZoom;
-
+- (IBAction) zoomImageToActualSize:(id)dummy;
+- (IBAction) zoomOut:(id)dummy;
+- (IBAction) zoomIn:(id)dummy;
+- (void) viewDidMoveToSuperview;
+- (MyAmbulantView *) getPlayer;
 @end
 
 // MyDocument also implements part of thhe NSWindowDelegate protocol, but how do I state that if
@@ -116,6 +123,8 @@ class document_embedder : public ambulant::common::embedder {
 - (BOOL)openAuxDocument: (NSURL *)auxUrl;
 - (void)closeAuxDocument;
 #endif
+- (IBAction)showHUD: (id)sender;
+- (IBAction)hideHUD: (id)sender;
 @end
 
 @interface NSDocumentController(MyDocumentControllerCategory)
