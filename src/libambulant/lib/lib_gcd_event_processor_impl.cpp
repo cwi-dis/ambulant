@@ -25,19 +25,12 @@
 #include "ambulant/lib/lib_gcd_event_processor_impl.h"
 #include "ambulant/lib/logger.h"
 #include <map>
-#ifdef AMBULANT_PLATFORM_WIN32
-//#define X_DISPATCH
-#ifdef X_DISPATCH
+
+#ifdef WITH_LIBXDISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
-#else
-#include "config/config.h"
-#include "dispatch/dispatch.h"
-#endif
 #else
 #include <dispatch/dispatch.h>
 #endif
-
-#define WINDOWS_THREAD_ID
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -54,7 +47,7 @@ lib::gcd_event_processor_factory(timer *t)
 
 event_processor_impl_gcd::event_processor_impl_gcd(timer *t)
 :	m_timer(t),
-m_observer(NULL)
+	m_observer(NULL)
 {
 	m_lock.enter();
 	assert(t != 0);
@@ -73,10 +66,9 @@ event_processor_impl_gcd::get_timer() const
 	return m_timer;
 }
 
-#ifdef AMBULANT_PLATFORM_WIN32
 void gb_serve_event(event *gb_e)
 {
-#ifdef WINDOWS_THREAD_ID
+#ifdef AMBULANT_PLATFORM_WIN32
 	logger::get_logger()->debug("serve_event: ThreadId=0x%x pe=0x%x", GetCurrentThreadId(), gb_e);
 #endif
 	AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
@@ -84,7 +76,6 @@ void gb_serve_event(event *gb_e)
 	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
 	delete gb_e;
 }
-#endif
 
 void
 event_processor_impl_gcd::add_event(event *pe, time_type t,
@@ -94,81 +85,55 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 	AM_DBG logger::get_logger()->debug("lib_gcd_event_processor_impl:add_event(0x%x, t=%d, pri=%d)",pe,t,priority);
 	m_lock.enter();
 	// Insert the event into the correct queue.
-	switch(priority) {
-		case ep_high: {
-			// t is in milliseconds and dispatch_time is expecting time instant in nanoseconds
-#ifdef AMBULANT_PLATFORM_WIN32
-#ifdef X_DISPATCH
-			xdispatch::global_queue(xdispatch::HIGH).after(${
-				pe->fire();
-				delete pe;
-				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
-			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
-#else
-			AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
-#ifdef WINDOWS_THREAD_ID
-			logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
-#endif
-			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0),pe, (dispatch_function_t)gb_serve_event);
-#endif
-#else
-			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-				AM_DBG logger::get_logger()->debug("I am in global queue and serve_envet(0x%x)",pe);
-				pe->fire();
-				delete pe;
-			});	
-#endif
-		}
-			break;
-		case ep_med: {
-#ifdef AMBULANT_PLATFORM_WIN32
-#ifdef X_DISPATCH
-			xdispatch::global_queue(xdispatch::DEFAULT).after(${
-				pe->fire();
-				delete pe;
-				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
-			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
-#else
-			AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
-#ifdef WINDOWS_THREAD_ID
-			logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
-#endif
-			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),pe, (dispatch_function_t)gb_serve_event);
-#endif
-#else
-			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				AM_DBG logger::get_logger()->debug("I am in global queue and serve_envet(0x%x)",pe);
-				pe->fire();
-				delete pe;
-			});
-#endif
-		}
-			break;
-		case ep_low: {
-#ifdef AMBULANT_PLATFORM_WIN32
-#ifdef X_DISPATCH
-			xdispatch::global_queue(xdispatch::LOW).after(${
-				pe->fire();
-				delete pe;
-				logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
-			}, dispatch_time(DISPATCH_TIME_NOW, t*1000000));
-#else
-			AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
-#ifdef WINDOWS_THREAD_ID
-			logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
-#endif
-			dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),pe, (dispatch_function_t)gb_serve_event);
-#endif
-#else
-			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t*1000000),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-				AM_DBG logger::get_logger()->debug("I am in global queue and serve_envet(0x%x)",pe);
-				pe->fire();
-				delete pe;
-			});	
-#endif
-		}
-			break;
+	int prio;
+#ifdef WITH_LIBXDISPATCH
+	switch (priority) {
+	case ep_high:
+		prio = xdispatch::HIGH;
+		break;
+	case ep_med:
+		prio = xdispatch::DEFAULT;
+		break;
+	case ep_low:
+		prio = xdispatch::LOW;
+		break;
+	default:
+		assert(0);
 	}
+	xdispatch::global_queue(prio).after(
+		${
+			pe->fire();
+			delete pe;
+			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",pe);
+		},
+		dispatch_time(DISPATCH_TIME_NOW, t*1000000));
+
+#else
+	switch (priority) {
+	case ep_high:
+		prio = DISPATCH_QUEUE_PRIORITY_HIGH;
+		break;
+	case ep_med:
+		prio = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+		break;
+	case ep_low:
+		prio = DISPATCH_QUEUE_PRIORITY_LOW;
+		break;
+	default:
+		assert(0);
+	}
+	AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
+#ifdef AMBULANT_PLATFORM_WIN32
+	logger::get_logger()->debug("add_event(%d): ThreadId=0x%x pe=0x%x", priority, GetCurrentThreadId(),pe);
+#endif
+	dispatch_after_f(
+		dispatch_time(DISPATCH_TIME_NOW, t*1000000),
+		dispatch_get_global_queue(prio, 0),
+		pe,
+		(dispatch_function_t)gb_serve_event);
+
+#endif // WITH_LIBXDISPATCH
+
 	m_lock.leave();
 }
 
@@ -186,10 +151,5 @@ event_processor_impl_gcd::cancel_all_events()
 	AM_DBG logger::get_logger()->debug("cancel_all_events()");
 	// Your application does not need to retain or release the global (main and concurrent) dispatch queues; 
 	// calling this function on global dispatch queues has no effect.
-#if 0
-	dispatch_release(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-	dispatch_release(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-	dispatch_release(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
-#endif
 }
 

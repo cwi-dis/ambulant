@@ -21,9 +21,9 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #define GB_GCD_WIN
-//#define X_DISPATCH
+//#define WITH_LIBXDISPATCH
 #ifdef GB_GCD_WIN
-#ifdef X_DISPATCH
+#ifdef WITH_LIBXDISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
 #else
 #include "config/config.h"
@@ -273,7 +273,7 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 		m_lock.leave();
 #ifdef GB_GCD_WIN
 		 // xdispatch::global_queue().apply(new InnerCalculation(e),1);
-#ifdef X_DISPATCH
+#ifdef WITH_LIBXDISPATCH
 		xdispatch::global_queue(xdispatch::DEFAULT).async(${
 			e->fire();
 			delete e;
