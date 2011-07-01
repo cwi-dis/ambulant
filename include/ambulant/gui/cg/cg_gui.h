@@ -150,15 +150,15 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	BOOL fullscreen_ended;
 	BOOL has_drawn; // Indicates whether something has been draw in the view
 	CGLayerRef transition_surface;
-#ifdef	WITH_UIKIT
 	CGLayerRef fullscreen_oldimage;
+#ifdef	WITH_UIKIT
 //	CGLayerRef transition_tmpsurface;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #else // ! WITH_UIKIT
 	NSImage *transition_tmpsurface;
-	NSImage *fullscreen_previmage;
-	NSImage *fullscreen_oldimage;
+//X	NSImage *fullscreen_previmage;
+//X	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 	NSGraphicsContext* old_context;
@@ -227,11 +227,11 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // path or something like that) getTransitionTmpSurface will return one.
 - (CGLayerRef) getTransitionTmpSurface;
 
-#ifndef WITH_UIKIT
 // while in a transition, getTransitionOldSource will return the old pixels,
 // i.e. the pixels "behind" the transitioning element.
-- (NSImage *)getTransitionOldSource;
+- (CGLayerRef)getTransitionOldSource;
 
+#ifndef WITH_UIKIT
 // while in a transition, getTransitionNewSource will return the new pixels,
 // i.e. the pixels the transitioning element drew into getTransitionSurface.
 - (NSImage *)getTransitionNewSource;
@@ -251,6 +251,13 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void) _screenTransitionPostRedraw;
 
 #endif // ! WITH_UIKIT
+
+// return the current Graphics Context (AppKit/UIKit)
++ (CGContextRef) currentCGContext;
+
+// Create a new CGLayer containing a CGImage
++ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image flipped: (BOOL) flip;
+
 #ifdef WITH_UIKIT
 
 // Graphics debugging routines
@@ -263,9 +270,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 // Get an UIImage* from the contents of a CGLayerRef
 + (UIImage*) UIImageFromCGLayer: (CGLayerRef) layer;
-
-// Create a new CGLayer containing a CGImage
-+ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image;
 
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
 // $HOME refers to the Application home directory and number is a numeric string

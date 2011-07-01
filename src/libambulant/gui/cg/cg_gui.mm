@@ -183,7 +183,7 @@ cg_gui_screen::get_size(int *width, int *height)
 bool
 cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_size)
 {
-#if NOT_YET_UIKIT
+#ifndef WITH_UIKIT
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	*out_data = NULL;
@@ -196,16 +196,18 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 	else if (strcmp(type, "png") == 0) filetype = NSPNGFileType;
 	else {
 		lib::logger::get_logger()->trace("get_screenshot: unknown filetype \"%s\"", type);
-		goto bad;
+		[pool release];
+		return false;
 	}
 	NSData *data;
 	AmbulantView *view = (AmbulantView *)m_view;
 	NSImage *image = [view _getOnScreenImage];
+	NSBitmapImageRep* rep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
+//	NSImageRep *rep = [image bestRepresentationForDevice: NULL]; // deprecated
 	if (image == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get screen shot");
 		goto bad;
 	}
-	NSImageRep *rep = [image bestRepresentationForDevice: NULL];
 	if (rep == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get representation for screen shot");
 //		[image release];
@@ -230,7 +232,7 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 	return true;
 bad:
 	[pool release];
-#endif//NOT_YET_UIKIT
+#endif// ! WITH_UIKIT
 	return false;
 }
 
@@ -654,13 +656,6 @@ bad:
 	return rv;
 }
 
-- (NSImage *)getTransitionOldSource
-{
-	if (fullscreen_count && fullscreen_oldimage)
-		return fullscreen_oldimage;
-	return [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
-}
-
 - (NSImage *)getTransitionNewSource
 {
 	CGRect bounds = NSRectToCGRect([self bounds]);
@@ -675,16 +670,16 @@ bad:
 	rv = [rv autorelease];
 	return rv;
 }
-
+#ifdef JNK //X
 - (void) startScreenTransition
 {
 	AM_DBG NSLog(@"startScreenTransition");
 	if (fullscreen_count)
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
-	if (fullscreen_oldimage) [fullscreen_oldimage release];
-	fullscreen_oldimage = fullscreen_previmage;
-	fullscreen_previmage = NULL;
+//X	if (fullscreen_oldimage) [fullscreen_oldimage release];
+//X	fullscreen_oldimage = fullscreen_previmage;
+//X	fullscreen_previmage = NULL;
 }
 
 - (void) endScreenTransition
@@ -712,7 +707,6 @@ bad:
 
 - (void) _screenTransitionPostRedraw
 {
-#if 0 // XXXJACK temporarily disabled
 	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
@@ -753,8 +747,8 @@ bad:
 		fullscreen_oldimage = NULL;
 		fullscreen_engine = NULL;
 	}
-#endif
 }
+#endif//JNK
 
 #else// WITH_UIKIT
 // Transition implementation methods for UIKit
@@ -899,17 +893,6 @@ bad:
 	return ui_img;
 }
 
-// Create a new CGLayer containing a CGImage
-+ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image {
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	CGRect layer_rect = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
-	CGLayerRef newCGLayer = CGLayerCreateWithContext(context, layer_rect.size, NULL);
-	// Draw the image in the layer
-	CGContextRef newContext = CGLayerGetContext(newCGLayer);
-	CGContextDrawImage(newContext, layer_rect, image);
-	return newCGLayer;
-}
-
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
 // $HOME refers to the Application home directory and number is a numeric string
 // circular variying between "0000" and "9999", which is returned as an int.   
@@ -995,7 +978,36 @@ CreateBitmapContext (CGSize size)
     CGColorSpaceRelease(colorSpace);
 	
     return context;
-}	
+}
+#endif // WITH_UIKIT
+	
++ (CGContextRef) currentCGContext {
+#ifdef	WITH_UIKIT
+	CGContextRef context = UIGraphicsGetCurrentContext();
+#else // ! WITH_UIKIT
+	NSGraphicsContext* nsContext = [NSGraphicsContext currentContext];
+	CGContextRef context = (CGContextRef)[nsContext graphicsPort];
+#endif// ! WITH_UIKIT
+	return context;
+}
+
+// Create a new CGLayer containing a CGImage
++ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image flipped: (BOOL) flip {
+	CGContextRef context = [AmbulantView currentCGContext];
+	CGRect layer_rect = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
+	CGLayerRef newCGLayer = CGLayerCreateWithContext(context, layer_rect.size, NULL);
+	// Draw the image in the layer
+	CGContextRef newContext = CGLayerGetContext(newCGLayer);
+	CGContextSaveGState(newContext);
+	if (flip) {
+		CGContextTranslateCTM(newContext, 0.0, layer_rect.size.height);
+		CGContextScaleCTM(newContext, 1.0, -1.0);
+	}
+	CGContextDrawImage(newContext, layer_rect, image);
+	CGContextRestoreGState(newContext);
+	return newCGLayer;
+}
+	
 - (void) startScreenTransition: (BOOL) isOuttrans
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -1006,14 +1018,21 @@ CreateBitmapContext (CGSize size)
 	fullscreen_outtrans = isOuttrans;
 	fullscreen_ended = NO;
 	if (fullscreen_oldimage == NULL && ! isOuttrans) {
+#ifdef	WITH_UIKIT
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
-		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage.CGImage];
+		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage.CGImage flipped: NO];
+#else   // ! WITH_UIKIT
+		NSImage* oldFullScreenNSImage = [self _getOnScreenImage];
+		NSBitmapImageRep* rep = [NSBitmapImageRep imageRepWithData:[oldFullScreenNSImage TIFFRepresentation]];		
+		CGImageRef oldFullScreenImage = [rep CGImage];
+		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage flipped: YES];
+#endif  // ! WITH_UIKIT
 		CFRetain(fullscreen_oldimage);
 	}
 	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, fullscreen_oldimage);
 	[pool release];
 }
-
+	
 - (void) endScreenTransition
 {
 	AM_DBG NSLog(@"endScreenTransition");
@@ -1040,7 +1059,7 @@ CreateBitmapContext (CGSize size)
 	if (fullscreen_outtrans || fullscreen_oldimage == NULL) {
 		return;
 	}
-	CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], fullscreen_oldimage);
+	CGContextDrawLayerInRect([AmbulantView currentCGContext], [self bounds], fullscreen_oldimage);
 	[self pushTransitionSurface];
 }
 
@@ -1069,7 +1088,7 @@ CreateBitmapContext (CGSize size)
 		if (fullscreen_ended) { // fix-up interrupted transition step
 			ambulant::lib::rect fullsrcrect = ambulant::lib::rect(ambulant::lib::point(0, 0), ambulant::lib::size(self.bounds.size.width,self.bounds.size.height));  // Original image size
 			CGRect cg_fullsrcrect = ambulant::gui::cg::CGRectFromAmbulantRect(fullsrcrect);
-			CGContextRef ctx = UIGraphicsGetCurrentContext();	
+			CGContextRef ctx = [AmbulantView currentCGContext];	
 			CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [self getTransitionSurface]);
 			[self releaseTransitionSurfaces];
 		}		
@@ -1082,7 +1101,10 @@ CreateBitmapContext (CGSize size)
 		fullscreen_engine = NULL;
 	}
 }
+	
+#ifdef	WITH_UIKIT
 #endif // WITH_UIKIT
+
 	
 - (CGLayerRef) getTransitionSurface
 {
@@ -1099,6 +1121,15 @@ CreateBitmapContext (CGSize size)
 	}
 	return transition_surface;
 }
+
+	
+- (CGLayerRef) getTransitionOldSource
+{
+	if (fullscreen_count &&  fullscreen_oldimage)
+		return fullscreen_oldimage;
+//TBD	return [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
+}
+	
 	
 #if	JNK		
 - (CGLayerRef) getTransitionTmpSurface
