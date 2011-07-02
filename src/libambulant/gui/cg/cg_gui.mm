@@ -273,7 +273,7 @@ bad:
 	transition_count = 0;
 	fullscreen_count = 0;
 //	fullscreen_previmage = NULL; // XXXJACK Why don't we initialize these?
-//	fullscreen_oldimage = NULL; // XXXJACK Why don't we initialize these?
+	fullscreen_oldimage = NULL;
 	fullscreen_engine = NULL;
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
@@ -292,7 +292,7 @@ bad:
 	transition_count = 0;
 	fullscreen_count = 0;
 //	fullscreen_previmage = NULL;
-//	fullscreen_oldimage = NULL;
+	fullscreen_oldimage = NULL;
 	fullscreen_engine = NULL;
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
@@ -310,6 +310,10 @@ bad:
 //	transition_tmpsurface = NULL;
 //	if (overlay_window) [overlay_window release];
 //	overlay_window = NULL;
+	if (fullscreen_oldimage) {
+		[fullscreen_oldimage release];
+		fullscreen_oldimage = NULL;
+	}
 	[super dealloc];
 
 }
@@ -1027,7 +1031,6 @@ CreateBitmapContext (CGSize size)
 		CGImageRef oldFullScreenImage = [rep CGImage];
 		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage flipped: YES];
 #endif  // ! WITH_UIKIT
-		CFRetain(fullscreen_oldimage);
 	}
 	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, fullscreen_oldimage);
 	[pool release];
