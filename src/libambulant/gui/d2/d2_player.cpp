@@ -337,23 +337,28 @@ gui::d2::d2_player::init_parser_factory()
 void
 gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 {
-	if (wi->m_rendertarget) return;
+	if (wi->m_rendertarget && wi->m_bgbrush) {
+		return;
+	}
 	assert(wi->m_hwnd);
+	assert(wi->m_bgbrush == NULL);
 
 	RECT rc;
 	GetClientRect(wi->m_hwnd, &rc);
 	D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
-
-	HRESULT hr = m_d2d->CreateHwndRenderTarget(
+	HRESULT hr;
+	if (wi->m_rendertarget == NULL) {
+		hr = m_d2d->CreateHwndRenderTarget(
 #ifdef	AM_DMP
-		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+			D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
 #else //AM_DMP
-		D2D1::RenderTargetProperties(),
+			D2D1::RenderTargetProperties(),
 #endif//AM_DMP
-		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
-		&wi->m_rendertarget);
-	if (!SUCCEEDED(hr))
-		lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+			D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
+			&wi->m_rendertarget);
+		if (!SUCCEEDED(hr))
+			lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+	}
 
 	// Create the corresponding D2D brush
 	hr = wi->m_rendertarget->CreateSolidColorBrush(D2D1::ColorF(GetSysColor(COLOR_WINDOW), 1.0), &wi->m_bgbrush);
@@ -1002,6 +1007,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
+	winfo->m_bgbrush = NULL;
 	winfo->m_mouse_matrix = D2D1::Matrix3x2F::Identity();
 	bool is_fullscreen = false;
 	HWND parent_hwnd = GetParent(winfo->m_hwnd);
