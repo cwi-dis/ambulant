@@ -573,7 +573,9 @@ for name, object in locals().items():
 
 # Dummy versions of methods we cannot support:
 gui_screen_object.othermethods = [
-    "bool get_screenshot(const char*, char**, size_t*) { return false; }",
+    """#ifdef CPP_TO_PYTHON_BRIDGE
+    bool get_screenshot(const char*, char**, size_t*) { return false; }
+    #endif""",
 ]
 
 node_context_object.othermethods = [
@@ -683,9 +685,12 @@ print "=== Generating C++->Python callback implementation (.cpp file) ==="
 
 # Generate the code
 module.includestuff = """
+#define CPP_TO_PYTHON_BRIDGE 1
+
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
+
 
 // The Python interface does not qualify strings with const, so we have to
 // disable warnings about non-writeable strings (zillions of them)

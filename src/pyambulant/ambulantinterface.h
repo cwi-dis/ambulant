@@ -452,7 +452,12 @@ public:
 	virtual ~gui_screen();
 
 	void get_size(int* width, int* height);
-	bool get_screenshot(const char*, char**, size_t*) { return false; }
+#ifndef CPP_TO_PYTHON_BRIDGE
+	bool get_screenshot(const char* type, char* *out_data__out__, size_t* out_data__len__);
+#endif
+#ifdef CPP_TO_PYTHON_BRIDGE
+	    bool get_screenshot(const char*, char**, size_t*) { return false; }
+	    #endif
   private:
 	PyObject *py_gui_screen;
 

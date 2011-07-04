@@ -5779,9 +5779,38 @@ static PyObject *gui_screenObj_get_size(gui_screenObject *_self, PyObject *_args
 	return _res;
 }
 
+#ifndef CPP_TO_PYTHON_BRIDGE
+
+static PyObject *gui_screenObj_get_screenshot(gui_screenObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* type;
+	char *out_data__out__;
+	size_t out_data__len__;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &type))
+		return NULL;
+	out_data__out__ = NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->get_screenshot(type,
+	                                            &out_data__out__, &out_data__len__);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&z#",
+	                     bool_New, _rv,
+	                     out_data__out__, (int)out_data__len__);
+	if( out_data__out__ ) free(out_data__out__);
+	return _res;
+}
+#endif
+
 static PyMethodDef gui_screenObj_methods[] = {
 	{"get_size", (PyCFunction)gui_screenObj_get_size, 1,
 	 PyDoc_STR("() -> (int width, int height)")},
+
+#ifndef CPP_TO_PYTHON_BRIDGE
+	{"get_screenshot", (PyCFunction)gui_screenObj_get_screenshot, 1,
+	 PyDoc_STR("(char* type, Buffer out_data) -> (bool _rv, Buffer out_data)")},
+#endif
 	{NULL, NULL, 0}
 };
 
