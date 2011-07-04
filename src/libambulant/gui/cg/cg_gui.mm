@@ -1032,7 +1032,7 @@ CreateBitmapContext (CGSize size)
 		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage flipped: YES];
 #endif  // ! WITH_UIKIT
 	}
-	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, fullscreen_oldimage);
+	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), NSRectToCGRect(self.bounds), fullscreen_oldimage);
 	[pool release];
 }
 	
@@ -1062,7 +1062,7 @@ CreateBitmapContext (CGSize size)
 	if (fullscreen_outtrans || fullscreen_oldimage == NULL) {
 		return;
 	}
-	CGContextDrawLayerInRect([AmbulantView currentCGContext], [self bounds], fullscreen_oldimage);
+	CGContextDrawLayerInRect([AmbulantView currentCGContext],  NSRectToCGRect(self.bounds), fullscreen_oldimage);
 	[self pushTransitionSurface];
 }
 
@@ -1083,7 +1083,7 @@ CreateBitmapContext (CGSize size)
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%x", fullscreen_count,fullscreen_engine);
-	CGRect bounds = [self bounds];
+	CGRect bounds =  NSRectToCGRect(self.bounds);
 	if (fullscreen_engine && ! fullscreen_ended) {
 		fullscreen_engine->step(fullscreen_now);
 	} else {
