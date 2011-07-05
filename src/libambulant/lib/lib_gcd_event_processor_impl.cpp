@@ -71,9 +71,9 @@ void gb_serve_event(event *gb_e)
 #ifdef AMBULANT_PLATFORM_WIN32
 	logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), gb_e);
 #endif
-	AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
+	/*AM_DBG*/ logger::get_logger()->debug("before serve_event(0x%x)in GCD",gb_e);
 	gb_e->fire();
-	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
+	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD",gb_e);
 	delete gb_e;
 }
 

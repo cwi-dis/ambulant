@@ -80,7 +80,11 @@ extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 
 #------------------------------------------------------
 if WITH_GTK
+if WITH_GCD_EVENT_PROCESSOR
+gtk_libs=$(GTK_LIBS) $(GCD_LIBS)
+else
 gtk_libs=$(GTK_LIBS)
+endif #WITH_GCD_EVENT_PROCESSOR
 gtk_includes=$(GTK_CFLAGS)
 else
 gtk_libs=

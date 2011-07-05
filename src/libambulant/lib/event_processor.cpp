@@ -20,7 +20,7 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
-#define GB_GCD_WIN
+//#define GB_GCD_WIN
 //#define WITH_LIBXDISPATCH
 #ifdef GB_GCD_WIN
 #ifdef WITH_LIBXDISPATCH

@@ -68,6 +68,14 @@ xerces_includes =
 xerces_core_libs = 
 endif
 
+if WITH_GCD_EVENT_PROCESSOR
+gcd_event_processor_source = lib/lib_gcd_event_processor_impl.cpp
+gcd_event_processor_core_libs = $(GCD_LIBS)
+else
+gcd_event_processor_source = 
+gcd_event_processor_core_libs = 
+endif
+
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
 # XXX Should LIBINTL depend on USE_NLS?
@@ -161,7 +169,11 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_util.cpp \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
-libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS)
+if WITH_GCD_EVENT_PROCESSOR
+libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(GCD_LIBS)
+else
+libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) 
+endif 
 libambulant_gtk_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
 else
 gtkincludes=
@@ -277,19 +289,30 @@ lib_LTLIBRARIES = \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
-	
+
+if WITH_GCD_EVENT_PROCESSOR	
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
 	$(xerces_core_libs) \
 	$(platlibs) \
-	$(PTHREAD_LIBS)
+	$(PTHREAD_LIBS) \
+	$(GCD_LIBS)
+else
+libambulant_la_LDFLAGS= \
+	-export-dynamic $(LIBLTDL) \
+	$(expat_core_libs) \
+	$(xerces_core_libs) \
+	$(platlibs) \
+	$(PTHREAD_LIBS) 
+endif
 
 libambulant_la_SOURCES = \
 	get_version.cpp \
  \
 	$(expat_parser_source) \
 	$(xerces_parser_source) \
+	$(gcd_event_processor_source) \
  \
 	lib/colors.cpp \
 	lib/delta_timer.cpp \
