@@ -40,9 +40,20 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/mtsync.h"
 
+#define EVENT_PROCESSOR_WITH_LOCK
+
 namespace ambulant {
 
 namespace lib {
+
+class event_processor_impl_gcd;
+
+#ifdef EVENT_PROCESSOR_WITH_LOCK
+typedef struct call_back_param {
+	event_processor_impl_gcd *m_pointer_event_processor;
+	event *m_pointer_event;
+} gb_call_back_param;
+#endif
 
 /// Implementation of event_processor by using GCD.
 class event_processor_impl_gcd : public event_processor {
@@ -54,6 +65,9 @@ public:
 	//unsigned long run();
 	
 	void add_event(event *pe, time_type t, event_priority priority);
+#ifdef EVENT_PROCESSOR_WITH_LOCK
+	static	void gb_serve_event(gb_call_back_param *p_struct);
+#endif
 	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
 	void set_observer(event_processor_observer *obs) {m_observer = obs; };
@@ -71,6 +85,7 @@ protected:
 	critical_section_cv m_lock;
 		
 };
+
 	
 /// factory function
 AMBULANTAPI event_processor *gcd_event_processor_factory(timer *t);
