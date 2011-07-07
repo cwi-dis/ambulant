@@ -81,9 +81,11 @@ event_processor_impl_gcd::gb_serve_event(gb_call_back_param * p_struct)
 	logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), gb_e);
 #endif
 	AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
+	p_event_processor->m_lock.leave();
 	gb_e->fire();
 	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
-	delete gb_e;
+	//delete gb_e;
+	p_event_processor->m_lock.enter();
 	p_event_processor->m_lock.leave();
 }
 #else
