@@ -68,25 +68,20 @@ event_processor_impl_gcd::get_timer() const
 
 #ifdef EVENT_PROCESSOR_WITH_LOCK
 
-static gb_call_back_param callback_parameter;
-
 void
-event_processor_impl_gcd::gb_serve_event(gb_call_back_param * p_struct)
+event_processor_impl_gcd::gb_serve_event(gb_call_back_param *p_struct)
 {
-	event_processor_impl_gcd *p_event_processor = p_struct->m_pointer_event_processor;
-	event *gb_e;
-	gb_e =  p_struct->m_pointer_event;
-	p_event_processor->m_lock.enter();
+
+	p_struct->m_pointer_event_processor->m_lock.enter();
 #ifdef AMBULANT_PLATFORM_WIN32
-	logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), gb_e);
+	logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), *p_struct->m_pointer_event);
 #endif
-	AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
-	p_event_processor->m_lock.leave();
-	gb_e->fire();
-	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
-	//delete gb_e;
-	p_event_processor->m_lock.enter();
-	p_event_processor->m_lock.leave();
+	//AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
+	p_struct->m_pointer_event_processor->m_lock.leave();
+	p_struct->m_pointer_event->fire();
+	//AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
+	delete p_struct->m_pointer_event;
+	delete p_struct;
 }
 #else
 
@@ -154,12 +149,14 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 	logger::get_logger()->debug("add_event ThreadId 0x%x event 0x%x prio %d", GetCurrentThreadId() ,pe, priority);
 #endif
 #ifdef EVENT_PROCESSOR_WITH_LOCK
-	callback_parameter.m_pointer_event = pe;
-	callback_parameter.m_pointer_event_processor = this;
+	gb_call_back_param *p_callback_parameter;
+	p_callback_parameter = new gb_call_back_param;
+	p_callback_parameter->m_pointer_event = pe;
+	p_callback_parameter->m_pointer_event_processor = this;
 	dispatch_after_f(
 		dispatch_time(DISPATCH_TIME_NOW, t*1000000),
 		dispatch_get_global_queue(prio, 0),
-		&callback_parameter,
+		p_callback_parameter,
 		(dispatch_function_t)gb_serve_event);
 #else
 	dispatch_after_f(
