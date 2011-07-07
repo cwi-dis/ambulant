@@ -690,8 +690,8 @@ bool gui::d2::d2_player::_calc_fit(
 	}
 
 	// Now compute "spare" pixels
-	float spare_x = w - (fac*srcsize.w);
-	float spare_y = h - (fac*srcsize.h);
+	float spare_x = floor(0.5 + w - (fac*srcsize.w)); // round to nearest int
+	float spare_y = floor(0.5 + h - (fac*srcsize.h));
 	if (spare_x < 0) spare_x = 0;
 	if (spare_y < 0) spare_y = 0;
 
