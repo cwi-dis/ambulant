@@ -40,7 +40,7 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/mtsync.h"
 
-#define EVENT_PROCESSOR_WITH_LOCK
+#undef EVENT_PROCESSOR_WITH_LOCK
 
 namespace ambulant {
 
@@ -83,7 +83,9 @@ protected:
 	
 	// protects whole data structure
 	critical_section_cv m_lock;
-		
+#ifdef EVENT_PROCESSOR_WITH_LOCK
+	critical_section m_lock_cb;
+#endif
 };
 
 	

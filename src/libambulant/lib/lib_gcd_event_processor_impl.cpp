@@ -72,13 +72,13 @@ void
 event_processor_impl_gcd::gb_serve_event(gb_call_back_param *p_struct)
 {
 
-	p_struct->m_pointer_event_processor->m_lock.enter();
+	p_struct->m_pointer_event_processor->m_lock_cb.enter();
 #ifdef AMBULANT_PLATFORM_WIN32
 	logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), *p_struct->m_pointer_event);
 #endif
 	//AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
-	p_struct->m_pointer_event_processor->m_lock.leave();
 	p_struct->m_pointer_event->fire();
+	p_struct->m_pointer_event_processor->m_lock_cb.leave();
 	//AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
 	delete p_struct->m_pointer_event;
 	delete p_struct;
@@ -148,6 +148,7 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 #ifdef AMBULANT_PLATFORM_WIN32
 	logger::get_logger()->debug("add_event ThreadId 0x%x event 0x%x prio %d", GetCurrentThreadId() ,pe, priority);
 #endif
+
 #ifdef EVENT_PROCESSOR_WITH_LOCK
 	gb_call_back_param *p_callback_parameter;
 	p_callback_parameter = new gb_call_back_param;
