@@ -40,7 +40,7 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/mtsync.h"
 
-#undef EVENT_PROCESSOR_WITH_LOCK
+#define EVENT_PROCESSOR_WITH_LOCK
 
 namespace ambulant {
 
