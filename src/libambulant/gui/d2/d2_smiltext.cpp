@@ -564,6 +564,7 @@ d2_smiltext_renderer::recreate_d2d()
 	if (ri) alfa = ri->get_mediaopacity();
 	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(m_text_color), greenf(m_text_color), bluef(m_text_color), (float)alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
+	rt->Release();
 	m_lock.leave();
 }
 

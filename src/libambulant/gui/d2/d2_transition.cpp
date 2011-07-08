@@ -216,6 +216,7 @@ _d2_polygon_list_update(
 	}
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	if (brt == NULL || rt == NULL) {
+		SafeRelease(&rt);
 		return; // nothing to do
 	}
 	HRESULT hr = rt->CreateLayer(&layer);
@@ -241,6 +242,7 @@ _d2_polygon_list_update(
 cleanup:
 	SafeRelease(&layer);
 	SafeRelease(&path);
+	SafeRelease(&rt);
 }
 
 void
@@ -260,6 +262,7 @@ d2_transition_blitclass_fade::update()
 		brt = d2_player->get_transition_rendertarget();
 	}
 	if (rt == NULL || brt == NULL) {
+		SafeRelease(&rt);
 		return; // nothing to do
 	}
 	HRESULT hr = brt->EndDraw();
@@ -281,6 +284,7 @@ d2_transition_blitclass_fade::update()
 cleanup:
 	SafeRelease(&layer);
 	SafeRelease(&bitmap);
+	SafeRelease(&rt);
 }
 
 void
@@ -313,6 +317,7 @@ d2_transition_blitclass_rect::update()
 		}
 		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 		if (brt == NULL || rt == NULL) {
+			SafeRelease(&rt);
 			return; // nothing to do
 		}
 		HRESULT hr = brt->EndDraw();
@@ -337,6 +342,7 @@ d2_transition_blitclass_rect::update()
 				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
 			}
 		}  // otherwise HRESULT failure is ignored, may happen e.g. when bitmap is empty
+		rt->Release();
 	}
 }
 
@@ -363,6 +369,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 		brt = d2_player->get_transition_rendertarget();
 	}
 	if (brt == NULL || rt == NULL) {
+		SafeRelease(&rt);
 		return; // nothing to do
 	}
 	ID2D1RenderTarget* dst_rt = rt, *old_rt = rt, *new_rt = brt;
@@ -460,6 +467,7 @@ d2_transition_blitclass_rectlist::update()
 		}
 		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 		if (brt == NULL || rt ==  NULL) {
+			SafeRelease(&rt);
 			return; // nothing to do
 		}
 		HRESULT hr = brt->EndDraw();
@@ -471,6 +479,7 @@ d2_transition_blitclass_rectlist::update()
 		ID2D1Bitmap* bitmap = NULL;
 		hr = brt->GetBitmap(&bitmap);
 		if (FAILED(hr)) {
+			SafeRelease(&rt);
 			return;
 		}
 		for (newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
@@ -492,6 +501,7 @@ d2_transition_blitclass_rectlist::update()
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rectlist::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
+		SafeRelease(&rt);
 	}
 }
 

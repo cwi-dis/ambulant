@@ -153,6 +153,7 @@ d2_dsvideo_renderer::recreate_d2d()
 	HRESULT hr = rt->CreateBitmap(size, m_frame, m_size.w*4, props, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
+	rt->Release();
 	m_lock.leave();
 }
 

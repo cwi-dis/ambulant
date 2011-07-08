@@ -368,7 +368,10 @@ gui::d2::d2_player::_discard_d2d()
 	for(it=m_windows.begin();it!=m_windows.end();it++) {
 		wininfo *wi = it->second;
 		if (wi->m_rendertarget) {
-			wi->m_rendertarget->Release();
+			int rem = wi->m_rendertarget->Release();
+			if (rem) {
+				lib::logger::get_logger()->debug("d2_player: still have %d refs to the RenderTarget", rem);
+			}
 			wi->m_rendertarget = NULL;
 		}
 		if (wi->m_bgbrush) {
@@ -383,6 +386,23 @@ gui::d2::d2_player::_discard_d2d()
 	}
 	m_resources_lock.leave();
 }
+ID2D1HwndRenderTarget* 
+gui::d2::d2_player::get_rendertarget()
+{
+	m_resources_lock.enter();
+	ID2D1HwndRenderTarget *rv = m_cur_wininfo ? m_cur_wininfo->m_rendertarget : NULL;
+	if (rv) rv->AddRef();
+	m_resources_lock.leave();
+	return rv;
+}
+
+ID2D1BitmapRenderTarget*
+gui::d2::d2_player::get_transition_rendertarget()
+{
+	ID2D1BitmapRenderTarget *rv = m_transition_rendertarget;
+	return rv;
+}
+
 
 void gui::d2::d2_player::play() {
 	if(m_player) {
