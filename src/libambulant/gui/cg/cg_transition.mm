@@ -106,12 +106,17 @@ cg_transition_blitclass_rect::update()
 	AM_DBG NSLog(@"cg_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
+	lib::rect dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	dstrect_whole &= m_dst->get_clipped_screen_rect();
+	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
 	CGContextRef ctx = [view getCGContext];
 	CGContextSaveGState(ctx);
 	if (m_outtrans) {
-		add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
+		add_clockwise_rectangle (ctx, cg_dstrect_whole);
 	}
-	CGContextClipToRect(ctx, cg_clipped_rect);
+	CGContextAddRect(ctx, cg_clipped_rect);
+	CGContextClip(ctx);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
 	CGContextRestoreGState(ctx);
 }
@@ -178,7 +183,11 @@ cg_transition_blitclass_rectlist::update()
 	}
 	if (is_clipped) {
 		if (m_outtrans) {
-			add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
+			lib::rect dstrect_whole = m_dst->get_rect();
+			dstrect_whole.translate(m_dst->get_global_topleft());
+			dstrect_whole &= m_dst->get_clipped_screen_rect();
+			CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
+			add_clockwise_rectangle (ctx, cg_dstrect_whole);
 		}		
 		CGContextClip(ctx);
 		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
