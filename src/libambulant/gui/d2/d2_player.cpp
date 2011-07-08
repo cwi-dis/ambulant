@@ -337,27 +337,32 @@ gui::d2::d2_player::init_parser_factory()
 void
 gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 {
-	if (wi->m_rendertarget) return;
+	if (wi->m_rendertarget && wi->m_bgbrush) return;
 	assert(wi->m_hwnd);
 
 	RECT rc;
 	GetClientRect(wi->m_hwnd, &rc);
 	D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
-
-	HRESULT hr = m_d2d->CreateHwndRenderTarget(
+	HRESULT hr;
+	if (wi->m_rendertarget == NULL) {
+		assert(wi->m_bgbrush == NULL);
+		hr = m_d2d->CreateHwndRenderTarget(
 #ifdef	AM_DMP
-		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+			D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
 #else //AM_DMP
-		D2D1::RenderTargetProperties(),
+			D2D1::RenderTargetProperties(),
 #endif//AM_DMP
-		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
-		&wi->m_rendertarget);
-	if (!SUCCEEDED(hr))
-		lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+			D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
+			&wi->m_rendertarget);
+		if (!SUCCEEDED(hr))
+			lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+	}
 
-	// Create the corresponding D2D brush
-	hr = wi->m_rendertarget->CreateSolidColorBrush(D2D1::ColorF(GetSysColor(COLOR_WINDOW), 1.0), &wi->m_bgbrush);
-	if (!SUCCEEDED(hr)) lib::win32::win_trace_error("CreateSolidColorBrush", hr);
+	if (wi->m_bgbrush == NULL) {
+		// Create the corresponding D2D brush
+		hr = wi->m_rendertarget->CreateSolidColorBrush(D2D1::ColorF(GetSysColor(COLOR_WINDOW), 1.0), &wi->m_bgbrush);
+		if (!SUCCEEDED(hr)) lib::win32::win_trace_error("CreateSolidColorBrush", hr);
+	}
 }
 
 void
@@ -851,7 +856,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		// it will be re-created next time around.
 		rt->Release();
 		_discard_d2d();
-	} else {
+	} else if (hr == S_OK) {
 		// Handle capture callbacks.
 		std::list<std::pair<lib::rect, d2_capture_callback *> >::iterator it;
 		for(it=m_captures.begin(); it != m_captures.end(); it++) {
@@ -861,6 +866,8 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		}
 		rt->Release();
 		m_captures.clear();
+	} else {
+		lib::logger::get_logger()->trace("d2_player::redraw: EndDraw: error 0x%x", hr);
 	}
 	m_redraw_lock.leave();
 }
@@ -953,6 +960,9 @@ gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 		D2D1_RECT_F dst_rect =  d2_rectf(r); //X{ r.left(), r.top(), r.right(), r.bottom() };
 		dst_rt->DrawBitmap(src_bitmap, dst_rect);
 		hr = dst_rt->EndDraw();
+		if (hr != S_OK) {
+			lib::logger::get_logger()->trace("d2_player: capture: EndDraw returned 0x%x", hr);
+		}
 		// Ignore result, nothing we can do.
 	} else {
 		// Creating the D2D bitmap failed. Release the result.
@@ -1022,6 +1032,7 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
+	winfo->m_bgbrush = NULL;
 	winfo->m_mouse_matrix = D2D1::Matrix3x2F::Identity();
 	bool is_fullscreen = false;
 	HWND parent_hwnd = GetParent(winfo->m_hwnd);
