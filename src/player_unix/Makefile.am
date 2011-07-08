@@ -76,6 +76,12 @@ extra_sdl_DEFINES=
 extra_sdl_LDADD=
 endif
 
+if WITH_GCD_EVENT_PROCESSOR
+extra_gcd_LDADD=$(GCD_LIBS)
+else
+extra_gcd_LDADD=
+endif
+
 if WITH_XERCES_BUILTIN
 extra_xerces_DEFINES=$(XERCES_CFLAGS) -DWITH_XERCES_BUILTIN
 extra_xerces_LDADD=$(XERCES_LIBS)
@@ -96,6 +102,7 @@ LDADD = \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
+	$(extra_gcd_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(libambulant_core) \
 	$(QT_LIBS) \
