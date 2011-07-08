@@ -82,8 +82,13 @@ cg_transition_blitclass_fade::update()
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = [view getCGContext];
+	CGContextSaveGState(ctx);
+	lib::rect r = m_dst->get_rect();
+	r.translate(m_dst->get_global_topleft());
+	CGContextClipToRect(ctx,CGRectFromAmbulantRect(r));
 	CGContextSetAlpha (ctx, m_outtrans ? 1.0 - m_progress : m_progress);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
+	CGContextRestoreGState(ctx);
 }
 
 void
@@ -102,12 +107,13 @@ cg_transition_blitclass_rect::update()
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = [view getCGContext];
+	CGContextSaveGState(ctx);
 	if (m_outtrans) {
 		add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
 	}
-	CGContextAddRect(ctx, cg_clipped_rect);
-	CGContextClip(ctx);
+	CGContextClipToRect(ctx, cg_clipped_rect);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
+	CGContextRestoreGState(ctx);
 }
 
 void

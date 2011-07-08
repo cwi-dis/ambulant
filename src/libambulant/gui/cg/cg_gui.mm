@@ -591,8 +591,9 @@ bad:
 	assert(transition_count > 0);
 	transition_count--;
 	AM_DBG NSLog(@"decrementTransitionCount: count=%d", transition_count);
-	// XXXX Should we delete transition_surface?
-	// XXXX Should we delete transition_tmpsurface?
+	if (transition_count == 0) {
+		[self releaseTransitionSurfaces];
+	}
 }
 
 #ifndef	WITH_UIKIT
@@ -1148,6 +1149,9 @@ CreateBitmapContext (CGSize size)
 	
 - (void) releaseTransitionSurfaces
 {
+	if (transition_count > 0) {
+		return;
+	}
 	if (transition_surface != NULL) {
 		CFRelease(transition_surface);
 		transition_surface = NULL;
