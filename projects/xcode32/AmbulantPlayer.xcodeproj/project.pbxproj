@@ -106,6 +106,7 @@
 		04A1E99612B585D80060F97E /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
 		04A1E99712B585D80060F97E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		04C655E713CB30E40008DF3B /* libamplugin_xpath_state(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */; };
 		04CE00CC132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04CE00CD132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04CE00CE132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
@@ -254,6 +255,13 @@
 			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
 			remoteInfo = libambulant;
 		};
+		044C39D813CB33FE002DF651 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 0441E7B91343132C0025FCF9 /* plugin_xpath_state(CG) */;
+			remoteInfo = "plugin_xpath_state(CG)";
+		};
 		04A1E87712B57E100060F97E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
@@ -298,6 +306,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */,
+				04C655E713CB30E40008DF3B /* libamplugin_xpath_state(CG).so in Copy Plugins */,
 				04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
@@ -700,6 +709,7 @@
 				0405BFF612B621C0007AD3B2 /* PBXTargetDependency */,
 				04290D20132EBB7E0015D7B7 /* PBXTargetDependency */,
 				04290D24132EBB7E0015D7B7 /* PBXTargetDependency */,
+				044C39D913CB33FE002DF651 /* PBXTargetDependency */,
 			);
 			name = AmbulantPlayerCG;
 			productInstallPath = "$(HOME)/Applications";
@@ -1124,6 +1134,11 @@
 			isa = PBXTargetDependency;
 			name = libambulant;
 			targetProxy = 04428D841157787A0067C868 /* PBXContainerItemProxy */;
+		};
+		044C39D913CB33FE002DF651 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "plugin_xpath_state(CG)";
+			targetProxy = 044C39D813CB33FE002DF651 /* PBXContainerItemProxy */;
 		};
 		04CE8D8D12BB647A00801B1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
