@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
 		042AD9E61152D42B009CA791 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */; };
-		0441E7BE1343132C0025FCF9 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
 		0441E7BF1343132C0025FCF9 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0495994813168A6600311F05 /* libxml2.dylib */; };
 		0441E7C11343132C0025FCF9 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */; };
+		044C392A13CB3362002DF651 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E96AE12BA4DD200399893 /* libambulantCG.dylib */; };
 		0495994913168A6600311F05 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0495994813168A6600311F05 /* libxml2.dylib */; };
 /* End PBXBuildFile section */
 
@@ -80,8 +80,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0441E7BE1343132C0025FCF9 /* libambulant.dylib in Frameworks */,
 				0441E7BF1343132C0025FCF9 /* libxml2.dylib in Frameworks */,
+				044C392A13CB3362002DF651 /* libambulantCG.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
