@@ -337,8 +337,11 @@ gui::d2::d2_player::init_parser_factory()
 void
 gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 {
-	if (wi->m_rendertarget && wi->m_bgbrush) return;
+	if (wi->m_rendertarget && wi->m_bgbrush) {
+		return;
+	}
 	assert(wi->m_hwnd);
+	assert(wi->m_bgbrush == NULL);
 
 	RECT rc;
 	GetClientRect(wi->m_hwnd, &rc);
