@@ -259,7 +259,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 0441E7B91343132C0025FCF9 /* plugin_xpath_state(CG) */;
+			remoteGlobalIDString = 0441E7B91343132C0025FCF9;
 			remoteInfo = "plugin_xpath_state(CG)";
 		};
 		04A1E87712B57E100060F97E /* PBXContainerItemProxy */ = {

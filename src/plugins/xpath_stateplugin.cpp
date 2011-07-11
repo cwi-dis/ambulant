@@ -36,7 +36,7 @@ using namespace ambulant;
 // -------------------
 class xpath_state_component : public common::state_component {
   public:
-	xpath_state_component();
+	xpath_state_component(ambulant::common::factories* factory);
 	virtual ~xpath_state_component();
 
 	/// Register the systemTest/customTest API
@@ -68,9 +68,16 @@ class xpath_state_component : public common::state_component {
 
 	/// Register interest in stateChange events
 	void want_state_change(const char *ref, common::state_change_callback *cb);
+  
   private:
-	void _check_state_change(xmlNodePtr changed);
+  
+	// Helper: call relevant state_change_callbacks.
+    void _check_state_change(xmlNodePtr changed);
+    
+    // Helper: construct query string for submission.
+    std::string _node_as_form_urlencoded(xmlNodePtr node);
 
+    ambulant::common::factories* m_factories;
 	xmlDocPtr m_state;
 	xmlXPathContextPtr m_context;
 	common::state_test_methods *m_state_test_methods;
@@ -205,43 +212,24 @@ smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
 }
 } // extern "C"
 
-// -------------------
-
-// Helper function: get data from a subtree and return it as an application/x-www-form-urlencoded string
-std::string
-_node_as_form_urlencoded(xmlNodePtr node)
-{
-	std::string rv;
-	std::string node_data = (char *)xmlNodeGetContent(node);
-	std::string node_name = "foo";
-	if (node_data != "") {
-		rv = node_name + "=" + node_data;
-	}
-	xmlNodePtr child;
-	for(child=xmlFirstElementChild(node); child; child=xmlNextElementSibling(child)) {
-		std::string nextvalue = _node_as_form_urlencoded(child);
-		if (nextvalue != "") {
-			if (rv != "") {
-				rv = rv + "&" + nextvalue;
-			} else {
-				rv = nextvalue;
-			}
-		}
-	}
-	return rv;
-}
 
 // -------------------
 class xpath_state_component_factory : public common::state_component_factory {
   public:
-	virtual ~xpath_state_component_factory() {};
+    xpath_state_component_factory(ambulant::common::factories* factory)
+    :   m_factories(factory)
+    {};
+    virtual ~xpath_state_component_factory() {}
 
 	common::state_component *new_state_component(const char *uri);
+  protected:
+    ambulant::common::factories* m_factories;
 };
 
 // -------------------
-xpath_state_component::xpath_state_component()
-:	m_state(NULL),
+xpath_state_component::xpath_state_component(ambulant::common::factories* factory)
+:	m_factories(factory),
+    m_state(NULL),
 	m_context(NULL),
 	m_state_test_methods(NULL)
 {
@@ -578,6 +566,7 @@ xpath_state_component::send(const lib::node *submission)
 	}
 	m_context->node = xmlDocGetRootElement(m_state);
 	assert(submission);
+
 	const char *method = submission->get_attribute("method");
 	bool is_get = false, is_put = false;
 	if (method && strcmp(method, "put") == 0) {
@@ -589,20 +578,22 @@ xpath_state_component::send(const lib::node *submission)
 		return;
 	}
 	const char *replace = submission->get_attribute("replace");
-	if (replace && strcmp(replace, "none") != 0) {
-		lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
-		return;
-	}
+
 	net::url dst_url = submission->get_url("action");
 	if (dst_url.is_empty_path()) {
 		lib::logger::get_logger()->trace("xpath_state_component: send: submission action attribute missing");
 		return;
 	}
+
 	if (dst_url.is_local_file()) {
 		if (!is_put) {
 			lib::logger::get_logger()->trace("xpath_state_component: send: only method=\"put\" implemented for file: URLs");
 			return;
 		}
+        if (replace && strcmp(replace, "none") != 0) {
+            lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
+            return;
+        }
 		std::string dst_filename = dst_url.get_file();
 		FILE *fp = fopen(dst_filename.c_str(), "w");
 		// XXXJACK: we're ignoring ref here...
@@ -645,8 +636,19 @@ xpath_state_component::send(const lib::node *submission)
 		}
 		assert(refnode);
 		std::string query = _node_as_form_urlencoded(refnode);
-		net::url newurl = net::url::from_url(dst_url.get_url() + "?" + query);
-		lib::logger::get_logger()->trace("xpath_state_component: nonlocal URL schemes for %s not yet implemented", newurl.get_url().c_str());
+		net::url query_url = net::url::from_url(dst_url.get_url() + "?" + query);
+        char *data = NULL;
+        size_t datasize = 0;
+        lib::logger::get_logger()->trace("xpath_state_component: submitting to URL <%s>", query_url.get_url().c_str());
+        if (!net::read_data_from_url(query_url, m_factories->get_datasource_factory(), &data, &datasize)) {
+            lib::logger::get_logger()->error("%s: Cannot open", query_url.get_url().c_str());
+            return;
+        }
+        // Lazy programmer: here we could parse data and insert into the tree.
+        if (replace && strcmp(replace, "none") != 0) {
+            lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
+            return;
+        }
 		return;
 	}
 }
@@ -722,13 +724,39 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 	}
 }
 
+// Helper function: get data from a subtree and return it as an application/x-www-form-urlencoded string
+std::string
+xpath_state_component::_node_as_form_urlencoded(xmlNodePtr node)
+{
+	std::string rv;
+	std::string node_data;
+    if (xmlChildElementCount(node) == 0)
+        node_data = (char *)xmlNodeGetContent(node);
+	std::string node_name = (char *)node->name;
+	if (node_data != "") {
+		rv = node_name + "=" + node_data;
+	}
+	xmlNodePtr child;
+	for(child=xmlFirstElementChild(node); child; child=xmlNextElementSibling(child)) {
+		std::string nextvalue = _node_as_form_urlencoded(child);
+		if (nextvalue != "") {
+			if (rv != "") {
+				rv = rv + "&" + nextvalue;
+			} else {
+				rv = nextvalue;
+			}
+		}
+	}
+	return rv;
+}
+
 // -------------------
 common::state_component *
 xpath_state_component_factory::new_state_component(const char *uri)
 {
 	if (strcmp(uri, "http://www.w3.org/TR/1999/REC-xpath-19991116") == 0) {
 		AM_DBG lib::logger::get_logger()->debug("xpath_state_component_factory::new_state_component: returned state_component");
-		return new xpath_state_component();
+		return new xpath_state_component(m_factories);
 	}
 	lib::logger::get_logger()->trace("xpath_state_component_factory::new_state_component: no support for language %s", uri);
 	return NULL;
@@ -761,7 +789,7 @@ void initialize(
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
 	common::global_state_component_factory *scf = factory->get_state_component_factory();
 	if (scf) {
-		xpath_state_component_factory *dscf = new xpath_state_component_factory();
+		xpath_state_component_factory *dscf = new xpath_state_component_factory(factory);
 		scf->add_factory(dscf);
 		lib::logger::get_logger()->trace("xpath_state_plugin: registered");
 	}
