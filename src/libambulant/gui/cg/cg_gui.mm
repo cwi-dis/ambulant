@@ -210,11 +210,9 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 	}
 	if (rep == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get representation for screen shot");
-//		[image release];
 		goto bad;
 	}
 	data = [rep representationUsingType: filetype properties: NULL];
-//	[image release];
 	if (data == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot convert screenshot to %s format", type);
 		goto bad;
@@ -222,12 +220,10 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 	*out_data = (char *)malloc([data length]);
 	if (*out_data == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: out of memory");
-//		[data release];
 		goto bad;
 	}
 	*out_size = [data length];
 	[data getBytes: *out_data];
-//	[data release];
 	[pool release];
 	return true;
 bad:
@@ -591,33 +587,13 @@ bad:
 	assert(transition_count > 0);
 	transition_count--;
 	AM_DBG NSLog(@"decrementTransitionCount: count=%d", transition_count);
-	// XXXX Should we delete transition_surface?
-	// XXXX Should we delete transition_tmpsurface?
+	if (transition_count == 0) {
+		[self releaseTransitionSurfaces];
+	}
 }
 
 #ifndef	WITH_UIKIT
 // Transition implementation methods for AppKit
-#ifdef	JNK
-
-- (void)_releaseTransitionSurface
-{
-	if (transition_surface) {
-		[transition_surface release];
-		transition_surface = NULL;
-	}
-}
-
-- (NSImage *)getTransitionTmpSurface
-{
-	if (!transition_tmpsurface) {
-		// It does not exist yet. Create it.
-		transition_tmpsurface = [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
-		[transition_tmpsurface retain];
-		[transition_tmpsurface setFlipped: NO];
-	}
-	return transition_tmpsurface;
-}
-#endif//JNK
 	
 - (NSImage *)_getOnScreenImage
 {
@@ -1133,21 +1109,11 @@ CreateBitmapContext (CGSize size)
 //TBD	return [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
 }
 	
-	
-#if	JNK		
-- (CGLayerRef) getTransitionTmpSurface
-{
-	if (transition_tmpsurface == NULL) {
-		// It does not exist yet. Create it.
-		CGContextRef ctxr = [self getCGContext];
-		transition_tmpsurface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
-	}
-	return transition_tmpsurface;
-}
-#endif//JNK
-	
 - (void) releaseTransitionSurfaces
 {
+	if (transition_count > 0) {
+		return;
+	}
 	if (transition_surface != NULL) {
 		CFRelease(transition_surface);
 		transition_surface = NULL;
