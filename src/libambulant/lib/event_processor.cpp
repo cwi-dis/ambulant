@@ -40,6 +40,8 @@
 #define AM_DBG if(0)
 #endif
 
+//#if 0
+
 using namespace ambulant;
 using namespace lib;
 
@@ -316,3 +318,4 @@ event_processor_impl::dump()
 //		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
 #endif
 }
+//#endif
