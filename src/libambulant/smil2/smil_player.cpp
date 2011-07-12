@@ -766,6 +766,7 @@ smil_player::started(int n, double t) {
 		time_node::value_type root_time = m_root->get_simple_time();
 		m_scheduler->update_horizon(root_time);
 		q_smil_time timestamp(m_root, root_time);
+		/*AM_DBG*/ m_logger->debug("smil_player::started: node %s is started", (*it).second->get_sig().c_str());
 		async_arg aa((*it).second, timestamp);
 		async_cb *cb = new async_cb(this, &smil_player::started_async, aa);
 		schedule_event(cb, 0, ep_high);
@@ -775,6 +776,7 @@ smil_player::started(int n, double t) {
 void
 smil_player::started_async(async_arg aa) {
 	m_scheduler->lock();
+	/*AM_DBG*/ m_logger->debug("smil_player::started_async: node %s is started_async", aa.first->get_sig().c_str());
 	aa.first->on_bom(aa.second);
 	m_scheduler->unlock();
 }
@@ -790,10 +792,14 @@ smil_player::stopped(int n, double t) {
 		q_smil_time timestamp(m_root, root_time);
 		time_node* tn = (*it).second;
 		AM_DBG m_logger->debug("smil_player::stopped(%d), want_on_eom()=%d", n, tn->want_on_eom());
+		/*AM_DBG*/ m_logger->debug("smil_player::stopped: node %s is stopped", tn->get_sig().c_str());
 		if (tn->want_on_eom()) {
 			async_arg aa((*it).second, timestamp);
 			async_cb *cb = new async_cb(this, &smil_player::stopped_async, aa);
-			schedule_event(cb, 0, ep_high);
+//XXXJACK			schedule_event(cb, 0, ep_high);
+			// Temporary workaround: we would like the stopped-async call to happen after the started_async.
+			// The timeout here is a gross hack to try and make that happen more often.
+			schedule_event(cb, 10000, ep_high);
 		}
 	}
 }
@@ -801,6 +807,7 @@ smil_player::stopped(int n, double t) {
 void
 smil_player::stopped_async(async_arg aa) {
 	m_scheduler->lock();
+	/*AM_DBG*/ m_logger->debug("smil_player::stopped_async: node %s is stopped_async", aa.first->get_sig().c_str());
 	aa.first->on_eom(aa.second);
 	m_scheduler->unlock();
 }

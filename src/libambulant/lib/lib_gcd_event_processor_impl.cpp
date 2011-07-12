@@ -89,11 +89,11 @@ void
 gb_serve_event(event *gb_e)
 {
 #ifdef AMBULANT_PLATFORM_WIN32
-	logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), gb_e);
+	AM_DBG logger::get_logger()->debug("serve_event ThreadId 0x%x event 0x%x", GetCurrentThreadId(), gb_e);
 #endif
-	/*AM_DBG*/ logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
+	AM_DBG logger::get_logger()->debug("before serve_event(0x%x)in GCD_WIN",gb_e);
 	gb_e->fire();
-	/*AM_DBG*/ logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
+	AM_DBG logger::get_logger()->debug("after serve_event(0x%x)in GCD_WIN",gb_e);
 	delete gb_e;
 }
 #endif
@@ -146,7 +146,7 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 	}
 	AM_DBG logger::get_logger()->debug("t=%ld, pe=0x%x",t, pe);
 #ifdef AMBULANT_PLATFORM_WIN32
-	logger::get_logger()->debug("add_event ThreadId 0x%x event 0x%x prio %d", GetCurrentThreadId() ,pe, priority);
+	AM_DBG logger::get_logger()->debug("add_event ThreadId 0x%x event 0x%x prio %d", GetCurrentThreadId() ,pe, priority);
 #endif
 
 #ifdef EVENT_PROCESSOR_WITH_LOCK

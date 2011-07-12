@@ -1271,7 +1271,11 @@ void time_node::on_eom(qtime_type timestamp) {
 // this situation could never occur or (b) could detect this situation in on_eom().
 bool time_node::want_on_eom()
 {
+#if 1
+	return true;
+#else
 	return is_active() && !m_eom_flag;
+#endif
 }
 
 // End of transition
