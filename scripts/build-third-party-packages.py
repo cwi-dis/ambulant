@@ -295,6 +295,35 @@ else:
         print "** The current directory (%s) has too long a pathname."
         print "** This will make the Xerces build hit a Visual Studio bug and fail"
         sys.exit(1)
+    #
+    # Check that the DirectShow baseclasses have been installled and built.
+    #
+    sdkdir = os.getenv("WindowsSdkDir")
+    if not sdkdir:
+        print "** WindowsSdkDir environment variable not set? Did you run vcvars32.bat?"
+        sys.exit(1)
+    baseclasses_dir = os.path.join(sdkdir, 'Samples\\multimedia\\directshow\\baseclasses')
+    if not os.path.exists(baseclasses_dir):
+        print '** Ambulant needs the DirectShow baseclasses,'
+        print '** which are part of the MS Windows API installer.'
+        print '** Expected them in', baseclasses_dir
+        print '** Please install and build them (as Administrator, probably)'
+        sys.exit(1)
+    lib_r = os.path.join(baseclasses_dir, 'Release\\strmbase.lib')
+    lib_d = os.path.join(baseclasses_dir, 'Debug\\strmbasd.lib')
+    ok = True
+    if not os.path.exists(lib_r):
+        print '** Missing:', lib_r
+        ok = False
+    if not os.path.exists(lib_d):
+        print '** Missing:', lib_d
+        ok = False
+    if not ok:
+        sln = os.path.join(baseclasses_dir, 'baseclasses.sln')
+        print '** DirectShow Baseclasses not built.'
+        print '** Please open %s (as Administrator) and build Debug and Release targets'% sln
+        sys.exit(1)
+    
     
 third_party_packages={
     'debian' : [
