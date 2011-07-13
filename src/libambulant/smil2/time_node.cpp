@@ -1208,6 +1208,8 @@ void time_node::on_bom(qtime_type timestamp) {
 		m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
+	if (m_saw_on_bom || m_saw_on_eom)
+		return;
 	m_saw_on_bom = true;
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
@@ -1238,6 +1240,10 @@ void time_node::on_rom(qtime_type timestamp) {
 void time_node::on_eom(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s[%s].on_eom()", m_attrs.get_tag().c_str(),
 		m_attrs.get_id().c_str());
+	if (!m_saw_on_bom) {
+		m_logger->debug("time_node::on_eom: simulating on_bom() which has not occurred yet for %s", get_sig().c_str());
+		on_bom(timestamp);
+	}
 	m_eom_flag = true;
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
