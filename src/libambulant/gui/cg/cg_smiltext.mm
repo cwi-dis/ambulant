@@ -707,7 +707,6 @@ cg_smiltext_renderer::attributes_are_changed(common::surface* surf) {
 	}
 	const common::region_info* ri = surf->get_info();
 	if (ri == NULL) {
-		assert(ri == NULL);
 		return rv;
 	}
 	// background color

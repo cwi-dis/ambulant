@@ -251,6 +251,7 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
 
 			const region_info *ri = (*it2)->get_info();
+			assert(ri);
 			zindex_t z = ri->get_zindex();
 			AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->subregion 0x%x (z=%d)", (void *)this, m_name.c_str(), (void *)(*it2), z);
 			if (z < last_z_index)
@@ -271,6 +272,7 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 		children_list_t& cl = (*it2).second;
 		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++) {
 			const region_info *ri = (*it3)->get_info();
+			assert(ri);
 			if(!ri || !ri->is_subregion()) {
 				zindex_t z = ri->get_zindex();
 				AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->child region 0x%x (z=%d)", (void *)this, m_name.c_str(), (void *)(*it3), z);
@@ -339,6 +341,7 @@ surface_impl::user_event(const lib::point &where, int what)
 			if (handled && what == user_event_click) break;
 			AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x) -> child 0x%x,z=%d", (void *)this, (void *)(*it2), (*it1).first);
 			const region_info *ri = (*it2)->get_info();
+			assert(ri);
 			if(!ri || !ri->is_subregion()) {
 				handled = (*it2)->user_event(our_point, what);
 			}
