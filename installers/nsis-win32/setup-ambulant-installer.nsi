@@ -1,4 +1,3 @@
-Ad=o1gl;
 ; Ambulant Player NSIS installer script.
 ; (see http://nsis.sourceforge.net for details on NSIS).
 ; 
