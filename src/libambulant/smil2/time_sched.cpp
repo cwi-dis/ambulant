@@ -48,7 +48,7 @@ scheduler::~scheduler() {
 		lock();
 		unlock();
 	}
-}
+}  
 
 // Starts a hyperlink target node
 void scheduler::start(time_node *tn) {

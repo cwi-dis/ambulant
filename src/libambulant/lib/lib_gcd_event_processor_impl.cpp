@@ -51,6 +51,9 @@ event_processor_impl_gcd::event_processor_impl_gcd(timer *t)
 {
 	m_lock.enter();
 	assert(t != 0);
+#ifdef CUSTOM_QUEUE
+	m_custom_queue = dispatch_queue_create("org.ambulantplayer.myqueue", NULL);
+#endif
 	m_lock.leave();
 }
 
@@ -160,11 +163,20 @@ event_processor_impl_gcd::add_event(event *pe, time_type t,
 		p_callback_parameter,
 		(dispatch_function_t)gb_serve_event);
 #else
+#ifdef CUSTOM_QUEUE
+	dispatch_set_target_queue(m_custom_queue, dispatch_get_global_queue(prio, 0));
+	dispatch_after_f(
+		dispatch_time(DISPATCH_TIME_NOW, t*1000000),
+		m_custom_queue,
+		pe,
+		(dispatch_function_t)gb_serve_event);
+#else
 	dispatch_after_f(
 		dispatch_time(DISPATCH_TIME_NOW, t*1000000),
 		dispatch_get_global_queue(prio, 0),
 		pe,
 		(dispatch_function_t)gb_serve_event);
+#endif // CUSTOM_QUEUE
 #endif // EVENT_PROCESSOR_WITH_LOCK
 
 #endif // WITH_LIBXDISPATCH
@@ -188,3 +200,30 @@ event_processor_impl_gcd::cancel_all_events()
 	// calling this function on global dispatch queues has no effect.
 }
 
+void
+event_processor_impl_gcd::pause()
+{
+	m_lock.enter();
+#ifdef CUSTOM_QUEUE
+	dispatch_suspend(m_custom_queue);
+#else
+	dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+	dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
+#endif
+	m_lock.leave();
+}
+
+void
+event_processor_impl_gcd::resume()
+{
+	m_lock.enter();
+#ifdef CUSTOM_QUEUE
+	dispatch_resume(m_custom_queue);
+#else
+	dispatch_resume(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	dispatch_resume(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+	dispatch_resume(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
+#endif
+	m_lock.leave();
+}
