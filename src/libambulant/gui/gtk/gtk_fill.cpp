@@ -211,7 +211,7 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	}
 	// Fill with <brush> color
 	color_t color = lib::to_color(color_attr);
-	lib::color_t bgcolor = info->get_bgcolor();
+	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	GdkColor bgc;
 	bgc.red = redc(color)*0x101;

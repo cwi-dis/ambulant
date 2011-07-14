@@ -114,7 +114,7 @@ cg_image_renderer::_prepare_image()
 
 		// Apply chroma keying.
 		// XXXJACK: by doing this here we disregard animation on chromaKeying
-		if (ri->is_chromakey_specified()) {
+		if (ri && ri->is_chromakey_specified()) {
 			double opacity = ri->get_chromakeyopacity();
 			if (opacity != 0.0 && opacity != 1.0) {
 				lib::logger::get_logger()->trace("%s: only chromaKeyOpacity values 0.0 and 1.0 supported on MacOS", m_node->get_sig().c_str());
