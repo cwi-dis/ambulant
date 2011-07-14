@@ -227,6 +227,9 @@ void smil_player::start() {
 	m_lock.enter();
 	if(m_state == common::ps_pausing) {
 		_resume();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+		m_event_processor->resume();
+#endif
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
 		if(m_root) {
@@ -270,6 +273,9 @@ void smil_player::pause() {
 	if(m_state == common::ps_playing) {
 		m_state = common::ps_pausing;
 		m_timer->pause();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+		m_event_processor->pause();
+#endif
 		std::map<const lib::node*, common::playable *>::iterator it;
 		m_playables_cs.enter();
 		for(it = m_playables.begin();it!=m_playables.end();it++)
@@ -284,6 +290,9 @@ void smil_player::pause() {
 void smil_player::resume() {
 	m_lock.enter();
 	_resume();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	m_event_processor->resume();
+#endif
 	m_lock.leave();
 }
 // internal implementation resume playback
@@ -796,10 +805,11 @@ smil_player::stopped(int n, double t) {
 		if (tn->want_on_eom()) {
 			async_arg aa((*it).second, timestamp);
 			async_cb *cb = new async_cb(this, &smil_player::stopped_async, aa);
-//XXXJACK			schedule_event(cb, 0, ep_high);
+//XXXJACK			
+			schedule_event(cb, 0, ep_high);
 			// Temporary workaround: we would like the stopped-async call to happen after the started_async.
 			// The timeout here is a gross hack to try and make that happen more often.
-			schedule_event(cb, 10000, ep_high);
+			//schedule_event(cb, 10000, ep_high);
 		}
 	}
 }

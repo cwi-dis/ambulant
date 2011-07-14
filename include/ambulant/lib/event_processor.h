@@ -62,6 +62,14 @@ class event_processor {
 	/// Cancel a previously scheduled event.
 	virtual bool cancel_event(event *pe, event_priority priority = ep_low) = 0;
 
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	/// Pause all events
+	virtual void pause() = 0;
+
+	/// Resume all events
+	virtual void resume() = 0;
+#endif // WITH_GCD_EVENT_PROCESSOR
+
 	/// Get the underlying timer.
 	virtual timer *get_timer() const = 0;
 

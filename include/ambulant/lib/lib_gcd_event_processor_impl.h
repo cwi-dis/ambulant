@@ -40,7 +40,13 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/mtsync.h"
 
+#define CUSTOM_QUEUE
+
 #undef EVENT_PROCESSOR_WITH_LOCK
+
+#ifdef CUSTOM_QUEUE
+#include <dispatch/dispatch.h>
+#endif
 
 namespace ambulant {
 
@@ -71,6 +77,8 @@ public:
 	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
 	void set_observer(event_processor_observer *obs) {m_observer = obs; };
+	void pause();
+	void resume();
 
 protected:
 	// Called by platform-specific subclasses.
@@ -85,6 +93,9 @@ protected:
 	critical_section_cv m_lock;
 #ifdef EVENT_PROCESSOR_WITH_LOCK
 	critical_section m_lock_cb;
+#endif
+#ifdef CUSTOM_QUEUE
+	dispatch_queue_t m_custom_queue;
 #endif
 };
 
