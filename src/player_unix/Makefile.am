@@ -1,6 +1,6 @@
 
 
-EXTRA_DIST=ambulant.schemas
+EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
