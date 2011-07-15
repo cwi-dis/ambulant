@@ -109,6 +109,7 @@ binary-common:
 #	dh_installemacsen
 #	dh_installpam
 	dh_installmime
+	dh_install
 	dh_icons
 #	dh_python
 #	dh_installinit
