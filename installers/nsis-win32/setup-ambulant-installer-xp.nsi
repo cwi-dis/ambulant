@@ -108,7 +108,7 @@ Section "Core Components" CoreSection
 !endif
   ${registerExtension} "$INSTDIR\AmbulantPlayerDX.exe" ".smil" "SMIL Multimedia Presentation"
   ${registerExtension} "$INSTDIR\AmbulantPlayerDX.exe" ".smi" "SMIL Multimedia Presentation"
-  WriteRegStr HKCR "SMIL Multimedia Presentation\DefaultIcon" "$INSTDIR\AmbulantPlayer.exe,1"
+  WriteRegStr HKCR "SMIL Multimedia Presentation\DefaultIcon" "" "$INSTDIR\AmbulantPlayer.exe,1"
 
   CreateDirectory "$SMPROGRAMS\Ambulant"
   CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"
