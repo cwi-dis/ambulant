@@ -1180,8 +1180,8 @@ void time_node::on_bom(qtime_type timestamp) {
 		m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
-    if (m_saw_on_bom || m_saw_on_eom)
-        return;
+	if (m_saw_on_bom || m_saw_on_eom)
+		return;
 	m_saw_on_bom = true;
 
 	m_eom_flag = false;
@@ -1212,10 +1212,10 @@ void time_node::on_rom(qtime_type timestamp) {
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s.on_eom()", get_sig().c_str());
-    if (!m_saw_on_bom) {
-        AM_DBG m_logger->debug("time_node::on_eom: simulating on_bom()");
-        on_bom(timestamp);
-    }
+	if (!m_saw_on_bom) {
+		m_logger->debug("time_node::on_eom: simulating on_bom() which has not occurred yet for %s", get_sig().c_str());
+		on_bom(timestamp);
+	}
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
 	m_saw_on_eom = true;
