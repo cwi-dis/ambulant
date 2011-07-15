@@ -366,7 +366,7 @@ void
 d2_smiltext_renderer::smiltext_changed()
 {
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_smiltext_renderer::smiltext_changed");
+	AM_DBG lib::logger::get_logger()->debug("d2_smiltext_renderer::smiltext_changed");
 	m_engine.lock();
 	if (_collect_text())
 		_recreate_layout();

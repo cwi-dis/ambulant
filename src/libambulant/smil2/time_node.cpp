@@ -1008,6 +1008,7 @@ void time_node::exec(qtime_type timestamp) {
 	}
 
 	if(m_update_event.first) {
+		AM_DBG m_logger->debug("timenode::exec(%ld): calling %s.sync_update(%ld)", timestamp.second(), get_sig().c_str(), m_update_event.second.second());
 		sync_update(m_update_event.second);
 		m_update_event.first = false;
 	}
@@ -1175,7 +1176,6 @@ bool time_node::on_eosd(qtime_type timestamp) {
 // Currently this notification is not used.
 // Could be used to define the slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
-	m_eom_flag = false;
 	if (m_saw_on_bom)
 		m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
 	if (m_saw_on_eom)
@@ -1183,6 +1183,8 @@ void time_node::on_bom(qtime_type timestamp) {
     if (m_saw_on_bom || m_saw_on_eom)
         return;
 	m_saw_on_bom = true;
+
+	m_eom_flag = false;
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
@@ -1210,7 +1212,6 @@ void time_node::on_rom(qtime_type timestamp) {
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s.on_eom()", get_sig().c_str());
-	m_eom_flag = true;
     if (!m_saw_on_bom) {
         AM_DBG m_logger->debug("time_node::on_eom: simulating on_bom()");
         on_bom(timestamp);
@@ -1218,12 +1219,15 @@ void time_node::on_eom(qtime_type timestamp) {
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
 	m_saw_on_eom = true;
+
+	m_eom_flag = true;
 	if(is_playable() && !is_discrete()) {
 		if(m_impldur == time_type::unresolved) {
 			time_type pt = timestamp.as_node_time(sync_node());
 			m_impldur = pt - m_interval.begin();
 		}
 		if (m_state->ident() == ts_active) {
+			AM_DBG m_logger->debug("time_node::on_eom: raise update event for active %s", get_sig().c_str());
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}

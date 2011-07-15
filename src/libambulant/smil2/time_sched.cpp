@@ -284,7 +284,7 @@ scheduler::time_type scheduler::_exec(time_type now) {
 	// get all the pending events from the timegraph
 	m_root->get_pending_events(events);
 	if(events.empty()) {
-		AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d no events", now);
+		AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d no events, return next=%d", now, next);
 		return next;
 	}
 	event_map_t::iterator eit = events.begin();
