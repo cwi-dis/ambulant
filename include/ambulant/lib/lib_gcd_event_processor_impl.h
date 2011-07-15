@@ -40,12 +40,12 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/mtsync.h"
 
-#define CUSTOM_QUEUE
+#undef CUSTOM_QUEUE
 
 #undef EVENT_PROCESSOR_WITH_LOCK
 
 #ifdef CUSTOM_QUEUE
-#include <dispatch/dispatch.h>
+//#include <dispatch/dispatch.h>
 #endif
 
 namespace ambulant {
