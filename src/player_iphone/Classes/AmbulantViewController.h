@@ -83,6 +83,7 @@ enum ZoomState {
 	IBOutlet UIButton* playPauseButton;
 	NSString* currentURL;      // The document that is currently playing (or will play shortly)
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
+    BOOL is_visible;    // Set by viewDidAppear, cleared by viewWillDisappear
 }
 
 // Lifecycle
@@ -91,6 +92,7 @@ enum ZoomState {
 - (void) viewDidLoad;
 - (void) viewWillAppear:(BOOL)animated;
 - (void) viewDidAppear:(BOOL)animated;
+- (void) viewWillDisappear:(BOOL)animated;
 - (void) viewDidUnload;
 - (void) willTerminate;
 
@@ -100,6 +102,7 @@ enum ZoomState {
 - (PlaylistItem*) currentItem;
 - (void) pause;
 - (void) play;
+- (void) stopped;
 
 // View control
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;

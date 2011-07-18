@@ -366,7 +366,7 @@ getPresentationViewWithIndex: (NSUInteger) index
 - (void)
 document_stopped: (id) sender
 {
-	[viewController pause]; // to activate the 'Play" button
+	[viewController stopped]; // to activate the 'Play" button
 }
 
 - (void) settingsHaveChanged:(SettingsViewController *)controller {

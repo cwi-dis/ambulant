@@ -69,6 +69,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void) awakeFromNib
 {
     AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
+    is_visible = NO;
 
 	// prepare to react when device is rotated
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -141,18 +142,29 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void)viewWillAppear:(BOOL)animated
 {
 	AM_DBG NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	AM_DBG NSLog(@"AmbulantViewController viewWillDisappear(0x%x)", self);
+    [super viewWillDisappear:animated];
+    is_visible = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
 	AM_DBG NSLog(@"AmbulantViewController viewDidAppear(0x%x)", self);
+    [super viewDidAppear:animated];
     [self play];
+    is_visible = YES;
 }
 
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 	AM_DBG NSLog(@"AmbulantViewController viewDidUnLoad:self=0x%x", self);
+    [super viewDidUnload];
 }
 
 - (void) willTerminate
@@ -165,6 +177,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (currentURL)
 		[currentURL release];
     currentURL = nil;
+    [super willTerminate];
 }
 
 - (void)dealloc {
@@ -207,7 +220,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			myMainloop->goto_node_repr(node_repr);
 		}
 		[self showInteractionView: NO];
-        // play will be called in viewDidAppear
+        if (is_visible) {
+            [self play];
+        } else {
+            // play will be called in viewDidAppear
+        }
 	}
 }
 
@@ -223,6 +240,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
 	   [playPauseButton setImage:playImage forState:UIControlStateNormal];
 	}
+}
+
+- (void) stopped {
+    UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
+   [playPauseButton setImage:playImage forState:UIControlStateNormal];
 }
 
 - (void) play {
