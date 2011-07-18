@@ -1,2 +1,6 @@
 usr/bin/AmbulantPlayer_gtk
 usr/bin/AmbulantPlayer
+usr/share/applications/ambulant-gnome.desktop
+usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png

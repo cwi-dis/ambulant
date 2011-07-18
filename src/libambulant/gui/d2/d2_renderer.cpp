@@ -76,9 +76,13 @@ d2_transition_renderer::get_current_rendertarget()
 	ID2D1RenderTarget* rv = d2player->get_fullscreen_rendertarget(); // fullscreen trans. active
 	if (rv == NULL)	{
 		rv = this->m_transition_rendertarget;		  // normal transition active
+	} else {
+		rv->AddRef();
 	}
 	if (rv == NULL) {
 		rv = d2player->get_rendertarget();			  // no transition active
+	} else {
+		rv->AddRef();
 	}
 	return rv;
 }
@@ -90,12 +94,14 @@ d2_transition_renderer::get_transition_rendertarget ()
 		if (m_transition_rendertarget == NULL) {
 			// Create a new target for drawing objects that need to be translated
 			ID2D1RenderTarget* rt = get_d2player()->get_rendertarget();
+			assert(rt);
 			HRESULT hr = rt->CreateCompatibleRenderTarget(&m_transition_rendertarget);
 			if (FAILED(hr)) {
 				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
 			} else {
 				m_transition_rendertarget->BeginDraw();
 			}
+			rt->Release();
 		}
 		return m_transition_rendertarget;
 	}
@@ -155,7 +161,10 @@ d2_transition_renderer::check_fullscreen_outtrans(const lib::node* node)
 			lib::logger::get_logger()->debug("d2_transition_renderer:check_fullscreen_outtrans(0x%x) scope=%s", this, scope);
 			d2_player* d2player = get_d2player();
 			if (d2player->get_fullscreen_old_bitmap() == NULL) {
-				d2player->take_fullscreen_shot(d2player->get_rendertarget());
+				ID2D1RenderTarget* rt = d2player->get_rendertarget();
+				assert(rt);
+				d2player->take_fullscreen_shot(rt);
+				rt->Release();
 			}
 		}
 	}
@@ -239,6 +248,7 @@ d2_transition_renderer::redraw_post(gui_window *window)
 					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
 					rt->DrawBitmap(old_bitmap);
 					HRESULT hr = rt->Flush();
+					rt->Release();
 				}
 				if (new_bitmap != NULL) {
 					ID2D1RenderTarget* brt = d2_player->get_fullscreen_rendertarget();
@@ -251,6 +261,7 @@ d2_transition_renderer::redraw_post(gui_window *window)
 					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
 					rt->DrawBitmap(old_bitmap);
 					HRESULT hr = rt->Flush();
+					rt->Release();
 				}
 			}
 			get_d2player()->screen_transition_step(m_trans_engine, m_event_processor->get_timer()->elapsed());

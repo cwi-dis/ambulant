@@ -122,8 +122,6 @@ d2_fill_renderer::recreate_d2d()
 	if (m_brush) return;
 	m_lock.enter();
 	HRESULT hr = S_OK;
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
-	assert(rt);
 
 	// Get color and alpha info from the SMIL node
 	const char *color_attr = m_node->get_attribute("color");
@@ -132,15 +130,21 @@ d2_fill_renderer::recreate_d2d()
 		m_lock.leave();
 		return;
 	}
+
 	color_t color = lib::to_color(color_attr);
 	AM_DBG lib::logger::get_logger()->debug("d2_fill_renderer.redraw: clearing to 0x%x", (long)color);
 	double alfa = 1.0;
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
 
+	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
+	assert(rt);
+
 	// Create the corresponding D2D brush
 	hr = rt->CreateSolidColorBrush(D2D1::ColorF(redf(color), greenf(color), bluef(color), alfa), &m_brush);
 	if (!SUCCEEDED(hr)) lib::logger::get_logger()->trace("CreateSolidColorBrush: error 0x%x", hr);
+
+	rt->Release();
 	m_lock.leave();
 }
 
@@ -183,6 +187,7 @@ d2_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
+
 	D2D1_RECT_F rr = d2_rectf(dstrect);
 	rt->FillRectangle(rr, m_brush);
 #ifdef D2D_NOTYET
@@ -195,6 +200,7 @@ d2_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 			operation: NSCompositeSourceAtop fraction: (float)1.0];
 	}
 #endif
+	rt->Release();
 }
 
 void
@@ -263,6 +269,7 @@ d2_background_renderer::recreate_d2d()
 	} else {
 		m_mustrender = false;
 	}
+	rt->Release();
 }
 
 void

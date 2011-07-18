@@ -219,9 +219,12 @@ class AMBULANTAPI d2_player :
 	// Global capture-callback: saves snapshots, keeps bitmap for transitions, etc.
 	void captured(IWICBitmap *bitmap);
 
+	// Get current rendertarget. Note: you must call Release() when
+	// done with the rendertarget.
+	ID2D1HwndRenderTarget* get_rendertarget();
+
 	// Get current rendertarget, used while redrawing transitions
-	ID2D1HwndRenderTarget* get_rendertarget() {return m_cur_wininfo ? m_cur_wininfo->m_rendertarget : NULL; }
-	ID2D1BitmapRenderTarget* get_transition_rendertarget() {return m_transition_rendertarget; }
+	ID2D1BitmapRenderTarget* get_transition_rendertarget();
 	
 	// Get current hwnd
 	HWND get_hwnd() {

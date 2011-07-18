@@ -256,6 +256,7 @@ gui::d2::d2_img_renderer::recreate_d2d()
 	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
+	rt->Release();
 }
 
 void

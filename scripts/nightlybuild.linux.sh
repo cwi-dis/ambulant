@@ -17,7 +17,7 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.3
-ARCH=`uname -p`
+ARCH=`uname -m`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
@@ -38,7 +38,7 @@ CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npamb
 MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
 DESTINATION_SRC=$DESTINATION/src
-DESTINATION_NPAMBULANT=$DESTINATION/linux-intel-firefoxplugin
+DESTINATION_NPAMBULANT=$DESTINATION/linux-$ARCH-firefoxplugin
 
 echo
 echo ==========================================================

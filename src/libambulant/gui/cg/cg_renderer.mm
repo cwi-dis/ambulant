@@ -294,8 +294,6 @@ cg_transition_renderer::stop()
 	[view decrementTransitionCount];
 	if (m_fullscreen) {
 		[view endScreenTransition];
-	} else {
-		[view releaseTransitionSurfaces];
 	}
 
 	m_lock.leave();

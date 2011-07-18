@@ -30,6 +30,10 @@
 // If you don't have it you should re-install the SDK and include the sample code.
 #include "streams.h"
 
+// To enable screenshots you must define WITH_SCREENSHOT. But there is a price
+// to pay: each frame will be copied.
+#define WITH_SCREENSHOT
+
 interface ID2D1RenderTarget;
 interface ID2D1Bitmap;
 class CVideoD2DBitmapRenderer;
@@ -78,7 +82,12 @@ class AMBULANTAPI CVideoD2DBitmapRenderer : public CBaseVideoRenderer
 	/// Free the current bitmap.
 	void DestroyBitmap();
 private:
+	// Convert the DX m_sample to the D2D m_d2bitmap
+	HRESULT _SampleToBitmap(BYTE *data);
 	ID2D1RenderTarget *m_rt;
+#ifdef WITH_SCREENSHOT
+	BYTE *m_sample_data;
+#endif
 	ID2D1Bitmap *m_d2bitmap;
 	IVideoD2DBitmapRendererCallback *m_callback;
 	int m_width;   // Video width

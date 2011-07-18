@@ -32,15 +32,25 @@ Building for Linux
 ------------------
 
 After unpacking Ambulant you should first download and build the required
-3rd party packages. In third_party_packages, run the following command:
+3rd party packages. In third_party_packages, run one of the following commands:
 
 	python ../scripts/build-third-party-packages.py linux
 	
-This will install all needed packages (insofar they are not installed
+or
+	
+
+	python ../scripts/build-third-party-packages.py linux
+	
+The first version will install all needed packages (insofar they are not installed
 on your system yet) in "third_party_packages/installed", and configure
-and make will pick them up from there. You could also use "debian"
-in stead of "linux", then the third party packages will be installed
-system-wide through the package manager.
+and make will pick them up from there. This method will not pollute your
+system with lots of packages you may nnot be interested in.
+
+You could also use "debian" in stead of "linux", then the third party
+packages will be installed system-wide through the package manager.
+This is actually preferred for most users, as components like the
+Ambulant Python module will now automatically pick up the packages
+without needing LD_LIBRARY_PATH or such tricks.
 
 
 After this, the normal "configure"/"make"/"make install" combo can be used here

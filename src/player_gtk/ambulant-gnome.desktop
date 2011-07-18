@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=AmbulantPlayer
+Comment=Multimedia Player for SMIL3.0 presentations
+Categories=GNOME;AudioVideo;
+Exec=AmbulantPlayer_gtk %u
+Icon=/usr/share/ambulant/icons/Ambulant.png
+Terminal=false
+Type=Application
+MimeType=application/smil;application/x-smil;

@@ -36,7 +36,7 @@ using namespace ambulant;
 // -------------------
 class xpath_state_component : public common::state_component {
   public:
-	xpath_state_component();
+	xpath_state_component(ambulant::common::factories* factory);
 	virtual ~xpath_state_component();
 
 	/// Register the systemTest/customTest API
@@ -68,9 +68,16 @@ class xpath_state_component : public common::state_component {
 
 	/// Register interest in stateChange events
 	void want_state_change(const char *ref, common::state_change_callback *cb);
+  
   private:
-	void _check_state_change(xmlNodePtr changed);
+  
+	// Helper: call relevant state_change_callbacks.
+    void _check_state_change(xmlNodePtr changed);
+    
+    // Helper: construct query string for submission.
+    std::string _node_as_form_urlencoded(xmlNodePtr node);
 
+    ambulant::common::factories* m_factories;
 	xmlDocPtr m_state;
 	xmlXPathContextPtr m_context;
 	common::state_test_methods *m_state_test_methods;
@@ -205,17 +212,24 @@ smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
 }
 } // extern "C"
 
+
 // -------------------
 class xpath_state_component_factory : public common::state_component_factory {
   public:
-	virtual ~xpath_state_component_factory() {};
+    xpath_state_component_factory(ambulant::common::factories* factory)
+    :   m_factories(factory)
+    {};
+    virtual ~xpath_state_component_factory() {}
 
 	common::state_component *new_state_component(const char *uri);
+  protected:
+    ambulant::common::factories* m_factories;
 };
 
 // -------------------
-xpath_state_component::xpath_state_component()
-:	m_state(NULL),
+xpath_state_component::xpath_state_component(ambulant::common::factories* factory)
+:	m_factories(factory),
+    m_state(NULL),
 	m_context(NULL),
 	m_state_test_methods(NULL)
 {
@@ -547,34 +561,96 @@ xpath_state_component::send(const lib::node *submission)
 {
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::send(%s)", submission->get_sig().c_str());
 	if (m_state == NULL || m_context == NULL) {
-		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		lib::logger::get_logger()->trace("xpath_state_component: send: state not initialized");
 		return;
 	}
 	m_context->node = xmlDocGetRootElement(m_state);
 	assert(submission);
+
 	const char *method = submission->get_attribute("method");
-	if (method && strcmp(method, "put") != 0) {
-		lib::logger::get_logger()->trace("xpath_state_component: only method=\"put\" implemented");
+	bool is_get = false, is_put = false;
+	if (method && strcmp(method, "put") == 0) {
+		is_put = true;
+	} else if (method && strcmp(method, "get") == 0) {
+		is_get = true;
+	} else {
+		lib::logger::get_logger()->trace("xpath_state_component: send: unknown method=\"%s\"", method);
 		return;
 	}
 	const char *replace = submission->get_attribute("replace");
-	if (replace && strcmp(replace, "none") != 0) {
-		lib::logger::get_logger()->trace("xpath_state_component: only replace=\"none\" implemented");
-		return;
-	}
+
 	net::url dst_url = submission->get_url("action");
 	if (dst_url.is_empty_path()) {
-		lib::logger::get_logger()->trace("xpath_state_component: submission action attribute missing");
+		lib::logger::get_logger()->trace("xpath_state_component: send: submission action attribute missing");
 		return;
 	}
-	if (!dst_url.is_local_file()) {
-		lib::logger::get_logger()->trace("xpath_state_component: only file: scheme implemented for <send>");
+
+	if (dst_url.is_local_file()) {
+		if (!is_put) {
+			lib::logger::get_logger()->trace("xpath_state_component: send: only method=\"put\" implemented for file: URLs");
+			return;
+		}
+        if (replace && strcmp(replace, "none") != 0) {
+            lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
+            return;
+        }
+		std::string dst_filename = dst_url.get_file();
+		FILE *fp = fopen(dst_filename.c_str(), "w");
+		// XXXJACK: we're ignoring ref here...
+		xmlDocDump(fp, m_state);
+		fclose(fp);
+	} else {
+		// Lazy implementor warning in effect: For now we only need get, and with url-encoded data and no return value.
+		if (!is_get) {
+			lib::logger::get_logger()->trace("xpath_state_component: send: only method=\"get\" implemented for nonlocal URLs");
+			return;
+		}
+		const char *ref = submission->get_attribute("ref");
+		m_context->node = xmlDocGetRootElement(m_state);
+		
+		// Get the set of nodes that ref points to, or the root.
+		xmlNodePtr refnode;
+		if (ref == NULL) {
+			refnode = m_context->node; // The root
+		} else {
+			xmlXPathObjectPtr refobj = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+			if (refobj == NULL) {
+				lib::logger::get_logger()->trace("xpath_state_component: send: cannot evaluate ref=\"%s\"", ref);
+				return;
+			}
+			if (refobj->type != XPATH_NODESET) {
+				lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" is not a node-set", ref);
+				return;
+			}
+			xmlNodeSetPtr nodeset = refobj->nodesetval;
+			if (nodeset == NULL) {
+				lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" does not refer to an existing item", ref);
+				return;
+			}
+			if (nodeset->nodeNr != 1) {
+				lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+				return;
+			}
+			// Finally set the value
+			refnode = *nodeset->nodeTab;
+		}
+		assert(refnode);
+		std::string query = _node_as_form_urlencoded(refnode);
+		net::url query_url = net::url::from_url(dst_url.get_url() + "?" + query);
+        char *data = NULL;
+        size_t datasize = 0;
+        lib::logger::get_logger()->trace("xpath_state_component: submitting to URL <%s>", query_url.get_url().c_str());
+        if (!net::read_data_from_url(query_url, m_factories->get_datasource_factory(), &data, &datasize)) {
+            lib::logger::get_logger()->error("%s: Cannot open", query_url.get_url().c_str());
+            return;
+        }
+        // Lazy programmer: here we could parse data and insert into the tree.
+        if (replace && strcmp(replace, "none") != 0) {
+            lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
+            return;
+        }
 		return;
 	}
-	std::string dst_filename = dst_url.get_file();
-	FILE *fp = fopen(dst_filename.c_str(), "w");
-	xmlDocDump(fp, m_state);
-	fclose(fp);
 }
 
 std::string
@@ -648,13 +724,39 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 	}
 }
 
+// Helper function: get data from a subtree and return it as an application/x-www-form-urlencoded string
+std::string
+xpath_state_component::_node_as_form_urlencoded(xmlNodePtr node)
+{
+	std::string rv;
+	std::string node_data;
+    if (xmlChildElementCount(node) == 0)
+        node_data = (char *)xmlNodeGetContent(node);
+	std::string node_name = (char *)node->name;
+	if (node_data != "") {
+		rv = node_name + "=" + node_data;
+	}
+	xmlNodePtr child;
+	for(child=xmlFirstElementChild(node); child; child=xmlNextElementSibling(child)) {
+		std::string nextvalue = _node_as_form_urlencoded(child);
+		if (nextvalue != "") {
+			if (rv != "") {
+				rv = rv + "&" + nextvalue;
+			} else {
+				rv = nextvalue;
+			}
+		}
+	}
+	return rv;
+}
+
 // -------------------
 common::state_component *
 xpath_state_component_factory::new_state_component(const char *uri)
 {
 	if (strcmp(uri, "http://www.w3.org/TR/1999/REC-xpath-19991116") == 0) {
 		AM_DBG lib::logger::get_logger()->debug("xpath_state_component_factory::new_state_component: returned state_component");
-		return new xpath_state_component();
+		return new xpath_state_component(m_factories);
 	}
 	lib::logger::get_logger()->trace("xpath_state_component_factory::new_state_component: no support for language %s", uri);
 	return NULL;
@@ -687,7 +789,7 @@ void initialize(
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
 	common::global_state_component_factory *scf = factory->get_state_component_factory();
 	if (scf) {
-		xpath_state_component_factory *dscf = new xpath_state_component_factory();
+		xpath_state_component_factory *dscf = new xpath_state_component_factory(factory);
 		scf->add_factory(dscf);
 		lib::logger::get_logger()->trace("xpath_state_plugin: registered");
 	}

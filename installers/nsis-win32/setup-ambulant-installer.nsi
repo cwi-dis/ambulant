@@ -1,4 +1,3 @@
-;
 ; Ambulant Player NSIS installer script.
 ; (see http://nsis.sourceforge.net for details on NSIS).
 ; 
@@ -108,6 +107,8 @@ Section "Core Components" CoreSection
 !endif
   ${registerExtension} "$INSTDIR\AmbulantPlayer.exe" ".smil" "SMIL Multimedia Presentation"
   ${registerExtension} "$INSTDIR\AmbulantPlayer.exe" ".smi" "SMIL Multimedia Presentation"
+  ; registerExtension uses ,0 for the icon, which is incorrect. Fix it:
+  WriteRegStr HKCR "SMIL Multimedia Presentation\DefaultIcon" "" "$INSTDIR\AmbulantPlayer.exe,1"
 
   CreateDirectory "$SMPROGRAMS\Ambulant"
   CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"

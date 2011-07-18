@@ -91,7 +91,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		assert(bestrep);
 		// If we need to do chroma keying we do it now. We have to go via a CGImage to do it, though...
 		// XXX By doing it here and not later we disable animation on the chromakey attributes...
-		if (ri->is_chromakey_specified()) {
+		if (ri && ri->is_chromakey_specified()) {
 			double opacity = ri->get_chromakeyopacity();
 			if (opacity != 0.0 && opacity != 1.0) {
 				lib::logger::get_logger()->trace("%s: only chromaKeyOpacity values 0.0 and 1.0 supported on MacOS", m_node->get_sig().c_str());
