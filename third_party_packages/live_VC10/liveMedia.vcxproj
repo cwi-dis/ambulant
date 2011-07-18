@@ -124,7 +124,10 @@
     <ClCompile Include="..\live\liveMedia\H263plusVideoRTPSink.cpp" />
     <ClCompile Include="..\live\liveMedia\H263plusVideoRTPSource.cpp" />
     <ClCompile Include="..\live\liveMedia\H264VideoRTPSource.cpp" />
-    <ClCompile Include="..\live\liveMedia\HTTPSink.cpp" />
+    <ClCompile Include="..\live\liveMedia\HTTPSink.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\live\liveMedia\InputFile.cpp" />
     <ClCompile Include="..\live\liveMedia\JPEGVideoRTPSink.cpp" />
     <ClCompile Include="..\live\liveMedia\JPEGVideoRTPSource.cpp" />
@@ -156,7 +159,10 @@
     <ClCompile Include="..\live\liveMedia\MPEG1or2DemuxedServerMediaSubsession.cpp" />
     <ClCompile Include="..\live\liveMedia\MPEG1or2FileServerDemux.cpp" />
     <ClCompile Include="..\live\liveMedia\MPEG1or2VideoFileServerMediaSubsession.cpp" />
-    <ClCompile Include="..\live\liveMedia\MPEG1or2VideoHTTPSink.cpp" />
+    <ClCompile Include="..\live\liveMedia\MPEG1or2VideoHTTPSink.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\live\liveMedia\MPEG1or2VideoRTPSink.cpp" />
     <ClCompile Include="..\live\liveMedia\MPEG1or2VideoRTPSource.cpp" />
     <ClCompile Include="..\live\liveMedia\MPEG1or2VideoStreamDiscreteFramer.cpp" />
