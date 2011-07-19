@@ -228,7 +228,7 @@ void smil_player::start() {
 	if(m_state == common::ps_pausing) {
 		_resume();
 #ifdef WITH_GCD_EVENT_PROCESSOR
-		m_event_processor->resume();
+		//m_event_processor->resume();
 #endif
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
@@ -274,7 +274,7 @@ void smil_player::pause() {
 		m_state = common::ps_pausing;
 		m_timer->pause();
 #ifdef WITH_GCD_EVENT_PROCESSOR
-		m_event_processor->pause();
+		//m_event_processor->pause();
 #endif
 		std::map<const lib::node*, common::playable *>::iterator it;
 		m_playables_cs.enter();
@@ -291,7 +291,7 @@ void smil_player::resume() {
 	m_lock.enter();
 	_resume();
 #ifdef WITH_GCD_EVENT_PROCESSOR
-	m_event_processor->resume();
+	//m_event_processor->resume();
 #endif
 	m_lock.leave();
 }

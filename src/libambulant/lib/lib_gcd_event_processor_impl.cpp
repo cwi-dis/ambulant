@@ -200,6 +200,7 @@ event_processor_impl_gcd::cancel_all_events()
 	// calling this function on global dispatch queues has no effect.
 }
 
+#ifdef CUSTOM_QUEUE
 void
 event_processor_impl_gcd::pause()
 {
@@ -227,3 +228,4 @@ event_processor_impl_gcd::resume()
 #endif
 	m_lock.leave();
 }
+#endif // CUSTOM_QUEUE

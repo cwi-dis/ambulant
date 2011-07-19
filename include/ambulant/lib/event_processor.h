@@ -62,14 +62,6 @@ class event_processor {
 	/// Cancel a previously scheduled event.
 	virtual bool cancel_event(event *pe, event_priority priority = ep_low) = 0;
 
-#ifdef WITH_GCD_EVENT_PROCESSOR
-	/// Pause all events
-	virtual void pause() = 0;
-
-	/// Resume all events
-	virtual void resume() = 0;
-#endif // WITH_GCD_EVENT_PROCESSOR
-
 	/// Get the underlying timer.
 	virtual timer *get_timer() const = 0;
 
@@ -145,7 +137,7 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 
 	// serve a single event from a delta_timer run queue
 	// return true if an event was served
-	bool _serve_event(delta_timer& dt, std::queue<event*> *qp);
+	bool _serve_event(delta_timer& dt, std::queue<event*> *qp, event_priority priority);
 
 	// high priority delta timer and its event queue
 	delta_timer m_high_delta_timer;

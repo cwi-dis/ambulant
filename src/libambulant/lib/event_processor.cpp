@@ -20,7 +20,7 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
-//#define GB_GCD_WIN
+#define GB_GCD_WIN
 //#define WITH_LIBXDISPATCH
 #ifdef GB_GCD_WIN
 #ifdef WITH_LIBXDISPATCH
@@ -187,20 +187,20 @@ event_processor_impl::_serve_events()
 		AM_DBG lib::logger::get_logger()->debug("_serve_events: %d hi, %d med, %d lo", m_high_q.size(), m_med_q.size(), m_low_q.size());
 		// There was at least one event
 		// First try to serve the high priority event
-		if (_serve_event(m_high_delta_timer, &m_high_q)) {
+		if (_serve_event(m_high_delta_timer, &m_high_q, ep_high)) {
 			// serving the event may generate another event
 			// of any priority, must check all queues again
 			continue;
 		}
 		// If there was no high priority event, then try to
 		// serve one medium priority event
-		if (_serve_event(m_med_delta_timer, &m_med_q))
+		if (_serve_event(m_med_delta_timer, &m_med_q, ep_med))
 			// again, serving this event may generate another
 			// of any priority, so check all queues
 			continue;
 		// There was no medium priority event either, so
 		// it must be a low priority event
-		(void) _serve_event(m_low_delta_timer, &m_low_q);
+		(void) _serve_event(m_low_delta_timer, &m_low_q, ep_low);
 	}
 
 	timer::signed_time_type drift = m_timer->get_drift();
@@ -263,7 +263,7 @@ void gb_serve_event_1(event *gb_e)
 #endif
 
 bool
-event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
+event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp, event_priority priority)
 // serve a single event from a delta_timer run queue
 // return true if an event was served
 {
@@ -282,7 +282,21 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",e);
 		});
 #else
-		dispatch_async_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), e, (dispatch_function_t)gb_serve_event_1);
+		int prio;
+		switch (priority) {
+		case ep_high:
+			prio = DISPATCH_QUEUE_PRIORITY_HIGH;
+			break;
+		case ep_med:
+			prio = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+			break;
+		case ep_low:
+			prio = DISPATCH_QUEUE_PRIORITY_LOW;
+			break;
+		default:
+			assert(0);
+		}
+		dispatch_async_f(dispatch_get_global_queue(prio, 0), e, (dispatch_function_t)gb_serve_event_1);
 #endif
 		 
 #else

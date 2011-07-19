@@ -77,8 +77,10 @@ public:
 	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
 	void set_observer(event_processor_observer *obs) {m_observer = obs; };
+#ifdef CUSTOM_QUEUE
 	void pause();
 	void resume();
+#endif
 
 protected:
 	// Called by platform-specific subclasses.
