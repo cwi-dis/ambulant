@@ -30,13 +30,18 @@ TODAY=`date +%Y%m%d`
 
 # The rest should be automatic
 case x$BRANCH in
-x)	;;
+x)	
+	;;
+release*)
+	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=
+	;;
 *)
 	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=.$TODAY
 esac
 CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
-VERSIONSUFFIX=.$TODAY
 DESTINATION_DEBIAN=$DESTINATION/debian/
 
 echo

@@ -26,17 +26,23 @@ TODAY=`date +%Y%m%d`
 
 # The rest should be automatic
 case x$BRANCH in
-x)	;;
+x)	
+	;;
+release*)
+	TODAY=$TODAY-$BRANCH
+	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=
+	;;
 *)
 	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=.$TODAY
 esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=linux
 CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
 MAKEOPTS=
-VERSIONSUFFIX=.$TODAY
 DESTINATION_SRC=$DESTINATION/src
 DESTINATION_NPAMBULANT=$DESTINATION/linux-$ARCH-firefoxplugin
 
