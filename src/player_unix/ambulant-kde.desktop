@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=AmbulantPlayer_qt
+Comment=Multimedia Player for SMIL3.0 presentations
+Categories=KDE;AudioVideo;
+Exec=AmbulantPlayer_qt %u
+Icon=/usr/share/ambulant/icons/Ambulant.png
+Terminal=false
+Type=Application
+MimeType=application/smil;application/x-smil;

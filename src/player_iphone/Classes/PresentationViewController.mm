@@ -78,7 +78,7 @@ isHistory {
 {
     [super viewDidLoad];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
-	self.tableView.rowHeight = 60;
+//	self.tableView.rowHeight = 60;
 	if (presentationsArray == NULL) {
 		presentationsArray = [[NSMutableArray alloc] init];
 	}
@@ -142,16 +142,30 @@ isHistory {
     
 	// Configure the cell.
 	try {
-		Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
-		UIImageView* posterView = (UIImageView*) [ cell viewWithTag:5]; // tags are assigned in the nib
+		Presentation* aPresentation = [presentationsArray objectAtIndex: indexPath.row ];
+		UIImageView* posterView = (UIImageView*) [cell viewWithTag:5]; // tags are assigned in the nib
 		posterView.contentMode = UIViewContentModeScaleAspectFit;
 		posterView.image = [UIImage imageWithData: [aPresentation poster_data]];
 		[posterView setNeedsDisplay];
-		UILabel* label = (UILabel*) [ cell viewWithTag: 1];
+		
+		// Set the title
+		UILabel* label = (UILabel*) [cell viewWithTag: 1];
 		label.text = aPresentation.title;
-		label = (UILabel*) [ cell viewWithTag: 2];
+		
+		// Set the duration
+		label = (UILabel*) [cell viewWithTag: 2];
 		label.text = aPresentation.duration;
-		label = (UILabel*) [ cell viewWithTag: 3];
+		
+		// Set the progress
+		UIButton *button = (UIButton*)[cell viewWithTag: 6];
+		// TBD
+		
+		// Set the author
+		label = (UILabel*) [cell viewWithTag: 4];
+		// TBD
+		
+		// Set the description
+		label = (UILabel*) [cell viewWithTag: 3];
 		label.text = aPresentation.description;
 	}
 	catch (NSException* exception) {
