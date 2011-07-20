@@ -2,6 +2,7 @@
 /build/
 /BUILD/
 /Build/
+/debian/tmp/
 /Release/
 /Debug/
 ^lib/win32/.*\.exp
@@ -60,5 +61,8 @@ Makefile.in
 .*\.xcodeproj/.*\.mode1v3
 .*\.pyc
 .*\.pyo
-
-
+.*/Makefile$
+.*/Makefile\.in$
+.*/\.Plo
+.*/\.lo
+.*/\.o
