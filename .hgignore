@@ -3,11 +3,11 @@
 /BUILD/
 /Build/
 /DEBIAN/
-/debian/ambulant-gnome/
-/debian/ambulant-kde/
-/debian/libambulant/
-/debian/libambulant-dev/
-/debian/tmp/
+debian/ambulant-gnome/
+debian/ambulant-kde/
+debian/libambulant/
+debian/libambulant-dev/
+debian/tmp/
 /Release/
 /Debug/
 ^lib/win32/.*\.exp
