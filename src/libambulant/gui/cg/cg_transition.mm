@@ -17,16 +17,11 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef	WITH_UIKIT
-#include <UIKit/UIKit.h>
-#else	WITH_UIKIT
-#include <AppKit/AppKit.h>
-#endif//WITH_UIKIT
 #include "ambulant/gui/cg/cg_transition.h"
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/lib/logger.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -36,25 +31,6 @@ namespace ambulant {
 namespace gui {
 
 namespace cg {
-
-// Helper functions to setup and finalize transitions
-static CGLayer*
-setup_transition (bool outtrans, AmbulantView *view)
-{
-	CGLayer* rv = NULL;
-	if (outtrans) {
-		rv = [view getTransitionTmpSurface];
-		return rv;
-	} else {
-		rv = [view getTransitionSurface];
-	}
-	return rv;
-}
-
-static void
-finalize_transition(bool outtrans, common::surface *dst)
-{
-}
 	
 // Helper function: add a clockwise defined rectangle to the path of a CGContext
 // This is used for out transitions to reverse the effect of the counter-clockwise defined 
@@ -96,7 +72,6 @@ cg_transition_blitclass_rect::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-	CGLayerRef cg_layer = setup_transition(false, view);
 	lib::rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	newrect_whole &= m_dst->get_clipped_screen_rect();
@@ -117,7 +92,7 @@ cg_transition_blitclass_rect::update()
 	}
 	CGContextAddRect(ctx, cg_clipped_rect);
 	CGContextClip(ctx);
-	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
+	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
 }
 
@@ -232,6 +207,7 @@ cg_transition_blitclass_poly::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
+	
 	CGContextRef ctx = [view getCGContext];
 	CGContextSaveGState(ctx);
 
