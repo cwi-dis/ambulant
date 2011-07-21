@@ -22,21 +22,21 @@
 #include "ambulant/common/preferences.h"
 
 @interface PlaylistItem : NSObject {
-	NSString* ns_title; // <meta name="title" content=.. /> 
-	NSURL* ns_url;
-	NSData* ns_image_data; // contains CGImage
-	NSString* ns_description;
-	NSString* ns_dur;
-	NSString* ns_last_node_repr;
-	NSUInteger position;
+	NSString* title; // <meta name="title" content=.. /> 
+	NSURL* url;
+	NSData* poster_data; // contains CGImage
+	NSString* description;
+	NSString* duration;
+	NSString* position_node;
+	NSUInteger position_offset;
 }
-@property(nonatomic,retain) NSString* ns_title;
-@property(nonatomic,retain) NSURL* ns_url;
-@property(nonatomic,retain) NSData* ns_image_data;
-@property(nonatomic,retain) NSString* ns_description;
-@property(nonatomic,retain) NSString* ns_dur;
-@property(nonatomic,assign) NSString* ns_last_node_repr;
-@property(nonatomic,assign) NSUInteger position;
+@property(nonatomic,retain) NSString* title;
+@property(nonatomic,retain) NSURL* url;
+@property(nonatomic,retain) NSData* poster_data;
+@property(nonatomic,retain) NSString* description;
+@property(nonatomic,retain) NSString* duration;
+@property(nonatomic,assign) NSString* position_node;
+@property(nonatomic,assign) NSUInteger position_offset;
 
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
@@ -45,7 +45,7 @@
 	description: (NSString*) ans_description
 	duration: (NSString*) ans_dur
 	last_node_repr: (NSString*) alast_node_repr
-	position: (NSUInteger) aposition;
+	position_offset: (NSUInteger) aposition;
 	
 // compare with another PlaylistItem
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem;

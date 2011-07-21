@@ -217,8 +217,8 @@ iOSpreferences::repr()
 }
 
 @implementation PlaylistItem
-@synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
-@synthesize ns_image_data;
+@synthesize title, url, description, duration, position_node, position_offset;
+@synthesize poster_data;
 
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 	url: (NSURL*) ans_url
@@ -226,63 +226,63 @@ iOSpreferences::repr()
 	description: (NSString*) ans_description
 	duration: (NSString*) ans_dur
 	last_node_repr: (NSString*) alast_node_repr
-	position: (NSUInteger) aposition
+	position_offset: (NSUInteger) aposition
 {
-	ns_title = atitle;
-	ns_url = [ans_url retain];
-	ns_image_data = ans_image_data;
-	ns_description = ans_description;
-	ns_dur = ans_dur;
+	title = atitle;
+	url = [ans_url retain];
+	poster_data = ans_image_data;
+	description = ans_description;
+	duration = ans_dur;
 	if (alast_node_repr == NULL) {
-		ns_last_node_repr = [NSString stringWithString: @""];
+		position_node = [NSString stringWithString: @""];
 	} else {
-		ns_last_node_repr = alast_node_repr;			
+		position_node = alast_node_repr;			
 	}
-	position = aposition;
+	position_offset = aposition;
 	return self;
 }
 
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	BOOL rv = [[self ns_url] isEqual: [playlistitem ns_url]];
+	BOOL rv = [[self url] isEqual: [playlistitem url]];
 	[pool release];
 	return rv; 
 }
 	
 - (void) encodeWithCoder: (NSCoder*) encoder	
 {
-	[encoder encodeObject:ns_title forKey:@"Ns_title"];
-	[encoder encodeObject:ns_url forKey:@"Ns_url"];
-	if (ns_image_data != NULL) {
-		[encoder encodeObject:ns_image_data forKey:@"Ns_image_data"];
+	[encoder encodeObject:title forKey:@"Ns_title"];
+	[encoder encodeObject:url forKey:@"Ns_url"];
+	if (poster_data != NULL) {
+		[encoder encodeObject:poster_data forKey:@"Ns_image_data"];
 	}
-	[encoder encodeObject:ns_description forKey:@"Ns_description"];
-	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
-	[self.ns_last_node_repr retain];
-	[encoder encodeObject:ns_last_node_repr forKey:@"Ns_lastnode"];
-//TBD [encoder encodeObject:position forKey:@"Position"];
+	[encoder encodeObject:description forKey:@"Ns_description"];
+	[encoder encodeObject:duration forKey:@"Ns_dur"];
+	[self.position_node retain];
+	[encoder encodeObject:position_node forKey:@"Ns_lastnode"];
+//TBD [encoder encodeObject:position_offset forKey:@"Position"];
 }
 
 - (id) initWithCoder: (NSCoder*) decoder
 {
-	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
-	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
-	self.ns_image_data = [decoder decodeObjectForKey:@"Ns_image_data"];
-	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
-	self.ns_dur = [decoder decodeObjectForKey:@"Ns_dur"];
-	self.ns_last_node_repr = [decoder decodeObjectForKey:@"Ns_lastnode"];
-	[self.ns_last_node_repr retain];
-//TBD self.position = [decoder decodeObjectForKey:@"Position"];
+	self.title = [decoder decodeObjectForKey:@"Ns_title"];
+	self.url = [decoder decodeObjectForKey:@"Ns_url"];
+	self.poster_data = [decoder decodeObjectForKey:@"Ns_image_data"];
+	self.description = [decoder decodeObjectForKey:@"Ns_description"];
+	self.duration = [decoder decodeObjectForKey:@"Ns_dur"];
+	self.position_node = [decoder decodeObjectForKey:@"Ns_lastnode"];
+	[self.position_node retain];
+//TBD self.position_offset = [decoder decodeObjectForKey:@"Position"];
 	return self;
 }
 
 - (void) dealloc {
-	[ns_title release];
-	[ns_url release];
-	[ns_image_data release];
-	[ns_description release];
-	[ns_dur release];
+	[title release];
+	[url release];
+	[poster_data release];
+	[description release];
+	[duration release];
 
 	[super dealloc];
 }

@@ -178,8 +178,8 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 //			if ([dur compare: @""] == NSOrderedSame) {
 //				dur = [[NSString stringWithUTF8String:"indefinite"] retain];
 //			}
-			NSUInteger position = 0;
-			PlaylistItem* new_item = [[PlaylistItem alloc] initWithTitle:title url:m_nsurl image_data:image_data description:description duration:dur last_node_repr:NULL position:position];
+			NSUInteger position_offset = 0;
+			PlaylistItem* new_item = [[PlaylistItem alloc] initWithTitle:title url:m_nsurl image_data:image_data description:description duration:dur last_node_repr:NULL position_offset:position_offset];
 			PlaylistItem* last_item = history->get_last_item();
 			if (last_item == NULL || ! [new_item equalsPlaylistItem: last_item]) {
 				history->insert_item_at_index(new_item, 0);
@@ -312,10 +312,10 @@ mainloop::~mainloop()
     if (last_item) {
         if (m_last_node_started) {
             lib::xml_string last_node_repr = m_last_node_started->get_xpath();
-            NSString* ns_last_node_repr = [NSString stringWithUTF8String: last_node_repr.c_str()];
-            last_item.ns_last_node_repr = ns_last_node_repr;
+            NSString* position_node = [NSString stringWithUTF8String: last_node_repr.c_str()];
+            last_item.position_node = position_node;
         } else {
-            last_item.ns_last_node_repr = NULL;
+            last_item.position_node = NULL;
         }
     }
 	// We need to delete gui_player::m_player before deleting m_doc, because the
