@@ -409,9 +409,52 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) doAddFavorite: (id)sender
 {
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
-    assert(delegate);
-	PresentationViewController* favoritesVC = [ delegate getPresentationViewWithIndex: 1];	
-	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
+    UIActionSheet *sheet = [[UIActionSheet alloc] 
+        initWithTitle:@"Share" 
+        delegate:self 
+        cancelButtonTitle:@"Cancel" 
+        destructiveButtonTitle:nil 
+        otherButtonTitles:@"Add to Favorites", @"Email", nil];
+    [sheet showInView: interactionView];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"Clicked button %d", buttonIndex);
+    if (buttonIndex == 0) {
+        assert(delegate);
+        PresentationViewController* favoritesVC = [ delegate getPresentationViewWithIndex: 1];	
+        [favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
+    } else if (buttonIndex == 1) {
+        [self pause];
+        MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
+        mc.mailComposeDelegate = self;
+        [mc setSubject: @"A presentation for you"];
+        NSString *body = [NSString stringWithFormat: 
+            @"<p>Here is a presentation I want to share with you. You may need to install Ambulant.</p>\n"
+            "<p><a href=\"ambulant:%@\">%@</a></p>",
+            currentURL, currentURL];
+            
+        [mc setMessageBody: body isHTML: YES];
+        [self presentModalViewController:mc animated:YES];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error 
+{
+    if (result == MFMailComposeResultFailed) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Mail"
+            message: @"Failed to send Mail message"
+            delegate:nil	
+            cancelButtonTitle:@"OK"
+            otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+
+    }
+    [self dismissModalViewControllerAnimated:YES];
+    [self play];
+    [controller release];
 }
 
 - (IBAction) doPlaylists: (id)sender

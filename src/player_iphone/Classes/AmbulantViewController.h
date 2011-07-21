@@ -20,6 +20,8 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
 #import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
 #import "PlaylistItem.h"
@@ -72,7 +74,7 @@ enum ZoomState {
 @end
 
 @interface AmbulantViewController : UIViewController 
-				<UITextFieldDelegate> {
+				<UITextFieldDelegate, MFMailComposeViewControllerDelegate> {
 	document_embedder *embedder;    // Our class to handle inter-SMIL-document commands.
 	mainloop *myMainloop;   // Controller object for the SMIL player
 //	IBOutlet AmbulantContainerView* view; // our main view, contains scalerView and interactionView
@@ -125,6 +127,11 @@ enum ZoomState {
 - (IBAction) doNextItem: (id)sender;
 - (IBAction) doAddFavorite:(id)sender;
 - (IBAction) doPlaylists:(id)sender;
+
+// Delegates and such
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error ;
+
 
 // Notifications from other views, etc.
 - (void) settingsHaveChanged;
