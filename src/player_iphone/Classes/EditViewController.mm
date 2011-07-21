@@ -33,6 +33,7 @@
 viewDidLoad
 {
     [super viewDidLoad];
+	[textField becomeFirstResponder];
 	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x)", self);
 }
 
@@ -49,6 +50,10 @@ done:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
     NSString *theUrl = textField.text;
+	// Remove leading/trailing whitespace (copy/paste can be a bit
+	// finicky on the iPhone)
+	theUrl = [theUrl stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	// Remove an optional "ambulant:" pseudo-protocol
     if ([theUrl hasPrefix: @"ambulant:"])
         theUrl = [theUrl substringFromIndex: 9];
 	
