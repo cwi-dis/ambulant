@@ -131,28 +131,30 @@ iOSpreferences::load_preferences()
 	m_hud_auto_hide = [prefs boolForKey: @"HUDautoHide"];
 	m_hud_short_tap = [prefs boolForKey: @"HUDshortTap"];
 	m_normal_exit = [prefs boolForKey: @"normalExit"];
-	// favorites is archived
-	NSData* favorites_archive = [prefs objectForKey:@"favorites"];
-	NSArray* favorites = NULL;
-	if ([favorites_archive length] != 1) {
-		favorites = [NSKeyedUnarchiver unarchiveObjectWithData:favorites_archive];
-	}
+
+	// Check version of preferences, to see whether we should
+    // decode history/favorites
+    NSArray* history = NULL;
+    NSArray* favorites = NULL;
 	NSString* version = [prefs stringForKey:@"version"];
-	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
+	version = [prefs stringForKey:@"version"];
+	if ([version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
+        // Decode history
+        NSData* history_archive = [prefs objectForKey:@"history"];
+        if ([history_archive length] != 1) {
+            history = [NSKeyedUnarchiver unarchiveObjectWithData:history_archive];
+        }
+        // Decode Favorites
+        NSData* favorites_archive = [prefs objectForKey:@"favorites"];
+        if ([favorites_archive length] != 1) {
+            favorites = [NSKeyedUnarchiver unarchiveObjectWithData:favorites_archive];
+	}
+    } else {
+		history = NULL;
 		favorites = NULL;
 	}
-	m_favorites = new ambulant::Playlist(favorites);
-	// history is archived
-	NSData* history_archive = [prefs objectForKey:@"history"];
-	NSArray* history = NULL;
-	if ([history_archive length] != 1) {
-		history = [NSKeyedUnarchiver unarchiveObjectWithData:history_archive];
-	}
-	version = [prefs stringForKey:@"version"];
-	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
-		history = NULL;
-	}
 	m_history = new ambulant::Playlist(history);
+	m_favorites = new ambulant::Playlist(favorites);
 	
 	save_preferences();
 	[pool release];

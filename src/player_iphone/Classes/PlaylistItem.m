@@ -22,12 +22,19 @@
 #import "PlaylistItem.h"
 
 @implementation PlaylistItem
-@synthesize title, url, description, duration, position_node, position_offset;
+@synthesize title;
+@synthesize url;
 @synthesize poster_data;
+@synthesize author;
+@synthesize description;
+@synthesize duration;
+@synthesize position_node;
+@synthesize position_offset;
 
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 	url: (NSURL*) ans_url
 	image_data: (NSData*) ans_image_data
+    author: (NSString*) ans_author
 	description: (NSString*) ans_description
 	duration: (NSString*) ans_dur
 	last_node_repr: (NSString*) alast_node_repr
@@ -37,6 +44,7 @@
 	url = [ans_url retain];
 	poster_data = ans_image_data;
 	description = ans_description;
+    author = ans_author;
 	duration = ans_dur;
 	if (alast_node_repr == NULL) {
 		position_node = [NSString stringWithString: @""];
@@ -50,6 +58,8 @@
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    // Note by Jack: this means two references to different positions in one document
+    // compare as equal.
 	BOOL rv = [[self url] isEqual: [playlistitem url]];
 	[pool release];
 	return rv; 
@@ -57,28 +67,29 @@
 	
 - (void) encodeWithCoder: (NSCoder*) encoder	
 {
-	[encoder encodeObject:title forKey:@"Ns_title"];
-	[encoder encodeObject:url forKey:@"Ns_url"];
+	[encoder encodeObject:title forKey:@"title"];
+	[encoder encodeObject:url forKey:@"url"];
 	if (poster_data != NULL) {
-		[encoder encodeObject:poster_data forKey:@"Ns_image_data"];
+		[encoder encodeObject:poster_data forKey:@"poster_data"];
 	}
-	[encoder encodeObject:description forKey:@"Ns_description"];
-	[encoder encodeObject:duration forKey:@"Ns_dur"];
-	[self.position_node retain];
-	[encoder encodeObject:position_node forKey:@"Ns_lastnode"];
-//TBD [encoder encodeObject:position_offset forKey:@"Position"];
+    [encoder encodeObject:author forKey:@"author"];
+	[encoder encodeObject:description forKey:@"description"];
+	[encoder encodeObject:duration forKey:@"duration"];
+	[encoder encodeObject:position_node forKey:@"position_node"];
+    [encoder encodeInt:position_offset forKey:@"position_offset"];
 }
 
 - (id) initWithCoder: (NSCoder*) decoder
 {
-	self.title = [decoder decodeObjectForKey:@"Ns_title"];
-	self.url = [decoder decodeObjectForKey:@"Ns_url"];
-	self.poster_data = [decoder decodeObjectForKey:@"Ns_image_data"];
-	self.description = [decoder decodeObjectForKey:@"Ns_description"];
-	self.duration = [decoder decodeObjectForKey:@"Ns_dur"];
-	self.position_node = [decoder decodeObjectForKey:@"Ns_lastnode"];
-	[self.position_node retain];
-//TBD self.position_offset = [decoder decodeObjectForKey:@"Position"];
+    // Note: the trick of using the accessor means we don't have to do the retain
+	self.title = [decoder decodeObjectForKey:@"title"];
+	self.url = [decoder decodeObjectForKey:@"url"];
+	self.poster_data = [decoder decodeObjectForKey:@"poster_data"];
+    self.author = [decoder decodeObjectForKey:@"author"];
+	self.description = [decoder decodeObjectForKey:@"description"];
+	self.duration = [decoder decodeObjectForKey:@"duration"];
+	self.position_node = [decoder decodeObjectForKey:@"position_node"];
+    self.position_offset = [decoder decodeIntForKey:@"position_offset"];
 	return self;
 }
 
@@ -86,6 +97,7 @@
 	[title release];
 	[url release];
 	[poster_data release];
+    [author release];
 	[description release];
 	[duration release];
 

@@ -61,6 +61,7 @@
 		04B75D4312B80C2A00161EB5 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D3812B80C2A00161EB5 /* data */; };
 		04B75D4812B80C4900161EB5 /* mainloop.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4512B80C4900161EB5 /* mainloop.mm */; };
 		04B75D4912B80C4900161EB5 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4712B80C4900161EB5 /* main.mm */; };
+		04CDFF0513D8BFE700485C7A /* PartiallyPlayed.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF0413D8BFE700485C7A /* PartiallyPlayed.png */; };
 		9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9352AC13131D0E6F00D0192D /* CoreFoundation.framework */; };
 		93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */; };
 		93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */; };
@@ -184,6 +185,7 @@
 		04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-iphone.xcconfig"; path = "config/ambulant-release-iphone.xcconfig"; sourceTree = SOURCE_ROOT; };
 		04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = SOURCE_ROOT; };
 		04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
+		04CDFF0413D8BFE700485C7A /* PartiallyPlayed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = PartiallyPlayed.png; path = ../../src/player_iphone/Resources/PartiallyPlayed.png; sourceTree = SOURCE_ROOT; };
 		1D6058910D05DD3D006BFB54 /* iAmbulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iAmbulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32CA4F630368D1EE00C91783 /* iAmbulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iAmbulant_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iAmbulant-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iAmbulant-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -388,6 +390,7 @@
 				04B75D0B12B80C0300161EB5 /* EditIcon-30x30.png */,
 				04B75D0D12B80C0300161EB5 /* HelpIcon-30x30.png */,
 				04B75D0E12B80C0300161EB5 /* ToolsIcon-30x30.png */,
+				04CDFF0413D8BFE700485C7A /* PartiallyPlayed.png */,
 				04B75D0F12B80C0300161EB5 /* Background_iPhone.png */,
 				04B75D1012B80C0300161EB5 /* FastForward_iPhone.png */,
 				04B75D1112B80C0300161EB5 /* Pause_iPhone.png */,
@@ -544,6 +547,7 @@
 				048503E3133B5BF4006CE724 /* Icon-72.png in Resources */,
 				0475634813CC97E900E8F3C8 /* AmbulantHelp-images in Resources */,
 				04B304F713D855C4004FCB54 /* DefaultPoster.png in Resources */,
+				04CDFF0513D8BFE700485C7A /* PartiallyPlayed.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

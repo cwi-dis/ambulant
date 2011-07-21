@@ -169,6 +169,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 				}
 			}
 			[poster release];
+            NSString *author = get_meta_content("author");
 			NSString* description = get_meta_content("description");
 			if ([description compare: @""] == NSOrderedSame) {
 				description = [m_nsurl absoluteString];
@@ -179,7 +180,15 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 //				dur = [[NSString stringWithUTF8String:"indefinite"] retain];
 //			}
 			NSUInteger position_offset = 0;
-			PlaylistItem* new_item = [[PlaylistItem alloc] initWithTitle:title url:m_nsurl image_data:image_data description:description duration:dur last_node_repr:NULL position_offset:position_offset];
+			PlaylistItem* new_item = [[PlaylistItem alloc] 
+                initWithTitle:title 
+                url:m_nsurl 
+                image_data:image_data
+                author: author
+                description:description 
+                duration:dur 
+                last_node_repr:NULL 
+                position_offset:position_offset];
 			PlaylistItem* last_item = history->get_last_item();
 			if (last_item == NULL || ! [new_item equalsPlaylistItem: last_item]) {
 				history->insert_item_at_index(new_item, 0);

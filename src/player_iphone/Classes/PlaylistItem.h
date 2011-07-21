@@ -25,6 +25,7 @@
 	NSString* title; // <meta name="title" content=.. /> 
 	NSURL* url;
 	NSData* poster_data; // contains CGImage
+    NSString* author;
 	NSString* description;
 	NSString* duration;
 	NSString* position_node;
@@ -33,15 +34,17 @@
 @property(nonatomic,retain) NSString* title;
 @property(nonatomic,retain) NSURL* url;
 @property(nonatomic,retain) NSData* poster_data;
+@property(nonatomic,retain) NSString* author;
 @property(nonatomic,retain) NSString* description;
 @property(nonatomic,retain) NSString* duration;
-@property(nonatomic,assign) NSString* position_node;
+@property(nonatomic,retain) NSString* position_node;
 @property(nonatomic,assign) NSUInteger position_offset;
 
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 	url: (NSURL*) ansurl
 	image_data: (NSData*) ans_image_data
+    author: (NSString*) ans_author
 	description: (NSString*) ans_description
 	duration: (NSString*) ans_dur
 	last_node_repr: (NSString*) alast_node_repr

@@ -149,11 +149,11 @@ isHistory {
 		
 		// Set the progress
 		UIButton *button = (UIButton*)[cell viewWithTag: 6];
-		// TBD
+		button.hidden = aPresentation.position_node == nil || [aPresentation.position_node isEqualToString:@""];
 		
 		// Set the author
 		label = (UILabel*) [cell viewWithTag: 4];
-		// TBD
+		label.text = aPresentation.author;
 		
 		// Set the description
 		label = (UILabel*) [cell viewWithTag: 3];
