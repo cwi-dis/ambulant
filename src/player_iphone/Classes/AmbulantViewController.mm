@@ -177,7 +177,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (currentURL)
 		[currentURL release];
     currentURL = nil;
-    [super willTerminate];
 }
 
 - (void)dealloc {

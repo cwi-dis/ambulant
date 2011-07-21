@@ -32,7 +32,7 @@
 		04B304F713D855C4004FCB54 /* DefaultPoster.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B304F613D855C4004FCB54 /* DefaultPoster.png */; };
 		04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CEC12B80B9800161EB5 /* EditViewController.mm */; };
 		04B75CFE12B80B9800161EB5 /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF012B80B9800161EB5 /* PresentationViewController.mm */; };
-		04B75CFF12B80B9800161EB5 /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF212B80B9800161EB5 /* Presentation.m */; };
+		04B75CFF12B80B9800161EB5 /* PlaylistItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF212B80B9800161EB5 /* PlaylistItem.m */; };
 		04B75D0012B80B9800161EB5 /* iOSpreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF312B80B9800161EB5 /* iOSpreferences.mm */; };
 		04B75D0112B80B9800161EB5 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF612B80B9800161EB5 /* AmbulantAppDelegate.mm */; };
 		04B75D0212B80B9800161EB5 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF812B80B9800161EB5 /* AmbulantViewController.mm */; };
@@ -141,8 +141,8 @@
 		04B75CEE12B80B9800161EB5 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistAppDelegate.h; path = ../../src/player_iphone/Classes/PlaylistAppDelegate.h; sourceTree = SOURCE_ROOT; };
 		04B75CEF12B80B9800161EB5 /* PresentationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PresentationViewController.h; path = ../../src/player_iphone/Classes/PresentationViewController.h; sourceTree = SOURCE_ROOT; };
 		04B75CF012B80B9800161EB5 /* PresentationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PresentationViewController.mm; path = ../../src/player_iphone/Classes/PresentationViewController.mm; sourceTree = SOURCE_ROOT; };
-		04B75CF112B80B9800161EB5 /* Presentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Presentation.h; path = ../../src/player_iphone/Classes/Presentation.h; sourceTree = SOURCE_ROOT; };
-		04B75CF212B80B9800161EB5 /* Presentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Presentation.m; path = ../../src/player_iphone/Classes/Presentation.m; sourceTree = SOURCE_ROOT; };
+		04B75CF112B80B9800161EB5 /* PlaylistItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistItem.h; sourceTree = "<group>"; };
+		04B75CF212B80B9800161EB5 /* PlaylistItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaylistItem.m; sourceTree = "<group>"; };
 		04B75CF312B80B9800161EB5 /* iOSpreferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iOSpreferences.mm; path = ../../src/player_iphone/Classes/iOSpreferences.mm; sourceTree = SOURCE_ROOT; };
 		04B75CF412B80B9800161EB5 /* iOSpreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iOSpreferences.h; path = ../../src/player_iphone/Classes/iOSpreferences.h; sourceTree = SOURCE_ROOT; };
 		04B75CF512B80B9800161EB5 /* AmbulantAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AmbulantAppDelegate.h; path = ../../src/player_iphone/Classes/AmbulantAppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -316,8 +316,8 @@
 				04B75CEE12B80B9800161EB5 /* PlaylistAppDelegate.h */,
 				04B75CEF12B80B9800161EB5 /* PresentationViewController.h */,
 				04B75CF012B80B9800161EB5 /* PresentationViewController.mm */,
-				04B75CF112B80B9800161EB5 /* Presentation.h */,
-				04B75CF212B80B9800161EB5 /* Presentation.m */,
+				04B75CF112B80B9800161EB5 /* PlaylistItem.h */,
+				04B75CF212B80B9800161EB5 /* PlaylistItem.m */,
 				04B75CF412B80B9800161EB5 /* iOSpreferences.h */,
 				04B75CF312B80B9800161EB5 /* iOSpreferences.mm */,
 				04B75CF512B80B9800161EB5 /* AmbulantAppDelegate.h */,
@@ -556,7 +556,7 @@
 			files = (
 				04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */,
 				04B75CFE12B80B9800161EB5 /* PresentationViewController.mm in Sources */,
-				04B75CFF12B80B9800161EB5 /* Presentation.m in Sources */,
+				04B75CFF12B80B9800161EB5 /* PlaylistItem.m in Sources */,
 				04B75D0012B80B9800161EB5 /* iOSpreferences.mm in Sources */,
 				04B75D0112B80B9800161EB5 /* AmbulantAppDelegate.mm in Sources */,
 				04B75D0212B80B9800161EB5 /* AmbulantViewController.mm in Sources */,

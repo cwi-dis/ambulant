@@ -26,18 +26,6 @@
 
 @implementation PresentationViewController
 
-- (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem*) item {
-	Presentation* aPresentation = [ [ Presentation alloc ] init ];
-	if (item != NULL) {
-		aPresentation.title = [item ns_title];
-		aPresentation.poster_data = [item ns_image_data];
-		aPresentation.duration = [item ns_dur];
-		aPresentation.description = [item ns_description];
-
-	}
-	return aPresentation;
-}
-
 - (NSArray*) get_playlist {
 	NSArray* playlist;
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
@@ -140,7 +128,7 @@ isHistory {
     
 	// Configure the cell.
 	try {
-		Presentation* aPresentation = [presentationsArray objectAtIndex: indexPath.row ];
+		PlaylistItem* aPresentation = [presentationsArray objectAtIndex: indexPath.row ];
 		UIImageView* posterView = (UIImageView*) [cell viewWithTag:5]; // tags are assigned in the nib
 		posterView.contentMode = UIViewContentModeScaleAspectFit;
 		NSData *poster_data = [aPresentation poster_data];
@@ -187,7 +175,7 @@ isHistory {
 	NSUInteger playlistIndex = indexPath.row;
 	currentIndex = playlistIndex;
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
+	[delegate playPresentation:[[selectedItem url] absoluteString] fromPresentationViewController: self];
 }
 
 // Support conditional editing of the table view.
@@ -278,7 +266,7 @@ isHistory {
 		ambulant::Playlist* playlist = prefs->m_favorites;
 		PlaylistItem* new_item = prefs->m_history->get_last_item();
 		// Check if we have 'new_item' already in the playlist; if so ignore
-		AM_DBG NSLog(@"new_item.ns_url=0x%x: %@", new_item.ns_url, new_item.ns_url != NULL ? [new_item.ns_url absoluteString]:@"<nil>");
+		AM_DBG NSLog(@"new_item.url=0x%x: %@", new_item.url, new_item.url != NULL ? [new_item.url absoluteString]:@"<nil>");
 		BOOL found = NO;
 		BOOL* found_ref = &found;
 		NSArray* items = playlist->get_playlist();
@@ -287,8 +275,8 @@ isHistory {
             ^(id obj, NSUInteger idx, BOOL *stop)
             {
                 PlaylistItem* item = (PlaylistItem*) obj;
-                AM_DBG NSLog(@"item.ns_url=0x%x: %@", item.ns_url, item.ns_url != NULL ? [item.ns_url absoluteString]:@"<nil>");
-                if ([new_item.ns_url isEqual: (id) item.ns_url]) {
+                AM_DBG NSLog(@"item.url=0x%x: %@", item.url, item.url != NULL ? [item.url absoluteString]:@"<nil>");
+                if ([new_item.url isEqual: (id) item.url]) {
                     *found_ref = YES;
                 }
             }
@@ -297,12 +285,11 @@ isHistory {
 			return;
 		}
 		playlist->insert_item_at_index(new_item, playlistIndex);
-		newPresentation = [self getPresentationFromPlaylistItem: new_item];
 		if (playlistIndex < 0 || [presentationsArray count] == 0) {
-			[presentationsArray addObject: newPresentation] ;
+			[presentationsArray addObject: new_item];
 			[self.tableView reloadData];
 		} else {
-			[presentationsArray insertObject: newPresentation atIndex: indexPath.row ];
+			[presentationsArray insertObject: new_item atIndex: indexPath.row ];
 			NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow:indexPath.row inSection: 0 ];
 			AM_DBG NSLog(@"updatedPath.row=%d",updatedPath.row);
 			NSMutableArray* updatedPaths = [ [NSMutableArray alloc] init ];
@@ -328,9 +315,7 @@ isHistory {
         ^(id obj, NSUInteger idx, BOOL *stop)
         {
             PlaylistItem* item = (PlaylistItem*) obj;
-            Presentation* presentation = [self getPresentationFromPlaylistItem: item];
-            [presentationsArray addObject: presentation];
-            [presentation release]; // the array now has ownership
+            [presentationsArray addObject: item];
         }
     ];
 	[[self tableView] reloadData];
@@ -345,7 +330,7 @@ isHistory {
 		playlistIndex = currentIndex = 0;
 	}
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
+	[delegate playPresentation:[[selectedItem url] absoluteString] fromPresentationViewController: self];
 }
 	
 - (void) viewWillDisappear:(BOOL)animated

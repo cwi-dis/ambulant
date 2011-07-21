@@ -216,8 +216,8 @@ applicationDidBecomeActive:(UIApplication *)application {
 		if (prefs->m_normal_exit) {
 			// restart where left
 			PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
-			NSString *startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
-			NSString *startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;
+			NSString *startPath = last_item != NULL ? [[last_item url] absoluteString] : NULL;
+			NSString *startNodeRepr = last_item != NULL ? [last_item position_node] : NULL;
             if (startPath && startNodeRepr) {
                 [viewController doPlayURL: startPath fromNode: startNodeRepr];
             }
@@ -413,7 +413,7 @@ document_stopped: (id) sender
 }
 
 - (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
-    // XXXJACK: Change interface to get PlayListItem, which has the position as well.
+    // XXXJACK: Change interface to get PlayListItem, which has the position_offset as well.
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	currentPVC = controller;
