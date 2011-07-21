@@ -26,8 +26,6 @@
 
 @implementation PresentationViewController
 
-@synthesize nibLoadedCell;
-
 - (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem*) item {
 	Presentation* aPresentation = [ [ Presentation alloc ] init ];
 	if (item != NULL) {

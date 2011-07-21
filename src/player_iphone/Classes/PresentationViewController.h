@@ -33,7 +33,7 @@
 @interface PresentationViewController : UITableViewController < UITableViewDataSource, UITableViewDelegate > {
 	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
-	UITableViewCell* nibLoadedCell; // XXXJACK thinks this isn't neeeded: it isn't initializaed anywhere...
+	IBOutlet UITableViewCell* nibLoadedCell; // XXXJACK thinks this isn't neeeded: it isn't initializaed anywhere...
 	Presentation* selectedPresentation;
 	NSInteger currentIndex;
 	BOOL isHistory;
@@ -53,6 +53,4 @@
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
 - (BOOL) isHistory;
-
-@property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
 @end
