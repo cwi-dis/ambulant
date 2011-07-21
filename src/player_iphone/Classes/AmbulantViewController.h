@@ -22,7 +22,7 @@
 #import <UIKit/UIKit.h>
 #import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
-#import "Presentation.h"
+#import "PlaylistItem.h"
 #import "PresentationViewController.h"
 #import "ambulant/common/embedder.h"
 #import "ambulant/net/url.h"

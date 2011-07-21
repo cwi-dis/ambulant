@@ -20,10 +20,10 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "Presentation.h"
+#import "PlaylistItem.h"
 #import "PresentationViewController.h"
 #import "iOSpreferences.h"
-#import "Presentation.h"
+#import "PlaylistItem.h"
 #import "PlaylistAppDelegate.h"
 
 @protocol PresentationViewControllerDelegate;

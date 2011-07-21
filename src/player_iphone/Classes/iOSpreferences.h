@@ -20,41 +20,7 @@
  */
 
 #include "ambulant/common/preferences.h"
-
-@interface PlaylistItem : NSObject {
-	NSString* title; // <meta name="title" content=.. /> 
-	NSURL* url;
-	NSData* poster_data; // contains CGImage
-	NSString* description;
-	NSString* duration;
-	NSString* position_node;
-	NSUInteger position_offset;
-}
-@property(nonatomic,retain) NSString* title;
-@property(nonatomic,retain) NSURL* url;
-@property(nonatomic,retain) NSData* poster_data;
-@property(nonatomic,retain) NSString* description;
-@property(nonatomic,retain) NSString* duration;
-@property(nonatomic,assign) NSString* position_node;
-@property(nonatomic,assign) NSUInteger position_offset;
-
-// initialize all fields
-- (PlaylistItem*) initWithTitle: (NSString*) atitle
-	url: (NSURL*) ansurl
-	image_data: (NSData*) ans_image_data
-	description: (NSString*) ans_description
-	duration: (NSString*) ans_dur
-	last_node_repr: (NSString*) alast_node_repr
-	position_offset: (NSUInteger) aposition;
-	
-// compare with another PlaylistItem
-- (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem;
-
-// Next 2 methods are provided for use by NSKeyedArchiver
--(void) encodeWithCoder: (NSCoder*) encoder;
--(id) initWithCoder: (NSCoder*) decoder;
-
-@end
+#include "PlaylistItem.h"
 
 namespace ambulant {
 	
