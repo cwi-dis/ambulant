@@ -297,12 +297,11 @@ isHistory {
 			return;
 		}
 		playlist->insert_item_at_index(new_item, playlistIndex);
-		Presentation* newPresentation = [self getPresentationFromPlaylistItem: new_item];
 		if (playlistIndex < 0 || [presentationsArray count] == 0) {
-			[presentationsArray addObject: newPresentation] ;
+			[presentationsArray addObject: new_item];
 			[self.tableView reloadData];
 		} else {
-			[presentationsArray insertObject: newPresentation atIndex: indexPath.row ];
+			[presentationsArray insertObject: new_item atIndex: indexPath.row ];
 			NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow:indexPath.row inSection: 0 ];
 			AM_DBG NSLog(@"updatedPath.row=%d",updatedPath.row);
 			NSMutableArray* updatedPaths = [ [NSMutableArray alloc] init ];
@@ -328,9 +327,7 @@ isHistory {
         ^(id obj, NSUInteger idx, BOOL *stop)
         {
             PlaylistItem* item = (PlaylistItem*) obj;
-            Presentation* presentation = [self getPresentationFromPlaylistItem: item];
-            [presentationsArray addObject: presentation];
-            [presentation release]; // the array now has ownership
+            [presentationsArray addObject: item];
         }
     ];
 	[[self tableView] reloadData];

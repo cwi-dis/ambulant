@@ -34,7 +34,6 @@
 	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
 	IBOutlet UITableViewCell* nibLoadedCell; // XXXJACK thinks this isn't neeeded: it isn't initializaed anywhere...
-	Presentation* selectedPresentation;
 	NSInteger currentIndex;
 	BOOL isHistory;
 	UITableViewCellEditingStyle editingStyle;
