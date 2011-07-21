@@ -297,7 +297,7 @@ isHistory {
 			return;
 		}
 		playlist->insert_item_at_index(new_item, playlistIndex);
-		newPresentation = [self getPresentationFromPlaylistItem: new_item];
+		Presentation* newPresentation = [self getPresentationFromPlaylistItem: new_item];
 		if (playlistIndex < 0 || [presentationsArray count] == 0) {
 			[presentationsArray addObject: newPresentation] ;
 			[self.tableView reloadData];

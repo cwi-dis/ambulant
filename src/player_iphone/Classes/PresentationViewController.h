@@ -38,7 +38,6 @@
 	NSInteger currentIndex;
 	BOOL isHistory;
 	UITableViewCellEditingStyle editingStyle;
-	Presentation* newPresentation;
 }
 - (void) awakeFromNib;
 - (void) viewDidLoad;
