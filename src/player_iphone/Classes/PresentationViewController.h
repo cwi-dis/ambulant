@@ -46,7 +46,6 @@
 - (IBAction) done: (id) sender;
 // aux.
 - (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath;
-- (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem *) item;
 - (void) selectNextPresentation;
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;

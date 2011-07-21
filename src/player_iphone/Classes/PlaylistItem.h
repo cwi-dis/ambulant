@@ -21,7 +21,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define Presentation PlaylistItem
 @interface PlaylistItem : NSObject {
 	NSString* title; // <meta name="title" content=.. /> 
 	NSURL* url;

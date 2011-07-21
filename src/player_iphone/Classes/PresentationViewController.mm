@@ -26,18 +26,6 @@
 
 @implementation PresentationViewController
 
-- (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem*) item {
-	Presentation* aPresentation = [ [ Presentation alloc ] init ];
-	if (item != NULL) {
-		aPresentation.title = [item title];
-		aPresentation.poster_data = [item poster_data];
-		aPresentation.duration = [item duration];
-		aPresentation.description = [item description];
-
-	}
-	return aPresentation;
-}
-
 - (NSArray*) get_playlist {
 	NSArray* playlist;
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
@@ -140,7 +128,7 @@ isHistory {
     
 	// Configure the cell.
 	try {
-		Presentation* aPresentation = [presentationsArray objectAtIndex: indexPath.row ];
+		PlaylistItem* aPresentation = [presentationsArray objectAtIndex: indexPath.row ];
 		UIImageView* posterView = (UIImageView*) [cell viewWithTag:5]; // tags are assigned in the nib
 		posterView.contentMode = UIViewContentModeScaleAspectFit;
 		NSData *poster_data = [aPresentation poster_data];
