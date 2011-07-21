@@ -145,7 +145,10 @@ isHistory {
 		Presentation* aPresentation = [presentationsArray objectAtIndex: indexPath.row ];
 		UIImageView* posterView = (UIImageView*) [cell viewWithTag:5]; // tags are assigned in the nib
 		posterView.contentMode = UIViewContentModeScaleAspectFit;
-		posterView.image = [UIImage imageWithData: [aPresentation poster_data]];
+		NSData *poster_data = [aPresentation poster_data];
+		if (poster_data) {
+			posterView.image = [UIImage imageWithData: poster_data];
+		}
 		[posterView setNeedsDisplay];
 		
 		// Set the title

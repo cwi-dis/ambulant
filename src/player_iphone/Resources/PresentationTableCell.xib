@@ -53,13 +53,17 @@
 								<string key="NSFrameSize">{94, 94}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIClipsSubviews">YES</bool>
-								<int key="IBUIContentMode">7</int>
+								<int key="IBUIContentMode">4</int>
 								<int key="IBUITag">5</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<object class="IBUIAccessibilityConfiguration" key="IBUIAccessibilityConfiguration">
 									<string key="IBUIAccessibilityLabel">Poster</string>
 								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">DefaultPoster.png</string>
+								</object>
 							</object>
 							<object class="IBUILabel" id="763834353">
 								<reference key="NSNextResponder" ref="1006509784"/>
@@ -105,7 +109,7 @@
 									<double key="NSSize">12</double>
 									<int key="NSfFlags">16</int>
 								</object>
-								<object class="NSColor" key="IBUITextColor" id="221000405">
+								<object class="NSColor" key="IBUITextColor" id="322660469">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MC4zMzMzMzMzMzMzAA</bytes>
 								</object>
@@ -114,7 +118,7 @@
 								<float key="IBUIMinimumFontSize">10</float>
 								<int key="IBUILineBreakMode">2</int>
 							</object>
-							<object class="IBUILabel" id="820765074">
+							<object class="IBUILabel" id="438148590">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{180, 62}, {131, 15}}</string>
@@ -150,12 +154,12 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<string key="IBUIText">Description</string>
 								<reference key="IBUIFont" ref="1017891789"/>
-								<reference key="IBUITextColor" ref="221000405"/>
+								<reference key="IBUITextColor" ref="322660469"/>
 								<nil key="IBUIHighlightedColor"/>
 								<float key="IBUIMinimumFontSize">10</float>
 								<int key="IBUILineBreakMode">5</int>
 							</object>
-							<object class="IBUIButton" id="386782818">
+							<object class="IBUIButton" id="593959764">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{152, 59}, {20, 21}}</string>
@@ -259,8 +263,8 @@
 							<reference ref="763834353"/>
 							<reference ref="1046103899"/>
 							<reference ref="1001044352"/>
-							<reference ref="820765074"/>
-							<reference ref="386782818"/>
+							<reference ref="438148590"/>
+							<reference ref="593959764"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -287,12 +291,12 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">15</int>
-						<reference key="object" ref="820765074"/>
+						<reference key="object" ref="438148590"/>
 						<reference key="parent" ref="361040697"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">20</int>
-						<reference key="object" ref="386782818"/>
+						<reference key="object" ref="593959764"/>
 						<reference key="parent" ref="361040697"/>
 					</object>
 				</object>
@@ -693,6 +697,10 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../../projects/xcode32/iAmbulant.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">DefaultPoster.png</string>
+			<string key="NS.object.0">{128, 128}</string>
+		</object>
 		<string key="IBCocoaTouchPluginVersion">141</string>
 	</data>
 </archive>
