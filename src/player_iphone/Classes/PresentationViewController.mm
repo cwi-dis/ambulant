@@ -148,6 +148,8 @@ isHistory {
 		NSData *poster_data = [aPresentation poster_data];
 		if (poster_data) {
 			posterView.image = [UIImage imageWithData: poster_data];
+		} else {
+			posterView.image = [UIImage imageNamed: @"DefaultPoster.png"];
 		}
 		[posterView setNeedsDisplay];
 		
