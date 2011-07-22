@@ -20,6 +20,15 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/mtsync.h"
+#ifdef AMBULANT_PLATFORM_UNIX
+#include "ambulant/lib/unix/unix_thread.h"
+#define BASE_THREAD lib::unix::thread
+#endif
+#ifdef AMBULANT_PLATFORM_WIN32
+#include "ambulant/lib/win32/win32_thread.h"
+#define BASE_THREAD lib::win32::thread
+#endif
 
 #ifdef WITH_GCD_EVENT_PROCESSOR
 #ifdef WITH_LIBXDISPATCH
@@ -31,6 +40,8 @@
 #endif // WITH_GCD_EVENT_PROCESSOR
 
 #include <map>
+#include <queue>
+#include <cassert>
 
 #if defined(AMBULANT_PLATFORM_WIN32)
 #include <windows.h>
@@ -42,6 +53,59 @@
 
 using namespace ambulant;
 using namespace lib;
+
+/// Implementation of event_processor.
+/// This is an implementation of the event_processor interface that uses a thread
+/// and three priority queues to execute events.
+class event_processor_impl : public event_processor, public BASE_THREAD {
+  public:
+	/// Constructor.
+	event_processor_impl(timer *t);
+	~event_processor_impl();
+
+	timer *get_timer() const;
+	/// Internal: code run by the thread.
+	unsigned long run();
+
+	void add_event(event *pe, time_type t, event_priority priority);
+	bool cancel_event(event *pe, event_priority priority = ep_low);
+	void cancel_all_events();
+	void set_observer(event_processor_observer *obs) {m_observer = obs; };
+	/// Debug method to dump queues.
+	void dump();
+  protected:
+	/// Called by platform-specific subclasses.
+	/// Should hold m_lock when calling.
+	void _serve_events();
+
+	timer *m_timer;	///< the timer for this processor
+	event_processor_observer *m_observer;	///< The observer.
+
+	/// protects whole data structure.
+	critical_section_cv m_lock;
+
+  private:
+	// check, if needed, with a delta_timer to fill its run queue
+	// return true if the run queue contains any events
+	bool _events_available(delta_timer& dt, std::queue<event*> *qp);
+
+	// serve a single event from a delta_timer run queue
+	// return true if an event was served
+	bool _serve_event(delta_timer& dt, std::queue<event*> *qp, event_priority priority);
+
+	// high priority delta timer and its event queue
+	delta_timer m_high_delta_timer;
+	std::queue<event*> m_high_q;
+
+	// medium priority delta timer and its event queue
+	delta_timer m_med_delta_timer;
+	std::queue<event*> m_med_q;
+
+	// low priority delta timer and its event queue
+	delta_timer m_low_delta_timer;
+	std::queue<event*> m_low_q;
+
+};
 
 lib::event_processor *
 lib::event_processor_factory(timer *t)

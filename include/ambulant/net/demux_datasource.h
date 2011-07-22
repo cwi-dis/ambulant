@@ -22,11 +22,11 @@
 #ifndef AMBULANT_NET_DEMUX_DATASOURCE_H
 #define AMBULANT_NET_DEMUX_DATASOURCE_H
 
-
 #include "ambulant/config/config.h"
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/datasource.h"
 
+#include <queue>
 
 struct video_frame {
 	char* data;
