@@ -26,11 +26,13 @@
 #include "ambulant/lib/logger.h"
 #include <map>
 
+#ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
 #ifdef WITH_LIBXDISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
 #else
 #include <dispatch/dispatch.h>
-#endif
+#endif // WITH_LIBXDISPATCH
+#endif // XXNOTWITH_GCD_EVENT_PROCESSOR
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

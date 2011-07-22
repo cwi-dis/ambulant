@@ -20,16 +20,16 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
-#define GB_GCD_WIN
-//#define WITH_LIBXDISPATCH
-#ifdef GB_GCD_WIN
+
+#ifdef WITH_GCD_EVENT_PROCESSOR
 #ifdef WITH_LIBXDISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
 #else
-#include "config/config.h"
+//#include "config/config.h"
 #include "dispatch/dispatch.h"
-#endif
-#endif
+#endif // WITH_LIBXDISPATCH
+#endif // WITH_GCD_EVENT_PROCESSOR
+
 #include <map>
 
 #if defined(AMBULANT_PLATFORM_WIN32)
@@ -39,8 +39,6 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-
-//#if 0
 
 using namespace ambulant;
 using namespace lib;
@@ -239,28 +237,15 @@ event_processor_impl::_events_available(delta_timer& dt, std::queue<event*> *qp)
 	return !qp->empty();
 }
 
-#ifdef GB_GCD_WIN
-#if 0
-class InnerCalculation : public xdispatch::iteration_operation {
-       
-       event* gcd_e;
-       
-public:
-       InnerCalculation(event* e) : gcd_e(e) {}
-       
-       void operator()(size_t i){
-             gcd_e->fire();
-       }
-
-};
-#else
-void gb_serve_event_1(event *gb_e)
+#ifdef WITH_GCD_EVENT_PROCESSOR
+// Helper function, called whtn the event should fire.
+static void
+gb_serve_event_1(event *gb_e)
 {
 	gb_e->fire();
 	delete gb_e;
 }
-#endif
-#endif
+#endif // WITH_GCD_EVENT_PROCESSOR
 
 bool
 event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp, event_priority priority)
@@ -273,8 +258,7 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp, even
 		AM_DBG logger::get_logger()->debug("serve_event(0x%x)",e);
 		qp->pop();
 		m_lock.leave();
-#ifdef GB_GCD_WIN
-		 // xdispatch::global_queue().apply(new InnerCalculation(e),1);
+#ifdef WITH_GCD_EVENT_PROCESSOR
 #ifdef WITH_LIBXDISPATCH
 		xdispatch::global_queue(xdispatch::DEFAULT).async(${
 			e->fire();
@@ -297,12 +281,12 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp, even
 			assert(0);
 		}
 		dispatch_async_f(dispatch_get_global_queue(prio, 0), e, (dispatch_function_t)gb_serve_event_1);
-#endif
+#endif // WITH_LIBXDISPATCH
 		 
 #else
 		e->fire();
 		delete e;
-#endif
+#endif // WITH_GCD_EVENT_PROCESSOR
 
 		m_lock.enter();
 	}

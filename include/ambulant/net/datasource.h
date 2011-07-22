@@ -27,7 +27,7 @@
 #include "ambulant/lib/callback.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/event_processor.h"
-#ifdef WITH_GCD_EVENT_PROCESSOR
+#ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
 #include "ambulant/lib/lib_gcd_event_processor_impl.h"
 #endif
 #include "ambulant/lib/thread.h"

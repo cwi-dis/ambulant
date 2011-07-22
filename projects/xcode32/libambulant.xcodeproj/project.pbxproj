@@ -103,6 +103,10 @@
 		040DAB3312B790BB002C4DFD /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
 		041DCB3D12B64D75003407C8 /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D16115194C10007DD71 /* posix_datasource.cpp */; };
 		041DCB3E12B64D8E003407C8 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
+		044E012913D9A8E300E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
+		044E012A13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
+		044E012B13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
+		044E012C13D9A8E500E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		04791D30115194C10007DD71 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
 		04791D31115194C10007DD71 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		04791D32115194C10007DD71 /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
@@ -357,10 +361,6 @@
 		04D07B68138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B69138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B6A138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
-		04DB9A3F13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
-		04DB9AFD13BDD4BC0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
-		04DB9AFE13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
-		04DB9AFF13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
 		939CEABC12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEABD12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEACD12E8659E0003D62E /* cg_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 939CEACC12E8659E0003D62E /* cg_transition.mm */; };
@@ -432,6 +432,7 @@
 		040707151152847A0094FB0B /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		040DAB3812B790BB002C4DFD /* libambulantIPhone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libambulantIPhone.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
+		044E012713D9A81300E6A628 /* event_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = event_processor.cpp; sourceTree = "<group>"; };
 		04791B821151943B0007DD71 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		04791B831151943B0007DD71 /* state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
 		04791B841151943B0007DD71 /* embedder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embedder.h; sourceTree = "<group>"; };
@@ -1619,6 +1620,7 @@
 		04791CEF115194C10007DD71 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				044E012713D9A81300E6A628 /* event_processor.cpp */,
 				04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */,
 				04791CF0115194C10007DD71 /* nscontext.cpp */,
 				04791CF1115194C10007DD71 /* colors.cpp */,
@@ -2044,7 +2046,7 @@
 				93BBA28512DCABC500EE7501 /* cg_avfoundation_video.mm in Sources */,
 				939CEACE12E8659E0003D62E /* cg_transition.mm in Sources */,
 				04D07B6A138B0D4500F93772 /* node_impl.cpp in Sources */,
-				04DB9AFF13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */,
+				044E012C13D9A8E500E6A628 /* event_processor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2130,7 +2132,7 @@
 				04A1E95A12B585030060F97E /* cg_smiltext.mm in Sources */,
 				939CEACF12E8659E0003D62E /* cg_transition.mm in Sources */,
 				04D07B68138B0D4500F93772 /* node_impl.cpp in Sources */,
-				04DB9AFD13BDD4BC0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */,
+				044E012A13D9A8E400E6A628 /* event_processor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2216,7 +2218,7 @@
 				041DCB3E12B64D8E003407C8 /* get_version.cpp in Sources */,
 				939CEACD12E8659E0003D62E /* cg_transition.mm in Sources */,
 				04D07B69138B0D4500F93772 /* node_impl.cpp in Sources */,
-				04DB9AFE13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */,
+				044E012B13D9A8E400E6A628 /* event_processor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2306,7 +2308,7 @@
 				04791DB9115194C10007DD71 /* trace_player.cpp in Sources */,
 				04791DBA115194C10007DD71 /* transition.cpp in Sources */,
 				04D07B67138B0D4500F93772 /* node_impl.cpp in Sources */,
-				04DB9A3F13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */,
+				044E012913D9A8E300E6A628 /* event_processor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
