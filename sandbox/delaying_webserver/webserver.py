@@ -13,23 +13,30 @@ delay=0
 class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        mimetype, _ = mimetypes.guess_type(self.path)
+        path = os.path.normpath(self.path)
+        path = os.curdir + os.sep + self.path
+        print '**', path
+        if os.path.isdir(path):
+            path = os.path.join(path, 'index.html')
+        print '***', path
         try:
-            mimetype, _ = mimetypes.guess_type(self.path)
-            path = os.path.normpath(self.path)
-            path = os.curdir + os.sep + self.path
-            print '**', path
-            if os.path.isdir(path):
-                path = os.path.join(path, 'index.html')
-            print '***', path
             f = open(path, 'rb') #self.path has /test.html
-            time.sleep(delay)
-            self.send_response(200)
-            self.send_header('Content-type',	mimetype)
-            self.end_headers()
-            self.wfile.write(f.read())
-            f.close()
         except IOError:
+            import pdb
+            pdb.set_trace()
             self.send_error(404,'File Not Found: %s' % self.path)
+            return
+        time.sleep(delay)
+        self.send_response(200)
+        self.send_header('Content-type',	mimetype)
+        self.end_headers()
+        while True:
+            data = f.read(16*1024)
+            if not data:
+                break
+            self.wfile.write(data)
+        f.close()
      
 def main():
     global delay
