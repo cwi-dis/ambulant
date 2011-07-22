@@ -164,7 +164,7 @@ install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
 	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
-	cp ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
+	cp $(srcdir)/ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
 # install gnome document icon for mimetype application/smil
 	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
 	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
