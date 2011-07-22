@@ -66,8 +66,10 @@
 - (void) settingsHaveChanged:(SettingsViewController *)controller;
 - (void) auxViewControllerDidFinish: (UIViewController *)controller;
 - (void) setHistoryViewController:(PresentationViewController *)controller;
+- (BOOL) canSelectNextPresentation;
 - (void) selectNextPresentation;
-- (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller;
+- (void) playURL: (NSString*) whatString;
+- (void) playPresentation: (PlaylistItem*) item fromPresentationViewController: (PresentationViewController*) controller;
 - (BOOL) canShowRotatedUIViews;
 
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application;

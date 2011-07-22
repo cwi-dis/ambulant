@@ -37,6 +37,7 @@
 #define NSRectFromCGRect(x) (x)
 #endif
 
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif//AM_DBG
@@ -265,7 +266,6 @@ bad:
 	self = [super initWithFrame: NSRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 	transition_surface = NULL;
-//	transition_tmpsurface = NULL; // XXXJACK Why don't we initialize these?
 	transition_count = 0;
 	fullscreen_count = 0;
 //	fullscreen_previmage = NULL; // XXXJACK Why don't we initialize these?
@@ -284,7 +284,6 @@ bad:
 	self = [super initWithCoder:aDecoder];
 	ambulant_window = NULL;
 	transition_surface = NULL;
-//	transition_tmpsurface = NULL;
 	transition_count = 0;
 	fullscreen_count = 0;
 //	fullscreen_previmage = NULL;
@@ -299,15 +298,12 @@ bad:
 
 - (void)dealloc {
 	AM_DBG NSLog(@"AmbulantView.dealloc(0x%x)", self);
-	// XXXJACK Don't we need these deallocs?
-//	if (transition_surface) [transition_surface release];
-//	transition_surface = NULL;
-//	if (transition_tmpsurface) [transition_tmpsurface release];
-//	transition_tmpsurface = NULL;
-//	if (overlay_window) [overlay_window release];
-//	overlay_window = NULL;
+	if (transition_surface) {
+//		CFRelease(transition_surface);
+//		transition_surface = NULL;
+	}
 	if (fullscreen_oldimage) {
-		[fullscreen_oldimage release];
+		CFRelease(fullscreen_oldimage);
 		fullscreen_oldimage = NULL;
 	}
 	[super dealloc];
@@ -587,9 +583,6 @@ bad:
 	assert(transition_count > 0);
 	transition_count--;
 	AM_DBG NSLog(@"decrementTransitionCount: count=%d", transition_count);
-	if (transition_count == 0) {
-		[self releaseTransitionSurfaces];
-	}
 }
 
 #ifndef	WITH_UIKIT
@@ -650,85 +643,6 @@ bad:
 	rv = [rv autorelease];
 	return rv;
 }
-#ifdef JNK //X
-- (void) startScreenTransition
-{
-	AM_DBG NSLog(@"startScreenTransition");
-	if (fullscreen_count)
-		NSLog(@"Warning: multiple Screen transitions in progress");
-	fullscreen_count++;
-//X	if (fullscreen_oldimage) [fullscreen_oldimage release];
-//X	fullscreen_oldimage = fullscreen_previmage;
-//X	fullscreen_previmage = NULL;
-}
-
-- (void) endScreenTransition
-{
-	AM_DBG NSLog(@"endScreenTransition");
-	assert(fullscreen_count > 0);
-	fullscreen_count--;
-}
-
-- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
-		elapsed: (ambulant::lib::transition_info::time_type)now
-{
-	AM_DBG NSLog(@"screenTransitionStep %d", (int)now);
-	assert(fullscreen_count > 0);
-	fullscreen_engine = engine;
-	fullscreen_now = now;
-}
-
-- (void) _screenTransitionPreRedraw
-{
-	if (fullscreen_count == 0) return;
-	// XXX setup drawing to transition surface
-	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
-}
-
-- (void) _screenTransitionPostRedraw
-{
-	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
-		// Neither in fullscreen transition nor wrapping one up.
-		// Take a snapshot of the screen and return.
-		if (fullscreen_previmage) [fullscreen_previmage release];
-		fullscreen_previmage = [[self getOnScreenImageForRect: NSRectToCGRect([self bounds])] retain];
-		return;
-	}
-	if (fullscreen_oldimage == NULL) {
-		// Just starting a new fullscreen transition. Get the
-		// background bits from the snapshot saved during the previous
-		// redraw.
-		fullscreen_oldimage = fullscreen_previmage;
-		fullscreen_previmage = NULL;
-	}
-
-	// Do the transition step, or simply copy the bits
-	// if no engine available.
-	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
-	CGRect bounds = NSRectToCGRect([self bounds]);
-	if (fullscreen_engine) {
-		[[self getTransitionOldSource] drawInRect: NSRectFromCGRect(bounds)
-			fromRect: NSRectFromCGRect(bounds)
-			operation: NSCompositeCopy
-			fraction: 1.0];
-		fullscreen_engine->step(fullscreen_now);
-	} else {
-		AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
-		[[self getTransitionNewSource] drawInRect: NSRectFromCGRect(bounds)
-			fromRect: NSRectFromCGRect(bounds)
-			operation: NSCompositeCopy
-			fraction: 1.0];
-	}
-
-	if (fullscreen_count == 0) {
-		// Finishing a fullscreen transition.
-		AM_DBG NSLog(@"_screenTransitionPostRedraw: cleanup after transition done");
-		if (fullscreen_oldimage) [fullscreen_oldimage release];
-		fullscreen_oldimage = NULL;
-		fullscreen_engine = NULL;
-	}
-}
-#endif//JNK
 
 #else// WITH_UIKIT
 // Transition implementation methods for UIKit
@@ -1072,7 +986,9 @@ CreateBitmapContext (CGSize size)
 			[self releaseTransitionSurfaces];
 		}		
 	}
-	
+	if (transition_count == 0) {
+		[self releaseTransitionSurfaces];
+	}	
 	if (fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
         //XXX No idea yet what to do here
@@ -1107,6 +1023,7 @@ CreateBitmapContext (CGSize size)
 	if (fullscreen_count &&  fullscreen_oldimage)
 		return fullscreen_oldimage;
 //TBD	return [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
+	return NULL;
 }
 	
 - (void) releaseTransitionSurfaces

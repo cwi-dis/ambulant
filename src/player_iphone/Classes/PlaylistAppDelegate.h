@@ -22,13 +22,15 @@
 #import <UIKit/UIKit.h>
 
 @class PresentationViewController;
+@class PlaylistItem;
 
 @protocol PlaylistViewControllerDelegate
 @property(readonly) BOOL autoCenter;
 @property(readonly) BOOL autoResize;
 @property(readonly) BOOL nativeRenderer;
 - (void) auxViewControllerDidFinish: (UIViewController *)controller;
-- (void) playPresentation:(NSString*) what fromPresentationViewController:(PresentationViewController*) controller;
+- (void) playURL: (NSString*) whatString;
+- (void) playPresentation: (PlaylistItem*) item fromPresentationViewController: (PresentationViewController*) controller;
 - (void) auxViewControllerDidFinish: (PresentationViewController*) controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
 - (void) settingsHaveChanged: (UIViewController*) controller;

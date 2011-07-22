@@ -1,6 +1,6 @@
 
 
-EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas
+EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas ambulant-kde.desktop
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
@@ -166,3 +166,17 @@ check-ambulantplayer_qt:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
+
+install-data-local:
+	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
+	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
+	mkdir -p  $(DESTDIR)$(datadir)/applications
+	cp $(srcdir)/ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
+# install gnome document icon for mimetype application/smil
+	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+

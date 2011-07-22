@@ -20,9 +20,11 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
 #import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
-#import "Presentation.h"
+#import "PlaylistItem.h"
 #import "PresentationViewController.h"
 #import "ambulant/common/embedder.h"
 #import "ambulant/net/url.h"
@@ -72,17 +74,23 @@ enum ZoomState {
 @end
 
 @interface AmbulantViewController : UIViewController 
-				<UITextFieldDelegate> {
+		<UITextFieldDelegate, 
+		MFMailComposeViewControllerDelegate,
+		UIActionSheetDelegate>
+{
 	document_embedder *embedder;    // Our class to handle inter-SMIL-document commands.
 	mainloop *myMainloop;   // Controller object for the SMIL player
 //	IBOutlet AmbulantContainerView* view; // our main view, contains scalerView and interactionView
     IBOutlet AmbulantScalerView* scalerView; // The zoom/pan view, contains playerView
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
+	IBOutlet UIView* finishedView;
 	IBOutlet AmbulantAppDelegate* delegate; // Our higher-level controller
 	IBOutlet UIButton* playPauseButton;
+	IBOutlet UIButton* nextPresentationButton;
 	NSString* currentURL;      // The document that is currently playing (or will play shortly)
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
+    BOOL is_visible;    // Set by viewDidAppear, cleared by viewWillDisappear
 }
 
 // Lifecycle
@@ -91,6 +99,7 @@ enum ZoomState {
 - (void) viewDidLoad;
 - (void) viewWillAppear:(BOOL)animated;
 - (void) viewDidAppear:(BOOL)animated;
+- (void) viewWillDisappear:(BOOL)animated;
 - (void) viewDidUnload;
 - (void) willTerminate;
 
@@ -100,12 +109,14 @@ enum ZoomState {
 - (PlaylistItem*) currentItem;
 - (void) pause;
 - (void) play;
+- (void) stopped;
 
 // View control
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
 - (void) orientationChanged:(NSNotification *)notification;
 - (void) showInteractionView: (BOOL) on;
+- (void) showFinishedView: (BOOL) on;
 - (void) autoHideInteractionView;
 
 // User interaction through gestures
@@ -122,6 +133,11 @@ enum ZoomState {
 - (IBAction) doNextItem: (id)sender;
 - (IBAction) doAddFavorite:(id)sender;
 - (IBAction) doPlaylists:(id)sender;
+
+// Delegates and such
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error ;
+
 
 // Notifications from other views, etc.
 - (void) settingsHaveChanged;

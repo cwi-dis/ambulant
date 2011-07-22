@@ -3,3 +3,5 @@ usr/share/locale
 usr/lib/libambulant*.so.0.0.0
 usr/lib/libambulant*.so.0
 usr/lib/ambulant
+usr/share/icons
+

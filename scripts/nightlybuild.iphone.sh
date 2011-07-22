@@ -25,14 +25,20 @@ TODAY=`date +%Y%m%d`
 
 # The rest should be automatic
 case x$BRANCH in
-x)	;;
+x)	
+	;;
+release*)
+	TODAY=$TODAY-$BRANCH
+	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=
+	;;
 *)
 	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=.$TODAY
 esac
 BUILDDIR=ambulant-iphone-build-$TODAY
 DESTDIR=ambulant-iphone-install-$TODAY
-VERSIONSUFFIX=.$TODAY
 DESTINATION_IPHONE=$DESTINATION/iphone/
 
 echo
