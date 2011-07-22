@@ -175,7 +175,7 @@ isHistory {
 	NSUInteger playlistIndex = indexPath.row;
 	currentIndex = playlistIndex;
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[delegate playPresentation:[[selectedItem url] absoluteString] fromPresentationViewController: self];
+	[delegate playPresentation:selectedItem fromPresentationViewController: self];
 }
 
 // Support conditional editing of the table view.
@@ -330,7 +330,7 @@ isHistory {
 		playlistIndex = currentIndex = 0;
 	}
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[delegate playPresentation:[[selectedItem url] absoluteString] fromPresentationViewController: self];
+	[delegate playPresentation:selectedItem fromPresentationViewController: self];
 }
 	
 - (void) viewWillDisappear:(BOOL)animated

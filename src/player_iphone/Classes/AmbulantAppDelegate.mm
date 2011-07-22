@@ -407,17 +407,34 @@ document_stopped: (id) sender
 	}
 }
 
+- (BOOL) canSelectNextPresentation
+{
+	return currentPVC && ![currentPVC isHistory];
+}
+
 - (void) selectNextPresentation
 {
     if (currentPVC) [currentPVC selectNextPresentation];
 }
 
-- (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
+- (void) playURL: (NSString*) whatString {
     // XXXJACK: Change interface to get PlayListItem, which has the position_offset as well.
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	AM_DBG NSLog(@"Selected: %@",whatString);
-	currentPVC = controller;
+	currentPVC = nil;
     [viewController doPlayURL: whatString fromNode: nil];
+    if ([viewController canPlay]) {
+        [self showAmbulantPlayer: self];
+        [history updatePlaylist];
+    }
+}
+
+- (void) playPresentation: (PlaylistItem*) item fromPresentationViewController: (PresentationViewController*) controller {
+    // XXXJACK: Change interface to get PlayListItem, which has the position_offset as well.
+	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
+	AM_DBG NSLog(@"Selected: %@",item);
+	currentPVC = controller;
+    [viewController doPlayURL: [[item url] absoluteString] fromNode: [item position_node]];
     if ([viewController canPlay]) {
         [self showAmbulantPlayer: self];
         [history updatePlaylist];

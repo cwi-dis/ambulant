@@ -64,7 +64,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	m_nsurl(NULL),
 	m_current_item(NULL),
 	m_last_node_started(NULL),
-	m_restarting(false)
+	m_no_stopped_callbacks(false)
 {
 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -355,7 +355,7 @@ mainloop::~mainloop()
 void
 mainloop::restart(bool reparse)
 {
-	m_restarting = true;
+	m_no_stopped_callbacks = true;
 	
 	bool playing = is_play_active();
 	bool pausing = is_pause_active();
@@ -384,7 +384,7 @@ mainloop::restart(bool reparse)
 	if (playing || pausing) play();
 	if (pausing) pause();
 	
-	m_restarting = false;
+	m_no_stopped_callbacks = false;
 }
 
 common::gui_screen *
@@ -524,7 +524,7 @@ mainloop::document_stopped()
     m_last_node_started = NULL;
 #endif
 	AM_DBG NSLog(@"document_stopped");
-	if (m_restarting) {
+	if (m_no_stopped_callbacks) {
 		return;
 	}
 	AmbulantAppDelegate* am_delegate = (AmbulantAppDelegate*)[[UIApplication sharedApplication] delegate];

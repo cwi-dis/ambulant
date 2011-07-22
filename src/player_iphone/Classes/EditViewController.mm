@@ -57,7 +57,7 @@ done:(id)sender
     if ([theUrl hasPrefix: @"ambulant:"])
         theUrl = [theUrl substringFromIndex: 9];
 	
-	[delegate playPresentation:theUrl fromPresentationViewController: NULL];
+	[delegate playURL:theUrl];
 	[self cancel: sender];
 }
 

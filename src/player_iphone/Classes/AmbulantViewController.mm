@@ -200,6 +200,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     }
 	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantViewController doPlayURL(0x%x): url=%s ns_node_repr=%s", self, currentURL? [ currentURL UTF8String]: "NULL", ns_node_repr? [ns_node_repr UTF8String] : "NULL");
 	if (myMainloop != NULL) {
+		myMainloop->no_stopped_callbacks();
 		myMainloop->stop();
 		delete myMainloop;
         
@@ -219,6 +220,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			myMainloop->goto_node_repr(node_repr);
 		}
 		[self showInteractionView: NO];
+		[self showFinishedView: NO];
         if (is_visible) {
             [self play];
         } else {
@@ -244,6 +246,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void) stopped {
     UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
    [playPauseButton setImage:playImage forState:UIControlStateNormal];
+   [self showFinishedView: YES];
 }
 
 - (void) play {
@@ -296,6 +299,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 // display the Control Panel (as a HUD) at the bottom of the player view 
 - (void) showInteractionView: (BOOL) want_show {
 	if (want_show && interactionView.hidden) {
+		nextPresentationButton.enabled = [delegate canSelectNextPresentation];
 		interactionView.hidden = false;
 		interactionView.opaque = true;
         assert(self.view);
@@ -309,6 +313,17 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		interactionView.hidden = true;
 		interactionView.opaque = false;
         [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
+	}
+}
+
+- (void) showFinishedView: (BOOL) want_show {
+	if (want_show) {
+		finishedView.hidden = false;
+		finishedView.opaque = true;
+		[self.view bringSubviewToFront: finishedView];
+	} else {
+		finishedView.hidden = true;
+		finishedView.opaque = false;
 	}
 }
 
@@ -395,6 +410,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG NSLog(@"AmbulantViewController handleRestartTapped(0x%x)", self);
 	if (myMainloop != NULL) {
 		myMainloop->restart(false);
+		if (!myMainloop->is_play_active()) {
+			[self play];
+		}
 	} else {
 		[self doPlayURL: nil fromNode: nil];
 	}

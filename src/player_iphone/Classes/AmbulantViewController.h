@@ -74,15 +74,20 @@ enum ZoomState {
 @end
 
 @interface AmbulantViewController : UIViewController 
-				<UITextFieldDelegate, MFMailComposeViewControllerDelegate> {
+		<UITextFieldDelegate, 
+		MFMailComposeViewControllerDelegate,
+		UIActionSheetDelegate>
+{
 	document_embedder *embedder;    // Our class to handle inter-SMIL-document commands.
 	mainloop *myMainloop;   // Controller object for the SMIL player
 //	IBOutlet AmbulantContainerView* view; // our main view, contains scalerView and interactionView
     IBOutlet AmbulantScalerView* scalerView; // The zoom/pan view, contains playerView
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
+	IBOutlet UIView* finishedView;
 	IBOutlet AmbulantAppDelegate* delegate; // Our higher-level controller
 	IBOutlet UIButton* playPauseButton;
+	IBOutlet UIButton* nextPresentationButton;
 	NSString* currentURL;      // The document that is currently playing (or will play shortly)
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
     BOOL is_visible;    // Set by viewDidAppear, cleared by viewWillDisappear
@@ -111,6 +116,7 @@ enum ZoomState {
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
 - (void) orientationChanged:(NSNotification *)notification;
 - (void) showInteractionView: (BOOL) on;
+- (void) showFinishedView: (BOOL) on;
 - (void) autoHideInteractionView;
 
 // User interaction through gestures
