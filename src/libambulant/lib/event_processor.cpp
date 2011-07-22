@@ -104,6 +104,10 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	// low priority delta timer and its event queue
 	delta_timer m_low_delta_timer;
 	std::queue<event*> m_low_q;
+	
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	dispatch_group_t m_gcd_group;
+#endif
 
 };
 
@@ -122,6 +126,9 @@ event_processor_impl::event_processor_impl(timer *t)
 {
 	m_lock.enter();
 	assert(t != 0);
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	m_gcd_group = dispatch_group_create();
+#endif
 	start();
 	m_lock.leave();
 }
@@ -132,6 +139,10 @@ event_processor_impl::~event_processor_impl()
 	stop();
 	assert( ! is_running());
 	cancel_all_events();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	dispatch_group_wait(m_gcd_group, DISPATCH_TIME_FOREVER);
+	dispatch_release(m_gcd_group);
+#endif // WITH_GCD_EVENT_PROCESSOR
 }
 
 timer *
@@ -344,7 +355,7 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp, even
 		default:
 			assert(0);
 		}
-		dispatch_async_f(dispatch_get_global_queue(prio, 0), e, (dispatch_function_t)gb_serve_event_1);
+		dispatch_group_async_f(m_gcd_group, dispatch_get_global_queue(prio, 0), e, (dispatch_function_t)gb_serve_event_1);
 #endif // WITH_LIBXDISPATCH
 		 
 #else
