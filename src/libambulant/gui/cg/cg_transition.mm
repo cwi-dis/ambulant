@@ -21,7 +21,7 @@
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/lib/logger.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

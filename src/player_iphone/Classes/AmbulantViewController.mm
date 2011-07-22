@@ -97,14 +97,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		initWithTarget:self
 		action:@selector(handleDoubleTapGesture:)];
 	doubleTapGesture.numberOfTapsRequired = 2;
-	[scalerView addGestureRecognizer:doubleTapGesture];
+	[scalerView.superview addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
 
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self
 		action:shortTapAction];
-	[scalerView addGestureRecognizer:singleTapGesture];	
+	[scalerView.superview addGestureRecognizer:singleTapGesture];	
     [singleTapGesture release];
 	// do not also errnoneously recognize a single tap when a double tap is recognized
 	[singleTapGesture requireGestureRecognizerToFail:doubleTapGesture];	
@@ -113,21 +113,21 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
 		initWithTarget:self
 		action:longTapAction];
-    [scalerView addGestureRecognizer:longPressGesture];
+    [scalerView.superview addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
 		initWithTarget:self
 		action:@selector(handlePinchGesture:)];
-	[scalerView addGestureRecognizer:pinchGesture];
+	[scalerView.superview addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 
 	// prepare to react on "pan" gesture (move playerView with one finger)
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
 		initWithTarget:self
 		action:@selector(handlePanGesture:)];
-    [scalerView addGestureRecognizer:panGesture];
+    [scalerView.superview addGestureRecognizer:panGesture];
     [panGesture release];
 }
 
