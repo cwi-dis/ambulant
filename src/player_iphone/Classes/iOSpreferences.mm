@@ -131,28 +131,30 @@ iOSpreferences::load_preferences()
 	m_hud_auto_hide = [prefs boolForKey: @"HUDautoHide"];
 	m_hud_short_tap = [prefs boolForKey: @"HUDshortTap"];
 	m_normal_exit = [prefs boolForKey: @"normalExit"];
-	// favorites is archived
-	NSData* favorites_archive = [prefs objectForKey:@"favorites"];
-	NSArray* favorites = NULL;
-	if ([favorites_archive length] != 1) {
-		favorites = [NSKeyedUnarchiver unarchiveObjectWithData:favorites_archive];
-	}
+
+	// Check version of preferences, to see whether we should
+    // decode history/favorites
+    NSArray* history = NULL;
+    NSArray* favorites = NULL;
 	NSString* version = [prefs stringForKey:@"version"];
-	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
+	version = [prefs stringForKey:@"version"];
+	if ([version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
+        // Decode history
+        NSData* history_archive = [prefs objectForKey:@"history"];
+        if ([history_archive length] != 1) {
+            history = [NSKeyedUnarchiver unarchiveObjectWithData:history_archive];
+        }
+        // Decode Favorites
+        NSData* favorites_archive = [prefs objectForKey:@"favorites"];
+        if ([favorites_archive length] != 1) {
+            favorites = [NSKeyedUnarchiver unarchiveObjectWithData:favorites_archive];
+	}
+    } else {
+		history = NULL;
 		favorites = NULL;
 	}
-	m_favorites = new ambulant::Playlist(favorites);
-	// history is archived
-	NSData* history_archive = [prefs objectForKey:@"history"];
-	NSArray* history = NULL;
-	if ([history_archive length] != 1) {
-		history = [NSKeyedUnarchiver unarchiveObjectWithData:history_archive];
-	}
-	version = [prefs stringForKey:@"version"];
-	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
-		history = NULL;
-	}
 	m_history = new ambulant::Playlist(history);
+	m_favorites = new ambulant::Playlist(favorites);
 	
 	save_preferences();
 	[pool release];
@@ -216,78 +218,6 @@ iOSpreferences::repr()
 	return rv;
 }
 
-@implementation PlaylistItem
-@synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
-@synthesize ns_image_data;
-
-- (PlaylistItem*) initWithTitle: (NSString*) atitle
-	url: (NSURL*) ans_url
-	image_data: (NSData*) ans_image_data
-	description: (NSString*) ans_description
-	duration: (NSString*) ans_dur
-	last_node_repr: (NSString*) alast_node_repr
-	position: (NSUInteger) aposition
-{
-	ns_title = atitle;
-	ns_url = [ans_url retain];
-	ns_image_data = ans_image_data;
-	ns_description = ans_description;
-	ns_dur = ans_dur;
-	if (alast_node_repr == NULL) {
-		ns_last_node_repr = [NSString stringWithString: @""];
-	} else {
-		ns_last_node_repr = alast_node_repr;			
-	}
-	position = aposition;
-	return self;
-}
-
-- (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	BOOL rv = [[self ns_url] isEqual: [playlistitem ns_url]];
-	[pool release];
-	return rv; 
-}
-	
-- (void) encodeWithCoder: (NSCoder*) encoder	
-{
-	[encoder encodeObject:ns_title forKey:@"Ns_title"];
-	[encoder encodeObject:ns_url forKey:@"Ns_url"];
-	if (ns_image_data != NULL) {
-		[encoder encodeObject:ns_image_data forKey:@"Ns_image_data"];
-	}
-	[encoder encodeObject:ns_description forKey:@"Ns_description"];
-	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
-	[self.ns_last_node_repr retain];
-	[encoder encodeObject:ns_last_node_repr forKey:@"Ns_lastnode"];
-//TBD [encoder encodeObject:position forKey:@"Position"];
-}
-
-- (id) initWithCoder: (NSCoder*) decoder
-{
-	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
-	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
-	self.ns_image_data = [decoder decodeObjectForKey:@"Ns_image_data"];
-	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
-	self.ns_dur = [decoder decodeObjectForKey:@"Ns_dur"];
-	self.ns_last_node_repr = [decoder decodeObjectForKey:@"Ns_lastnode"];
-	[self.ns_last_node_repr retain];
-//TBD self.position = [decoder decodeObjectForKey:@"Position"];
-	return self;
-}
-
-- (void) dealloc {
-	[ns_title release];
-	[ns_url release];
-	[ns_image_data release];
-	[ns_description release];
-	[ns_dur release];
-
-	[super dealloc];
-}
-
-@end
 
 ambulant::Playlist::Playlist(NSArray* ansarray)
 {

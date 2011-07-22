@@ -3,9 +3,16 @@
 # Script to do a nightly clean build of a full Ambulant
 # Debian packages, built on Ubuntu version
 #
-# Note: the key used for signing (in debuild) must have no passphrase.
+# NOTE: a number of things must be installed (and working) for this
+# script to run successfully:
+# - development tools (gcc, make, auto*)
+# - debuild
+# - chrpath
+# - mail and configuration (actually for the cron job)
+#
+# NOTE 2: the key used for signing (in debuild) must have no passphrase.
 # I think this can only be done with the gpg --edit-key command line
-# interface.
+# interface, then use the "passwd" command and set the passphrase to empty.
 #
 set -e
 set -x

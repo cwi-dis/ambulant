@@ -20,10 +20,10 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "Presentation.h"
+#import "PlaylistItem.h"
 #import "PresentationViewController.h"
 #import "iOSpreferences.h"
-#import "Presentation.h"
+#import "PlaylistItem.h"
 #import "PlaylistAppDelegate.h"
 
 @protocol PresentationViewControllerDelegate;
@@ -33,12 +33,10 @@
 @interface PresentationViewController : UITableViewController < UITableViewDataSource, UITableViewDelegate > {
 	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
-	UITableViewCell* nibLoadedCell; // XXXJACK thinks this isn't neeeded: it isn't initializaed anywhere...
-	Presentation* selectedPresentation;
+	IBOutlet UITableViewCell* nibLoadedCell; // XXXJACK thinks this isn't neeeded: it isn't initializaed anywhere...
 	NSInteger currentIndex;
 	BOOL isHistory;
 	UITableViewCellEditingStyle editingStyle;
-	Presentation* newPresentation;
 }
 - (void) awakeFromNib;
 - (void) viewDidLoad;
@@ -48,11 +46,8 @@
 - (IBAction) done: (id) sender;
 // aux.
 - (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath;
-- (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem *) item;
 - (void) selectNextPresentation;
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
 - (BOOL) isHistory;
-
-@property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
 @end
