@@ -22,6 +22,7 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 #import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
 #import "PlaylistItem.h"
@@ -104,6 +105,7 @@ enum ZoomState {
 - (void) willTerminate;
 
 // Player control
+- (bool) hasNetwork;
 - (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr;
 - (bool) canPlay;
 - (PlaylistItem*) currentItem;

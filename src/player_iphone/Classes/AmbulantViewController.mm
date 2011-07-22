@@ -21,6 +21,7 @@
 #import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#include "ambulant/lib/logger.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -191,6 +192,17 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 #pragma mark -
 #pragma mark Player control
+- (bool) hasNetwork {
+	static SCNetworkReachabilityRef reachabilityRef;
+	if (reachabilityRef == NULL) {
+		reachabilityRef = SCNetworkReachabilityCreateWithName(NULL, "www.ambulantplayer.org");
+	}
+	if (reachabilityRef == NULL)
+		return false;
+	SCNetworkReachabilityFlags flags;
+	SCNetworkReachabilityGetFlags(reachabilityRef, &flags);
+	return flags & kSCNetworkReachabilityFlagsReachable;
+}
 
 // create a new instance of the smil player
 - (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr {
@@ -212,7 +224,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     assert(self.view);
     assert(currentURL);
     assert(playerView);
-    assert(embedder);	
+    assert(embedder);
+	if (self.view == NULL || currentURL == NULL || playerView == NULL || embedder == NULL) {
+		return;
+	}
+	if ( ! [currentURL hasPrefix:@"file://"] && ! [self hasNetwork]) {
+		[delegate showAlert: @"No Internet Connection"];
+		return;
+	}
 	myMainloop = new mainloop([currentURL UTF8String], playerView, embedder);	
 	if (myMainloop) {
 		if (ns_node_repr != NULL) {
