@@ -277,7 +277,7 @@ lib_LTLIBRARIES = \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
-	
+
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
@@ -373,6 +373,25 @@ EXTRA_DIST= \
 	lib/win32
 
 CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT
+
+install-data-local:
+# install icon for use by the players
+	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
+	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
+# install gnome document icon for mimetype application/smil
+	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	libtool --finish $(DESTDIR)$(libdir)
+ 
+uninstall-local:
+	-rm $(DESTDIR)$(datadir)/ambulant/icons/Ambulant.png
+	-rm $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+	-rm $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+	-rm $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 if WITH_NPAMBULANT
 # when selinux is enblaed, identify the installed shared library
