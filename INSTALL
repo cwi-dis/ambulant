@@ -76,6 +76,9 @@ For more special case configure options consult "configure --help".
 Building for Mac OS X, configure/make style
 -------------------------------------------
 
+Warning: as of this writing, building on 10.7 Lion does not work: there are
+minimal tweaks that need to be made to SDL and gettext. 
+
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
 put these in the next category, but for now you need to download, build and
@@ -114,6 +117,9 @@ into /usr/local.
 
 Building for Mac OS X 10.6 using XCode
 --------------------------------------
+
+Warning: as of this writing, building on 10.7 Lion does not work: there are
+minimal tweaks that need to be made to SDL and gettext.
 
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will

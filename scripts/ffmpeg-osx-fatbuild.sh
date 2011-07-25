@@ -44,7 +44,7 @@ ANY_RANDOM_ARCH=i386
 # You may need to fiddle these, but probably not.
 #
 PPC_CONFIGOPTS="--arch=powerpc --cpu=g4 --enable-altivec --enable-shared"
-I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.0"
+I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared"
 PPC64_CONFIGOPTS="--enable-cross-compile --arch=ppc64 --cpu=g4 --enable-altivec --enable-shared"
 X86_64_CONFIGOPTS="--arch=x86_64 --enable-shared"
 #
