@@ -142,6 +142,7 @@ check-ambulantplayer_qt:
 	if test x$$DISPLAY = x; then \
 		echo Skipping tests, DISPLAY not set; \
 	else \
+	  AMBULANT_TOP_DIR=$(DESTDIR)$(datadir) \
 	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) ; \
@@ -161,15 +162,6 @@ uninstall-local:
 	-rm -fr AM_TEST-output.txt 
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
-	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
 	cp $(srcdir)/ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
-# install gnome document icon for mimetype application/smil
-	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
