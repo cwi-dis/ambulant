@@ -20,7 +20,27 @@
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/mtsync.h"
+#ifdef AMBULANT_PLATFORM_UNIX
+#include "ambulant/lib/unix/unix_thread.h"
+#define BASE_THREAD lib::unix::thread
+#endif
+#ifdef AMBULANT_PLATFORM_WIN32
+#include "ambulant/lib/win32/win32_thread.h"
+#define BASE_THREAD lib::win32::thread
+#endif
+
+#ifdef WITH_GCD_EVENT_PROCESSOR
+#ifdef WITH_LIBXDISPATCH
+#include "xdispatch/xdispatch/dispatch.h"
+#else
+#include "dispatch/dispatch.h"
+#endif // WITH_LIBXDISPATCH
+#endif // WITH_GCD_EVENT_PROCESSOR
+
 #include <map>
+#include <queue>
+#include <cassert>
 
 #if defined(AMBULANT_PLATFORM_WIN32)
 #include <windows.h>
@@ -30,8 +50,67 @@
 #define AM_DBG if(0)
 #endif
 
+//#if 0
+
 using namespace ambulant;
 using namespace lib;
+
+/// Implementation of event_processor.
+/// This is an implementation of the event_processor interface that uses a thread
+/// and three priority queues to execute events.
+class event_processor_impl : public event_processor, public BASE_THREAD {
+  public:
+	/// Constructor.
+	event_processor_impl(timer *t);
+	~event_processor_impl();
+
+	timer *get_timer() const;
+	/// Internal: code run by the thread.
+	unsigned long run();
+
+	void add_event(event *pe, time_type t, event_priority priority);
+	bool cancel_event(event *pe, event_priority priority = ep_low);
+	void cancel_all_events();
+	void set_observer(event_processor_observer *obs) {m_observer = obs; };
+	/// Debug method to dump queues.
+	void dump();
+  protected:
+	/// Called by platform-specific subclasses.
+	/// Should hold m_lock when calling.
+	void _serve_events();
+
+	timer *m_timer;	///< the timer for this processor
+	event_processor_observer *m_observer;	///< The observer.
+
+	/// protects whole data structure.
+	critical_section_cv m_lock;
+
+  private:
+	// check, if needed, with a delta_timer to fill its run queue
+	// return true if the run queue contains any events
+	bool _events_available(delta_timer& dt, std::queue<event*> *qp);
+
+	// serve a single event from a delta_timer run queue
+	// return true if an event was served
+	bool _serve_event(delta_timer& dt, std::queue<event*> *qp, event_priority priority);
+
+	// high priority delta timer and its event queue
+	delta_timer m_high_delta_timer;
+	std::queue<event*> m_high_q;
+
+	// medium priority delta timer and its event queue
+	delta_timer m_med_delta_timer;
+	std::queue<event*> m_med_q;
+
+	// low priority delta timer and its event queue
+	delta_timer m_low_delta_timer;
+	std::queue<event*> m_low_q;
+	
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	dispatch_group_t m_gcd_group;
+#endif
+
+};
 
 lib::event_processor *
 lib::event_processor_factory(timer *t)
@@ -48,6 +127,9 @@ event_processor_impl::event_processor_impl(timer *t)
 {
 	m_lock.enter();
 	assert(t != 0);
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	m_gcd_group = dispatch_group_create();
+#endif
 	start();
 	m_lock.leave();
 }
@@ -58,6 +140,10 @@ event_processor_impl::~event_processor_impl()
 	stop();
 	assert( ! is_running());
 	cancel_all_events();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	dispatch_group_wait(m_gcd_group, DISPATCH_TIME_FOREVER);
+	dispatch_release(m_gcd_group);
+#endif // WITH_GCD_EVENT_PROCESSOR
 }
 
 timer *
@@ -175,20 +261,20 @@ event_processor_impl::_serve_events()
 		AM_DBG lib::logger::get_logger()->debug("_serve_events: %d hi, %d med, %d lo", m_high_q.size(), m_med_q.size(), m_low_q.size());
 		// There was at least one event
 		// First try to serve the high priority event
-		if (_serve_event(m_high_delta_timer, &m_high_q)) {
+		if (_serve_event(m_high_delta_timer, &m_high_q, ep_high)) {
 			// serving the event may generate another event
 			// of any priority, must check all queues again
 			continue;
 		}
 		// If there was no high priority event, then try to
 		// serve one medium priority event
-		if (_serve_event(m_med_delta_timer, &m_med_q))
+		if (_serve_event(m_med_delta_timer, &m_med_q, ep_med))
 			// again, serving this event may generate another
 			// of any priority, so check all queues
 			continue;
 		// There was no medium priority event either, so
 		// it must be a low priority event
-		(void) _serve_event(m_low_delta_timer, &m_low_q);
+		(void) _serve_event(m_low_delta_timer, &m_low_q, ep_low);
 	}
 
 	timer::signed_time_type drift = m_timer->get_drift();
@@ -227,8 +313,18 @@ event_processor_impl::_events_available(delta_timer& dt, std::queue<event*> *qp)
 	return !qp->empty();
 }
 
+#ifdef WITH_GCD_EVENT_PROCESSOR
+// Helper function, called whtn the event should fire.
+static void
+gb_serve_event_1(event *gb_e)
+{
+	gb_e->fire();
+	delete gb_e;
+}
+#endif // WITH_GCD_EVENT_PROCESSOR
+
 bool
-event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
+event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp, event_priority priority)
 // serve a single event from a delta_timer run queue
 // return true if an event was served
 {
@@ -238,8 +334,36 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 		AM_DBG logger::get_logger()->debug("serve_event(0x%x)",e);
 		qp->pop();
 		m_lock.leave();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+#ifdef WITH_LIBXDISPATCH
+		xdispatch::global_queue(xdispatch::DEFAULT).async(${
+			e->fire();
+			delete e;
+			logger::get_logger()->debug("serve_event(0x%x)in GCD_WIN",e);
+		});
+#else
+		int prio;
+		switch (priority) {
+		case ep_high:
+			prio = DISPATCH_QUEUE_PRIORITY_HIGH;
+			break;
+		case ep_med:
+			prio = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+			break;
+		case ep_low:
+			prio = DISPATCH_QUEUE_PRIORITY_LOW;
+			break;
+		default:
+			assert(0);
+		}
+		dispatch_group_async_f(m_gcd_group, dispatch_get_global_queue(prio, 0), e, (dispatch_function_t)gb_serve_event_1);
+#endif // WITH_LIBXDISPATCH
+		 
+#else
 		e->fire();
 		delete e;
+#endif // WITH_GCD_EVENT_PROCESSOR
+
 		m_lock.enter();
 	}
 	return must_serve;
@@ -268,3 +392,4 @@ event_processor_impl::dump()
 //		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
 #endif
 }
+//#endif

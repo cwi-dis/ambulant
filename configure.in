@@ -252,6 +252,23 @@ AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
 #
+# Do we want GCD event processor support?
+#
+AC_MSG_CHECKING(for --with-gcd-event-processor)
+AC_ARG_WITH([gcd-event-processor],
+    AS_HELP_STRING([--with-gcd-event-processor],[Enable gcd event processor]),
+    [with_gcd_event_processor=${withval}],
+    [with_gcd_event_processor=yes])
+if test "x$with_gcd_event_processor" = xyes;
+then
+    AC_DEFINE(WITH_GCD_EVENT_PROCESSOR, 1, [Define to enable gcd event processor support])
+fi
+GCD_LIBS="-ldispatch"
+AC_SUBST(GCD_LIBS)
+AM_CONDITIONAL(WITH_GCD_EVENT_PROCESSOR, test x$with_gcd_event_processor = xyes)
+AC_MSG_RESULT($with_gcd_event_processor)
+
+#
 # Do we want overlay window support support?
 #
 test_overlay=false
@@ -1170,6 +1187,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 
     Build with npambulant plugin:   ${with_npambulant}
     Use shared libs internally:     ${with_ambulant_shared_lib}
+    Build with GCD:		     		${with_gcd_event_processor}
      "
 
 if test "x$with_frontend" = "xfalse"; then

@@ -904,10 +904,10 @@ third_party_packages={
                 "devenv jpeg\\win32\\libjpeg.vcproj /Upgrade && " +
                 "devenv lpng128\\projects\v\isualc71\\libpng.vcproj /Upgrade && " +
                 "devenv lpng128\\projects\\visualc71\\zlib.vcproj /Upgrade && " +
-                "cd ..\\projects\\%s && " +
+                ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
                 "devenv third_party_packages.sln /Upgrade && " +
                 "devenv third_party_packages.sln /build Debug && " +
-                "devenv third_party_packages.sln /build %s" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
+                ("devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG)
             ),
         ],
     

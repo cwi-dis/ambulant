@@ -5,7 +5,7 @@
 	Set global_ambulant_defines to the build-time options that influence all products (shared lib, plugins, browser plugins, etc) built. Picked up by many projects inside Ambulant_win32.sln.
 -->
 
-    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN</global_ambulant_defines>
+    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR</global_ambulant_defines>
 <!--
 	Set the following variables to the locations where you downloaded the various
 	third party libraries. Building Ambulant without these will be disappointing.
@@ -25,6 +25,7 @@
     <xerces_minor>1</xerces_minor>
     <xulrunner_dir>..\..\third_party_packages\xulrunner-sdk</xulrunner_dir>
     <firefox_plugin_dir>C:\Program Files\Mozilla Firefox\plugins\</firefox_plugin_dir>
+    <libdispatch_dir>..\..\third_party_packages\DrPizza-libdispatch-bfae016\libdispatch</libdispatch_dir>
     <zip_executable>E:\ufs\jack\bin\zip.exe</zip_executable>
     <python_dir>C:\Python27</python_dir>
     <python_version>2.7</python_version>

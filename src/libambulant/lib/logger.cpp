@@ -273,7 +273,7 @@ void lib::logger::log_cstr(int level, const char *buf) {
 #endif // AMBULANT_NO_TIME_H
 
 	if(loglevel)
-		os << get_level_name(level) << "\t";
+		os << get_level_name(level) << " ";
 	os << buf;
 	char hbuf[64];
 	if(logger::logname)

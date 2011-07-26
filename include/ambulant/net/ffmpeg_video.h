@@ -25,6 +25,8 @@
 #include "ambulant/config/config.h"
 #include "ambulant/net/datasource.h"
 
+#include <queue>
+
 // Needed for avcodec.h:
 #ifndef INT64_C
 #define INT64_C(x) x ## LL

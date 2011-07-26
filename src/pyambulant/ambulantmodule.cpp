@@ -16758,7 +16758,11 @@ static PyObject *PyAm_event_processor_factory(PyObject *_self, PyObject *_args)
 	                      timerObj_Convert, &t))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
+#ifdef WITH_GCD_EVENT_PROCESSOR
+	assert(0);
+#else
 	_rv = ambulant::lib::event_processor_factory(t);
+#endif
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     event_processorObj_New, _rv);

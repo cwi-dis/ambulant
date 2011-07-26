@@ -68,6 +68,12 @@ xerces_includes =
 xerces_core_libs = 
 endif
 
+if WITH_GCD_EVENT_PROCESSOR
+gcd_event_processor_core_libs = $(GCD_LIBS)
+else
+gcd_event_processor_core_libs = 
+endif
+
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
 # XXX Should LIBINTL depend on USE_NLS?
@@ -161,7 +167,11 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_util.cpp \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
-libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS)
+if WITH_GCD_EVENT_PROCESSOR
+libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(GCD_LIBS)
+else
+libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) 
+endif 
 libambulant_gtk_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
 else
 gtkincludes=
@@ -278,13 +288,93 @@ lib_LTLIBRARIES = \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
 
+if WITH_GCD_EVENT_PROCESSOR	
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
 	$(xerces_core_libs) \
 	$(platlibs) \
-	$(PTHREAD_LIBS)
+	$(PTHREAD_LIBS) \
+	$(GCD_LIBS)
+else
+libambulant_la_LDFLAGS= \
+	-export-dynamic $(LIBLTDL) \
+	$(expat_core_libs) \
+	$(xerces_core_libs) \
+	$(platlibs) \
+	$(PTHREAD_LIBS) 
+endif
 
+if WITH_GCD_EVENT_PROCESSOR
+libambulant_la_SOURCES = \
+	get_version.cpp \
+ \
+	$(expat_parser_source) \
+	$(xerces_parser_source) \
+ \
+	lib/colors.cpp \
+	lib/delta_timer.cpp \
+	lib/document.cpp \
+	lib/gpaths.cpp \
+	lib/logger.cpp \
+	lib/nfa.cpp \
+	lib/node_impl.cpp \
+	lib/nscontext.cpp \
+	lib/parselets.cpp \
+	lib/string_util.cpp \
+	lib/timer.cpp \
+	lib/transition_info.cpp \
+	lib/tree_builder.cpp \
+ \
+	lib/parser_factory.cpp \
+	lib/unix/unix_mtsync.cpp \
+	lib/unix/unix_thread.cpp \
+	lib/unix/unix_timer.cpp \
+ \
+	net/posix_datasource.cpp \
+	net/stdio_datasource.cpp \
+	net/datasource.cpp \
+	net/databuffer.cpp \
+	net/url.cpp \
+ \
+	common/factory.cpp \
+	common/gui_player.cpp \
+	common/preferences.cpp \
+	common/region.cpp \
+	common/renderer_impl.cpp \
+	common/renderer_select.cpp \
+	common/schema.cpp \
+	common/state.cpp \
+	common/smil_alignment.cpp \
+	common/smil_handler.cpp \
+	common/plugin_engine.cpp \
+	common/video_renderer.cpp \
+ \
+	smil2/animate_a.cpp \
+	smil2/animate_e.cpp \
+	smil2/animate_n.cpp \
+	smil2/params.cpp \
+	smil2/region_node.cpp \
+	smil2/smiltext.cpp \
+	smil2/smil_layout.cpp \
+	smil2/smil_player.cpp \
+	smil2/smil_time.cpp \
+	smil2/sync_rule.cpp \
+	smil2/test_attrs.cpp \
+	smil2/time_attrs.cpp \
+	smil2/time_calc.cpp \
+	smil2/time_node.cpp \
+	smil2/time_sched.cpp \
+	smil2/time_state.cpp \
+	smil2/timegraph.cpp \
+	smil2/trace_player.cpp \
+	smil2/transition.cpp \
+ \
+	gui/none/none_area.cpp \
+	gui/none/none_gui.cpp \
+	gui/none/none_video_renderer.cpp \
+	gui/none/none_factory.cpp
+else
 libambulant_la_SOURCES = \
 	get_version.cpp \
  \
@@ -354,6 +444,7 @@ libambulant_la_SOURCES = \
 	gui/none/none_gui.cpp \
 	gui/none/none_video_renderer.cpp \
 	gui/none/none_factory.cpp
+endif
 
 EXTRA_DIST= \
     lib/expat_parser.cpp \

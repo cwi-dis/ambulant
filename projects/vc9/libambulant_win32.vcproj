@@ -260,7 +260,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FrameworkSDKDir)\Samples\multimedia\directshow\baseclasses&quot;;..\..\include;&quot;$(expat_dir)\lib&quot;;&quot;$(jpeg_dir)&quot;;&quot;$(zlib_dir)&quot;;&quot;$(lpng_dir)&quot;;&quot;$(xerces_dir)\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(FrameworkSDKDir)\Samples\multimedia\directshow\baseclasses&quot;;..\..\include;&quot;$(expat_dir)\lib&quot;;&quot;$(jpeg_dir)&quot;;&quot;$(zlib_dir)&quot;;&quot;$(lpng_dir)&quot;;&quot;$(xerces_dir)\src&quot;;&quot;C:\Program Files\Microsoft DirectX SDK (February 2010)\Include&quot;"
 				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_WINDOWS_PLUGINS;WITH_D2D"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -424,7 +424,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;&quot;$(expat_dir)\lib&quot;;&quot;$(jpeg_dir)&quot;;&quot;$(zlib_dir)&quot;;&quot;$(lpng_dir)&quot;;&quot;$(xerces_dir)\src&quot;"
+				AdditionalIncludeDirectories="..\..\include;&quot;$(expat_dir)\lib&quot;;&quot;$(jpeg_dir)&quot;;&quot;$(zlib_dir)&quot;;&quot;$(lpng_dir)&quot;;&quot;$(xerces_dir)\src&quot;;&quot;C:\Users\Administrator\ambulant-hg-for-windows\ambulant\include\ambulant&quot;"
 				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_WINDOWS_PLUGINS"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="false"
@@ -445,7 +445,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib windowscodecs.lib"
+				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib windowscodecs.lib dispatch.lib xdispatch.lib"
 				OutputFile="..\..\bin\win32\libambulantDX_shwin32_D.dll"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
