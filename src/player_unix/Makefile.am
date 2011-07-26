@@ -148,29 +148,15 @@ check-ambulantplayer_qt:
 	if test x$$DISPLAY = x; then \
 		echo Skipping tests, DISPLAY not set; \
 	else \
+		set -e; \
+		set -x; \
+		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
+		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
 		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
+		export LD_PRELOAD=$$pyp/lib/python$$pyv/config/libpython$$pyv.so; \
 		./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil; \
 		if test -e AM_TEST-output.txt; then cat AM_TEST-output.txt; fi \
-	fi
-	
-kees-check-ambulantplayer_qt:
-#	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
-	if test x$$DISPLAY = x; then \
-		echo Skipping tests, DISPLAY not set; \
-	else \
-	  AMBULANT_TOP_DIR=$(DESTDIR)$(datadir) \
-	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
-	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
-	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) ; \
-	  cp $(top_srcdir)/src/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
-	  a=`cd $(ambulantlibdir); pwd` ; \
-	  welcomepath=$$AMBULANT_TOP_DIR/Extras/Welcome/Welcome.smil; \
-	  echo PWD=$$PWD; \
-	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
-	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(top_srcdir)/scripts/nightlytestsuite.sh ./AmbulantPlayer_qt $$welcomepath; \
-	  else LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ./AmbulantPlayer_qt $$welcomepath; \
-	  fi; \
-	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
 	fi
 
 uninstall-local:

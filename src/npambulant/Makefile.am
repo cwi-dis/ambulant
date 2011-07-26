@@ -132,7 +132,8 @@ libnpambulant_la_LDFLAGS=	\
 #
 all-am: build-npambulant
 
-check-am: check-npambulant
+## Disabled: the test subdirectory doesn't exist...
+##check-am: check-npambulant
 
 install-exec-hook: install-npambulant
 
@@ -177,7 +178,7 @@ check-npambulant:
 	else \
 		a=`cd $(ambulantlibdir); pwd` ; \
 		cd $(srcdir) ; \
-		LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
+		LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) `pwd`/test/test_npambulant.html ; \
 	fi
 	
 testplay:
