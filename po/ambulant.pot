@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2011-07-23 19:25+0200\n"
+"POT-Creation-Date: 2011-07-26 16:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -454,12 +454,12 @@ msgstr ""
 msgid "No state support for language %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:1059
+#: src/libambulant/smil2/smil_player.cpp:1076
 #, c-format
 msgid "Link destination not found: %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:1065
+#: src/libambulant/smil2/smil_player.cpp:1082
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr ""
