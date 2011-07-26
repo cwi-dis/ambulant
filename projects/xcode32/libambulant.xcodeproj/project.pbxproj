@@ -361,10 +361,6 @@
 		04D07B68138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B69138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B6A138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
-		04DB9A3F13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
-		04DB9AFD13BDD4BC0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
-		04DB9AFE13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
-		04DB9AFF13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
 		939CEABC12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEABD12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEACD12E8659E0003D62E /* cg_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 939CEACC12E8659E0003D62E /* cg_transition.mm */; };
@@ -860,7 +856,6 @@
 		04B75B7212B79C8900161EB5 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		04D07B66138B0D4500F93772 /* node_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = node_impl.cpp; sourceTree = "<group>"; };
 		04D71F8312B628210064FBCB /* libambulantCGstatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libambulantCGstatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lib_gcd_event_processor_impl.cpp; sourceTree = "<group>"; };
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF5E0370ADEE00C91783 /* libambulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libambulant_Prefix.pch; sourceTree = "<group>"; };
@@ -1625,7 +1620,6 @@
 			isa = PBXGroup;
 			children = (
 				044E012713D9A81300E6A628 /* event_processor.cpp */,
-				04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */,
 				04791CF0115194C10007DD71 /* nscontext.cpp */,
 				04791CF1115194C10007DD71 /* colors.cpp */,
 				04791CF2115194C10007DD71 /* delta_timer.cpp */,

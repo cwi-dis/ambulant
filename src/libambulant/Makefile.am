@@ -69,10 +69,8 @@ xerces_core_libs =
 endif
 
 if WITH_GCD_EVENT_PROCESSOR
-gcd_event_processor_source = lib/lib_gcd_event_processor_impl.cpp
 gcd_event_processor_core_libs = $(GCD_LIBS)
 else
-gcd_event_processor_source = 
 gcd_event_processor_core_libs = 
 endif
 
@@ -313,7 +311,6 @@ libambulant_la_SOURCES = \
  \
 	$(expat_parser_source) \
 	$(xerces_parser_source) \
-	$(gcd_event_processor_source) \
  \
 	lib/colors.cpp \
 	lib/delta_timer.cpp \
