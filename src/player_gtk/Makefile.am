@@ -142,7 +142,7 @@ AM_CXXFLAGS=-fPIC
 install-exec-hook: install-data-local
 	cd $(DESTDIR)$(bindir) && \
 	$(LN_S) -f $(bin_PROGRAMS) AmbulantPlayer
-#X	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/../player_unix/ambulant.schemas
+	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/../player_unix/ambulant.schemas
 ##	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
@@ -172,16 +172,7 @@ uninstall-local:
 #	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
-	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
-	cp ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
-# install gnome document icon for mimetype application/smil
-	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	-cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
 
 EXTRA_DIST=ambulant-gnome.desktop

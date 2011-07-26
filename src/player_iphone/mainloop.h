@@ -37,6 +37,7 @@ class mainloop :
 	~mainloop();
 	
 	void restart(bool reparse=true);
+	void no_stopped_callbacks() { m_no_stopped_callbacks = true; }
 	void init_factories();
 	void init_playable_factory();
 	void init_window_factory();
@@ -61,6 +62,6 @@ class mainloop :
 	ambulant::common::gui_screen *m_gui_screen;
     const ambulant::lib::node *m_last_node_started;
 	void print_nodes();
-	bool m_restarting; // during the 'restart' operation 'document_stopped' is disabled
+	bool m_no_stopped_callbacks; // during the 'restart' operation 'document_stopped' is disabled
 	NSString* get_meta_content(const char* name);
 };

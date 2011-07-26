@@ -23,14 +23,22 @@ rem
 
 set hg="C:\Program Files\TortoiseHg\hg.exe"
 set pageant="C:\Program Files\PuTTY\pageant.exe"
-set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
-set vcdir="vc9"
-rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
-rem ALTERNATIVE set vcdir="vc10"
+rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
+rem ALTERNATIVE set vcdir="vc9"
+set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
+set vcdir="vc10"
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
 set pscp="c:\Program Files\Putty\pscp.exe" -i %KEYFILE%
 set nsis="c:\Program Files\NSIS\makensis.exe"
 set python="c:\python26\python.exe"
+
+rem
+rem Getting the date in a reasonable format depends on the machine:
+rem
+
+rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
+set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
+rem Win7 Jack: TODAY=%date%
 
 rem
 rem Other settable parameters
@@ -38,15 +46,18 @@ rem
 
 set AMBULANTVERSION=2.3
 set BRANCH=default
+
+rem
+rem Set VERSIONSUFFIX to empty for distribution builds
+rem
+
+set VERSIONSUFFIX=.%TODAY%
+
 set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
 set HGCLONEPRIVARGS="ssh://hg@ambulantplayer.org/hgpriv/ambulant-private"
 set CHECKOUTPRIVARGS=-P
 set BUILDHOME="%USERPROFILE%\Documents\AmbulantNightly"
-rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
-set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
-set Win7 Jack: TODAY=%date%
-set VERSIONSUFFIX=.%TODAY%
 set BUILDDIR=build-%TODAY%-%BRANCH%
 set BUILD3PPARGS=win32
 set DESTINATION="sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/%BRANCH%"

@@ -1,6 +1,6 @@
 
 
-EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas
+EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas ambulant-kde.desktop
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
@@ -149,6 +149,7 @@ check-ambulantplayer_qt:
 	if test x$$DISPLAY = x; then \
 		echo Skipping tests, DISPLAY not set; \
 	else \
+	  AMBULANT_TOP_DIR=$(DESTDIR)$(datadir) \
 	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) ; \
@@ -166,3 +167,8 @@ check-ambulantplayer_qt:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
+
+install-data-local:
+	mkdir -p  $(DESTDIR)$(datadir)/applications
+	cp $(srcdir)/ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
+

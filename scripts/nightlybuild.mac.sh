@@ -26,16 +26,22 @@ TODAY=`date +%Y%m%d`
 
 # The rest should be automatic
 case x$BRANCH in
-x)	;;
+x)	
+	;;
+release*)
+	TODAY=$TODAY-$BRANCH
+	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=
+	;;
 *)
 	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
+	VERSIONSUFFIX=.$TODAY
 esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python --with-python-plugin"
-VERSIONSUFFIX=.$TODAY
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
