@@ -907,7 +907,7 @@ third_party_packages={
                 ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
                 "devenv third_party_packages.sln /Upgrade && " +
                 "devenv third_party_packages.sln /build Debug && " +
-                ("devenv third_party_packages.sln /build %s" % (WIN32_COMMON_CONFIG)
+                ("devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG)
             ),
         ],
     
