@@ -34,7 +34,6 @@
 #ifdef WITH_LIBXDISPATCH
 #include "xdispatch/xdispatch/dispatch.h"
 #else
-//#include "config/config.h"
 #include "dispatch/dispatch.h"
 #endif // WITH_LIBXDISPATCH
 #endif // WITH_GCD_EVENT_PROCESSOR
@@ -50,6 +49,8 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
+
+//#if 0
 
 using namespace ambulant;
 using namespace lib;

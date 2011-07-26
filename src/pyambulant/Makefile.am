@@ -112,7 +112,7 @@ mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
 	-rm -r $(srcdir)/build
 
-DISTCLEANFILES=ambulant.so ambulant-2.2-py2.7.egg_info
+DISTCLEANFILES=ambulant.so ambulant-2.2-py2.7.egg-info
 
 # Targets to regenerate ambulantmodule.cpp and ambulantinterface.cpp
 

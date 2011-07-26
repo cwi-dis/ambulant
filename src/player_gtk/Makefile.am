@@ -172,16 +172,7 @@ uninstall-local:
 #	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
-	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
-	cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
-# install gnome document icon for mimetype application/smil
-	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	-cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
 
 EXTRA_DIST=ambulant-gnome.desktop

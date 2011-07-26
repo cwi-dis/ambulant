@@ -361,6 +361,10 @@
 		04D07B68138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B69138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B6A138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
+		04DB9A3F13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
+		04DB9AFD13BDD4BC0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
+		04DB9AFE13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
+		04DB9AFF13BDD4BD0043B4F0 /* lib_gcd_event_processor_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04DB9A3E13BDD26F0043B4F0 /* lib_gcd_event_processor_impl.cpp */; };
 		939CEABC12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEABD12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEACD12E8659E0003D62E /* cg_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 939CEACC12E8659E0003D62E /* cg_transition.mm */; };

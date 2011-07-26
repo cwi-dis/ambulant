@@ -422,7 +422,10 @@
     <ClCompile Include="..\..\src\libambulant\lib\colors.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\delta_timer.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\document.cpp" />
-    <ClCompile Include="..\..\src\libambulant\lib\event_processor.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\event_processor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\src\libambulant\lib\expat_parser.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\gpaths.cpp" />
     <ClCompile Include="..\..\src\libambulant\lib\lib_gcd_event_processor_impl.cpp">

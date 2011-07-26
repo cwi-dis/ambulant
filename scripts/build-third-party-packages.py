@@ -899,7 +899,15 @@ third_party_packages={
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
-            buildcmd="cd ..\\projects\\%s && devenv third_party_packages.sln /Upgrade && devenv third_party_packages.sln /build Debug && devenv third_party_packages.sln /build %s" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
+            buildcmd=
+                "devenv expat\\lib\\expat.vcproj /Upgrade && " +
+                "devenv jpeg\\win32\\libjpeg.vcproj /Upgrade && " +
+                "devenv lpng128\\projects\v\isualc71\\libpng.vcproj /Upgrade && " +
+                "devenv lpng128\\projects\\visualc71\\zlib.vcproj /Upgrade && " +
+                ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
+                "devenv third_party_packages.sln /Upgrade && " +
+                "devenv third_party_packages.sln /build Debug && " +
+                ("devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG)
             ),
         ],
     

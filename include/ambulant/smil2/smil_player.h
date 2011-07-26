@@ -24,9 +24,6 @@
 
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
-#ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
-#include "ambulant/lib/lib_gcd_event_processor_impl.h"
-#endif
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/node.h"
