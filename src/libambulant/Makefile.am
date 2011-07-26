@@ -479,10 +479,10 @@ install-data-local:
 	libtool --finish $(DESTDIR)$(libdir)
  
 uninstall-local:
-	-rm $(DESTDIR)$(datadir)/ambulant/icons/Ambulant.png
-	-rm $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	-rm $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	-rm $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/ambulant/icons/Ambulant.png
+	-rm -f $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 if WITH_NPAMBULANT
 # when selinux is enblaed, identify the installed shared library
