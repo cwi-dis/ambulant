@@ -86,11 +86,7 @@ smil_player::initialize()
 	assert(m_doc);
 	document_loaded(m_doc);
 
-<<<<<<< local
 #ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
-=======
-#ifdef WITH_GCD_EVENT_PROCESSOR
->>>>>>> other
 	m_event_processor = gcd_event_processor_factory(m_timer);
 #else
 	m_event_processor = event_processor_factory(m_timer);
@@ -231,11 +227,7 @@ void smil_player::start() {
 	m_lock.enter();
 	if(m_state == common::ps_pausing) {
 		_resume();
-<<<<<<< local
 #ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
-=======
-#ifdef WITH_GCD_EVENT_PROCESSOR
->>>>>>> other
 		//m_event_processor->resume();
 #endif
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
@@ -281,11 +273,7 @@ void smil_player::pause() {
 	if(m_state == common::ps_playing) {
 		m_state = common::ps_pausing;
 		m_timer->pause();
-<<<<<<< local
 #ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
-=======
-#ifdef WITH_GCD_EVENT_PROCESSOR
->>>>>>> other
 		//m_event_processor->pause();
 #endif
 		std::map<const lib::node*, common::playable *>::iterator it;
@@ -302,11 +290,7 @@ void smil_player::pause() {
 void smil_player::resume() {
 	m_lock.enter();
 	_resume();
-<<<<<<< local
 #ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
-=======
-#ifdef WITH_GCD_EVENT_PROCESSOR
->>>>>>> other
 	//m_event_processor->resume();
 #endif
 	m_lock.leave();
