@@ -895,15 +895,23 @@ third_party_packages={
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
+        WinTPP("libdispatch",
+            url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
+            url2="DrPizza-libdispatch-1ed626c.zip",
+            checkcmd="if not exist DrPizza-libdispatch-1ed626c\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
+            buildcmd="cd DrPizza-libdispatch-1ed626c && " +
+                "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
+                "devenv libdispatch.sln /build StaticDebug /project libdispatch "
+        ),
             
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
             buildcmd=
-                "devenv expat\\lib\\expat.vcproj /Upgrade && " +
-                "devenv jpeg\\win32\\libjpeg.vcproj /Upgrade && " +
-                "devenv lpng128\\projects\v\isualc71\\libpng.vcproj /Upgrade && " +
-                "devenv lpng128\\projects\\visualc71\\zlib.vcproj /Upgrade && " +
+                "if not exist expat\\lib\\expat.vcxproj devenv expat\\lib\\expat.vcproj /Upgrade && " +
+                "if not exist jpeg\\win32\\libjpeg.vcxproj devenv jpeg\\win32\\libjpeg.vcproj /Upgrade && " +
+                "if not exist lpng128\\projects\v\isualc71\\libpng.vcxproj devenv lpng128\\projects\v\isualc71\\libpng.vcproj /Upgrade && " +
+                "if not exist lpng128\\projects\\visualc71\\zlib.vcxproj devenv lpng128\\projects\\visualc71\\zlib.vcproj /Upgrade && " +
                 ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
                 "devenv third_party_packages.sln /Upgrade && " +
                 "devenv third_party_packages.sln /build Debug && " +
