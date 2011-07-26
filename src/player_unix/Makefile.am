@@ -167,6 +167,7 @@ check-ambulantplayer_qt:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
+	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-kde.desktop
 
 install-data-local:
 	mkdir -p  $(DESTDIR)$(datadir)/applications

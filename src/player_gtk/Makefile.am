@@ -166,6 +166,7 @@ check-ambulantplayer_gtk:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
+	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-gnome.desktop
 
 #	rm /usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
 #	rm /usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
