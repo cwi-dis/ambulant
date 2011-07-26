@@ -159,7 +159,7 @@ check-ambulantplayer_qt:
 	  echo PWD=$$PWD; \
 	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
 	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(top_srcdir)/scripts/nightlytestsuite.sh ./AmbulantPlayer_qt $$welcomepath; \
-	  else LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.lib ./AmbulantPlayer_qt $$welcomepath; \
+	  else LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ./AmbulantPlayer_qt $$welcomepath; \
 	  fi; \
 	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
 	fi
