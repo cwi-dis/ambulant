@@ -392,7 +392,7 @@ install-data-local:
 	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
 	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
 	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
-	libtool --finish $(DESTDIR)$(libdir)
+	$(LIBTOOL) --finish $(DESTDIR)$(libdir)
  
 uninstall-local:
 	-rm -f $(DESTDIR)$(datadir)/ambulant/icons/Ambulant.png
