@@ -145,6 +145,15 @@ uninstall-hook:
 	rm -f AmbulantPlayer
 
 check-ambulantplayer_qt:
+	if test x$$DISPLAY = x; then \
+		echo Skipping tests, DISPLAY not set; \
+	else \
+		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil; \
+		if test -e AM_TEST-output.txt; then cat AM_TEST-output.txt; fi \
+	fi
+	
+kees-check-ambulantplayer_qt:
 #	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
 	if test x$$DISPLAY = x; then \
 		echo Skipping tests, DISPLAY not set; \
