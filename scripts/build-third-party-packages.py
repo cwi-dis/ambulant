@@ -888,10 +888,16 @@ third_party_packages={
             ),
             
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
+##        WinTPP("libxml2",
+##            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
+##            url2="libxml2-2.7.7.tar.gz",
+##            extractcmd='cmd /c "%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
+##            checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
+##            # Build is done by FINAL
+##            ),
         WinTPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
-            extractcmd='cmd /c "%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
+            url="http://ambulantplayer.org/our/mirror/has/essential/fixes",
+            url2="libxml2-2.7.7-modforVC10.zip",
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
@@ -908,10 +914,7 @@ third_party_packages={
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
             buildcmd=
-                "if not exist expat\\lib\\expat.vcxproj devenv expat\\lib\\expat.vcproj /Upgrade && " +
-                "if not exist jpeg\\win32\\libjpeg.vcxproj devenv jpeg\\win32\\libjpeg.vcproj /Upgrade && " +
-                "if not exist lpng128\\projects\v\isualc71\\libpng.vcxproj devenv lpng128\\projects\v\isualc71\\libpng.vcproj /Upgrade && " +
-                "if not exist lpng128\\projects\\visualc71\\zlib.vcxproj devenv lpng128\\projects\\visualc71\\zlib.vcproj /Upgrade && " +
+                "call ..\\scripts\\upgrade3pp2VC10.bat && " +
                 ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
                 "devenv third_party_packages.sln /Upgrade && " +
                 "devenv third_party_packages.sln /build Debug && " +
