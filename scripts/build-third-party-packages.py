@@ -390,7 +390,7 @@ third_party_packages={
             buildcmd=
                 "mkdir ffmpeg-0.6.1-universal && "
                 "cd ffmpeg-0.6.1-universal && "
-                "%s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.1 all" % 
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.1 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
@@ -477,7 +477,7 @@ third_party_packages={
             buildcmd=
                 "mkdir ffmpeg-export-universal && "
                 "cd ffmpeg-export-universal && "
-                "%s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
 
