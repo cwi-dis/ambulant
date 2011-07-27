@@ -271,16 +271,14 @@ time_node::get_implicit_dur() {
 
 	// If this is a discrete leaf node, we know the answer
 	if(is_discrete()) {
-		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return 0 for discrete", m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str());
+		AM_DBG m_logger->debug("get_implicit_dur(%s) return 0 for discrete", get_sig().c_str());
 		return time_type(0);
 	}
 
 	// Was the implicit duration calculated before?
 	// If yes, avoid the overhead of querring
 	if(m_impldur != time_type::unresolved) {
-		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return cached %s", m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str(), ::repr(m_impldur).c_str());
+		AM_DBG m_logger->debug("get_implicit_dur(%s) return cached %s", get_sig().c_str(), ::repr(m_impldur).c_str());
 		return m_impldur;
 	}
 
@@ -288,14 +286,12 @@ time_node::get_implicit_dur() {
 	m_impldur = get_playable_dur();
 
 	if(m_ffwd_mode && m_impldur == time_type::unresolved) {
-		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return 1000 for ffwd_mode", m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str());
+		AM_DBG m_logger->debug("get_implicit_dur(%s) return 1000 for ffwd_mode", get_sig().c_str());
 		return 1000;
 	}
 
 	// Trace the return value of this function
-	AM_DBG m_logger->debug("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(m_impldur).c_str());
+	AM_DBG m_logger->debug("%s.get_implicit_dur(): %s", get_sig().c_str(), ::repr(m_impldur).c_str());
 
 	return m_impldur;
 }
@@ -461,8 +457,7 @@ void time_node::set_state_ex(time_state_type tst, qtime_type timestamp) {
 
 // Cancels the current interval notifyings dependents.
 void time_node::cancel_interval(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].cancel_interval(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(m_interval).c_str());
+	AM_DBG m_logger->debug("%s.cancel_interval(): %s", get_sig().c_str(), ::repr(m_interval).c_str());
 	assert(m_interval.is_valid());
 
 	// The interval should be updated before sync_update
@@ -476,8 +471,7 @@ void time_node::cancel_interval(qtime_type timestamp) {
 
 // Updates the current interval with the one provided notifyings dependents.
 void time_node::update_interval(qtime_type timestamp, const interval_type& new_interval) {
-	AM_DBG m_logger->debug("%s[%s].update_interval(): %s -> %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(m_interval).c_str(), ::repr(new_interval).c_str());
+	AM_DBG m_logger->debug("%s.update_interval(): %s -> %s", get_sig().c_str(), ::repr(m_interval).c_str(), ::repr(new_interval).c_str());
 	assert(m_interval.is_valid());
 	assert(timestamp.first == sync_node());
 
@@ -504,8 +498,8 @@ void time_node::update_interval(qtime_type timestamp, const interval_type& new_i
 
 // Updates the current interval end with the value provided notifyings dependents.
 void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
-	AM_DBG m_logger->debug("%s[%s].update_interval_end(): %s -> %s at PT:%ld, DT:%ld",
-		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.update_interval_end(): %s -> %s at PT:%ld, DT:%ld",
+		get_sig().c_str(),
 		::repr(m_interval.end).c_str(),
 		::repr(new_end).c_str(),
 		timestamp.second(),
@@ -534,8 +528,7 @@ void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
 // when the node is activated.
 // param timestamp: "now" in parent simple time
 void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
-	AM_DBG m_logger->debug("%s[%s].set_current_interval(): %s (DT=%ld)", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
+	AM_DBG m_logger->debug("%s.set_current_interval(): %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 
 	// verify the assumptions made in the following code
 	assert(timestamp.first == sync_node());
@@ -594,7 +587,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 		time_node *prev = previous();
 		if(prev && prev->is_active()) {
 			// wait
-			AM_DBG m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
+			AM_DBG m_logger->debug("%s attempt to set_current_interval() but prev active: %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 			return false;
 		}
 	}
@@ -610,8 +603,8 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 				std::string astate;
 				if(atn->paused()) astate = "paused";
 				else if(atn->deferred()) astate = "deferred";
-				m_logger->debug("%s[%s] attempt to set_current_interval() but an ancestor is %s: %s (DT=%ld)",
-					m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), astate.c_str(),
+				m_logger->debug("%s attempt to set_current_interval() but an ancestor is %s: %s (DT=%ld)",
+					get_sig().c_str(), astate.c_str(),
 					::repr(i).c_str(), timestamp.as_doc_time_value());
 			}
 			return false;
@@ -698,8 +691,7 @@ void time_node::activate(qtime_type timestamp) {
 
 	}
 
-	AM_DBG m_logger->debug("%s[%s].start(%ld) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),  sd_offset(), sd_offset(),
+	AM_DBG m_logger->debug("%s.start(%ld) ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 
@@ -733,8 +725,7 @@ void time_node::activate(qtime_type timestamp) {
 // Starts an animation
 void time_node::start_animation(time_type offset) {
 	qtime_type timestamp(this, offset);
-	AM_DBG m_logger->debug("%s[%s].start_animation(%ld) DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	AM_DBG m_logger->debug("%s.start_animation(%ld) DT:%ld", get_sig().c_str(), offset(), timestamp.as_doc_time_value());
 	animation_engine *ae = m_context->get_animation_engine();
 	animate_node *an = (animate_node*)this;
 	an->prepare_interval();
@@ -749,8 +740,7 @@ void time_node::stop_animation() {
 
 void time_node::start_statecommand(time_type offset) {
 	qtime_type timestamp(this, offset);
-	AM_DBG m_logger->debug("%s[%s].start_statecommand(%ld) DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	AM_DBG m_logger->debug("%s.start_statecommand(%ld) DT:%ld", get_sig().c_str(), offset(), timestamp.as_doc_time_value());
 	/* XXXJACK Inline implementation should go somewhere else, at some point */
 	common::state_component *sc = m_node->get_context()->get_state();
 	if (!sc) {
@@ -817,7 +807,7 @@ void time_node::start_prefetch(time_type offset) {
 		return;
 	}
 	qtime_type timestamp(this, offset);
-	AM_DBG m_logger->debug("%s[%s].start_prefetch(%ld) DT:%ld", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	AM_DBG m_logger->debug("%s.start_prefetch(%ld) DT:%ld",get_sig().c_str(), offset(), timestamp.as_doc_time_value());
 	common::playable *np = create_playable();
 	if(np) {
 		// XXXJACK: I think offset isn't the right parameter here. The intention of the
@@ -835,27 +825,21 @@ bool time_node::is_playable() const {
 // Returns true when this node is an animation
 bool time_node::is_animation() const {
 	const common::schema *sch = common::schema::get_instance();
-	AM_DBG lib::logger::get_logger()->debug("is_animation: 0x%x %s\n", m_node, m_node->get_sig().c_str());
 	const lib::xml_string& qn = m_node->get_local_name();
-	AM_DBG lib::logger::get_logger()->debug("is_animation: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_animation(qn);
 }
 
 // Returns true when this node is a state command
 bool time_node::is_statecommand() const {
 	const common::schema *sch = common::schema::get_instance();
-	AM_DBG lib::logger::get_logger()->debug("is_statecommand: 0x%x %s\n", m_node, m_node->get_sig().c_str());
 	const lib::xml_string& qn = m_node->get_local_name();
-	AM_DBG lib::logger::get_logger()->debug("is_statecommand: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_statecommand(qn);
 }
 
 // Returns true when this node is a prefetch
 bool time_node::is_prefetch() const {
 	const common::schema *sch = common::schema::get_instance();
-	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s\n", m_node, m_node->get_sig().c_str());
 	const lib::xml_string& qn = m_node->get_local_name();
-	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_prefetch(qn);
 }
 //////////////////////////
@@ -870,8 +854,7 @@ void time_node::start_playable(time_type offset) {
 		return;
 	}
 	qtime_type timestamp(this, offset);
-	AM_DBG m_logger->debug("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	AM_DBG m_logger->debug("%s.start_playable(%ld) DT:%ld", get_sig().c_str(), offset(), timestamp.as_doc_time_value());
 	m_eom_flag = false;
 	m_saw_on_bom = false;
 	m_saw_on_eom = false;
@@ -886,30 +869,26 @@ void time_node::start_playable(time_type offset) {
 		}
 	}
 	if (is_link()  && m_attrs.get_actuate() == actuate_onload) {
-		AM_DBG m_logger->debug("%s[%s].start_playable: actuate_onLoad", m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str());
+		AM_DBG m_logger->debug("%s.start_playable: actuate_onLoad", get_sig().c_str());
 		follow_link(timestamp);
 	}
 }
 
 void time_node::seek_playable(time_type offset) {
 	if(!is_playable() || m_ffwd_mode) return;
-	AM_DBG m_logger->debug("%s[%s].seek(%ld)", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), offset());
+	AM_DBG m_logger->debug("%s.seek(%ld)", get_sig().c_str(), offset());
 	m_context->seek_playable(m_node, time_type_to_secs(offset()));
 }
 
 void time_node::pause_playable(common::pause_display d) {
 	if(!is_playable() || m_ffwd_mode) return;
-	AM_DBG m_logger->debug("%s[%s].pause()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%s.pause()", get_sig().c_str());
 	m_context->pause_playable(m_node, d);
 }
 
 void time_node::resume_playable() {
 	if(!is_playable() || m_ffwd_mode) return;
-	AM_DBG m_logger->debug("%s[%s].resume()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%s.resume()", get_sig().c_str());
 	m_context->resume_playable(m_node);
 }
 
@@ -917,15 +896,13 @@ void time_node::stop_playable() {
 	if(!is_playable() && !is_prefetch()) return;
 	if(!m_needs_remove) return;
 	m_eom_flag = true;
-	AM_DBG m_logger->debug("%s[%s].stop()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%s%.stop()", get_sig().c_str());
 	m_context->stop_playable(m_node);
 }
 
 void time_node::repeat_playable() {
 	if(!is_playable() || m_ffwd_mode) return;
-	AM_DBG m_logger->debug("%s[%s].repeat()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%.repeat()",get_sig().c_str());
 	stop_playable();
 	m_context->start_playable(m_node, 0);
 }
@@ -933,8 +910,7 @@ void time_node::repeat_playable() {
 common::playable *time_node::create_playable() {
 	assert(is_playable()||is_prefetch());
 	if(m_ffwd_mode) return 0;
-	AM_DBG m_logger->debug("%s[%s].create()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%s.create()", get_sig().c_str());
 	return m_context->create_playable(m_node);
 }
 
@@ -1022,7 +998,6 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 		// Finally we recursively get all events for our childen.
 		(*it)->get_pending_events(events);
 	}
-	AM_DBG lib::logger::get_logger()->debug(" time_node::get_pending_events: 0x%x", &events);
 }
 
 void time_node::exec(qtime_type timestamp) {
@@ -1033,6 +1008,7 @@ void time_node::exec(qtime_type timestamp) {
 	}
 
 	if(m_update_event.first) {
+		AM_DBG m_logger->debug("timenode::exec(%ld): calling %s.sync_update(%ld)", timestamp.second(), get_sig().c_str(), m_update_event.second.second());
 		sync_update(m_update_event.second);
 		m_update_event.first = false;
 	}
@@ -1060,8 +1036,8 @@ void time_node::exec(qtime_type timestamp) {
 			qtime_type ts(sync_node(), *set.begin());
 			if(timestamp.second >= ts.second) {
 				// start trasnition
-				AM_DBG m_logger->debug("%s[%s].start_transition() at %ld (end:%ld)",
-					m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
+				AM_DBG m_logger->debug("%s.start_transition() at %ld (end:%ld)",
+					get_sig().c_str(),
 					ts.second(),  m_interval.end());
 				const lib::transition_info *trans_out = m_attrs.get_trans_out();
 				m_context->start_transition(m_node, trans_out, false);
@@ -1101,8 +1077,7 @@ void time_node::exec(qtime_type timestamp) {
 #endif
 
 	// Check for the EOSD event
-	AM_DBG if (has_debug()) m_logger->debug("%s[%s] checking for end-of-sd (cdur=%ld)", m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str(), m_last_cdur());
+	AM_DBG if (has_debug()) m_logger->debug("%s checking for end-of-sd (cdur=%ld)", get_sig().c_str(), m_last_cdur());
 	if(m_last_cdur.is_definite() && m_last_cdur() != 0 && timestamp.as_time_value_down_to(this) >= m_last_cdur())
 		on_eosd(timestamp);
 }
@@ -1119,8 +1094,7 @@ bool time_node::end_cond(qtime_type timestamp) {
 	bool tc = !end_sync_cond_applicable() && timestamp.second >= get_interval_end();
 
 	if(is_time_container() && (ec || tc)) {
-		AM_DBG m_logger->debug("%s[%s].end_cond() true [%s]", m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str(), (ec?"end_sync_cond":"interval_end"));
+		AM_DBG m_logger->debug("%s.end_cond() true [%s]", get_sig().c_str(), (ec?"end_sync_cond":"interval_end"));
 	}
 
 	// The "tc" condition is not sufficient when needs_implicit_dur()is true
@@ -1139,8 +1113,7 @@ bool time_node::end_cond(qtime_type timestamp) {
 			&& tc && !specified_dur && m_time_calc->uses_dur()) {
 		if(m_context->wait_for_eom() && !m_eom_flag) {
 			tc = false;
-			AM_DBG m_logger->debug("%s[%s].end_cond() waiting media end",
-				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+			AM_DBG m_logger->debug("%s.end_cond() waiting media end",get_sig().c_str());
 		}
 	}
 
@@ -1168,8 +1141,8 @@ void time_node::sync_update(qtime_type timestamp) {
 
 // Called on the end of simple duration event
 bool time_node::on_eosd(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", 
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value(),
@@ -1203,18 +1176,20 @@ bool time_node::on_eosd(qtime_type timestamp) {
 // Currently this notification is not used.
 // Could be used to define the slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
-	m_eom_flag = false;
 	if (m_saw_on_bom)
 		m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
+	if (m_saw_on_bom || m_saw_on_eom)
+		return;
 	m_saw_on_bom = true;
+
+	m_eom_flag = false;
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
-		AM_DBG m_logger->debug("%s[%s].on_bom() ST:%ld, PT:%ld, DT:%ld",
-			m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str(),
+		AM_DBG m_logger->debug("%s.on_bom() ST:%ld, PT:%ld, DT:%ld",
+			get_sig().c_str(),
 			st.second(),
 			pt.second(),
 			timestamp.second());
@@ -1236,26 +1211,30 @@ void time_node::on_rom(qtime_type timestamp) {
 // This notification is taken into account when this node is still active
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].on_eom()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
-	m_eom_flag = true;
+	AM_DBG m_logger->debug("%s.on_eom()", get_sig().c_str());
+	if (!m_saw_on_bom) {
+		m_logger->debug("time_node::on_eom: simulating on_bom() which has not occurred yet for %s", get_sig().c_str());
+		on_bom(timestamp);
+	}
 	if (m_saw_on_eom)
 		m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
 	m_saw_on_eom = true;
+
+	m_eom_flag = true;
 	if(is_playable() && !is_discrete()) {
 		if(m_impldur == time_type::unresolved) {
 			time_type pt = timestamp.as_node_time(sync_node());
 			m_impldur = pt - m_interval.begin();
 		}
 		if (m_state->ident() == ts_active) {
+			AM_DBG m_logger->debug("time_node::on_eom: raise update event for active %s", get_sig().c_str());
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
-		AM_DBG m_logger->debug("%s[%s].on_eom() ST:%ld, PT:%ld, DT:%ld",
-			m_attrs.get_tag().c_str(),
-			m_attrs.get_id().c_str(),
+		AM_DBG m_logger->debug("%s.on_eom() ST:%ld, PT:%ld, DT:%ld",
+			get_sig().c_str(),
 			st.second(),
 			pt.second(),
 			timestamp.second());
@@ -1271,16 +1250,19 @@ void time_node::on_eom(qtime_type timestamp) {
 // this situation could never occur or (b) could detect this situation in on_eom().
 bool time_node::want_on_eom()
 {
+#if 1
+	return true;
+#else
 	return is_active() && !m_eom_flag;
+#endif
 }
 
 // End of transition
 // This notification is sent when a transition ends. It is sent to
 // all nodes that overlap the transition that just finished.
 void time_node::on_transitioned(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].on_transitioned() DT:%ld",
-		m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.on_transitioned() DT:%ld",
+		get_sig().c_str(),
 		timestamp.second());
 	// If this node is not in fill=fill_transition state we do nothing
 	if (m_active || !m_needs_remove) return;
@@ -1297,8 +1279,8 @@ void time_node::on_transitioned(qtime_type timestamp) {
 // The following function is called when the node should repeat.
 // It is responsible to execute the repeat actions for this node.
 void time_node::repeat(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].repeat() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.repeat() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1344,8 +1326,8 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 	}
 
 	// Report changed interval
-	AM_DBG m_logger->debug("%s[%s].pause(): %s -> %s at %ld",
-		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.pause(): %s -> %s at %ld",
+		get_sig().c_str(),
 		::repr(i1).c_str(), ::repr(m_interval).c_str(), self_simple_time());
 
 	// Pause playable active children
@@ -1362,15 +1344,13 @@ void time_node::pause(qtime_type timestamp, pause_display d) {
 void time_node::resume(qtime_type timestamp) {
 	if(!is_active()) {
 		// gone inactive while paused
-		AM_DBG m_logger->debug("%s[%s].resume(): gone inactive while paused",
-			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+		AM_DBG m_logger->debug("%s.resume(): gone inactive while paused",get_sig().c_str());
 		return;
 	}
 
 	m_time_calc->set_paused_mode(false);
 	set_paused(false);
-	AM_DBG m_logger->debug("%s[%s].resume()",
-		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%s.resume()",get_sig().c_str());
 
 	time_type self_simple_time = timestamp.as_time_down_to(this);
 	qtime_type qt(this, self_simple_time);
@@ -1385,8 +1365,8 @@ void time_node::resume(qtime_type timestamp) {
 		update_interval_end(timestamp, iend);
 	}
 
-	AM_DBG m_logger->debug("%s[%s].resume(): %s",
-		m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.resume(): %s",
+        get_sig().c_str(),
 		::repr(m_interval).c_str());
 
 	if(is_playable()) resume_playable();
@@ -1497,8 +1477,8 @@ void time_node::fill(qtime_type timestamp) {
 // or when the next is activated.
 void time_node::remove(qtime_type timestamp) {
 	if(!m_needs_remove) return;
-	AM_DBG m_logger->debug("%s[%s].stop() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.stop() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1580,9 +1560,9 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 	rule_list::iterator it;
 	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
-		AM_DBG m_logger->debug("%s[%s].on_add_instance() --> %s[%s]",
-			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(),
-			owner->get_time_attrs()->get_tag().c_str(), owner->get_time_attrs()->get_id().c_str());
+		AM_DBG m_logger->debug("%s.on_add_instance() --> %s",
+			get_sig().c_str(),
+			owner->get_sig().c_str());
 		rule_type rt = (*it)->get_target_attr();
 		if(!owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
 			if(!filter || !nnhelper::is_descendent(owner, filter)) {
@@ -1652,10 +1632,9 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 	rule_list::iterator it;
 	for(it=p->begin();it!=p->end();it++) {
 		time_node* owner = (*it)->get_target();
-		AM_DBG m_logger->debug("%s[%s 0x%x].on_add_instance() --> %s[%s 0x%x]",
-			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), (void*)this,
-			owner->get_time_attrs()->get_tag().c_str(), owner->get_time_attrs()->get_id().c_str(),
-			(void*)owner);
+		AM_DBG m_logger->debug("%s.on_add_instance() --> %s",
+			get_sig().c_str(),
+            owner->get_sig().c_str());
 		rule_type rt = (*it)->get_target_attr();
 		if(!owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
 			if(!filter || !nnhelper::is_descendent(owner, filter)) {
@@ -1711,8 +1690,8 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 // and notify dependents.
 // Leaf nodes have to notify dependents and start their peer playable.
 void time_node::raise_begin_event(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].raise_begin_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_begin_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1739,8 +1718,9 @@ void time_node::node_started()
 // Leaf nodes have to notify dependents and start their peer playable at 0.
 // timestamp is parent's simple time when this event occurs.
 void time_node::raise_repeat_event(qtime_type timestamp) {
-	AM_DBG m_logger->debug("%s[%s].raise_repeat_event(%d) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), m_precounter,
+	AM_DBG m_logger->debug("%s.raise_repeat_event(%d) ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
+        m_precounter,
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1753,8 +1733,8 @@ void time_node::raise_repeat_event(qtime_type timestamp) {
 // and notify dependents.
 // Leaf nodes have to notify dependents and pause playable
 void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
-	AM_DBG m_logger->debug("%s[%s].raise_end_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_end_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1791,8 +1771,8 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 
 void time_node::raise_activate_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_activate_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1804,8 +1784,8 @@ void time_node::raise_activate_event(qtime_type timestamp) {
 
 void time_node::raise_inbounds_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_inbounds_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_inbounds_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1814,8 +1794,8 @@ void time_node::raise_inbounds_event(qtime_type timestamp) {
 
 void time_node::raise_outofbounds_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_outofbounds_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_outofbounds_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1824,8 +1804,8 @@ void time_node::raise_outofbounds_event(qtime_type timestamp) {
 
 void time_node::raise_focusin_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_focusin_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_focusin_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1834,8 +1814,8 @@ void time_node::raise_focusin_event(qtime_type timestamp) {
 
 void time_node::raise_focusout_event(qtime_type timestamp) {
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_focusout_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_focusout_event() ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
@@ -1846,8 +1826,8 @@ void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
 	qtime_type timestamp = accesskey.first;
 	int ch = accesskey.second;
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_accesskey_event(%c) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_accesskey_event(%c) ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		ch,
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
@@ -1859,8 +1839,8 @@ void time_node::raise_marker_event(std::pair<qtime_type, std::string> arg) {
 	qtime_type timestamp = arg.first;
 	std::string& name = arg.second;
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_marker_event(%s) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_marker_event(%s) ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		name.c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
@@ -1873,8 +1853,8 @@ void time_node::raise_state_change(std::pair<qtime_type, std::string> statearg) 
 	std::string statevar = statearg.second;
 	timestamp.to_ancestor(sync_node());
 	// ??timestamp.to_node
-	AM_DBG m_logger->debug("%s[%s].raise_state_change_event(%s) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(),
+	AM_DBG m_logger->debug("%s.raise_state_change_event(%s) ST:%ld, PT:%ld, DT:%ld",
+        get_sig().c_str(),
 		statevar.c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
@@ -2248,8 +2228,9 @@ time_container::calc_implicit_dur_for_esr_first(std::list<const time_node*>& cl)
 		if(i.is_valid())
 			idur = std::min(idur, c->get_interval_end());
 	}
-	AM_DBG m_logger->debug("%s[%s].calc_implicit_dur_for_esr_first(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(idur).c_str());
+	AM_DBG m_logger->debug("%s.calc_implicit_dur_for_esr_first(): %s",
+        get_sig().c_str(),
+        ::repr(idur).c_str());
 	return idur;
 }
 
@@ -2268,8 +2249,9 @@ time_container::calc_implicit_dur_for_esr_id(std::list<const time_node*>& cl) {
 			break;
 		}
 	}
-	AM_DBG m_logger->debug("%s[%s].calc_implicit_dur_for_esr_id(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(idur).c_str());
+	AM_DBG m_logger->debug("%s.calc_implicit_dur_for_esr_id(): %s",
+        get_sig().c_str(), 
+        ::repr(idur).c_str());
 	return idur;
 }
 
@@ -2293,8 +2275,9 @@ time_container::calc_implicit_dur_for_esr_last(std::list<const time_node*>& cl) 
 			idur = std::max(idur, c->get_interval_end());
 		}
 	}
-	AM_DBG m_logger->debug("%s[%s].calc_implicit_dur_for_esr_last(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(idur).c_str());
+	AM_DBG m_logger->debug("%s.calc_implicit_dur_for_esr_last(): %s",
+        get_sig().c_str(), 
+        ::repr(idur).c_str());
 	return (idur == time_type::minus_infinity)?0:idur;
 }
 
@@ -2314,8 +2297,9 @@ time_container::calc_implicit_dur_for_esr_all(std::list<const time_node*>& cl) {
 			break;
 		}
 	}
-	AM_DBG m_logger->debug("%s[%s].calc_implicit_dur_for_esr_all(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(idur).c_str());
+	AM_DBG m_logger->debug("%s.calc_implicit_dur_for_esr_all(): %s",
+        get_sig().c_str(), 
+        ::repr(idur).c_str());
 	return (idur == time_type::minus_infinity)?time_type::unresolved:idur;
 }
 
@@ -2392,8 +2376,9 @@ seq::get_implicit_dur() {
 	const interval_type& i = tn->get_last_interval();
 	time_type idur =  time_type::unresolved;
 	if(i.is_valid()) idur = tn->get_interval_end();
-	AM_DBG m_logger->debug("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), ::repr(idur).c_str());
+	AM_DBG m_logger->debug("%s.get_implicit_dur(): %s",
+        get_sig().c_str(), 
+        ::repr(idur).c_str());
 	return idur;
 }
 
@@ -2428,8 +2413,7 @@ excl::~excl() {
 // for each excl element to build the required
 // priorityClass related structures.
 void excl::built_priorities() {
-	AM_DBG m_logger->debug("%s[%s].built_priorities()", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str());
+	AM_DBG m_logger->debug("%s.built_priorities()", get_sig().c_str());
 
 	const node *n = m_node->down();
 	if(!n || n->get_local_name() != "priorityClass") {
@@ -2453,8 +2437,9 @@ void excl::built_priorities() {
 
 	// keep number of priorityClass
 	m_num_classes = int(prio_classes.size());
-	AM_DBG m_logger->debug("%s[%s].built_priorities() %d classes", m_attrs.get_tag().c_str(),
-		m_attrs.get_id().c_str(), prio_classes.size());
+	AM_DBG m_logger->debug("%s.built_priorities() %d classes",
+        get_sig().c_str(), 
+        prio_classes.size());
 
 	// the number to be assigned to the higher priority
 	int prio = m_num_classes-1;
@@ -2484,10 +2469,7 @@ void excl::built_priorities() {
 				tn->set_priority(prio);
 				// this prio applies and to all its children
 
-				const time_attrs* pa = tn->get_time_attrs();
-				AM_DBG m_logger->debug("%s[%s] priority: %d",
-					pa->get_tag().c_str(),
-					pa->get_id().c_str(), prio);
+				AM_DBG m_logger->debug("%s priority: %d", get_sig().c_str(), prio);
 			}
 			//else not a time node
 		}
@@ -2566,17 +2548,21 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 	// Set interrupt attrs based on whether the interrupting node is peer, higher or lower
 	interrupt_type what;
 	if(interrupting_node->priority() == active_node->priority()) {
-		AM_DBG m_logger->debug("%s[%s] int by peer %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		AM_DBG m_logger->debug("%s int by peer %s",
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
 		what = pa->peers;
 	} else if(interrupting_node->priority() > active_node->priority()) {
-		AM_DBG m_logger->debug("%s[%s] int by higher %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		AM_DBG m_logger->debug("%s int by higher %s",
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
+
 		what = pa->higher;
 	} else {
-		AM_DBG m_logger->debug("%s[%s] int by lower %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
-		what = pa->lower;
+		AM_DBG m_logger->debug("%s int by lower %s",
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
+        what = pa->lower;
 	}
 
 	// handle interrupt based on excl semantics
@@ -2588,9 +2574,9 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		if(ta->get_fill() == fill_freeze)
 			active_node->remove(timestamp);
 
-		AM_DBG m_logger->debug("%s[%s] int_stop by %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
-
+		AM_DBG m_logger->debug("%s int_stop by %s",
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
 		// start interrupting_node
 		//interrupting_node->set_state(ts_active, timestamp, c);
 		interrupting_node->set_state(ts_active, timestamp, c);
@@ -2604,15 +2590,16 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		active_node->pause(timestamp, pa->display);
 		m_queue->push_pause(active_node);
 
-		AM_DBG m_logger->debug("%s[%s] int_pause by %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
-
+		AM_DBG m_logger->debug("%s int_pause by %s", 
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
 		// start interrupting_node
 		interrupting_node->set_state(ts_active, timestamp, c);
 
 	} else if(what == int_defer) {
-		AM_DBG m_logger->debug("%s[%s] continue int_defer: %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		AM_DBG m_logger->debug("%s continue int_defer: %s",
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
 		// do not touch active_node
 		// defer the interrupting_node
 		// arrange so that the deferred node ingnores sync_update (see spec)
@@ -2623,8 +2610,9 @@ void excl::interrupt(time_node *c, qtime_type timestamp) {
 		// what == int_never
 		// do not touch active_node
 		// ignore interrupting_node
-		AM_DBG m_logger->debug("%s[%s] int_never ignore: %s[%s]", ta->get_tag().c_str(),
-			ta->get_id().c_str(), tai->get_tag().c_str(), tai->get_id().c_str());
+		AM_DBG m_logger->debug("%s int_never ignore: %s",
+            get_sig().c_str(),
+            interrupting_node->get_sig().c_str());
 
 		// assert that the interval is canceled
 		// e.g. cancel notification to dependents
@@ -2638,9 +2626,7 @@ void excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 	if(!m_queue || m_queue->empty()) return;
 	time_node *nxt = m_queue->pop();
 
-	const time_attrs* ta = nxt->get_time_attrs();
-	AM_DBG m_logger->debug("%s[%s].dequeue %s", ta->get_tag().c_str(),
-			ta->get_id().c_str(), (nxt->is_active()?"active":"deferred"));
+	AM_DBG m_logger->debug("%s.dequeue %s", get_sig().c_str(), (nxt->is_active()?"active":"deferred"));
 
 	// if its active resume else start
 	if(nxt->paused()) {

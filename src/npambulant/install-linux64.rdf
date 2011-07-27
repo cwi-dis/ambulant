@@ -14,5 +14,6 @@
         <em:maxVersion>5.*</em:maxVersion>
       </Description>
     </em:targetApplication>
+    <em:unpack>true</em:unpack>
   </Description>
 </RDF>

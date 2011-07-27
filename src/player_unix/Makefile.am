@@ -76,6 +76,12 @@ extra_sdl_DEFINES=
 extra_sdl_LDADD=
 endif
 
+if WITH_GCD_EVENT_PROCESSOR
+extra_gcd_LDADD=$(GCD_LIBS)
+else
+extra_gcd_LDADD=
+endif
+
 if WITH_XERCES_BUILTIN
 extra_xerces_DEFINES=$(XERCES_CFLAGS) -DWITH_XERCES_BUILTIN
 extra_xerces_LDADD=$(XERCES_LIBS)
@@ -96,6 +102,7 @@ LDADD = \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
+	$(extra_gcd_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(libambulant_core) \
 	$(QT_LIBS) \
@@ -138,38 +145,28 @@ uninstall-hook:
 	rm -f AmbulantPlayer
 
 check-ambulantplayer_qt:
-#	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
 	if test x$$DISPLAY = x; then \
 		echo Skipping tests, DISPLAY not set; \
 	else \
-	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
-	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
-	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) ; \
-	  cp $(top_srcdir)/src/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
-	  a=`cd $(ambulantlibdir); pwd` ; \
-	  welcomepath=$$AMBULANT_TOP_DIR/Extras/Welcome/Welcome.smil; \
-	  echo PWD=$$PWD; \
-	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
-	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(top_srcdir)/scripts/nightlytestsuite.sh ./AmbulantPlayer_qt $$welcomepath; \
-	  else LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.lib ./AmbulantPlayer_qt $$welcomepath; \
-	  fi; \
-	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
+		set -e; \
+		set -x; \
+		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
+		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
+		lib=/lib; \
+		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
+		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
+		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
+		./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil; \
+		if test -e AM_TEST-output.txt; then cat AM_TEST-output.txt; fi \
 	fi
 
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
+	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-kde.desktop
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
-	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
 	cp $(srcdir)/ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
-# install gnome document icon for mimetype application/smil
-	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 

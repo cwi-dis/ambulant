@@ -65,4 +65,8 @@ copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Debug\UsageEnvironmentD.lib %AM
 
 REM libxml2
 copy %libxml2_dir%\win32\bin.msvc\libxml2_a.lib %AMB_HOME%\lib\win32\libxml2_a.lib
+
+REM libdispatch
+if exist %libdispatch_dir%\bin\win32\StaticRelease\libdispatch.lib copy %libdispatch_dir%\bin\win32\StaticRelease\libdispatch.lib %AMB_HOME%\lib\win32\libdispatch.lib
+if exist %libdispatch_dir%\bin\win32\StaticDebug\libdispatch.lib copy %libdispatch_dir%\bin\win32\StaticDebug\libdispatch.lib %AMB_HOME%\lib\win32\libdispatchD.lib
 @echo on

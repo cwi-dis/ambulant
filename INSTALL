@@ -172,8 +172,13 @@ Visual Studio 2010.
 You must not only have Visual Studio, but also the Microsoft DirectX SDK. This
 can be downloaded from the Microsoft site. NOTE: the version of June 2010 does
 not seem to work, it is missing a library (ddraw.lib) that Ambulant needs. The
-February 2010 is the last version known to work. You also need 7-Zip and
-Python 2.6 or 2.7.
+February 2010 is the last version known to work. 
+
+Next, you need the Microsoft Windows SDK, v7.0A or v7.1. You also need the
+"Samples" subdirectory, and even though the SDK is usually installed by default
+with Visual Studio the samples are not. Google and install.
+
+You also need 7-Zip and Python 2.6 or 2.7.
 
 First, you build the third party packages, by opening a "cmd" command window
 and navigating to ambulant/third_party_packages. You now run the following

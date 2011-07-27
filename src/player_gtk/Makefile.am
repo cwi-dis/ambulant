@@ -80,7 +80,11 @@ extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 
 #------------------------------------------------------
 if WITH_GTK
+if WITH_GCD_EVENT_PROCESSOR
+gtk_libs=$(GTK_LIBS) $(GCD_LIBS)
+else
 gtk_libs=$(GTK_LIBS)
+endif #WITH_GCD_EVENT_PROCESSOR
 gtk_includes=$(GTK_CFLAGS)
 else
 gtk_libs=
@@ -146,38 +150,30 @@ check-ambulantplayer_gtk:
 	if test x$$DISPLAY = x; then \
 		echo Skipping tests, DISPLAY not set; \
 	else \
-	  set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
-	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
-	  cp $(top_srcdir)/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
-	  a=`cd $(ambulantlibdir); pwd` ; \
-	  welcomepath=$$AMBULANT_TOP_DIR/Extras/Welcome/Welcome.smil; \
-	  echo PWD=$$PWD top_srcdir=$(top_srcdir) srcdir=$(srcdir) welcomepath=$$welcomepath; \
-	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
-	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs  $(top_srcdir)/scripts/nightlytestsuite.sh ./AmbulantPlayer_gtk $$welcomepath;  \
-	  else  LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $$welcomepath; \
-	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
-	  fi; \
+		set -e; \
+		set -x; \
+		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
+		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
+		lib=/lib; \
+		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
+		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
+		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
+		./AmbulantPlayer_gtk $(top_srcdir)/Extras/Welcome/Welcome.smil; \
+		if test -e AM_TEST-output.txt; then cat AM_TEST-output.txt; fi \
 	fi
 
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
+	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-gnome.desktop
 
 #	rm /usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
 #	rm /usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
 #	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
-	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
-	cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
-# install gnome document icon for mimetype application/smil
-	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
-	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	-cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
 
 EXTRA_DIST=ambulant-gnome.desktop

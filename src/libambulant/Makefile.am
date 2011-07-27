@@ -68,6 +68,12 @@ xerces_includes =
 xerces_core_libs = 
 endif
 
+if WITH_GCD_EVENT_PROCESSOR
+gcd_event_processor_core_libs = $(GCD_LIBS)
+else
+gcd_event_processor_core_libs = 
+endif
+
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
 # XXX Should LIBINTL depend on USE_NLS?
@@ -161,7 +167,7 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_util.cpp \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
-libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS)
+libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(gcd_event_processor_core_libs)
 libambulant_gtk_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
 else
 gtkincludes=
@@ -277,13 +283,14 @@ lib_LTLIBRARIES = \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
-	
+
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
 	$(xerces_core_libs) \
 	$(platlibs) \
-	$(PTHREAD_LIBS)
+	$(PTHREAD_LIBS) \
+	$(gcd_event_processor_core_libs)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \
@@ -373,6 +380,25 @@ EXTRA_DIST= \
 	lib/win32
 
 CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT
+
+install-data-local:
+# install icon for use by the players
+	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
+	cp $(srcdir)/../player_unix/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
+# install gnome document icon for mimetype application/smil
+	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
+	cp $(srcdir)/../player_unix/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	$(LIBTOOL) --finish $(DESTDIR)$(libdir)
+ 
+uninstall-local:
+	-rm -f $(DESTDIR)$(datadir)/ambulant/icons/Ambulant.png
+	-rm -f $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 if WITH_NPAMBULANT
 # when selinux is enblaed, identify the installed shared library

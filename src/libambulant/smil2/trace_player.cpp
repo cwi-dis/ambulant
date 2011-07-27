@@ -35,7 +35,7 @@ trace_player::trace_player(lib::document *doc)
 	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory())),
 	m_event_processor(0) {
 	m_logger = logger::get_logger();
-	m_event_processor = event_processor_factory(m_timer);
+	m_event_processor = lib::event_processor_factory(m_timer);
 	timegraph tg(this, m_doc, schema::get_instance());
 	m_root = tg.detach_root();
 }

@@ -209,10 +209,23 @@ plugin_engine::collect_plugin_directories()
 #elif defined(AMBULANT_PLATFORM_UNIX)
 	// On other unix platforms add the pkglibdir
 #ifdef AMBULANT_PLUGINDIR
-	m_plugindirs.push_back(AMBULANT_PLUGINDIR);
+	char *normal_plugin_dir = AMBULANT_PLUGINDIR;
 #else
-	m_plugindirs.push_back("/usr/local/lib/ambulant");
+	char *normal_plugin_dir = "/usr/local/lib/ambulant"
 #endif // AMBULANT_PLUGINDIR
+	if (access(normal_plugin_dir, 0) == 0) {
+		m_plugindirs.push_back(normal_plugin_dir);
+	} else {
+		// If the normal plugin dir doesn't exist assume we are running from
+		// the build directory.
+		if (access("../plugins/.libs", 0) == 0) {
+			m_plugindirs.push_back("../plugins/.libs");
+		} else
+		if (access("src/plugins/.libs", 0) == 0) {
+			m_plugindirs.push_back("src/plugins/.libs");
+		}
+		
+	}
 #elif defined(AMBULANT_PLATFORM_WIN32)
 	// Add directory containing the main module (either main prog or dll)
 	std::string main_dir = lib::win32::get_module_dir();

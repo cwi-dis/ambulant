@@ -32,6 +32,7 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <queue>
 
 namespace ambulant {
 
