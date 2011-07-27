@@ -180,7 +180,7 @@ check-npambulant:
 		cd $(srcdir) ; \
 		LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) `pwd`/test/test_npambulant.html ; \
 	fi
-	
+
 testplay:
 	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html
 
@@ -272,37 +272,46 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 		i386|i686)			\
 			cp $(srcdir)/install-linux.rdf npambulant_plugin_dir/install.rdf ;;	\
 	esac
+	cp $(srcdir)/manifest.json npambulant_plugin_dir/manifest.json
 	strip  npambulant_plugin_dir/plugins/npambulant/*.so*
 install-npambulant:  npambulant_plugin_dir
 	if [ `id -u` == "0" ]; then \
-			MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); \
-		else \
-			MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);\
-		fi; \
-		$(INSTALL) -d $(MOZILLA_PLUGINS);	\
-		$(INSTALL_PROGRAM) npambulant_plugin_dir/plugins/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
-		(cd  npambulant_plugin_dir/plugins ; tar cf - npambulant  ) | \
-			(cd $$MOZILLA_PLUGINS ; tar xf -)
-#	We may need the following too:
-#		$(srcdir)/selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
+		MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); \
+	else \
+		MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);\
+	fi; \
+	$(INSTALL) -d $(MOZILLA_PLUGINS);	\
+	$(INSTALL_PROGRAM) npambulant_plugin_dir/plugins/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
+	(cd  npambulant_plugin_dir/plugins ; tar cf - npambulant  ) | \
+		(cd $$MOZILLA_PLUGINS ; tar xf -)
+# We may need the following too:
+#	$(srcdir)/selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
 # when selinux is enabled, identify the installed shared library
 endif
 #------------------------------------------------------
 #
 # Build the .xpi file which can be fed to Firefox to install the plugin
+# and when Google Chrome browser is installed, the .crx for that browser as well
 #
 installer: $(INSTALLER_ARCHIVE)
 
 $(INSTALLER_ARCHIVE): npambulant_plugin_dir
 	-rm $(INSTALLER_ARCHIVE)
 	cd npambulant_plugin_dir; \
-		zip -r ../$(INSTALLER_ARCHIVE) *
+		zip -r ../$(INSTALLER_ARCHIVE) * ; \
+	which google-chrome; \
+	if test $$?; then cd ..;pwd;ls; \
+		rm -f  npambulant_plugin_dir.pem ; \
+		google-chrome --enable-apps --pack-extension=$$PWD/npambulant_plugin_dir; \
+		mv npambulant_plugin_dir.crx npambulant.crx; \
+	fi
 #------------------------------------------------------
 
 EXTRA_DIST = \
 	install-linux.rdf \
 	install-linux64.rdf \
 	install-win32.rdf  \
+	manifest.json \
 	npambulant.rc \
 	npambulant.def \
 	resource.h \
