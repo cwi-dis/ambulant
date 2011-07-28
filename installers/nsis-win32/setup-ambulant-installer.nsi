@@ -38,8 +38,11 @@
 ; !define DISTRIBUTE_VC9_RT
 ; !define VC9_DISTDIR "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86"
 
-!define DOWNLOAD_VC9_RT
-!define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
+; !define DOWNLOAD_VC9_RT
+; !define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
+
+!define DOWNLOAD_VC10_RT
+!define DOWNLOAD_VC10_RT_URL "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe"
 
 ; File associations
 !include "FileAssociation.nsh"
@@ -196,6 +199,29 @@ install:
 finish:
 
 !endif
+!ifdef DOWNLOAD_VC10_RT
+;
+; Download from Microsoft. Code (and idea) from <http://wiki.spench.net/wiki/NISRP_Installer_Script>
+;
+!define DOWNLOAD_LOCATION	"$INSTDIR\Downloaded"
+!define RUNTIME_FILE		"${DOWNLOAD_LOCATION}\vcredist_x86_2008_sp1.exe"
+	AddSize 4119
+	# Download is placed in installation directory
+	SetOutPath ${DOWNLOAD_LOCATION}
+	NSISdl::download ${DOWNLOAD_VC10_RT_URL} "${RUNTIME_FILE}"
+	Pop $R0 ;Get the return value
+	StrCmp $R0 "success" install
+	MessageBox MB_YESNO|MB_ICONEXCLAMATION "Download of Microsoft VC++ runtime failed, maybe your internet connection is down?$\n$\n Ambulant will not run until this component is correctly installed.$\n$\nDo you wish to continue?" IDYES true IDNO false
+	true:
+		Goto finish
+	false:
+		Abort "Download failed: $R0"
+install:
+	# FIXME: Silent install?
+	ExecWait "${RUNTIME_FILE}"
+finish:
+
+!endif
 SectionEnd
 
 Section "Demo Presentation" DemoSection
@@ -253,13 +279,23 @@ Function .onInit
   IntOp $0 ${SF_SELECTED} | ${SF_RO}
   SectionSetFlags ${CoreSection} $0
   
+!ifdef DOWNLOAD_VC9_RT
   ; Do we need to install the VC9 runtime?
   ; Don't install if SP1 or later has been installed.
   ; Note that a missing key reads as "0".
   ReadRegDWORD $0 HKLM SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0 SP
   IntCmp $0 1 +2 0 +2
     SectionSetFlags ${RuntimeSection} ${SF_SELECTED}
-    
+!endif
+!ifdef DOWNLOAD_VC10_RT
+  ; Do we need to install the VC10 runtime?
+  ; Don't install if VC10 (any SP) has been installed.
+  ; Note that a missing key reads as "0".
+  ReadRegDWORD $0 HKLM SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0 SP
+  IfErrors 0 +1
+    SectionSetFlags ${RuntimeSection} ${SF_SELECTED}
+!endif
+
 FunctionEnd
 
 Function un.onUninstSuccess
