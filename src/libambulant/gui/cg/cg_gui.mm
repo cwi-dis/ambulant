@@ -150,7 +150,7 @@ cg_window_factory::get_default_size()
 common::gui_window *
 cg_window_factory::new_window(const std::string &name, size bounds, common::gui_events *handler)
 {
-	NSLog(@"view %@ responds %d", (AmbulantView *)m_defaultwindow_view, [(AmbulantView *)m_defaultwindow_view respondsToSelector: @selector(isAmbulantWindowInUse)]);
+	AM_DBG NSLog(@"view %@ responds %d", (AmbulantView *)m_defaultwindow_view, [(AmbulantView *)m_defaultwindow_view respondsToSelector: @selector(isAmbulantWindowInUse)]);
 	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
 		// XXXX Should create new toplevel window and put an ambulantview in it
 		logger::get_logger()->error(gettext("Unsupported: AmbulantPlayer cannot open second toplevel window yet"));
@@ -299,7 +299,7 @@ bad:
 - (void)dealloc {
 	AM_DBG NSLog(@"AmbulantView.dealloc(0x%x)", self);
 	if (transition_surface) {
-		NSLog(@"CFGetRetainCount(transition_surface)=%d",CFGetRetainCount(transition_surface)); 
+		AM_DBG NSLog(@"CFGetRetainCount(transition_surface)=%d",CFGetRetainCount(transition_surface)); 
 		CFRelease(transition_surface);
 		transition_surface = NULL;
 	}
