@@ -296,15 +296,17 @@ endif
 installer: $(INSTALLER_ARCHIVE)
 
 $(INSTALLER_ARCHIVE): npambulant_plugin_dir
-	-rm $(INSTALLER_ARCHIVE)
+	-rm -f $(INSTALLER_ARCHIVE)
+	-rm -f npambulant-$(VERSION)-linux-$(ARCH).crx
 	cd npambulant_plugin_dir; \
 		zip -r ../$(INSTALLER_ARCHIVE) * ; \
 	which google-chrome; \
-	if test $$?; then cd ..;pwd;ls; \
+	if test $$?; then cd ..; \
 		rm -f  npambulant_plugin_dir.pem ; \
-		google-chrome --enable-apps --pack-extension=$$PWD/npambulant_plugin_dir; \
-		mv npambulant_plugin_dir.crx npambulant.crx; \
+		Xvfb :829 & DISPLAY=:829 google-chrome --enable-apps --pack-extension=$$PWD/npambulant_plugin_dir; killall Xvfb; \
 	fi
+#	-rm -f /tmp/.X829
+	-mv -f npambulant_plugin_dir.crx npambulant-$(VERSION)-linux-$(ARCH).crx
 #------------------------------------------------------
 
 EXTRA_DIST = \
