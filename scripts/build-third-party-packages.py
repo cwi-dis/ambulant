@@ -847,8 +847,8 @@ third_party_packages={
             checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG),
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\%s\\xerces-all && "
-                "devenv xerces-all.sln /build Debug /project XercesLib"
-                "devenv xerces-all.sln /build %s /project XercesLib" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
+                "devenv xerces-all.sln /build Debug /project XercesLib && "
+                "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VSVERSION)
             ),
             
         WinTPP("xulrunner-sdk",
