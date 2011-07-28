@@ -272,12 +272,17 @@ xpath_state_component::declare_state(const lib::node *state)
 		// Check for src= attribute for remote state
 		if (state->get_attribute("src")) {
 			net::url src_url = state->get_url("src");
+#if 0
 			if (!src_url.is_local_file()) {
 				lib::logger::get_logger()->trace("xpath_state_component: only file: scheme implemented for <state>");
 				return;
 			}
 			std::string src_filename = src_url.get_file();
 			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
+#else
+			std::string src_filename = src_url.get_url();
+			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
+#endif
 			if (m_state) {
 				// Finally we set up the XPath expression context.
 				// NOTE: m_context->node has to be re-set before every evaluation,
