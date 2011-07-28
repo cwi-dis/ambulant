@@ -299,7 +299,9 @@ $(INSTALLER_ARCHIVE): npambulant_plugin_dir
 	-rm -f $(INSTALLER_ARCHIVE)
 	-rm -f npambulant-$(VERSION)-linux-$(ARCH).crx
 	cd npambulant_plugin_dir; \
-		zip -r ../$(INSTALLER_ARCHIVE) * ; \
+		zip -r ../$(INSTALLER_ARCHIVE) *
+
+npambulant-$(VERSION)-linux-$(ARCH).crx: npambulant_plugin_dir
 	which google-chrome; \
 	if test $$?; then cd ..; \
 		rm -f  npambulant_plugin_dir.pem ; \
