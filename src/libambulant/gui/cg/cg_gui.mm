@@ -299,8 +299,9 @@ bad:
 - (void)dealloc {
 	AM_DBG NSLog(@"AmbulantView.dealloc(0x%x)", self);
 	if (transition_surface) {
-//		CFRelease(transition_surface);
-//		transition_surface = NULL;
+		NSLog(@"CFGetRetainCount(transition_surface)=%d",CFGetRetainCount(transition_surface)); 
+		CFRelease(transition_surface);
+		transition_surface = NULL;
 	}
 	if (fullscreen_oldimage) {
 		CFRelease(fullscreen_oldimage);
@@ -1009,10 +1010,6 @@ CreateBitmapContext (CGSize size)
 		transition_surface = CGLayerCreateWithContext(ctxr, NSSizeToCGSize(self.bounds.size), NULL);
 		assert(transition_surface);
 		// clear the surface
-		CGContextRef ts_ctxr = CGLayerGetContext(transition_surface);
-		CGSize s = CGLayerGetSize(transition_surface);
-		CGRect r = CGRectMake(0.0, 0.0, s.width, s.height); 
-		CGContextClearRect(ts_ctxr, r);
 	}
 	return transition_surface;
 }
@@ -1025,9 +1022,20 @@ CreateBitmapContext (CGSize size)
 //TBD	return [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
 	return NULL;
 }
-	
+
+- (void) clearTransitionSurface
+{
+	if (transition_surface != NULL) {
+		CGContextRef ts_ctxr = CGLayerGetContext(transition_surface);
+		CGSize s = CGLayerGetSize(transition_surface);
+		CGRect r = CGRectMake(0.0, 0.0, s.width, s.height); 
+		CGContextClearRect(ts_ctxr, r);
+	}
+}
+
 - (void) releaseTransitionSurfaces
 {
+	AM_DBG NSLog(@"releaseTransitionSurfaces: transition_count=%d CFGetRetainCount(transition_surface)=%d",transition_count, CFGetRetainCount(transition_surface)); 
 	if (transition_count > 0) {
 		return;
 	}

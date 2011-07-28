@@ -1176,9 +1176,9 @@ bool time_node::on_eosd(qtime_type timestamp) {
 // Currently this notification is not used.
 // Could be used to define the slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
-	if (m_saw_on_bom)
+	AM_DBG if (m_saw_on_bom)
 		m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
-	if (m_saw_on_eom)
+	AM_DBG if (m_saw_on_eom)
 		m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
 	if (m_saw_on_bom || m_saw_on_eom)
 		return;
@@ -1213,11 +1213,11 @@ void time_node::on_rom(qtime_type timestamp) {
 void time_node::on_eom(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s.on_eom()", get_sig().c_str());
 	if (!m_saw_on_bom) {
-		m_logger->debug("time_node::on_eom: simulating on_bom() which has not occurred yet for %s", get_sig().c_str());
+		AM_DBG m_logger->debug("time_node::on_eom: simulating on_bom() which has not occurred yet for %s", get_sig().c_str());
 		on_bom(timestamp);
 	}
 	if (m_saw_on_eom)
-		m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
+		AM_DBG m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
 	m_saw_on_eom = true;
 
 	m_eom_flag = true;

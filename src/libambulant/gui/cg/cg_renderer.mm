@@ -143,6 +143,7 @@ cg_transition_renderer::redraw_pre(gui_window *window)
 	m_lock.enter();
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
+	[view clearTransitionSurface];
 	int i = 0;
 	AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw_pre(0x%x) i=%d", (void *)this, i);
 		

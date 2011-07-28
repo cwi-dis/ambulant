@@ -214,6 +214,9 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // transitioning element should be drawn to.
 - (CGLayerRef) getTransitionSurface;
 
+// clear the transition surface before drawing on it
+- (void) clearTransitionSurface;
+
 // internal: release the transition surfaces when we're done with it.
 - (void) releaseTransitionSurfaces;
 
