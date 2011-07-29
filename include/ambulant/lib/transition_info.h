@@ -87,7 +87,18 @@ class AMBULANTAPI transition_info {
 	typedef double progress_type;
 	
 	transition_type m_type;    ///< SMIL 2.1 transition type.
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	std::string m_subtype;     ///< SMIL 2.1 transition subtype.
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 	time_type m_dur;           ///< Transition duration (Unit???)
 	progress_type m_startProgress; ///< Starting point of transition.
 	progress_type m_endProgress;   ///< Ending point of transition.

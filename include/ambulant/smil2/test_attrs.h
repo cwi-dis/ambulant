@@ -97,9 +97,21 @@ class AMBULANTAPI test_attrs {
 	const lib::node *m_node;
 	const std::map<std::string, custom_test>* m_custom_tests;
 
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	// tracing
 	std::string m_id;
 	std::string m_tag;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
+
 	lib::logger *m_logger;
 	friend class state_test_methods_impl;
 };

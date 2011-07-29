@@ -35,6 +35,10 @@ const unsigned int default_layout_height = 480;
 //const char* parser_ids[] = {"any", "expat", "xerces"};
 //const char* val_schemes[] = {"never", "always", "auto"};
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
 
 /// Class providing access to user preference settings.
 /// This is a singleton class, but it doesn't follow the corresponing
@@ -117,6 +121,11 @@ class AMBULANTAPI preferences {
 	static preferences* s_preferences; // singleton
 
 };// class preferences
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 
 } // namespace common
 

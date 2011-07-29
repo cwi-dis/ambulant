@@ -202,7 +202,18 @@ class AMBULANTAPI logger {
 
 	// this logger members
 	critical_section m_cs;
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	std::string m_name;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 	ostream* m_pos;
 	show_message_type m_show_message;
 	int m_level;

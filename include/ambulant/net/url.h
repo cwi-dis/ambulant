@@ -32,6 +32,10 @@
 namespace ambulant {
 
 namespace net {
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
 
 /// Class representing a URL.
 class AMBULANTAPI url {
@@ -236,6 +240,9 @@ class AMBULANTAPI url {
 	void set_from_scheme(ambulant::lib::scanner& sc, const std::string& pat);
 
 };
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 } // namespace net
 
