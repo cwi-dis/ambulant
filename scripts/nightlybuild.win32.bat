@@ -139,7 +139,7 @@ rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONS
 if %errorlevel% neq 0 pause
 
 rem
-rem Build XP desktop player
+rem Build XP desktop player, installer, upload
 rem
 cd ..\..\projects\%vcdir%
 devenv Ambulant-win32.sln /build ReleaseShlibDX
@@ -149,6 +149,23 @@ if %errorlevel% neq 0 pause
 rename  Ambulant-%AMBULANTVERSION%-win32xp.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe
 %pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe %DESTINATIONDESKTOPXP%
 if %errorlevel% neq 0 pause
+
+rem
+rem Upload IE, Netscape plugins for XP
+rem
+
+cd ..\..\bin\win32
+if not exist npambulantDX-%AMBULANTVERSION%-win32.xpi goto skipnpambulantxp
+rename npambulantDX-%AMBULANTVERSION%-win32.xpi npambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
+%pscp% -i %KEYFILE% npambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATIONNPXP%
+if %errorlevel% neq 0 pause
+:skipnpambulantxp
+if not exist ieambulantDX-%AMBULANTVERSION%-win32.cab goto skipieambulantxp
+rename ieambulanDXt-%AMBULANTVERSION%-win32.cab ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
+%pscp% -i %KEYFILE% ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATIONIEXP%
+if %errorlevel% neq 0 pause
+:skipieambulantxp
+
 
 
 rem 
