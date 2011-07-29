@@ -83,7 +83,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	m_well_formed = true;
 	while(!ifs.eof() && ifs.good()) {
 		ifs.read(buf, buf_size);
-		if(!m_xmlparser->parse(buf, ifs.gcount(), ifs.eof())){
+		if(!m_xmlparser->parse(buf, (size_t)ifs.gcount(), ifs.eof())){
 			m_well_formed = false;
 			break;
 		}

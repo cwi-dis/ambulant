@@ -15,7 +15,7 @@
 @echo on
 
 ;; VS2010 no longer seems to set this...
-set TargetPath=$(OutDir)ieambulant-2.3-win32.cab
+set TargetPath=$(OutDir)ieambulantDX-2.3-win32.cab
 ;;
 @echo "copying all files for the cab into this directory"
 del $(IntDir)\*.*
@@ -24,17 +24,18 @@ mkdir $(IntDir)
 :: redistributable C-runtime
 copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(intdir)\vcredist_x86.exe
 :: Ambulant dll's
-copy ..\..\bin\win32\AmbulantActiveX.dll $(intdir)\AmbulantActiveX.dll
-copy ..\..\bin\win32\libambulant_shwin32.dll $(intdir)\libambulant_shwin32.dll
-copy ..\..\bin\win32\libamplugin_ffmpeg.dll $(intdir)\libamplugin_ffmpeg.dll 
-copy ..\..\bin\win32\libamplugin_state_xpath.dll $(intdir)\libamplugin_state_xpath.dll
+copy ..\..\bin\win32\AmbulantActiveXDX.dll $(intdir)\AmbulantActiveXDX.dll
+copy ..\..\bin\win32\libambulantDX_shwin32.dll $(intdir)\libambulantDX_shwin32.dll
+copy ..\..\bin\win32\libamplugin_ffmpegDX.dll $(intdir)\libamplugin_ffmpegDX.dll 
+copy ..\..\bin\win32\libamplugin_state_xpathDX.dll $(intdir)\libamplugin_state_xpathDX.dll
 copy ..\..\bin\win32\avcodec-52.dll $(intdir)\avcodec-52.dll
 copy ..\..\bin\win32\avformat-52.dll $(intdir)\avformat-52.dll 
 copy ..\..\bin\win32\avutil-50.dll $(intdir)\avutil-50.dll
+copy ..\..\bin\win32\avcore-0.dll $(intdir)\avcore-0.dll
 copy ..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll
 copy ..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
 copy ..\..\bin\win32\xerces-c_3_1.dll $(intdir)\xerces-c_3_1.dll
-copy ..\..\src\ieambulant\AmbulantActiveX.inf $(intdir)\AmbulantActiveX.inf
+copy ..\..\src\ieambulant\AmbulantActiveXDX.inf $(intdir)\AmbulantActiveXDX.inf
 :: Create a new cabinet (.cab) archive
 ^"$(CabArc)^" -s 6144 n %TargetPath% $(IntDir)*.exe $(IntDir)*.dll $(IntDir)*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
