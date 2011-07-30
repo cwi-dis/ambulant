@@ -54,8 +54,14 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 // #define	WITH_DUMPIMAGES
 #ifdef	WITH_DUMPIMAGES
 #define DUMPPIXMAP(gdkpixmap, id)  gdk_pixmap_dump(gdkpixmap, id)
-void
+// dump a pixmap or pixbuf on a file named 'nnnnid' where nnnn is a
+// generated 4-digit number from 0000-9999 and id is parameter
+// return the 4-digit number for identfication purposes 
+int
 gdk_pixmap_dump(GdkPixmap* gpm, std::string id);
+
+int
+gdk_pixbuf_dump(GdkPixbuf* gpb, std::string id);
 #else
 #define DUMPPIXMAP(gdkpixmap, id)
 #endif//WITH_DUMPIMAGES

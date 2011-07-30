@@ -173,24 +173,27 @@ isEqualToPrevious(QImage* img) {
 	}
 }
 
-void
+int
 qt_image_dump(QImage* img, std::string id) {
-	if ( ! img) return;
+	if ( ! img) return -1;
 	if ( ! isEqualToPrevious(img)) {
 		static int i;
 		char buf[5];
 		sprintf(buf,"%04d",i++);
+		if (i == 10000) i = 0;
 		std::string newfile = buf + std::string(id) +".png";
 		img->save(newfile, "PNG");
 		AM_DBG lib::logger::get_logger()->debug("qt_image_dump(%s)", newfile.c_str());
+		return i == 0 ? 9999 : i - 1;
 	}
+	return -1;
 }
 
-void
+int
 qt_pixmap_dump(QPixmap* qpm, std::string id) {
-	if ( ! qpm) return;
+	if ( ! qpm) return -1;
 	QImage img = qpm->convertToImage();
-	qt_image_dump(&img, id);
+	return qt_image_dump(&img, id);
 }
 #endif /* WITH_DUMPIMAGES */
 
