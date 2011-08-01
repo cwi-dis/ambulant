@@ -71,6 +71,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
     is_visible = NO;
+    currentURL = nil;
 
 	// prepare to react when device is rotated
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -205,11 +206,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 // create a new instance of the smil player
-- (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr {
+- (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr
+{    
     if (theUrl) {
         if (currentURL) [currentURL release];
         currentURL = [theUrl retain];
     }
+    
 	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantViewController doPlayURL(0x%x): url=%s ns_node_repr=%s", self, currentURL? [ currentURL UTF8String]: "NULL", ns_node_repr? [ns_node_repr UTF8String] : "NULL");
 	if (myMainloop != NULL) {
 		myMainloop->no_stopped_callbacks();
@@ -339,6 +342,15 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (want_show) {
 		finishedView.hidden = false;
 		finishedView.opaque = true;
+        NSData *poster_data = nil;
+        PlaylistItem *item = myMainloop->get_current_item();
+        if (item) poster_data = [item poster_data];
+		if (poster_data) {
+			finishedViewImage.image = [UIImage imageWithData: poster_data];
+		} else {
+			finishedViewImage.image = [UIImage imageNamed: @"DefaultPoster.png"];
+		}
+
 		[self.view bringSubviewToFront: finishedView];
 	} else {
 		finishedView.hidden = true;

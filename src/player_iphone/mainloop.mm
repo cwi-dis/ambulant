@@ -196,6 +196,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 			} else if (last_item != NULL) {
 				// new item not stored
 				[new_item release];
+                m_current_item = last_item;
 			}
 			prefs->m_normal_exit = false;
 			prefs->m_history = history;

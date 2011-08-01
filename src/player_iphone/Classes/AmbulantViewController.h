@@ -86,6 +86,7 @@ enum ZoomState {
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet UIView* finishedView;
+    IBOutlet UIImageView* finishedViewImage;
 	IBOutlet AmbulantAppDelegate* delegate; // Our higher-level controller
 	IBOutlet UIButton* playPauseButton;
 	IBOutlet UIButton* nextPresentationButton;
