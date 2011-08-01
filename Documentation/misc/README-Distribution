@@ -110,6 +110,8 @@ Before creating the distribution
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - projects/vc9/npambulant-installer.vcproj
   - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
+  - projects/vc10/npambulant-installer.vcproj (many places)
+  - projects/vc10/AmbulantActiveX-installer.vcproj (many places)
   - Documentation/user/developer.html (2 times)
   - Documentation/user-htmlhelp/developer.html (2 times, regenerate winHelp)
 - check the following files for being up-to-date:
