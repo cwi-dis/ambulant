@@ -161,7 +161,7 @@ rename npambulantDX-%AMBULANTVERSION%-win32.xpi npambulantDX-%AMBULANTVERSION%%V
 if %errorlevel% neq 0 pause
 :skipnpambulantxp
 if not exist ieambulantDX-%AMBULANTVERSION%-win32.cab goto skipieambulantxp
-rename ieambulanDXt-%AMBULANTVERSION%-win32.cab ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
+rename ieambulanDX-%AMBULANTVERSION%-win32.cab ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
 %pscp% -i %KEYFILE% ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATIONIEXP%
 if %errorlevel% neq 0 pause
 :skipieambulantxp
