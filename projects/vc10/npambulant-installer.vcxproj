@@ -108,7 +108,7 @@ copy "$(firefox_plugin_dir)swscale-0.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)SDL.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)xerces-c_$(xerces_major)_$(xerces_minor).dll" %intdir%%TargetName%\Plugins
 cd %intdir%%TargetName%
-"$(zip_executable)" "..\..\..\%TargetPath%" *.* Plugins\*.* 
+"$(zip_executable)" a "..\..\..\%TargetPath%" *.* Plugins\*.* 
 </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     </NMakeReBuildCommandLine>
@@ -144,7 +144,7 @@ copy "$(firefox_plugin_dir)swscale-0.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)SDL.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)xerces-c_$(xerces_major)_$(xerces_minor).dll" %intdir%%TargetName%\Plugins
 cd %intdir%%TargetName%
-"$(zip_executable)" "..\..\..\%TargetPath%" *.* Plugins\*.* 
+"$(zip_executable)" a "..\..\..\%TargetPath%" *.* Plugins\*.* 
 </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">
     </NMakeReBuildCommandLine>
