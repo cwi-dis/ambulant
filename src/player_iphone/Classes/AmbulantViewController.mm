@@ -427,6 +427,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) doRestartTapped: (id)sender
 {
 	AM_DBG NSLog(@"AmbulantViewController handleRestartTapped(0x%x)", self);
+	[self showFinishedView: NO];
 	if (myMainloop != NULL) {
 		myMainloop->restart(false);
 		if (!myMainloop->is_play_active()) {
@@ -498,6 +499,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     assert(delegate);
     [self pause];
+	[self showFinishedView: NO];
     [delegate showPresentationViews: self];
 }
 
