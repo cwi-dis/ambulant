@@ -459,23 +459,26 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) doAddFavorite: (id)sender
 {
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
+    NSString *email_or_nil = @"EMail";
+    if ([currentURL hasPrefix: @"file:"]) email_or_nil = nil;
     UIActionSheet *sheet = [[UIActionSheet alloc] 
         initWithTitle:@"Share" 
         delegate:self 
         cancelButtonTitle:@"Cancel" 
         destructiveButtonTitle:nil 
-        otherButtonTitles:@"Add to Favorites", @"Email", nil];
+        otherButtonTitles:@"Add to Favorites", email_or_nil, nil];
     [sheet showInView: interactionView];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"Clicked button %d", buttonIndex);
-    if (buttonIndex == 0) {
+    NSString *action = [actionSheet buttonTitleAtIndex: buttonIndex];
+    if ([action isEqualToString: @"Add to Favorites"]) {
         assert(delegate);
         PresentationViewController* favoritesVC = [ delegate getPresentationViewWithIndex: 1];	
         [favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
-    } else if (buttonIndex == 1) {
+    } else if ([action isEqualToString: @"EMail"]) {
         [self pause];
         MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
         mc.mailComposeDelegate = self;
