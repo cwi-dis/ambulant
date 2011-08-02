@@ -1,8 +1,8 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
-20 23 * * * sh $HOME/src/ambulant/scripts/nightlyrun.clean.sh
-20 0 * * * sh $HOME/src/ambulant/scripts/nightlyrun.mac.sh
+20 23 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.clean.sh
+20 0 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.mac.sh
 20 2 * * * prlctl start Win7-VS2010-Nightly
-20 4 * * * sh $HOME/src/ambulant/scripts/nightlyrun.iphone.sh
+20 4 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.iphone.sh
 20 6 * * * prlctl start Ubuntu1104

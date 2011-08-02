@@ -1,4 +1,4 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/ufs/jack/bin/i686:/ufs/jack/bin:/ufs/jack/src/mm/bin:/usr/local/bin:/usr/bin/X11:/usr/sbin:/usr/bsd:/bin:/usr/bin
-20 01 * * * sh $HOME/src/ambulant/scripts/nightlyrun.linux.sh 
+20 01 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.linux.sh 
