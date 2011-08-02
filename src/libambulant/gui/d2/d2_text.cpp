@@ -94,7 +94,10 @@ d2_text_renderer::init_with_node(const lib::node *node)
 
 	smil2::params *params = smil2::params::for_node(node);
 	if (params) {
-		font_name = params->get_str("font-family");
+		lib::textptr fn = params->get_str("font-family");
+		if (fn != (lib::textptr::const_char_ptr) NULL) {
+			font_name = fn;
+		}
 		font_size = params->get_float("font-size", 14.0);
 		m_text_color = params->get_color("color", 0);
 		delete params;
