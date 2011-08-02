@@ -143,7 +143,7 @@ Section "Core Components" CoreSection
   File "..\..\Extras\Welcome\data\*.mp3"
 SectionEnd
 
-Section /o "VC90 Runtime" RuntimeSection
+Section /o "VC++ Runtime" RuntimeSection
 
 !ifdef DISTRIBUTE_VC7_RT
 ; *** The all critical MSVC7 Dependencies
@@ -368,7 +368,7 @@ SectionEnd
 ; page.
 
 LangString DESC_CoreSection ${LANG_ENGLISH} "The player, help files, readme and other required components."
-LangString DESC_RuntimeSection ${LANG_ENGLISH} "The Microsoft VC++ 9.0 Runtime support required by Ambulant."
+LangString DESC_RuntimeSection ${LANG_ENGLISH} "The Microsoft VC++ Runtime support required by Ambulant."
 LangString DESC_DemoSection ${LANG_ENGLISH} "A simple slideshow example document."
 !ifdef DISTRIBUTE_PYTHON_PLUGIN
 LangString DESC_PythonSection ${LANG_ENGLISH} "Enable Ambulant extensions in Python, SMIL Python scripting and embedding Ambulant in Python."
