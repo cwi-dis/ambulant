@@ -272,7 +272,13 @@ d2_smiltext_renderer::init_with_node(const lib::node *node)
 
 	smil2::params *params = smil2::params::for_node(node);
 	if (params) {
-		font_name = params->get_str("font-family");
+		lib::textptr fn = params->get_str("font-family");
+		if (fn != (lib::textptr::const_char_ptr) NULL) {
+			font_name = fn;
+		}
+		if (fn != (lib::textptr::const_char_ptr) NULL) {
+			font_name = fn;
+		}
 		font_size = params->get_float("font-size", 14.0);
 		m_text_color = params->get_color("color", 0);
 		delete params;
@@ -372,11 +378,11 @@ d2_smiltext_renderer::smiltext_changed()
 		_recreate_layout();
 	bool finished = m_engine.is_finished();
 	m_engine.unlock();
+	if (finished)
+		m_context->stopped(m_cookie);
 	m_lock.leave();
 
 	m_dest->need_redraw();
-	if (finished)
-		m_context->stopped(m_cookie);
 }
 
 bool

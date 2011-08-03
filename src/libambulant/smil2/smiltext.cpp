@@ -74,12 +74,14 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 
 smiltext_engine::~smiltext_engine()
 {
+	m_lock.enter();
 	if (m_update_event&&m_event_processor)
 		m_event_processor->cancel_event(m_update_event, lib::ep_med);
 //	delete m_update_event;
 	m_update_event = NULL;
 	m_client = NULL;
 	m_node = NULL;
+	m_lock.leave();
 }
 
 /// Start the engine.
@@ -369,6 +371,7 @@ smiltext_engine::_update() {
 	unlock();
 	if (m_client)
 		m_client->smiltext_changed();
+	lock();
 	if ((m_params.m_rate > 0 || m_auto_rate)
 		&& (m_params.m_mode == stm_crawl || m_params.m_mode == stm_scroll)) {
 		// We need to schedule another update event to keep the scroll/crawl going.
@@ -384,6 +387,7 @@ smiltext_engine::_update() {
 		m_update_event = new update_callback(this, &smiltext_engine::_update);
 		m_event_processor->add_event(m_update_event, next_update_needed, lib::ep_med);
 	}
+	unlock();
 }
 
 // Fill a run with the formatting parameters from a node.
