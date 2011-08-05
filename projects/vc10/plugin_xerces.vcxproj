@@ -26,10 +26,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -111,13 +113,13 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../bin/win32/libampluginD_xerces.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>NotSet</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)pluginD_xerces.lib</ImportLibrary>
+      <ImportLibrary>BUILD\$(ProjectName)-$(Configuration)\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -142,7 +144,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)plugin_xerces.lib</ImportLibrary>
+      <ImportLibrary>BUILD\$(ProjectName)-$(Configuration)\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -156,6 +158,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <UndefinePreprocessorDefinitions>WITH_GCD_EVENT_PROCESSOR</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -167,7 +170,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)plugin_xerces.lib</ImportLibrary>
+      <ImportLibrary>BUILD\$(ProjectName)-$(Configuration)\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -184,19 +187,20 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <UndefinePreprocessorDefinitions>WITH_GCD_EVENT_PROCESSOR</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\lib\win32\xerces-c_$(xerces_major)D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../bin/win32/libampluginD_xerces.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>NotSet</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)pluginD_xerces.lib</ImportLibrary>
+      <ImportLibrary>BUILD\$(ProjectName)-$(Configuration)\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

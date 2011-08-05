@@ -30,12 +30,14 @@
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>Static</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -254,6 +256,7 @@ echo regsvr32 exec. time &gt; "$(IntDir)regsvr32.trg"
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UndefinePreprocessorDefinitions>WITH_GCD_EVENT_PROCESSOR</UndefinePreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -314,6 +317,7 @@ echo regsvr32 exec. time &gt; "$(IntDir)regsvr32.trg"
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UndefinePreprocessorDefinitions>WITH_GCD_EVENT_PROCESSOR</UndefinePreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
