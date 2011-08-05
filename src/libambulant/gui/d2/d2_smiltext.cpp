@@ -380,9 +380,10 @@ d2_smiltext_renderer::smiltext_changed()
 	m_engine.unlock();
 	if (finished)
 		m_context->stopped(m_cookie);
+	if (m_dest != NULL) {
+		m_dest->need_redraw();
+	}
 	m_lock.leave();
-
-	m_dest->need_redraw();
 }
 
 bool
@@ -480,7 +481,7 @@ d2_smiltext_renderer::_recreate_layout()
 	FLOAT w = (float) destrect.width();
 	FLOAT h = (float) destrect.height();
 
-	// Set width (or height) to pretty much infinite forcrawl or scroll
+	// Set width (or height) to pretty much infinite for crawl or scroll
 	if (m_params.m_mode == smil2::stm_crawl) {
 		w = INFINITE_SIZE;
 	}
@@ -505,7 +506,7 @@ d2_smiltext_renderer::_recreate_layout()
 	if (m_engine.is_auto_rate()) {
 		DWRITE_TEXT_METRICS textMetrics;
 		m_text_layout->GetMetrics(&textMetrics);
-		unsigned int dur = 11; // XXXX
+		unsigned int dur = m_engine.get_dur();
 		smil2::smiltext_align align = m_cur_para_align;
 		lib::size full_size((int)textMetrics.width, (int)textMetrics.height);
 		unsigned int rate = _compute_rate(align, full_size, m_dest->get_rect(), dur);
@@ -550,8 +551,11 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Re
 	for (i=m_range_params.begin(); i != m_range_params.end(); i++) {
 		(*i)->apply_colors(m_text_layout, rt, logical_origin);
 	}
-	// Draw the whole thing
+	// Draw the whole thing, clipped w.r.t. the destination rectangle
+	D2D1_RECT_F cliprect =  D2D1::RectF((float) destrect.left(),(float) destrect.top(),(float)  destrect.right(),(float) destrect.bottom());
+	rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
 	rt->DrawTextLayout(logical_origin, m_text_layout, m_brush);
+	rt->PopAxisAlignedClip();
 
 	m_lock.leave();
 }
