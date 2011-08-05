@@ -401,9 +401,6 @@
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img.h">
       <Filter>Header Files\ambulant\gui\dx</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img_wic.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_playable.h">
       <Filter>Header Files\ambulant\gui\dx</Filter>
     </ClInclude>

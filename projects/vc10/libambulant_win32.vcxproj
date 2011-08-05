@@ -494,7 +494,6 @@
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_html_renderer.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_image_renderer.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img_wic.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_playable.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_player.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\dx_rgn.h" />
