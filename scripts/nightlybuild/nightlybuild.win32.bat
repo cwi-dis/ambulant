@@ -64,9 +64,11 @@ set DESTINATION="sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuild
 set DESTINATIONDESKTOP="%DESTINATION%/win32-intel-desktop/"
 set DESTINATIONNP="%DESTINATION%/win32-intel-firefoxplugin/"
 set DESTINATIONIE="%DESTINATION%/win32-intel-ieplugin/"
+set DESTINATIONIEURL="http://www.ambulantplayer.org/nightlybuilds/%BRANCH%/win32-intel-ieplugin"
 set DESTINATIONDESKTOPXP="%DESTINATION%/win32-intel-desktop-xp/"
 set DESTINATIONNPXP="%DESTINATION%/win32-intel-firefoxplugin-xp/"
 set DESTINATIONIEXP="%DESTINATION%/win32-intel-ieplugin-xp/"
+set DESTINATIONIEXPURL="http://www.ambulantplayer.org/nightlybuilds/%BRANCH%/win32-intel-ieplugin-xp"
 
 rem
 rem Setup variables
@@ -124,6 +126,9 @@ if %errorlevel% neq 0 pause
 if not exist ieambulant-%AMBULANTVERSION%-win32.cab goto skipieambulant
 rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
 %pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATIONIE%
+%python% ..\..\scripts\geniepluginwebpage.py ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32 %DESTINATIONIEURL%/ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab > ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html
+%pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html %DESTINATIONIE%
+
 if %errorlevel% neq 0 pause
 :skipieambulant
 
@@ -139,7 +144,7 @@ rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONS
 if %errorlevel% neq 0 pause
 
 rem
-rem Build XP desktop player
+rem Build XP desktop player, installer, upload
 rem
 cd ..\..\projects\%vcdir%
 devenv Ambulant-win32.sln /build ReleaseShlibDX
@@ -149,6 +154,25 @@ if %errorlevel% neq 0 pause
 rename  Ambulant-%AMBULANTVERSION%-win32xp.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe
 %pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe %DESTINATIONDESKTOPXP%
 if %errorlevel% neq 0 pause
+
+rem
+rem Upload IE, Netscape plugins for XP
+rem
+
+cd ..\..\bin\win32
+if not exist npambulantDX-%AMBULANTVERSION%-win32.xpi goto skipnpambulantxp
+rename npambulantDX-%AMBULANTVERSION%-win32.xpi npambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
+%pscp% -i %KEYFILE% npambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATIONNPXP%
+if %errorlevel% neq 0 pause
+:skipnpambulantxp
+if not exist ieambulantDX-%AMBULANTVERSION%-win32.cab goto skipieambulantxp
+rename ieambulantDX-%AMBULANTVERSION%-win32.cab ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
+%pscp% -i %KEYFILE% ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATIONIEXP%
+%python% ..\..\scripts\geniepluginwebpage.py ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32 %DESTINATIONIEXPURL%/ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab > ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html
+%pscp% -i %KEYFILE% ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html %DESTINATIONIEXP%
+if %errorlevel% neq 0 pause
+:skipieambulantxp
+
 
 
 rem 

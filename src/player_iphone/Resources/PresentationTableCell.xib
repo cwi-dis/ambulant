@@ -3,15 +3,16 @@
 	<data>
 		<int key="IBDocument.SystemTarget">768</int>
 		<string key="IBDocument.SystemVersion">10K540</string>
-		<string key="IBDocument.InterfaceBuilderVersion">823</string>
+		<string key="IBDocument.InterfaceBuilderVersion">851</string>
 		<string key="IBDocument.AppKitVersion">1038.36</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">132</string>
+			<string key="NS.object.0">141</string>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
+			<integer value="2"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -49,9 +50,8 @@
 							<object class="IBUIImageView" id="527232619">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">260</int>
-								<string key="NSFrameSize">{94, 94}</string>
+								<string key="NSFrame">{{2, 2}, {92, 92}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">4</int>
 								<int key="IBUITag">5</int>
@@ -70,7 +70,6 @@
 								<int key="NSvFlags">290</int>
 								<string key="NSFrame">{{102, 7}, {209, 54}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">9</int>
@@ -98,7 +97,6 @@
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{102, 62}, {42, 15}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">8</int>
@@ -122,10 +120,9 @@
 							</object>
 							<object class="IBUILabel" id="438148590">
 								<reference key="NSNextResponder" ref="1006509784"/>
-								<int key="NSvFlags">268</int>
+								<int key="NSvFlags">266</int>
 								<string key="NSFrame">{{180, 62}, {131, 15}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">8</int>
@@ -149,7 +146,6 @@
 								<int key="NSvFlags">266</int>
 								<string key="NSFrame">{{102, 82}, {209, 12}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">7</int>
@@ -168,7 +164,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{152, 59}, {20, 21}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<int key="IBUITag">6</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -200,7 +195,6 @@
 						</object>
 						<string key="NSFrameSize">{320, 96}</string>
 						<reference key="NSSuperview" ref="361040697"/>
-						<reference key="NSWindow"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MCAwAA</bytes>
@@ -214,7 +208,6 @@
 				</object>
 				<string key="NSFrameSize">{320, 96}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
 					<bytes key="NSRGB">MSAxIDEAA</bytes>
@@ -341,7 +334,7 @@
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABDNAAAwpYAAA</bytes>
 					</object>
-					<string>{{514, 802}, {320, 96}}</string>
+					<string>{{218, 527}, {320, 96}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
@@ -722,6 +715,6 @@
 				<string>{24, 24}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">132</string>
+		<string key="IBCocoaTouchPluginVersion">141</string>
 	</data>
 </archive>

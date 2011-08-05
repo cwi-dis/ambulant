@@ -44,11 +44,7 @@ class gtk_transition_debug { // TMP
 class gtk_transition_blitclass_fade : virtual public smil2::transition_blitclass_fade {
   public:
   protected:
-	gtk_transition_blitclass_fade();
-	~gtk_transition_blitclass_fade();
 	void update();
-  private:
-	GdkPixbuf* m_new_pixbuf;
 };
 
 class gtk_transition_blitclass_rect : virtual public smil2::transition_blitclass_rect {

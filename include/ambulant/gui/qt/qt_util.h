@@ -49,12 +49,16 @@ QColor color_t2QColor(lib::color_t c);
 // of animations, transitions and such.
 // Enable by adding -DWITH_DUMPIMAGES to CXXFLAGS on the ./configure line
 // #define	WITH_DUMPIMAGES
+
+// dump a QImage or Qpixbuf on a file named 'nnnnid' where nnnn is a
+// generated 4-digit number from 0000-9999 and id is parameter
+// return the 4-digit number for identfication purposes 
 #ifdef	WITH_DUMPIMAGES
 #define DUMPIMAGE(qimage, id)  qt_image_dump(qimage, id)
-void
+int
 qt_image_dump(QImage* qimage, std::string id);
 #define DUMPPIXMAP(qpixmap, id)  qt_pixmap_dump(qpixmap, id)
-void
+int
 qt_pixmap_dump(QPixmap* qpixmap, std::string id);
 #else
 #define DUMPIMAGE(qimage, id)

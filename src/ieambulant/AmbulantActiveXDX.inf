@@ -1,0 +1,86 @@
+; INF file for AmbulantACTIVEX.DLL
+; NOTE: the contents of this file are intimately tied to what is in
+; the makeCabinet.cmd file. You MUST update both files if you change
+; libraries, etc.
+;
+[version] 
+; version signature (same for both NT and Win95) do not remove
+signature="$CHICAGO$"
+AdvancedINF=2.0  
+
+[Add.Code]
+AmbulantActiveXDX.dll=AmbulantActiveXDX.dll
+libambulantDX_shwin32.dll=libambulantDX_shwin32.dll
+libamplugin_ffmpegDX.dll=libamplugin_ffmpegDX.dll
+libamplugin_state_xpathDX.dll=libamplugin_state_xpathDX.dll
+avcodec-52.dll=avcodec-52.dll
+avformat-52.dll=avformat-52.dll
+avutil-50.dll=avutil-50.dll
+avcore-0.dll=avcore-0.dll
+swscale-0.dll=swscale-0.dll
+SDL.dll=SDL.dll
+xerces-c_3_1.dll=xerces-c_3_1.dll
+vcredist_x86.exe=vcredist_86.exe
+AmbulantActiveXDX.inf=AmbulantActiveXDX.inf
+
+[vcredist_x86.exe]
+hook=hook.vcredist_x86
+
+[hook.vcredist_x86]
+run=%EXTRACT_DIR%\vcredist_x86.exe
+
+[AmbulantActiveXDX.dll]
+file-win32-x86=thiscab
+clsid={014B38CC-E346-4813-AB87-026677D4C75D} 
+FileVersion=1,0,0,1 
+RegisterServer=yes
+
+; ambulant libarary
+[libambulantDX_shwin32.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[libamplugin_ffmpegDX.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[libamplugin_state_xpathDX.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+; third-party-packages
+; ffmpeg audio, video
+[avcodec-52.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[avformat-52.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[avcore-0.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[swscale-0.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[avutil-50.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+; sound
+[SDL.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+; xerces validating XML parser
+[xerces-c_3_1.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[AmbulantActiveXDX.inf]
+file=thiscab
+; end of INF file
+

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -80,19 +80,6 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 	}
 }
 
-
-gtk_transition_blitclass_fade::gtk_transition_blitclass_fade()
-:	smil2::transition_blitclass_fade(),
-	m_new_pixbuf(NULL)
-{
-}
-
-gtk_transition_blitclass_fade::~gtk_transition_blitclass_fade()
-{
-	if (m_new_pixbuf != NULL)
-		g_object_unref (G_OBJECT (m_new_pixbuf));
-}
-
 void
 gtk_transition_blitclass_fade::update()
 {
@@ -106,14 +93,14 @@ gtk_transition_blitclass_fade::update()
 	setup_transition(m_outtrans, agw, &opm, &npm);
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f) agw=0x%x, opm=0x%x,npm0x%x", m_progress, agw, opm, npm);
 	GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
-	if (m_new_pixbuf == NULL)
-		m_new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
+	GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
 	int alpha = static_cast<int>(round(255*m_progress));
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
-	gdk_pixbuf_composite(m_new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
+	gdk_pixbuf_composite(new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
 	g_object_unref (G_OBJECT (gc));
+	g_object_unref (G_OBJECT (new_pixbuf));
 	g_object_unref (G_OBJECT (old_pixbuf));
 	finalize_transition(m_outtrans, agw, m_dst);
 }

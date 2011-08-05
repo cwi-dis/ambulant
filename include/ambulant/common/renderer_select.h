@@ -68,7 +68,18 @@ class AMBULANTAPI renderer_select {
 	bool m_url_valid;
 	net::url m_url;
 	bool m_mimetype_valid;
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	std::string m_mimetype;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 	bool m_renderer_uri_valid;
 	const char *m_renderer_uri;
 	playable_factory *m_pf;

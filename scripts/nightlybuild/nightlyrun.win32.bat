@@ -6,7 +6,7 @@ set python="c:\python26\python.exe"
 
 cd \users\jack\documents
 set
-%python% -c "import urllib; urllib.urlretrieve('http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant/raw-file/default/scripts/nightlybuild.win32.bat', 'nightlybuild.win32.bat')"
+%python% -c "import urllib; urllib.urlretrieve('http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant/raw-file/default/scripts/nightlybuild/nightlybuild.win32.bat', 'nightlybuild.win32.bat')"
 
 echo hello world
 

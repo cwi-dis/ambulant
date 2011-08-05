@@ -87,42 +87,31 @@ zip $(TargetPath) $(IntDir)$(TargetName)
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">del /s /q $(IntDir)$(TargetName)
-del /q $(TargetPath)
-mkdir $(IntDir)$(TargetName)
-mkdir $(IntDir)$(TargetName)\Plugins
-copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
-copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
-cd $(IntDir)$(TargetName)
-"$(zip_executable)" "$(TargetPath)" *.* Plugins\*.* Plugins\plugins\*.*
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">@echo on
+set TargetName=npambulant-2.3-win32
+set TargetPath=..\..\bin\win32\%TargetName%.xpi
+set intdir="BUILD\npambulant-installer-Release\"
+if exist %intdir%%TargetName% del /s /q %intdir%%TargetName%
+if exist %TargetPath% del /q %TargetPath%
+mkdir %intdir%%TargetName%
+mkdir %intdir%%TargetName%\Plugins
+copy ..\..\src\npambulant\install-win32.rdf %intdir%%TargetName%\install.rdf
+copy "$(firefox_plugin_dir)npambulant.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)libambulant_shwin32.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)libamplugin_ffmpeg.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)libamplugin_state_xpath.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avcodec-52.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avformat-52.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avutil-50.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avcore-0.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)swscale-0.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)SDL.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)xerces-c_$(xerces_major)_$(xerces_minor).dll" %intdir%%TargetName%\Plugins
+cd %intdir%%TargetName%
+"$(zip_executable)" a "..\..\..\%TargetPath%" *.* Plugins\*.* 
 </NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">del /s /q $(IntDir)$(TargetName)
-del /q $(TargetPath)
-mkdir $(IntDir)$(TargetName)
-mkdir $(IntDir)$(TargetName)\Plugins
-copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
-copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
-cd $(IntDir)$(TargetName)
-"$(zip_executable)" $(TargetPath) *.* Plugins\*.* Plugins\plugins\*.*
-</NMakeReBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">del /s /q $(IntDir)$(TargetName)
 del /q $(TargetPath)
 </NMakeCleanCommandLine>
@@ -134,42 +123,31 @@ del /q $(TargetPath)
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">..\..\bin\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">del /s /q $(IntDir)$(TargetName)
-del /q $(TargetPath)
-mkdir $(IntDir)$(TargetName)
-mkdir $(IntDir)$(TargetName)\Plugins
-copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
-copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
-cd $(IntDir)$(TargetName)
-"$(zip_executable)" "$(TargetPath)" *.* Plugins\*.* Plugins\plugins\*.*
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">@echo on
+set TargetName=npambulantDX-2.3-win32
+set TargetPath=..\..\bin\win32\%TargetName%.xpi
+set intdir="BUILD\npambulant-installer-ReleaseShlibDX\"
+if exist %intdir%%TargetName% del /s /q %intdir%%TargetName%
+if exist %TargetPath% del /q %TargetPath%
+mkdir %intdir%npambulantDX-2.3-win32
+mkdir %intdir%npambulantDX-2.3-win32\Plugins
+copy ..\..\src\npambulant\install-win32.rdf %intdir%%TargetName%\install.rdf
+copy "$(firefox_plugin_dir)npambulantDX.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)libambulantDX_shwin32.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)libamplugin_ffmpegDX.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)libamplugin_state_xpathDX.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avcodec-52.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avformat-52.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avutil-50.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avcore-0.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)swscale-0.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)SDL.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)xerces-c_$(xerces_major)_$(xerces_minor).dll" %intdir%%TargetName%\Plugins
+cd %intdir%%TargetName%
+"$(zip_executable)" a "..\..\..\%TargetPath%" *.* Plugins\*.* 
 </NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">del /s /q $(IntDir)$(TargetName)
-del /q $(TargetPath)
-mkdir $(IntDir)$(TargetName)
-mkdir $(IntDir)$(TargetName)\Plugins
-copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
-copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
-copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
-cd $(IntDir)$(TargetName)
-"$(zip_executable)" $(TargetPath) *.* Plugins\*.* Plugins\plugins\*.*
-</NMakeReBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">
+    </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">del /s /q $(IntDir)$(TargetName)
 del /q $(TargetPath)
 </NMakeCleanCommandLine>

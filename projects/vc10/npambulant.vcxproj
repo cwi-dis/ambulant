@@ -27,11 +27,13 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -111,7 +113,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(projectdir);$(xulrunner_dir);$(xulrunner_dir)\include;$(xulrunner_dir)\sdk\include;$(xulrunner_dir)\include\plugin;$(xulrunner_dir)\include\nspr;$(xulrunner_dir)\include\java;$(xulrunner_dir)\include\js;$(xulrunner_dir)\include\xpcom;..\..\include;..\..\src\npambulant;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WITH_D2D;WIN32;_DEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -184,7 +186,7 @@ copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\plugi
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>$(projectdir);$(xulrunner_dir);$(xulrunner_dir)\include;$(xulrunner_dir)\sdk\include;$(xulrunner_dir)\include\plugin;$(xulrunner_dir)\include\nspr;$(xulrunner_dir)\include\java;$(xulrunner_dir)\include\js;$(xulrunner_dir)\include\xpcom;..\..\include;..\..\src\npambulant;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WITH_D2D;WIN32;NDEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -223,7 +225,6 @@ copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\plugi
 copy /y ..\..\bin\win32\libambulant_shwin32.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\libamplugin_xerces.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avcodec-52.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avformat-52.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avutil-50.dll "$(firefox_plugin_dir)\"
@@ -262,6 +263,7 @@ del /s /q "$(firefox_plugin_dir)\plugins"
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UndefinePreprocessorDefinitions>WITH_GCD_EVENT_PROCESSOR</UndefinePreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -283,14 +285,14 @@ del /s /q "$(firefox_plugin_dir)\plugins"
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y ..\..\bin\win32\npambulant.dll "$(firefox_plugin_dir)"
-copy /y ..\..\bin\win32\libambulant_shwin32.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\libamplugin_xerces.dll "$(firefox_plugin_dir)\"
+      <Command>copy /y ..\..\bin\win32\npambulantDX.dll "$(firefox_plugin_dir)"
+copy /y ..\..\bin\win32\libambulantDX_shwin32.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\libamplugin_state_xpathDX.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\libamplugin_ffmpegDX.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avcodec-52.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avformat-52.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avutil-50.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avcore-0.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\swscale-0.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\SDL.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\xerces-c_$(xerces_major)_$(xerces_minor).dll "$(firefox_plugin_dir)\"
@@ -331,6 +333,7 @@ del /s /q "$(firefox_plugin_dir)\plugins"
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>CompileAsCpp</CompileAs>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UndefinePreprocessorDefinitions>WITH_GCD_EVENT_PROCESSOR</UndefinePreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

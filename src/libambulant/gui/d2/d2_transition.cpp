@@ -153,7 +153,7 @@ path_from_polygon_list(
 	ID2D1PathGeometry* path = NULL;
 	ID2D1GeometrySink* sink = NULL;
 	D2D1_POINT_2F new_d2_point_2f = D2D1::Point2F();
-	lib:point old_point = lib::point();
+	lib::point old_point = lib::point();
 	std::vector<lib::point>::iterator newpoint_p;
 
 	HRESULT hr = factory->CreatePathGeometry(&path);
@@ -274,7 +274,7 @@ d2_transition_blitclass_fade::update()
 	if (m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
 		OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  rt->CreateLayer");
-		layer_params.opacity = m_outtrans ? (1.0 - m_progress) : m_progress;
+		layer_params.opacity = (FLOAT)(m_outtrans ? (1.0 - m_progress) : m_progress);
 		rt->PushLayer(layer_params, layer);
 	}
 	rt->DrawBitmap(bitmap);

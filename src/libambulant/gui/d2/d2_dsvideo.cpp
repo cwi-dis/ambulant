@@ -42,7 +42,7 @@ namespace gui {
 namespace d2 {
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((FLOAT)r.left(), (FLOAT)r.top(), (FLOAT)r.right(), (FLOAT)r.bottom());
 }
 
 d2_dsvideo_renderer::d2_dsvideo_renderer(
@@ -128,7 +128,7 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Ren
 	rt->DrawBitmap(
 		m_d2bitmap,
 		d2_rectf(img_reg_rc),
-		alpha_media,
+		(FLOAT)alpha_media,
 		D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
 		d2_rectf(img_rect));
 

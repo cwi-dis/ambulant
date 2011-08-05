@@ -93,13 +93,14 @@ class AMBULANTAPI nscontext {
 
 	std::map<xml_string, xml_string> m_pre2uri;
 	std::map<xml_string, xml_string> m_uri2pre;
+	static xml_string s_empty;
+	static std::set<xml_string> *s_supported_namespaces;
 
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
-	static xml_string s_empty;
-	static std::set<xml_string> *s_supported_namespaces;
+
 };
 
 

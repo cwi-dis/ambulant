@@ -121,22 +121,32 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 
 }
 
-void
+#ifdef	WITH_DUMPIMAGES
+int
 gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
-	if ( ! gpm) return;
+	if ( ! gpm) return -1;
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, gpm, 0, 0, 0, 0, 0, -1, -1);
+	int i = gdk_pixbuf_dump(pixbuf, filename);
+	g_object_unref(G_OBJECT(pixbuf));
+	return i;
+}
 
-	if (pixbuf) {
+int
+gdk_pixbuf_dump(GdkPixbuf* gpb, std::string filename) {
+	if (gpb) {
 		char buf[5];
 		static int i;
 		sprintf(buf,"%04d",i++);
+		if (i == 10000) i = 0;
 		std::string newfile = buf + std::string(filename) +".png";
 		GError* error = NULL;
-		gdk_pixbuf_save(pixbuf, newfile.c_str(), "png", &error, NULL);
-		g_object_unref(G_OBJECT(pixbuf));
+		gdk_pixbuf_save(gpb, newfile.c_str(), "png", &error, NULL);
 		AM_DBG lib::logger::get_logger()->debug("gdk_pixmap_dump(%s)", newfile.c_str());
+		return i == 0 ? 9999 : i-1;
 	}
+	return -1;
 }
+#endif//WITH_DUMPIMAGES
 
 } // namespace gtk
 
