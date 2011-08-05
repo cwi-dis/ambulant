@@ -220,7 +220,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		delete myMainloop;
         
 	}
-    if (!currentURL) return;
+    if (!currentURL) {
+		return;
+	}
     if (!playerView) {
         [self view]; // This loads the view
     }
@@ -248,6 +250,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         } else {
             // play will be called in viewDidAppear
         }
+	} else {
+		return;
 	}
 }
 
