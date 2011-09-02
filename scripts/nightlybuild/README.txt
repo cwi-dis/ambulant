@@ -15,6 +15,12 @@ iphone:
 linux:
 	desktop.cwi.nl and Ubuntu-1104 VM. The first machine builds the 64bit Firefox plugin,
 	the latter the 32bit plugin. Should run on any linux machine.
+	Here are the packages I know you need to install:
+		curl
+		devscripts
+		pgpgpg
+		gpgkeys
+		chrpath
 mac:
 	Jack's workstation. Should run on any Mac.
 win32:
