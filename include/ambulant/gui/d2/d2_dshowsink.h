@@ -23,7 +23,7 @@
 #define AMBULANT_GUI_D2_DSHOWSINK_H
 
 #include "ambulant/config/config.h"
-
+#include "ambulant/lib/mtsync.h"
 #include <windows.h>
 #include <dshow.h>
 // NOTE: The next include file comes from sdkdir\Samples\multimedia\directshow\baseclasses.
@@ -87,6 +87,7 @@ private:
 	ID2D1RenderTarget *m_rt;
 #ifdef WITH_SCREENSHOT
 	BYTE *m_sample_data;
+	int m_sample_data_size;
 #endif
 	ID2D1Bitmap *m_d2bitmap;
 	IVideoD2DBitmapRendererCallback *m_callback;
@@ -95,6 +96,7 @@ private:
 	int m_pitch;   // Video Pitch
 	bool m_has_alpha;
 	bool m_ignore_timestamps;
+	ambulant::lib::critical_section m_d2bitmap_lock;
 
 };
 

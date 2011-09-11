@@ -20,6 +20,7 @@ CVideoD2DBitmapRenderer::CVideoD2DBitmapRenderer(LPUNKNOWN pUnk, HRESULT *phr)
 	m_rt(NULL),
 #ifdef WITH_SCREENSHOT
 	m_sample_data(NULL),
+	m_sample_data_size(0),
 #endif
 	m_d2bitmap(NULL),
 	m_callback(NULL),
@@ -38,10 +39,12 @@ CVideoD2DBitmapRenderer::CVideoD2DBitmapRenderer(LPUNKNOWN pUnk, HRESULT *phr)
 //-----------------------------------------------------------------------------
 CVideoD2DBitmapRenderer::~CVideoD2DBitmapRenderer()
 {
+	m_d2bitmap_lock.enter();
 	if (m_d2bitmap) {
 		m_d2bitmap->Release();
 		m_d2bitmap = NULL;
 	}
+	m_d2bitmap_lock.leave();
 	m_rt = NULL;
 }
 
@@ -49,6 +52,7 @@ void
 CVideoD2DBitmapRenderer::SetRenderTarget(ID2D1RenderTarget *rt)
 {
 	if (rt == m_rt) return;
+	m_d2bitmap_lock.enter();
 	if (rt) rt->AddRef();
 	ID2D1Bitmap *old_bitmap = m_d2bitmap;
 	ID2D1RenderTarget *old_rt = m_rt;
@@ -56,6 +60,7 @@ CVideoD2DBitmapRenderer::SetRenderTarget(ID2D1RenderTarget *rt)
 	m_rt = rt;
 	if (old_rt) old_rt->Release();
 	if (old_bitmap) old_bitmap->Release();
+	m_d2bitmap_lock.leave();
 }
 
 void
@@ -68,6 +73,7 @@ ID2D1Bitmap *
 CVideoD2DBitmapRenderer::LockBitmap()
 {
 	// XXX Lock it.
+	m_d2bitmap_lock.enter();
 #ifdef WITH_SCREENSHOT
 	if (m_d2bitmap == NULL && m_sample_data != NULL) {
 		// Someone changed our RenderTarget, probably due to a screenshot
@@ -76,7 +82,9 @@ CVideoD2DBitmapRenderer::LockBitmap()
 	}
 #endif
 	if (m_d2bitmap) m_d2bitmap->AddRef();
-	return m_d2bitmap;
+	ID2D1Bitmap *rv = m_d2bitmap;
+	m_d2bitmap_lock.leave();
+	return rv;
 }
 
 void
@@ -89,8 +97,10 @@ CVideoD2DBitmapRenderer::UnlockBitmap(ID2D1Bitmap *bitmap)
 void
 CVideoD2DBitmapRenderer::DestroyBitmap()
 {
+	m_d2bitmap_lock.enter();
 	if (m_d2bitmap) m_d2bitmap->Release();
 	m_d2bitmap = NULL;
+	m_d2bitmap_lock.leave();
 }
 
 //-----------------------------------------------------------------------------
@@ -174,13 +184,14 @@ HRESULT CVideoD2DBitmapRenderer::DoRenderSample( IMediaSample * pSample )
 #ifdef WITH_SCREENSHOT
 	// Release the old sample data
 	if (m_sample_data) free(m_sample_data);
-
+	m_sample_data = NULL;
+	m_sample_data_size = 0;
 	// Get the video bitmap buffer data
-	long size = pSample->GetActualDataLength();
-	m_sample_data = (BYTE *)malloc(size);
+	m_sample_data_size = pSample->GetActualDataLength();
+	m_sample_data = (BYTE *)malloc(m_sample_data_size);
 	if (m_sample_data == NULL||pBmpBuffer == NULL)
 		return E_OUTOFMEMORY;
-	memcpy((void*)m_sample_data, pBmpBuffer, size);
+	memcpy((void*)m_sample_data, pBmpBuffer, m_sample_data_size);
 	HRESULT hr = _SampleToBitmap(m_sample_data);
 
 #else
@@ -199,7 +210,17 @@ HRESULT CVideoD2DBitmapRenderer::_SampleToBitmap(BYTE *pBMPBytes)
 
 	if (m_rt == NULL) 
 		return S_OK;
-
+	assert(pBMPBytes);
+#ifdef WITH_SCREENSHOT
+	if (m_width*m_height*4 != m_sample_data_size) {
+		ambulant::lib::logger::get_logger()->trace("CVideoD2DBitmapRenderer::DoRenderSample: incorrect sized data: %d", m_sample_data_size);
+		m_d2bitmap_lock.enter();
+		if (m_d2bitmap) m_d2bitmap->Release();
+		m_d2bitmap = NULL;
+		m_d2bitmap_lock.leave();
+		return E_FAIL;
+	}
+#endif
 	ID2D1Bitmap *bitmap = NULL;
 	D2D1_SIZE_U size = D2D1::SizeU(m_width, m_height);
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
@@ -212,11 +233,13 @@ HRESULT CVideoD2DBitmapRenderer::_SampleToBitmap(BYTE *pBMPBytes)
 	}
 	// XXX Lock
 	AM_DBG ambulant::lib::logger::get_logger()->debug("CVideoD2DBitmapRenderer::DoRenderSample: new bitmap is 0x%x", bitmap);
+	m_d2bitmap_lock.enter();
 	ID2D1Bitmap *old_bitmap = m_d2bitmap;
 	m_d2bitmap = bitmap;
 	// XXX Unlock
 	if (old_bitmap) 
 		old_bitmap->Release();
+	m_d2bitmap_lock.leave();
 	return hr;
 }
 
