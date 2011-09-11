@@ -416,11 +416,13 @@ d2_transition_blitclass_r1r2r3r4::update()
 		old_rt->PopAxisAlignedClip();
 	}
 	hr = bitmap_old->CopyFromRenderTarget(NULL, old_rt, &d2_rectu(oldsrcrect));
+//AM_DMP	d2_player->dump(dst_rt, "scrn"); // Cannot be called when a Layer or cliprect is used
 	if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F && cliprect.right == 0.0F && cliprect.left ==0.0F)) {
 		old_rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
 	}
 	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_old->CopyFromRenderTarget");
 	dst_rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
+//AM_DMP	d2_player->dump_bitmap(bitmap_old, old_rt, "bold");
 	// likewise create a compatible bitmap for the new stuff
 	props.pixelFormat = new_rt->GetPixelFormat();
 	new_rt->GetDpi(&props.dpiX, &props.dpiY);
@@ -429,6 +431,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	// copy the bits of the new stuff (from 'new_rt') to the right spot on screen;
 	hr = bitmap_new->CopyFromRenderTarget(NULL, new_rt, &d2_rectu(newsrcrect));
 	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_new->CopyFromRenderTarget");
+//AM_DMP	d2_player->dump_bitmap(bitmap_new, new_rt, "bnew");
 	dst_rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
 	hr = dst_rt->Flush();
 	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 dst_rt->Flush");

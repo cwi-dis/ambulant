@@ -1601,7 +1601,7 @@ gui::d2::d2_player::dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::st
 	hr = bmrt->EndDraw();
 	OnErrorGoto_cleanup(hr, "dump_bitmap() DrawBitmap");
 
-	rv = this->dump(rt, id);
+	rv = this->dump(bmrt, id);
 
 cleanup:
 	SafeRelease(&bmrt);
