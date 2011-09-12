@@ -782,7 +782,7 @@ third_party_packages={
             ),
 
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url="http://non.existent/non.existent", # TMP, because of SDL error. WAS: url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
             url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
