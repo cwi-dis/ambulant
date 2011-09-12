@@ -183,5 +183,5 @@ rem  XXX TODO
 rem
 rem attempt to shutdown the computer
 rem
-rem shutdown /s
+shutdown /s
 
