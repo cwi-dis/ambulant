@@ -334,8 +334,9 @@ class AMBULANTAPI d2_player :
 	// The logger
 	lib::logger *m_logger;
 
-//#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
-
+// This code can be useful for debugging transitions etc. to dump snapshots as images on files.
+// Not for Release builds.
+//#define	AM_DMP
 #ifdef	AM_DMP
   public:
 // write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is
@@ -346,6 +347,7 @@ class AMBULANTAPI d2_player :
 // write the contents of the (ID2D1Bitmap* <bmp> associated with ID2D1RenderTarget* <rt> to the file:
 // ".\<number>.<id>.png" where number is a generated numeric string circular variying between
 //	"0000" and "9999", which is returned as an int.
+// Example:  d2_player->dump_bitmap(bitmap_old, old_rt, "bold"); // got 'bitmap_old' from 'old_rt'
 // Cannot be called when a Layer or cliprect is pushed on 'rt'
 	int dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id);
 #endif//AM_DMP

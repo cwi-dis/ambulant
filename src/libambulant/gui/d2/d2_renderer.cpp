@@ -99,6 +99,10 @@ d2_transition_renderer::get_transition_rendertarget ()
 			if (FAILED(hr)) {
 				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
 			} else {
+				// Apply the same transformation as the original RenderTarget momentarily has due to scaling
+				D2D1_MATRIX_3X2_F transform;
+				rt->GetTransform(&transform);
+				m_transition_rendertarget->SetTransform(transform);
 				m_transition_rendertarget->BeginDraw();
 			}
 			rt->Release();

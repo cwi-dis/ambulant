@@ -489,7 +489,7 @@ void gui::d2::d2_player::on_click(int x, int y, HWND hwnd) {
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return;
 	wininfo *wi = _get_wininfo(hwnd);
-	D2D1_POINT_2F oldpt = {x, y};
+	D2D1_POINT_2F oldpt = {float(x), float(y)};
 	D2D1_POINT_2F newpt = wi->m_mouse_matrix.TransformPoint(oldpt);
 	lib::point pt((int)newpt.x, (int)newpt.y);
 	common::gui_events *r = d2win->get_gui_events();
@@ -504,7 +504,7 @@ void gui::d2::d2_player::on_zoom(double factor, HWND hwnd)
 	if (wi == NULL) return;
 	if (wi->m_window == NULL) return;
 	lib::rect r = wi->m_window->get_rect();
-	lib::size bounds(r.w*factor, r.h*factor);
+	lib::size bounds(unsigned int(r.w*factor), unsigned int(r.h*factor));
 	// For the time being, we only implement this for non-fulllscreen windows.
 	HWND parent_hwnd = GetParent(wi->m_hwnd);
 	if (parent_hwnd) {
@@ -520,7 +520,7 @@ int gui::d2::d2_player::get_cursor(int x, int y, HWND hwnd) {
 	wininfo *wi = _get_wininfo(hwnd);
 	d2_window *d2win = (d2_window *) _get_window(hwnd);
 	if(!d2win) return 0;
-	D2D1_POINT_2F oldpt = {x, y};
+	D2D1_POINT_2F oldpt = {float(x), float(y)};
 	D2D1_POINT_2F newpt = wi->m_mouse_matrix.TransformPoint(oldpt);
 	lib::point pt((int)newpt.x, (int)newpt.y);
 	common::gui_events *r = d2win->get_gui_events();
@@ -662,7 +662,9 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 		rv = true;
 
 cleanup:
-
+		if ( ! rv) {
+			lib::logger::get_logger()->trace("d2_window::get_screenshot failed, error code was: 0x%x", hr);
+		}
 		// Rest
 		SafeRelease(&wicStream);
 		SafeRelease(&wicBitmapEncoder);
@@ -739,10 +741,10 @@ RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
 		// Note: this code knows the matrix is scale/translate only.
 		D2D1_MATRIX_3X2_F transform;
 		rt->GetTransform(&transform);
-		rv.left = rv.left*transform._11 + transform._31;
-		rv.right = rv.right*transform._11 + transform._31 + 0.99;
-		rv.top = rv.top*transform._22 + transform._32;
-		rv.bottom = rv.bottom*transform._22 + transform._32 + 0.99;
+		rv.left = long(rv.left*transform._11 + transform._31);
+		rv.right = long(rv.right*transform._11 + transform._31 + 0.99);
+		rv.top = long(rv.top*transform._22 + transform._32);
+		rv.bottom = long(rv.bottom*transform._22 + transform._32 + 0.99);
 	}
 	AM_DBG lib::logger::get_logger()->debug("screen_rect(%d, %d, %d, %d) -> (%d, %d, %d, %d)",
 		r.left(), r.top(), r.right(), r.bottom(),
@@ -807,10 +809,10 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		}
 		if (dirty) {
 			dirtyMod = *dirty;
-			dirtyMod.left -= xoff;
-			dirtyMod.right -= xoff;
-			dirtyMod.top -= yoff;
-			dirtyMod.bottom -= yoff;
+			dirtyMod.left -= long(xoff);
+			dirtyMod.right -= long(xoff);
+			dirtyMod.top -= long(yoff);
+			dirtyMod.bottom -= long(yoff);
 			dirtyMod.left /= factor;
 			dirtyMod.right /= factor;
 			dirtyMod.top /= factor;
