@@ -346,29 +346,76 @@ d2_transition_blitclass_rect::update()
 	}
 }
 
-lib::point
-transform(lib::point p, D2D1_MATRIX_3X2_F m)
+D2D1_POINT_2U
+transform(D2D1_POINT_2U p, D2D1_MATRIX_3X2_F m)
 {
-	return lib::point(int(p.x*m._11+p.y*m._21+m._31),
-					  int(p.x*m._12+p.y*m._22+m._32));
+	return D2D1::Point2U(UINT32(p.x*m._11+p.y*m._21+m._31),
+					  UINT32(p.x*m._12+p.y*m._22+m._32));
 }
 
-lib::rect
-transform (lib::rect r, D2D1_MATRIX_3X2_F m)
+
+D2D1_RECT_U
+transform (D2D1_RECT_U r, D2D1_MATRIX_3X2_F m)
 {
-	lib::point lt = transform(r.left_top(), m);
-	lib::point rb = transform(r.right_bottom(), m);
-	return lib::rect(lt, lib::size(rb.x-lt.x, rb.y-lt.y));
+	D2D1_POINT_2U lt = transform(D2D1::Point2U(r.left, r.top), m);
+	D2D1_POINT_2U rb = transform(D2D1::Point2U(r.right, r.bottom), m);
+	return D2D1::RectU(lt.x, lt.y, rb.x, rb.y);
 }
 
 void
-draw_rect(lib::rect r, ID2D1RenderTarget* rt)
+draw_rect(lib::rect r, ID2D1RenderTarget* rt, D2D1::ColorF colorspec = D2D1::ColorF::Red, bool needBeginEnd = false)
 {
 	ID2D1SolidColorBrush* color;
 	HRESULT hr = rt->CreateSolidColorBrush(
-                D2D1::ColorF(D2D1::ColorF::OrangeRed),//CornflowerBlue),
+                D2D1::ColorF(colorspec),
                 &color);
+	if (needBeginEnd) {
+		rt->BeginDraw();
+	}
 	rt->DrawRectangle(d2_rectf(r), color, 5.0);
+	if (needBeginEnd) {
+		rt->EndDraw();
+	}
+}
+
+// compute the complement of 2 rectangles for those boundary cases where the
+// result is also a single rectangle. Return an empty rectangle in all other cases.
+lib::rect comp_rect(lib::rect A, lib::rect B)
+{
+	lib::rect rv = lib::rect();
+	if (A != B) {
+		if ((A.size().w < B.size().w) ^ /*XOR*/ (A.size().h < B.size().h)) {
+			lib::rect tmp = A;
+			A = B;
+			B = tmp;
+		}
+		if (A.top() == B.top() && A.height() == B.height()) {
+			if (A.left_top() == B.left_top() && A.right_bottom() != B.right_bottom()) {
+				rv.x = A.x + B.w;
+				rv.y = A.y;
+				rv.w = A.w - B.w;
+				rv.h = A.h;
+			} else if (A.left_top() != B.left_top() && A.right_bottom() == B.right_bottom()) {
+				rv.x = A.x;
+				rv.y = A.y;
+				rv.w = A.w - B.w;
+				rv.h = A.h;
+			}
+		} else if (A.left() == B.left() && A.width() == B.width()) {
+			if (A.left_top() == B.left_top() && A.right_bottom() != B.right_bottom()) {
+				rv.x = A.x;
+				rv.y = A.y + B.h;
+				rv.w = A.w;
+				rv.h = A.h - B.h;
+			} else if (A.left_top() != B.left_top() && A.right_bottom() == B.right_bottom()) {
+				rv.x = A.x;
+				rv.y = A.y;
+				rv.w = A.w;
+				rv.h = A.h - B.h;
+			}
+		}
+	}
+	return rv;
 }
 
 void
@@ -416,6 +463,14 @@ d2_transition_blitclass_r1r2r3r4::update()
 	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
 	if (m_outtrans) {
 		// exchange "old" and "new" rects, but not the render targets
+		if (m_info->m_type == transition_type::slideWipe) {
+			lib::rect dst_rect = m_dst->get_rect();
+			dst_rect.translate(m_dst->get_global_topleft());
+			oldsrcrect = comp_rect(dst_rect, oldsrcrect);
+			olddstrect = comp_rect(dst_rect, olddstrect);
+			newsrcrect = comp_rect(dst_rect, newsrcrect);
+			newdstrect = comp_rect(dst_rect, newdstrect);
+		} else { // pushWipe
 		lib::rect tmp_rect;
 		tmp_rect = oldsrcrect;
 		oldsrcrect = newsrcrect;
@@ -423,9 +478,10 @@ d2_transition_blitclass_r1r2r3r4::update()
 		tmp_rect = olddstrect;
 		olddstrect = newdstrect;
 		newdstrect = tmp_rect;
+		}
 	}
-	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)
-	// oldsrcrect = transform(oldsrcrect, d2_rt_transform);
+//	draw_rect(oldsrcrect, old_rt);
+//	draw_rect(newsrcrect, new_rt, D2D1::ColorF::Blue, true);
 
 	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
 	// where we put the data into ('bitmap_old') with equal properties as its data source ('old_rt')
@@ -433,7 +489,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	props.pixelFormat = old_rt->GetPixelFormat();
 	D2D1::Matrix3x2F old_matrix;
 	old_rt->GetTransform(&old_matrix);
-	D2D1_RECT_U oldsrc_rectu = d2_rectu(transform(oldsrcrect, old_matrix));
+	D2D1_RECT_U oldsrc_rectu = transform(d2_rectu(oldsrcrect), old_matrix);
 	D2D1_SIZE_U oldsrc_sizeu = D2D1::SizeU(oldsrc_rectu.right - oldsrc_rectu.left,
 										   oldsrc_rectu.bottom - oldsrc_rectu.top);
 	hr = old_rt->CreateBitmap(oldsrc_sizeu, props, &bitmap_old);
@@ -459,7 +515,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	//XXXX code copy, to be factored out ?
 	D2D1::Matrix3x2F new_matrix;
 	new_rt->GetTransform(&new_matrix);
-	D2D1_RECT_U newsrc_rectu = d2_rectu(transform(newsrcrect, new_matrix));
+	D2D1_RECT_U newsrc_rectu = transform(d2_rectu(newsrcrect), new_matrix);
 	D2D1_SIZE_U newsrc_sizeu = D2D1::SizeU(newsrc_rectu.right - newsrc_rectu.left,
 										   newsrc_rectu.bottom - newsrc_rectu.top);
 	props.pixelFormat = new_rt->GetPixelFormat();
