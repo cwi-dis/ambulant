@@ -336,7 +336,7 @@ class AMBULANTAPI d2_player :
 
 // This code is useful for debugging transitions etc. to dump series of snapshots as imagefiles.
 // Not for Release builds.
-// #define	AM_DMP
+//#define	AM_DMP
 #ifdef	AM_DMP
   public:
 // write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is
