@@ -77,6 +77,18 @@ d2_sizeu(lib::rect r)
 	return D2D1::SizeU((UINT32) r.width(), (UINT32) r.height());
 }
 
+// Helper function: translate a rectangle pointed to by `rp' to the top-left point of the surface `dst'
+// and clip the rectangle with the clipped screen rectangle of the surface
+lib::rect
+translate_and_clip_rect (lib::rect r, common::surface* dst)
+{
+	if ( ! r.empty() && dst != NULL) {
+		r.translate(dst->get_global_topleft());
+		r &= dst->get_clipped_screen_rect();
+	}
+	return r;
+}
+
 // Helper function: add a counter clockwise defined rectangle to the path of a ID2D1GeometrySink
 // This is used for out transitions to reverse the effect of the clockwise defined clipping paths
 // by enclosing them in a counter clockwise defined rectangle for the whole region using the
@@ -118,7 +130,7 @@ polygon_list_from_rect_list(std::vector<lib::rect>* rect_list)
 	return rv;
 }
 
-// Helper function: create a bitmap with the contents of a rendertarger
+// Helper function: create a bitmap with the contents of a rendertarget
 ID2D1Bitmap*
 BitmapFromRenderTarget(ID2D1RenderTarget* rt, D2D1_RECT_F rect_f)
 {
@@ -131,10 +143,10 @@ BitmapFromRenderTarget(ID2D1RenderTarget* rt, D2D1_RECT_F rect_f)
 	D2D1_RECT_U rect = D2D1::RectU((UINT)rect_f.left,(UINT)rect_f.top,(UINT)rect_f.right,(UINT)rect_f.bottom); 
 	D2D1_SIZE_U size = D2D1::SizeU(rect.right-rect.left, rect.bottom-rect.top);
 	HRESULT hr = rt->CreateBitmap(size, props, &bitmap);
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 old_rt->CreateBitmap");
+	OnErrorGoto_cleanup(hr,"d2_transition::BitmapFromRenderTarget rt->CreateBitmap");
 	// copy the bits of the old stuff (from 'old_rt') to the new destination
 	hr = bitmap->CopyFromRenderTarget(NULL, rt, &rect);
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_old->CopyFromRenderTarget");
+	OnErrorGoto_cleanup(hr,"d2_transition::BitmapFromRenderTarget bitmap->CopyFromRenderTarget");
 	return bitmap;
 cleanup:
 	SafeRelease(&bitmap);
@@ -265,23 +277,49 @@ d2_transition_blitclass_fade::update()
 		SafeRelease(&rt);
 		return; // nothing to do
 	}
+	D2D1_MATRIX_3X2_F transform;
+	rt->GetTransform(&transform);
+	// the transtion render target now has the same transformation marix as the screen render target,
+	// therefore the bitmap drawing needs the identity transformation
+	rt->SetTransform(D2D1::Matrix3x2F::Identity());
+	D2D1_RECT_F cliprect = d2_player->get_current_clip_rectf();	
+#ifdef	AM_DMP
+//	d2_player->dump(rt, "rt1", &cliprect);
+#endif//AM_DMP
 	HRESULT hr = brt->EndDraw();
 	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  brt->EndDraw");
 	hr = brt->GetBitmap(&bitmap);
 	if (bitmap == NULL) {
 		goto cleanup;
 	}
+#ifdef	AM_DMP
+//	d2_player->dump_bitmap(bitmap, brt, "brt");
+#endif//AM_DMP
+
 	if (m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
 		OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  rt->CreateLayer");
 		layer_params.opacity = (FLOAT)(m_outtrans ? (1.0 - m_progress) : m_progress);
+		// similar to the trnasformation, when a cliprect was installed it temporarily needs to be popped
+		if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F &&
+				cliprect.right == 0.0F && cliprect.left == 0.0F)) {
+			rt->PopAxisAlignedClip();
+		}
 		rt->PushLayer(layer_params, layer);
 	}
 	rt->DrawBitmap(bitmap);
 	if (m_progress < 1.0) {
 		rt->PopLayer();
+		if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F &&
+				cliprect.right == 0.0F && cliprect.left == 0.0F)) {
+			rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
+		}
 	}
+#ifdef	AM_DMP
+//	d2_player->dump(rt, "rt2", &cliprect);
+#endif//AM_DMP
 cleanup:
+	rt->SetTransform(transform);
 	SafeRelease(&layer);
 	SafeRelease(&bitmap);
 	SafeRelease(&rt);
@@ -303,9 +341,7 @@ d2_transition_blitclass_rect::update()
 		d2_window *cwindow = (d2_window *)window;
 		d2_player* d2_player = cwindow->get_d2_player();
 
-		lib::rect newrect_whole = m_newrect;
-		newrect_whole.translate(m_dst->get_global_topleft());
-		newrect_whole &= m_dst->get_clipped_screen_rect();
+		lib::rect newrect_whole = translate_and_clip_rect (m_newrect, m_dst);
 		if (newrect_whole.empty())
 			return;
 		D2D1_RECT_F d2_new_rect_f;
@@ -378,9 +414,10 @@ draw_rect(lib::rect r, ID2D1RenderTarget* rt, D2D1::ColorF colorspec = D2D1::Col
 	}
 }
 
-// compute the complement of 2 rectangles for those boundary cases where the
-// result is also a single rectangle. Return an empty rectangle in all other cases.
-lib::rect comp_rect(lib::rect A, lib::rect B)
+// return the difference of 2 rectangles for those boundary cases where the result
+// is also a single rectangle. Return an empty rectangle in all other cases.
+lib::rect
+diff_rect(lib::rect A, lib::rect B)
 {
 	lib::rect rv = lib::rect();
 	if (A != B) {
@@ -418,6 +455,52 @@ lib::rect comp_rect(lib::rect A, lib::rect B)
 	return rv;
 }
 
+// copy the area `rect1' on rendertarget `rt1' and draw it as a bitmap to `rect2' on rendertarget `rt2'
+// if `cliprect` is has been pushed (and given) for `rt1', it will be popped from it and restored.
+// Returns `false' on error
+bool
+copy_draw_rectu(ID2D1RenderTarget* rt1, D2D1_RECT_U* rect1, ID2D1RenderTarget* rt2, D2D1_RECT_U* rect2,
+				D2D1_RECT_F* cliprect = NULL)
+{
+	if (rt1 == NULL || rect1 == NULL || rt2 == NULL || rect2 == NULL) {
+		return false;
+	}
+	HRESULT hr = E_FAIL;
+	ID2D1Bitmap* bitmap = NULL;
+	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the `bitmap'
+	// where w'll put the data into with equal properties as its data source `rt1'
+	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
+	D2D1::Matrix3x2F matrix;
+	rt1->GetDpi(&props.dpiX, &props.dpiY);
+	props.pixelFormat = rt1->GetPixelFormat();
+	rt1->GetTransform(&matrix);
+	D2D1_RECT_U tr_rect1 = transform(*rect1, matrix);
+	D2D1_SIZE_U tr_size1 = D2D1::SizeU(tr_rect1.right - tr_rect1.left, tr_rect1.bottom - tr_rect1.top);
+	D2D1_RECT_F rect2_f = D2D1::RectF(float(rect2->left),float(rect2->top),float(rect2->right),float(rect2->bottom));
+
+	hr = rt1->CreateBitmap(tr_size1, props, &bitmap);
+	OnErrorGoto_cleanup(hr,"d2_transition::copy_draw_draw: rt1->CreateBitmap");
+
+	// copy the bits of the pixels from `rt1' to the new destination on `rt2'
+	// to be able to use CopyFromRenderTarget, the current cliprect must be temporary popped.
+	if (cliprect != NULL && ! (cliprect->bottom == 0.0F && cliprect->left == 0.0F &&
+								cliprect->right == 0.0F && cliprect->left == 0.0F)) {
+		rt1->PopAxisAlignedClip();
+	}
+	hr = bitmap->CopyFromRenderTarget(NULL, rt1, &tr_rect1);
+
+	if (cliprect != NULL && ! (cliprect->bottom == 0.0F && cliprect->left == 0.0F &&
+								cliprect->right == 0.0F && cliprect->left == 0.0F)) {
+		rt1->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
+	}
+	OnErrorGoto_cleanup(hr,"d2_transition::copy_draw_draw: bitmap->CopyFromRenderTarget");
+	rt2->DrawBitmap(bitmap, rect2_f);
+	hr = rt2->Flush();
+
+cleanup:
+	SafeRelease(&bitmap);
+	return hr == S_OK;
+}
 void
 d2_transition_blitclass_r1r2r3r4::update()
 {
@@ -426,17 +509,18 @@ d2_transition_blitclass_r1r2r3r4::update()
 	gui_window *window = m_dst->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
 	d2_player* d2_player = cwindow->get_d2_player();
-	lib::rect newsrcrect = m_newsrcrect;
-	lib::rect newdstrect = m_newdstrect;
-	lib::rect oldsrcrect = m_oldsrcrect;
-	lib::rect olddstrect = m_olddstrect;
+	lib::rect newsrcrect = translate_and_clip_rect(m_newsrcrect, m_dst);
+	lib::rect newdstrect = translate_and_clip_rect(m_newdstrect, m_dst);
+	lib::rect oldsrcrect = translate_and_clip_rect(m_oldsrcrect, m_dst);
+	lib::rect olddstrect = translate_and_clip_rect(m_olddstrect, m_dst);
+	D2D1_RECT_U oldsrcrectu, olddstrectu, newsrcrectu, newdstrectu;
 
 	ID2D1Bitmap* bitmap_old = NULL; // bitmap for the "old" stuff
 	ID2D1Bitmap* bitmap_new = NULL; // bitmap for the "new" stuff
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	D2D1_MATRIX_3X2_F d2_rt_transform;
-	D2D1_RECT_F cliprect = d2_player->get_current_clip_rect();
+	D2D1_RECT_F cliprect = d2_player->get_current_clip_rectf();
 	ID2D1BitmapRenderTarget* brt = d2_player->get_fullscreen_rendertarget();
 	if (brt == NULL) {
 		brt = d2_player->get_transition_rendertarget();
@@ -452,83 +536,34 @@ d2_transition_blitclass_r1r2r3r4::update()
 	rt->GetTransform(&d2_rt_transform);
 	HRESULT hr = brt->EndDraw();
 	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_r1r2r3r4() brt->EndDraw()");
-	newsrcrect.translate(m_dst->get_global_topleft());
-	newsrcrect &= m_dst->get_clipped_screen_rect();
-	newdstrect.translate(m_dst->get_global_topleft());
-	newdstrect &= m_dst->get_clipped_screen_rect();
-	oldsrcrect.translate(m_dst->get_global_topleft());
-	oldsrcrect &= m_dst->get_clipped_screen_rect();
-	olddstrect.translate(m_dst->get_global_topleft());
-	olddstrect &= m_dst->get_clipped_screen_rect();
+
 	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
 	if (m_outtrans) {
 		// exchange "old" and "new" rects, but not the render targets
-		if (m_info->m_type == transition_type::slideWipe) {
+		if (m_info->m_type == slideWipe) {
 			lib::rect dst_rect = m_dst->get_rect();
 			dst_rect.translate(m_dst->get_global_topleft());
-			oldsrcrect = comp_rect(dst_rect, oldsrcrect);
-			olddstrect = comp_rect(dst_rect, olddstrect);
-			newsrcrect = comp_rect(dst_rect, newsrcrect);
-			newdstrect = comp_rect(dst_rect, newdstrect);
+			oldsrcrect = diff_rect(dst_rect, oldsrcrect);
+			olddstrect = diff_rect(dst_rect, olddstrect);
+			newsrcrect = diff_rect(dst_rect, newsrcrect);
+			newdstrect = diff_rect(dst_rect, newdstrect);
 		} else { // pushWipe
-		lib::rect tmp_rect;
-		tmp_rect = oldsrcrect;
-		oldsrcrect = newsrcrect;
-		newsrcrect = tmp_rect;
-		tmp_rect = olddstrect;
-		olddstrect = newdstrect;
-		newdstrect = tmp_rect;
+			lib::rect tmp_rect;
+			tmp_rect   = oldsrcrect;
+			oldsrcrect = newsrcrect;
+			newsrcrect = tmp_rect;
+			tmp_rect   = olddstrect;
+			olddstrect = newdstrect;
+			newdstrect = tmp_rect;
 		}
 	}
-//	draw_rect(oldsrcrect, old_rt);
-//	draw_rect(newsrcrect, new_rt, D2D1::ColorF::Blue, true);
-
-	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
-	// where we put the data into ('bitmap_old') with equal properties as its data source ('old_rt')
-	old_rt->GetDpi(&props.dpiX, &props.dpiY);
-	props.pixelFormat = old_rt->GetPixelFormat();
-	D2D1::Matrix3x2F old_matrix;
-	old_rt->GetTransform(&old_matrix);
-	D2D1_RECT_U oldsrc_rectu = transform(d2_rectu(oldsrcrect), old_matrix);
-	D2D1_SIZE_U oldsrc_sizeu = D2D1::SizeU(oldsrc_rectu.right - oldsrc_rectu.left,
-										   oldsrc_rectu.bottom - oldsrc_rectu.top);
-	hr = old_rt->CreateBitmap(oldsrc_sizeu, props, &bitmap_old);
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 old_rt->CreateBitmap");
-
-	// copy the bits of the old stuff (from 'old_rt') to the new destination
-	// to be able to use CopyFromRenderTarget, the current cliprect must be temporary popped.
-	if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F && cliprect.right == 0.0F && cliprect.left ==0.0F)) {
-		old_rt->PopAxisAlignedClip();
-	}
-	hr = bitmap_old->CopyFromRenderTarget(NULL, old_rt, &oldsrc_rectu);
-#ifdef	AM_DMP
-//	d2_player->dump(old_rt, "ort1");
-//	d2_player->dump_bitmap(bitmap_old, old_rt, "omp1");
-#endif//AM_DMP
-	if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F && cliprect.right == 0.0F && cliprect.left ==0.0F)) {
-		old_rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
-	}
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_old->CopyFromRenderTarget");
-	dst_rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
-
-	// likewise create a compatible bitmap for the new stuff
-	//XXXX code copy, to be factored out ?
-	D2D1::Matrix3x2F new_matrix;
-	new_rt->GetTransform(&new_matrix);
-	D2D1_RECT_U newsrc_rectu = transform(d2_rectu(newsrcrect), new_matrix);
-	D2D1_SIZE_U newsrc_sizeu = D2D1::SizeU(newsrc_rectu.right - newsrc_rectu.left,
-										   newsrc_rectu.bottom - newsrc_rectu.top);
-	props.pixelFormat = new_rt->GetPixelFormat();
-	new_rt->GetDpi(&props.dpiX, &props.dpiY);
-	hr = new_rt->CreateBitmap(newsrc_sizeu, props, &bitmap_new);
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 new_rt->CreateBitmap");
-
-	// copy the bits of the new stuff (from 'new_rt') to the right spot on screen;
-	hr = bitmap_new->CopyFromRenderTarget(NULL, new_rt, &newsrc_rectu);
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_new->CopyFromRenderTarget");
-	dst_rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
-	hr = dst_rt->Flush();
-	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 dst_rt->Flush");
+	// convert to d2 rectangles
+	oldsrcrectu = d2_rectu(oldsrcrect);
+	olddstrectu = d2_rectu(olddstrect);
+	newsrcrectu = d2_rectu(newsrcrect);
+	newdstrectu = d2_rectu(newdstrect);
+	copy_draw_rectu(old_rt, &oldsrcrectu, dst_rt, &olddstrectu, &cliprect);
+	copy_draw_rectu(new_rt, &newsrcrectu, dst_rt, &newdstrectu);
 
 cleanup:
 	SafeRelease(&bitmap_old);

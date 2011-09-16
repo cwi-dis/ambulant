@@ -1512,7 +1512,7 @@ gui::d2::d2_player::_set_fullscreen_old_bitmap(ID2D1RenderTarget* rt)
 #ifdef	AM_DMP
 // screen dump support (for debugging). Returns index nr. of dump file
 int
-gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id)
+gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id, D2D1_RECT_F* cliprect)
 {
 	int rv = -1;
 	if (rt == NULL)
@@ -1541,8 +1541,16 @@ gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id)
 
 	WICPixelFormatGUID format = GUID_WICPixelFormatDontCare;
 	HRESULT hr = 0;
+	if (cliprect != NULL && ! (cliprect->bottom == 0.0F && cliprect->left == 0.0F &&
+								cliprect->right == 0.0F && cliprect->left == 0.0F)) {
+		rt->PopAxisAlignedClip();
+	}
 	if ((wicBitmap = _capture_wic(lib::rect(), rt)) == NULL)
 		goto cleanup;
+	if (cliprect != NULL && ! (cliprect->bottom == 0.0F && cliprect->left == 0.0F &&
+								cliprect->right == 0.0F && cliprect->left == 0.0F)) {
+		rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
+	}
 	hr = m_WICFactory->CreateStream(&wicStream);
 	OnErrorGoto_cleanup(hr, "dump() m_WICFactory->CreateStream");
 

@@ -192,7 +192,7 @@ class AMBULANTAPI d2_player :
 	void resumed(common::playable *p);
 	void set_intransition(common::playable *p, const lib::transition_info *info);
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
-	D2D1_RECT_F get_current_clip_rect() { return m_current_clip_rectf; }
+	D2D1_RECT_F get_current_clip_rectf() { return m_current_clip_rectf; }
 
 	// Full screen transition support
 	void start_screen_transition(bool outtrans);
@@ -334,15 +334,15 @@ class AMBULANTAPI d2_player :
 	// The logger
 	lib::logger *m_logger;
 
-// This code can be useful for debugging transitions etc. to dump snapshots as images on files.
+// This code is useful for debugging transitions etc. to dump series of snapshots as imagefiles.
 // Not for Release builds.
-//#define	AM_DMP
+// #define	AM_DMP
 #ifdef	AM_DMP
   public:
 // write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is
 // a generated numeric string circular variying between "0000" and "9999", which is returned as an int.
 // Cannot be called when a Layer or cliprect is pushed on 'rt'
-	int dump (ID2D1RenderTarget* rt, std::string id);
+	int dump (ID2D1RenderTarget* rt, std::string id, D2D1_RECT_F* cliprect = NULL);
 
 // write the contents of the (ID2D1Bitmap* <bmp> associated with ID2D1RenderTarget* <rt> to the file:
 // ".\<number>.<id>.png" where number is a generated numeric string circular variying between
