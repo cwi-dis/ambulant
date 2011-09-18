@@ -89,8 +89,8 @@ translate_and_clip_rect (lib::rect r, common::surface* dst)
 	return r;
 }
 
-// Helper function: normalize the rendertarget s.t. transformation matrix set on it is not used during bitmap operations
-// returns the original transformation matrix
+//X Helper function: normalize the rendertarget s.t. transformation matrix set on it is not used during bitmap operations
+//X returns the original transformation matrix
 D2D1::Matrix3x2F
 normalize_rendertarget(ID2D1RenderTarget* p_rt, D2D1_RECT_F* p_cliprect = NULL)
 {
@@ -279,17 +279,17 @@ _d2_polygon_list_update(
 
 	path = path_from_polygon_list(d2_player->get_D2D1Factory(), dst_global_topleft, polygon_list, outtrans, whole_rect);
 
-	// if a cliprect was set by d2_player->redraw(), it is temporary removed
-	remove_clip_rendertarget(rt, &cliprect);
+//X if a cliprect was set by d2_player->redraw(), it is temporary removed
+//X	remove_clip_rendertarget(rt, &cliprect);
 	rt->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(), path), layer);
 	// the transtion render target has the same transformation matrix as the bitmap render target had during
 	// drawing, therefore during DrawBitmap the rendertarget needs the identity transformation set; otherwise
 	// the transformation matrix would be applied twice.
-	transform = normalize_rendertarget(rt);
+//X	transform = normalize_rendertarget(rt);
 	rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
 	rt->PopLayer();
 	hr = rt->Flush();
-	reset_normalized_rendertarget(rt, &transform, &cliprect);
+//X	reset_normalized_rendertarget(rt, &transform, &cliprect);
 	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() rt->Flush()");
 cleanup:
 	SafeRelease(&layer);
@@ -318,11 +318,11 @@ d2_transition_blitclass_fade::update()
 		SafeRelease(&rt);
 		return; // nothing to do
 	}
-	D2D1_MATRIX_3X2_F transform;
-	rt->GetTransform(&transform);
+//	D2D1_MATRIX_3X2_F transform;
+//	rt->GetTransform(&transform);
 	// the transtion render target now has the same transformation marix as the screen render target,
 	// therefore the bitmap drawing needs the identity transformation
-	rt->SetTransform(D2D1::Matrix3x2F::Identity());
+//	rt->SetTransform(D2D1::Matrix3x2F::Identity());
 	D2D1_RECT_F cliprect = d2_player->get_current_clip_rectf();	
 #ifdef	AM_DMP
 //	d2_player->dump(rt, "rt1", &cliprect);
@@ -336,7 +336,6 @@ d2_transition_blitclass_fade::update()
 #ifdef	AM_DMP
 //	d2_player->dump_bitmap(bitmap, brt, "brt");
 #endif//AM_DMP
-
 	if (m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
 		OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  rt->CreateLayer");
@@ -360,7 +359,7 @@ d2_transition_blitclass_fade::update()
 //	d2_player->dump(rt, "rt2", &cliprect);
 #endif//AM_DMP
 cleanup:
-	rt->SetTransform(transform);
+//	rt->SetTransform(transform);
 	SafeRelease(&layer);
 	SafeRelease(&bitmap);
 	SafeRelease(&rt);
@@ -412,9 +411,9 @@ d2_transition_blitclass_rect::update()
 		d2_player->dump_bitmap(bitmap, brt, "brt");
 #endif//AM_DMP
 		if (SUCCEEDED(hr)) {
-			remove_clip_rendertarget(rt, &cliprect);
+//X			remove_clip_rendertarget(rt, &cliprect);
 			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
-			D2D1::Matrix3x2F transform = normalize_rendertarget(rt);
+//X			D2D1::Matrix3x2F transform = normalize_rendertarget(rt);
 			rt->DrawBitmap(bitmap,
 					d2_full_rect_f,
 					1.0f,
@@ -425,7 +424,7 @@ d2_transition_blitclass_rect::update()
 			if (FAILED(hr)) {
 				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
 			}
-			reset_normalized_rendertarget(rt, &transform, &cliprect);
+//X			reset_normalized_rendertarget(rt, &transform, &cliprect);
 		}  // otherwise HRESULT failure is ignored, may happen e.g. when bitmap is empty
 #ifdef	AM_DMP
 		d2_player->dump(rt, "rt2", &cliprect);
@@ -673,16 +672,16 @@ d2_transition_blitclass_rectlist::update()
 			if (newrect_whole.empty()) {
 				continue;
 			}
-			remove_clip_rendertarget(rt, &cliprect);
+//X			remove_clip_rendertarget(rt, &cliprect);
 			newrect_whole.translate(m_dst->get_global_topleft());
 			newrect_whole &= m_dst->get_clipped_screen_rect();
 			D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
 			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
-			D2D1::Matrix3x2F transform = normalize_rendertarget(rt);
+//X			D2D1::Matrix3x2F transform = normalize_rendertarget(rt);
 			rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
 			rt->PopAxisAlignedClip();
 			hr = rt->Flush();
-			reset_normalized_rendertarget(rt, &transform, &cliprect);
+//X			reset_normalized_rendertarget(rt, &transform, &cliprect);
 			if (FAILED(hr)) {
 				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rectlist::update: DrawBitmap returns 0x%x", hr);
 				break;

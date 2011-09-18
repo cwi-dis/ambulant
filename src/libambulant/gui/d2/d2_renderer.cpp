@@ -99,10 +99,9 @@ d2_transition_renderer::get_transition_rendertarget ()
 			if (FAILED(hr)) {
 				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
 			} else {
-				// Apply the same transformation as the original RenderTarget momentarily has due to scaling
-				D2D1_MATRIX_3X2_F transform;
-				rt->GetTransform(&transform);
-				m_transition_rendertarget->SetTransform(transform);
+				// For the transition rendertarget, the Identity transfromation mxtrix is used, and the current
+				// transformation is applied when the resulting bitmap is drawn into the main rendertarget
+				m_transition_rendertarget->SetTransform(D2D1::Matrix3x2F::Identity());
 				m_transition_rendertarget->BeginDraw();
 			}
 			rt->Release();
@@ -246,28 +245,40 @@ d2_transition_renderer::redraw_post(gui_window *window)
 		if (m_fullscreen) {
 			d2::d2_player* d2_player = get_d2player();
 			ID2D1Bitmap* old_bitmap = d2_player->get_fullscreen_old_bitmap();
+			// The old bitmap may have been taken while a scaling transformation was effective.
+			// Therefore, during DrawBitmap this scaling transformation must be temporarily disabled,
+			// otherwise it would be applied twice.
+			ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
+			D2D1::Matrix3x2F transform;
+			rt->GetTransform(&transform);
+			rt->SetTransform(D2D1::IdentityMatrix());
 			if (this->m_outtransition) {
 				ID2D1Bitmap* new_bitmap = d2_player->get_fullscreen_orig_bitmap();
+				d2_player->dump_bitmap(old_bitmap, rt, "old");
 				if (old_bitmap != NULL) {
-					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
 					rt->DrawBitmap(old_bitmap);
 					HRESULT hr = rt->Flush();
 					rt->Release();
 				}
 				if (new_bitmap != NULL) {
 					ID2D1RenderTarget* brt = d2_player->get_fullscreen_rendertarget();
+					D2D1::Matrix3x2F brt_transform;
+					brt->GetTransform(&brt_transform);
+					brt->SetTransform(D2D1::IdentityMatrix());
+					d2_player->dump_bitmap(new_bitmap, brt, "new");
 					if (brt == NULL) return;
 					brt->DrawBitmap(new_bitmap);
 					HRESULT hr = brt->Flush();
+					brt->SetTransform(brt_transform);
 				}
 			} else {
 				if (old_bitmap != NULL) {
-					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
 					rt->DrawBitmap(old_bitmap);
 					HRESULT hr = rt->Flush();
 					rt->Release();
 				}
 			}
+			rt->SetTransform(transform);
 			get_d2player()->screen_transition_step(m_trans_engine, m_event_processor->get_timer()->elapsed());
 		} else {
 			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
