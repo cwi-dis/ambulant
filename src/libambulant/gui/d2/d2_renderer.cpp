@@ -76,13 +76,9 @@ d2_transition_renderer::get_current_rendertarget()
 	ID2D1RenderTarget* rv = d2player->get_fullscreen_rendertarget(); // fullscreen trans. active
 	if (rv == NULL)	{
 		rv = this->m_transition_rendertarget;		  // normal transition active
-	} else {
-		rv->AddRef();
 	}
 	if (rv == NULL) {
 		rv = d2player->get_rendertarget();			  // no transition active
-	} else {
-		rv->AddRef();
 	}
 	return rv;
 }
@@ -99,8 +95,8 @@ d2_transition_renderer::get_transition_rendertarget ()
 			if (FAILED(hr)) {
 				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
 			} else {
-				// For the transition rendertarget, the Identity transfromation mxtrix is used, and the current
-				// transformation is applied when the resulting bitmap is drawn into the main rendertarget
+				// For the transition rendertarget, the Identity transfromation matrix is used, and the current
+				// scaling transformation is applied when the resulting bitmap is drawn into the main rendertarget
 				m_transition_rendertarget->SetTransform(D2D1::Matrix3x2F::Identity());
 				m_transition_rendertarget->BeginDraw();
 			}
@@ -254,7 +250,6 @@ d2_transition_renderer::redraw_post(gui_window *window)
 			rt->SetTransform(D2D1::IdentityMatrix());
 			if (this->m_outtransition) {
 				ID2D1Bitmap* new_bitmap = d2_player->get_fullscreen_orig_bitmap();
-				d2_player->dump_bitmap(old_bitmap, rt, "old");
 				if (old_bitmap != NULL) {
 					rt->DrawBitmap(old_bitmap);
 					HRESULT hr = rt->Flush();
@@ -265,7 +260,6 @@ d2_transition_renderer::redraw_post(gui_window *window)
 					D2D1::Matrix3x2F brt_transform;
 					brt->GetTransform(&brt_transform);
 					brt->SetTransform(D2D1::IdentityMatrix());
-					d2_player->dump_bitmap(new_bitmap, brt, "new");
 					if (brt == NULL) return;
 					brt->DrawBitmap(new_bitmap);
 					HRESULT hr = brt->Flush();

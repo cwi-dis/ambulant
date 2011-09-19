@@ -89,37 +89,6 @@ translate_and_clip_rect (lib::rect r, common::surface* dst)
 	return r;
 }
 
-//X Helper function: normalize the rendertarget s.t. transformation matrix set on it is not used during bitmap operations
-//X returns the original transformation matrix
-D2D1::Matrix3x2F
-normalize_rendertarget(ID2D1RenderTarget* p_rt, D2D1_RECT_F* p_cliprect = NULL)
-{
-	D2D1::Matrix3x2F transform;
-	p_rt->GetTransform(&transform);
-	p_rt->SetTransform(D2D1::Matrix3x2F::Identity());
-	return transform;
-}
-
-void
-remove_clip_rendertarget(ID2D1RenderTarget* p_rt, D2D1_RECT_F* p_cliprect)
-{
-	if (p_cliprect != NULL && ! (p_cliprect->bottom == 0.0F && p_cliprect->left == 0.0F && p_cliprect->right == 0.0F && p_cliprect->left == 0.0F)) {
-			p_rt->PopAxisAlignedClip();
-	}
-}
-
-// Helper function: reset the normalized rendertarget to its previous state, as specified
-void
-reset_normalized_rendertarget(ID2D1RenderTarget* p_rt, D2D1::Matrix3x2F* p_transform = NULL, D2D1_RECT_F* p_cliprect = NULL)
-{
-	if (p_transform != NULL) {
-		p_rt->SetTransform(p_transform);
-	}
-	if (p_cliprect != NULL && ! (p_cliprect->bottom == 0.0F && p_cliprect->left == 0.0F && p_cliprect->right == 0.0F && p_cliprect->left == 0.0F)) {
-			p_rt->PushAxisAlignedClip(p_cliprect,  D2D1_ANTIALIAS_MODE_ALIASED);
-	}
-}
-
 // Helper function: add a counter clockwise defined rectangle to the path of a ID2D1GeometrySink
 // This is used for out transitions to reverse the effect of the clockwise defined clipping paths
 // by enclosing them in a counter clockwise defined rectangle for the whole region using the
@@ -159,29 +128,6 @@ polygon_list_from_rect_list(std::vector<lib::rect>* rect_list)
 		rv.push_back(polygon_from_rect(*it));
 	}
 	return rv;
-}
-
-// Helper function: create a bitmap with the contents of a rendertarget
-ID2D1Bitmap*
-BitmapFromRenderTarget(ID2D1RenderTarget* rt, D2D1_RECT_F rect_f)
-{
-	ID2D1Bitmap* bitmap = NULL; // bitmap for the "new" stuff
-	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
-	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
-	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
-	rt->GetDpi(&props.dpiX, &props.dpiY);
-	props.pixelFormat = rt->GetPixelFormat();
-	D2D1_RECT_U rect = D2D1::RectU((UINT)rect_f.left,(UINT)rect_f.top,(UINT)rect_f.right,(UINT)rect_f.bottom); 
-	D2D1_SIZE_U size = D2D1::SizeU(rect.right-rect.left, rect.bottom-rect.top);
-	HRESULT hr = rt->CreateBitmap(size, props, &bitmap);
-	OnErrorGoto_cleanup(hr,"d2_transition::BitmapFromRenderTarget rt->CreateBitmap");
-	// copy the bits of the old stuff (from 'old_rt') to the new destination
-	hr = bitmap->CopyFromRenderTarget(NULL, rt, &rect);
-	OnErrorGoto_cleanup(hr,"d2_transition::BitmapFromRenderTarget bitmap->CopyFromRenderTarget");
-	return bitmap;
-cleanup:
-	SafeRelease(&bitmap);
-	return NULL;
 }
 
 // Helper function: add clipping path from the list of polygons
@@ -279,17 +225,13 @@ _d2_polygon_list_update(
 
 	path = path_from_polygon_list(d2_player->get_D2D1Factory(), dst_global_topleft, polygon_list, outtrans, whole_rect);
 
-//X if a cliprect was set by d2_player->redraw(), it is temporary removed
-//X	remove_clip_rendertarget(rt, &cliprect);
 	rt->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(), path), layer);
 	// the transtion render target has the same transformation matrix as the bitmap render target had during
 	// drawing, therefore during DrawBitmap the rendertarget needs the identity transformation set; otherwise
 	// the transformation matrix would be applied twice.
-//X	transform = normalize_rendertarget(rt);
 	rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
 	rt->PopLayer();
 	hr = rt->Flush();
-//X	reset_normalized_rendertarget(rt, &transform, &cliprect);
 	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() rt->Flush()");
 cleanup:
 	SafeRelease(&layer);
@@ -318,48 +260,25 @@ d2_transition_blitclass_fade::update()
 		SafeRelease(&rt);
 		return; // nothing to do
 	}
-//	D2D1_MATRIX_3X2_F transform;
-//	rt->GetTransform(&transform);
-	// the transtion render target now has the same transformation marix as the screen render target,
-	// therefore the bitmap drawing needs the identity transformation
-//	rt->SetTransform(D2D1::Matrix3x2F::Identity());
 	D2D1_RECT_F cliprect = d2_player->get_current_clip_rectf();	
-#ifdef	AM_DMP
-//	d2_player->dump(rt, "rt1", &cliprect);
-#endif//AM_DMP
 	HRESULT hr = brt->EndDraw();
 	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  brt->EndDraw");
 	hr = brt->GetBitmap(&bitmap);
 	if (bitmap == NULL) {
 		goto cleanup;
 	}
-#ifdef	AM_DMP
-//	d2_player->dump_bitmap(bitmap, brt, "brt");
-#endif//AM_DMP
 	if (m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
 		OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  rt->CreateLayer");
 		layer_params.opacity = (FLOAT)(m_outtrans ? (1.0 - m_progress) : m_progress);
-		// similar to the trnasformation, when a cliprect was installed it temporarily needs to be popped
-		if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F &&
-				cliprect.right == 0.0F && cliprect.left == 0.0F)) {
-			rt->PopAxisAlignedClip();
-		}
+		// similar to the transformation, when a cliprect was installed it temporarily needs to be popped
 		rt->PushLayer(layer_params, layer);
 	}
 	rt->DrawBitmap(bitmap);
 	if (m_progress < 1.0) {
 		rt->PopLayer();
-		if ( ! (cliprect.bottom == 0.0F && cliprect.left == 0.0F &&
-				cliprect.right == 0.0F && cliprect.left == 0.0F)) {
-			rt->PushAxisAlignedClip(cliprect, D2D1_ANTIALIAS_MODE_ALIASED);
-		}
 	}
-#ifdef	AM_DMP
-//	d2_player->dump(rt, "rt2", &cliprect);
-#endif//AM_DMP
 cleanup:
-//	rt->SetTransform(transform);
 	SafeRelease(&layer);
 	SafeRelease(&bitmap);
 	SafeRelease(&rt);
@@ -406,14 +325,8 @@ d2_transition_blitclass_rect::update()
 		d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
 		ID2D1Bitmap* bitmap = NULL;
 		hr = brt->GetBitmap(&bitmap);
-#ifdef	AM_DMP
-		d2_player->dump(rt, "rt1", &cliprect);
-		d2_player->dump_bitmap(bitmap, brt, "brt");
-#endif//AM_DMP
 		if (SUCCEEDED(hr)) {
-//X			remove_clip_rendertarget(rt, &cliprect);
 			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
-//X			D2D1::Matrix3x2F transform = normalize_rendertarget(rt);
 			rt->DrawBitmap(bitmap,
 					d2_full_rect_f,
 					1.0f,
@@ -424,24 +337,19 @@ d2_transition_blitclass_rect::update()
 			if (FAILED(hr)) {
 				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
 			}
-//X			reset_normalized_rendertarget(rt, &transform, &cliprect);
 		}  // otherwise HRESULT failure is ignored, may happen e.g. when bitmap is empty
-#ifdef	AM_DMP
-		d2_player->dump(rt, "rt2", &cliprect);
-#endif//AM_DMP
 		rt->Release();
 	}
 }
 
-// Helper function: transform point `p' by applying matrix `m'
+// Helper function: return transform point `p' by applying matrix `m'
 D2D1_POINT_2U
 transform(D2D1_POINT_2U p, D2D1_MATRIX_3X2_F m)
 {
-	return D2D1::Point2U(UINT32(p.x*m._11+p.y*m._21+m._31),
-					  UINT32(p.x*m._12+p.y*m._22+m._32));
+	return D2D1::Point2U(UINT32(p.x*m._11+p.y*m._21+m._31),UINT32(p.x*m._12+p.y*m._22+m._32));
 }
 
-// Helper function: transform rectangle `r' by applying matrix `m'
+// Helper function: return transformed rectangle `r' by applying matrix `m'
 D2D1_RECT_U
 transform (D2D1_RECT_U r, D2D1_MATRIX_3X2_F m)
 {
@@ -450,6 +358,7 @@ transform (D2D1_RECT_U r, D2D1_MATRIX_3X2_F m)
 	return D2D1::RectU(lt.x, lt.y, rb.x, rb.y);
 }
 
+#ifdef	AM_DBG
 void
 draw_rect(lib::rect r, ID2D1RenderTarget* rt, D2D1::ColorF colorspec = D2D1::ColorF::Red, bool needBeginEnd = false)
 {
@@ -465,9 +374,11 @@ draw_rect(lib::rect r, ID2D1RenderTarget* rt, D2D1::ColorF colorspec = D2D1::Col
 		rt->EndDraw();
 	}
 }
+#endif//AM_DBG
 
 // return the difference of 2 rectangles for those boundary cases where the result
 // is also a single rectangle. Return an empty rectangle in all other cases.
+// Used for pushWipe out transitions.
 lib::rect
 diff_rect(lib::rect A, lib::rect B)
 {
@@ -510,6 +421,7 @@ diff_rect(lib::rect A, lib::rect B)
 // copy the area `rect1' on rendertarget `rt1' and draw it as a bitmap to `rect2' on rendertarget `rt2'
 // if `cliprect` is has been pushed (and given) for `rt1', it will be popped from it and restored.
 // Returns `false' on error
+// Used for pushWipe/slideWipe transitions
 bool
 copy_draw_rectu(ID2D1RenderTarget* rt1, D2D1_RECT_U* rect1, ID2D1RenderTarget* rt2, D2D1_RECT_U* rect2,
 				D2D1_RECT_F* cliprect = NULL)
@@ -553,6 +465,8 @@ cleanup:
 	SafeRelease(&bitmap);
 	return hr == S_OK;
 }
+
+// Used for pushWipe/slideWipe transitions
 void
 d2_transition_blitclass_r1r2r3r4::update()
 {
@@ -581,9 +495,6 @@ d2_transition_blitclass_r1r2r3r4::update()
 		SafeRelease(&rt);
 		return; // nothing to do
 	}
-#ifdef	AM_DMP
-//	d2_player->dump(brt, "brt1");
-#endif//AM_DMP
 	ID2D1RenderTarget* dst_rt = rt, *old_rt = rt, *new_rt = brt;
 	rt->GetTransform(&d2_rt_transform);
 	HRESULT hr = brt->EndDraw();
@@ -672,16 +583,13 @@ d2_transition_blitclass_rectlist::update()
 			if (newrect_whole.empty()) {
 				continue;
 			}
-//X			remove_clip_rendertarget(rt, &cliprect);
 			newrect_whole.translate(m_dst->get_global_topleft());
 			newrect_whole &= m_dst->get_clipped_screen_rect();
 			D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
 			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
-//X			D2D1::Matrix3x2F transform = normalize_rendertarget(rt);
 			rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
 			rt->PopAxisAlignedClip();
 			hr = rt->Flush();
-//X			reset_normalized_rendertarget(rt, &transform, &cliprect);
 			if (FAILED(hr)) {
 				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rectlist::update: DrawBitmap returns 0x%x", hr);
 				break;

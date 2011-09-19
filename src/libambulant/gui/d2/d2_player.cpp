@@ -813,10 +813,10 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 			dirtyMod.right -= long(xoff);
 			dirtyMod.top -= long(yoff);
 			dirtyMod.bottom -= long(yoff);
-			dirtyMod.left /= factor;
-			dirtyMod.right /= factor;
-			dirtyMod.top /= factor;
-			dirtyMod.bottom /= factor;
+			dirtyMod.left = long(dirtyMod.left / factor);
+			dirtyMod.right = long(dirtyMod.right / factor);
+			dirtyMod.top = long(dirtyMod.top / factor);
+			dirtyMod.bottom = long(dirtyMod.bottom / factor);
 			dirty = &dirtyMod;
 		}
 	} else {
