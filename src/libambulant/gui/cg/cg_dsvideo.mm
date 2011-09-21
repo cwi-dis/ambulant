@@ -80,7 +80,7 @@ cg_dsvideo_renderer::cg_dsvideo_renderer(
 	event_processor *evp,
 	common::factories *factory,
 	common::playable_factory_machdep *mdp)
-:	common::video_renderer(context, cookie, node, evp, factory, mdp),
+:	cg_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
 	m_image(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer(): 0x%x created", (void*)this);
@@ -146,7 +146,7 @@ cg_dsvideo_renderer::_push_frame(char* frame, size_t size)
 }
 
 void
-cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
+cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();

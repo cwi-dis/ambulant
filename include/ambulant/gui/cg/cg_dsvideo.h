@@ -37,7 +37,7 @@ namespace gui {
 namespace cg {
 
 class cg_dsvideo_renderer :
-	public common::video_renderer {
+	public cg_renderer<common::video_renderer> {
   public:
 	cg_dsvideo_renderer(
 		playable_notification *context,
@@ -49,9 +49,8 @@ class cg_dsvideo_renderer :
 	~cg_dsvideo_renderer();
 
 	net::pixel_order pixel_layout();
-	void redraw(const rect &dirty, gui_window *window);
-	void set_intransition(const lib::transition_info *info) {};
-	void start_outtransition(const lib::transition_info *info) {};
+	void redraw_body(const rect &dirty, gui_window *window);
+
   protected:
 	void _push_frame(char* frame, size_t size);
   private:
