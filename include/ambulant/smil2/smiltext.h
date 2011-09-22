@@ -281,6 +281,7 @@ class smiltext_engine {
 	bool m_auto_rate;			// true while computing textRate="auto"
 	lib::critical_section m_lock;		// for protection of  m_runs
 	bool m_is_locked;			// true while m_lock is entered
+	void* m_this;				//XXX is set during livetime of object, used by _update()
 };
 
 /// Extra classes for smiltext layout
