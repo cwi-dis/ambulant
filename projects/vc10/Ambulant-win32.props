@@ -7,7 +7,7 @@
 
     <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR
 </global_ambulant_defines>
-<!-- 
+<!--
 	Set the following variables to the locations where you downloaded the various
 	third party libraries. Building Ambulant without these will be disappointing.
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.

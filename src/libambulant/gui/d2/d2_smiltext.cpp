@@ -426,6 +426,7 @@ d2_smiltext_renderer::_collect_text()
 		case smil2::stc_data:
 			if ( (*i).m_data == "") {
 				// I think we leave the conditionals alone, for an empty block.
+				newdata = "";
 			} else {
 				char lastch = *((*i).m_data.rbegin());
 				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
