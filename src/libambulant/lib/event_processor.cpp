@@ -207,6 +207,9 @@ event_processor_impl::add_event(event *pe, time_type t,
 bool
 event_processor_impl::cancel_event(event *pe, event_priority priority)
 {
+#ifdef	WITH_GCD_EVENT_PROCESSOR
+	assert(0); // not implementable for GCD
+#endif//WITH_GCD_EVENT_PROCESSOR
 	bool succeeded = false;
 	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
 	m_lock.enter();

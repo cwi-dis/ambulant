@@ -23,6 +23,7 @@
 #include <math.h>
 #define round(x) ((int)((x)+0.5))
 
+//#define	AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -46,6 +47,7 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 {
 	AM_DBG lib::logger::get_logger()->debug("smiltext_engine(0x%x).smiltext_engine(%s)", this, m_node->get_sig().c_str());
 	// Initialize the iterators to the correct place
+	m_this = this;
 	m_tree_iterator++;
 	m_newbegin = m_runs.end();
 	m_newbegin_valid = false;
@@ -74,13 +76,17 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 
 smiltext_engine::~smiltext_engine()
 {
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::~smiltext_engine(0x%x)",this);
 	m_lock.enter();
+#ifndef	WITH_GCD_EVENT_PROCESSOR
 	if (m_update_event&&m_event_processor)
 		m_event_processor->cancel_event(m_update_event, lib::ep_med);
+#endif//WITH_GCD_EVENT_PROCESSOR
 //	delete m_update_event;
 	m_update_event = NULL;
 	m_client = NULL;
 	m_node = NULL;
+	m_this = NULL;
 	m_lock.leave();
 }
 
@@ -103,11 +109,14 @@ smiltext_engine::seek(double t) {
 /// Stop the engine.
 void
 smiltext_engine::stop() {
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::stop(0x%x)",this);
+	lock();
+#ifndef	WITH_GCD_EVENT_PROCESSOR
 	if (m_update_event&&m_event_processor)
 		m_event_processor->cancel_event(m_update_event, lib::ep_med);
+#endif//WITH_GCD_EVENT_PROCESSOR
 //	delete m_update_event;
 	m_update_event = NULL;
-	lock();
 	m_tree_iterator = m_node->end();
 	m_runs.clear();
 	m_newbegin = m_runs.end();
@@ -186,14 +195,17 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 
 void
 smiltext_engine::_update() {
-	if (m_node == NULL || m_run_stack.empty()) {
+	if (m_this != this)
+		return; // object has been released
+	lock();
+	if (m_this != this || m_node == NULL || m_run_stack.empty()) {
+		unlock();
 		return;
 	}
 	assert(m_node);
 	lib::timer::time_type next_update_needed = 0;
-	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_update()");
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_update(0x%x)",this);
 	m_update_event = NULL;
-	lock();
 	for( ; !m_tree_iterator.is_end(); m_tree_iterator++) {
 		assert(!m_run_stack.empty());
 		const lib::node *item = (*m_tree_iterator).second;
@@ -368,10 +380,6 @@ smiltext_engine::_update() {
 		_insert_run_at_end(run);
 
 	}
-	unlock();
-	if (m_client)
-		m_client->smiltext_changed();
-	lock();
 	if ((m_params.m_rate > 0 || m_auto_rate)
 		&& (m_params.m_mode == stm_crawl || m_params.m_mode == stm_scroll)) {
 		// We need to schedule another update event to keep the scroll/crawl going.
@@ -385,9 +393,13 @@ smiltext_engine::_update() {
 	}
 	if (next_update_needed > 0) {
 		m_update_event = new update_callback(this, &smiltext_engine::_update);
+		AM_DBG lib::logger::get_logger()->debug("add_event(0x%x): next_update_needed=%d m_update_event=0x%x", this, next_update_needed, m_update_event);
 		m_event_processor->add_event(m_update_event, next_update_needed, lib::ep_med);
 	}
+	smiltext_notification* client = m_client;
 	unlock();
+	if (client)
+		client->smiltext_changed();
 }
 
 // Fill a run with the formatting parameters from a node.
@@ -1268,7 +1280,6 @@ smiltext_layout_engine::compute_rate(const smiltext_params params, const smiltex
 	}
 	return (dst+dur-1)/dur;
 }
-
+ 
 } // namespace smil2
 } // namespace ambulant
-

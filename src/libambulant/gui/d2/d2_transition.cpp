@@ -750,5 +750,5 @@ d2_transition_engine(common::surface *dst, bool is_outtrans, const lib::transiti
 }
 } // namespace d2
 } // namespace gui
-} //namespace ambulant
+} // namespace ambulant
 
