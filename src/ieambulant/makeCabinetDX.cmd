@@ -22,7 +22,7 @@ del $(IntDir)\*.*
 mkdir $(IntDir)
 ::
 :: redistributable C-runtime
-copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(intdir)\vcredist_x86.exe
+copy ^"$(WindowsSDKDir)\Redist\VC\vcredist_x86.exe^" $(intdir)\vcredist_x86.exe
 :: Ambulant dll's
 copy ..\..\bin\win32\AmbulantActiveXDX.dll $(intdir)\AmbulantActiveXDX.dll
 copy ..\..\bin\win32\libambulantDX_shwin32.dll $(intdir)\libambulantDX_shwin32.dll
