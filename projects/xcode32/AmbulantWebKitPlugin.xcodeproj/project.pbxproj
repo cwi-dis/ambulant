@@ -644,7 +644,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
-				INFOPLIST_FILE = "../../src/webkit_plugin/Info copy.plist";
+				INFOPLIST_FILE = ../../src/webkit_plugin/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				PRODUCT_NAME = AmbulantWebKitPluginCG;
 				WARNING_CFLAGS = "-Wall";
