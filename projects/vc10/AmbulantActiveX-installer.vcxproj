@@ -200,7 +200,7 @@ copy ..\..\bin\win32\avcore-0.dll $(intdir)\avcore-0.dll
 copy ..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll
 copy ..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
 copy ..\..\bin\win32\xerces-c_3_1.dll $(intdir)\xerces-c_3_1.dll
-copy ..\..\src\ieambulant\AmbulantActiveXDX.inf $(intdir)\AmbulantActiveXDX.inf
+copy ..\..\src\ieambulant\AmbulantActiveX.inf $(intdir)\AmbulantActiveX.inf
 :: Create a new cabinet (.cab) archive
 ^"$(CabArc)^" -s 6144 n %TargetPath% $(IntDir)*.exe $(IntDir)*.dll $(IntDir)*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
