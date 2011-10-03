@@ -86,17 +86,17 @@ mkdir $(IntDir)
 :: redistributable C-runtime
 copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(IntDir)vcredist_x86.exe
 :: Ambulant dll%27s
-copy ..\..\bin\win32\AmbulantActiveX.dll $(IntDir)AmbulantActiveX.dll
-copy ..\..\bin\win32\libambulant_shwin32.dll $(IntDir)libambulant_shwin32.dll
-copy ..\..\bin\win32\libamplugin_ffmpeg.dll $(IntDir)libamplugin_ffmpeg.dll 
-copy ..\..\bin\win32\libamplugin_state_xpath.dll $(IntDir)libamplugin_state_xpath.dll
+copy ..\..\bin\win32\AmbulantActiveX-DBG.dll $(IntDir)AmbulantActiveX-DBG.dll
+copy ..\..\bin\win32\libambulant_shwin32_D.dll $(IntDir)libambulant_shwin32_D.dll
+copy ..\..\bin\win32\libampluginD_ffmpeg.dll $(IntDir)libampluginD_ffmpeg.dll 
+copy ..\..\bin\win32\libampluginD_state_xpath.dll $(IntDir)libampluginD_state_xpath.dll
 copy ..\..\bin\win32\avcodec-52.dll $(IntDir)avcodec-52.dll
 copy ..\..\bin\win32\avformat-52.dll $(IntDir)avformat-52.dll 
 copy ..\..\bin\win32\avutil-50.dll $(IntDir)avutil-50.dll
 copy ..\..\bin\win32\swscale-0.dll $(IntDir)swscale-0.dll
 copy ..\..\bin\win32\SDL.dll $(IntDir)SDL.dll
-copy ..\..\bin\win32\xerces-c_3_1.dll $(IntDir)xerces-c_3_1.dll
-copy ..\..\src\ieambulant\AmbulantActiveX.inf $(IntDir)AmbulantActiveX.inf
+copy ..\..\bin\win32\xerces-c_3_1.dll $(IntDir)xerces-c_3_1D.dll
+copy ..\..\src\ieambulant\AmbulantActiveX_D.inf $(IntDir)AmbulantActiveX_D.inf
 :: Create a new cabinet (.cab) archive
 ^"$(CabArc)^" -s 6144 n %TargetPath% $(IntDir)*.exe $(IntDir)*.dll $(IntDir)*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
@@ -108,7 +108,7 @@ set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 %signtool% verify /v /a /pa %TargetPath%
 </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">:: Script to create CAB file for IEAmbulant ActiveX plugin.
-:: NOTE: Do not run this script, btu copy the contents into
+:: NOTE: Do not run this script, but copy the contents into
 :: the IEAmbulant-Installer project, "make" command lines.
 ::
 :: This script expects to be run from within Visual Studio only,
@@ -133,17 +133,17 @@ mkdir $(IntDir)
 :: redistributable C-runtime
 copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(IntDir)vcredist_x86.exe
 :: Ambulant dll%27s
-copy ..\..\bin\win32\AmbulantActiveX.dll $(IntDir)AmbulantActiveX.dll
-copy ..\..\bin\win32\libambulant_shwin32.dll $(IntDir)libambulant_shwin32.dll
-copy ..\..\bin\win32\libamplugin_ffmpeg.dll $(IntDir)libamplugin_ffmpeg.dll 
-copy ..\..\bin\win32\libamplugin_state_xpath.dll $(IntDir)libamplugin_state_xpath.dll
+copy ..\..\bin\win32\AmbulantActiveX-DBG.dll $(IntDir)AmbulantActiveX-DBG.dll
+copy ..\..\bin\win32\libambulant_shwin32_D.dll $(IntDir)libambulant_shwin32_D.dll
+copy ..\..\bin\win32\libampluginD_ffmpeg.dll $(IntDir)libampluginD_ffmpeg.dll 
+copy ..\..\bin\win32\libampluginD_state_xpath.dll $(IntDir)libampluginD_state_xpath.dll
 copy ..\..\bin\win32\avcodec-52.dll $(IntDir)avcodec-52.dll
 copy ..\..\bin\win32\avformat-52.dll $(IntDir)avformat-52.dll 
 copy ..\..\bin\win32\avutil-50.dll $(IntDir)avutil-50.dll
 copy ..\..\bin\win32\swscale-0.dll $(IntDir)swscale-0.dll
 copy ..\..\bin\win32\SDL.dll $(IntDir)SDL.dll
-copy ..\..\bin\win32\xerces-c_3_1.dll $(IntDir)xerces-c_3_1.dll
-copy ..\..\src\ieambulant\AmbulantActiveX.inf $(IntDir)AmbulantActiveX.inf
+copy ..\..\bin\win32\xerces-c_3_1.dll $(IntDir)xerces-c_3_1D.dll
+copy ..\..\src\ieambulant\AmbulantActiveX_D.inf $(IntDir)AmbulantActiveX_D.inf
 :: Create a new cabinet (.cab) archive
 ^"$(CabArc)^" -s 6144 n %TargetPath% $(IntDir)*.exe $(IntDir)*.dll $(IntDir)*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
@@ -153,6 +153,7 @@ set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 %signtool% timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" %TargetPath%
 :: verify the resulting cabinet^" (.cab) archive
 %signtool% verify /v /a /pa %TargetPath%
+
 </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)ieambulant(debug)-2.2-win32.cab</NMakeOutput>

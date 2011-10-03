@@ -1,5 +1,5 @@
 :: Script to create CAB file for IEAmbulant ActiveX plugin.
-:: NOTE: Do not run this script, btu copy the contents into
+:: NOTE: Do not run this script, but copy the contents into
 :: the IEAmbulant-Installer project, "make" command lines.
 ::
 :: This script expects to be run from within Visual Studio only,
