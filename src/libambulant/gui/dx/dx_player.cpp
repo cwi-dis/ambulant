@@ -52,6 +52,8 @@
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_brush.h"
 
+
+#if 1 // Kees: this causes multiple definitions on my Windows 7
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
 // order can mess up standard include files.
@@ -64,6 +66,7 @@ template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange
 }
 }
 #endif 
+#endif//0
 
 // Select audio renderer to use.
 // Multiple selections are possible.
