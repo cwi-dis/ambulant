@@ -68,6 +68,46 @@ function StartTimer(timeout,idd)
     <PARAM  name="src"         value="http://ambulantplayer.org/Demos/Welcome/Welcome-smiltext.smil" />
     <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
     <PARAM  name="autostart"   value="true"  />
+    <!-- We hide the inner stuff from IE through magic conditional code -->
+    <!--[if !IE]><![IGNORE[--><![IGNORE[]]>
+      <!-- The inner object tag is for all other browsers. NOTE: use same ID as for outer tag with _inner appended -->
+      <object data="http://ambulantplayer.org/Demos/Welcome/Welcome-smiltext.smil"
+      	type="application/x-ambulant-smil"
+    	width="240"
+    	height="270"
+    	id="my_ambulant_plugin_inner">
+    <div>
+      <table cellspacing="2" cellpadding="0" width="500"  align="center" border="0">
+	    <tr>
+	      <td class="TextFirst">
+	        <a class="TextLink" href="ieambulantWeb.htm">
+	          <img width="65" height="80" valign="middle" src="http://www.ambulantplayer.org/Ambulant/Logo20.gif">
+	        </a>
+	      </td>
+	      <td class="TextSolo">The Ambulant SMIL plugin installer may need confirmation. <br>
+	      	If it has not been installed or it doesn't seem to work, then <br>
+	      	please install
+		    <a class="TextLink" href="http://homepages.cwi.nl/~kees/ambulant/test/npambulantDX-2.3-win32.xpi">
+		      Firefox AmbulantInstaller for Windows XP
+		    </a> <br>
+	      	and optionally the 
+	      	<a class="TextLink" href="http://www.microsoft.com/download/en/confirmation.aspx?id=29">
+	          Microsoft Runtime for Windows XP <br>
+	        </a>
+	          or alternatively
+		    <a class="TextLink" href="http://homepages.cwi.nl/~kees/ambulant/test/npambulant-2.3-win32.xpi">
+		      Firefox AmbulantInstaller for Windows 7
+		    </a> <br>
+	       	  and optionally the 
+	        <a class="TextLink" href="http://www.microsoft.com/download/en/confirmation.aspx?id=5555">
+	          Microsoft Runtime for Windows 7 <br>
+	        </a> to complete the installation.
+	      </td>
+        </tr>
+      </table>
+    </div>
+    </object>
+    <!--<![endif]-->
 </OBJECT>
 <form name="formname">
 <input type=button value="Start"	onclick='ambulantObject("ambulant_object1").startPlayer()'>

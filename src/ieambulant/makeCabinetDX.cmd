@@ -1,5 +1,5 @@
 :: Script to create CAB file for IEAmbulant ActiveX plugin.
-:: NOTE: Do not run this script, btu copy the contents into
+:: NOTE: Do not run this script, but copy the contents into
 :: the IEAmbulant-Installer project, "make" command lines.
 ::
 :: This script expects to be run from within Visual Studio only,
@@ -14,15 +14,17 @@
 :: copy all files for the cab into this directory
 @echo on
 
-;; VS2010 no longer seems to set this...
-set TargetPath=$(OutDir)ieambulantDX-2.3-win32.cab
-;;
+:: VS2010 no longer seems to set this...
+set TargetPath=$(OutDir)\ieambulantDX-2.3-win32.cab
+::
 @echo "copying all files for the cab into this directory"
-del $(IntDir)\*.*
+del /q $(IntDir)\*.*
 mkdir $(IntDir)
 ::
 :: redistributable C-runtime
-copy ^"$(WindowsSDKDir)\Redist\VC\vcredist_x86.exe^" $(intdir)\vcredist_x86.exe
+:: For DX, the Visual Studio 2008 (VC9) runtime is needed
+:: copy ^"$(WindowsSDKDir)\Redist\VC\vcredist_x86.exe^" $(intdir)\vcredist_x86.exe
+copy "C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe" $(intdir)\vcredist_x86.exe
 :: Ambulant dll's
 copy ..\..\bin\win32\AmbulantActiveXDX.dll $(intdir)\AmbulantActiveXDX.dll
 copy ..\..\bin\win32\libambulantDX_shwin32.dll $(intdir)\libambulantDX_shwin32.dll
@@ -37,7 +39,7 @@ copy ..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
 copy ..\..\bin\win32\xerces-c_3_1.dll $(intdir)\xerces-c_3_1.dll
 copy ..\..\src\ieambulant\AmbulantActiveXDX.inf $(intdir)\AmbulantActiveXDX.inf
 :: Create a new cabinet (.cab) archive
-^"$(CabArc)^" -s 6144 n %TargetPath% $(IntDir)*.exe $(IntDir)*.dll $(IntDir)*.inf
+^"$(CabArc)^" -s 6144 n %TargetPath% $(IntDir)\*.exe $(IntDir)\*.dll $(IntDir)\*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
 set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 %signtool% sign /f $(ieambulant_certificate) /p Ambulant /v %TargetPath%
