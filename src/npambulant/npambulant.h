@@ -37,6 +37,10 @@
 #ifndef __CPLUGIN_H__
 #define __CPLUGIN_H__
 
+#ifdef __LP64__
+// Hack: 1.9.2 npai.h on MacOS 64 bit does not include next file (for good reasons) so we do it...
+#include <Carbon/Carbon.h>
+#endif
 #include "npapi.h"
 #include "npruntime.h"
 #include "prtypes.h"

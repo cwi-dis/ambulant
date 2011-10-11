@@ -180,7 +180,7 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 	CGMutablePathRef path = CGPathCreateMutable ();
 	std::vector<lib::point>::iterator newpoint;
 	bool first = true;
-	lib:point old_point;
+	lib::point old_point;
 	for( newpoint=polygon.begin(); newpoint != polygon.end(); newpoint++) {
 		lib::point p = *newpoint + origin;
 		if ( ! first) {

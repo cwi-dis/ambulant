@@ -25,13 +25,15 @@ NPAMBULANT_PLUGIN=npambulant.plugin
 MOZILLA_PLUGINS="/Library/Internet Plug-Ins"
 mainloop=cg_mainloop.cpp
 ambulant_LDADD=$(libambulant_core) $(EXPAT_LIBS) 
-cgdefines=-DXP_MACOSX
+extra_cg_DEFINES=-DXP_MACOSX
+extra_cg_LDADD=-L$(ambulantlibdir) -lambulant_cg
 else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
 ambulant_LDADD=$(libambulant_core)
 mainloop=
-cgdefines=
+extra_cg_DEFINES=
+extra_cg_LDADD=
 endif
 PYTHON=python
 #
@@ -87,7 +89,7 @@ endif
 # Bringing all the optional flags together
 #
 AM_CPPFLAGS = \
-	$(cgdefines) \
+	$(extra_cg_DEFINES)	\
 	$(extra_gtk_DEFINES)	\
 	$(extra_ffmpeg_DEFINES)	\
 	$(extra_sdl_DEFINES)	\
@@ -118,6 +120,7 @@ libnpambulant_la_SOURCES=\
 libnpambulant_la_LDFLAGS=	\
 	-module -shared	-export-dynamic	\
 	$(LIBLTDL)		\
+	$(extra_cg_LDADD)	\
 	$(extra_gtk_LDADD)	\
 	$(extra_ffmpeg_LDADD)	\
 	$(extra_sdl_LDADD)	\
@@ -200,13 +203,13 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	cp $(srcdir)/Info.plist $(NPAMBULANT_PLUGIN)/Contents
 
 #	Install npambulant plugin binary
-	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
+	-mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
 	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
 
 #	Install ambulant core libraries
 
-#	Install plugins for ambulant engine
-	mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
+	Install plugins for ambulant engine
+	-mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
 	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
 	cd ../plugins; \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
@@ -219,16 +222,24 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 install-npambulant: $(NPAMBULANT_PLUGIN)
 	-rm -fr $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 	cp -R $(NPAMBULANT_PLUGIN) $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
-	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
+	-mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
 	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
 
 #	Install ambulant core libraries
 
 #	Install plugins for ambulant engine
-	mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
+	-mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
 	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
 	cd ../plugins; \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
+
+#	Copy in shared libraries and fix rpath
+	DYLD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
+		$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -v\
+		$(NPAMBULANT_PLUGIN)
+#	Check that internalization worked
+	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(NPAMBULANT_PLUGIN)
+#TBD	strip  npambulant_plugin_dir/plugins/npambulant/*.so*
 
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
@@ -244,21 +255,16 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 	mkdir npambulant_plugin_dir/plugins
 	mkdir npambulant_plugin_dir/plugins/npambulant
 	mkdir npambulant_plugin_dir/plugins/npambulant/plugins
+
 #	Copy browser plugin
 	cp .libs/$(NPAMBULANT) npambulant_plugin_dir/plugins/npambulant.so
 	strip npambulant_plugin_dir/plugins/npambulant.so
+
 #	Install plugins for ambulant engine
 		pkglibdir=`pwd`/npambulant_plugin_dir/plugins/npambulant/plugins; \
 		cd ../plugins; \
 		cp .libs/*.{so.0,la} $$pkglibdir
-##	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
-#	Hack the plugins
-##	-rm npambulant_plugin_dir/plugins/npambulant/plugins/*.a
-##	for i in npambulant_plugin_dir/plugins/npambulant/plugins/*.so; do \
-##		rm $$i ; \
-##		rm $$i.0 ; \
-##		mv $$i.0.0.0 $$i.0; \
-##	done
+
 #	Copy in shared libraries and fix rpath
 	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
 		$(PYTHON) $(top_srcdir)/scripts/internalize_shlibs.py \
@@ -274,6 +280,7 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 	esac
 	cp $(srcdir)/manifest.json npambulant_plugin_dir/manifest.json
 	strip  npambulant_plugin_dir/plugins/npambulant/*.so*
+
 install-npambulant:  npambulant_plugin_dir
 	if [ `id -u` == "0" ]; then \
 		MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); \

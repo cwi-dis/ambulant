@@ -131,6 +131,8 @@ libambulant_cg_la_SOURCES = \
 	gui/cg/cg_gui.m \
 	gui/cg/cg_image.m \
 	gui/cg/cg_renderer.m \
+	gui/cg/cg_smiltext.m \
+	gui/cg/cg_transition.m \
 	gui/cg/cg_text.m \
 	gui/cg/cg_dsvideo.m
 libambulant_cg_la_LDFLAGS=$(libambulant_core)
@@ -145,12 +147,15 @@ extradist_cg = \
 	gui/cg/cg_image.m \
 	gui/cg/cg_renderer.m \
 	gui/cg/cg_text.m \
+	gui/cg/cg_transition.m \
 	gui/cg/cg_dsvideo.m \
 	gui/cg/cg_fill.mm \
 	gui/cg/cg_gui.mm \
 	gui/cg/cg_image.mm \
 	gui/cg/cg_renderer.mm \
+	gui/cg/cg_smiltext.mm \
 	gui/cg/cg_text.mm \
+	gui/cg/cg_transition.mm \
 	gui/cg/cg_dsvideo.mm
 
 if WITH_GTK
