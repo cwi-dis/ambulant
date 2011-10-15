@@ -37,7 +37,7 @@
 #define NSRectFromCGRect(x) (x)
 #endif
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif//AM_DBG
@@ -90,8 +90,12 @@ cg_window::need_redraw(const rect &r)
 	CGRect my_rect = CGRectFromAmbulantRect(r);
 	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
 	// XXX Is it safe to cast C++ objects to ObjC id's?
-	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
-		withObject: arect waitUntilDone: NO];
+	if (m_plugin_callback == NULL) {
+		[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
+								  withObject: arect waitUntilDone: NO];
+	} else {
+		m_plugin_callback(m_plugin_data, (void*) &r);
+	}
 }
 
 void
@@ -203,6 +207,7 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 	NSData *data;
 	AmbulantView *view = (AmbulantView *)m_view;
 	NSImage *image = [view _getOnScreenImage];
+	
 	NSBitmapImageRep* rep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
 //	NSImageRep *rep = [image bestRepresentationForDevice: NULL]; // deprecated
 	if (image == NULL) {
@@ -275,6 +280,13 @@ bad:
 	transition_pushed = NO;
 	fullscreen_ended = NO;
 	has_drawn = NO;
+#ifndef	WITH_UIKIT
+	myCGContext = NULL;
+	myBounds = CGRectMake(0,0,0,0);
+	myFrame = CGRectMake(0,0,0,0);
+	mySize = CGSizeMake(0,0);
+#endif// ! WITH_UIKIT
+
 	return self;
 }
 
@@ -293,6 +305,13 @@ bad:
 	transition_pushed = NO;
 	fullscreen_ended = NO;
 	has_drawn = NO;
+#ifndef	WITH_UIKIT
+	myCGContext = NULL;
+	myBounds = CGRectMake(0,0,0,0);
+	myFrame = CGRectMake(0,0,0,0);
+	mySize = CGSizeMake(0,0);
+#endif// ! WITH_UIKIT
+	
 	return self;
 }
 
@@ -422,7 +441,12 @@ bad:
 
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
 {
+	AM_DBG NSLog(@"setAmbulantWindow:%p", window);
 	ambulant_window = window;
+	if (plugin_callback != NULL) {
+		ambulant_window->m_plugin_callback = (void(*)(void*,void*))plugin_callback;
+		ambulant_window->m_plugin_data = plugin_data;
+	}
 }
 
 - (void)ambulantWindowClosed
@@ -662,8 +686,7 @@ bad:
 	else
 		UIGraphicsBeginImageContext(imageSize);
 	
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	
+	CGContextRef context = [AmbulantView currentCGContext];	
 	// Iterate over every window from back to front
 	for (UIWindow *window in [[UIApplication sharedApplication] windows]) 
 	{
@@ -705,7 +728,7 @@ bad:
 	else
 		UIGraphicsBeginImageContext(imageSize);
 	
-	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextRef context = [AmbulantView currentCGContext];
 	
 	if (!view.window || ![view.window respondsToSelector:@selector(screen)] || [view.window screen] == [UIScreen mainScreen])
 	{
@@ -1087,4 +1110,54 @@ CreateBitmapContext (CGSize size)
 		assert (transition_pushed);
 	}
 }
-@end
+#ifndef WITH_UIKIT
+// for npambulant
+@synthesize plugin_callback, plugin_data;
+	
+	- (ambulant::gui::cg::cg_window *) getAmbulant_window {
+		return ambulant_window;
+	}
+
+	void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void* plugin_data) {
+		CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+		if (myContext != NULL) {
+			CGContextSaveGState(myContext);
+		}
+		NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort: (void*) ctxp flipped:YES];
+		[NSGraphicsContext setCurrentContext:ns_ctx];
+		AmbulantView* v = [AmbulantView alloc];
+		r =  CGContextGetClipBoundingBox(ctxp);
+		NSLog(@"ctxp=%p r=(%f,%f,%f,%f)", ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
+			[v initWithFrame: r];
+//X		[NSView.focusView addSubView:v];
+		if (myContext != NULL) {
+			CGContextRestoreGState(myContext);
+		}
+		v.plugin_callback = plugin_callback; // need_redraw callback function pointer
+		v.plugin_data = plugin_data; // data for callback function
+		
+		return (void*) v;
+	}
+	void* update_AmbulantView(CGContextRef cg_ctxp, void* obj, CGRect* rectp) {
+		CGRect cg_rect = * rectp;
+		AmbulantView* v = (AmbulantView*) obj;
+		ambulant::lib::point p(cg_rect.origin.x, cg_rect.origin.y);
+		ambulant::lib::size s(cg_rect.size.width, cg_rect.size.height);
+		ambulant::lib::rect r(p, s);
+		NSLog(@"calling need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))",cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
+//X		[v getAmbulant_window]->need_redraw(r);
+		CGContextRef myContext = [v getCGContext];
+		if (myContext != NULL) {	
+			CGContextSaveGState(myContext);
+		}
+		CGContextRef ctxp = (CGContextRef) cg_ctxp;
+		NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxp flipped:YES];
+		[NSGraphicsContext setCurrentContext:ns_ctx];
+		[v drawRect: NSRectFromCGRect(cg_rect)];
+		if (myContext != NULL) {
+			CGContextRestoreGState(myContext);
+		}
+		return (void*) v;
+	}
+#endif// ! WITH_UIKIT
+	@end

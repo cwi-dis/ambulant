@@ -26,6 +26,7 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"
+#include "ambulant/gui/cg/cg_gui.h"
 
 class cg_mainloop :
 	public ambulant::common::gui_player,
@@ -49,8 +50,8 @@ class cg_mainloop :
 	void node_started(const ambulant::lib::node *n) {};
 	void node_stopped(const ambulant::lib::node *n) {};
 	void node_focussed(const ambulant::lib::node *n);
-
+	void update(CGContextRef ctx);
   private:
-	void *m_view;
+	void* m_view;
 	ambulant::common::gui_screen *m_gui_screen;
 };

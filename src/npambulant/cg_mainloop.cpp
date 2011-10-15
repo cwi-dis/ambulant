@@ -71,13 +71,13 @@ cg_mainloop::cg_mainloop(const char *urlstr, void *view,
 	common::preferences *p = common::preferences::get_preferences();
 	p->m_log_level = 0;
 	set_embedder(app);
-	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop(0x%x): created", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop(%p): created", (void*)this);
 	init_factories();
-	AM_DBG lib::logger::get_logger()->debug("m_node_factory now 0x%x", get_node_factory());
+	AM_DBG lib::logger::get_logger()->debug("m_node_factory now %p", get_node_factory());
 	init_plugins();
 
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
-	AM_DBG lib::logger::get_logger()->debug("m_node_factory now 0x%x", get_node_factory());
+	AM_DBG lib::logger::get_logger()->debug("m_node_factory now %p", get_node_factory());
 	m_doc = create_document(url);
 	if (!m_doc) {
 		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), urlstr);
@@ -108,7 +108,7 @@ cg_mainloop::init_playable_factory()
 	pf->add_factory(gui::cg::create_cg_dsvideo_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_image_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
-//	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
+	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_video_playable_factory(this, NULL));
 #endif // NONE_PLAYER
@@ -173,6 +173,7 @@ cg_mainloop::~cg_mainloop()
 {
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
+	m_player->terminate();
 	delete m_player;
 	m_player = NULL;
 	delete m_doc;
@@ -244,3 +245,14 @@ cg_mainloop::node_focussed(const lib::node *n)
 //	set_statusline(m_view, "???");
 }
 
+
+void
+cg_mainloop::update(CGContextRef ctx)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->debug("update(%p): ctx=%p", this , ctx);
+	// draw red Rect
+	CGContextRef context = ctx;
+ 	CGColorRef redColor = CGColorCreateGenericRGB(1.0,0.0,0.0,0.5);
+	CGContextSetFillColorWithColor(context, redColor);
+	CGContextFillRect(context, CGContextGetClipBoundingBox(ctx));
+}

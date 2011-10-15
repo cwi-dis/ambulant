@@ -139,11 +139,15 @@ cg_image_renderer::_prepare_image()
     AM_DBG lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
     
     // Create the layer, initially with the same parameters as the current context.
+#ifdef JNK
 #ifdef WITH_UIKIT
     CGContextRef myContext = UIGraphicsGetCurrentContext();
 #else
     CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 #endif
+#else// ! JNK
+	CGContextRef myContext = [AmbulantView currentCGContext];
+#endif// ! JNK
     CGRect layer_rect = CGRectMake(0, 0, m_size.w, m_size.h);
     m_cglayer = CGLayerCreateWithContext(myContext, layer_rect.size, NULL);
     assert(m_cglayer);

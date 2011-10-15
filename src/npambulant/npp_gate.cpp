@@ -48,7 +48,8 @@
 #endif//XP_WIN32
 
 #include "npambulant.h"
-//#define AM_DBG
+#define AM_DBG
+#define this (void*)0
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -57,6 +58,7 @@ char*
 NPP_GetMIMEDescription(void)
 {
   char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
+  LOG("mimetypes=",mimetypes);
   return mimetypes;
 }
 
@@ -64,11 +66,13 @@ npambulant * s_npambulant = NULL;
 
 NPError NPP_Initialize(void)
 {
+  LOG("\n");
   return NPERR_NO_ERROR;
 }
 
 void NPP_Shutdown(void)
 {
+  LOG("");
 }
 
 // here the plugin creates an instance of our npambulant object which
@@ -82,6 +86,7 @@ NPError NPP_New(NPMIMEType pluginType,
                 char* argv[],
                 NPSavedData* saved)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -91,18 +96,27 @@ NPError NPP_New(NPMIMEType pluginType,
 	NPBool supportsCG = false;
 	rv = NPN_GetValue(instance, NPNVsupportsCoreGraphicsBool, &supportsCG);
 	if (rv) {
-		AM_DBG fprintf(stderr, "GetValue(NPNVsupportsCoreGraphicsBool) returned %d\n", rv);
+		LOG("GetValue(NPNVsupportsCoreGraphicsBool) returned %d\n", rv);
 		return rv;
 	}
 	if (!supportsCG) {
-		AM_DBG fprintf(stderr, "Browser does not support NPNVsupportsCoreGraphicsBool\n");
+		LOG("Browser does not support NPNVsupportsCoreGraphicsBool\n");
 		return NPERR_INCOMPATIBLE_VERSION_ERROR;
 	}
 	rv = NPN_SetValue(instance, NPPVpluginDrawingModel, (void*)NPDrawingModelCoreGraphics);
 	if (rv) {
-		AM_DBG fprintf(stderr, "SetValue(NPDrawingModelCoreGraphics) returned %d\n", rv);
+		LOG("SetValue(NPDrawingModelCoreGraphics) returned %d\n", rv);
 		return NPERR_INCOMPATIBLE_VERSION_ERROR;
 	}
+
+  // select the Cocoa event model
+  NPBool supportsCocoaEvents = false;
+  if (NPN_GetValue(instance, NPNVsupportsCocoaBool, &supportsCocoaEvents) == NPERR_NO_ERROR && supportsCocoaEvents) {
+    NPN_SetValue(instance, NPPVpluginEventModel, (void*)NPEventModelCocoa);
+  } else {
+    LOG("Cocoa event model not supported, can't create a plugin instance.\n");
+    return NPERR_INCOMPATIBLE_VERSION_ERROR;
+  }
 #endif
   npambulant * pPlugin = new npambulant(pluginType,instance,mode,argc,argn,argv,saved);
   if(pPlugin == NULL)
@@ -115,6 +129,7 @@ NPError NPP_New(NPMIMEType pluginType,
 // here is the place to clean up and destroy the npambulant object
 NPError NPP_Destroy (NPP instance, NPSavedData** save)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -135,6 +150,7 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
 // initialization and shutdown
 NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -165,6 +181,7 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 // in the bin/components folder
 NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 {
+  LOG("");
   if(instance == NULL || value == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -201,6 +218,7 @@ NPError NPP_NewStream(NPP instance,
                       NPBool seekable,
                       uint16* stype)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -211,7 +229,7 @@ NPError NPP_NewStream(NPP instance,
     return NPERR_GENERIC_ERROR;
 
   if (pPlugin->isInitialized()) {
-	  fprintf(stderr, "npambulant: NPP_NewStream called twice\n");
+	  LOG("npambulant: NPP_NewStream called twice\n");
     return rv;
   }
   if (!pPlugin->init()) {
@@ -222,6 +240,7 @@ NPError NPP_NewStream(NPP instance,
 
 int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -231,6 +250,7 @@ int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 
 int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, void *buffer)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -240,6 +260,7 @@ int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, 
 
 NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -249,24 +270,28 @@ NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
 
 void NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
 {
+  LOG("");
   if(instance == NULL)
     return;
 }
 
 void NPP_Print (NPP instance, NPPrint* printInfo)
 {
+  LOG("");
   if(instance == NULL)
     return;
 }
 
 void NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData)
 {
+  LOG("");
   if(instance == NULL)
     return;
 }
 
 NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 {
+  LOG("");
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -276,6 +301,7 @@ NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 
 int16	NPP_HandleEvent(NPP instance, void* event)
 {
+  LOG("");
   if(instance == NULL)
     return 0;
 
@@ -290,12 +316,14 @@ int16	NPP_HandleEvent(NPP instance, void* event)
 #ifdef OJI
 jref NPP_GetJavaClass (void)
 {
+  LOG("");
   return NULL;
 }
 #endif//OJI
 
 NPObject *NPP_GetScriptableInstance(NPP instance)
 {
+  LOG("");
   if(!instance)
     return 0;
 
