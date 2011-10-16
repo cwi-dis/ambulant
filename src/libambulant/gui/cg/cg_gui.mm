@@ -90,12 +90,12 @@ cg_window::need_redraw(const rect &r)
 	CGRect my_rect = CGRectFromAmbulantRect(r);
 	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
 	// XXX Is it safe to cast C++ objects to ObjC id's?
-	if (m_plugin_callback == NULL) {
+//X	if (m_plugin_callback == NULL) {
 		[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
 								  withObject: arect waitUntilDone: NO];
-	} else {
-		m_plugin_callback(m_plugin_data, (void*) &r);
-	}
+//X	} else {
+//X		m_plugin_callback(m_plugin_data, (void*) &r);
+//X	}
 }
 
 void
@@ -106,6 +106,16 @@ cg_window::redraw_now()
 		withObject: nil waitUntilDone: NO];
 }
 
+void
+cg_window::npambulant_invalidateRect(CGRect cgrect)
+{
+	rect r = ambulantRectFromCGRect(cgrect);
+	if (m_plugin_callback != NULL && m_plugin_data != NULL) {
+		AM_DBG logger::get_logger()->debug("cg_window::npambulant_invalidateRect(%p &r=%p, ltrb=(%f,%f,%f,%f))", (void *)this, &r, r.top(), r.left(), r.bottom(), r.right());
+		m_plugin_callback(m_plugin_data, (void*) &r);
+	}
+}
+	
 void
 cg_window::redraw(const rect &r)
 {
@@ -371,7 +381,11 @@ bad:
 	CGRect my_rect = [arect rect];
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
-	[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
+	if (plugin_callback == NULL) { //AmabulantPlayer
+		[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
+	} else { // npambulant: firefox wants NPN_Invalidate rect called from main thread
+		ambulant_window->npambulant_invalidateRect(my_rect);
+	}
 }
 
 - (void) syncDisplayIfNeeded: (id) dummy
@@ -394,7 +408,6 @@ bad:
 {
 	CGRect rect = NSRectToCGRect(_rect);
 #endif // WITH_UIKIT
-
     CGContextRef myContext = [self getCGContext];
     CGContextSaveGState(myContext);
 #ifndef WITH_UIKIT

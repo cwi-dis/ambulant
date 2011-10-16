@@ -86,6 +86,7 @@ class cg_window : public common::gui_window {
 	void set_size(lib::size bounds);
 	void (* m_plugin_callback)(void *, void*); // for npambulant XXX needs private
 	void *m_plugin_data;
+	void npambulant_invalidateRect(CGRect r);
   private:
 	void *m_view;
 };

@@ -822,6 +822,7 @@ plugin_callback(void* ptr, void* arg)
 {
 	ambulant::lib::rect r = *(ambulant::lib::rect*) arg;
 	NPRect nsr = {r.top(), r.left(), r.bottom(), r.right()};
+	ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
 	NPN_InvalidateRect ((NPP) ptr, &nsr);
 }
 
