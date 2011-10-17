@@ -68,9 +68,7 @@ class cg_window : public common::gui_window {
   public:
 	cg_window(const std::string &name, lib::size bounds, void *_view, common::gui_events *handler)
 	:	common::gui_window(handler),
-		m_view(_view),
-		m_plugin_callback(NULL),
-		m_plugin_data(NULL)
+		m_view(_view)
 		{}
 	~cg_window();
 
@@ -84,9 +82,7 @@ class cg_window : public common::gui_window {
 	void *view() { return m_view; }
 
 	void set_size(lib::size bounds);
-	void (* m_plugin_callback)(void *, void*); // for npambulant XXX needs private
-	void *m_plugin_data;
-	void npambulant_invalidateRect(CGRect r);
+	
   private:
 	void *m_view;
 };
@@ -162,13 +158,19 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #ifndef	WITH_UIKIT
 	NSGraphicsContext* old_context;
-	// section for use by npambulant only, hiding their superclass counterparts
-	CGContextRef myCGContext;
-	CGRect myBounds;
-	CGRect myFrame;
-	CGSize mySize;
-	void* plugin_callback;
-	void* plugin_data;
+	// section for use by npambulant only.
+	// npambulant creates a "fake" AmbulantView (not added to a superView) outside of the "normal" drawing loop.
+	// It calls the drawRect() method directly when the browser wants a NPCocoaEventDrawRect to be handled with 
+	// the CGContext given in the event data. When the player calls need_redraw(lib::rect), the npapi function
+	// NPN_InvalidateRect(NSRect*) is called though a callback mechanism, causing the browser to re-generate the draw event.
+	// Firefox/Google Chrome (not Safari) require the function to be called from main plugin thread 
+	// (see: https://developer.mozilla.org/en/Gecko_Plugin_API_Reference/Browser_Side_Plug-in_API)
+	CGContextRef myCGContext;//X
+	CGRect myBounds;		 //X
+	CGRect myFrame;			 //X
+	CGSize mySize;			 //X
+	void* plugin_callback;	// callback function pointer to call NPN_InvalidateRect on need_redraw()
+	void* plugin_data;		// browser data for use by NPN_InvalidateRect
 #endif// ! WITH_UIKIT
 }
 
@@ -294,7 +296,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #endif // 0
 #else // ! WITH_UIKIT
 - (ambulant::gui::cg::cg_window *) getAmbulant_window;
-@property (nonatomic,assign) void* plugin_callback;
+@property (nonatomic,assign) void* plugin_callback; 
 @property (nonatomic,assign) void* plugin_data;
 #endif// ! WITH_UIKIT
 @end
@@ -303,7 +305,14 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifndef WITH_UIKIT
 void* new_AmbulantView(CGContextRef cg_ctxp, CGRect rectp, void* plugin_callback, void* plugin_ptr);
-void* update_AmbulantView(CGContextRef cg_ctxp, void* obj, CGRect* rectp);
+// call AmbulantView.drawRect directly with the given CGContext 
+void* draw_rect_AmbulantView(void* obj, CGContextRef cg_ctxp, CGRect* rectp);
+// mouse event handler for npambulant
+typedef struct _event_data {double x; double y;} event_data;
+void handle_event_AmbulantView(void* obj, CGContextRef ctx, void* type, void* data);
+// destructor for npambulant
+void delete_AmbulantView(void* obj);
+
 #endif// ! WITH_UIKIT
 
 #endif // AMBULANT_GUI_CG_CG_GUI_H

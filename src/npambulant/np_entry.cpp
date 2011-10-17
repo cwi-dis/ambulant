@@ -63,7 +63,7 @@ extern "C" {
 
 NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 {
-  AM_DBG fprintf(stderr, "ambulant_plugin: NP_GetEntryPoints(0x%x) called\n", pFuncs);
+  AM_DBG fprintf(stderr, "ambulant_plugin: NP_GetEntryPoints(%p) called\n", pFuncs);
   if(pFuncs == NULL)
     return NPERR_INVALID_FUNCTABLE_ERROR;
 #ifdef XP_MACOSX
@@ -117,7 +117,7 @@ NP_Initialize(NPNetscapeFuncs* pFuncs
 //#endif
               )
 {
-  AM_DBG fprintf(stderr, "ambulant_plugin: NP_Initialize(0x%x) called\n", pFuncs);
+  AM_DBG fprintf(stderr, "ambulant_plugin: NP_Initialize(%p) called\n", pFuncs);
   if(pFuncs == NULL)
     return NPERR_INVALID_FUNCTABLE_ERROR;
 

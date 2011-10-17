@@ -54,10 +54,10 @@
 #define AM_DBG if(0)
 #endif
 
-char*
+const char*
 NPP_GetMIMEDescription(void)
 {
-  char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
+  const char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
   LOG("mimetypes=",mimetypes);
   return mimetypes;
 }
@@ -193,10 +193,10 @@ NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 
   switch (variable) {
   case NPPVpluginNameString:
-    *((char **)value) = "NPRuntimeTest";
+    *((const char **)value) = "npambulant";
     break;
   case NPPVpluginDescriptionString:
-    *((char **)value) = "NPRuntime scriptability API test plugin";
+    *((const char **)value) = "SMIL3.0 player";
     break;
   case NPPVpluginScriptableNPObject:
     *(NPObject **)value = plugin->GetScriptableObject();

@@ -534,21 +534,33 @@ npambulant::handleEvent(void* event) {
 	if (cocoaEvent.type == NPCocoaEventDrawRect) {
 		CGRect cgrect = CGRectMake(cocoaEvent.data.draw.x, cocoaEvent.data.draw.y, cocoaEvent.data.draw.width, cocoaEvent.data.draw.height);
 		m_cgcliprect = cgrect;
-		NPRect nprect = {cocoaEvent.data.draw.x, cocoaEvent.data.draw.y, cocoaEvent.data.draw.x+cocoaEvent.data.draw.width,cocoaEvent.data.draw.y+ cocoaEvent.data.draw.height};
+		NPRect nprect = {cocoaEvent.data.draw.y, cocoaEvent.data.draw.x, cocoaEvent.data.draw.y+ cocoaEvent.data.draw.height,cocoaEvent.data.draw.x+cocoaEvent.data.draw.width};
 		m_nprect = nprect;
+		LOG("New m_nprect=(tlbr)(%d,%d,%d,%d)",m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
 		CGContextRef ctx =  ((NPCocoaEvent*) event)->data.draw.context;
 		CGContextClipToRect(ctx, cgrect);
 		if (m_cgcontext != ctx) {
 			m_cgcontext = ctx;
+			CGAffineTransform t = CGContextGetCTM(ctx);
+			LOG("New m_cgcontext: ctx=%p (t=abcdxy)(%f,%f,%f,%f,%f,%f)", ctx,t.a,t.b,t.c,t.d,t.tx,t.ty);
+
 		}
 		if (m_view == NULL && repr(m_url) != "") {
 			init_cg_view(m_cgcontext);
 			return 1;
 		}
 		if (m_view != NULL && m_mainloop != NULL) {
-		  LOG("m_view=%p m_mainloop=%p",m_view, m_mainloop);
-		  update_AmbulantView(m_cgcontext, m_view, &m_cgcliprect); // do redraw
-		}
+			LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
+			draw_rect_AmbulantView(m_view, m_cgcontext, &m_cgcliprect); // do redraw
+ 		}
+ 	} else  if (cocoaEvent.type == NPCocoaEventMouseDown) {
+ 		if (m_view != NULL && m_mainloop != NULL) {
+		        event_data e_data;
+			unsigned long int NSLeftMouseDown = 1; 
+ 			e_data.x = cocoaEvent.data.mouse.pluginX;
+			e_data.y = cocoaEvent.data.mouse.pluginY;
+			handle_event_AmbulantView((void*) m_view,  m_cgcontext, &NSLeftMouseDown, (void*) &e_data);
+		}	  
 	} else if (m_nprect.top < m_nprect.bottom && m_nprect.left < m_nprect.right) {
 		NPN_InvalidateRect (m_pNPInstance, &m_nprect);	// Ask for draw event
 		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",m_pNPInstance,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
@@ -820,9 +832,11 @@ gtk_gui::~gtk_gui() {
 void
 plugin_callback(void* ptr, void* arg)
 {
-	ambulant::lib::rect r = *(ambulant::lib::rect*) arg;
-	NPRect nsr = {r.top(), r.left(), r.bottom(), r.right()};
-	ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
+	CGRect r = *(CGRect*) arg;
+	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
+	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
+	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
+	ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
 	NPN_InvalidateRect ((NPP) ptr, &nsr);
 }
 

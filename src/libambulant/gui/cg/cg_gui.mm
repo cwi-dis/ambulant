@@ -107,16 +107,6 @@ cg_window::redraw_now()
 }
 
 void
-cg_window::npambulant_invalidateRect(CGRect cgrect)
-{
-	rect r = ambulantRectFromCGRect(cgrect);
-	if (m_plugin_callback != NULL && m_plugin_data != NULL) {
-		AM_DBG logger::get_logger()->debug("cg_window::npambulant_invalidateRect(%p &r=%p, ltrb=(%f,%f,%f,%f))", (void *)this, &r, r.top(), r.left(), r.bottom(), r.right());
-		m_plugin_callback(m_plugin_data, (void*) &r);
-	}
-}
-	
-void
 cg_window::redraw(const rect &r)
 {
 	AM_DBG logger::get_logger()->debug("cg_window::redraw(0x%x, ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
@@ -381,10 +371,12 @@ bad:
 	CGRect my_rect = [arect rect];
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
-	if (plugin_callback == NULL) { //AmabulantPlayer
+	if (plugin_callback == NULL) { //AmbulantPlayer
 		[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
-	} else { // npambulant: firefox wants NPN_Invalidate rect called from main thread
-		ambulant_window->npambulant_invalidateRect(my_rect);
+	} else {
+		// npambulant: Firefox, Google Chrome need NPN_InvalidateRect to be called from main thread
+		void npambulant_invalidateRect(void*, CGRect);
+		npambulant_invalidateRect((void*) self, my_rect);
 	}
 }
 
@@ -456,10 +448,6 @@ bad:
 {
 	AM_DBG NSLog(@"setAmbulantWindow:%p", window);
 	ambulant_window = window;
-	if (plugin_callback != NULL) {
-		ambulant_window->m_plugin_callback = (void(*)(void*,void*))plugin_callback;
-		ambulant_window->m_plugin_data = plugin_data;
-	}
 }
 
 - (void)ambulantWindowClosed
@@ -560,7 +548,10 @@ bad:
 - (void)mouseDown: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
-	where = [self convertPoint: where fromView: nil];
+	if (plugin_callback == NULL) {
+		// player needs conversio, npambulant plugin does not
+		where = [self convertPoint: where fromView: nil];
+	}
 	if (!NSPointInRect(where, [self bounds])) {
 		AM_DBG NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
 		return;
@@ -1124,53 +1115,75 @@ CreateBitmapContext (CGSize size)
 	}
 }
 #ifndef WITH_UIKIT
-// for npambulant
+// extensions for npambulant
 @synthesize plugin_callback, plugin_data;
 	
-	- (ambulant::gui::cg::cg_window *) getAmbulant_window {
-		return ambulant_window;
-	}
+- (ambulant::gui::cg::cg_window *) getAmbulant_window {
+	return ambulant_window;
+}
 
-	void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void* plugin_data) {
-		CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-		if (myContext != NULL) {
-			CGContextSaveGState(myContext);
-		}
-		NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort: (void*) ctxp flipped:YES];
-		[NSGraphicsContext setCurrentContext:ns_ctx];
-		AmbulantView* v = [AmbulantView alloc];
-		r =  CGContextGetClipBoundingBox(ctxp);
-		NSLog(@"ctxp=%p r=(%f,%f,%f,%f)", ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
-			[v initWithFrame: r];
-//X		[NSView.focusView addSubView:v];
-		if (myContext != NULL) {
-			CGContextRestoreGState(myContext);
-		}
-		v.plugin_callback = plugin_callback; // need_redraw callback function pointer
-		v.plugin_data = plugin_data; // data for callback function
-		
-		return (void*) v;
+// execute callback on behalf of asyncRedrawForAmbulantRect:CGRect
+void npambulant_invalidateRect(void* obj, CGRect r) {
+	AmbulantView* v = (AmbulantView*) obj;
+	void* browser_data = v.plugin_data;
+	void (*npambulant_callback)(void*, void*) = (void(*)(void*, void*)) [v plugin_callback];
+	npambulant_callback(browser_data, (void*) &r);
+}
+
+// create a "fake" AmbulantView for use by npambulant
+void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void* plugin_data) {
+	CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	if (myContext != NULL) {
+		CGContextSaveGState(myContext);
 	}
-	void* update_AmbulantView(CGContextRef cg_ctxp, void* obj, CGRect* rectp) {
-		CGRect cg_rect = * rectp;
-		AmbulantView* v = (AmbulantView*) obj;
-		ambulant::lib::point p(cg_rect.origin.x, cg_rect.origin.y);
-		ambulant::lib::size s(cg_rect.size.width, cg_rect.size.height);
-		ambulant::lib::rect r(p, s);
-		NSLog(@"calling need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))",cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
-//X		[v getAmbulant_window]->need_redraw(r);
-		CGContextRef myContext = [v getCGContext];
-		if (myContext != NULL) {	
-			CGContextSaveGState(myContext);
-		}
-		CGContextRef ctxp = (CGContextRef) cg_ctxp;
-		NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxp flipped:YES];
-		[NSGraphicsContext setCurrentContext:ns_ctx];
-		[v drawRect: NSRectFromCGRect(cg_rect)];
-		if (myContext != NULL) {
-			CGContextRestoreGState(myContext);
-		}
-		return (void*) v;
+	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort: (void*) ctxp flipped:YES];
+	[NSGraphicsContext setCurrentContext:ns_ctx];
+	AmbulantView* v = [AmbulantView alloc];
+	r =  CGContextGetClipBoundingBox(ctxp);
+	NSLog(@"ctxp=%p r=(%f,%f,%f,%f)", ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
+		[v initWithFrame: r];
+	v.plugin_callback = plugin_callback; //X 
+	v.plugin_data = plugin_data;		 //X browser data for callback function
+	
+	return (void*) v;
+}
+
+// call AmbulantView.drawRect directly with the given CGContext 
+void* draw_rect_AmbulantView(void* obj, CGContextRef ctx, CGRect* rectp) {
+	CGRect cg_rect = *rectp;
+	AmbulantView* v = (AmbulantView*) obj;
+	ambulant::lib::point p(cg_rect.origin.x, cg_rect.origin.y);
+	ambulant::lib::size s(cg_rect.size.width, cg_rect.size.height);
+	ambulant::lib::rect r(p, s);
+	NSLog(@"draw_rect_AmbulantView: need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))",cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
+	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
+	[NSGraphicsContext setCurrentContext:ns_ctx];
+	[v drawRect: NSRectFromCGRect(cg_rect)];
+	return (void*) v;
+}
+
+// mouse event handler for npambulant
+void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, void* data) {
+	AmbulantView* v = (AmbulantView*) obj;
+	NSEventType type = *(NSEventType*) NSEventTypeRef;
+	event_data e_data = *(event_data*) data; 
+	NSPoint p = {e_data.x, e_data.y};
+	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
+	NSEvent* nse = [NSEvent mouseEventWithType: type location: p modifierFlags: 0 timestamp: 0 windowNumber: v.window.windowNumber context:ns_ctx eventNumber:1 clickCount:1 pressure:0.0];
+	switch (type) {
+		case NSLeftMouseDown:
+			NSLog(@"handle_event_AmbulantView: e_data=(%f,%f) p=(%f,%f)",e_data.x, e_data.y, p.x, p.y);
+			[v mouseDown: nse];
+			break;
+		default:
+			break;
 	}
+}
+
+// destructor for npambulant
+void delete_AmbulantView(void* obj) {
+	AmbulantView* v = (AmbulantView*) obj;
+	[v release];
+}
 #endif// ! WITH_UIKIT
 	@end
