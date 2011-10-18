@@ -33,7 +33,7 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/preferences.h"
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -464,6 +464,12 @@ npambulant::shut() {
 			while ( ! m_ambulant_player->is_done())
 				sleep(3);
 		}
+#ifdef WITH_CG
+		if (m_view != NULL) {
+			delete_AmbulantView(m_view);
+			m_view = NULL;
+		}
+#endif//WIT_CG
 		delete m_mainloop;
 	}
 #endif
@@ -841,7 +847,7 @@ plugin_callback(void* ptr, void* arg)
 	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
 	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
 	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
-	ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
+	AM_DBG ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
 	NPN_InvalidateRect ((NPP) ptr, &nsr);
 }
 
@@ -862,7 +868,7 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 	if (m_ambulant_player == NULL) {
 		delete m_mainloop;
 		m_mainloop = NULL;
-		delete m_view;
+		delete_AmbulantView(m_view);
 		m_view = NULL;
 		return;
 	}

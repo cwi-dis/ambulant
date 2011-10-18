@@ -37,7 +37,7 @@
 #define NSRectFromCGRect(x) (x)
 #endif
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif//AM_DBG
@@ -1172,7 +1172,7 @@ void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void*
 	[NSGraphicsContext setCurrentContext:ns_ctx];
 	AmbulantView* v = [AmbulantView alloc];
 	r =  CGContextGetClipBoundingBox(ctxp);
-	NSLog(@"ctxp=%p r=(%f,%f,%f,%f)", ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
+	AM_DBG NSLog(@"ctxp=%p r=(%f,%f,%f,%f)", ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
 		[v initWithFrame: r];
 	v.plugin_callback = plugin_callback; //X 
 	v.plugin_data = plugin_data;		 //X browser data for callback function
@@ -1186,7 +1186,7 @@ void* draw_rect_AmbulantView(void* obj, CGContextRef ctx, CGRect* rectp) {
 	ambulant::lib::point p(cg_rect.origin.x, cg_rect.origin.y);
 	ambulant::lib::size s(cg_rect.size.width, cg_rect.size.height);
 	ambulant::lib::rect r(p, s);
-	NSLog(@"draw_rect_AmbulantView: need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))",cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
+	AM_DBG NSLog(@"draw_rect_AmbulantView: need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))",cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
 	[NSGraphicsContext setCurrentContext:ns_ctx];
 	[v drawRect: NSRectFromCGRect(cg_rect)];
@@ -1201,7 +1201,7 @@ void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, 
 	NSPoint p = {e_data.x, e_data.y};
 	v.plugin_mainloop = (ambulant::common::gui_player*) mainloop; //X needed for cursor appearance change
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
-	NSLog(@"handle_event_AmbulantView: e_type=%d e_data=(%f,%f) p=(%f,%f)", e_type, e_data.x, e_data.y, p.x, p.y);
+	AM_DBG NSLog(@"handle_event_AmbulantView: e_type=%d e_data=(%f,%f) p=(%f,%f)", e_type, e_data.x, e_data.y, p.x, p.y);
 	// NSEvent mouseEventWithType will crash on type=NSMouseEntered or NSMouseExited showing:
 	// Invalid parameter not satisfying: NSEventMaskFromType(type) & (MouseMask|NSMouseMovedMask)
 	// The idea is to just update the cursor shape in these cases, so make it an NSMouseMoved instead.

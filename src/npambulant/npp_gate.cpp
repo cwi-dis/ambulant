@@ -48,7 +48,7 @@
 #endif//XP_WIN32
 
 #include "npambulant.h"
-#define AM_DBG
+//#define AM_DBG
 #define this (void*)0
 #ifndef AM_DBG
 #define AM_DBG if(0)
