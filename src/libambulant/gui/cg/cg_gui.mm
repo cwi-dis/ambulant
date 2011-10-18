@@ -285,6 +285,9 @@ bad:
 	myBounds = CGRectMake(0,0,0,0);
 	myFrame = CGRectMake(0,0,0,0);
 	mySize = CGSizeMake(0,0);
+	plugin_callback = NULL;
+	plugin_data = NULL;
+	plugin_mainloop = NULL;
 #endif// ! WITH_UIKIT
 
 	return self;
@@ -310,6 +313,9 @@ bad:
 	myBounds = CGRectMake(0,0,0,0);
 	myFrame = CGRectMake(0,0,0,0);
 	mySize = CGSizeMake(0,0);
+	plugin_callback = NULL;
+	plugin_data = NULL;
+	plugin_mainloop = NULL;
 #endif// ! WITH_UIKIT
 	
 	return self;
@@ -549,7 +555,7 @@ bad:
 {
 	NSPoint where = [theEvent locationInWindow];
 	if (plugin_callback == NULL) {
-		// player needs conversio, npambulant plugin does not
+		// player needs conversion, npambulant plugin does not
 		where = [self convertPoint: where fromView: nil];
 	}
 	if (!NSPointInRect(where, [self bounds])) {
@@ -564,17 +570,43 @@ bad:
 - (void)mouseMoved: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
-	where = [self convertPoint: where fromView: nil];
+	if (plugin_callback == NULL) {
+		// player needs conversion, npambulant plugin does not
+		where = [self convertPoint: where fromView: nil];
+	}
 	if (!NSPointInRect(where, [self bounds])) {
 		AM_DBG NSLog(@"mouseMoved outside our frame");
+		if (plugin_callback != NULL && plugin_mainloop != NULL) {
+			if ([NSCursor currentCursor] != [NSCursor pointingHandCursor])
+				[[NSCursor pointingHandCursor] set];
+		}
 		return;
 	}
-	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"%p: mouseMoved at ambulant-point(%f, %f) plugin_callback=%p plugin_mainloop=%p", (void*)self, where.x, where.y, plugin_callback, plugin_mainloop);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
+	if (plugin_callback == NULL) {
+		[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
+	} else {
+		plugin_mainloop->before_mousemove(0);
+	}
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
+	if (plugin_callback == NULL) {
+		[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
+	} else {// from AmbulantPlayer->MyDocument.mm
+		int cursor = plugin_mainloop->after_mousemove();
+		AM_DBG NSLog(@"mouseMoved: cursor=%d", cursor);
+		if (cursor == 0) {
+			if ([NSCursor currentCursor] != [NSCursor arrowCursor]) {
+				[[NSCursor arrowCursor] set];
+			}
+		} else if (cursor == 1) {
+			if ([NSCursor currentCursor] != [NSCursor pointingHandCursor])
+				[[NSCursor pointingHandCursor] set];
+		} else {
+			NSLog(@"Warning: unknown cursor index %d", cursor);
+		}
+	}
 }
 
 - (void)pseudoMouseMove: (id)dummy
@@ -1116,7 +1148,7 @@ CreateBitmapContext (CGSize size)
 }
 #ifndef WITH_UIKIT
 // extensions for npambulant
-@synthesize plugin_callback, plugin_data;
+@synthesize plugin_callback, plugin_data, plugin_mainloop;
 	
 - (ambulant::gui::cg::cg_window *) getAmbulant_window {
 	return ambulant_window;
@@ -1144,7 +1176,6 @@ void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void*
 		[v initWithFrame: r];
 	v.plugin_callback = plugin_callback; //X 
 	v.plugin_data = plugin_data;		 //X browser data for callback function
-	
 	return (void*) v;
 }
 
@@ -1163,17 +1194,30 @@ void* draw_rect_AmbulantView(void* obj, CGContextRef ctx, CGRect* rectp) {
 }
 
 // mouse event handler for npambulant
-void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, void* data) {
+void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, void* data, void* mainloop) {
 	AmbulantView* v = (AmbulantView*) obj;
-	NSEventType type = *(NSEventType*) NSEventTypeRef;
+	NSEventType e_type = *(NSEventType*) NSEventTypeRef;
 	event_data e_data = *(event_data*) data; 
 	NSPoint p = {e_data.x, e_data.y};
+	v.plugin_mainloop = (ambulant::common::gui_player*) mainloop; //X needed for cursor appearance change
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
-	NSEvent* nse = [NSEvent mouseEventWithType: type location: p modifierFlags: 0 timestamp: 0 windowNumber: v.window.windowNumber context:ns_ctx eventNumber:1 clickCount:1 pressure:0.0];
-	switch (type) {
+	NSLog(@"handle_event_AmbulantView: e_type=%d e_data=(%f,%f) p=(%f,%f)", e_type, e_data.x, e_data.y, p.x, p.y);
+	// NSEvent mouseEventWithType will crash on type=NSMouseEntered or NSMouseExited showing:
+	// Invalid parameter not satisfying: NSEventMaskFromType(type) & (MouseMask|NSMouseMovedMask)
+	// The idea is to just update the cursor shape in these cases, so make it an NSMouseMoved instead.
+	if (e_type == NSMouseEntered || e_type == NSMouseExited) {
+		e_type = NSMouseMoved;
+	}
+	NSEvent* nse = [NSEvent mouseEventWithType: e_type location: p modifierFlags: 0 timestamp: 0 windowNumber: v.window.windowNumber context:ns_ctx eventNumber:1 clickCount:1 pressure:0.0];
+	switch (e_type) {
 		case NSLeftMouseDown:
-			NSLog(@"handle_event_AmbulantView: e_data=(%f,%f) p=(%f,%f)",e_data.x, e_data.y, p.x, p.y);
 			[v mouseDown: nse];
+			break;
+		case NSMouseEntered:
+		case NSMouseMoved:
+		case NSMouseExited:
+			// update mouse position and cursor shape
+			[v mouseMoved: nse];
 			break;
 		default:
 			break;

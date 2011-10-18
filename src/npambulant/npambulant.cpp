@@ -553,19 +553,24 @@ npambulant::handleEvent(void* event) {
 			LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
 			draw_rect_AmbulantView(m_view, m_cgcontext, &m_cgcliprect); // do redraw
  		}
- 	} else  if (cocoaEvent.type == NPCocoaEventMouseDown) {
+ 	} else  if (cocoaEvent.type == NPCocoaEventMouseMoved || cocoaEvent.type == NPCocoaEventMouseDown || cocoaEvent.type == NPCocoaEventMouseEntered || cocoaEvent.type == NPCocoaEventMouseExited) {
  		if (m_view != NULL && m_mainloop != NULL) {
 		        event_data e_data;
-			unsigned long int NSLeftMouseDown = 1; 
+			unsigned long int NSLeftMouseDown = 1, NSMouseMoved = 5, NSMouseEntered = 8, NSMouseExited = 9; //XXX needs #include <NSEvent.h >
  			e_data.x = cocoaEvent.data.mouse.pluginX;
 			e_data.y = cocoaEvent.data.mouse.pluginY;
-			handle_event_AmbulantView((void*) m_view,  m_cgcontext, &NSLeftMouseDown, (void*) &e_data);
+			unsigned long int e_type
+			  = cocoaEvent.type == NPCocoaEventMouseMoved ? NSMouseMoved
+			  : cocoaEvent.type == NPCocoaEventMouseEntered ? NSMouseEntered
+			  : cocoaEvent.type ==NPCocoaEventMouseExited ? NSMouseExited
+			  : NSLeftMouseDown;
+			handle_event_AmbulantView((void*) m_view,  m_cgcontext, &e_type, (void*) &e_data, m_mainloop);
 		}	  
 	} else if (m_nprect.top < m_nprect.bottom && m_nprect.left < m_nprect.right) {
 		NPN_InvalidateRect (m_pNPInstance, &m_nprect);	// Ask for draw event
 		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",m_pNPInstance,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
 	}
-#endif
+#endif//WITH_CG
 	return 0;
 }
 
