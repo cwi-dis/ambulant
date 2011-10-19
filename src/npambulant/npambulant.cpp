@@ -110,6 +110,10 @@ npambulant::npambulant(
 	m_view = NULL;
 	m_cgcontext = NULL;
 	m_cgcliprect = CGRectMake(0,0,0,0);
+	m_doc_rect = CGRectMake(0,0,0,0);
+	m_view_rect = CGRectMake(0,0,0,0);
+	m_old_view_rect = CGRectMake(0,0,0,0);
+	m_ctm = CGAffineTransformMake(1.0,0.0,0.0,-1.0,0.0,0.0);
 	NPRect r = {0,0,0,0};
 	m_nprect = r;
 	m_mainloop = NULL;
@@ -556,7 +560,24 @@ npambulant::handleEvent(void* event) {
 			return 1;
 		}
 		if (m_view != NULL && m_mainloop != NULL) {
-			LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
+		  LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
+			if (m_cgcliprect.origin.x == 0 && m_cgcliprect.origin.y == 0) {
+				// compute zoom
+				// special case <region id="image1" top="0" left="0" width="small" height="small" />
+				// is always turned into the whole screen redraw by plugin_callback() 
+				m_view_rect = m_cgcliprect;
+				LOG ("m_view_rect=(%f,%f,%f,%f)", m_view_rect.origin.x,m_view_rect.origin.y,m_view_rect.size.width,m_view_rect.size.height);
+				LOG ("m_old_view_rect=(%f,%f,%f,%f)", m_old_view_rect.origin.x,m_old_view_rect.origin.y,m_old_view_rect.size.width,m_old_view_rect.size.height);
+				if (m_old_view_rect.size.width != 0 && m_old_view_rect.size.height != 0) {
+					double scale_x = m_view_rect.size.width / m_old_view_rect.size.width;
+					double scale_y = m_view_rect.size.height / m_old_view_rect.size.height;
+					double scale = scale_x > 1.0 && scale_x < scale_y ? scale_x : scale_y;
+					LOG("scale_x=%f, scale_y=%f, scale=%f", scale_x, scale_y, scale);
+					m_ctm = CGAffineTransformScale(m_ctm, scale, scale);
+					m_old_view_rect = m_view_rect;
+				}
+			}
+			CGContextConcatCTM(m_cgcontext, m_ctm);
 			draw_rect_AmbulantView(m_view, m_cgcontext, &m_cgcliprect); // do redraw
  		}
  	} else  if (cocoaEvent.type == NPCocoaEventMouseMoved || cocoaEvent.type == NPCocoaEventMouseDown || cocoaEvent.type == NPCocoaEventMouseEntered || cocoaEvent.type == NPCocoaEventMouseExited) {
@@ -843,12 +864,19 @@ gtk_gui::~gtk_gui() {
 void
 plugin_callback(void* ptr, void* arg)
 {
+	npambulant* npa = (npambulant*) ptr;
 	CGRect r = *(CGRect*) arg;
+	if (r.origin.x == 0.0 && r.origin.y == 0.0) {
+		// need to redraw whole screen to prevent wrong interpretation as new zoom rect by handle_event
+		r = npa->m_view_rect;
+	}
+	r = CGRectApplyAffineTransform(r, npa->m_ctm);
+	
 	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
 	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
 	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
-	NPN_InvalidateRect ((NPP) ptr, &nsr);
+	NPN_InvalidateRect (npa->get_NPP(), &nsr);
 }
 
 void
@@ -857,12 +885,17 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 	LOG("getting a view... m_view=%p, cg_ctx=%p m_url=%s", m_view, cg_ctx, repr(m_url).c_str());
 	if (cg_ctx == NULL || m_view != NULL || repr(m_url) == "")
 		return;
-	m_cgcliprect = CGContextGetClipBoundingBox(cg_ctx);
+	m_view_rect = CGContextGetClipBoundingBox(cg_ctx);
+	m_old_view_rect = m_view_rect;
+	m_ctm = CGContextGetCTM(cg_ctx);
+	m_ctm = CGAffineTransformScale(m_ctm, 1.0, -1.0);
+	m_ctm = CGAffineTransformTranslate(m_ctm, 0.0, -m_view_rect.size.height);
 	LOG("CGContext=%p bounding box (%f, %f, %f, %f)", cg_ctx, m_cgcliprect.origin.x, m_cgcliprect.origin.y, m_cgcliprect.size.width, m_cgcliprect.size.height);
-	m_view = new_AmbulantView(cg_ctx, m_cgcliprect, (void*)plugin_callback, m_pNPInstance);
+	m_view = new_AmbulantView(cg_ctx, m_cgcliprect, (void*)plugin_callback, this);
 	if (m_view == NULL)
 		return;
 	m_mainloop = new cg_mainloop(repr(m_url).c_str(), m_view, false, NULL);
+	m_doc_rect = m_view_rect; //XXX get from m_mainloop->m_doc->get_node("root-layout")->size()
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
 	if (m_ambulant_player == NULL) {
