@@ -223,7 +223,14 @@ class npambulant
 	CGRect m_cgcliprect;		// current clipping rectangle in Browser coordinates
 	NPRect m_nprect;		// current drawing rect in Plugin coordinates (for NPN_InvalidateRect)
 	cg_mainloop *m_mainloop;	// current player control object
+	// zoom control
+	CGRect m_doc_rect;		// size of root-layout
+	CGRect m_view_rect;		// screen size from browser 
+	CGRect m_old_view_rect;		// previous screen size from browser 
+	CGAffineTransform m_ctm;	// current transformation matrix 
+
 	void init_cg_view(CGContextRef cg_ctx);
+	NPP get_NPP() { return m_pNPInstance; }
 #else
 	void *m_mainloop;
 #endif
