@@ -434,7 +434,6 @@ npambulant::setWindow(NPWindow* pNPWindow) {
 		// initialize 
 		m_size.width = m_Window->width;
 		m_size.height = m_Window->height;
-//X		m_doc_size = m_size; //XXX should get this from document root-layout
 		m_ctm = CGAffineTransformMake(1.0,0.0,0.0,1.0, 0.0,0.0);
 	} else if (m_size.width != m_Window->width || m_size.height != m_Window->height) {
 		LOG("m_doc_size.width=%f, m_doc_size.height=%f, m_Window->width=%d, m_Window->height=%d)",m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
@@ -898,9 +897,10 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 		return;
 	CGRect cgcliprect =  CGContextGetClipBoundingBox (cg_ctx);
 	LOG("CGContext=%p bounding box (%f, %f, %f, %f)",cg_ctx,cgcliprect.origin.x,cgcliprect.origin.y,cgcliprect.size.width,cgcliprect.size.height);
-	m_view = new_AmbulantView(cg_ctx, m_cgcliprect, (void*) plugin_callback, this);
-	if (m_view == NULL)
+	m_view = new_AmbulantView(cg_ctx, cgcliprect, (void*) plugin_callback, this);
+	if (m_view == NULL) {
 		return;
+	}
 	m_mainloop = new cg_mainloop(repr(m_url).c_str(), m_view, false, NULL);
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
@@ -908,10 +908,17 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 		delete m_mainloop;
 		m_mainloop = NULL;
 		m_view = NULL;
+		LOG("m_ambulant_player == NULL");
 		return;
 	}
-	m_doc_size = get_bounds_AmbulantView((void*) m_view);
-	m_size.width /= 2; m_size.height /= 2;
+	m_doc_size = m_mainloop->get_size_from_doc(); //X get_bounds_AmbulantView((void*) m_view);
+	LOG("m_doc_size=%f,%f",m_doc_size.width, m_doc_size.height);
+	CGRect r = CGRectMake(0,0, m_doc_size.width, m_doc_size.width);
+//	m_view = new_AmbulantView(cg_ctx, r, (void*) plugin_callback, this);
+	if (m_view == NULL) {
+		return;
+	}
+	m_size.width = 1; m_size.height = 1;
 	setWindow(m_Window); // recompute_zoom
 	if (m_autostart)
 		m_ambulant_player->start();

@@ -256,3 +256,10 @@ cg_mainloop::update(CGContextRef ctx)
 	CGContextSetFillColorWithColor(context, redColor);
 	CGContextFillRect(context, CGContextGetClipBoundingBox(ctx));
 }
+
+const CGSize
+cg_mainloop::get_size_from_doc()
+{
+	CGSize rv = CGSizeMake(200,200);
+	return rv;
+}
