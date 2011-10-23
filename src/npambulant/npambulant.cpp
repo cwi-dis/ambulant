@@ -33,7 +33,7 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/preferences.h"
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -576,6 +576,11 @@ npambulant::handleEvent(void* event) {
 		m_nprect = nprect;
 		LOG("New m_nprect=(tlbr)(%d,%d,%d,%d)",m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
 		CGContextRef ctx =  ((NPCocoaEvent*) event)->data.draw.context;
+		if (ctx == NULL) {
+			return 1;
+		}
+		CGAffineTransform ctm = CGContextGetCTM(ctx);
+		LOG("CGContext=%p CTM(a=%f,b=%f,c=%f,d=%f,tr=%f,ty=%f)",ctx,ctm.a,ctm.b,ctm.c,ctm.d,ctm.tx,ctm.ty);
 		CGContextClipToRect(ctx, cgrect);
 		if (m_cgcontext != ctx) {
 			m_cgcontext = ctx;
