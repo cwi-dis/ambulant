@@ -208,10 +208,11 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 
 #	Install ambulant core libraries
 
-	Install plugins for ambulant engine
+#	Install plugins for ambulant engine
 	-mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
 	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
 	cd ../plugins; \
+	echo $(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install;  \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
 
 #	Install gettext localizations

@@ -307,10 +307,11 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifndef WITH_UIKIT
 void* new_AmbulantView(CGContextRef cg_ctxp, CGRect rectp, void* plugin_callback, void* plugin_ptr);
+CGSize get_bounds_AmbulantView(void* view);
 // call AmbulantView.drawRect directly with the given CGContext 
 void* draw_rect_AmbulantView(void* obj, CGContextRef cg_ctxp, CGRect* rectp);
 // mouse event handler for npambulant
-typedef struct _event_data {double x; double y;} event_data;
+typedef struct _event_data {double x; double y;} event_data; //XXX
 void handle_event_AmbulantView(void* obj, CGContextRef ctx, void* type, void* data,  void* mainloop);
 // destructor for npambulant
 void delete_AmbulantView(void* obj);

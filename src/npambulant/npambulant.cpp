@@ -101,19 +101,19 @@ npambulant::npambulant(
 	m_ambulant_player(NULL),
 	m_Window(NULL)
 {
+	LOG("");
 	m_url = net::url();
 #ifdef XP_WIN
 	m_hWnd = NULL;
 	m_lpOldProc = NULL;
 	m_OldWindow = NULL;
 #elif WITH_CG
+	m_size = CGSizeMake(0,0);
+	m_doc_size = CGSizeMake(0,0);
+	m_zoom = 1.0;
 	m_view = NULL;
 	m_cgcontext = NULL;
-	m_cgcliprect = CGRectMake(0,0,0,0);
-	m_doc_rect = CGRectMake(0,0,0,0);
-	m_view_rect = CGRectMake(0,0,0,0);
-	m_old_view_rect = CGRectMake(0,0,0,0);
-	m_ctm = CGAffineTransformMake(1.0,0.0,0.0,-1.0,0.0,0.0);
+	m_ctm = CGAffineTransformMake(1.0,0.0,0.0,1.0,0.0,0.0);
 	NPRect r = {0,0,0,0};
 	m_nprect = r;
 	m_mainloop = NULL;
@@ -319,13 +319,11 @@ npambulant::init_ambulant(NPP npp)
 #endif // WITH_GTK
 
 #ifdef WITH_CG
-//X	assert( ! m_view);
 	if (url_str != NULL)
  		free(url_str);
         if (m_view == NULL && m_cgcontext != NULL) {
 		NPN_InvalidateRect (npp, &m_nprect);	// Ask for draw event
 		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",npp,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
-//X		init_cg_view(m_cgcontext);
 	}
 #endif // WITH_CG
 
@@ -396,6 +394,18 @@ char* npambulant::get_document_location() {
 	return rv;
 }
 
+double
+recompute_zoom (double old_width, double old_height, double new_width, double new_height) {
+	double rv = 1.0;
+	if (old_width > 0.0 && new_width > 0.0) {
+		double scale_x = new_width / old_width;
+		double scale_y = new_height / old_height;
+		rv = scale_x > 1.0 && scale_x < scale_y ? scale_x : scale_y;
+		fprintf(stderr, "recompute_zoom:scale_x=%f, scale_y=%f, scale=%f\n", scale_x, scale_y, rv);
+	}
+	return rv;
+}
+
 NPBool
 npambulant::setWindow(NPWindow* pNPWindow) {
 	if(pNPWindow == NULL)
@@ -419,6 +429,24 @@ npambulant::setWindow(NPWindow* pNPWindow) {
 
 	m_Window = pNPWindow;
 	LOG("m_Window=%p .windox=%p .x=%d .y=%d .width=%d .height=%d .clipRect=(t=%d,l=%d,b=%d,r=%d) .type=%d", m_Window, m_Window->window, m_Window->x, m_Window->y, m_Window->width, m_Window->height, m_Window->clipRect.top, m_Window->clipRect.left, m_Window->clipRect.bottom, m_Window->clipRect.right, m_Window->type);
+#ifdef WITH_CG
+	if (m_size.width == 0.0 && m_size.height == 0.0) {
+		// initialize 
+		m_size.width = m_Window->width;
+		m_size.height = m_Window->height;
+//X		m_doc_size = m_size; //XXX should get this from document root-layout
+		m_ctm = CGAffineTransformMake(1.0,0.0,0.0,1.0, 0.0,0.0);
+	} else if (m_size.width != m_Window->width || m_size.height != m_Window->height) {
+		LOG("m_doc_size.width=%f, m_doc_size.height=%f, m_Window->width=%d, m_Window->height=%d)",m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
+		m_zoom = recompute_zoom(m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
+		m_size.width = m_Window->width;
+		m_size.height = m_Window->height;
+		m_ctm = CGAffineTransformMake(m_zoom,0.0,0.0,m_zoom, 0.0,0.0);
+		if (m_cgcontext != NULL) {
+			CGContextScaleCTM(m_cgcontext, m_zoom, m_zoom);
+		}
+	}				  
+#endif//WITH_CG
 	return TRUE;
 }
 
@@ -470,7 +498,7 @@ npambulant::shut() {
 		}
 #ifdef WITH_CG
 		if (m_view != NULL) {
-			delete_AmbulantView(m_view);
+ //X mainloop takes care //delete_AmbulantView(m_view);
 			m_view = NULL;
 		}
 #endif//WIT_CG
@@ -553,31 +581,15 @@ npambulant::handleEvent(void* event) {
 			m_cgcontext = ctx;
 			CGAffineTransform t = CGContextGetCTM(ctx);
 			LOG("New m_cgcontext: ctx=%p (t=abcdxy)(%f,%f,%f,%f,%f,%f)", ctx,t.a,t.b,t.c,t.d,t.tx,t.ty);
-
 		}
 		if (m_view == NULL && repr(m_url) != "") {
 			init_cg_view(m_cgcontext);
+//			CGContextConcatCTM(m_cgcontext, m_ctm);
 			return 1;
 		}
 		if (m_view != NULL && m_mainloop != NULL) {
-		  LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
-			if (m_cgcliprect.origin.x == 0 && m_cgcliprect.origin.y == 0) {
-				// compute zoom
-				// special case <region id="image1" top="0" left="0" width="small" height="small" />
-				// is always turned into the whole screen redraw by plugin_callback() 
-				m_view_rect = m_cgcliprect;
-				LOG ("m_view_rect=(%f,%f,%f,%f)", m_view_rect.origin.x,m_view_rect.origin.y,m_view_rect.size.width,m_view_rect.size.height);
-				LOG ("m_old_view_rect=(%f,%f,%f,%f)", m_old_view_rect.origin.x,m_old_view_rect.origin.y,m_old_view_rect.size.width,m_old_view_rect.size.height);
-				if (m_old_view_rect.size.width != 0 && m_old_view_rect.size.height != 0) {
-					double scale_x = m_view_rect.size.width / m_old_view_rect.size.width;
-					double scale_y = m_view_rect.size.height / m_old_view_rect.size.height;
-					double scale = scale_x > 1.0 && scale_x < scale_y ? scale_x : scale_y;
-					LOG("scale_x=%f, scale_y=%f, scale=%f", scale_x, scale_y, scale);
-					m_ctm = CGAffineTransformScale(m_ctm, scale, scale);
-					m_old_view_rect = m_view_rect;
-				}
-			}
-			CGContextConcatCTM(m_cgcontext, m_ctm);
+			LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
+			CGContextScaleCTM(m_cgcontext, m_zoom, m_zoom);
 			draw_rect_AmbulantView(m_view, m_cgcontext, &m_cgcliprect); // do redraw
  		}
  	} else  if (cocoaEvent.type == NPCocoaEventMouseMoved || cocoaEvent.type == NPCocoaEventMouseDown || cocoaEvent.type == NPCocoaEventMouseEntered || cocoaEvent.type == NPCocoaEventMouseExited) {
@@ -866,12 +878,6 @@ plugin_callback(void* ptr, void* arg)
 {
 	npambulant* npa = (npambulant*) ptr;
 	CGRect r = *(CGRect*) arg;
-	if (r.origin.x == 0.0 && r.origin.y == 0.0) {
-		// need to redraw whole screen to prevent wrong interpretation as new zoom rect by handle_event
-		r = npa->m_view_rect;
-	}
-	r = CGRectApplyAffineTransform(r, npa->m_ctm);
-	
 	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
 	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
 	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
@@ -885,26 +891,23 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 	LOG("getting a view... m_view=%p, cg_ctx=%p m_url=%s", m_view, cg_ctx, repr(m_url).c_str());
 	if (cg_ctx == NULL || m_view != NULL || repr(m_url) == "")
 		return;
-	m_view_rect = CGContextGetClipBoundingBox(cg_ctx);
-	m_old_view_rect = m_view_rect;
-	m_ctm = CGContextGetCTM(cg_ctx);
-	m_ctm = CGAffineTransformScale(m_ctm, 1.0, -1.0);
-	m_ctm = CGAffineTransformTranslate(m_ctm, 0.0, -m_view_rect.size.height);
-	LOG("CGContext=%p bounding box (%f, %f, %f, %f)", cg_ctx, m_cgcliprect.origin.x, m_cgcliprect.origin.y, m_cgcliprect.size.width, m_cgcliprect.size.height);
-	m_view = new_AmbulantView(cg_ctx, m_cgcliprect, (void*)plugin_callback, this);
+	CGRect cgcliprect =  CGContextGetClipBoundingBox (cg_ctx);
+	LOG("CGContext=%p bounding box (%f, %f, %f, %f)",cg_ctx,cgcliprect.origin.x,cgcliprect.origin.y,cgcliprect.size.width,cgcliprect.size.height);
+	m_view = new_AmbulantView(cg_ctx, m_cgcliprect, (void*) plugin_callback, this);
 	if (m_view == NULL)
 		return;
 	m_mainloop = new cg_mainloop(repr(m_url).c_str(), m_view, false, NULL);
-	m_doc_rect = m_view_rect; //XXX get from m_mainloop->m_doc->get_node("root-layout")->size()
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
 	if (m_ambulant_player == NULL) {
 		delete m_mainloop;
 		m_mainloop = NULL;
-		delete_AmbulantView(m_view);
 		m_view = NULL;
 		return;
 	}
+	m_doc_size = get_bounds_AmbulantView((void*) m_view);
+	m_size.width /= 2; m_size.height /= 2;
+	setWindow(m_Window); // recompute_zoom
 	if (m_autostart)
 		m_ambulant_player->start();
 

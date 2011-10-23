@@ -137,7 +137,7 @@ cg_window::need_events(bool want)
 void
 cg_window::set_size(lib::size bounds)
 {
-
+	AM_DBG logger::get_logger()->debug("cg_window::set_size(0x%x, %d, %d)", (void *)this, bounds.w, bounds.h);
 	AmbulantView *view = (AmbulantView *)m_view;
 	[view ambulantSetSize: bounds];
 }
@@ -379,7 +379,7 @@ bad:
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
 	if (plugin_callback == NULL) { //AmbulantPlayer
 		[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
-	} else {
+	} else if (ambulant_window != NULL) {
 		// npambulant: Firefox, Google Chrome need NPN_InvalidateRect to be called from main thread
 		void npambulant_invalidateRect(void*, CGRect);
 		npambulant_invalidateRect((void*) self, my_rect);
@@ -393,61 +393,6 @@ bad:
 #else // AppKit
 	[self setNeedsDisplay:true];
 #endif//WITH_UIKIT
-}
-
-// drawRect has different signatures in AppKit and UIKit. Hence the ugly
-// c preprocessor constructs here.
-
-#ifdef WITH_UIKIT
-- (void)drawRect:(CGRect)rect
-{
-#else
-- (void)drawRect:(NSRect)_rect
-{
-	CGRect rect = NSRectToCGRect(_rect);
-#endif // WITH_UIKIT
-    CGContextRef myContext = [self getCGContext];
-    CGContextSaveGState(myContext);
-#ifndef WITH_UIKIT
-    //
-    // CG has default coordinate system with the origin bottom-left, we want topleft.
-    // But: if we are running in an NSView then the coordinate system has already
-    // been setup wrt. isFlipped, so we do nothing.
-    //
-    if (![self isFlipped]) {
-        float view_height = CGRectGetHeight(NSRectToCGRect(self.bounds));
-        CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
-        CGContextConcatCTM(myContext, matrix);
-        // Also adapt the dirty rect
-        matrix = CGAffineTransformInvert(matrix);
-        rect = CGRectApplyAffineTransform(rect, matrix);
-    }
-#endif// WITH_UIKIT
-    
-	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
-
-	if (!ambulant_window) {
-		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
-	} else {
-		// If we have seen transitions we always redraw the whole view
-		// XXXJACK interaction of fullscreen transitions and overlay windows
-		// is completely untested, and probably broken.
-		if (transition_count) rect = NSRectToCGRect([self bounds]);
-		ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
-		if (has_drawn) {
-			[self _screenTransitionPreRedraw];
-		}
-		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
-		ambulant_window->redraw(arect);
-		if (has_drawn) {
-			[self _screenTransitionPostRedraw];
-		} else {
-			has_drawn = YES;
-		}
-//		[self _releaseTransitionSurface];
-	}
-
-    CGContextRestoreGState(myContext);
 }
 
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
@@ -1172,11 +1117,17 @@ void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void*
 	[NSGraphicsContext setCurrentContext:ns_ctx];
 	AmbulantView* v = [AmbulantView alloc];
 	r =  CGContextGetClipBoundingBox(ctxp);
-	AM_DBG NSLog(@"ctxp=%p r=(%f,%f,%f,%f)", ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
+	AM_DBG NSLog(@"new_AmbulantView(%p): ctxp=%p r=(%f,%f,%f,%f)", (void*) v, ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
 		[v initWithFrame: r];
 	v.plugin_callback = plugin_callback; //X 
 	v.plugin_data = plugin_data;		 //X browser data for callback function
 	return (void*) v;
+}
+
+CGSize get_bounds_AmbulantView(void* view) {
+	NSSize s = ((AmbulantView*)view).bounds.size;
+	AM_DBG NSLog(@"get_bounds_AmbulantView(%p): size=%f,%f))", view, s.width, s.height);
+	return NSSizeToCGSize(s);
 }
 
 // call AmbulantView.drawRect directly with the given CGContext 
@@ -1186,7 +1137,7 @@ void* draw_rect_AmbulantView(void* obj, CGContextRef ctx, CGRect* rectp) {
 	ambulant::lib::point p(cg_rect.origin.x, cg_rect.origin.y);
 	ambulant::lib::size s(cg_rect.size.width, cg_rect.size.height);
 	ambulant::lib::rect r(p, s);
-	AM_DBG NSLog(@"draw_rect_AmbulantView: need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))",cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
+	AM_DBG NSLog(@"draw_rect_AmbulantView(%p): need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))", obj, cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
 	[NSGraphicsContext setCurrentContext:ns_ctx];
 	[v drawRect: NSRectFromCGRect(cg_rect)];
@@ -1201,7 +1152,7 @@ void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, 
 	NSPoint p = {e_data.x, e_data.y};
 	v.plugin_mainloop = (ambulant::common::gui_player*) mainloop; //X needed for cursor appearance change
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
-	AM_DBG NSLog(@"handle_event_AmbulantView: e_type=%d e_data=(%f,%f) p=(%f,%f)", e_type, e_data.x, e_data.y, p.x, p.y);
+	AM_DBG NSLog(@"handle_event_AmbulantView(%p): e_type=%d e_data=(%f,%f) p=(%f,%f)", obj, e_type, e_data.x, e_data.y, p.x, p.y);
 	// NSEvent mouseEventWithType will crash on type=NSMouseEntered or NSMouseExited showing:
 	// Invalid parameter not satisfying: NSEventMaskFromType(type) & (MouseMask|NSMouseMovedMask)
 	// The idea is to just update the cursor shape in these cases, so make it an NSMouseMoved instead.
@@ -1226,8 +1177,63 @@ void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, 
 
 // destructor for npambulant
 void delete_AmbulantView(void* obj) {
+	AM_DBG NSLog(@"delete_AmbulantView(%p):)", obj);
 	AmbulantView* v = (AmbulantView*) obj;
 	[v release];
 }
 #endif// ! WITH_UIKIT
-	@end
+// drawRect has different signatures in AppKit and UIKit. Hence the ugly
+// c preprocessor constructs here.
+
+#ifdef WITH_UIKIT
+- (void)drawRect:(CGRect)rect
+{
+#else
+	- (void)drawRect:(NSRect)_rect
+	{
+		CGRect rect = NSRectToCGRect(_rect);
+#endif // WITH_UIKIT
+		CGContextRef myContext = [self getCGContext];
+		CGContextSaveGState(myContext);
+#ifndef WITH_UIKIT
+		//
+		// CG has default coordinate system with the origin bottom-left, we want topleft.
+		// But: if we are running in an NSView then the coordinate system has already
+		// been setup wrt. isFlipped, so we do nothing.
+		//
+		if (![self isFlipped]) {
+			float view_height = CGRectGetHeight(NSRectToCGRect(self.bounds));
+			CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
+			CGContextConcatCTM(myContext, matrix);
+			// Also adapt the dirty rect
+			matrix = CGAffineTransformInvert(matrix);
+			rect = CGRectApplyAffineTransform(rect, matrix);
+		}
+#endif// WITH_UIKIT
+		
+		AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+		
+		if (!ambulant_window) {
+			AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
+		} else {
+			// If we have seen transitions we always redraw the whole view
+			// XXXJACK interaction of fullscreen transitions and overlay windows
+			// is completely untested, and probably broken.
+			if (transition_count) rect = NSRectToCGRect([self bounds]);
+			ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
+			if (has_drawn) {
+				[self _screenTransitionPreRedraw];
+			}
+			AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
+			ambulant_window->redraw(arect);
+			if (has_drawn) {
+				[self _screenTransitionPostRedraw];
+			} else {
+				has_drawn = YES;
+			}
+			//		[self _releaseTransitionSurface];
+		}
+		
+		CGContextRestoreGState(myContext);
+	}
+@end
