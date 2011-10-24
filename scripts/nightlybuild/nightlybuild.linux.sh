@@ -96,6 +96,7 @@ esac
 sh autogen.sh
 cd third_party_packages
 python ../scripts/build-third-party-packages.py $BUILD3PPARGS
+PATH=`pwd`/installed/bin:$PATH
 cd ..
 
 

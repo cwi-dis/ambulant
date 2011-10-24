@@ -89,6 +89,7 @@ cd build-3264
 mkdir third_party_packages
 cd third_party_packages
 python ../../scripts/build-third-party-packages.py $BUILD3PPARGS
+PATH=`pwd`/installed/bin:$PATH
 cd ..
 #
 # configure, make, make install
