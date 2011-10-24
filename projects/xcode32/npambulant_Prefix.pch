@@ -1,0 +1,10 @@
+/*
+ *  npambulant.pch
+ *  npambulant
+ *
+ *  Created by Jack Jansen on 29/03/11.
+ *  Copyright 2011 Centrum voor Wiskunde en Informatica. All rights reserved.
+ *
+ */
+
+#include <CoreFoundation/CoreFoundation.h>
