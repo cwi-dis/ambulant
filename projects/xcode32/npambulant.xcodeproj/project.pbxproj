@@ -89,21 +89,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 04FEB3CD13428FDB004D0667 /* libambulant.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 04A1E80812B57DF20060F97E /* libambulantCG */;
+			remoteGlobalIDString = 04A1E80812B57DF20060F97E;
 			remoteInfo = libambulantCG;
 		};
 		932F6E9B1455AA25003E08BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04FEB3D013428FDB004D0667 /* plugin_xpath_state.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 0441E7B91343132C0025FCF9 /* plugin_xpath_state(CG) */;
+			remoteGlobalIDString = 0441E7B91343132C0025FCF9;
 			remoteInfo = "plugin_xpath_state(CG)";
 		};
 		932F6E9D1455AA2B003E08BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04FEB3D313428FDB004D0667 /* plugin_python.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 04290B9C132EB6FD0015D7B7 /* plugin_python (CG) */;
+			remoteGlobalIDString = 04290B9C132EB6FD0015D7B7;
 			remoteInfo = "plugin_python (CG)";
 		};
 /* End PBXContainerItemProxy section */
@@ -505,9 +505,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
+				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
+				LINK_WITH_STANDARD_LIBRARIES = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PATH = "$(PATH):/usr/local/bin:/Applications//Firefox.app/Contents/MacOS/";
+				PATH = "$(PATH):/usr/local/bin";
 				PREBINDING = NO;
 				PRODUCT_NAME = npambulant;
 				SDKROOT = macosx10.6;
@@ -563,7 +564,7 @@
 				);
 				INFOPLIST_FILE = ../../src/npambulant/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) $(AMBULANT_3PP)/xulrunner-sdk/include";
 			};
 			name = Debug;

@@ -101,7 +101,7 @@ npambulant::npambulant(
 	m_ambulant_player(NULL),
 	m_Window(NULL)
 {
-	LOG("");
+//	sleep(60);
 	m_url = net::url();
 #ifdef XP_WIN
 	m_hWnd = NULL;
@@ -119,7 +119,7 @@ npambulant::npambulant(
 	m_mainloop = NULL;
 #endif
 	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &m_window_obj);
-
+	
 	sStartPlayer_id = NPN_GetStringIdentifier("startPlayer");
 	sStopPlayer_id = NPN_GetStringIdentifier("stopPlayer");
 	sRestartPlayer_id = NPN_GetStringIdentifier("restartPlayer");
@@ -174,7 +174,7 @@ npambulant::init_ambulant(NPP npp)
 	// Step 1 - Initialize the logger and such
 	//
 	const char* version = ambulant::get_version();
-	LOG("npambulant::init_ambulant(%p) ambulant version %s", m_Window, version);
+	LOG("m_window=%p ambulant version %s", m_Window, version);
 #ifndef NDEBUG
 	if (getenv("AMBULANT_DEBUG") != 0) {
 		ambulant::lib::logger::get_logger()->set_ostream(new stderr_ostream);
@@ -194,7 +194,7 @@ npambulant::init_ambulant(NPP npp)
 	prefs->m_prefer_ffmpeg = true;
 	prefs->m_use_plugins = true;
 	prefs->m_log_level = ambulant::lib::logger::LEVEL_SHOW;
-	
+
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
 	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
@@ -224,7 +224,6 @@ npambulant::init_ambulant(NPP npp)
 	}
 
 #endif // !XP_WIN3: Linux, Mac
-
 	//
 	// Step 3 - save the NPWindow for any Ambulant plugins (such as SMIL State)
 	//
@@ -258,7 +257,6 @@ npambulant::init_ambulant(NPP npp)
 //	assert ( ! m_ambulant_player);
 //	ambulant::lib::logger::get_logger()->set_show_message(npambulant_display_message);
 	ambulant::lib::logger::get_logger()->show(gettext("Ambulant plugin loaded"));
-
 	//
 	// Step 5 - Argument processing, and obtaining the document URL.
 	//
@@ -317,7 +315,6 @@ npambulant::init_ambulant(NPP npp)
 	gtk_widget_show_all(gtkwidget);
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
-
 #ifdef WITH_CG
 	if (url_str != NULL)
  		free(url_str);
@@ -897,6 +894,7 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 		return;
 	CGRect cgcliprect =  CGContextGetClipBoundingBox (cg_ctx);
 	LOG("CGContext=%p bounding box (%f, %f, %f, %f)",cg_ctx,cgcliprect.origin.x,cgcliprect.origin.y,cgcliprect.size.width,cgcliprect.size.height);
+	sleep(30);
 	m_view = new_AmbulantView(cg_ctx, cgcliprect, (void*) plugin_callback, this);
 	if (m_view == NULL) {
 		return;
@@ -911,7 +909,8 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 		LOG("m_ambulant_player == NULL");
 		return;
 	}
-	m_doc_size = m_mainloop->get_size_from_doc(); //X get_bounds_AmbulantView((void*) m_view);
+	// m_doc_size = m_mainloop->get_size_from_doc();
+	m_doc_size = get_bounds_AmbulantView((void*) m_view);
 	LOG("m_doc_size=%f,%f",m_doc_size.width, m_doc_size.height);
 	CGRect r = CGRectMake(0,0, m_doc_size.width, m_doc_size.width);
 //	m_view = new_AmbulantView(cg_ctx, r, (void*) plugin_callback, this);
