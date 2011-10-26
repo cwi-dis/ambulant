@@ -33,7 +33,7 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/preferences.h"
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -398,7 +398,7 @@ recompute_zoom (double old_width, double old_height, double new_width, double ne
 		double scale_x = new_width / old_width;
 		double scale_y = new_height / old_height;
 		rv = scale_x > 1.0 && scale_x < scale_y ? scale_x : scale_y;
-		fprintf(stderr, "recompute_zoom:scale_x=%f, scale_y=%f, scale=%f\n", scale_x, scale_y, rv);
+		AM_DBG fprintf(stderr, "recompute_zoom:scale_x=%f, scale_y=%f, scale=%f\n", scale_x, scale_y, rv);
 	}
 	return rv;
 }
@@ -894,7 +894,7 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 		return;
 	CGRect cgcliprect =  CGContextGetClipBoundingBox (cg_ctx);
 	LOG("CGContext=%p bounding box (%f, %f, %f, %f)",cg_ctx,cgcliprect.origin.x,cgcliprect.origin.y,cgcliprect.size.width,cgcliprect.size.height);
-	sleep(30);
+//	sleep(60);
 	m_view = new_AmbulantView(cg_ctx, cgcliprect, (void*) plugin_callback, this);
 	if (m_view == NULL) {
 		return;
