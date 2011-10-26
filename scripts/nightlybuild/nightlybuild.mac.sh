@@ -41,7 +41,7 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
-CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python --with-python-plugin"
+CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 ##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
