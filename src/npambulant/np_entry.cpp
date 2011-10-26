@@ -112,9 +112,9 @@ NP_GetValue(void* future, NPPVariable variable, void *value)
 
 NPError OSCALL
 NP_Initialize(NPNetscapeFuncs* pFuncs
-//#if defined(XP_UNIX)
-//              , NPPluginFuncs* pluginFuncs
-//#endif
+#if defined(XP_UNIX)
+              , NPPluginFuncs* pluginFuncs
+#endif
               )
 {
   AM_DBG fprintf(stderr, "ambulant_plugin: NP_Initialize(0x%x) called\n", pFuncs);
