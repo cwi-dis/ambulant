@@ -1,3 +1,4 @@
+#undef NDEBUG
 #ifdef	XP_WIN32
 #include <cstddef>	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
 #ifdef _DEBUG
@@ -100,13 +101,25 @@ npambulant::npambulant(
 	m_ambulant_player(NULL),
 	m_Window(NULL)
 {
+//	sleep(60);
+	m_url = net::url();
 #ifdef XP_WIN
 	m_hWnd = NULL;
 	m_lpOldProc = NULL;
 	m_OldWindow = NULL;
+#elif WITH_CG
+	m_size = CGSizeMake(0,0);
+	m_doc_size = CGSizeMake(0,0);
+	m_zoom = 1.0;
+	m_view = NULL;
+	m_cgcontext = NULL;
+	m_ctm = CGAffineTransformMake(1.0,0.0,0.0,1.0,0.0,0.0);
+	NPRect r = {0,0,0,0};
+	m_nprect = r;
+	m_mainloop = NULL;
 #endif
 	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &m_window_obj);
-
+	
 	sStartPlayer_id = NPN_GetStringIdentifier("startPlayer");
 	sStopPlayer_id = NPN_GetStringIdentifier("stopPlayer");
 	sRestartPlayer_id = NPN_GetStringIdentifier("restartPlayer");
@@ -155,13 +168,13 @@ npambulant::~npambulant()
 }
 
 bool
-npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
+npambulant::init_ambulant(NPP npp)
 {
 	//
 	// Step 1 - Initialize the logger and such
 	//
 	const char* version = ambulant::get_version();
-	AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, version);
+	LOG("m_window=%p ambulant version %s", m_Window, version);
 #ifndef NDEBUG
 	if (getenv("AMBULANT_DEBUG") != 0) {
 		ambulant::lib::logger::get_logger()->set_ostream(new stderr_ostream);
@@ -171,9 +184,8 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 #else //NDEBUG
 	ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_SHOW);
 #endif // NDEBUG
-	if(aWindow == NULL)
+	if (m_Window == NULL)
 		return FALSE;
-	
 	//
 	// Step 2 - Initialize preferences, including setting up for loading
 	// Ambulant plugins (which are needed for SMIL State and (on Windows) ffmpeg).
@@ -182,7 +194,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	prefs->m_prefer_ffmpeg = true;
 	prefs->m_use_plugins = true;
 	prefs->m_log_level = ambulant::lib::logger::LEVEL_SHOW;
-	
+
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
 	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
@@ -195,9 +207,13 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 		prefs->m_use_plugins = false;
 	} else {
 #ifdef WITH_LTDL_PLUGINS
-		char* path = strdup(p.dli_fname); // full path of this firefox plugin
+		char* path = strdup(p.dli_fname); // full path of this npapi plugin
 		char* ffplugindir = dirname(path);
-		char* npambulant_plugins = "/npambulant/plugins";
+#ifdef MOZ_X11
+		const char* npambulant_plugins = "/npambulant/plugins";
+#elif WITH_CG
+		const char* npambulant_plugins = "../PlugIns"; // expected in app. bundle
+#endif
 		char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
 		sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
 		prefs->m_plugin_dir = amplugin_path;
@@ -208,24 +224,23 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	}
 
 #endif // !XP_WIN3: Linux, Mac
-
 	//
 	// Step 3 - save the NPWindow for any Ambulant plugins (such as SMIL State)
 	//
 	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 	void *edptr = pe->get_extra_data("npapi_extra_data");
 	if (edptr) {
-		*(NPWindow**)edptr = aWindow;
-		AM_DBG fprintf(stderr, "npambulant::init_ambulant: setting npapi_extra_data(0x%x) to NPWindow 0x%x\n", edptr, aWindow);
+		*(NPWindow**)edptr = m_Window;
+		LOG("npambulant::init_ambulant: setting npapi_extra_data(%p) to NPWindow %p", edptr, m_Window);
 	} else {
-		AM_DBG fprintf(stderr, "npambulant::init_ambulant: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
+		LOG("npambulant::init_ambulant: Cannot find npapi_extra_data, cannot communicate NPWindow");
 	}
 	
 	//
 	// Step 4 - Platform-specific window mumbo-jumbo
 	//
 #ifdef WITH_GTK
-	long long ll_winid = reinterpret_cast<long long>(aWindow->window);
+	long long ll_winid = reinterpret_cast<long long>(m_Window->window);
 	int i_winid = static_cast<int>(ll_winid);
 	GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
 	if (gtkwidget->window == NULL) {
@@ -235,14 +250,13 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	}
 #endif // WITH_GTK
 #ifdef	XP_WIN32
-	m_hwnd = (HWND)aWindow->window;
+	m_hwnd = (HWND)m_Window->window;
 	if(m_hwnd == NULL)
 		return FALSE;
 #endif//XP_WIN32
-	assert ( ! m_ambulant_player);
-	ambulant::lib::logger::get_logger()->set_show_message(npambulant_display_message);
+//	assert ( ! m_ambulant_player);
+//	ambulant::lib::logger::get_logger()->set_show_message(npambulant_display_message);
 	ambulant::lib::logger::get_logger()->show(gettext("Ambulant plugin loaded"));
-
 	//
 	// Step 5 - Argument processing, and obtaining the document URL.
 	//
@@ -266,7 +280,9 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	net::url file_url;
 	net::url arg_url = net::url::from_url(arg_str);
 	char* url_str = NULL;
+	LOG("arg_url=%s", repr(arg_url).c_str());
 	if (arg_url.is_absolute()) {
+		LOG("absolute");
 		url_str = strdup(arg_url.get_url().c_str());
 		file_url = arg_url;
 	} else {
@@ -280,8 +296,9 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 		}
 		url_str = strdup(file_url.get_url().c_str());
 	}
+	LOG("file_url=%s", repr(file_url).c_str());
 	m_url = file_url;
-	
+	LOG("m_url=%s m_Window->window=%p", repr(m_url).c_str(), m_Window->window);
 	//
 	// Step 6 - Initialize the platform-specific widget infrastructure, create
 	// the ambulant player and optionally start it
@@ -298,22 +315,13 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	gtk_widget_show_all(gtkwidget);
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
-
 #ifdef WITH_CG
-	NP_CGContext *cg_context = (NP_CGContext *)aWindow->window;
-	AM_DBG fprintf(stderr, "npambulant::init_ambulant: context=0x%x, window=0x%x\n", cg_context->context, cg_context->window);
-	AM_DBG {
-		CGRect rect = CGContextGetClipBoundingBox(cg_context->context);
-		fprintf(stderr, "npambulant::init_ambulant: bounding box (%f, %f, %f, %f)\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+	if (url_str != NULL)
+ 		free(url_str);
+        if (m_view == NULL && m_cgcontext != NULL) {
+		NPN_InvalidateRect (npp, &m_nprect);	// Ask for draw event
+		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",npp,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
 	}
-	void *view = NULL; // XXXJACK
-	m_mainloop = new cg_mainloop(url_str, view, false, NULL);
-	m_logger = lib::logger::get_logger();
-	m_ambulant_player = m_mainloop->get_player();
-	if (m_ambulant_player == NULL)
-		return false;
-	if (m_autostart)
-		m_ambulant_player->start();
 #endif // WITH_CG
 
 #ifdef	XP_WIN32
@@ -338,13 +346,13 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 /// In javascript this is simply document.location.href. In C it's the
 /// same, but slightly more convoluted:-)
 char* npambulant::get_document_location() {
-	AM_DBG fprintf(stderr, "npambulant::get_document_location()\n");
+	LOG("npambulant::get_document_location()");
 	char *rv = NULL;
 
 	// Get document
 	NPVariant npvDocument;
 	bool ok = NPN_GetProperty( m_pNPInstance, m_window_obj, NPN_GetStringIdentifier("document"), &npvDocument);
-	AM_DBG fprintf(stderr, "NPN_GetProperty(..., document, ...) -> %d, 0x%d\n", ok, npvDocument);
+	LOG("NPN_GetProperty(..., document, ...) -> %d, %p",  ok, npvDocument.value.objectValue);
 	if (!ok) return NULL;
 	assert(NPVARIANT_IS_OBJECT(npvDocument));
 	NPObject *document = NPVARIANT_TO_OBJECT(npvDocument);
@@ -353,7 +361,7 @@ char* npambulant::get_document_location() {
 	// Get document.location
 	NPVariant npvLocation;
 	ok = NPN_GetProperty(m_pNPInstance, document, NPN_GetStringIdentifier("location"), &npvLocation);
-	AM_DBG fprintf(stderr, "NPN_GetProperty(..., location, ...) -> %d, 0x%d\n", ok, npvLocation);
+	LOG("NPN_GetProperty(..., location, ...) -> %d, %p", ok, npvLocation.value.objectValue);
 	if (!ok) return NULL;
 	assert(NPVARIANT_IS_OBJECT(npvLocation));
 	NPObject *location = NPVARIANT_TO_OBJECT(npvLocation);
@@ -362,10 +370,10 @@ char* npambulant::get_document_location() {
 	// Get document.location.href
 	NPVariant npvHref;
 	ok = NPN_GetProperty(m_pNPInstance, location, NPN_GetStringIdentifier("href"), &npvHref);
-	AM_DBG fprintf(stderr, "NPN_GetProperty(..., href, ...) -> %d, 0x%d\n", ok, npvHref);
+	LOG("NPN_GetProperty(..., href, ...) -> %d, %p", ok, npvHref.value.objectValue);
 	if (!ok) return NULL;
 	if (!NPVARIANT_IS_STRING(npvHref)) {
-		AM_DBG fprintf(stderr, "get_document_location: document.location.href is not a string\n");
+		LOG("get_document_location: document.location.href is not a string");
 		return NULL;
 	}
 
@@ -375,11 +383,23 @@ char* npambulant::get_document_location() {
 	rv = (char*) malloc(href.UTF8Length+1);
 	strncpy(rv, href.UTF8Characters, href.UTF8Length);
 	rv[href.UTF8Length] = '\0';
-	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
+	LOG("get_document_location: returning \"%s\"", rv);
 
 	NPN_ReleaseVariantValue(&npvLocation);
 	NPN_ReleaseVariantValue(&npvDocument);
 	NPN_ReleaseVariantValue(&npvHref);
+	return rv;
+}
+
+double
+recompute_zoom (double old_width, double old_height, double new_width, double new_height) {
+	double rv = 1.0;
+	if (old_width > 0.0 && new_width > 0.0) {
+		double scale_x = new_width / old_width;
+		double scale_y = new_height / old_height;
+		rv = scale_x > 1.0 && scale_x < scale_y ? scale_x : scale_y;
+		AM_DBG fprintf(stderr, "recompute_zoom:scale_x=%f, scale_y=%f, scale=%f\n", scale_x, scale_y, rv);
+	}
 	return rv;
 }
 
@@ -388,10 +408,10 @@ npambulant::setWindow(NPWindow* pNPWindow) {
 	if(pNPWindow == NULL)
 		return FALSE;
 	if (m_Window && m_Window != pNPWindow)
-		ambulant::lib::logger::get_logger()->trace("npambulant: NPWindow changed from 0x%x to 0x%x", m_Window, pNPWindow);
+		ambulant::lib::logger::get_logger()->trace("npambulant: NPWindow changed from %p to %p", m_Window, pNPWindow);
 #ifdef XP_WIN
 	if (m_hWnd && m_hwnd != (HWND)pNPWindow->window)
-		ambulant::lib::logger::get_logger()->trace("npambulant: HWND changed from 0x%x to 0x%x", m_hWnd, (HWND)pNPWindow->window);
+		ambulant::lib::logger::get_logger()->trace("npambulant: HWND changed from %p to %p", m_hWnd, (HWND)pNPWindow->window);
 	m_hWnd = (HWND)pNPWindow->window;
 	if(m_hWnd == NULL)
 		return FALSE;
@@ -405,7 +425,24 @@ npambulant::setWindow(NPWindow* pNPWindow) {
 #endif
 
 	m_Window = pNPWindow;
-
+	LOG("m_Window=%p .windox=%p .x=%d .y=%d .width=%d .height=%d .clipRect=(t=%d,l=%d,b=%d,r=%d) .type=%d", m_Window, m_Window->window, m_Window->x, m_Window->y, m_Window->width, m_Window->height, m_Window->clipRect.top, m_Window->clipRect.left, m_Window->clipRect.bottom, m_Window->clipRect.right, m_Window->type);
+#ifdef WITH_CG
+	if (m_size.width == 0.0 && m_size.height == 0.0) {
+		// initialize 
+		m_size.width = m_Window->width;
+		m_size.height = m_Window->height;
+		m_ctm = CGAffineTransformMake(1.0,0.0,0.0,1.0, 0.0,0.0);
+	} else if (m_size.width != m_Window->width || m_size.height != m_Window->height) {
+		LOG("m_doc_size.width=%f, m_doc_size.height=%f, m_Window->width=%d, m_Window->height=%d)",m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
+		m_zoom = recompute_zoom(m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
+		m_size.width = m_Window->width;
+		m_size.height = m_Window->height;
+		m_ctm = CGAffineTransformMake(m_zoom,0.0,0.0,m_zoom, 0.0,0.0);
+		if (m_cgcontext != NULL) {
+			CGContextScaleCTM(m_cgcontext, m_zoom, m_zoom);
+		}
+	}				  
+#endif//WITH_CG
 	return TRUE;
 }
 
@@ -423,7 +460,7 @@ npambulant::init() {
 		ambulant::lib::logger::get_logger()->trace("npambulant: init called twice");
 	}
 	m_bInitialized = TRUE;
-	return init_ambulant(m_pNPInstance, m_Window);
+	return init_ambulant(m_pNPInstance);
 }
 
 void
@@ -455,6 +492,12 @@ npambulant::shut() {
 			while ( ! m_ambulant_player->is_done())
 				sleep(3);
 		}
+#ifdef WITH_CG
+		if (m_view != NULL) {
+ //X mainloop takes care //delete_AmbulantView(m_view);
+			m_view = NULL;
+		}
+#endif//WIT_CG
 		delete m_mainloop;
 	}
 #endif
@@ -489,18 +532,85 @@ npambulant::getValue(const char *name) {
 
 int16
 npambulant::handleEvent(void* event) {
-#ifdef XP_MAC
-	// XXXJACK thinks this is nonsense.... Old debug code??
-	NPEvent* ev = (NPEvent*)event;
-	if (m_Window) {
-		Rect box = { 
-			m_Window->y, m_Window->x,
-			m_Window->y + m_Window->height, m_Window->x + m_Window->width };
-		if (ev->what == updateEvt) {
-			::TETextBox(m_String, strlen(m_String), &box, teJustCenter);
+#ifdef WITH_CG
+	NPCocoaEvent cocoaEvent = *(NPCocoaEvent*)event;
+	LOG("event=%p, type=%d", event, cocoaEvent.type);
+	// From: https://wiki.mozilla.org/NPAPI:CocoaEventModel
+	switch (cocoaEvent.type) {
+	case NPCocoaEventDrawRect: 		//1
+		LOG("cocoaEvent.data.draw.context=%p .x=%lf .y=%lf .width=%lf .height=%lf", cocoaEvent.data.draw.context, cocoaEvent.data.draw.x, cocoaEvent.data.draw.y, cocoaEvent.data.draw.width, cocoaEvent.data.draw.height);
+		break;
+	case NPCocoaEventMouseDown: 		//2
+	case NPCocoaEventMouseUp: 		//3
+	case NPCocoaEventMouseMoved: 		//4
+	case NPCocoaEventMouseEntered: 		//5
+	case NPCocoaEventMouseExited: 		//6
+	case NPCocoaEventMouseDragged: 		//7
+		LOG("cocoaEvent.data.mouse.modifierFlags=%x .pluginX=%lf .pluginY=%lf .buttonNumber=%d .clickCount=%d .deltaX=%lf .deltaY=%lf .deltaZ=%lf", cocoaEvent.data.mouse.modifierFlags, cocoaEvent.data.mouse.pluginX, cocoaEvent.data.mouse.pluginY, cocoaEvent.data.mouse.buttonNumber, cocoaEvent.data.mouse.clickCount, cocoaEvent.data.mouse.deltaX, cocoaEvent.data.mouse.deltaY, cocoaEvent.data.mouse.deltaZ);
+		break;
+	case NPCocoaEventKeyDown: 		//8
+	case NPCocoaEventKeyUp: 		//9
+		LOG("cocoaEvent.data.key.modifierFlags=%x .characters=%p .charactersIgnoringModifiers=%p .isARepeat=%d keyCode=%d", cocoaEvent.data.key.modifierFlags, cocoaEvent.data.key.characters, cocoaEvent.data.key.charactersIgnoringModifiers, cocoaEvent.data.key.isARepeat, cocoaEvent.data.key.keyCode);
+		break;
+	case NPCocoaEventFlagsChanged: 		//10
+	case NPCocoaEventFocusChanged: 		//11
+	case NPCocoaEventWindowFocusChanged:	//12
+		LOG("cocoaEvent.data.focus.hasFocus=%d",cocoaEvent.data.focus.hasFocus); 
+		break;
+	case NPCocoaEventScrollWheel:		//13
+	case NPCocoaEventTextInput:		//14
+		LOG("cocoaEvent.data.text=%p", cocoaEvent.data.text.text); // NPNString* is a NSString*
+		break;
+	default:
+		LOG("unknown cocoaEvent");
+		break;
+	};
+	if (cocoaEvent.type == NPCocoaEventDrawRect) {
+		CGRect cgrect = CGRectMake(cocoaEvent.data.draw.x, cocoaEvent.data.draw.y, cocoaEvent.data.draw.width, cocoaEvent.data.draw.height);
+		m_cgcliprect = cgrect;
+		NPRect nprect = {cocoaEvent.data.draw.y, cocoaEvent.data.draw.x, cocoaEvent.data.draw.y+ cocoaEvent.data.draw.height,cocoaEvent.data.draw.x+cocoaEvent.data.draw.width};
+		m_nprect = nprect;
+		LOG("New m_nprect=(tlbr)(%d,%d,%d,%d)",m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
+		CGContextRef ctx =  ((NPCocoaEvent*) event)->data.draw.context;
+		if (ctx == NULL) {
+			return 1;
 		}
+		CGAffineTransform ctm = CGContextGetCTM(ctx);
+		LOG("CGContext=%p CTM(a=%f,b=%f,c=%f,d=%f,tr=%f,ty=%f)",ctx,ctm.a,ctm.b,ctm.c,ctm.d,ctm.tx,ctm.ty);
+		CGContextClipToRect(ctx, cgrect);
+		if (m_cgcontext != ctx) {
+			m_cgcontext = ctx;
+			CGAffineTransform t = CGContextGetCTM(ctx);
+			LOG("New m_cgcontext: ctx=%p (t=abcdxy)(%f,%f,%f,%f,%f,%f)", ctx,t.a,t.b,t.c,t.d,t.tx,t.ty);
+		}
+		if (m_view == NULL && repr(m_url) != "") {
+			init_cg_view(m_cgcontext);
+//			CGContextConcatCTM(m_cgcontext, m_ctm);
+			return 1;
+		}
+		if (m_view != NULL && m_mainloop != NULL) {
+			LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
+			CGContextScaleCTM(m_cgcontext, m_zoom, m_zoom);
+			draw_rect_AmbulantView(m_view, m_cgcontext, &m_cgcliprect); // do redraw
+ 		}
+ 	} else  if (cocoaEvent.type == NPCocoaEventMouseMoved || cocoaEvent.type == NPCocoaEventMouseDown || cocoaEvent.type == NPCocoaEventMouseEntered || cocoaEvent.type == NPCocoaEventMouseExited) {
+ 		if (m_view != NULL && m_mainloop != NULL) {
+		        event_data e_data;
+			unsigned long int NSLeftMouseDown = 1, NSMouseMoved = 5, NSMouseEntered = 8, NSMouseExited = 9; //XXX needs #include <NSEvent.h >
+ 			e_data.x = cocoaEvent.data.mouse.pluginX;
+			e_data.y = cocoaEvent.data.mouse.pluginY;
+			unsigned long int e_type
+			  = cocoaEvent.type == NPCocoaEventMouseMoved ? NSMouseMoved
+			  : cocoaEvent.type == NPCocoaEventMouseEntered ? NSMouseEntered
+			  : cocoaEvent.type ==NPCocoaEventMouseExited ? NSMouseExited
+			  : NSLeftMouseDown;
+			handle_event_AmbulantView((void*) m_view,  m_cgcontext, &e_type, (void*) &e_data, m_mainloop);
+		}	  
+	} else if (m_nprect.top < m_nprect.bottom && m_nprect.left < m_nprect.right) {
+		NPN_InvalidateRect (m_pNPInstance, &m_nprect);	// Ask for draw event
+		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",m_pNPInstance,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
 	}
-#endif
+#endif//WITH_CG
 	return 0;
 }
 
@@ -761,3 +871,56 @@ gtk_gui::~gtk_gui() {
 	g_object_unref (G_OBJECT (main_loop));
 }
 #endif // WITH_GTK
+
+#ifdef  WITH_CG
+
+void
+plugin_callback(void* ptr, void* arg)
+{
+	npambulant* npa = (npambulant*) ptr;
+	CGRect r = *(CGRect*) arg;
+	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
+	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
+	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
+	AM_DBG ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
+	NPN_InvalidateRect (npa->get_NPP(), &nsr);
+}
+
+void
+npambulant::init_cg_view(CGContextRef cg_ctx)
+{
+	LOG("getting a view... m_view=%p, cg_ctx=%p m_url=%s", m_view, cg_ctx, repr(m_url).c_str());
+	if (cg_ctx == NULL || m_view != NULL || repr(m_url) == "")
+		return;
+	CGRect cgcliprect =  CGContextGetClipBoundingBox (cg_ctx);
+	LOG("CGContext=%p bounding box (%f, %f, %f, %f)",cg_ctx,cgcliprect.origin.x,cgcliprect.origin.y,cgcliprect.size.width,cgcliprect.size.height);
+//	sleep(60);
+	m_view = new_AmbulantView(cg_ctx, cgcliprect, (void*) plugin_callback, this);
+	if (m_view == NULL) {
+		return;
+	}
+	m_mainloop = new cg_mainloop(repr(m_url).c_str(), m_view, false, NULL);
+	m_logger = lib::logger::get_logger();
+	m_ambulant_player = m_mainloop->get_player();
+	if (m_ambulant_player == NULL) {
+		delete m_mainloop;
+		m_mainloop = NULL;
+		m_view = NULL;
+		LOG("m_ambulant_player == NULL");
+		return;
+	}
+	// m_doc_size = m_mainloop->get_size_from_doc();
+	m_doc_size = get_bounds_AmbulantView((void*) m_view);
+	LOG("m_doc_size=%f,%f",m_doc_size.width, m_doc_size.height);
+	CGRect r = CGRectMake(0,0, m_doc_size.width, m_doc_size.width);
+//	m_view = new_AmbulantView(cg_ctx, r, (void*) plugin_callback, this);
+	if (m_view == NULL) {
+		return;
+	}
+	m_size.width = 1; m_size.height = 1;
+	setWindow(m_Window); // recompute_zoom
+	if (m_autostart)
+		m_ambulant_player->start();
+
+}
+#endif//WITH_CG

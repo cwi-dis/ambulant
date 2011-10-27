@@ -377,6 +377,70 @@
 		93C8CEA313166F360085212A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CEA113166F360085212A /* CoreText.framework */; };
 		93C8CEA513166F450085212A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CE9D13166EF80085212A /* CoreGraphics.framework */; };
 		93C8CEA713166F650085212A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CE9F13166F130085212A /* ImageIO.framework */; };
+		93DEE5A614475D5500091472 /* connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59314475D5400091472 /* connection.h */; };
+		93DEE5A714475D5500091472 /* databuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59414475D5400091472 /* databuffer.h */; };
+		93DEE5A814475D5500091472 /* datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59514475D5400091472 /* datasource.h */; };
+		93DEE5A914475D5500091472 /* demux_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59614475D5400091472 /* demux_datasource.h */; };
+		93DEE5AA14475D5500091472 /* ffmpeg_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59714475D5400091472 /* ffmpeg_audio.h */; };
+		93DEE5AB14475D5500091472 /* ffmpeg_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59814475D5400091472 /* ffmpeg_common.h */; };
+		93DEE5AC14475D5500091472 /* ffmpeg_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59914475D5400091472 /* ffmpeg_factory.h */; };
+		93DEE5AD14475D5500091472 /* ffmpeg_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59A14475D5400091472 /* ffmpeg_raw.h */; };
+		93DEE5AE14475D5500091472 /* ffmpeg_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59B14475D5400091472 /* ffmpeg_video.h */; };
+		93DEE5B014475D5500091472 /* posix_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59F14475D5500091472 /* posix_datasource.h */; };
+		93DEE5B114475D5500091472 /* rtsp_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A014475D5500091472 /* rtsp_datasource.h */; };
+		93DEE5B214475D5500091472 /* rtsp_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A114475D5500091472 /* rtsp_factory.h */; };
+		93DEE5B314475D5500091472 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A214475D5500091472 /* socket.h */; };
+		93DEE5B414475D5500091472 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A314475D5500091472 /* stdio_datasource.h */; };
+		93DEE5B514475D5500091472 /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A414475D5500091472 /* url.h */; };
+		93DEE5B614475D5500091472 /* win32_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A514475D5500091472 /* win32_datasource.h */; };
+		93DEE5B714475D5500091472 /* connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59314475D5400091472 /* connection.h */; };
+		93DEE5B814475D5500091472 /* databuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59414475D5400091472 /* databuffer.h */; };
+		93DEE5B914475D5500091472 /* datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59514475D5400091472 /* datasource.h */; };
+		93DEE5BA14475D5500091472 /* demux_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59614475D5400091472 /* demux_datasource.h */; };
+		93DEE5BB14475D5500091472 /* ffmpeg_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59714475D5400091472 /* ffmpeg_audio.h */; };
+		93DEE5BC14475D5500091472 /* ffmpeg_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59814475D5400091472 /* ffmpeg_common.h */; };
+		93DEE5BD14475D5500091472 /* ffmpeg_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59914475D5400091472 /* ffmpeg_factory.h */; };
+		93DEE5BE14475D5500091472 /* ffmpeg_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59A14475D5400091472 /* ffmpeg_raw.h */; };
+		93DEE5BF14475D5500091472 /* ffmpeg_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59B14475D5400091472 /* ffmpeg_video.h */; };
+		93DEE5C114475D5500091472 /* posix_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59F14475D5500091472 /* posix_datasource.h */; };
+		93DEE5C214475D5500091472 /* rtsp_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A014475D5500091472 /* rtsp_datasource.h */; };
+		93DEE5C314475D5500091472 /* rtsp_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A114475D5500091472 /* rtsp_factory.h */; };
+		93DEE5C414475D5500091472 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A214475D5500091472 /* socket.h */; };
+		93DEE5C514475D5500091472 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A314475D5500091472 /* stdio_datasource.h */; };
+		93DEE5C614475D5500091472 /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A414475D5500091472 /* url.h */; };
+		93DEE5C714475D5500091472 /* win32_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A514475D5500091472 /* win32_datasource.h */; };
+		93DEE5C814475D5500091472 /* connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59314475D5400091472 /* connection.h */; };
+		93DEE5C914475D5500091472 /* databuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59414475D5400091472 /* databuffer.h */; };
+		93DEE5CA14475D5500091472 /* datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59514475D5400091472 /* datasource.h */; };
+		93DEE5CB14475D5500091472 /* demux_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59614475D5400091472 /* demux_datasource.h */; };
+		93DEE5CC14475D5500091472 /* ffmpeg_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59714475D5400091472 /* ffmpeg_audio.h */; };
+		93DEE5CD14475D5500091472 /* ffmpeg_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59814475D5400091472 /* ffmpeg_common.h */; };
+		93DEE5CE14475D5500091472 /* ffmpeg_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59914475D5400091472 /* ffmpeg_factory.h */; };
+		93DEE5CF14475D5500091472 /* ffmpeg_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59A14475D5400091472 /* ffmpeg_raw.h */; };
+		93DEE5D014475D5500091472 /* ffmpeg_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59B14475D5400091472 /* ffmpeg_video.h */; };
+		93DEE5D214475D5500091472 /* posix_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59F14475D5500091472 /* posix_datasource.h */; };
+		93DEE5D314475D5500091472 /* rtsp_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A014475D5500091472 /* rtsp_datasource.h */; };
+		93DEE5D414475D5500091472 /* rtsp_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A114475D5500091472 /* rtsp_factory.h */; };
+		93DEE5D514475D5500091472 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A214475D5500091472 /* socket.h */; };
+		93DEE5D614475D5500091472 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A314475D5500091472 /* stdio_datasource.h */; };
+		93DEE5D714475D5500091472 /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A414475D5500091472 /* url.h */; };
+		93DEE5D814475D5500091472 /* win32_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A514475D5500091472 /* win32_datasource.h */; };
+		93DEE5D914475D5500091472 /* connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59314475D5400091472 /* connection.h */; };
+		93DEE5DA14475D5500091472 /* databuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59414475D5400091472 /* databuffer.h */; };
+		93DEE5DB14475D5500091472 /* datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59514475D5400091472 /* datasource.h */; };
+		93DEE5DC14475D5500091472 /* demux_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59614475D5400091472 /* demux_datasource.h */; };
+		93DEE5DD14475D5500091472 /* ffmpeg_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59714475D5400091472 /* ffmpeg_audio.h */; };
+		93DEE5DE14475D5500091472 /* ffmpeg_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59814475D5400091472 /* ffmpeg_common.h */; };
+		93DEE5DF14475D5500091472 /* ffmpeg_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59914475D5400091472 /* ffmpeg_factory.h */; };
+		93DEE5E014475D5500091472 /* ffmpeg_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59A14475D5400091472 /* ffmpeg_raw.h */; };
+		93DEE5E114475D5500091472 /* ffmpeg_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59B14475D5400091472 /* ffmpeg_video.h */; };
+		93DEE5E314475D5500091472 /* posix_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59F14475D5500091472 /* posix_datasource.h */; };
+		93DEE5E414475D5500091472 /* rtsp_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A014475D5500091472 /* rtsp_datasource.h */; };
+		93DEE5E514475D5500091472 /* rtsp_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A114475D5500091472 /* rtsp_factory.h */; };
+		93DEE5E614475D5500091472 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A214475D5500091472 /* socket.h */; };
+		93DEE5E714475D5500091472 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A314475D5500091472 /* stdio_datasource.h */; };
+		93DEE5E814475D5500091472 /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A414475D5500091472 /* url.h */; };
+		93DEE5E914475D5500091472 /* win32_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A514475D5500091472 /* win32_datasource.h */; };
 		D2AAC0CC05546C4400DB518D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -868,6 +932,23 @@
 		93C8CE9D13166EF80085212A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		93C8CE9F13166F130085212A /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		93C8CEA113166F360085212A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		93DEE59214475D5400091472 /* .cvsignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .cvsignore; sourceTree = "<group>"; };
+		93DEE59314475D5400091472 /* connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = connection.h; sourceTree = "<group>"; };
+		93DEE59414475D5400091472 /* databuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = databuffer.h; sourceTree = "<group>"; };
+		93DEE59514475D5400091472 /* datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = datasource.h; sourceTree = "<group>"; };
+		93DEE59614475D5400091472 /* demux_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demux_datasource.h; sourceTree = "<group>"; };
+		93DEE59714475D5400091472 /* ffmpeg_audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_audio.h; sourceTree = "<group>"; };
+		93DEE59814475D5400091472 /* ffmpeg_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_common.h; sourceTree = "<group>"; };
+		93DEE59914475D5400091472 /* ffmpeg_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_factory.h; sourceTree = "<group>"; };
+		93DEE59A14475D5400091472 /* ffmpeg_raw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_raw.h; sourceTree = "<group>"; };
+		93DEE59B14475D5400091472 /* ffmpeg_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_video.h; sourceTree = "<group>"; };
+		93DEE59F14475D5500091472 /* posix_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posix_datasource.h; sourceTree = "<group>"; };
+		93DEE5A014475D5500091472 /* rtsp_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_datasource.h; sourceTree = "<group>"; };
+		93DEE5A114475D5500091472 /* rtsp_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_factory.h; sourceTree = "<group>"; };
+		93DEE5A214475D5500091472 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
+		93DEE5A314475D5500091472 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
+		93DEE5A414475D5500091472 /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
+		93DEE5A514475D5500091472 /* win32_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = win32_datasource.h; sourceTree = "<group>"; };
 		D2A6134D07B89F6200DD23D3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		D2AAC0C705546C1D00DB518D /* libambulant.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulant.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1019,7 +1100,7 @@
 				04791BCE1151943B0007DD71 /* gui */,
 				04791C321151943B0007DD71 /* lib */,
 				04791C671151943B0007DD71 /* Makefile.am */,
-				04791C681151943B0007DD71 /* net */,
+				93DEE59114475D5400091472 /* net */,
 				04791C7A1151943B0007DD71 /* smil2 */,
 				04791C911151943B0007DD71 /* version.h */,
 			);
@@ -1392,12 +1473,14 @@
 				04791C781151943B0007DD71 /* url.h */,
 				04791C791151943B0007DD71 /* win32_datasource.h */,
 			);
-			path = net;
+			name = net;
+			path = ../net;
 			sourceTree = "<group>";
 		};
 		04791C7A1151943B0007DD71 /* smil2 */ = {
 			isa = PBXGroup;
 			children = (
+				04791C681151943B0007DD71 /* net */,
 				04791C7B1151943B0007DD71 /* smiltext.h */,
 				04791C7C1151943B0007DD71 /* animate_a.h */,
 				04791C7D1151943B0007DD71 /* animate_e.h */,
@@ -1814,6 +1897,30 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
+		93DEE59114475D5400091472 /* net */ = {
+			isa = PBXGroup;
+			children = (
+				93DEE59214475D5400091472 /* .cvsignore */,
+				93DEE59314475D5400091472 /* connection.h */,
+				93DEE59414475D5400091472 /* databuffer.h */,
+				93DEE59514475D5400091472 /* datasource.h */,
+				93DEE59614475D5400091472 /* demux_datasource.h */,
+				93DEE59714475D5400091472 /* ffmpeg_audio.h */,
+				93DEE59814475D5400091472 /* ffmpeg_common.h */,
+				93DEE59914475D5400091472 /* ffmpeg_factory.h */,
+				93DEE59A14475D5400091472 /* ffmpeg_raw.h */,
+				93DEE59B14475D5400091472 /* ffmpeg_video.h */,
+				93DEE59F14475D5500091472 /* posix_datasource.h */,
+				93DEE5A014475D5500091472 /* rtsp_datasource.h */,
+				93DEE5A114475D5500091472 /* rtsp_factory.h */,
+				93DEE5A214475D5500091472 /* socket.h */,
+				93DEE5A314475D5500091472 /* stdio_datasource.h */,
+				93DEE5A414475D5500091472 /* url.h */,
+				93DEE5A514475D5500091472 /* win32_datasource.h */,
+			);
+			path = net;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1824,6 +1931,22 @@
 				93BBA28712DCABF700EE7501 /* cg_avfoundation_video.h in Headers */,
 				93BBA28912DCAC1B00EE7501 /* cg_smiltext.h in Headers */,
 				939CEABD12E85FD40003D62E /* cg_transition.h in Headers */,
+				93DEE5D914475D5500091472 /* connection.h in Headers */,
+				93DEE5DA14475D5500091472 /* databuffer.h in Headers */,
+				93DEE5DB14475D5500091472 /* datasource.h in Headers */,
+				93DEE5DC14475D5500091472 /* demux_datasource.h in Headers */,
+				93DEE5DD14475D5500091472 /* ffmpeg_audio.h in Headers */,
+				93DEE5DE14475D5500091472 /* ffmpeg_common.h in Headers */,
+				93DEE5DF14475D5500091472 /* ffmpeg_factory.h in Headers */,
+				93DEE5E014475D5500091472 /* ffmpeg_raw.h in Headers */,
+				93DEE5E114475D5500091472 /* ffmpeg_video.h in Headers */,
+				93DEE5E314475D5500091472 /* posix_datasource.h in Headers */,
+				93DEE5E414475D5500091472 /* rtsp_datasource.h in Headers */,
+				93DEE5E514475D5500091472 /* rtsp_factory.h in Headers */,
+				93DEE5E614475D5500091472 /* socket.h in Headers */,
+				93DEE5E714475D5500091472 /* stdio_datasource.h in Headers */,
+				93DEE5E814475D5500091472 /* url.h in Headers */,
+				93DEE5E914475D5500091472 /* win32_datasource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1832,6 +1955,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				93BBA28A12DCAC1B00EE7501 /* cg_smiltext.h in Headers */,
+				93DEE5A614475D5500091472 /* connection.h in Headers */,
+				93DEE5A714475D5500091472 /* databuffer.h in Headers */,
+				93DEE5A814475D5500091472 /* datasource.h in Headers */,
+				93DEE5A914475D5500091472 /* demux_datasource.h in Headers */,
+				93DEE5AA14475D5500091472 /* ffmpeg_audio.h in Headers */,
+				93DEE5AB14475D5500091472 /* ffmpeg_common.h in Headers */,
+				93DEE5AC14475D5500091472 /* ffmpeg_factory.h in Headers */,
+				93DEE5AD14475D5500091472 /* ffmpeg_raw.h in Headers */,
+				93DEE5AE14475D5500091472 /* ffmpeg_video.h in Headers */,
+				93DEE5B014475D5500091472 /* posix_datasource.h in Headers */,
+				93DEE5B114475D5500091472 /* rtsp_datasource.h in Headers */,
+				93DEE5B214475D5500091472 /* rtsp_factory.h in Headers */,
+				93DEE5B314475D5500091472 /* socket.h in Headers */,
+				93DEE5B414475D5500091472 /* stdio_datasource.h in Headers */,
+				93DEE5B514475D5500091472 /* url.h in Headers */,
+				93DEE5B614475D5500091472 /* win32_datasource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1841,6 +1980,22 @@
 			files = (
 				93BBA28B12DCAC1B00EE7501 /* cg_smiltext.h in Headers */,
 				939CEABC12E85FD40003D62E /* cg_transition.h in Headers */,
+				93DEE5C814475D5500091472 /* connection.h in Headers */,
+				93DEE5C914475D5500091472 /* databuffer.h in Headers */,
+				93DEE5CA14475D5500091472 /* datasource.h in Headers */,
+				93DEE5CB14475D5500091472 /* demux_datasource.h in Headers */,
+				93DEE5CC14475D5500091472 /* ffmpeg_audio.h in Headers */,
+				93DEE5CD14475D5500091472 /* ffmpeg_common.h in Headers */,
+				93DEE5CE14475D5500091472 /* ffmpeg_factory.h in Headers */,
+				93DEE5CF14475D5500091472 /* ffmpeg_raw.h in Headers */,
+				93DEE5D014475D5500091472 /* ffmpeg_video.h in Headers */,
+				93DEE5D214475D5500091472 /* posix_datasource.h in Headers */,
+				93DEE5D314475D5500091472 /* rtsp_datasource.h in Headers */,
+				93DEE5D414475D5500091472 /* rtsp_factory.h in Headers */,
+				93DEE5D514475D5500091472 /* socket.h in Headers */,
+				93DEE5D614475D5500091472 /* stdio_datasource.h in Headers */,
+				93DEE5D714475D5500091472 /* url.h in Headers */,
+				93DEE5D814475D5500091472 /* win32_datasource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1848,6 +2003,22 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93DEE5B714475D5500091472 /* connection.h in Headers */,
+				93DEE5B814475D5500091472 /* databuffer.h in Headers */,
+				93DEE5B914475D5500091472 /* datasource.h in Headers */,
+				93DEE5BA14475D5500091472 /* demux_datasource.h in Headers */,
+				93DEE5BB14475D5500091472 /* ffmpeg_audio.h in Headers */,
+				93DEE5BC14475D5500091472 /* ffmpeg_common.h in Headers */,
+				93DEE5BD14475D5500091472 /* ffmpeg_factory.h in Headers */,
+				93DEE5BE14475D5500091472 /* ffmpeg_raw.h in Headers */,
+				93DEE5BF14475D5500091472 /* ffmpeg_video.h in Headers */,
+				93DEE5C114475D5500091472 /* posix_datasource.h in Headers */,
+				93DEE5C214475D5500091472 /* rtsp_datasource.h in Headers */,
+				93DEE5C314475D5500091472 /* rtsp_factory.h in Headers */,
+				93DEE5C414475D5500091472 /* socket.h in Headers */,
+				93DEE5C514475D5500091472 /* stdio_datasource.h in Headers */,
+				93DEE5C614475D5500091472 /* url.h in Headers */,
+				93DEE5C714475D5500091472 /* win32_datasource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2589,15 +2760,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PATH = "$(PATH):/usr/local/bin:";
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};

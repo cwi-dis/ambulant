@@ -204,14 +204,15 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 
 #	Install npambulant plugin binary
 	-mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
-	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
+	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/npambulant
 
 #	Install ambulant core libraries
 
-	Install plugins for ambulant engine
+#	Install plugins for ambulant engine
 	-mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
 	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
 	cd ../plugins; \
+	echo $(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install;  \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
 
 #	Install gettext localizations
@@ -235,8 +236,7 @@ install-npambulant: $(NPAMBULANT_PLUGIN)
 
 #	Copy in shared libraries and fix rpath
 	DYLD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
-		$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -v\
-		$(NPAMBULANT_PLUGIN)
+		$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py $(NPAMBULANT_PLUGIN)
 #	Check that internalization worked
 	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(NPAMBULANT_PLUGIN)
 #TBD	strip  npambulant_plugin_dir/plugins/npambulant/*.so*

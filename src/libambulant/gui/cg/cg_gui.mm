@@ -90,8 +90,12 @@ cg_window::need_redraw(const rect &r)
 	CGRect my_rect = CGRectFromAmbulantRect(r);
 	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
 	// XXX Is it safe to cast C++ objects to ObjC id's?
-	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
-		withObject: arect waitUntilDone: NO];
+//X	if (m_plugin_callback == NULL) {
+		[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
+								  withObject: arect waitUntilDone: NO];
+//X	} else {
+//X		m_plugin_callback(m_plugin_data, (void*) &r);
+//X	}
 }
 
 void
@@ -133,7 +137,7 @@ cg_window::need_events(bool want)
 void
 cg_window::set_size(lib::size bounds)
 {
-
+	AM_DBG logger::get_logger()->debug("cg_window::set_size(0x%x, %d, %d)", (void *)this, bounds.w, bounds.h);
 	AmbulantView *view = (AmbulantView *)m_view;
 	[view ambulantSetSize: bounds];
 }
@@ -203,6 +207,7 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 	NSData *data;
 	AmbulantView *view = (AmbulantView *)m_view;
 	NSImage *image = [view _getOnScreenImage];
+	
 	NSBitmapImageRep* rep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
 //	NSImageRep *rep = [image bestRepresentationForDevice: NULL]; // deprecated
 	if (image == NULL) {
@@ -275,6 +280,16 @@ bad:
 	transition_pushed = NO;
 	fullscreen_ended = NO;
 	has_drawn = NO;
+#ifndef	WITH_UIKIT
+	myCGContext = NULL;
+	myBounds = CGRectMake(0,0,0,0);
+	myFrame = CGRectMake(0,0,0,0);
+	mySize = CGSizeMake(0,0);
+	plugin_callback = NULL;
+	plugin_data = NULL;
+	plugin_mainloop = NULL;
+#endif// ! WITH_UIKIT
+
 	return self;
 }
 
@@ -293,6 +308,16 @@ bad:
 	transition_pushed = NO;
 	fullscreen_ended = NO;
 	has_drawn = NO;
+#ifndef	WITH_UIKIT
+	myCGContext = NULL;
+	myBounds = CGRectMake(0,0,0,0);
+	myFrame = CGRectMake(0,0,0,0);
+	mySize = CGSizeMake(0,0);
+	plugin_callback = NULL;
+	plugin_data = NULL;
+	plugin_mainloop = NULL;
+#endif// ! WITH_UIKIT
+	
 	return self;
 }
 
@@ -352,7 +377,13 @@ bad:
 	CGRect my_rect = [arect rect];
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
-	[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
+	if (plugin_callback == NULL) { //AmbulantPlayer
+		[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
+	} else if (ambulant_window != NULL) {
+		// npambulant: Firefox, Google Chrome need NPN_InvalidateRect to be called from main thread
+		void npambulant_invalidateRect(void*, CGRect);
+		npambulant_invalidateRect((void*) self, my_rect);
+	}
 }
 
 - (void) syncDisplayIfNeeded: (id) dummy
@@ -364,64 +395,9 @@ bad:
 #endif//WITH_UIKIT
 }
 
-// drawRect has different signatures in AppKit and UIKit. Hence the ugly
-// c preprocessor constructs here.
-
-#ifdef WITH_UIKIT
-- (void)drawRect:(CGRect)rect
-{
-#else
-- (void)drawRect:(NSRect)_rect
-{
-	CGRect rect = NSRectToCGRect(_rect);
-#endif // WITH_UIKIT
-
-    CGContextRef myContext = [self getCGContext];
-    CGContextSaveGState(myContext);
-#ifndef WITH_UIKIT
-    //
-    // CG has default coordinate system with the origin bottom-left, we want topleft.
-    // But: if we are running in an NSView then the coordinate system has already
-    // been setup wrt. isFlipped, so we do nothing.
-    //
-    if (![self isFlipped]) {
-        float view_height = CGRectGetHeight(NSRectToCGRect(self.bounds));
-        CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
-        CGContextConcatCTM(myContext, matrix);
-        // Also adapt the dirty rect
-        matrix = CGAffineTransformInvert(matrix);
-        rect = CGRectApplyAffineTransform(rect, matrix);
-    }
-#endif// WITH_UIKIT
-    
-	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
-
-	if (!ambulant_window) {
-		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
-	} else {
-		// If we have seen transitions we always redraw the whole view
-		// XXXJACK interaction of fullscreen transitions and overlay windows
-		// is completely untested, and probably broken.
-		if (transition_count) rect = NSRectToCGRect([self bounds]);
-		ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
-		if (has_drawn) {
-			[self _screenTransitionPreRedraw];
-		}
-		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
-		ambulant_window->redraw(arect);
-		if (has_drawn) {
-			[self _screenTransitionPostRedraw];
-		} else {
-			has_drawn = YES;
-		}
-//		[self _releaseTransitionSurface];
-	}
-
-    CGContextRestoreGState(myContext);
-}
-
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
 {
+	AM_DBG NSLog(@"setAmbulantWindow:%p", window);
 	ambulant_window = window;
 }
 
@@ -523,7 +499,10 @@ bad:
 - (void)mouseDown: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
-	where = [self convertPoint: where fromView: nil];
+	if (plugin_callback == NULL) {
+		// player needs conversion, npambulant plugin does not
+		where = [self convertPoint: where fromView: nil];
+	}
 	if (!NSPointInRect(where, [self bounds])) {
 		AM_DBG NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
 		return;
@@ -536,17 +515,43 @@ bad:
 - (void)mouseMoved: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
-	where = [self convertPoint: where fromView: nil];
+	if (plugin_callback == NULL) {
+		// player needs conversion, npambulant plugin does not
+		where = [self convertPoint: where fromView: nil];
+	}
 	if (!NSPointInRect(where, [self bounds])) {
 		AM_DBG NSLog(@"mouseMoved outside our frame");
+		if (plugin_callback != NULL && plugin_mainloop != NULL) {
+			if ([NSCursor currentCursor] != [NSCursor pointingHandCursor])
+				[[NSCursor pointingHandCursor] set];
+		}
 		return;
 	}
-	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"%p: mouseMoved at ambulant-point(%f, %f) plugin_callback=%p plugin_mainloop=%p", (void*)self, where.x, where.y, plugin_callback, plugin_mainloop);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
+	if (plugin_callback == NULL) {
+		[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
+	} else {
+		plugin_mainloop->before_mousemove(0);
+	}
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
+	if (plugin_callback == NULL) {
+		[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
+	} else {// from AmbulantPlayer->MyDocument.mm
+		int cursor = plugin_mainloop->after_mousemove();
+		AM_DBG NSLog(@"mouseMoved: cursor=%d", cursor);
+		if (cursor == 0) {
+			if ([NSCursor currentCursor] != [NSCursor arrowCursor]) {
+				[[NSCursor arrowCursor] set];
+			}
+		} else if (cursor == 1) {
+			if ([NSCursor currentCursor] != [NSCursor pointingHandCursor])
+				[[NSCursor pointingHandCursor] set];
+		} else {
+			NSLog(@"Warning: unknown cursor index %d", cursor);
+		}
+	}
 }
 
 - (void)pseudoMouseMove: (id)dummy
@@ -662,8 +667,7 @@ bad:
 	else
 		UIGraphicsBeginImageContext(imageSize);
 	
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	
+	CGContextRef context = [AmbulantView currentCGContext];	
 	// Iterate over every window from back to front
 	for (UIWindow *window in [[UIApplication sharedApplication] windows]) 
 	{
@@ -705,7 +709,7 @@ bad:
 	else
 		UIGraphicsBeginImageContext(imageSize);
 	
-	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextRef context = [AmbulantView currentCGContext];
 	
 	if (!view.window || ![view.window respondsToSelector:@selector(screen)] || [view.window screen] == [UIScreen mainScreen])
 	{
@@ -1087,4 +1091,149 @@ CreateBitmapContext (CGSize size)
 		assert (transition_pushed);
 	}
 }
+#ifndef WITH_UIKIT
+// extensions for npambulant
+@synthesize plugin_callback, plugin_data, plugin_mainloop;
+	
+- (ambulant::gui::cg::cg_window *) getAmbulant_window {
+	return ambulant_window;
+}
+
+// execute callback on behalf of asyncRedrawForAmbulantRect:CGRect
+void npambulant_invalidateRect(void* obj, CGRect r) {
+	AmbulantView* v = (AmbulantView*) obj;
+	void* browser_data = v.plugin_data;
+	void (*npambulant_callback)(void*, void*) = (void(*)(void*, void*)) [v plugin_callback];
+	npambulant_callback(browser_data, (void*) &r);
+}
+
+// create a "fake" AmbulantView for use by npambulant
+void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void* plugin_data) {
+	CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+	if (myContext != NULL) {
+		CGContextSaveGState(myContext);
+	}
+	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort: (void*) ctxp flipped:YES];
+	[NSGraphicsContext setCurrentContext:ns_ctx];
+	AmbulantView* v = [AmbulantView alloc];
+	r =  CGContextGetClipBoundingBox(ctxp);
+	AM_DBG NSLog(@"new_AmbulantView(%p): ctxp=%p r=(%f,%f,%f,%f)", (void*) v, ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
+		[v initWithFrame: r];
+	v.plugin_callback = plugin_callback; //X 
+	v.plugin_data = plugin_data;		 //X browser data for callback function
+	return (void*) v;
+}
+
+CGSize get_bounds_AmbulantView(void* view) {
+	NSSize s = ((AmbulantView*)view).bounds.size;
+	AM_DBG NSLog(@"get_bounds_AmbulantView(%p): size=%f,%f))", view, s.width, s.height);
+	return NSSizeToCGSize(s);
+}
+
+// call AmbulantView.drawRect directly with the given CGContext 
+void* draw_rect_AmbulantView(void* obj, CGContextRef ctx, CGRect* rectp) {
+	CGRect cg_rect = *rectp;
+	AmbulantView* v = (AmbulantView*) obj;
+	ambulant::lib::point p(cg_rect.origin.x, cg_rect.origin.y);
+	ambulant::lib::size s(cg_rect.size.width, cg_rect.size.height);
+	ambulant::lib::rect r(p, s);
+	AM_DBG NSLog(@"draw_rect_AmbulantView(%p): need_redraw(cg_rect=(%f,%f,%f,%f)r=(%d,%d,%d,%d))", obj, cg_rect.origin.x,cg_rect.origin.y,cg_rect.size.width,cg_rect.size.height,r.x,r.y,r.w,r.h);
+	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
+	[NSGraphicsContext setCurrentContext:ns_ctx];
+	[v drawRect: NSRectFromCGRect(cg_rect)];
+	return (void*) v;
+}
+
+// mouse event handler for npambulant
+void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, void* data, void* mainloop) {
+	AmbulantView* v = (AmbulantView*) obj;
+	NSEventType e_type = *(NSEventType*) NSEventTypeRef;
+	event_data e_data = *(event_data*) data; 
+	NSPoint p = {e_data.x, e_data.y};
+	v.plugin_mainloop = (ambulant::common::gui_player*) mainloop; //X needed for cursor appearance change
+	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
+	AM_DBG NSLog(@"handle_event_AmbulantView(%p): e_type=%d e_data=(%f,%f) p=(%f,%f)", obj, e_type, e_data.x, e_data.y, p.x, p.y);
+	// NSEvent mouseEventWithType will crash on type=NSMouseEntered or NSMouseExited showing:
+	// Invalid parameter not satisfying: NSEventMaskFromType(type) & (MouseMask|NSMouseMovedMask)
+	// The idea is to just update the cursor shape in these cases, so make it an NSMouseMoved instead.
+	if (e_type == NSMouseEntered || e_type == NSMouseExited) {
+		e_type = NSMouseMoved;
+	}
+	NSEvent* nse = [NSEvent mouseEventWithType: e_type location: p modifierFlags: 0 timestamp: 0 windowNumber: v.window.windowNumber context:ns_ctx eventNumber:1 clickCount:1 pressure:0.0];
+	switch (e_type) {
+		case NSLeftMouseDown:
+			[v mouseDown: nse];
+			break;
+		case NSMouseEntered:
+		case NSMouseMoved:
+		case NSMouseExited:
+			// update mouse position and cursor shape
+			[v mouseMoved: nse];
+			break;
+		default:
+			break;
+	}
+}
+
+// destructor for npambulant
+void delete_AmbulantView(void* obj) {
+	AM_DBG NSLog(@"delete_AmbulantView(%p):)", obj);
+	AmbulantView* v = (AmbulantView*) obj;
+	[v release];
+}
+#endif// ! WITH_UIKIT
+// drawRect has different signatures in AppKit and UIKit. Hence the ugly
+// c preprocessor constructs here.
+
+#ifdef WITH_UIKIT
+- (void)drawRect:(CGRect)rect
+{
+#else
+	- (void)drawRect:(NSRect)_rect
+	{
+		CGRect rect = NSRectToCGRect(_rect);
+#endif // WITH_UIKIT
+		CGContextRef myContext = [self getCGContext];
+		CGContextSaveGState(myContext);
+#ifndef WITH_UIKIT
+		//
+		// CG has default coordinate system with the origin bottom-left, we want topleft.
+		// But: if we are running in an NSView then the coordinate system has already
+		// been setup wrt. isFlipped, so we do nothing.
+		//
+		if (![self isFlipped]) {
+			float view_height = CGRectGetHeight(NSRectToCGRect(self.bounds));
+			CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
+			CGContextConcatCTM(myContext, matrix);
+			// Also adapt the dirty rect
+			matrix = CGAffineTransformInvert(matrix);
+			rect = CGRectApplyAffineTransform(rect, matrix);
+		}
+#endif// WITH_UIKIT
+		
+		AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+		
+		if (!ambulant_window) {
+			AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
+		} else {
+			// If we have seen transitions we always redraw the whole view
+			// XXXJACK interaction of fullscreen transitions and overlay windows
+			// is completely untested, and probably broken.
+			if (transition_count) rect = NSRectToCGRect([self bounds]);
+			ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
+			if (has_drawn) {
+				[self _screenTransitionPreRedraw];
+			}
+			AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
+			ambulant_window->redraw(arect);
+			if (has_drawn) {
+				[self _screenTransitionPostRedraw];
+			} else {
+				has_drawn = YES;
+			}
+			//		[self _releaseTransitionSurface];
+		}
+		
+		CGContextRestoreGState(myContext);
+	}
 @end

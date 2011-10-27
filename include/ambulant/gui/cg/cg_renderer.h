@@ -22,17 +22,10 @@
 #ifndef AMBULANT_GUI_CG_CG_RENDERER_H
 #define AMBULANT_GUI_CG_CG_RENDERER_H
 
-#ifdef __OBJC__
-#include "TargetConditionals.h"
-#if TARGET_OS_IPHONE
-#include <CoreGraphics/CoreGraphics.h>
-#else
-#include <ApplicationServices/ApplicationServices.h>
-#endif//TARGET_OS_IPHONE
-#endif//__OBJC__
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/gui/cg/cg_gui.h"
 
 namespace ambulant {
 

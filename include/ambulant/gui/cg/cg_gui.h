@@ -27,25 +27,25 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/common/gui_player.h"
 #include "ambulant/smil2/transition.h"
-#ifdef __OBJC__
-#ifdef WITH_UIKIT
-#include <CoreFoundation/CoreFoundation.h>
+
+// select proper frameworks for Iphone/MacOS target operating system
+#include "TargetConditionals.h"
+#if TARGET_OS_IPHONE
+#include <CoreGraphics/CoreGraphics.h>
 #include <ImageIO/ImageIO.h>
+#ifdef __OBJC__
 #include <UIKit/UIKit.h>
 #define VIEW_SUPERCLASS UIView
-#else// ! WITH_UIKIT
+#endif//__OBJC__
+#elif TARGET_OS_MAC
 #include <ApplicationServices/ApplicationServices.h>
+#ifdef __OBJC__
 #include <AppKit/AppKit.h>
 #define VIEW_SUPERCLASS NSView
-#endif// ! WITH_UIKIT
 #endif//__OBJC__
-
-#ifdef WITH_UIKIT
-#define __WEBSERVICESCORE__ // HACK! HACK!
-#include <CoreGraphics/CoreGraphics.h>
-#else // ! WITH_UIKIT
-#include <ApplicationServices/ApplicationServices.h>
-#endif // ! WITH_UIKIT
+#else
+#error "No valid TARGET_OS defined"
+#endif//TARGET_OS
 
 namespace ambulant {
 
@@ -68,7 +68,8 @@ class cg_window : public common::gui_window {
   public:
 	cg_window(const std::string &name, lib::size bounds, void *_view, common::gui_events *handler)
 	:	common::gui_window(handler),
-	m_view(_view) {};
+		m_view(_view)
+		{}
 	~cg_window();
 
 	void need_redraw(const lib::rect &r);
@@ -81,7 +82,7 @@ class cg_window : public common::gui_window {
 	void *view() { return m_view; }
 
 	void set_size(lib::size bounds);
-
+	
   private:
 	void *m_view;
 };
@@ -130,6 +131,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 } // namespace ambulant
 
 #ifdef __OBJC__
+
 @interface NSRectHolder : NSObject
 {
 	CGRect rect;
@@ -156,6 +158,20 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #ifndef	WITH_UIKIT
 	NSGraphicsContext* old_context;
+	// section for use by npambulant only.
+	// npambulant creates a "fake" AmbulantView (not added to a superView) outside of the "normal" drawing loop.
+	// It calls the drawRect() method directly when the browser wants a NPCocoaEventDrawRect to be handled with 
+	// the CGContext given in the event data. When the player calls need_redraw(lib::rect), the npapi function
+	// NPN_InvalidateRect(NSRect*) is called though a callback mechanism, causing the browser to re-generate the draw event.
+	// NPAPI as in Firefox/Google Chrome (not Safari) require the function to be called from main plugin thread 
+	// (see: https://developer.mozilla.org/en/Gecko_Plugin_API_Reference/Browser_Side_Plug-in_API)
+	CGContextRef myCGContext;//X
+	CGRect myBounds;		 //X
+	CGRect myFrame;			 //X
+	CGSize mySize;			 //X
+	void* plugin_callback;	 // callback function pointer to call NPN_InvalidateRect on need_redraw()
+	void* plugin_data;		 // browser data for use by NPN_InvalidateRect
+	ambulant::common::gui_player* plugin_mainloop; // needed for cursor shape determination
 #endif// ! WITH_UIKIT
 }
 
@@ -279,8 +295,27 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // Return part of the onscreen image, does not cater for AVFoundation
 - (CGImageRef) getOnScreenImageForRect: (CGRect)bounds; //TBD
 #endif // 0
-#endif// WITH_UIKIT
+#else // ! WITH_UIKIT
+- (ambulant::gui::cg::cg_window *) getAmbulant_window;
+@property (nonatomic,assign) void* plugin_callback; 
+@property (nonatomic,assign) void* plugin_data;
+@property (nonatomic,assign) ambulant::common::gui_player* plugin_mainloop;
+#endif// ! WITH_UIKIT
 @end
 
 #endif // __OBJC__
+
+#ifndef WITH_UIKIT
+void* new_AmbulantView(CGContextRef cg_ctxp, CGRect rectp, void* plugin_callback, void* plugin_ptr);
+CGSize get_bounds_AmbulantView(void* view);
+// call AmbulantView.drawRect directly with the given CGContext 
+void* draw_rect_AmbulantView(void* obj, CGContextRef cg_ctxp, CGRect* rectp);
+// mouse event handler for npambulant
+typedef struct _event_data {double x; double y;} event_data; //XXX
+void handle_event_AmbulantView(void* obj, CGContextRef ctx, void* type, void* data,  void* mainloop);
+// destructor for npambulant
+void delete_AmbulantView(void* obj);
+
+#endif// ! WITH_UIKIT
+
 #endif // AMBULANT_GUI_CG_CG_GUI_H

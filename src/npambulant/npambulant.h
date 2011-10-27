@@ -34,6 +34,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/// npambulant - NPAPI plugin wrapper for Ambulant.
+/// The code serves 3 platforms: Windows XP/7 (XP_WIN), MacOS (WITH_CG), nad Linux (MOZ_X11)
+/// Originally developed for Firefox 1.0, now works on Firefox 6.0, Google chrome 14.0.835.202 and Safari 5.1 
 #ifndef __CPLUGIN_H__
 #define __CPLUGIN_H__
 
@@ -144,13 +147,11 @@ class npambulant
 	NPSavedData* m_data;
 	bool m_autostart;
 	NPObject* m_window_obj;
-
 #ifdef XP_WIN
 	HWND m_hWnd;
 	WNDPROC m_lpOldProc;
 	LONG m_OldWindow;
 #endif
-
 	NPWindow * m_Window;
 
 	NPStream * m_pNPStream;
@@ -206,7 +207,7 @@ class npambulant
 	int m_cursor_id;
 
 	static NPP s_last_instance;
-	bool init_ambulant(NPP npp, NPWindow* aWindow);
+	bool init_ambulant(NPP npp);
 	char* get_document_location();
 #ifdef	MOZ_X11
 	Window window;
@@ -217,7 +218,19 @@ class npambulant
 #ifdef WITH_GTK
 	gtk_mainloop* m_mainloop;
 #elif WITH_CG
-	cg_mainloop *m_mainloop;
+	void* m_view;			// current AmvbulantView
+	CGContext* m_cgcontext;		// current CGContext
+	CGRect m_cgcliprect;		// current clipping rectangle in Browser coordinates
+	NPRect m_nprect;		// current drawing rect in Plugin coordinates (for NPN_InvalidateRect)
+	cg_mainloop *m_mainloop;	// current player control object
+	// zoom control
+	CGSize m_doc_size;		// top-level window size in document (root-layout) 
+	CGSize m_size;			// current size of top-level window
+	double m_zoom; 			// current zoom factor
+	CGAffineTransform m_ctm;	// current transformation matrix 
+
+	void init_cg_view(CGContextRef cg_ctx);
+	NPP get_NPP() { return m_pNPInstance; }
 #else
 	void *m_mainloop;
 #endif
@@ -242,4 +255,8 @@ extern "C" {
 void npambulant_display_message(int level, const char *message);
 };
 
+#define LOG(formatAndArgs...) AM_DBG { \
+					fprintf (stderr, "%s(%p):  ", __PRETTY_FUNCTION__, this); \
+					fprintf(stderr, formatAndArgs); fprintf(stderr, "\n");	\
+					}
 #endif // __CPLUGIN_H__
