@@ -56,7 +56,11 @@
 NPNetscapeFuncs NPNFuncs;
 
 extern "C" {
-  NPError OSCALL NP_Initialize(NPNetscapeFuncs *browserFuncs);
+  NPError OSCALL NP_Initialize(NPNetscapeFuncs *browserFuncs
+#if defined(XP_UNIX)
+              , NPPluginFuncs* pluginFuncs
+#endif
+);
   NPError OSCALL NP_GetEntryPoints(NPPluginFuncs *pluginFuncs);
   NPError OSCALL NP_Shutdown(void);
 }; // extern "C"
