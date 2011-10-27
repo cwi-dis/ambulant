@@ -19,6 +19,7 @@
 		932F6E361455A5D3003E08BD /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FEB3E113428FDB004D0667 /* libambulantCG.dylib */; };
 		932F6E9F1455AA39003E08BD /* libamplugin_xpath_state(CG).so in Copy Files - plugins */ = {isa = PBXBuildFile; fileRef = 0470A12E1346688600059573 /* libamplugin_xpath_state(CG).so */; };
 		932F6EA01455AA3F003E08BD /* libamplugin_python(CG).so in Copy Files - plugins */ = {isa = PBXBuildFile; fileRef = 04FEB3EE13428FDB004D0667 /* libamplugin_python(CG).so */; };
+		9380BC51145986E700DB0C07 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0470A317134676FD00059573 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -418,6 +419,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9380BC51145986E700DB0C07 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,7 +507,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
+				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin";
