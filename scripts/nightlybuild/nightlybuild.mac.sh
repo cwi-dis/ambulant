@@ -41,11 +41,11 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
-CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python --with-python-plugin"
+CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
-PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
+##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
-DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
+##DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
 DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
 
 echo
@@ -89,6 +89,7 @@ cd build-3264
 mkdir third_party_packages
 cd third_party_packages
 python ../../scripts/build-third-party-packages.py $BUILD3PPARGS
+PATH=`pwd`/installed/bin:$PATH
 cd ..
 #
 # configure, make, make install
@@ -126,32 +127,32 @@ cd installers/sh-macos
 sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
 scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
-#
-# Build webkit plugin.
-#
-cd projects/xcode32
-rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
-mkdir -p "$HOME/Library/Internet Plug-Ins"
-xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
-	-target AmbulantWebKitPlugin \
-	-configuration Release -sdk macosx10.6 \
-	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
-	DSTROOT=$BUILDHOME/$DESTDIR \
-	INSTALL_PATH="/Library/Internet Plug-ins" \
-	install
-cd ../..
-#
-# Build plugin installer, upload
-#
-mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-rm -rf $PLUGINDMGNAME
-mkdir $PLUGINDMGNAME
-mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
-cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
-zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
-scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
+###
+### Build webkit plugin.
+###
+##cd projects/xcode32
+##rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
+##mkdir -p "$HOME/Library/Internet Plug-Ins"
+##xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
+##	-target AmbulantWebKitPlugin \
+##	-configuration Release -sdk macosx10.6 \
+##	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
+##	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
+##	DSTROOT=$BUILDHOME/$DESTDIR \
+##	INSTALL_PATH="/Library/Internet Plug-ins" \
+##	install
+##cd ../..
+###
+### Build plugin installer, upload
+###
+##mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
+##cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
+##rm -rf $PLUGINDMGNAME
+##mkdir $PLUGINDMGNAME
+##mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
+##cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
+##zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
+##scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current
 #
