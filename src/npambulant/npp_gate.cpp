@@ -54,6 +54,7 @@
 #define AM_DBG if(0)
 #endif
 
+#ifdef XP_UNIX
 const char*
 NPP_GetMIMEDescription(void)
 {
@@ -61,6 +62,7 @@ NPP_GetMIMEDescription(void)
   LOG("mimetypes=",mimetypes);
   return mimetypes;
 }
+#endif//XP_UNIX
 
 npambulant * s_npambulant = NULL;
 

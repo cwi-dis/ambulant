@@ -99,7 +99,7 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 
   return NPERR_NO_ERROR;
 }
-
+#ifdef XP_UNIX
 char *NPP_GetMIMEDescription();
 
 char *
@@ -107,6 +107,7 @@ NP_GetMIMEDescription()
 {
   return NPP_GetMIMEDescription();
 }
+#endif//XP_UNIX
 
 NPError
 NP_GetValue(void* future, NPPVariable variable, void *value)
