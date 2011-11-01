@@ -13,6 +13,8 @@
 #  mailutils
 #  curl
 #  ssh
+#  libgtk2.0-dev
+#  libxt-dev
 #
 set -e
 set -x
