@@ -865,13 +865,15 @@ third_party_packages={
             ),
 
         #  The WINDOWS_DXSDK paths (DirectX SDK) need to be added for the SDL build to work.
+        # Note: older zipfiles for 1.2.14 (sigh) had the VisualC directory zipped. Add a line
+        #                 "%s VisualC.zip && "
+        # if that turns out to happen again in future.
         WinTPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
             url2="SDL-1.2.14.zip",
             checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
                 "cd SDL-1.2.14 && "
-                "%s VisualC.zip && "
                 "cd VisualC && "
                 "devenv SDL.sln /Upgrade && "
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
