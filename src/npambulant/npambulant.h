@@ -254,9 +254,14 @@ class npambulant
 extern "C" {
 void npambulant_display_message(int level, const char *message);
 };
-
+#if 0
+// XXXJACK this looks like pretty incorrect C++....
 #define LOG(formatAndArgs...) AM_DBG { \
 					fprintf (stderr, "%s(%p):  ", __PRETTY_FUNCTION__, this); \
 					fprintf(stderr, formatAndArgs); fprintf(stderr, "\n");	\
 					}
+#else
+extern void xxxjacklog(...);
+#define LOG if(0) xxxjacklog
+#endif
 #endif // __CPLUGIN_H__

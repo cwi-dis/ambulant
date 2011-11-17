@@ -71,7 +71,7 @@ class stderr_ostream : public ambulant::lib::ostream {
 int stderr_ostream::write(const char *cstr)
 {
 #ifdef XP_WIN32
-	OutputDebugString(cstr);
+	OutputDebugStringA(cstr);
 #endif
 	fprintf(stderr, "%s", cstr);
 	return strlen(cstr);
