@@ -353,6 +353,24 @@
     <ClCompile Include="..\live\liveMedia\WAVAudioFileSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\live\liveMedia\VP8VideoMatroskaFileServerMediaSubsession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\live\liveMedia\VP8VideoRTPSink.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\live\liveMedia\VP8VideoRTPSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\live\liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\live\liveMedia\VorbisAudioRTPSink.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\live\liveMedia\VorbisAudioRTPSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\live\liveMedia\BitVector.hh">
@@ -690,6 +708,12 @@
     </None>
     <None Include="..\live\liveMedia\include\WAVAudioFileSource.hh">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\live\liveMedia\VP8VideoMatroskaFileServerMediaSubsession.hh">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\live\liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.hh">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

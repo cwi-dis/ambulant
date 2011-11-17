@@ -208,6 +208,12 @@
     <ClCompile Include="..\live\liveMedia\StreamParser.cpp" />
     <ClCompile Include="..\live\liveMedia\uLawAudioFilter.cpp" />
     <ClCompile Include="..\live\liveMedia\VideoRTPSink.cpp" />
+    <ClCompile Include="..\live\liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.cpp" />
+    <ClCompile Include="..\live\liveMedia\VorbisAudioRTPSink.cpp" />
+    <ClCompile Include="..\live\liveMedia\VorbisAudioRTPSource.cpp" />
+    <ClCompile Include="..\live\liveMedia\VP8VideoMatroskaFileServerMediaSubsession.cpp" />
+    <ClCompile Include="..\live\liveMedia\VP8VideoRTPSink.cpp" />
+    <ClCompile Include="..\live\liveMedia\VP8VideoRTPSource.cpp" />
     <ClCompile Include="..\live\liveMedia\WAVAudioFileServerMediaSubsession.cpp" />
     <ClCompile Include="..\live\liveMedia\WAVAudioFileSource.cpp" />
   </ItemGroup>
@@ -324,6 +330,8 @@
     <None Include="..\live\liveMedia\include\VideoRTPSink.hh" />
     <None Include="..\live\liveMedia\include\WAVAudioFileServerMediaSubsession.hh" />
     <None Include="..\live\liveMedia\include\WAVAudioFileSource.hh" />
+    <None Include="..\live\liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.hh" />
+    <None Include="..\live\liveMedia\VP8VideoMatroskaFileServerMediaSubsession.hh" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\live\liveMedia\our_md5.h" />
