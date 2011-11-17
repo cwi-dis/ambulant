@@ -51,6 +51,9 @@ if exist %sdl_dir%\lib copy %sdl_dir%\lib\SDLmain.lib %AMB_HOME%\lib\win32\SDLma
 if exist %sdl_dir%\VisualC\SDL\Release copy %sdl_dir%\VisualC\SDL\Release\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
 if exist %sdl_dir%\VisualC\SDL\Release copy %sdl_dir%\VisualC\SDL\Release\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
 if exist %sdl_dir%\VisualC\SDLmain\Release copy %sdl_dir%\VisualC\SDLmain\Release\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
+if exist %sdl_dir%\VisualC\SDL\Win32\Release copy %sdl_dir%\VisualC\SDL\Win32\Release\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
+if exist %sdl_dir%\VisualC\SDL\Win32\Release copy %sdl_dir%\VisualC\SDL\Win32\Release\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
+if exist %sdl_dir%\VisualC\SDLmain\Win32\Release copy %sdl_dir%\VisualC\SDLmain\Win32\Release\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
 
 REM Live555
 copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib

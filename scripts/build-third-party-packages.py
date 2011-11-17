@@ -7,6 +7,7 @@ import posixpath
 
 NOCHECK=False
 NORUN=False
+TRYMIRROR=True
 
 #
 # Where the mirrored copies of the Ambulant 3rd party packages for this release live.
@@ -117,7 +118,9 @@ class TPP(CommonTPP):
             return False
         return self._command(self.checkcmd, force=True)
         
-    def download(self, trymirror=True):
+    def download(self, trymirror=None):
+        if trymirror is None:
+            trymirror = TRYMIRROR
         print >>self.output, "+ download:", self.url
         try:
             myurlretrieve(self.url, self.downloadedfile)
@@ -555,31 +558,31 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
                 "cd ffmpeg-export-2010-01-22 && "
-				"export DEPLOYMENT_TARGET=%s;"
+                "export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
-			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+                " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$DEPLOYMENT_TARGET.sdk "
-				"--cpu=arm1176jzf-s "
+                "--cpu=arm1176jzf-s "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv6 -I../installed/include' "
-				"--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
+                "--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
-				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-doc;"
+                "--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
-				"for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
+                "for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
-				"--cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+                "--cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$DEPLOYMENT_TARGET.sdk "
-				"--cpu=cortex-a8 "
+                "--cpu=cortex-a8 "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv7 -I../installed/include' "
-				"--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
+                "--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
-				"--disable-ffserver --disable-ffplay --disable-doc;"
+                "--disable-ffserver --disable-ffplay --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
-				"for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
+                "for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
                 "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done;" 
-				"make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
+                "make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("SDL",
@@ -869,16 +872,16 @@ third_party_packages={
         #                 "%s VisualC.zip && "
         # and WINDOWS_UNZIP to the arglist if that turns out to happen again in future.
         WinTPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
-            url2="SDL-1.2.14.zip",
-            checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
+            url="http://www.libsdl.org/tmp/SDL-1.3.0-6050.zip",
+            url2="SDL-1.3.0-6050.zip",
+            checkcmd="if not exist SDL-1.3.0-6050\\VisualC\\SDL\\Win32\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
-                "cd SDL-1.2.14 && "
+                "cd SDL-1.3.0-6050 && "
                 "cd VisualC && "
-                "devenv SDL.sln /Upgrade && "
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
                 "set LIB=%s\\Lib\\x86;%%LIB%% && "
-                "devenv SDL.sln /UseEnv /build %s" % (WINDOWS_DXSDK, WINDOWS_DXSDK, WIN32_COMMON_CONFIG)
+				"set && "
+                "devenv SDL_VS2010.sln /UseEnv /build %s" % (WINDOWS_DXSDK_PATH, WINDOWS_DXSDK_PATH, WIN32_COMMON_CONFIG)
             ),
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
@@ -1028,6 +1031,7 @@ environment_checkers = {
 }
 
 def main():
+    global TRYMIRROR
     if len(sys.argv) == 2 and sys.argv[1] == '-m':
         good = 0
         bad = 0
@@ -1042,10 +1046,14 @@ def main():
         print '+ mirrored: %d packages' % good
         print '+ failed: %d packages' % bad
         sys.exit(bad)
+    if len(sys.argv) > 1 and sys.argv[1] == '-M':
+        del sys.argv[1]
+        TRYMIRROR=False
     if len(sys.argv) != 2 or sys.argv[1] not in third_party_packages:
-        print "Usage: %s platform" % sys.argv[0]
+        print "Usage: %s [-M] platform" % sys.argv[0]
         print "Platform is one of:", ' '.join(third_party_packages.keys())
-        print "%s -m to populate mirror directory" % sys.argv[0]
+        print "-M argument ignores mirror directory"
+        print "Use %s -m to populate mirror directory" % sys.argv[0]
         return 2
     ok = environment_checkers[sys.argv[1]](sys.argv[1])
     if not ok:
