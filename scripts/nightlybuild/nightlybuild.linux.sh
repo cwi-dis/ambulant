@@ -1,7 +1,20 @@
 #!/bin/sh
 #
 # Script to do a nightly clean build of a full Ambulant
-# Mac 10.6 version
+# Linux version
+#
+# If you are on Ubuntu, you will need to apt-get at least the following packages:
+#  mercurial
+#  chrpath
+#  autoconf
+#  automake
+#  libtool
+#  postfix
+#  mailutils
+#  curl
+#  ssh
+#  libgtk2.0-dev
+#  libxt-dev
 #
 set -e
 set -x
