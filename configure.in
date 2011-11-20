@@ -874,7 +874,7 @@ then
            PYTHON_LIBS="-framework Python" 
            ;;
        x-I/System/Library*)
-           PYTHON_LIBS="-F /System/Library/Frameworks -framework Python"
+           PYTHON_LIBS="-F/System/Library/Frameworks -framework Python"
            ;;
        *)
            pylibdir=`$PYTHON -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBPL")'`
