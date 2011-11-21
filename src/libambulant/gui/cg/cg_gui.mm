@@ -377,6 +377,9 @@ bad:
 	CGRect my_rect = [arect rect];
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
+#ifdef WITH_UIKIT
+    [self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
+#else
 	if (plugin_callback == NULL) { //AmbulantPlayer
 		[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
 	} else if (ambulant_window != NULL) {
@@ -384,6 +387,7 @@ bad:
 		void npambulant_invalidateRect(void*, CGRect);
 		npambulant_invalidateRect((void*) self, my_rect);
 	}
+#endif
 }
 
 - (void) syncDisplayIfNeeded: (id) dummy
