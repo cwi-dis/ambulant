@@ -266,6 +266,7 @@ LINUX_COMMON_CONFIGURE="./configure --prefix='%s'" % COMMON_INSTALLDIR
 #
 WIN32_COMMON_CONFIG="Release"
 #WIN32_COMMON_CONFIG="Debug"
+WIN32_VCVERSION="unknown"
 WIN32_VSVERSION="unknown"
 
 if os.path.sep == '/':
@@ -284,9 +285,11 @@ else:
         print '** Run "call ....Microsoft Visual Studio X.Y\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
         sys.exit(1)
     if '10.0' in vsdir:
-        WIN32_VSVERSION="vc10"
+        WIN32_VCVERSION="vc10"
+        WIN32_VSVERSION="vs2010"
     elif '9.0' in vsdir:
-        WIN32_VSVERSION="vc9"
+        WIN32_VCVERSION="vc9"
+        WIN32_VSVERSION="vs2008"
     else:
         print "** Unknown version of Visual Studio:", vsdir
         sysexit(1)
@@ -847,11 +850,11 @@ third_party_packages={
         WinTPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.zip",
             url2="xerces-c-3.1.1.zip",
-            checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG),
+            checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VCVERSION, WIN32_COMMON_CONFIG),
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\%s\\xerces-all && "
                 "devenv xerces-all.sln /build Debug /project XercesLib && "
-                "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VSVERSION)
+                "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VCVERSION)
             ),
             
         WinTPP("xulrunner-sdk",
@@ -880,8 +883,7 @@ third_party_packages={
                 "cd VisualC && "
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
                 "set LIB=%s\\Lib\\x86;%%LIB%% && "
-				"set && "
-                "devenv SDL_VS2010.sln /UseEnv /build %s" % (WINDOWS_DXSDK_PATH, WINDOWS_DXSDK_PATH, WIN32_COMMON_CONFIG)
+                "devenv SDL_%s.sln /UseEnv /build %s" % (WINDOWS_DXSDK_PATH, WINDOWS_DXSDK_PATH, WIN32_VSVERSION, WIN32_COMMON_CONFIG)
             ),
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
@@ -920,7 +922,7 @@ third_party_packages={
             # where Ambulant expects it (bin\\win32 and lib\\win32)
             buildcmd=
                 "call ..\\scripts\\upgrade3pp2VC10.bat && " +
-                ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
+                ("cd ..\\projects\\%s && " % WIN32_VCVERSION) +
                 "devenv third_party_packages.sln /Upgrade && " +
                 "devenv third_party_packages.sln /build Debug && " +
                 ("devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG)
