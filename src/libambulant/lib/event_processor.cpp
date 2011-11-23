@@ -321,6 +321,7 @@ event_processor_impl::_events_available(delta_timer& dt, std::queue<event*> *qp)
 static void
 gb_serve_event_1(event *gb_e)
 {
+	AM_DBG logger::get_logger()->debug("serve_event(0x%x)in GCD",gb_e);
 	gb_e->fire();
 	delete gb_e;
 }

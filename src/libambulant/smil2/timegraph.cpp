@@ -166,7 +166,7 @@ timegraph::build_time_tree(const lib::node *root) {
 			m_id2tn[ident] = tn;
 
 			if(stack.empty()) {
-				assert(time_root == 0);
+				//assert(time_root == 0); // xxxbo: comment out temporarily. 
 				time_root = tn;
 			} else {
 				// container or media with area or animate elements, etc

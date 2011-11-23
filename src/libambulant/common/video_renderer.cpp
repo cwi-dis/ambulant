@@ -398,9 +398,14 @@ video_renderer::data_avail()
 	}
 	if (m_src->end_of_file() || (m_clip_end > 0 && frame_ts_micros > m_clip_end)) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: stopping playback. eof=%d, ts=%lld, now=%lld, clip_end=%lld ", (int)m_src->end_of_file(), frame_ts_micros, now_micros, m_clip_end );
-		// If we have an audio renderer we should let it do the stopped() callback.
-		if (m_audio_renderer == NULL) m_context->stopped(m_cookie, 0);
-
+		// If we have an audio renderer and the soundlevel is not 0, then we should let it do the stopped() callback.
+		int level;
+		if (m_dest) {
+            const common::region_info *info = m_dest->get_info();
+            level = info ? info->get_soundlevel() : 1;
+		}
+		if (m_audio_renderer == NULL || level == 0) m_context->stopped(m_cookie, 0); 
+		
 		// Remember how far we officially got (discounting any fill=continue behaviour)
 		m_previous_clip_position = m_clip_end;
 		// If we are past real end-of-file we always stop playback.
