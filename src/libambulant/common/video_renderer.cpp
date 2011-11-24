@@ -18,10 +18,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/lib/logger.h"
-//#include "ambulant/lib/transition_info.h"
 #include "ambulant/common/video_renderer.h"
-//#include "ambulant/gui/none/none_gui.h"
-//#include "ambulant/net/datasource.h"
+#include "ambulant/common/region_info.h"
 #include "ambulant/lib/profile.h"
 
 //#define AM_DBG if(1)
