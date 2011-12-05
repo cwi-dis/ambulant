@@ -160,10 +160,21 @@ gui::d2::d2_player::d2_player(
 		IID_ID2D1Factory,
 		&options,
 		(void**)&m_d2d);
+#ifndef	NDEBUG
+	if (!SUCCEEDED(hr)) {
+		m_logger->debug("Cannot D2D1CreateFactory() with D2D1_DEBUG_LEVEL_INFORMATION: trying again with D2D1_DEBUG_LEVEL_NONE");
+		D2D1_FACTORY_OPTIONS optionsd = { D2D1_DEBUG_LEVEL_NONE };
+		hr = D2D1CreateFactory(
+			D2D1_FACTORY_TYPE_MULTI_THREADED,
+			IID_ID2D1Factory,
+			&optionsd,
+			(void**)&m_d2d);
+
+	}
+#endif
 	if (!SUCCEEDED(hr)) {
 		m_logger->fatal("Cannot initialize Direct2D: error 0x%x", hr);
-	}
-	// Order the factories according to the preferences
+	}	// Order the factories according to the preferences
 	common::preferences *prefs = common::preferences::get_preferences();
 	m_logger->debug("constructing d2 player with %s", prefs->repr().c_str());
 
