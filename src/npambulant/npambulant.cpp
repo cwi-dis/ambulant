@@ -595,14 +595,16 @@ npambulant::handleEvent(void* event) {
  		}
  	} else  if (cocoaEvent.type == NPCocoaEventMouseMoved || cocoaEvent.type == NPCocoaEventMouseDown || cocoaEvent.type == NPCocoaEventMouseEntered || cocoaEvent.type == NPCocoaEventMouseExited) {
  		if (m_view != NULL && m_mainloop != NULL) {
-		        event_data e_data;
+		    event_data e_data;
 			unsigned long int NSLeftMouseDown = 1, NSMouseMoved = 5, NSMouseEntered = 8, NSMouseExited = 9; //XXX needs #include <NSEvent.h >
- 			e_data.x = cocoaEvent.data.mouse.pluginX;
-			e_data.y = cocoaEvent.data.mouse.pluginY;
+			CGPoint cg_p = CGPointMake(cocoaEvent.data.mouse.pluginX, cocoaEvent.data.mouse.pluginY);
+			cg_p = CGPointApplyAffineTransform(cg_p, CGAffineTransformInvert(m_ctm));
+ 			e_data.x = cg_p.x;
+			e_data.y = cg_p.y;
 			unsigned long int e_type
 			  = cocoaEvent.type == NPCocoaEventMouseMoved ? NSMouseMoved
 			  : cocoaEvent.type == NPCocoaEventMouseEntered ? NSMouseEntered
-			  : cocoaEvent.type ==NPCocoaEventMouseExited ? NSMouseExited
+			  : cocoaEvent.type == NPCocoaEventMouseExited ? NSMouseExited
 			  : NSLeftMouseDown;
 			handle_event_AmbulantView((void*) m_view,  m_cgcontext, &e_type, (void*) &e_data, m_mainloop);
 		}	  
