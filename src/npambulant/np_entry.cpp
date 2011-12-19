@@ -57,7 +57,7 @@ NPNetscapeFuncs NPNFuncs;
 
 extern "C" {
   NPError OSCALL NP_Initialize(NPNetscapeFuncs *browserFuncs
-#if defined(XP_UNIX)
+#if defined(XP_UNIX) && ! defined(XP_MACOSX)
               , NPPluginFuncs* pluginFuncs
 #endif
 );
@@ -102,7 +102,7 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 #ifdef XP_UNIX
 char *NPP_GetMIMEDescription();
 
-char *
+const char *
 NP_GetMIMEDescription()
 {
   return NPP_GetMIMEDescription();
@@ -117,7 +117,7 @@ NP_GetValue(void* future, NPPVariable variable, void *value)
 
 NPError OSCALL
 NP_Initialize(NPNetscapeFuncs* pFuncs
-#if defined(XP_UNIX)
+#if defined(XP_UNIX) && ! defined(XP_MACOSX)
               , NPPluginFuncs* pluginFuncs
 #endif
               )
