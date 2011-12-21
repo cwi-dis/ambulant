@@ -107,10 +107,14 @@ gui::d2::d2_d2video_renderer::~d2_d2video_renderer() {
 		m_basic_audio->Release();
 		m_basic_audio = 0;
 	}
-#if 0
+#if 1
 	// For reasons unknown, we should not release the video
 	// sink. Maybe the AddRef() is missing?
+	// Jack thinks (2011-12-21) this is fixed by calling
+	// SetCallback(NULL).
 	if (m_video_sink) {
+		m_video_sink->SetRenderTarget(NULL);
+		m_video_sink->SetCallback(NULL);
 		m_video_sink->Release();
 		m_video_sink = 0;
 	}
@@ -323,8 +327,14 @@ bool gui::d2::d2_d2video_renderer::stop() {
 	m_cs.enter();
 	m_update_event = 0;
 	_stop();
+	surface *dest = m_dest;
+	m_dest = NULL;
+	if (m_video_sink) {
+		m_video_sink->SetRenderTarget(NULL);
+		m_video_sink->SetCallback(NULL);
+	}
 	m_cs.leave();
-	if (m_dest) m_dest->renderer_done(this);
+	if (dest) dest->renderer_done(this);
 	m_dest = NULL;
 	m_activated = false;
 	m_context->stopped(m_cookie);
