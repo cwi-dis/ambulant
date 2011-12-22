@@ -247,6 +247,8 @@ video_renderer::post_stop()
 	m_lock.enter();
 	if (!m_post_stop_called) {
 		m_post_stop_called = true;
+		// XXXJACK: this may be unsafe (lock inversion), may want to
+		// keep m_dest and call renderer_done outside the lock.
 		if (m_dest) m_dest->renderer_done(this);
 		m_dest = NULL;
 		if (m_audio_renderer) m_audio_renderer->post_stop();

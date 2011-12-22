@@ -107,18 +107,16 @@ gui::d2::d2_d2video_renderer::~d2_d2video_renderer() {
 		m_basic_audio->Release();
 		m_basic_audio = 0;
 	}
-#if 1
-	// For reasons unknown, we should not release the video
-	// sink. Maybe the AddRef() is missing?
-	// Jack thinks (2011-12-21) this is fixed by calling
-	// SetCallback(NULL).
 	if (m_video_sink) {
 		m_video_sink->SetRenderTarget(NULL);
 		m_video_sink->SetCallback(NULL);
+#if 0
+		// For reasons unknown, we should not release the video
+		// sink. Maybe the AddRef() is missing?
 		m_video_sink->Release();
+#endif
 		m_video_sink = 0;
 	}
-#endif
 	if(m_graph_builder) {
 		m_graph_builder->Release();
 		m_graph_builder = 0;
