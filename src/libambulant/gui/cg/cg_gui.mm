@@ -1189,7 +1189,7 @@ void delete_AmbulantView(void* obj) {
 - (void)drawRect:(CGRect)rect
 {
 #else
-	- (void)drawRect:(NSRect)_rect
+- (void)drawRect:(NSRect)_rect
 	{
 		CGRect rect = NSRectToCGRect(_rect);
 #endif // WITH_UIKIT

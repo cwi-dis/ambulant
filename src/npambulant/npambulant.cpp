@@ -33,7 +33,7 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/preferences.h"
-//#define AM_DBG
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -433,10 +433,10 @@ npambulant::setWindow(NPWindow* pNPWindow) {
 		m_size.height = m_Window->height;
 		m_ctm = CGAffineTransformMake(1.0,0.0,0.0,1.0, 0.0,0.0);
 	} else if (m_size.width != m_Window->width || m_size.height != m_Window->height) {
-		LOG("m_doc_size.width=%f, m_doc_size.height=%f, m_Window->width=%d, m_Window->height=%d)",m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
 		m_zoom = recompute_zoom(m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height);
 		m_size.width = m_Window->width;
 		m_size.height = m_Window->height;
+		LOG("m_doc_size=(%f,%f) m_Window->width=%d, m_Window->height=%d m_zoom=%f)",m_doc_size.width, m_doc_size.height, m_Window->width, m_Window->height, m_zoom);
 		m_ctm = CGAffineTransformMake(m_zoom,0.0,0.0,m_zoom, 0.0,0.0);
 		if (m_cgcontext != NULL) {
 			CGContextScaleCTM(m_cgcontext, m_zoom, m_zoom);
@@ -567,7 +567,6 @@ npambulant::handleEvent(void* event) {
 	};
 	if (cocoaEvent.type == NPCocoaEventDrawRect) {
 		CGRect cgrect = CGRectMake(cocoaEvent.data.draw.x, cocoaEvent.data.draw.y, cocoaEvent.data.draw.width, cocoaEvent.data.draw.height);
-		m_cgcliprect = cgrect;
 		NPRect nprect = {cocoaEvent.data.draw.y, cocoaEvent.data.draw.x, cocoaEvent.data.draw.y+ cocoaEvent.data.draw.height,cocoaEvent.data.draw.x+cocoaEvent.data.draw.width};
 		m_nprect = nprect;
 		LOG("New m_nprect=(tlbr)(%d,%d,%d,%d)",m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
@@ -577,7 +576,7 @@ npambulant::handleEvent(void* event) {
 		}
 		CGAffineTransform ctm = CGContextGetCTM(ctx);
 		LOG("CGContext=%p CTM(a=%f,b=%f,c=%f,d=%f,tr=%f,ty=%f)",ctx,ctm.a,ctm.b,ctm.c,ctm.d,ctm.tx,ctm.ty);
-		CGContextClipToRect(ctx, cgrect);
+		m_cgcliprect = cgrect;
 		if (m_cgcontext != ctx) {
 			m_cgcontext = ctx;
 			CGAffineTransform t = CGContextGetCTM(ctx);
@@ -585,12 +584,13 @@ npambulant::handleEvent(void* event) {
 		}
 		if (m_view == NULL && repr(m_url) != "") {
 			init_cg_view(m_cgcontext);
-//			CGContextConcatCTM(m_cgcontext, m_ctm);
 			return 1;
 		}
 		if (m_view != NULL && m_mainloop != NULL) {
 			LOG("m_view=%p m_mainloop=%p m_cgcliprect=(ltwh)(%f,%f,%f,%f)",m_view, m_mainloop,m_cgcliprect.origin.x,m_cgcliprect.origin.y,m_cgcliprect.size.width,m_cgcliprect.size.height);
 			CGContextScaleCTM(m_cgcontext, m_zoom, m_zoom);
+			// remember last CTM used fro drawing for mouse location and NPInvalidateRect
+			m_ctm = CGContextGetCTM(ctx);
 			draw_rect_AmbulantView(m_view, m_cgcontext, &m_cgcliprect); // do redraw
  		}
  	} else  if (cocoaEvent.type == NPCocoaEventMouseMoved || cocoaEvent.type == NPCocoaEventMouseDown || cocoaEvent.type == NPCocoaEventMouseEntered || cocoaEvent.type == NPCocoaEventMouseExited) {
@@ -883,6 +883,7 @@ plugin_callback(void* ptr, void* arg)
 	CGRect r = *(CGRect*) arg;
 	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
 	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
+	r = CGRectApplyAffineTransform(r, npa->m_ctm);
 	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
 	NPN_InvalidateRect (npa->get_NPP(), &nsr);
