@@ -227,7 +227,7 @@ class npambulant
 	CGSize m_doc_size;		// top-level window size in document (root-layout) 
 	CGSize m_size;			// current size of top-level window
 	double m_zoom; 			// current zoom factor
-	CGAffineTransform m_ctm;	// current transformation matrix 
+	CGAffineTransform m_ctm;	// current transformation matrix
 
 	void init_cg_view(CGContextRef cg_ctx);
 	NPP get_NPP() { return m_pNPInstance; }

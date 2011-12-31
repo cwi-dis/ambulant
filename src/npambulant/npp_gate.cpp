@@ -58,9 +58,9 @@
 const char*
 NPP_GetMIMEDescription(void)
 {
-  const char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
-  LOG("mimetypes=",mimetypes);
-  return mimetypes;
+	const char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
+	LOG("mimetypes=",mimetypes);
+	return mimetypes;
 }
 #endif//XP_UNIX
 
@@ -68,13 +68,13 @@ npambulant * s_npambulant = NULL;
 
 NPError NPP_Initialize(void)
 {
-  LOG("\n");
-  return NPERR_NO_ERROR;
+	LOG("\n");
+	return NPERR_NO_ERROR;
 }
 
 void NPP_Shutdown(void)
 {
-  LOG("");
+	LOG("");
 }
 
 // here the plugin creates an instance of our npambulant object which
@@ -88,11 +88,11 @@ NPError NPP_New(NPMIMEType pluginType,
                 char* argv[],
                 NPSavedData* saved)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  NPError rv = NPERR_NO_ERROR;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
 #ifdef WITH_CG
 	// We need to request CoreGraphics support in stead of QuickDraw support.
 	NPBool supportsCG = false;
@@ -101,7 +101,7 @@ NPError NPP_New(NPMIMEType pluginType,
 		LOG("GetValue(NPNVsupportsCoreGraphicsBool) returned %d\n", rv);
 		return rv;
 	}
-	if (!supportsCG) {
+	if (! supportsCG) {
 		LOG("Browser does not support NPNVsupportsCoreGraphicsBool\n");
 		return NPERR_INCOMPATIBLE_VERSION_ERROR;
 	}
@@ -111,40 +111,40 @@ NPError NPP_New(NPMIMEType pluginType,
 		return NPERR_INCOMPATIBLE_VERSION_ERROR;
 	}
 
-  // select the Cocoa event model
-  NPBool supportsCocoaEvents = false;
-  if (NPN_GetValue(instance, NPNVsupportsCocoaBool, &supportsCocoaEvents) == NPERR_NO_ERROR && supportsCocoaEvents) {
-    NPN_SetValue(instance, NPPVpluginEventModel, (void*)NPEventModelCocoa);
-  } else {
-    LOG("Cocoa event model not supported, can't create a plugin instance.\n");
-    return NPERR_INCOMPATIBLE_VERSION_ERROR;
-  }
+	// select the Cocoa event model
+	NPBool supportsCocoaEvents = false;
+	if (NPN_GetValue(instance, NPNVsupportsCocoaBool, &supportsCocoaEvents) == NPERR_NO_ERROR && supportsCocoaEvents) {
+		NPN_SetValue(instance, NPPVpluginEventModel, (void*)NPEventModelCocoa);
+	} else {
+		LOG("Cocoa event model not supported, can't create a plugin instance.\n");
+		return NPERR_INCOMPATIBLE_VERSION_ERROR;
+	}
 #endif
-  npambulant * pPlugin = new npambulant(pluginType,instance,mode,argc,argn,argv,saved);
-  if(pPlugin == NULL)
-    return NPERR_OUT_OF_MEMORY_ERROR;
-  s_npambulant = pPlugin;
-  instance->pdata = (void *)pPlugin;
-  return rv;
+	npambulant * pPlugin = new npambulant(pluginType,instance,mode,argc,argn,argv,saved);
+	if (pPlugin == NULL) {
+		return NPERR_OUT_OF_MEMORY_ERROR;
+	}
+	s_npambulant = pPlugin;
+	instance->pdata = (void *)pPlugin;
+	return rv;
 }
 
 // here is the place to clean up and destroy the npambulant object
 NPError NPP_Destroy (NPP instance, NPSavedData** save)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  NPError rv = NPERR_NO_ERROR;
-
-  npambulant * pPlugin = (npambulant *)instance->pdata;
-  if(pPlugin != NULL) {
-  pPlugin->shut();
-    delete pPlugin;
-    if (s_npambulant == pPlugin)
-      s_npambulant = NULL;
-  }
-  return rv;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
+	npambulant * pPlugin = (npambulant *)instance->pdata;
+	if (pPlugin != NULL) {
+		pPlugin->shut();
+		delete pPlugin;
+		if (s_npambulant == pPlugin)
+			s_npambulant = NULL;
+	}
+	return rv;
 }
 
 // during this call we know when the plugin window is ready or
@@ -152,24 +152,24 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
 // initialization and shutdown
 NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
 
-  NPError rv = NPERR_NO_ERROR;
+	if (pNPWindow == NULL) {
+		return NPERR_GENERIC_ERROR;
+	}
+	npambulant *pPlugin = (npambulant *)instance->pdata;
 
-  if(pNPWindow == NULL)
-    return NPERR_GENERIC_ERROR;
-
-  npambulant *pPlugin = (npambulant *)instance->pdata;
-
-  if(pPlugin == NULL)
-    return NPERR_GENERIC_ERROR;
-
-  if (!pPlugin->setWindow(pNPWindow))
-	  rv = NPERR_GENERIC_ERROR;
-
-  return rv;
+	if (pPlugin == NULL) {
+		return NPERR_GENERIC_ERROR;
+	}
+	if ( ! pPlugin->setWindow(pNPWindow)) {
+		rv = NPERR_GENERIC_ERROR;
+	}
+	return rv;
 }
 
 // ==============================
@@ -183,35 +183,33 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 // in the bin/components folder
 NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 {
-  LOG("");
-  if(instance == NULL || value == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  NPError rv = NPERR_NO_ERROR;
-
-  npambulant * plugin = (npambulant *)instance->pdata;
-  if(plugin == NULL)
-    return NPERR_GENERIC_ERROR;
-
-  switch (variable) {
-  case NPPVpluginNameString:
-    *((const char **)value) = "npambulant";
-    break;
-  case NPPVpluginDescriptionString:
-    *((const char **)value) = "SMIL3.0 player";
-    break;
-  case NPPVpluginScriptableNPObject:
-    *(NPObject **)value = plugin->GetScriptableObject();
-    break;
-  case NPPVpluginNeedsXEmbed:
-    *(NPBool *) value = TRUE;
-    break;
-  default:
-//    rv = NPERR_GENERIC_ERROR;
-	break;
-  }
-
-  return rv;
+	LOG("");
+	if (instance == NULL || value == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
+	npambulant * plugin = (npambulant *)instance->pdata;
+	if (plugin == NULL) {
+		return NPERR_GENERIC_ERROR;
+	}
+	switch (variable) {
+		case NPPVpluginNameString:
+			*((const char **)value) = "npambulant";
+			break;
+		case NPPVpluginDescriptionString:
+			*((const char **)value) = "SMIL3.0 player";
+			break;
+		case NPPVpluginScriptableNPObject:
+			*(NPObject **)value = plugin->GetScriptableObject();
+			break;
+		case NPPVpluginNeedsXEmbed:
+			*(NPBool *) value = TRUE;
+			break;
+		default:
+//			rv = NPERR_GENERIC_ERROR;
+			break;
+	}
+	return rv;
 }
 
 NPError NPP_NewStream(NPP instance,
@@ -220,119 +218,122 @@ NPError NPP_NewStream(NPP instance,
                       NPBool seekable,
                       uint16* stype)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
+	npambulant *pPlugin = (npambulant *)instance->pdata;
 
-  NPError rv = NPERR_NO_ERROR;
-  npambulant *pPlugin = (npambulant *)instance->pdata;
-
-  if(pPlugin == NULL)
-    return NPERR_GENERIC_ERROR;
-
-  if (pPlugin->isInitialized()) {
-	  LOG("npambulant: NPP_NewStream called twice\n");
-    return rv;
-  }
-  if (!pPlugin->init()) {
-	  rv = NPERR_GENERIC_ERROR;
-  }
-  return rv;
+	if (pPlugin == NULL) {
+		return NPERR_GENERIC_ERROR;
+	}
+	if (pPlugin->isInitialized()) {
+		LOG("npambulant: NPP_NewStream called twice\n");
+		return rv;
+	}
+	if (!pPlugin->init()) {
+		rv = NPERR_GENERIC_ERROR;
+	}
+	return rv;
 }
 
 int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  int32 rv = 0x0fffffff;
-  return rv;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	int32 rv = 0x0fffffff;
+	return rv;
 }
 
 int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, void *buffer)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  int32 rv = len;
-  return rv;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	int32 rv = len;
+	return rv;
 }
 
 NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  NPError rv = NPERR_NO_ERROR;
-  return rv;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
+	return rv;
 }
 
 void NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
 {
-  LOG("");
-  if(instance == NULL)
-    return;
+	LOG("");
+	if (instance == NULL) {
+		return;
+	}
 }
 
 void NPP_Print (NPP instance, NPPrint* printInfo)
 {
-  LOG("");
-  if(instance == NULL)
-    return;
+	LOG("");
+	if (instance == NULL) {
+		return;
+	}
 }
 
 void NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData)
 {
-  LOG("");
-  if(instance == NULL)
-    return;
+	LOG("");
+	if (instance == NULL) {
+		return;
+	}
 }
 
 NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 {
-  LOG("");
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
-
-  NPError rv = NPERR_NO_ERROR;
-  return rv;
+	LOG("");
+	if (instance == NULL) {
+		return NPERR_INVALID_INSTANCE_ERROR;
+	}
+	NPError rv = NPERR_NO_ERROR;
+	return rv;
 }
 
 int16	NPP_HandleEvent(NPP instance, void* event)
 {
-  LOG("");
-  if(instance == NULL)
-    return 0;
-
-  int16 rv = 0;
-  npambulant * pPlugin = (npambulant *)instance->pdata;
-  if (pPlugin)
-    rv = pPlugin->handleEvent(event);
-
-  return rv;
+	LOG("");
+	if (instance == NULL) {
+		return 0;
+	}
+	int16 rv = 0;
+	npambulant * pPlugin = (npambulant *)instance->pdata;
+	if (pPlugin) {
+		rv = pPlugin->handleEvent(event);
+	}
+	return rv;
 }
 
 #ifdef OJI
 jref NPP_GetJavaClass (void)
 {
-  LOG("");
-  return NULL;
+	LOG("");
+	return NULL;
 }
 #endif//OJI
 
 NPObject *NPP_GetScriptableInstance(NPP instance)
 {
-  LOG("");
-  if(!instance)
-    return 0;
-
-  NPObject *npobj = 0;
-  npambulant * pPlugin = (npambulant *)instance->pdata;
-  if (!pPlugin)
-    npobj = pPlugin->GetScriptableObject();
-
-  return npobj;
+	LOG("");
+	if (!instance) {
+		return 0;
+	}
+	NPObject *npobj = 0;
+	npambulant * pPlugin = (npambulant *)instance->pdata;
+	if (!pPlugin) {
+		npobj = pPlugin->GetScriptableObject();
+	}
+	return npobj;
 }

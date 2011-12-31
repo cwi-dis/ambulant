@@ -56,24 +56,26 @@
 NPNetscapeFuncs NPNFuncs;
 
 extern "C" {
-  NPError OSCALL NP_Initialize(NPNetscapeFuncs *browserFuncs
+	NPError OSCALL NP_Initialize(NPNetscapeFuncs *browserFuncs
 #if defined(XP_UNIX) && ! defined(XP_MACOSX)
-              , NPPluginFuncs* pluginFuncs
+								 , NPPluginFuncs* pluginFuncs
 #endif
 );
-  NPError OSCALL NP_GetEntryPoints(NPPluginFuncs *pluginFuncs);
-  NPError OSCALL NP_Shutdown(void);
+	NPError OSCALL NP_GetEntryPoints(NPPluginFuncs *pluginFuncs);
+	NPError OSCALL NP_Shutdown(void);
 }; // extern "C"
 
 NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 {
-  AM_DBG fprintf(stderr, "ambulant_plugin: NP_GetEntryPoints(%p) called\n", pFuncs);
-  if(pFuncs == NULL)
-    return NPERR_INVALID_FUNCTABLE_ERROR;
+	AM_DBG fprintf(stderr, "ambulant_plugin: NP_GetEntryPoints(%p) called\n", pFuncs);
+	if (pFuncs == NULL) {
+		return NPERR_INVALID_FUNCTABLE_ERROR;
+	}
 #ifdef XP_MACOSX
   // Workaround for what I think is a bug in Safari: it sets size to 0
-  if (pFuncs->size == 0)
-	pFuncs->size = sizeof(NPPluginFuncs);
+	if (pFuncs->size == 0) {
+		pFuncs->size = sizeof(NPPluginFuncs);
+	}
 #endif // XP_MACOSX
 // Next test fails when plugin linked with Gecko-SDK 1.9 is used with Firefox 2.0
 // As yet, out plugin does not use any of the new functions in Firefox 3.0
@@ -81,23 +83,23 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 //    return NPERR_INVALID_FUNCTABLE_ERROR;
 //  memset(pFuncs, 0, sizeof(NPPluginFuncs));
 //  pFuncs->size = sizeof(NPPluginFuncs);
-  pFuncs->version       = (NP_VERSION_MAJOR << 8) | NP_VERSION_MINOR;
-  pFuncs->newp          = NPP_New;
-  pFuncs->destroy       = NPP_Destroy;
-  pFuncs->setwindow     = NPP_SetWindow;
-  pFuncs->newstream     = NPP_NewStream;
-  pFuncs->destroystream = NPP_DestroyStream;
-  pFuncs->asfile        = NPP_StreamAsFile;
-  pFuncs->writeready    = NPP_WriteReady;
-  pFuncs->write         = NPP_Write;
-  pFuncs->print         = NPP_Print;
-  pFuncs->event         = NPP_HandleEvent;
-  pFuncs->urlnotify     = NPP_URLNotify;
-  pFuncs->getvalue      = NPP_GetValue;
-  pFuncs->setvalue      = NPP_SetValue;
-  pFuncs->javaClass     = NULL;
+	pFuncs->version       = (NP_VERSION_MAJOR << 8) | NP_VERSION_MINOR;
+	pFuncs->newp          = NPP_New;
+	pFuncs->destroy       = NPP_Destroy;
+	pFuncs->setwindow     = NPP_SetWindow;
+	pFuncs->newstream     = NPP_NewStream;
+	pFuncs->destroystream = NPP_DestroyStream;
+	pFuncs->asfile        = NPP_StreamAsFile;
+	pFuncs->writeready    = NPP_WriteReady;
+	pFuncs->write         = NPP_Write;
+	pFuncs->print         = NPP_Print;
+	pFuncs->event         = NPP_HandleEvent;
+	pFuncs->urlnotify     = NPP_URLNotify;
+	pFuncs->getvalue      = NPP_GetValue;
+	pFuncs->setvalue      = NPP_SetValue;
+	pFuncs->javaClass     = NULL;
 
-  return NPERR_NO_ERROR;
+	return NPERR_NO_ERROR;
 }
 #ifdef XP_UNIX
 char *NPP_GetMIMEDescription();
@@ -105,77 +107,78 @@ char *NPP_GetMIMEDescription();
 const char *
 NP_GetMIMEDescription()
 {
-  return NPP_GetMIMEDescription();
+	return NPP_GetMIMEDescription();
 }
 #endif//XP_UNIX
 
 NPError
 NP_GetValue(void* future, NPPVariable variable, void *value)
 {
-  return NPP_GetValue((NPP_t *)future, variable, value);
+	return NPP_GetValue((NPP_t *)future, variable, value);
 }
 
 NPError OSCALL
 NP_Initialize(NPNetscapeFuncs* pFuncs
 #if defined(XP_UNIX) && ! defined(XP_MACOSX)
-              , NPPluginFuncs* pluginFuncs
+			  , NPPluginFuncs* pluginFuncs
 #endif
-              )
+			  )
 {
   AM_DBG fprintf(stderr, "ambulant_plugin: NP_Initialize(%p) called\n", pFuncs);
-  if(pFuncs == NULL)
-    return NPERR_INVALID_FUNCTABLE_ERROR;
+	if (pFuncs == NULL) {
+		return NPERR_INVALID_FUNCTABLE_ERROR;
+	}
+	if(HIBYTE(pFuncs->version) > NP_VERSION_MAJOR) {
+		return NPERR_INCOMPATIBLE_VERSION_ERROR;
+	}
+	// Next test commented out because we build for Firefox 3 but support Firefox 2,
+	// and we don't use any of the new functions inf Firefox 3.
+	//if(pFuncs->size < sizeof(NPNetscapeFuncs))
+	//  return NPERR_INVALID_FUNCTABLE_ERROR;
 
-  if(HIBYTE(pFuncs->version) > NP_VERSION_MAJOR)
-    return NPERR_INCOMPATIBLE_VERSION_ERROR;
-
-// Next test commented out because we build for Firefox 3 but support Firefox 2,
-// and we don't use any of the new functions inf Firefox 3.
-//if(pFuncs->size < sizeof(NPNetscapeFuncs))
-//  return NPERR_INVALID_FUNCTABLE_ERROR;
-
-  NPNFuncs.size                    = pFuncs->size;
-  NPNFuncs.version                 = pFuncs->version;
-  NPNFuncs.geturlnotify            = pFuncs->geturlnotify;
-  NPNFuncs.geturl                  = pFuncs->geturl;
-  NPNFuncs.posturlnotify           = pFuncs->posturlnotify;
-  NPNFuncs.posturl                 = pFuncs->posturl;
-  NPNFuncs.requestread             = pFuncs->requestread;
-  NPNFuncs.newstream               = pFuncs->newstream;
-  NPNFuncs.write                   = pFuncs->write;
-  NPNFuncs.destroystream           = pFuncs->destroystream;
-  NPNFuncs.status                  = pFuncs->status;
-  NPNFuncs.uagent                  = pFuncs->uagent;
-  NPNFuncs.memalloc                = pFuncs->memalloc;
-  NPNFuncs.memfree                 = pFuncs->memfree;
-  NPNFuncs.memflush                = pFuncs->memflush;
-  NPNFuncs.reloadplugins           = pFuncs->reloadplugins;
-  NPNFuncs.getJavaEnv              = pFuncs->getJavaEnv;
-  NPNFuncs.getJavaPeer             = pFuncs->getJavaPeer;
-  NPNFuncs.getvalue                = pFuncs->getvalue;
-  NPNFuncs.setvalue                = pFuncs->setvalue;
-  NPNFuncs.invalidaterect          = pFuncs->invalidaterect;
-  NPNFuncs.invalidateregion        = pFuncs->invalidateregion;
-  NPNFuncs.forceredraw             = pFuncs->forceredraw;
-  NPNFuncs.getstringidentifier     = pFuncs->getstringidentifier;
-  NPNFuncs.getstringidentifiers    = pFuncs->getstringidentifiers;
-  NPNFuncs.getintidentifier        = pFuncs->getintidentifier;
-  NPNFuncs.identifierisstring      = pFuncs->identifierisstring;
-  NPNFuncs.utf8fromidentifier      = pFuncs->utf8fromidentifier;
-  NPNFuncs.intfromidentifier       = pFuncs->intfromidentifier;
-  NPNFuncs.createobject            = pFuncs->createobject;
-  NPNFuncs.retainobject            = pFuncs->retainobject;
-  NPNFuncs.releaseobject           = pFuncs->releaseobject;
-  NPNFuncs.invoke                  = pFuncs->invoke;
-  NPNFuncs.invokeDefault           = pFuncs->invokeDefault;
-  NPNFuncs.evaluate                = pFuncs->evaluate;
-  NPNFuncs.getproperty             = pFuncs->getproperty;
-  NPNFuncs.setproperty             = pFuncs->setproperty;
-  NPNFuncs.removeproperty          = pFuncs->removeproperty;
-  NPNFuncs.hasproperty             = pFuncs->hasproperty;
-  NPNFuncs.hasmethod               = pFuncs->hasmethod;
-  NPNFuncs.releasevariantvalue     = pFuncs->releasevariantvalue;
-  NPNFuncs.setexception            = pFuncs->setexception;
+	NPNFuncs.size                    = pFuncs->size;
+	NPNFuncs.version                 = pFuncs->version;
+	NPNFuncs.geturlnotify            = pFuncs->geturlnotify;
+	NPNFuncs.geturl                  = pFuncs->geturl;
+	NPNFuncs.posturlnotify           = pFuncs->posturlnotify;
+	NPNFuncs.posturl                 = pFuncs->posturl;
+	NPNFuncs.requestread             = pFuncs->requestread;
+	NPNFuncs.newstream               = pFuncs->newstream;
+	NPNFuncs.write                   = pFuncs->write;
+	NPNFuncs.destroystream           = pFuncs->destroystream;
+	NPNFuncs.status                  = pFuncs->status;
+	NPNFuncs.uagent                  = pFuncs->uagent;
+	NPNFuncs.memalloc                = pFuncs->memalloc;
+	NPNFuncs.memfree                 = pFuncs->memfree;
+	NPNFuncs.memflush                = pFuncs->memflush;
+	NPNFuncs.reloadplugins           = pFuncs->reloadplugins;
+	NPNFuncs.getJavaEnv              = pFuncs->getJavaEnv;
+	NPNFuncs.getJavaPeer             = pFuncs->getJavaPeer;
+	NPNFuncs.getvalue                = pFuncs->getvalue;
+	NPNFuncs.setvalue                = pFuncs->setvalue;
+	NPNFuncs.invalidaterect          = pFuncs->invalidaterect;
+	NPNFuncs.invalidateregion        = pFuncs->invalidateregion;
+	NPNFuncs.forceredraw             = pFuncs->forceredraw;
+	NPNFuncs.getstringidentifier     = pFuncs->getstringidentifier;
+	NPNFuncs.getstringidentifiers    = pFuncs->getstringidentifiers;
+	NPNFuncs.getintidentifier        = pFuncs->getintidentifier;
+	NPNFuncs.identifierisstring      = pFuncs->identifierisstring;
+	NPNFuncs.utf8fromidentifier      = pFuncs->utf8fromidentifier;
+	NPNFuncs.intfromidentifier       = pFuncs->intfromidentifier;
+	NPNFuncs.createobject            = pFuncs->createobject;
+	NPNFuncs.retainobject            = pFuncs->retainobject;
+	NPNFuncs.releaseobject           = pFuncs->releaseobject;
+	NPNFuncs.invoke                  = pFuncs->invoke;
+	NPNFuncs.invokeDefault           = pFuncs->invokeDefault;
+	NPNFuncs.evaluate                = pFuncs->evaluate;
+	NPNFuncs.getproperty             = pFuncs->getproperty;
+	NPNFuncs.setproperty             = pFuncs->setproperty;
+	NPNFuncs.removeproperty          = pFuncs->removeproperty;
+	NPNFuncs.hasproperty             = pFuncs->hasproperty;
+	NPNFuncs.hasmethod               = pFuncs->hasmethod;
+	NPNFuncs.releasevariantvalue     = pFuncs->releasevariantvalue;
+	NPNFuncs.setexception            = pFuncs->setexception;
+	NPNFuncs.convertpoint			 = pFuncs->convertpoint;
 
 #if defined(XP_UNIX) && !defined(XP_MACOSX)
   /* Workaround by Jack: Safari on MacOSX calls NP_Initialize "the windows way",
@@ -188,32 +191,30 @@ NP_Initialize(NPNetscapeFuncs* pFuncs
    * and have a UniversalProcPointer for every function we
    * implement.
    */
-  pluginFuncs->version    = (NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR;
-  pluginFuncs->size       = sizeof(NPPluginFuncs);
-  pluginFuncs->newp       = NewNPP_NewProc(NPP_New);
-  pluginFuncs->destroy    = NewNPP_DestroyProc(NPP_Destroy);
-  pluginFuncs->setwindow  = NewNPP_SetWindowProc(NPP_SetWindow);
-  pluginFuncs->newstream  = NewNPP_NewStreamProc(NPP_NewStream);
-  pluginFuncs->destroystream = NewNPP_DestroyStreamProc(NPP_DestroyStream);
-  pluginFuncs->asfile     = NewNPP_StreamAsFileProc(NPP_StreamAsFile);
-  pluginFuncs->writeready = NewNPP_WriteReadyProc(NPP_WriteReady);
-  pluginFuncs->write      = NewNPP_WriteProc(NPP_Write);
-  pluginFuncs->print      = NewNPP_PrintProc(NPP_Print);
-  pluginFuncs->urlnotify  = NewNPP_URLNotifyProc(NPP_URLNotify);
-  pluginFuncs->event      = NULL;
-  pluginFuncs->getvalue   = NewNPP_GetValueProc(NPP_GetValue);
+	pluginFuncs->version    = (NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR;
+	pluginFuncs->size       = sizeof(NPPluginFuncs);
+	pluginFuncs->newp       = NewNPP_NewProc(NPP_New);
+	pluginFuncs->destroy    = NewNPP_DestroyProc(NPP_Destroy);
+	pluginFuncs->setwindow  = NewNPP_SetWindowProc(NPP_SetWindow);
+	pluginFuncs->newstream  = NewNPP_NewStreamProc(NPP_NewStream);
+	pluginFuncs->destroystream = NewNPP_DestroyStreamProc(NPP_DestroyStream);
+	pluginFuncs->asfile     = NewNPP_StreamAsFileProc(NPP_StreamAsFile);
+	pluginFuncs->writeready = NewNPP_WriteReadyProc(NPP_WriteReady);
+	pluginFuncs->write      = NewNPP_WriteProc(NPP_Write);
+	pluginFuncs->print      = NewNPP_PrintProc(NPP_Print);
+	pluginFuncs->urlnotify  = NewNPP_URLNotifyProc(NPP_URLNotify);
+	pluginFuncs->event      = NULL;
+	pluginFuncs->getvalue   = NewNPP_GetValueProc(NPP_GetValue);
 #ifdef OJI
-  pluginFuncs->javaClass  = NPP_GetJavaClass();
+	pluginFuncs->javaClass  = NPP_GetJavaClass();
 #endif
-
-  NPP_Initialize();
+	NPP_Initialize();
 #endif
-
   return NPERR_NO_ERROR;
 }
 
 NPError OSCALL NP_Shutdown()
 {
-  return NPERR_NO_ERROR;
+	return NPERR_NO_ERROR;
 }
 
