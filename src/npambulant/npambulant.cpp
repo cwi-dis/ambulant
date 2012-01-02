@@ -101,7 +101,6 @@ npambulant::npambulant(
 	m_ambulant_player(NULL),
 	m_Window(NULL)
 {
-//	sleep(60);
 	m_url = net::url();
 #ifdef XP_WIN
 	m_hWnd = NULL;
@@ -459,7 +458,6 @@ npambulant::init() {
 	if (m_bInitialized) {
 		ambulant::lib::logger::get_logger()->trace("npambulant: init called twice");
 	}
-	sleep(30);
 	m_bInitialized = TRUE;
 	return init_ambulant(m_pNPInstance);
 }
@@ -486,20 +484,20 @@ npambulant::shut() {
 		delete m_ambulant_player;
 	}
 #else
-		if (m_ambulant_player->is_playing()
-			|| m_ambulant_player->is_pausing() )
-		{
-			m_ambulant_player->stop();
-			while ( ! m_ambulant_player->is_done())
-				sleep(3);
-		}
+	if (m_ambulant_player->is_playing()
+		|| m_ambulant_player->is_pausing() )
+	{
+		m_ambulant_player->stop();
+		while ( ! m_ambulant_player->is_done())
+			sleep(3);
+	}
 #ifdef WITH_CG
-		if (m_view != NULL) {
+	if (m_view != NULL) {
  //X mainloop takes care //delete_AmbulantView(m_view);
-			m_view = NULL;
-		}
-#endif//WIT_CG
-		delete m_mainloop;
+		m_view = NULL;
+	}
+#endif//WITH_CG
+	delete m_mainloop;
 	}
 #endif
 	m_ambulant_player = NULL; // deleted by mainloop
