@@ -459,6 +459,7 @@ npambulant::init() {
 	if (m_bInitialized) {
 		ambulant::lib::logger::get_logger()->trace("npambulant: init called twice");
 	}
+	sleep(30);
 	m_bInitialized = TRUE;
 	return init_ambulant(m_pNPInstance);
 }
