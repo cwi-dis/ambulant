@@ -1268,7 +1268,7 @@ void gui::d2::d2_player::stopped(common::playable *p) {
 	m_trmap_cs.enter();
 	trmap_t::iterator it = m_trmap.find(p);
 	if(it != m_trmap.end()) {
-		delete (*it).second;
+		delete (gui::d2::d2_player*) (*it).second;
 		common::playable *p = (*it).first;
 		it = m_trmap.erase(it);
 		common::renderer *r = p->get_renderer();
