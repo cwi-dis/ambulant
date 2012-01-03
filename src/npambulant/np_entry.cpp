@@ -104,7 +104,7 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 #ifdef XP_UNIX
 char *NPP_GetMIMEDescription();
 
-const char *
+char *
 NP_GetMIMEDescription()
 {
 	return NPP_GetMIMEDescription();
@@ -208,6 +208,7 @@ NP_Initialize(NPNetscapeFuncs* pFuncs
 #ifdef OJI
 	pluginFuncs->javaClass  = NPP_GetJavaClass();
 #endif
+  NPError NPP_Initialize();
 	NPP_Initialize();
 #endif
   return NPERR_NO_ERROR;

@@ -204,7 +204,7 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 
 #	Install npambulant plugin binary
 	-mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
-	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/npambulant
+	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
 
 #	Install ambulant core libraries
 
@@ -212,7 +212,6 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	-mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
 	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
 	cd ../plugins; \
-	echo $(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install;  \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
 
 #	Install gettext localizations
@@ -236,7 +235,8 @@ install-npambulant: $(NPAMBULANT_PLUGIN)
 
 #	Copy in shared libraries and fix rpath
 	DYLD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
-		$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py $(NPAMBULANT_PLUGIN)
+		$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -v\
+		$(NPAMBULANT_PLUGIN)
 #	Check that internalization worked
 	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(NPAMBULANT_PLUGIN)
 #TBD	strip  npambulant_plugin_dir/plugins/npambulant/*.so*
@@ -266,7 +266,8 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 		cp .libs/*.{so.0,la} $$pkglibdir
 
 #	Copy in shared libraries and fix rpath
-	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
+	if [ -e /lib/i386-linux-gnu/libc.so.6 ];then LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu;fi # Ubuntu 11.4
+	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib:$(LD_LIBRARY_PATH) \
 		$(PYTHON) $(top_srcdir)/scripts/internalize_shlibs.py \
 		npambulant_plugin_dir/plugins
 #	Check that internalization worked
