@@ -32,6 +32,8 @@ if not os.path.exists(WINDOWS_DXSDK_PATH) and os.path.exists(WINDOWS_PROGRAMFILE
     WINDOWS_DXSDK_PATH="%s\\Microsoft DirectX SDK (February 2010)" % WINDOWS_PROGRAMFILES32
 WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
+XULRUNNER_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/"
+XULRUNNER_VERSION="xulrunner-8.0"
 #
 # urlretrieve silently ignores 404 errors. We want them, so we can download
 # our shadow copies.
@@ -434,6 +436,12 @@ third_party_packages={
                 "%s --disable-dependency-tracking && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
+            ),
+        TPP("xulrunner-sdk", # no libraries used, 32 bit version also works w. 64 bit build
+            url="%s%s.en-US.mac-i386.sdk.tar.bz2" % (XULRUNNER_URL, XULRUNNER_VERSION),
+            url2="%s.en-US.mac-i386.sdk.tar.bz2" % XULRUNNER_VERSION,
+            checkcmd="test -d xulrunner-sdk",
+            buildcmd="test -d xulrunner-sdk"
             )
         ],
 
@@ -764,8 +772,8 @@ third_party_packages={
             ),
 
         TPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
-            url2="xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
+            url="%s%s.en-US.linux-i686.sdk.tar.bz2" % (XULRUNNER_URL, XULRUNNER_VERSION),
+            url2="%s.en-US.linux-i686.sdk.tar.bz2" % XULRUNNER_VERSION,
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
@@ -851,9 +859,11 @@ third_party_packages={
                 "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VSVERSION)
             ),
             
-        WinTPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-            url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+        WinTPP("xulunner-sdk",
+            #url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+			#url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+			url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
+            url2="%s.en-US.win32.sdk.zip" % XULRUNNER_VERSION,
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
             ),
