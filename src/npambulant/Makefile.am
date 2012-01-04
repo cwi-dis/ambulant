@@ -266,8 +266,13 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 		cp .libs/*.{so.0,la} $$pkglibdir
 
 #	Copy in shared libraries and fix rpath
-	if [ -e /usr/lib/i386-linux-gnu/libc.so ];then LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu;fi # Ubuntu 11.04 32 bit
-	if [ -e /usr/lib//lib/x86_64-linux-gnu/libc.so];then LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu;fi # Ubuntu 11.04 64 bit
+#	Ubuntu 11.04 32/65 bit
+	if [ -e /usr/lib/i386-linux-gnu/libc.so ]; \
+	then LD_LIBRARY_PATH=/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu; \
+	fi; \
+	if [ -e /usr/lib//lib/x86_64-linux-gnu/libc.so]; \
+	then LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu;\
+	fi; \
 	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib:$(LD_LIBRARY_PATH) \
 		$(PYTHON) $(top_srcdir)/scripts/internalize_shlibs.py \
 		npambulant_plugin_dir/plugins
