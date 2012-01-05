@@ -594,6 +594,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
+                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -682,6 +683,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
+                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
