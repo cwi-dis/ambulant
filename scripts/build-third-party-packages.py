@@ -7,6 +7,7 @@ import posixpath
 
 NOCHECK=False
 NORUN=False
+TRYMIRROR=True
 
 #
 # Where the mirrored copies of the Ambulant 3rd party packages for this release live.
@@ -119,7 +120,9 @@ class TPP(CommonTPP):
             return False
         return self._command(self.checkcmd, force=True)
         
-    def download(self, trymirror=True):
+    def download(self, trymirror=None):
+        if trymirror is None:
+            trymirror = TRYMIRROR
         print >>self.output, "+ download:", self.url
         try:
             myurlretrieve(self.url, self.downloadedfile)
@@ -265,6 +268,7 @@ LINUX_COMMON_CONFIGURE="./configure --prefix='%s'" % COMMON_INSTALLDIR
 #
 WIN32_COMMON_CONFIG="Release"
 #WIN32_COMMON_CONFIG="Debug"
+WIN32_VCVERSION="unknown"
 WIN32_VSVERSION="unknown"
 
 if os.path.sep == '/':
@@ -283,9 +287,11 @@ else:
         print '** Run "call ....Microsoft Visual Studio X.Y\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
         sys.exit(1)
     if '10.0' in vsdir:
-        WIN32_VSVERSION="vc10"
+        WIN32_VCVERSION="vc10"
+        WIN32_VSVERSION="vs2010"
     elif '9.0' in vsdir:
-        WIN32_VSVERSION="vc9"
+        WIN32_VCVERSION="vc9"
+        WIN32_VSVERSION="vs2008"
     else:
         print "** Unknown version of Visual Studio:", vsdir
         sysexit(1)
@@ -596,6 +602,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
+                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -684,6 +691,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
+                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
@@ -852,17 +860,17 @@ third_party_packages={
         WinTPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.zip",
             url2="xerces-c-3.1.1.zip",
-            checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG),
+            checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VCVERSION, WIN32_COMMON_CONFIG),
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\%s\\xerces-all && "
                 "devenv xerces-all.sln /build Debug /project XercesLib && "
-                "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VSVERSION)
+                "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VCVERSION)
             ),
             
         WinTPP("xulunner-sdk",
             #url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-			#url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-			url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
+	    #url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+	    url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
             url2="%s.en-US.win32.sdk.zip" % XULRUNNER_VERSION,
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
@@ -875,18 +883,19 @@ third_party_packages={
             ),
 
         #  The WINDOWS_DXSDK paths (DirectX SDK) need to be added for the SDL build to work.
+        # Note: older zipfiles for 1.2.14 (sigh) had the VisualC directory zipped. Add a line
+        #                 "%s VisualC.zip && "
+        # and WINDOWS_UNZIP to the arglist if that turns out to happen again in future.
         WinTPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
-            url2="SDL-1.2.14.zip",
-            checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
+            url="http://www.libsdl.org/tmp/SDL-1.3.0-6050.zip",
+            url2="SDL-1.3.0-6050.zip",
+            checkcmd="if not exist SDL-1.3.0-6050\\VisualC\\SDL\\Win32\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
-                "cd SDL-1.2.14 && "
-                "%s VisualC.zip && "
+                "cd SDL-1.3.0-6050 && "
                 "cd VisualC && "
-                "devenv SDL.sln /Upgrade && "
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
                 "set LIB=%s\\Lib\\x86;%%LIB%% && "
-                "devenv SDL.sln /UseEnv /build %s" % (WINDOWS_UNZIP, WINDOWS_DXSDK, WINDOWS_DXSDK, WIN32_COMMON_CONFIG)
+                "devenv SDL_%s.sln /UseEnv /build %s" % (WINDOWS_DXSDK_PATH, WINDOWS_DXSDK_PATH, WIN32_VSVERSION, WIN32_COMMON_CONFIG)
             ),
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
@@ -925,7 +934,7 @@ third_party_packages={
             # where Ambulant expects it (bin\\win32 and lib\\win32)
             buildcmd=
                 "call ..\\scripts\\upgrade3pp2VC10.bat && " +
-                ("cd ..\\projects\\%s && " % WIN32_VSVERSION) +
+                ("cd ..\\projects\\%s && " % WIN32_VCVERSION) +
                 "devenv third_party_packages.sln /Upgrade && " +
                 "devenv third_party_packages.sln /build Debug && " +
                 ("devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG)
@@ -1036,6 +1045,7 @@ environment_checkers = {
 }
 
 def main():
+    global TRYMIRROR
     if len(sys.argv) == 2 and sys.argv[1] == '-m':
         good = 0
         bad = 0
@@ -1050,10 +1060,14 @@ def main():
         print '+ mirrored: %d packages' % good
         print '+ failed: %d packages' % bad
         sys.exit(bad)
+    if len(sys.argv) > 1 and sys.argv[1] == '-M':
+        del sys.argv[1]
+        TRYMIRROR=False
     if len(sys.argv) != 2 or sys.argv[1] not in third_party_packages:
-        print "Usage: %s platform" % sys.argv[0]
+        print "Usage: %s [-M] platform" % sys.argv[0]
         print "Platform is one of:", ' '.join(third_party_packages.keys())
-        print "%s -m to populate mirror directory" % sys.argv[0]
+        print "-M argument ignores mirror directory"
+        print "Use %s -m to populate mirror directory" % sys.argv[0]
         return 2
     ok = environment_checkers[sys.argv[1]](sys.argv[1])
     if not ok:

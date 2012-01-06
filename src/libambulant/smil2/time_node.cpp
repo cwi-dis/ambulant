@@ -1458,7 +1458,7 @@ void time_node::fill(qtime_type timestamp) {
 			// Here, I just print some message and actual action needed to be inserted later after I
 			// figure out how to do it.
 			if (m_node->get_attribute("src")) {
-				m_logger->debug("%s.continue() ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(), timestamp.as_time_value_down_to(this), timestamp.second(), timestamp.as_doc_time_value());
+				AM_DBG m_logger->debug("%s.continue() ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(), timestamp.as_time_value_down_to(this), timestamp.second(), timestamp.as_doc_time_value());
 			}
 		}
 		if(m_timer) {

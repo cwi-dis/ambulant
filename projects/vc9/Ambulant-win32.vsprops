@@ -31,7 +31,7 @@
 	rendering of audio and video (no mp4, no rtsp, etc).
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
-<UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.2.14" PerformEnvironmentSet="true"/>
+<UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.3.0-6050" PerformEnvironmentSet="true"/>
 <UserMacro Name="ffmpeg_dir" Value="..\..\third_party_packages\ffmpeg-20110119-win32-prebuilt" PerformEnvironmentSet="true"/>
 <UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
 <!--

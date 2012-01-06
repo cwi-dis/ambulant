@@ -47,7 +47,9 @@
 // On second thoughts this seems a bad idea, so setting MIN_VIDEO_FRAMES to zero.
 #define MIN_VIDEO_FRAMES 0
 // How many video frames we would like to buffer at most.
-#define MAX_VIDEO_FRAMES 100
+// #define MAX_VIDEO_FRAMES 100 
+// xxxbo: decrease the buffer size for the memory limited device, such as IPad, etc. 
+#define MAX_VIDEO_FRAMES 10 
 
 // How scaling of images is done.
 // XXXJACK picked this scalerr because of "FAST" in the name. So there may be a better choice...

@@ -15,6 +15,17 @@
 #  mailutils
 #  curl
 #  ssh
+# libxml2-dev 
+# libqt3-mt-dev 
+# liblivemedia-dev 
+# libsdl1.2-dev 
+# libavformat-dev 
+# libavcodec-dev 
+# libswscale-dev 
+# libxerces-c-dev 
+# python-dev 
+# python-gtk2-dev 
+# python-gobject-dev
 #
 # NOTE 2: the key used for signing (in debuild) must have no passphrase.
 # I think this can only be done with the gpg --edit-key command line

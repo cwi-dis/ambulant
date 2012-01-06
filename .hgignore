@@ -87,3 +87,6 @@ po/POTFILES
 src/player_gtk/AmbulantPlayer_gtk
 src/player_unix/qt_gui.moc.cpp
 src/player_unix/AmbulantPlayer_qt
+src/player_macosx/AmbulantPlayer.app
+.*\.DS_Store
+

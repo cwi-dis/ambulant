@@ -682,6 +682,34 @@
 				>
 			</File>
 			<File
+				RelativePath="..\live\liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.hh"
+				>
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\VorbisAudioRTPSink.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\VorbisAudioRTPSource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\VP8VideoMatroskaFileServerMediaSubsession.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\VP8VideoRTPSink.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\VP8VideoRTPSource.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\live\liveMedia\WAVAudioFileServerMediaSubsession.cpp"
 				>
 			</File>
