@@ -104,7 +104,7 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 #ifdef XP_UNIX
 char *NPP_GetMIMEDescription();
 
-char *
+const char *
 NP_GetMIMEDescription()
 {
 	return NPP_GetMIMEDescription();
