@@ -142,8 +142,14 @@ npambulant::npambulant(
 	m_argn = (char**) malloc (sizeof(char*)*argc);
 	m_argv = (char**) malloc (sizeof(char*)*argc);
 	for (int i=0; i<m_argc; i++) {
-		m_argn[i] = strdup(argn[i]);
-		m_argv[i] = strdup(argv[i]);
+#define OLD_AM_DBG AM_DBG
+#undef	AM_DBG
+#define AM_DBG if(1)
+		LOG("argn[%i]=%s argv[%i]=%s",i,argn[i],i,argv[i]);
+#undef	AM_DBG
+#define	AM_DBG if(0)
+		m_argn[i] = argn[i]?strdup(argn[i]):NULL;
+		m_argv[i] = argv[i]?strdup(argv[i]):NULL;
 	}
 	s_npambulant_last_instance = pNPInstance;
 }
