@@ -350,7 +350,9 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 			common::renderer *rend = np->get_renderer();
 
 			// XXXJACK: Dirty hack, for now: we don't want prefetch to render to a surface so we zap it. Need to fix.
-			if (n->get_local_name() == "prefetch") surf = NULL;
+			if (n->get_local_name() == "prefetch") { 
+				surf = NULL;
+			}
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: cached playable 0x%x, renderer 0x%x, surface 0x%x", n, n->get_sig().c_str(), np, rend, surf);
 
 			if (rend && surf) {
@@ -492,7 +494,13 @@ void smil_player::stop_playable(const lib::node *n) {
 		common::playable *np = (it_url_based != m_cached_playables.end())?(*it_url_based).second:0;
 		if( np != NULL ) {
 			lib::logger::get_logger()->debug("smil_player::stop_playable: destroying, cache entry occupied for %s", victim.first->get_url("src").get_url().c_str());
-			can_cache = false;
+			// xxxbo: in case of the on playing node has the same src with the prefetch one, 
+			// we should cache the prefetch one in any case and remove the one which are playing
+			//can_cache = false; 
+			m_playables_cs.enter();
+			m_cached_playables.erase(it_url_based);
+			m_playables_cs.leave();
+			np->release();
 		}
 	}
 	if (can_cache && must_post_stop) {

@@ -107,14 +107,16 @@ gui::d2::d2_d2video_renderer::~d2_d2video_renderer() {
 		m_basic_audio->Release();
 		m_basic_audio = 0;
 	}
-#if 0
-	// For reasons unknown, we should not release the video
-	// sink. Maybe the AddRef() is missing?
 	if (m_video_sink) {
+		m_video_sink->SetRenderTarget(NULL);
+		m_video_sink->SetCallback(NULL);
+#if 0
+		// For reasons unknown, we should not release the video
+		// sink. Maybe the AddRef() is missing?
 		m_video_sink->Release();
+#endif
 		m_video_sink = 0;
 	}
-#endif
 	if(m_graph_builder) {
 		m_graph_builder->Release();
 		m_graph_builder = 0;
@@ -323,8 +325,14 @@ bool gui::d2::d2_d2video_renderer::stop() {
 	m_cs.enter();
 	m_update_event = 0;
 	_stop();
+	surface *dest = m_dest;
+	m_dest = NULL;
+	if (m_video_sink) {
+		m_video_sink->SetRenderTarget(NULL);
+		m_video_sink->SetCallback(NULL);
+	}
 	m_cs.leave();
-	if (m_dest) m_dest->renderer_done(this);
+	if (dest) dest->renderer_done(this);
 	m_dest = NULL;
 	m_activated = false;
 	m_context->stopped(m_cookie);

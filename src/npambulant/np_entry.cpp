@@ -218,4 +218,3 @@ NPError OSCALL NP_Shutdown()
 {
 	return NPERR_NO_ERROR;
 }
-
