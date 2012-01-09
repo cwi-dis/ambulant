@@ -158,7 +158,7 @@ class fraction_p : public int_p {
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		std::ptrdiff_t d = int_p::parse(it, end);
 		if (d < 0) return d;
-		ptrdiff_t digits = d;
+		std::ptrdiff_t digits = d;
 		while (digits < 3) {
 			digits++;
 			m_result *= 10;
