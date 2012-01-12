@@ -4,7 +4,7 @@ BUILDDIR=/var/www/AmbulantPlayerOrg/nightlybuilds
 set -e
 set -x
 cd $BUILDDIR
-subdirs=`echo */*/`
+subdirs=`echo */*/ */deb/dists/*/ambulant/*`
 for dir in $subdirs; do
 	cd $BUILDDIR
 	cd $dir
