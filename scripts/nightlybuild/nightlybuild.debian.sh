@@ -66,7 +66,14 @@ release*)
 esac
 CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
-DESTINATION_DEBIAN=$DESTINATION/debian/
+
+DISTRIB_RELEASE=unknown
+. /etc/lsb-release
+DEBARCH=`dpkg-architecture -qDEB_HOST_ARCH`
+DESTINATION_DEBIAN=$DESTINATION/deb/
+DESTINATION_STAGING=dists
+RELPATH_SRC=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/source
+RELPATH_BIN=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/binary-$DEBARCH
 
 echo
 echo ==========================================================
@@ -118,12 +125,13 @@ cd ..
 #
 
 cd ..
-mkdir debian-$TODAY
-mv *.tar.gz *.deb *.dsc *.changes *.build debian-$TODAY/
-dpkg-scanpackages debian-$TODAY | gzip -9c > Packages.gz
-dpkg-scansources debian-$TODAY | gzip -9c > Sources.gz
-scp -r debian-$TODAY $DESTINATION_DEBIAN
-scp Packages.gz Sources.gz $DESTINATION_DEBIAN
+mkdir -p $RELPATH_SRC/debian-$TODAY
+mkdir -p $RELPATH_BIN/debian-$TODAY
+mv *.tar.gz *.dsc *.changes *.build $RELPATH_SRC/debian-$TODAY/
+mv *.deb $RELPATH_BIN/debian-$TODAY/
+dpkg-scanpackages $RELPATH_BIN/debian-$TODAY | gzip -9c > $RELPATH_BIN/Packages.gz
+dpkg-scansources $RELPATH_SRC/debian-$TODAY | gzip -9c > $RELPATH_SRC/Sources.gz
+scp -r $DESTINATION_STAGING $DESTINATION_DEBIAN/$DESTINATION_STAGING
 
 #
 # Delete old installers, remember current
