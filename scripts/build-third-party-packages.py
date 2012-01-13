@@ -685,7 +685,7 @@ third_party_packages={
                 "cd SDL-1.3.0-*  && "
                 "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iOS/SDL  && "
-                "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
+                "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug ARCHS='i386 x86_64' &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
                 "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
