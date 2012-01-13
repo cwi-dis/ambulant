@@ -1,0 +1,4 @@
+NAME=jack@cwi.nl
+MAILTO=jack@cwi.nl
+PATH=/home/jack/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+30 5 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.debian.sh 
