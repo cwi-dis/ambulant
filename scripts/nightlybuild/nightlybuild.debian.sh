@@ -131,7 +131,7 @@ mv *.tar.gz *.dsc *.changes *.build $RELPATH_SRC/debian-$TODAY/
 mv *.deb $RELPATH_BIN/debian-$TODAY/
 dpkg-scanpackages $RELPATH_BIN/debian-$TODAY | gzip -9c > $RELPATH_BIN/Packages.gz
 dpkg-scansources $RELPATH_SRC/debian-$TODAY | gzip -9c > $RELPATH_SRC/Sources.gz
-rsync $DESTINATION_STAGING $DESTINATION_DEBIAN
+rsync -r $DESTINATION_STAGING $DESTINATION_DEBIAN
 
 #
 # Delete old installers, remember current
