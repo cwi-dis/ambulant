@@ -405,7 +405,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
-                "./configure --prefix='%s' --without-x --disable-dependency-tracking "
+                "./configure --prefix='%s'  --enable-video-x11=no  --enable-video-opengl=no --with-x=no --disable-dependency-tracking "
                     "CFLAGS='%s -framework ForceFeedback' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"
                 "make ${MAKEFLAGS} && "
@@ -683,7 +683,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
+                "./configure --with-x=no --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
