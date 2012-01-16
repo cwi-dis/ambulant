@@ -405,7 +405,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
-                "./configure --prefix='%s' --without-x  --enable-video-x11=no --disable-dependency-tracking "
+                "./configure --prefix='%s' --without-x  --without-video --disable-dependency-tracking "
                     "CFLAGS='%s -framework ForceFeedback' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"
                 "make ${MAKEFLAGS} && "
@@ -493,7 +493,7 @@ third_party_packages={
             buildcmd=
                 "cd SDL-1.3.0-* && "
                 "./configure --prefix='%s' "
-                    "--disable-dependency-tracking  --enable-video-x11=no"
+                    "--disable-dependency-tracking  --without-video"
                     "CC=gcc-4.0 CXX=g++-4.0 "
                     "CFLAGS='%s' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"

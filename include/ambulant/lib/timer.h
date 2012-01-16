@@ -30,6 +30,19 @@ namespace ambulant {
 
 namespace lib {
 
+#ifdef WITH_REMOTE_SYNC
+
+/// An interface that can be used to receive notification when
+/// interesting things happen to a timer.
+class timer_observer {
+  public:
+	virtual void started() = 0;
+	virtual void stopped() = 0;
+	virtual void paused() = 0;
+	virtual void resumed() = 0;
+};
+#endif WITH_REMOTE_SYNC
+
 /// Client interface to timer objects: allows you to get the
 /// current time and the rate at which time passes.
 class timer {
@@ -124,6 +137,11 @@ class timer_control : public timer {
 
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
+	
+#ifdef WITH_REMOTE_SYNC
+	/// Set the observer.
+	virtual void set_observer(timer_observer *obs) = 0;
+#endif
 
 };
 
@@ -203,6 +221,11 @@ class timer_control_impl : public timer_control {
 	/// Skew the clock.
 	void skew(signed_time_type skew_);
 
+#ifdef WITH_REMOTE_SYNC
+	/// Set the observer.
+	void set_observer(timer_observer *obs);
+#endif
+
   private:
 	void _start(time_type t = 0);
 	void _stop();
@@ -219,6 +242,9 @@ class timer_control_impl : public timer_control {
 	double m_speed;
 	bool m_running;
 	signed_time_type m_drift;
+#ifdef WITH_REMOTE_SYNC
+	timer_observer *m_observer;
+#endif
 	critical_section m_lock;
 };
 

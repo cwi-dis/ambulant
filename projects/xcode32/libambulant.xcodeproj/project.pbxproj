@@ -188,6 +188,14 @@
 		04791DB8115194C10007DD71 /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2D115194C10007DD71 /* timegraph.cpp */; };
 		04791DB9115194C10007DD71 /* trace_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2E115194C10007DD71 /* trace_player.cpp */; };
 		04791DBA115194C10007DD71 /* transition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2F115194C10007DD71 /* transition.cpp */; };
+		049D19D114C44B060062A141 /* timer_sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 049D19D014C44B060062A141 /* timer_sync.h */; };
+		049D19D214C44B060062A141 /* timer_sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 049D19D014C44B060062A141 /* timer_sync.h */; };
+		049D19D314C44B060062A141 /* timer_sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 049D19D014C44B060062A141 /* timer_sync.h */; };
+		049D19D414C44B060062A141 /* timer_sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 049D19D014C44B060062A141 /* timer_sync.h */; };
+		049D19D714C44E1E0062A141 /* timer_sync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049D19D614C44E1E0062A141 /* timer_sync.cpp */; };
+		049D19D814C44E1E0062A141 /* timer_sync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049D19D614C44E1E0062A141 /* timer_sync.cpp */; };
+		049D19D914C44E1E0062A141 /* timer_sync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049D19D614C44E1E0062A141 /* timer_sync.cpp */; };
+		049D19DA14C44E1E0062A141 /* timer_sync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049D19D614C44E1E0062A141 /* timer_sync.cpp */; };
 		04A1E80B12B57DF20060F97E /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
 		04A1E80C12B57DF20060F97E /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		04A1E80D12B57DF20060F97E /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
@@ -883,6 +891,8 @@
 		04791D2D115194C10007DD71 /* timegraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timegraph.cpp; sourceTree = "<group>"; };
 		04791D2E115194C10007DD71 /* trace_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trace_player.cpp; sourceTree = "<group>"; };
 		04791D2F115194C10007DD71 /* transition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transition.cpp; sourceTree = "<group>"; };
+		049D19D014C44B060062A141 /* timer_sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timer_sync.h; sourceTree = "<group>"; };
+		049D19D614C44E1E0062A141 /* timer_sync.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timer_sync.cpp; sourceTree = "<group>"; };
 		049DCA07138A8DE90023DFBC /* d2_basicvideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_basicvideo.cpp; path = d2/d2_basicvideo.cpp; sourceTree = "<group>"; };
 		049DCA08138A8DE90023DFBC /* d2_d2video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_d2video.cpp; path = d2/d2_d2video.cpp; sourceTree = "<group>"; };
 		049DCA09138A8DE90023DFBC /* d2_dshowsink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_dshowsink.cpp; path = d2/d2_dshowsink.cpp; sourceTree = "<group>"; };
@@ -1383,6 +1393,7 @@
 		04791C321151943B0007DD71 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				049D19D014C44B060062A141 /* timer_sync.h */,
 				04791C331151943B0007DD71 /* profile.h */,
 				04791C341151943B0007DD71 /* abstract_mtsync.h */,
 				04791C351151943B0007DD71 /* amstream.h */,
@@ -1717,6 +1728,7 @@
 				04791CFD115194C10007DD71 /* parser_factory.cpp */,
 				04791CFE115194C10007DD71 /* string_util.cpp */,
 				04791CFF115194C10007DD71 /* timer.cpp */,
+				049D19D614C44E1E0062A141 /* timer_sync.cpp */,
 				04791D00115194C10007DD71 /* transition_info.cpp */,
 				04791D01115194C10007DD71 /* tree_builder.cpp */,
 				04791D02115194C10007DD71 /* unix */,
@@ -1947,6 +1959,7 @@
 				93DEE5E714475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5E814475D5500091472 /* url.h in Headers */,
 				93DEE5E914475D5500091472 /* win32_datasource.h in Headers */,
+				049D19D414C44B060062A141 /* timer_sync.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1971,6 +1984,7 @@
 				93DEE5B414475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5B514475D5500091472 /* url.h in Headers */,
 				93DEE5B614475D5500091472 /* win32_datasource.h in Headers */,
+				049D19D214C44B060062A141 /* timer_sync.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1996,6 +2010,7 @@
 				93DEE5D614475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5D714475D5500091472 /* url.h in Headers */,
 				93DEE5D814475D5500091472 /* win32_datasource.h in Headers */,
+				049D19D314C44B060062A141 /* timer_sync.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2019,6 +2034,7 @@
 				93DEE5C514475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5C614475D5500091472 /* url.h in Headers */,
 				93DEE5C714475D5500091472 /* win32_datasource.h in Headers */,
+				049D19D114C44B060062A141 /* timer_sync.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2216,6 +2232,7 @@
 				939CEACE12E8659E0003D62E /* cg_transition.mm in Sources */,
 				04D07B6A138B0D4500F93772 /* node_impl.cpp in Sources */,
 				044E012C13D9A8E500E6A628 /* event_processor.cpp in Sources */,
+				049D19DA14C44E1E0062A141 /* timer_sync.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2302,6 +2319,7 @@
 				939CEACF12E8659E0003D62E /* cg_transition.mm in Sources */,
 				04D07B68138B0D4500F93772 /* node_impl.cpp in Sources */,
 				044E012A13D9A8E400E6A628 /* event_processor.cpp in Sources */,
+				049D19D814C44E1E0062A141 /* timer_sync.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2388,6 +2406,7 @@
 				939CEACD12E8659E0003D62E /* cg_transition.mm in Sources */,
 				04D07B69138B0D4500F93772 /* node_impl.cpp in Sources */,
 				044E012B13D9A8E400E6A628 /* event_processor.cpp in Sources */,
+				049D19D914C44E1E0062A141 /* timer_sync.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2478,6 +2497,7 @@
 				04791DBA115194C10007DD71 /* transition.cpp in Sources */,
 				04D07B67138B0D4500F93772 /* node_impl.cpp in Sources */,
 				044E012913D9A8E300E6A628 /* event_processor.cpp in Sources */,
+				049D19D714C44E1E0062A141 /* timer_sync.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
