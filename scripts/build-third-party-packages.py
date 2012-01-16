@@ -405,7 +405,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
-                "./configure --prefix='%s'  --enable-video-x11=no  --enable-video-opengl=no --with-x=no --disable-dependency-tracking "
+                "./configure --prefix='%s' --without-x  --enable-video-x11=no --disable-dependency-tracking "
                     "CFLAGS='%s -framework ForceFeedback' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"
                 "make ${MAKEFLAGS} && "
@@ -422,11 +422,11 @@ third_party_packages={
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
-            url2="gettext-0.17.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+            url2="gettext-0.18.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.17 && "
+                "cd gettext-0.18 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
@@ -493,7 +493,7 @@ third_party_packages={
             buildcmd=
                 "cd SDL-1.3.0-* && "
                 "./configure --prefix='%s' "
-                    "--disable-dependency-tracking "
+                    "--disable-dependency-tracking  --enable-video-x11=no"
                     "CC=gcc-4.0 CXX=g++-4.0 "
                     "CFLAGS='%s' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"
@@ -510,10 +510,10 @@ third_party_packages={
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.17 && "
+                "cd gettext-0.18 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
@@ -617,10 +617,10 @@ third_party_packages={
             ),
 
 ##      TPP("gettext",
-##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
+##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.17 && "
+##              "cd gettext-0.18 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -685,7 +685,7 @@ third_party_packages={
                 "cd SDL-1.3.0-*  && "
                 "./configure --with-x=no --enable-video-x11=no  --enable-video-opengl=no &&"                
                 "cd Xcode-iOS/SDL  && "
-                "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
+                "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug ARCHS='i386 x86_64' &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
                 "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
@@ -703,10 +703,10 @@ third_party_packages={
             ),
 
 ##      TPP("gettext",
-##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
+##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.17 && "
+##              "cd gettext-0.18 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -812,11 +812,11 @@ third_party_packages={
             ),
 
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
-            url2="gettext-0.17.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+            url2="gettext-0.18.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.17 && "
+                "cd gettext-0.18 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
