@@ -27,6 +27,7 @@
 
 #include "ambulant/lib/logger.h"
 #include <cmath>
+#include <cassert>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

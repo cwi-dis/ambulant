@@ -5,7 +5,7 @@
 	Set global_ambulant_defines to the build-time options that influence all products (shared lib, plugins, browser plugins, etc) built. Picked up by many projects inside Ambulant_win32.sln.
 -->
 
-    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR
+    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR;WITH_REMOTE_SYNC
 </global_ambulant_defines>
 <!--
 	Set the following variables to the locations where you downloaded the various
