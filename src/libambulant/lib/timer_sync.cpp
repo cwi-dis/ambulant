@@ -20,6 +20,7 @@
 #include "ambulant/lib/timer_sync.h"
 #include "ambulant/lib/logger.h"
 
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -36,6 +37,7 @@ class timer_sync_impl : public timer_sync {
 	}
 	
 	virtual ~timer_sync_impl() {
+        AM_DBG lib::logger::get_logger()->debug("timer_sync(0x%x): deleted", (void*)this);
 		if (m_timer) {
 			m_timer->set_observer(NULL);
 		}
@@ -43,8 +45,9 @@ class timer_sync_impl : public timer_sync {
 	
   
 	void initialize(timer_control *timer) {
-		AM_DBG lib::logger::get_logger()->debug("timer_sync(0x%x): initialize(0x%x)", (void*)this, (void*)m_timer);
 		m_timer = timer;
+		AM_DBG lib::logger::get_logger()->debug("timer_sync(0x%x): initialize(0x%x)", (void*)this, (void*)m_timer);
+        m_timer->set_observer(this);
 	}
 	
 	void started() {
@@ -68,7 +71,7 @@ class timer_sync_impl : public timer_sync {
 };
 
 timer_sync *
-timer_sync_factory(document *doc)
+timer_sync_factory_impl::new_timer_sync(document *doc)
 {
 	timer_sync *rv = new timer_sync_impl();
 	AM_DBG lib::logger::get_logger()->debug("timer_sync_factory(0x%x) -> 0x%x", doc, rv);

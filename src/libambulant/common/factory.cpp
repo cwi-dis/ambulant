@@ -30,6 +30,9 @@ factories::factories()
 	m_parser_factory(NULL),
 	m_node_factory(NULL),
 	m_state_component_factory(NULL)
+#ifdef WITH_REMOTE_SYNC
+    , m_timer_sync_factory(NULL)
+#endif
 {
 }
 
@@ -52,6 +55,9 @@ factories::init_factories()
 	init_parser_factory();
 	init_node_factory();
 	init_state_component_factory();
+#ifdef WITH_REMOTE_SYNC
+    init_timer_sync_factory();
+#endif
 }
 
 void
@@ -85,4 +91,13 @@ factories::init_state_component_factory()
 {
 	m_state_component_factory = get_global_state_component_factory();
 }
+
+#ifdef WITH_REMOTE_SYNC
+void
+factories::init_timer_sync_factory()
+{
+    m_timer_sync_factory = new timer_sync_factory_impl();
+}
+
+#endif
 

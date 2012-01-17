@@ -34,6 +34,7 @@ namespace lib {
 
 class timer_sync : public timer_observer {
   public:
+    virtual ~timer_sync() {}
 	virtual void initialize(timer_control *timer) = 0;
 	virtual void started() = 0;
 	virtual void stopped() = 0;
@@ -42,7 +43,16 @@ class timer_sync : public timer_observer {
 };
 
 // Factory function that returns a synchronizer 
-AMBULANTAPI timer_sync *timer_sync_factory(document *doc);
+class timer_sync_factory {
+  public:
+    virtual timer_sync *new_timer_sync(document *doc) = 0;
+};
+
+class timer_sync_factory_impl : public timer_sync_factory {
+  public:
+    timer_sync_factory_impl() {} 
+    timer_sync *new_timer_sync(document *doc);
+};
 
 
 } // namespace lib

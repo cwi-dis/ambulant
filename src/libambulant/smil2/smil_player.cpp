@@ -75,6 +75,9 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_focus(0),
 	m_focussed_nodes(new std::set<int>()),
 	m_new_focussed_nodes(0)
+#ifdef WITH_REMOTE_SYNC
+    , m_timer_sync(NULL)
+#endif
 {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player(0x%x)", this);
@@ -87,6 +90,15 @@ smil_player::initialize()
 	document_loaded(m_doc);
 
 	m_event_processor = event_processor_factory(m_timer);
+#ifdef WITH_REMOTE_SYNC
+    timer_sync_factory *tsf = m_factory->get_timer_sync_factory();
+    if (tsf) {
+        m_timer_sync = tsf->new_timer_sync(m_doc);
+    }
+    if (m_timer_sync) {
+        m_timer_sync->initialize(m_timer);
+    }
+#endif // WITH_REMOTE_SYNC
 	create_state_engine();
 	// build the layout (we need the top-level layout)
 	build_layout();
@@ -100,6 +112,9 @@ smil_player::terminate()
 {
 	m_lock.enter();
 	m_doc = NULL;
+#ifdef WITH_REMOTE_SYNC
+    delete m_timer_sync;
+#endif
 	m_timer->pause();
 	std::map<const lib::node*, common::playable *>::iterator it;
 	m_scheduler->reset_document();

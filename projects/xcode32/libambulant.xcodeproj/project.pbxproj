@@ -1393,8 +1393,6 @@
 		04791C321151943B0007DD71 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				049D19D014C44B060062A141 /* timer_sync.h */,
-				04791C331151943B0007DD71 /* profile.h */,
 				04791C341151943B0007DD71 /* abstract_mtsync.h */,
 				04791C351151943B0007DD71 /* amstream.h */,
 				04791C361151943B0007DD71 /* asb.h */,
@@ -1421,6 +1419,7 @@
 				04791C4C1151943B0007DD71 /* nscontext.h */,
 				04791C4D1151943B0007DD71 /* parselets.h */,
 				04791C4E1151943B0007DD71 /* parser_factory.h */,
+				04791C331151943B0007DD71 /* profile.h */,
 				04791C4F1151943B0007DD71 /* refcount.h */,
 				04791C501151943B0007DD71 /* sax_handler.h */,
 				04791C511151943B0007DD71 /* sax_types.h */,
@@ -1429,6 +1428,7 @@
 				04791C541151943B0007DD71 /* textptr.h */,
 				04791C551151943B0007DD71 /* thread.h */,
 				04791C561151943B0007DD71 /* timer.h */,
+				049D19D014C44B060062A141 /* timer_sync.h */,
 				04791C571151943B0007DD71 /* transition_info.h */,
 				04791C581151943B0007DD71 /* tree_builder.h */,
 				04791C591151943B0007DD71 /* unix */,

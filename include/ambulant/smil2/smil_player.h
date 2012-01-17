@@ -23,6 +23,9 @@
 #define AMBULANT_SMIL2_SMIL_PLAYER_H
 
 #include "ambulant/lib/timer.h"
+#ifdef WITH_REMOTE_SYNC
+#include "ambulant/lib/timer_sync.h"
+#endif
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
@@ -216,6 +219,9 @@ class smil_player :
 	const lib::node *m_focus;
 	std::set<int> *m_focussed_nodes;
 	std::set<int> *m_new_focussed_nodes;
+#ifdef WITH_REMOTE_SYNC
+    lib::timer_sync *m_timer_sync;
+#endif
 	lib::critical_section m_lock;
 	
 	// Calling time_node members must be done while locking

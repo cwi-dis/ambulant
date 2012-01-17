@@ -28,6 +28,9 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/state.h"
 #include "ambulant/lib/node.h"
+#ifdef WITH_REMOTE_SYNC
+#include "ambulant/lib/timer_sync.h"
+#endif
 
 namespace ambulant {
 
@@ -54,7 +57,10 @@ public:
 	virtual void init_node_factory();
 	/// Create the state factory.
 	virtual void init_state_component_factory();
-
+#ifdef WITH_REMOTE_SYNC
+    /// Create the timer-synchronizer factory.
+    virtual void init_timer_sync_factory();
+#endif
 	/// Return the playable factory.
 	virtual global_playable_factory *get_playable_factory() const { return m_playable_factory; }
 	/// Return the window factory.
@@ -79,6 +85,12 @@ public:
 	virtual void set_node_factory(lib::node_factory *nf) { m_node_factory = nf; }
 	/// Override the state factory.
 	virtual void set_state_component_factory(global_state_component_factory *sf) { delete m_state_component_factory; m_state_component_factory = sf; }
+#ifdef WITH_REMOTE_SYNC
+    /// Return the timer-synchronizer factory.
+    virtual lib::timer_sync_factory *get_timer_sync_factory() const { return m_timer_sync_factory; }
+    /// Override the timer-synchronizer factory.
+    virtual void set_timer_sync_factory(lib::timer_sync_factory *tsf) { delete m_timer_sync_factory; m_timer_sync_factory = tsf; }
+#endif
 private:
 	global_playable_factory *m_playable_factory;
 	window_factory *m_window_factory;
@@ -86,6 +98,9 @@ private:
 	lib::global_parser_factory *m_parser_factory;
 	lib::node_factory *m_node_factory;
 	common::global_state_component_factory *m_state_component_factory;
+#ifdef WITH_REMOTE_SYNC
+    lib::timer_sync_factory *m_timer_sync_factory;
+#endif
 };
 
 } // end namespaces
