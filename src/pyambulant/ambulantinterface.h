@@ -13,6 +13,7 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/timer_sync.h"
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/common/factory.h"
@@ -366,6 +367,7 @@ public:
 	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
+	void set_observer(ambulant::lib::timer_observer* obs);
   private:
 	PyObject *py_timer_control;
 
@@ -377,6 +379,30 @@ inline timer_control *Py_WrapAs_timer_control(PyObject *o)
 	timer_control *rv = dynamic_cast<timer_control*>(pycppbridge_getwrapper(o));
 	if (rv) return rv;
 	rv = new timer_control(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class timer_observer : public cpppybridge, public ambulant::lib::timer_observer {
+public:
+	timer_observer(PyObject *itself);
+	virtual ~timer_observer();
+
+	void started();
+	void stopped();
+	void paused();
+	void resumed();
+  private:
+	PyObject *py_timer_observer;
+
+	friend PyObject *timer_observerObj_New(ambulant::lib::timer_observer *itself);
+};
+#define BGEN_BACK_SUPPORT_timer_observer
+inline timer_observer *Py_WrapAs_timer_observer(PyObject *o)
+{
+	timer_observer *rv = dynamic_cast<timer_observer*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new timer_observer(o);
 	pycppbridge_setwrapper(o, rv);
 	return rv;
 }

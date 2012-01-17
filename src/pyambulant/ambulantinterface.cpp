@@ -2062,6 +2062,7 @@ timer_control::timer_control(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_drift");
 		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_drift");
 		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: skew");
+		if (!PyObject_HasAttrString(itself, "set_observer")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_observer");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2364,6 +2365,112 @@ void timer_control::skew(ambulant::lib::timer::signed_time_type skew)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_skew);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_control::set_observer(ambulant::lib::timer_observer* obs)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_obs = Py_BuildValue("O&", timer_observerObj_New, obs);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_observer", "(O)", py_obs);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::set_observer() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_obs);
+
+	PyGILState_Release(_GILState);
+}
+
+/* ---------------------- Class timer_observer ---------------------- */
+
+timer_observer::timer_observer(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "started")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: started");
+		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: stopped");
+		if (!PyObject_HasAttrString(itself, "paused")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: paused");
+		if (!PyObject_HasAttrString(itself, "resumed")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: resumed");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_timer_observer = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+timer_observer::~timer_observer()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_timer_observer);
+	py_timer_observer = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void timer_observer::started()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "started", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_observer::started() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_observer::stopped()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "stopped", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_observer::stopped() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_observer::paused()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "paused", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_observer::paused() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_observer::resumed()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "resumed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_observer::resumed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
 }

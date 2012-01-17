@@ -18,6 +18,7 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/timer_sync.h"
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/common/factory.h"
@@ -4293,6 +4294,21 @@ static PyObject *timer_controlObj_skew(timer_controlObject *_self, PyObject *_ar
 	return _res;
 }
 
+static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer_observer* obs;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      timer_observerObj_Convert, &obs))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_observer(obs);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timer_controlObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_controlObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -4322,6 +4338,8 @@ static PyMethodDef timer_controlObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_controlObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
+	{"set_observer", (PyCFunction)timer_controlObj_set_observer, 1,
+	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -4676,6 +4694,21 @@ static PyObject *timer_control_implObj_skew(timer_control_implObject *_self, PyO
 	return _res;
 }
 
+static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer_observer* obs;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      timer_observerObj_Convert, &obs))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_observer(obs);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timer_control_implObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_control_implObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -4705,6 +4738,8 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_control_implObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew_) -> None")},
+	{"set_observer", (PyCFunction)timer_control_implObj_set_observer, 1,
+	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -4796,6 +4831,227 @@ PyTypeObject timer_control_impl_Type = {
 };
 
 /* --------------- End object type timer_control_impl --------------- */
+
+
+/* ------------------- Object type timer_observer ------------------- */
+
+extern PyTypeObject timer_observer_Type;
+
+inline bool timer_observerObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_observer_Type);
+}
+
+typedef struct timer_observerObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::lib::timer_observer* ob_itself;
+} timer_observerObject;
+
+PyObject *timer_observerObj_New(ambulant::lib::timer_observer* itself)
+{
+	timer_observerObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_observer
+	timer_observer *encaps_itself = dynamic_cast<timer_observer *>(itself);
+	if (encaps_itself && encaps_itself->py_timer_observer)
+	{
+		Py_INCREF(encaps_itself->py_timer_observer);
+		return encaps_itself->py_timer_observer;
+	}
+#endif
+	it = PyObject_NEW(timer_observerObject, &timer_observer_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timer_observerObj_Convert(PyObject *v, ambulant::lib::timer_observer* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_observer
+	if (!timer_observerObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer_observer(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timer_observerObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer_observer required");
+		return 0;
+	}
+	*p_itself = ((timer_observerObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timer_observerObj_dealloc(timer_observerObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *timer_observerObj_started(timer_observerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->started();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_observerObj_stopped(timer_observerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stopped();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_observerObj_paused(timer_observerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->paused();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_observerObj_resumed(timer_observerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->resumed();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef timer_observerObj_methods[] = {
+	{"started", (PyCFunction)timer_observerObj_started, 1,
+	 PyDoc_STR("() -> None")},
+	{"stopped", (PyCFunction)timer_observerObj_stopped, 1,
+	 PyDoc_STR("() -> None")},
+	{"paused", (PyCFunction)timer_observerObj_paused, 1,
+	 PyDoc_STR("() -> None")},
+	{"resumed", (PyCFunction)timer_observerObj_resumed, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define timer_observerObj_getsetlist NULL
+
+
+static int timer_observerObj_compare(timer_observerObject *self, timer_observerObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timer_observerObj_repr NULL
+
+static long timer_observerObj_hash(timer_observerObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int timer_observerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer_observer* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_observerObj_Convert, &itself))
+	{
+		((timer_observerObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timer_observerObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timer_observerObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timer_observerObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timer_observerObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_observer_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer_observer", /*tp_name*/
+	sizeof(timer_observerObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timer_observerObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timer_observerObj_compare, /*tp_compare*/
+	(reprfunc) timer_observerObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timer_observerObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timer_observerObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timer_observerObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timer_observerObj_tp_init, /* tp_init */
+	timer_observerObj_tp_alloc, /* tp_alloc */
+	timer_observerObj_tp_new, /* tp_new */
+	timer_observerObj_tp_free, /* tp_free */
+};
+
+/* ----------------- End object type timer_observer ----------------- */
 
 
 /* ------------------ Object type transition_info ------------------- */
@@ -16758,11 +17014,7 @@ static PyObject *PyAm_event_processor_factory(PyObject *_self, PyObject *_args)
 	                      timerObj_Convert, &t))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-#ifdef WITH_GCD_EVENT_PROCESSOR
-	assert(0);
-#else
 	_rv = ambulant::lib::event_processor_factory(t);
-#endif
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     event_processorObj_New, _rv);
@@ -17686,6 +17938,11 @@ void initambulant(void)
 	if (PyType_Ready(&timer_control_impl_Type) < 0) return;
 	Py_INCREF(&timer_control_impl_Type);
 	PyModule_AddObject(m, "timer_control_impl", (PyObject *)&timer_control_impl_Type);
+	timer_observer_Type.ob_type = &PyType_Type;
+	timer_observer_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&timer_observer_Type) < 0) return;
+	Py_INCREF(&timer_observer_Type);
+	PyModule_AddObject(m, "timer_observer", (PyObject *)&timer_observer_Type);
 	transition_info_Type.ob_type = &PyType_Type;
 	transition_info_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&transition_info_Type) < 0) return;
