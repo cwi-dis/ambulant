@@ -109,7 +109,7 @@ cd .. # Back to source dir
 #
 cd installers/sh-macos
 sh mkmacdist.sh $DMGNAME $BUILDHOME/$DESTDIR
-scp $DMGNAME.dmg $DESTINATION_DESKTOP
+scp $DMGNAME.dmg $DESTINATION_DESKTOP/$DMGNAME.dmg
 cd ../..
 #
 # Build CG player
@@ -129,7 +129,7 @@ cd ../..
 #
 cd installers/sh-macos
 sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
-scp $DMGNAME-CG.dmg $DESTINATION_CG
+scp $DMGNAME-CG.dmg $DESTINATION_CG/$DMGNAME-CG.dmg
 cd ../..
 ###
 ### Build webkit plugin.
@@ -179,7 +179,7 @@ cd ../..
 cd "$BUILDHOME/BUILDDIR/installers/sh-macos"
 rm -fr $PLUGINNAME $PLUGINNAME-rw.dmg $PLUGINNAME.dmg 
 sh ./mkplugindist.sh $PLUGINNAME $HOME
-scp $PLUGINNAME.dmg $DESTINATION_PLUGIN/$PLUGINDMGNAME
+scp $PLUGINNAME.dmg $DESTINATION_PLUGIN/$PLUGINDMGNAME/$PLUGINNAME.dmg
 #
 # Delete old installers, remember current
 #
