@@ -5054,6 +5054,328 @@ PyTypeObject timer_observer_Type = {
 /* ----------------- End object type timer_observer ----------------- */
 
 
+/* --------------------- Object type timer_sync --------------------- */
+
+extern PyTypeObject timer_sync_Type;
+
+inline bool timer_syncObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_sync_Type);
+}
+
+typedef struct timer_syncObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::lib::timer_sync* ob_itself;
+} timer_syncObject;
+
+PyObject *timer_syncObj_New(ambulant::lib::timer_sync* itself)
+{
+	timer_syncObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_sync
+	timer_sync *encaps_itself = dynamic_cast<timer_sync *>(itself);
+	if (encaps_itself && encaps_itself->py_timer_sync)
+	{
+		Py_INCREF(encaps_itself->py_timer_sync);
+		return encaps_itself->py_timer_sync;
+	}
+#endif
+	it = PyObject_NEW(timer_syncObject, &timer_sync_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timer_syncObj_Convert(PyObject *v, ambulant::lib::timer_sync* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_sync
+	if (!timer_syncObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer_sync(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timer_syncObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer_sync required");
+		return 0;
+	}
+	*p_itself = ((timer_syncObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timer_syncObj_dealloc(timer_syncObject *self)
+{
+	timer_observer_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyMethodDef timer_syncObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define timer_syncObj_getsetlist NULL
+
+
+static int timer_syncObj_compare(timer_syncObject *self, timer_syncObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timer_syncObj_repr NULL
+
+static long timer_syncObj_hash(timer_syncObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int timer_syncObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer_sync* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_syncObj_Convert, &itself))
+	{
+		((timer_syncObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timer_syncObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timer_syncObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timer_syncObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timer_syncObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_sync_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer_sync", /*tp_name*/
+	sizeof(timer_syncObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timer_syncObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timer_syncObj_compare, /*tp_compare*/
+	(reprfunc) timer_syncObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timer_syncObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timer_syncObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timer_syncObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timer_syncObj_tp_init, /* tp_init */
+	timer_syncObj_tp_alloc, /* tp_alloc */
+	timer_syncObj_tp_new, /* tp_new */
+	timer_syncObj_tp_free, /* tp_free */
+};
+
+/* ------------------- End object type timer_sync ------------------- */
+
+
+/* ----------------- Object type timer_sync_factory ----------------- */
+
+extern PyTypeObject timer_sync_factory_Type;
+
+inline bool timer_sync_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &timer_sync_factory_Type);
+}
+
+typedef struct timer_sync_factoryObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::lib::timer_sync_factory* ob_itself;
+} timer_sync_factoryObject;
+
+PyObject *timer_sync_factoryObj_New(ambulant::lib::timer_sync_factory* itself)
+{
+	timer_sync_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_sync_factory
+	timer_sync_factory *encaps_itself = dynamic_cast<timer_sync_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_timer_sync_factory)
+	{
+		Py_INCREF(encaps_itself->py_timer_sync_factory);
+		return encaps_itself->py_timer_sync_factory;
+	}
+#endif
+	it = PyObject_NEW(timer_sync_factoryObject, &timer_sync_factory_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int timer_sync_factoryObj_Convert(PyObject *v, ambulant::lib::timer_sync_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_timer_sync_factory
+	if (!timer_sync_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_timer_sync_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!timer_sync_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "timer_sync_factory required");
+		return 0;
+	}
+	*p_itself = ((timer_sync_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void timer_sync_factoryObj_dealloc(timer_sync_factoryObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyMethodDef timer_sync_factoryObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define timer_sync_factoryObj_getsetlist NULL
+
+
+static int timer_sync_factoryObj_compare(timer_sync_factoryObject *self, timer_sync_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define timer_sync_factoryObj_repr NULL
+
+static long timer_sync_factoryObj_hash(timer_sync_factoryObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int timer_sync_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::timer_sync_factory* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_sync_factoryObj_Convert, &itself))
+	{
+		((timer_sync_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define timer_sync_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *timer_sync_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((timer_sync_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define timer_sync_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject timer_sync_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.timer_sync_factory", /*tp_name*/
+	sizeof(timer_sync_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) timer_sync_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) timer_sync_factoryObj_compare, /*tp_compare*/
+	(reprfunc) timer_sync_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) timer_sync_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	timer_sync_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	timer_sync_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	timer_sync_factoryObj_tp_init, /* tp_init */
+	timer_sync_factoryObj_tp_alloc, /* tp_alloc */
+	timer_sync_factoryObj_tp_new, /* tp_new */
+	timer_sync_factoryObj_tp_free, /* tp_free */
+};
+
+/* --------------- End object type timer_sync_factory --------------- */
+
+
 /* ------------------ Object type transition_info ------------------- */
 
 extern PyTypeObject transition_info_Type;
@@ -5643,6 +5965,19 @@ static PyObject *factoriesObj_init_state_component_factory(factoriesObject *_sel
 	return _res;
 }
 
+static PyObject *factoriesObj_init_timer_sync_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->init_timer_sync_factory();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *factoriesObj_get_playable_factory(factoriesObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -5811,6 +6146,34 @@ static PyObject *factoriesObj_set_state_component_factory(factoriesObject *_self
 	return _res;
 }
 
+static PyObject *factoriesObj_get_timer_sync_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer_sync_factory* _rv = _self->ob_itself->get_timer_sync_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     timer_sync_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *factoriesObj_set_timer_sync_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer_sync_factory* tsf;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      timer_sync_factoryObj_Convert, &tsf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_timer_sync_factory(tsf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef factoriesObj_methods[] = {
 	{"init_factories", (PyCFunction)factoriesObj_init_factories, 1,
 	 PyDoc_STR("() -> None")},
@@ -5825,6 +6188,8 @@ static PyMethodDef factoriesObj_methods[] = {
 	{"init_node_factory", (PyCFunction)factoriesObj_init_node_factory, 1,
 	 PyDoc_STR("() -> None")},
 	{"init_state_component_factory", (PyCFunction)factoriesObj_init_state_component_factory, 1,
+	 PyDoc_STR("() -> None")},
+	{"init_timer_sync_factory", (PyCFunction)factoriesObj_init_timer_sync_factory, 1,
 	 PyDoc_STR("() -> None")},
 	{"get_playable_factory", (PyCFunction)factoriesObj_get_playable_factory, 1,
 	 PyDoc_STR("() -> (ambulant::common::global_playable_factory* _rv)")},
@@ -5850,6 +6215,10 @@ static PyMethodDef factoriesObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::node_factory* nf) -> None")},
 	{"set_state_component_factory", (PyCFunction)factoriesObj_set_state_component_factory, 1,
 	 PyDoc_STR("(ambulant::common::global_state_component_factory* sf) -> None")},
+	{"get_timer_sync_factory", (PyCFunction)factoriesObj_get_timer_sync_factory, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer_sync_factory* _rv)")},
+	{"set_timer_sync_factory", (PyCFunction)factoriesObj_set_timer_sync_factory, 1,
+	 PyDoc_STR("(ambulant::lib::timer_sync_factory* tsf) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -17943,6 +18312,16 @@ void initambulant(void)
 	if (PyType_Ready(&timer_observer_Type) < 0) return;
 	Py_INCREF(&timer_observer_Type);
 	PyModule_AddObject(m, "timer_observer", (PyObject *)&timer_observer_Type);
+	timer_sync_Type.ob_type = &PyType_Type;
+	timer_sync_Type.tp_base = &timer_observer_Type;
+	if (PyType_Ready(&timer_sync_Type) < 0) return;
+	Py_INCREF(&timer_sync_Type);
+	PyModule_AddObject(m, "timer_sync", (PyObject *)&timer_sync_Type);
+	timer_sync_factory_Type.ob_type = &PyType_Type;
+	timer_sync_factory_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&timer_sync_factory_Type) < 0) return;
+	Py_INCREF(&timer_sync_factory_Type);
+	PyModule_AddObject(m, "timer_sync_factory", (PyObject *)&timer_sync_factory_Type);
 	transition_info_Type.ob_type = &PyType_Type;
 	transition_info_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&transition_info_Type) < 0) return;

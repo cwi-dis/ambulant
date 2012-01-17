@@ -47,14 +47,6 @@ class timer_sync_factory {
   public:
     virtual timer_sync *new_timer_sync(document *doc) = 0;
 };
-
-class timer_sync_factory_impl : public timer_sync_factory {
-  public:
-    timer_sync_factory_impl() {} 
-    timer_sync *new_timer_sync(document *doc);
-};
-
-
 } // namespace lib
 
 } // namespace ambulant

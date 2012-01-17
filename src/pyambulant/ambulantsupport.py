@@ -406,6 +406,7 @@ lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
 lib_timer_ptr = timer_ptr
+lib_timer_sync_factory_ptr = timer_sync_factory_ptr
 lib_point = point
 lib_size = size
 lib_color_t = color_t

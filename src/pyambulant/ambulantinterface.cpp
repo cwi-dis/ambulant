@@ -2621,6 +2621,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "init_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_parser_factory");
 		if (!PyObject_HasAttrString(itself, "init_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_node_factory");
 		if (!PyObject_HasAttrString(itself, "init_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_state_component_factory");
+		if (!PyObject_HasAttrString(itself, "init_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_timer_sync_factory");
 		if (!PyObject_HasAttrString(itself, "get_playable_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_playable_factory");
 		if (!PyObject_HasAttrString(itself, "get_window_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_window_factory");
 		if (!PyObject_HasAttrString(itself, "get_datasource_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_datasource_factory");
@@ -2633,6 +2634,8 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_parser_factory");
 		if (!PyObject_HasAttrString(itself, "set_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_node_factory");
 		if (!PyObject_HasAttrString(itself, "set_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_state_component_factory");
+		if (!PyObject_HasAttrString(itself, "get_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_timer_sync_factory");
+		if (!PyObject_HasAttrString(itself, "set_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_timer_sync_factory");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2747,6 +2750,21 @@ void factories::init_state_component_factory()
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during factories::init_state_component_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void factories::init_timer_sync_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "init_timer_sync_factory", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::init_timer_sync_factory() callback:\n");
 		PyErr_Print();
 	}
 
@@ -3003,6 +3021,48 @@ void factories::set_state_component_factory(ambulant::common::global_state_compo
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_sf);
+
+	PyGILState_Release(_GILState);
+}
+
+ambulant::lib::timer_sync_factory* factories::get_timer_sync_factory() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer_sync_factory* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "get_timer_sync_factory", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::get_timer_sync_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", timer_sync_factoryObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during factories::get_timer_sync_factory() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void factories::set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_tsf = Py_BuildValue("O&", timer_sync_factoryObj_New, tsf);
+
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "set_timer_sync_factory", "(O)", py_tsf);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::set_timer_sync_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_tsf);
 
 	PyGILState_Release(_GILState);
 }

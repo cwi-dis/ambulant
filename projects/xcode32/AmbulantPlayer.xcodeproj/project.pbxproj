@@ -87,6 +87,8 @@
 		04428EBE11577E960067C868 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
 		04428EC011577EC30067C868 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
 		0471A09613AAADE2000E2F17 /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 0471A09513AAADE2000E2F17 /* Background_iPhone.png */; };
+		047916EC14C5CCD3003952AC /* libamplugin_timesync(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 047916D214C5CC16003952AC /* libamplugin_timesync(CG).so */; };
+		047916ED14C5CCE5003952AC /* libamplugin_timesync(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 047916D014C5CC16003952AC /* libamplugin_timesync(Cocoa).so */; };
 		04A1E97B12B585D80060F97E /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
 		04A1E97C12B585D80060F97E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
 		04A1E97D12B585D80060F97E /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047D115266B40094FB0B /* playactive.png */; };
@@ -262,6 +264,34 @@
 			remoteGlobalIDString = 0441E7B91343132C0025FCF9;
 			remoteInfo = "plugin_xpath_state(CG)";
 		};
+		047916CF14C5CC16003952AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_timesync(Cocoa).so */;
+			remoteInfo = "plugin_timesync (Cocoa)";
+		};
+		047916D114C5CC16003952AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 04290B85132EB6BA0015D7B7 /* libamplugin_timesync(CG).so */;
+			remoteInfo = "plugin_timesync (CG)";
+		};
+		047916E814C5CC9C003952AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 04290B7A132EB6BA0015D7B7 /* plugin_timesync (CG) */;
+			remoteInfo = "plugin_timesync (CG)";
+		};
+		047916EA14C5CCBB003952AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D /* plugin_timesync (Cocoa) */;
+			remoteInfo = "plugin_timesync (Cocoa)";
+		};
 		04A1E87712B57E100060F97E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
@@ -295,6 +325,7 @@
 				042ADAA91152DA4F009CA791 /* libamplugin_xerces(Cocoa).so in Copy Plugins */,
 				042ADB0C1152DE69009CA791 /* libamplugin_python(Cocoa).so in Copy Plugins */,
 				042ADA421152D83E009CA791 /* libamplugin_xpath_state(Cocoa).so in Copy Plugins */,
+				047916ED14C5CCE5003952AC /* libamplugin_timesync(Cocoa).so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -308,6 +339,7 @@
 				04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */,
 				04C655E713CB30E40008DF3B /* libamplugin_xpath_state(CG).so in Copy Plugins */,
 				04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */,
+				047916EC14C5CCD3003952AC /* libamplugin_timesync(CG).so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,6 +401,7 @@
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
 		0471A09513AAADE2000E2F17 /* Background_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Background_iPhone.png; path = ../../src/player_iphone/Resources/Background_iPhone.png; sourceTree = SOURCE_ROOT; };
+		047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_timesync.xcodeproj; sourceTree = "<group>"; };
 		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CE00CB132EC5130079553C /* systemTestSettings.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = systemTestSettings.xml; path = ../../src/player_macosx/systemTestSettings.xml; sourceTree = SOURCE_ROOT; };
 		04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
@@ -464,6 +497,7 @@
 				042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */,
 				042AD9511152CC13009CA791 /* plugin.xcodeproj */,
 				042ADB061152DE65009CA791 /* plugin_python.xcodeproj */,
+				047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */,
 			);
 			name = Subprojects;
 			sourceTree = "<group>";
@@ -553,6 +587,15 @@
 			children = (
 				042ADB0B1152DE65009CA791 /* libamplugin_python(Cocoa).so */,
 				04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		047916C714C5CC16003952AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				047916D014C5CC16003952AC /* libamplugin_timesync(Cocoa).so */,
+				047916D214C5CC16003952AC /* libamplugin_timesync(CG).so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -710,6 +753,7 @@
 				04290D20132EBB7E0015D7B7 /* PBXTargetDependency */,
 				04290D24132EBB7E0015D7B7 /* PBXTargetDependency */,
 				044C39D913CB33FE002DF651 /* PBXTargetDependency */,
+				047916E914C5CC9C003952AC /* PBXTargetDependency */,
 			);
 			name = AmbulantPlayerCG;
 			productInstallPath = "$(HOME)/Applications";
@@ -736,6 +780,7 @@
 				04428D811157787A0067C868 /* PBXTargetDependency */,
 				04428D831157787A0067C868 /* PBXTargetDependency */,
 				04428D851157787A0067C868 /* PBXTargetDependency */,
+				047916EB14C5CCBB003952AC /* PBXTargetDependency */,
 			);
 			name = AmbulantPlayer;
 			productInstallPath = "$(HOME)/Applications";
@@ -773,6 +818,10 @@
 				{
 					ProductGroup = 042ADB071152DE65009CA791 /* Products */;
 					ProjectRef = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
+				},
+				{
+					ProductGroup = 047916C714C5CC16003952AC /* Products */;
+					ProjectRef = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
 				},
 				{
 					ProductGroup = 042ADAA41152DA4A009CA791 /* Products */;
@@ -865,6 +914,20 @@
 			fileType = "compiled.mach-o.dylib";
 			path = "libamplugin_xpath_state(CG).so";
 			remoteRef = 0441E8CB134324880025FCF9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		047916D014C5CC16003952AC /* libamplugin_timesync(Cocoa).so */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = "libamplugin_timesync(Cocoa).so";
+			remoteRef = 047916CF14C5CC16003952AC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		047916D214C5CC16003952AC /* libamplugin_timesync(CG).so */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = "libamplugin_timesync(CG).so";
+			remoteRef = 047916D114C5CC16003952AC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		04A1E87812B57E100060F97E /* libambulantCG.dylib */ = {
@@ -1139,6 +1202,16 @@
 			isa = PBXTargetDependency;
 			name = "plugin_xpath_state(CG)";
 			targetProxy = 044C39D813CB33FE002DF651 /* PBXContainerItemProxy */;
+		};
+		047916E914C5CC9C003952AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "plugin_timesync (CG)";
+			targetProxy = 047916E814C5CC9C003952AC /* PBXContainerItemProxy */;
+		};
+		047916EB14C5CCBB003952AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "plugin_timesync (Cocoa)";
+			targetProxy = 047916EA14C5CCBB003952AC /* PBXContainerItemProxy */;
 		};
 		04CE8D8D12BB647A00801B1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

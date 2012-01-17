@@ -96,7 +96,6 @@ factories::init_state_component_factory()
 void
 factories::init_timer_sync_factory()
 {
-    m_timer_sync_factory = new timer_sync_factory_impl();
 }
 
 #endif

@@ -445,6 +445,7 @@ public:
 	void init_parser_factory();
 	void init_node_factory();
 	void init_state_component_factory();
+	void init_timer_sync_factory();
 	ambulant::common::global_playable_factory* get_playable_factory() const;
 	ambulant::common::window_factory* get_window_factory() const;
 	ambulant::net::datasource_factory* get_datasource_factory() const;
@@ -457,6 +458,8 @@ public:
 	void set_parser_factory(ambulant::lib::global_parser_factory* pf);
 	void set_node_factory(ambulant::lib::node_factory* nf);
 	void set_state_component_factory(ambulant::common::global_state_component_factory* sf);
+	ambulant::lib::timer_sync_factory* get_timer_sync_factory() const;
+	void set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf);
   private:
 	PyObject *py_factories;
 

@@ -46,6 +46,12 @@ extern int timer_control_implObj_Convert(PyObject *v, ambulant::lib::timer_contr
 extern PyObject *timer_observerObj_New(ambulant::lib::timer_observer* itself);
 extern int timer_observerObj_Convert(PyObject *v, ambulant::lib::timer_observer* *p_itself);
 
+extern PyObject *timer_syncObj_New(ambulant::lib::timer_sync* itself);
+extern int timer_syncObj_Convert(PyObject *v, ambulant::lib::timer_sync* *p_itself);
+
+extern PyObject *timer_sync_factoryObj_New(ambulant::lib::timer_sync_factory* itself);
+extern int timer_sync_factoryObj_Convert(PyObject *v, ambulant::lib::timer_sync_factory* *p_itself);
+
 extern PyObject *transition_infoObj_New(ambulant::lib::transition_info* itself);
 extern int transition_infoObj_Convert(PyObject *v, ambulant::lib::transition_info* *p_itself);
 
