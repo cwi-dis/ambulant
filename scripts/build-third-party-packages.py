@@ -402,7 +402,8 @@ third_party_packages={
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#           url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+			url="http://www.ambulantplayer.org/thirdpartymirror/2.3/SDL-1.3-20110522.tar.gz",
             url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
