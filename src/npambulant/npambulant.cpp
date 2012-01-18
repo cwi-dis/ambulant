@@ -99,6 +99,7 @@ npambulant::npambulant(
 	m_pScriptableObject(NULL),
 	m_autostart(true),
 	m_ambulant_player(NULL),
+	m_url(NULL),
 	m_Window(NULL)
 {
 	m_url = net::url();
