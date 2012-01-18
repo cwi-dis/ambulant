@@ -5121,7 +5121,84 @@ static void timer_syncObj_dealloc(timer_syncObject *self)
 	timer_observer_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *timer_syncObj_initialize(timer_syncObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer_control* timer;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      timer_controlObj_Convert, &timer))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->initialize(timer);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_syncObj_started(timer_syncObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->started();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_syncObj_stopped(timer_syncObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->stopped();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_syncObj_paused(timer_syncObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->paused();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_syncObj_resumed(timer_syncObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->resumed();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timer_syncObj_methods[] = {
+	{"initialize", (PyCFunction)timer_syncObj_initialize, 1,
+	 PyDoc_STR("(ambulant::lib::timer_control* timer) -> None")},
+	{"started", (PyCFunction)timer_syncObj_started, 1,
+	 PyDoc_STR("() -> None")},
+	{"stopped", (PyCFunction)timer_syncObj_stopped, 1,
+	 PyDoc_STR("() -> None")},
+	{"paused", (PyCFunction)timer_syncObj_paused, 1,
+	 PyDoc_STR("() -> None")},
+	{"resumed", (PyCFunction)timer_syncObj_resumed, 1,
+	 PyDoc_STR("() -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -5282,7 +5359,24 @@ static void timer_sync_factoryObj_dealloc(timer_sync_factoryObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *timer_sync_factoryObj_new_timer_sync(timer_sync_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::document* doc;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      documentObj_Convert, &doc))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer_sync* _rv = _self->ob_itself->new_timer_sync(doc);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     timer_syncObj_New, _rv);
+	return _res;
+}
+
 static PyMethodDef timer_sync_factoryObj_methods[] = {
+	{"new_timer_sync", (PyCFunction)timer_sync_factoryObj_new_timer_sync, 1,
+	 PyDoc_STR("(ambulant::lib::document* doc) -> (ambulant::lib::timer_sync* _rv)")},
 	{NULL, NULL, 0}
 };
 

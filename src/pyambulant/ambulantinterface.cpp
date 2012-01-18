@@ -2475,6 +2475,165 @@ void timer_observer::resumed()
 	PyGILState_Release(_GILState);
 }
 
+/* ------------------------ Class timer_sync ------------------------ */
+
+timer_sync::timer_sync(PyObject *itself)
+:	::timer_observer(itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "initialize")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: initialize");
+		if (!PyObject_HasAttrString(itself, "started")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: started");
+		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: stopped");
+		if (!PyObject_HasAttrString(itself, "paused")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: paused");
+		if (!PyObject_HasAttrString(itself, "resumed")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: resumed");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_timer_sync = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+timer_sync::~timer_sync()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_timer_sync);
+	py_timer_sync = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void timer_sync::initialize(ambulant::lib::timer_control* timer)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_timer = Py_BuildValue("O&", timer_controlObj_New, timer);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "initialize", "(O)", py_timer);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::initialize() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_timer);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_sync::started()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "started", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::started() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_sync::stopped()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "stopped", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::stopped() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_sync::paused()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "paused", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::paused() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_sync::resumed()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "resumed", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::resumed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+/* -------------------- Class timer_sync_factory -------------------- */
+
+timer_sync_factory::timer_sync_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_timer_sync")) PyErr_Warn(PyExc_Warning, "timer_sync_factory: missing attribute: new_timer_sync");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_timer_sync_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+timer_sync_factory::~timer_sync_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_timer_sync_factory);
+	py_timer_sync_factory = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::lib::timer_sync* timer_sync_factory::new_timer_sync(ambulant::lib::document* doc)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer_sync* _rv;
+	PyObject *py_doc = Py_BuildValue("O&", documentObj_New, doc);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync_factory, "new_timer_sync", "(O)", py_doc);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync_factory::new_timer_sync() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", timer_syncObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_sync_factory::new_timer_sync() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_doc);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ------------------------- Class embedder ------------------------- */
 
 embedder::embedder(PyObject *itself)
