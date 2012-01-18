@@ -1,5 +1,5 @@
 #!/bin/sh
-# set -x
+set -x
 scriptdir=`dirname $0`
 topdir=$scriptdir/../..
 plugin_name="AmbulantInternetPlugin.plugin"
@@ -84,10 +84,10 @@ END-OF-SCRIPT
 # Done, unmount and compress the new disk
 #
 hdiutil detach /Volumes/$dirname
-sleep 2
+sleep 5
 hdiutil convert $dirname-rw.dmg -format UDZO -o $dirname.dmg
 #
 # Cleanup
 #
-rm $dirname-rw.dmg
-rm -r $dirname
+#rm $dirname-rw.dmg
+#rm -r $dirname
