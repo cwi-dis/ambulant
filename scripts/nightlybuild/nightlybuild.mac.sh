@@ -4,7 +4,7 @@
 # Mac 10.6 version
 #
 set -e
-set -x
+#set -x
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -109,7 +109,7 @@ cd .. # Back to source dir
 #
 cd installers/sh-macos
 sh mkmacdist.sh $DMGNAME $BUILDHOME/$DESTDIR
-scp $DMGNAME.dmg $DESTINATION_DESKTOP/$DMGNAME.dmg
+scp $DMGNAME.dmg $DESTINATION_DESKTOP
 cd ../..
 #
 # Build CG player
@@ -129,7 +129,7 @@ cd ../..
 #
 cd installers/sh-macos
 sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
-scp $DMGNAME-CG.dmg $DESTINATION_CG/$DMGNAME-CG.dmg
+scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
 ###
 ### Build webkit plugin.
@@ -164,22 +164,22 @@ cd $BUILDHOME/$BUILDDIR
 cd projects/xcode32
 rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
-xcodebuild -project nambulant.xcodeproj \
-	-target npsmbulsnt \
+xcodebuild -project npambulant.xcodeproj \
+	-target npambulant \
 	-configuration Release -sdk macosx10.6 \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
-	INSTALL_PATH="$HOME/Library/Internet Plug-ins" \
+	INSTALL_PATH="/Library/Internet Plug-ins" \
 	install
 cd ../..
 #
 # Build plugin installer, upload
 #
-cd "$BUILDHOME/BUILDDIR/installers/sh-macos"
+cd "$BUILDHOME/$BUILDDIR/installers/sh-macos"
 rm -fr $PLUGINNAME $PLUGINNAME-rw.dmg $PLUGINNAME.dmg 
-sh ./mkplugindist.sh $PLUGINNAME $HOME
-scp $PLUGINNAME.dmg $DESTINATION_PLUGIN/$PLUGINDMGNAME/$PLUGINNAME.dmg
+sh ./mkplugindist.sh $PLUGINNAME $BUILDHOME/$DESTDIR
+scp $PLUGINNAME.dmg $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current
 #

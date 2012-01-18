@@ -43,7 +43,7 @@ mkdir $dirname
 # Copy the files, overwriting placeholders
 #
 #cp -R "$installroot/Library/Internet Plug-Ins/$dirname".plugin/ $dirname.plugin
-(cd $dirname;(cd "$installroot/Library/Internet Plug-Ins"; tar cf - -L ./$dirname.plugin)|tar xf -)
+(cd $dirname;(cd $plugin_srcdir; tar cf - -L ./$dirname.plugin)|tar xf -)
 cp "$dirname-installer-bg.png" $dirname/.folderbg/folderbg.png
 #
 # Create temoporry disk image (.dmg) and mount it

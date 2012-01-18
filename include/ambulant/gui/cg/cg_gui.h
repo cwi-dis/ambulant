@@ -306,6 +306,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #endif // __OBJC__
 
 #ifndef WITH_UIKIT
+// Helper functions for npambulant
 void* new_AmbulantView(CGContextRef cg_ctxp, CGRect rectp, void* plugin_callback, void* plugin_ptr);
 CGSize get_bounds_AmbulantView(void* view);
 // call AmbulantView.drawRect directly with the given CGContext 
@@ -315,7 +316,7 @@ typedef struct _event_data {double x; double y;} event_data; //XXX
 void handle_event_AmbulantView(void* obj, CGContextRef ctx, void* type, void* data,  void* mainloop);
 // destructor for npambulant
 void delete_AmbulantView(void* obj);
-
+const char* to_char_AmbulantView(void* obj, void* nstr);
 #endif// ! WITH_UIKIT
 
 #endif // AMBULANT_GUI_CG_CG_GUI_H

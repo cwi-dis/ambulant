@@ -33,7 +33,7 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/preferences.h"
-//#define AM_DBG if(1)
+// #define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -194,6 +194,7 @@ npambulant::init_ambulant(NPP npp)
 	prefs->m_prefer_ffmpeg = true;
 	prefs->m_use_plugins = true;
 	prefs->m_log_level = ambulant::lib::logger::LEVEL_SHOW;
+	prefs->m_parser_id = "expat";
 
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
@@ -610,7 +611,15 @@ npambulant::handleEvent(void* event) {
 			  : cocoaEvent.type == NPCocoaEventMouseExited ? NSMouseExited
 			  : NSLeftMouseDown;
 			handle_event_AmbulantView((void*) m_view,  m_cgcontext, &e_type, (void*) &e_data, m_mainloop);
-		}	  
+		}
+	} else if (cocoaEvent.type == NPCocoaEventKeyDown) {
+ 		if (m_view != NULL && m_mainloop != NULL) {
+			const char* s = to_char_AmbulantView((void*) m_view, cocoaEvent.data.key.characters);
+			if (s != NULL) {
+				LOG("key.characters=%s",s);
+				m_mainloop->on_char((int) *s);
+			}
+		}
 	} else if (m_nprect.top < m_nprect.bottom && m_nprect.left < m_nprect.right) {
 		NPN_InvalidateRect (m_pNPInstance, &m_nprect);	// Ask for draw event
 		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",m_pNPInstance,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);

@@ -100,6 +100,9 @@ typedef void *jref;
 #include <X11/Intrinsic.h>
 #include <X11/cursorfont.h>
 #endif // MOZ_X11
+#ifdef XP_MACOSX
+#include <CoreFoundation/CoreFoundation.h>
+#endif
 #ifdef	WITH_GTK
 class gtk_mainloop;
 #elif WITH_CG
@@ -116,6 +119,7 @@ typedef ambulant::gui::dx::dx_player ambulant_gui_player;
 typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks;
 typedef ambulant::gui::dx::dx_player_callbacks ambulant_baseclass_player_callbacks;
 #endif // WITH_D2D
+
 #include <ambulant/net/url.h>
 class ambulant_player_callbacks : public ambulant_baseclass_player_callbacks {
 
