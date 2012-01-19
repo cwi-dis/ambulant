@@ -101,7 +101,6 @@ npambulant::npambulant(
 	m_ambulant_player(NULL),
 	m_Window(NULL)
 {
-	memset(&m_url, 0, sizeof(net::url));
 	m_url = net::url();
 #ifdef XP_WIN
 	m_hWnd = NULL;
