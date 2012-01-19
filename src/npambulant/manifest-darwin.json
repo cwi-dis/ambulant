@@ -1,0 +1,18 @@
+{
+	"name": "AmbulantPlayer",
+	"version": "2.3",
+	"description": "An open source multimedia player for SMIL3.0 presentations",
+	"plugins": [
+	    {   "path":	"plugins/npambulant.dylibc", "public": true },
+	    {   "path":	"plugins/npambulant/libambulant.dylib" },
+	    {   "path":	"plugins/npambulant/libambulant_live.dylib" },
+	    {   "path":	"plugins/npambulant/libambulant_ffmpeg.dylib" },
+	    {   "path":	"plugins/npambulant/libambulant_sdl.dylib" },
+	    {   "path":	"plugins/npambulant/libambulant_cg.dylib" },
+	    {   "path":	"plugins/npambulant/libexpat.dylib" },
+	    {   "path":	"plugins/npambulant/plugins/libamplugin_xpath_state.la" },
+	    {   "path":	"plugins/npambulant/plugins/libamplugin_xpath_state.so.0" },
+	    {   "path":	"plugins/npambulant/plugins/libamplugin_xerces.la" },
+	    {   "path":	"plugins/npambulant/plugins/libamplugin_xerces.so.0" }		   
+	]
+}

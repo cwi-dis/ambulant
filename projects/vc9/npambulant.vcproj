@@ -388,7 +388,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_$(xerces_major).lib"
+				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_$(xerces_major).lib"
 				OutputFile="$(OutDir)\$(ProjectName)DX_D.dll"
 				LinkIncremental="0"
 				SuppressStartupBanner="false"

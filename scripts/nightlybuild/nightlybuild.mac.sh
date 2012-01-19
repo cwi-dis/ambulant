@@ -4,7 +4,7 @@
 # Mac 10.6 version
 #
 set -e
-set -x
+#set -x
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -43,9 +43,13 @@ DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
+PLUGINNAME=npambulant
+PLUGINDMGNAME=$PLUGINNAME.dmg
+##PLUGINDMGNAME=$PLUGINNAME-$AMBULANTVERSION$VERSIONSUFFIX-mac.dmg
 ##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
 ##DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
+DESTINATION_PLUGIN=$DESTINATION/mac-intel-$PLUGINNAME.plugin/
 DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
 
 echo
@@ -153,6 +157,29 @@ cd ../..
 ##cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
 ##zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
 ##scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
+#
+# Build npambulant (Internet Plugin).
+#
+cd $BUILDHOME/$BUILDDIR
+cd projects/xcode32
+rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
+mkdir -p "$HOME/Library/Internet Plug-Ins"
+xcodebuild -project npambulant.xcodeproj \
+	-target npambulant \
+	-configuration Release -sdk macosx10.6 \
+	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
+	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
+	DSTROOT=$BUILDHOME/$DESTDIR \
+	INSTALL_PATH="/Library/Internet Plug-ins" \
+	install
+cd ../..
+#
+# Build plugin installer, upload
+#
+cd "$BUILDHOME/$BUILDDIR/installers/sh-macos"
+rm -fr $PLUGINNAME $PLUGINNAME-rw.dmg $PLUGINNAME.dmg 
+sh ./mkplugindist.sh $PLUGINNAME $BUILDHOME/$DESTDIR
+scp $PLUGINNAME.dmg $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current
 #
