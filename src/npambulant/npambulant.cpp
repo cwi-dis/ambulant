@@ -101,7 +101,7 @@ npambulant::npambulant(
 	m_ambulant_player(NULL),
 	m_Window(NULL)
 {
-	m_url = net::url();
+m_url = net::url();
 #ifdef XP_WIN
 	m_hWnd = NULL;
 	m_lpOldProc = NULL;
