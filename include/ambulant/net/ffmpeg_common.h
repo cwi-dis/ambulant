@@ -49,6 +49,13 @@
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
+#if LIBAVCODEC_VERSION_MAJOR > 52
+#define CodecType  AVMediaType
+#define CODEC_TYPE_UNKNOWN    AVMEDIA_TYPE_UNKNOWN
+#define CODEC_TYPE_VIDEO      AVMEDIA_TYPE_VIDEO
+#define CODEC_TYPE_AUDIO      AVMEDIA_TYPE_AUDIO
+#define MAX_STREAMS 20
+#endif//LIBAVCODEC_VERSION_MAJOR > 52
 }
 
 namespace ambulant

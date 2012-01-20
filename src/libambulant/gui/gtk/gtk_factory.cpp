@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -163,37 +163,6 @@ void gtk_C_callback_do_key_release_event(void *userdata, GdkEventKey *event, Gtk
 	if (gaw == NULL || event == NULL)
 		return; /* cannot handle */
 	gaw ->do_key_release_event (event);
-	/*
-	GdkWindow* s_gdkw; / source window
-	GtkWidget* d_gtkw; // destination widget
-	GtkWidget* t_gtkw; // toplevel widget
-	s_gdkw = event->window;
-	d_gtkw = gaw->get_gtk_widget ();
-	t_gtkw = gtk_widget_get_toplevel (d_gtkw);
-	gint s_x, s_y, d_x, d_y;
-	s_x = (gint) round (event->x);
-	s_y = (gint) round (event->y);
-
-	for (GtkWidget* a_gtkw = d_gtkw;
-		a_gtkw != NULL;
-		a_gtkw = gtk_widget_get_parent (a_gtkw))
-	{
-		if (s_gdkw == a_gtkw->window) {
-			// found corresponding GdkWindow in GtkWidget stack
-			// translate if necessary
-			if (a_gtkw != d_gtkw
-				&& gtk_widget_translate_coordinates (a_gtkw, d_gtkw, s_x, s_y, &d_x, &d_y))
-			{
-				event->x = d_x;
-				event->y = d_y;
-			}
-			gaw->do_button_release_event (event);
-			break;
-		}
-		if (a_gtkw == t_gtkw)
-		  break; // not found 
-	}
-	*/
 }
 }//extern "C"
 
@@ -707,6 +676,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 	lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) m_key_release_handler_id=%0x%x", this, widget, m_key_release_handler_id);
 	gtk_widget_add_events(GTK_WIDGET (ancestor_widget),
 		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
+	// widget needs focus for receiving key press/release events
 	GTK_WIDGET_SET_FLAGS(ancestor_widget, GTK_CAN_FOCUS);
 	gtk_widget_grab_focus(GTK_WIDGET(ancestor_widget));
 	gtk_ambulant_widget::s_lock.enter();
