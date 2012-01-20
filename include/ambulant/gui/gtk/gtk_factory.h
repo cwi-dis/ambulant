@@ -161,6 +161,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	void do_paint_event (GdkEventExpose * event);
 	void do_motion_notify_event(GdkEventMotion *event);
 	void do_button_release_event(GdkEventButton *event);
+	void do_key_release_event(GdkEventKey *event);
 //	void mouseReleaseEvent(QMouseEvent* e);
 
 	// gui_screen implementation
@@ -193,6 +194,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	gulong m_expose_event_handler_id;
 	gulong m_motion_notify_handler_id;
 	gulong m_button_release_handler_id;
+	gulong m_key_release_handler_id;
 
 };  // class gtk_ambulant_widget
 

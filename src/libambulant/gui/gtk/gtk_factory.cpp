@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -148,6 +148,52 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 		if (a_gtkw == t_gtkw)
 			break; /* not found */
 	}
+}
+}//extern "C"
+
+
+extern "C" {
+void gtk_C_callback_do_key_release_event(void *userdata, GdkEventKey *event, GtkWidget *widget)
+{
+	gtk_ambulant_widget* gaw = (gtk_ambulant_widget*) userdata;
+
+	// Find in the widget stack the widget in which window
+	// the event source coordinates (s_x,s_y) are defined
+	
+	if (gaw == NULL || event == NULL)
+		return; /* cannot handle */
+	gaw ->do_key_release_event (event);
+	/*
+	GdkWindow* s_gdkw; / source window
+	GtkWidget* d_gtkw; // destination widget
+	GtkWidget* t_gtkw; // toplevel widget
+	s_gdkw = event->window;
+	d_gtkw = gaw->get_gtk_widget ();
+	t_gtkw = gtk_widget_get_toplevel (d_gtkw);
+	gint s_x, s_y, d_x, d_y;
+	s_x = (gint) round (event->x);
+	s_y = (gint) round (event->y);
+
+	for (GtkWidget* a_gtkw = d_gtkw;
+		a_gtkw != NULL;
+		a_gtkw = gtk_widget_get_parent (a_gtkw))
+	{
+		if (s_gdkw == a_gtkw->window) {
+			// found corresponding GdkWindow in GtkWidget stack
+			// translate if necessary
+			if (a_gtkw != d_gtkw
+				&& gtk_widget_translate_coordinates (a_gtkw, d_gtkw, s_x, s_y, &d_x, &d_y))
+			{
+				event->x = d_x;
+				event->y = d_y;
+			}
+			gaw->do_button_release_event (event);
+			break;
+		}
+		if (a_gtkw == t_gtkw)
+		  break; // not found 
+	}
+	*/
 }
 }//extern "C"
 
@@ -656,8 +702,13 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 		"motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
 	m_button_release_handler_id = g_signal_connect_swapped (ancestor_widget,
 		"button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	m_key_release_handler_id = g_signal_connect_swapped (ancestor_widget,
+		"key_release_event", G_CALLBACK (gtk_C_callback_do_key_release_event), (void*) this);
+	lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) m_key_release_handler_id=%0x%x", this, widget, m_key_release_handler_id);
 	gtk_widget_add_events(GTK_WIDGET (ancestor_widget),
-		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
+	GTK_WIDGET_SET_FLAGS(ancestor_widget, GTK_CAN_FOCUS);
+	gtk_widget_grab_focus(GTK_WIDGET(ancestor_widget));
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets++;
 	gtk_ambulant_widget::s_lock.leave();
@@ -683,6 +734,8 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 		g_signal_handler_disconnect(ancestor_widget, m_motion_notify_handler_id);
 	if (g_signal_handler_is_connected (ancestor_widget, m_button_release_handler_id))
 		g_signal_handler_disconnect(ancestor_widget, m_button_release_handler_id);
+	if (g_signal_handler_is_connected (ancestor_widget, m_key_release_handler_id))
+		g_signal_handler_disconnect(ancestor_widget, m_key_release_handler_id);
 	if (m_gtk_window) {
 		m_gtk_window->set_ambulant_widget(NULL);
 		m_gtk_window = NULL;
@@ -765,6 +818,20 @@ gtk_ambulant_widget::do_button_release_event(GdkEventButton *e) {
 	if (e->type == GDK_BUTTON_RELEASE){
 		lib::point amwhere = lib::point((int)e->x, (int)e->y);
 		m_gtk_window->user_event(amwhere);
+	}
+}
+
+void
+gtk_ambulant_widget::do_key_release_event(GdkEventKey *e) {
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::do_key_release_event(0x%x): e=0x%x  key=%d, length=%d string=%s) m_gtk_window==NULL", (void*) this, (void*) e, e->keyval, e->length, e->string);
+	if (m_gtk_window == NULL) {
+		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_key_release_event(0x%x): e=0x%x  key=%d, length=%d string=%s) m_gtk_window==NULL", (void*) this, (void*) e, e->keyval, e->length, e->string);
+		return;
+	}
+	if (e->type == GDK_KEY_RELEASE){
+		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_key_release_event(0x%x): e=0x%x  key=%d, length=%d string=%s) m_gtk_window==NULL", (void*) this, (void*) e, e->keyval, e->length, e->string);
+//		m_gtk_window->user_event(amwhere);
+		m_gtk_window->get_gui_player()->on_char((int) *e->string);
 	}
 }
 
