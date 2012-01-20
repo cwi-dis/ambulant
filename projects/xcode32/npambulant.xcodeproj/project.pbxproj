@@ -582,7 +582,7 @@
 				GCC_PREFIX_HEADER = npambulant_Prefix.pch;
 				INFOPLIST_FILE = ../../src/npambulant/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) $(AMBULANT_3PP)/xulrunner-sdk/include";
