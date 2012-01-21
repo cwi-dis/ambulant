@@ -6,7 +6,7 @@ print 'pyamplugin_timesync: imported __init__ at ', time.asctime()
 
 import ambulant
 
-keeper_hack = []
+DEBUG=True
 
 class MyTimerSyncFactory(ambulant.timer_sync_factory):
 	def __init__(self):
@@ -51,9 +51,6 @@ def initialize(apiversion, factories, gui_player):
     	# is opened. Ignore, we'll get another one later.
     	return
 
-    keeper_hack.append(factories)
-    keeper_hack.append(gui_player)
-    
     sf = MyTimerSyncFactory()
     gsf = factories.get_timer_sync_factory()
     if  gsf:

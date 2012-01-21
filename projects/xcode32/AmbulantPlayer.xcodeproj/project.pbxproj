@@ -268,28 +268,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_timesync(Cocoa).so */;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
 			remoteInfo = "plugin_timesync (Cocoa)";
 		};
 		047916D114C5CC16003952AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 04290B85132EB6BA0015D7B7 /* libamplugin_timesync(CG).so */;
+			remoteGlobalIDString = 04290B85132EB6BA0015D7B7;
 			remoteInfo = "plugin_timesync (CG)";
 		};
 		047916E814C5CC9C003952AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 04290B7A132EB6BA0015D7B7 /* plugin_timesync (CG) */;
+			remoteGlobalIDString = 04290B7A132EB6BA0015D7B7;
 			remoteInfo = "plugin_timesync (CG)";
 		};
 		047916EA14C5CCBB003952AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D /* plugin_timesync (Cocoa) */;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
 			remoteInfo = "plugin_timesync (Cocoa)";
 		};
 		04A1E87712B57E100060F97E /* PBXContainerItemProxy */ = {

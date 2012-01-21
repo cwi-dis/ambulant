@@ -89,7 +89,7 @@ public:
     /// Return the timer-synchronizer factory.
     virtual lib::timer_sync_factory *get_timer_sync_factory() const { return m_timer_sync_factory; }
     /// Override the timer-synchronizer factory.
-    virtual void set_timer_sync_factory(lib::timer_sync_factory *tsf) { delete m_timer_sync_factory; m_timer_sync_factory = tsf; }
+    virtual void set_timer_sync_factory(lib::timer_sync_factory *tsf) { /*delete m_timer_sync_factory;*/ m_timer_sync_factory = tsf; }
 #endif
 private:
 	global_playable_factory *m_playable_factory;

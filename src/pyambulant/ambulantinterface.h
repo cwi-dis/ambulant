@@ -407,6 +407,52 @@ inline timer_observer *Py_WrapAs_timer_observer(PyObject *o)
 	return rv;
 }
 
+class timer_sync : public timer_observer, public ambulant::lib::timer_sync {
+public:
+	timer_sync(PyObject *itself);
+	virtual ~timer_sync();
+
+	void initialize(ambulant::lib::timer_control* timer);
+	void started();
+	void stopped();
+	void paused();
+	void resumed();
+  private:
+	PyObject *py_timer_sync;
+
+	friend PyObject *timer_syncObj_New(ambulant::lib::timer_sync *itself);
+};
+#define BGEN_BACK_SUPPORT_timer_sync
+inline timer_sync *Py_WrapAs_timer_sync(PyObject *o)
+{
+	timer_sync *rv = dynamic_cast<timer_sync*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new timer_sync(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class timer_sync_factory : public cpppybridge, public ambulant::lib::timer_sync_factory {
+public:
+	timer_sync_factory(PyObject *itself);
+	virtual ~timer_sync_factory();
+
+	ambulant::lib::timer_sync* new_timer_sync(ambulant::lib::document* doc);
+  private:
+	PyObject *py_timer_sync_factory;
+
+	friend PyObject *timer_sync_factoryObj_New(ambulant::lib::timer_sync_factory *itself);
+};
+#define BGEN_BACK_SUPPORT_timer_sync_factory
+inline timer_sync_factory *Py_WrapAs_timer_sync_factory(PyObject *o)
+{
+	timer_sync_factory *rv = dynamic_cast<timer_sync_factory*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new timer_sync_factory(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
 class embedder : public system_embedder, public ambulant::common::embedder {
 public:
 	embedder(PyObject *itself);
