@@ -33,6 +33,8 @@ if not os.path.exists(WINDOWS_DXSDK_PATH) and os.path.exists(WINDOWS_PROGRAMFILE
     WINDOWS_DXSDK_PATH="%s\\Microsoft DirectX SDK (February 2010)" % WINDOWS_PROGRAMFILES32
 WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
+XULRUNNER_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/"
+XULRUNNER_VERSION="xulrunner-8.0"
 #
 # urlretrieve silently ignores 404 errors. We want them, so we can download
 # our shadow copies.
@@ -401,6 +403,7 @@ third_party_packages={
             ),
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#			url="http://www.ambulantplayer.org/thirdpartymirror/2.3/SDL-1.3-20110522.tar.gz",
             url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
@@ -440,6 +443,12 @@ third_party_packages={
                 "%s --disable-dependency-tracking && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
+            ),
+        TPP("xulrunner-sdk", # no libraries used, 32 bit version also works w. 64 bit build
+            url="%s%s.en-US.mac-i386.sdk.tar.bz2" % (XULRUNNER_URL, XULRUNNER_VERSION),
+            url2="%s.en-US.mac-i386.sdk.tar.bz2" % XULRUNNER_VERSION,
+            checkcmd="test -d xulrunner-sdk",
+            buildcmd="test -d xulrunner-sdk"
             )
         ],
 
@@ -561,31 +570,31 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
                 "cd ffmpeg-export-2010-01-22 && "
-                "export DEPLOYMENT_TARGET=%s;"
+				"export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
-                " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$DEPLOYMENT_TARGET.sdk "
-                "--cpu=arm1176jzf-s "
+				"--cpu=arm1176jzf-s "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv6 -I../installed/include' "
-                "--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
+				"--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
-                "--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-doc;"
+				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
-                "for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
+				"for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
-                "--cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+				"--cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$DEPLOYMENT_TARGET.sdk "
-                "--cpu=cortex-a8 "
+				"--cpu=cortex-a8 "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv7 -I../installed/include' "
-                "--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
+				"--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
-                "--disable-ffserver --disable-ffplay --disable-doc;"
+				"--disable-ffserver --disable-ffplay --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
-                "for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
+				"for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
                 "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done;" 
-                "make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
+				"make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("SDL",
@@ -594,7 +603,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
+                "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  &&"                
                 "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -683,7 +692,7 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "./configure --with-x=no --enable-video-x11=no  --enable-video-opengl=no &&"                
+                "./configure--without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  &&"                
                 "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug ARCHS='i386 x86_64' &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
@@ -772,8 +781,8 @@ third_party_packages={
             ),
 
         TPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
-            url2="xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
+            url="%s%s.en-US.linux-i686.sdk.tar.bz2" % (XULRUNNER_URL, XULRUNNER_VERSION),
+            url2="%s.en-US.linux-i686.sdk.tar.bz2" % XULRUNNER_VERSION,
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
@@ -859,9 +868,11 @@ third_party_packages={
                 "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VCVERSION)
             ),
             
-        WinTPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-            url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+        WinTPP("xulunner-sdk",
+            #url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+	    #url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+	    url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
+            url2="%s.en-US.win32.sdk.zip" % XULRUNNER_VERSION,
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
             ),

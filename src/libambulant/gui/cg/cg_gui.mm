@@ -1185,6 +1185,10 @@ void delete_AmbulantView(void* obj) {
 	AmbulantView* v = (AmbulantView*) obj;
 	[v release];
 }
+
+const char* to_char_AmbulantView(void* obj, void* nstr) {
+	return [((NSString*)nstr) UTF8String];
+}
 #endif// ! WITH_UIKIT
 // drawRect has different signatures in AppKit and UIKit. Hence the ugly
 // c preprocessor constructs here.
@@ -1193,7 +1197,7 @@ void delete_AmbulantView(void* obj) {
 - (void)drawRect:(CGRect)rect
 {
 #else
-	- (void)drawRect:(NSRect)_rect
+- (void)drawRect:(NSRect)_rect
 	{
 		CGRect rect = NSRectToCGRect(_rect);
 #endif // WITH_UIKIT
