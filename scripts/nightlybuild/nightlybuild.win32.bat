@@ -109,9 +109,9 @@ rem
 
 cd projects\%vcdir%
 devenv third_party_packages.sln /build Release
-if %errorlevel% neq 0 pause
+if %errorlevel% gtr 0 pause
 devenv Ambulant-win32.sln /build Release
-if %errorlevel% neq 0 pause
+if %errorlevel% gtr 0 pause
 
 rem
 rem Upload IE, Netscape plugins
