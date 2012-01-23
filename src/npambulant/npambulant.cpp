@@ -1,9 +1,6 @@
 #undef NDEBUG
 #ifdef	XP_WIN32
 #include <cstddef>	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
-#ifdef _DEBUG
-#define ptrdiff_t long int // but not defined in Visual C++ 7.1.
-#endif//_DEBUG
 
 #include <windows.h>
 #include <windowsx.h>
