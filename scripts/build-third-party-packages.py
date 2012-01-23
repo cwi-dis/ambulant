@@ -4,6 +4,7 @@ import subprocess
 import urllib
 import urlparse
 import posixpath
+from optparse import OptionParser
 
 NOCHECK=False
 NORUN=False
@@ -1047,7 +1048,26 @@ environment_checkers = {
 
 def main():
     global TRYMIRROR
-    if len(sys.argv) == 2 and sys.argv[1] == '-m':
+    global NOCHECK
+    global NORUN
+
+    parser = OptionParser(usage="Usage: %prog [options] platform")
+    parser.add_option("-M", "--nomirror", dest="nomirror", action="store_true",
+        help="Ignore mirrored packages, download packages from original location")
+    parser.add_option("-f", "--force", dest="nocheck", action="store_true",
+        help="Force rebuild of all packages")
+    parser.add_option("-x", "--crossbuild", dest="crossbuild", action="store_true",
+        help="Build packages here, ignoring whether they are installed system-wide already")
+    parser.add_option("-n", "--dry_run", dest="norun", action="store_true",
+        help="Don't run commands, only print them")
+    parser.add_option("-m", "--loadmirror", dest="mirror", action="store_true",
+        help="Mirror all third party packages in the current directory")
+    options, args = parser.parse_args()
+        
+    if options.mirror:
+        if args:
+            print '-m and platform argument are mutually exclusive'
+            return 2
         good = 0
         bad = 0
         all = []
@@ -1061,21 +1081,28 @@ def main():
         print '+ mirrored: %d packages' % good
         print '+ failed: %d packages' % bad
         sys.exit(bad)
-    if len(sys.argv) > 1 and sys.argv[1] == '-M':
-        del sys.argv[1]
-        TRYMIRROR=False
-    if len(sys.argv) != 2 or sys.argv[1] not in third_party_packages:
-        print "Usage: %s [-M] platform" % sys.argv[0]
-        print "Platform is one of:", ' '.join(third_party_packages.keys())
-        print "-M argument ignores mirror directory"
-        print "Use %s -m to populate mirror directory" % sys.argv[0]
+    
+    if len(args) != 1 or args[0] not in third_party_packages:
+        parser.print_help()
+        print "\nPlatform is one of:", ' '.join(third_party_packages.keys())
         return 2
-    ok = environment_checkers[sys.argv[1]](sys.argv[1])
+
+        
+    if options.nomirror:
+        TRYMIRROR=False
+    NOCHECK=options.nocheck
+    NORUN=options.norun
+    if options.crossbuild:
+        if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
+            print '** PKG_CONFIG_LIBDIR must be set for cross-development'
+            return 1
+
+    ok = environment_checkers[args[0]](args[0])
     if not ok:
         return 1
     allok = True
     final_package = None
-    for pkg in third_party_packages[sys.argv[1]]:
+    for pkg in third_party_packages[args[0]]:
         if pkg.name == "FINAL":
             # Do this package last
             final_package=pkg
