@@ -298,9 +298,6 @@ install-npambulant:  npambulant_plugin_dir
 	$(INSTALL_PROGRAM) npambulant_plugin_dir/plugins/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
 	(cd  npambulant_plugin_dir/plugins ; tar cf - npambulant  ) | \
 		(cd $$MOZILLA_PLUGINS ; tar xf -)
-# We may need the following too:
-#	$(srcdir)/selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
-# when selinux is enabled, identify the installed shared library
 endif
 #------------------------------------------------------
 #
