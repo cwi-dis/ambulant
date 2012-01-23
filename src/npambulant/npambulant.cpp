@@ -1,4 +1,3 @@
-#undef NDEBUG
 #ifdef	XP_WIN32
 #include <cstddef>	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
 
@@ -68,7 +67,7 @@ class stderr_ostream : public ambulant::lib::ostream {
 int stderr_ostream::write(const char *cstr)
 {
 #ifdef XP_WIN32
-	OutputDebugString(cstr);
+	OutputDebugStringA(cstr);
 #endif
 	fprintf(stderr, "%s", cstr);
 	return strlen(cstr);
