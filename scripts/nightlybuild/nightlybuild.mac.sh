@@ -3,8 +3,7 @@
 # Script to do a nightly clean build of a full Ambulant
 # Mac 10.6 version
 #
-set -e
-#set -x
+set -x
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -43,13 +42,10 @@ DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
-PLUGINNAME=npambulant
+PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=$PLUGINNAME.dmg
-##PLUGINDMGNAME=$PLUGINNAME-$AMBULANTVERSION$VERSIONSUFFIX-mac.dmg
-##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
-##DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
-DESTINATION_PLUGIN=$DESTINATION/mac-intel-$PLUGINNAME.plugin/
+DESTINATION_PLUGIN=$DESTINATION/mac-intel-firefoxplugin/
 DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
 
 echo
@@ -131,32 +127,6 @@ cd installers/sh-macos
 sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
 scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
-###
-### Build webkit plugin.
-###
-##cd projects/xcode32
-##rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
-##mkdir -p "$HOME/Library/Internet Plug-Ins"
-##xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
-##	-target AmbulantWebKitPlugin \
-##	-configuration Release -sdk macosx10.6 \
-##	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-##	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
-##	DSTROOT=$BUILDHOME/$DESTDIR \
-##	INSTALL_PATH="/Library/Internet Plug-ins" \
-##	install
-##cd ../..
-###
-### Build plugin installer, upload
-###
-##mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-##cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-##rm -rf $PLUGINDMGNAME
-##mkdir $PLUGINDMGNAME
-##mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
-##cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
-##zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
-##scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
 #
 # Build npambulant (Internet Plugin).
 #
