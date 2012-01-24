@@ -2,7 +2,7 @@
 # set -x
 scriptdir=`dirname $0`
 topdir=$scriptdir/../..
-plugin_name="AmbulantInternetPlugin.plugin"
+plugin_name="npambulant.plugin"
 if [ x$1 == x-p ]; then
 	plugin_name=$2
 	shift
@@ -10,12 +10,11 @@ if [ x$1 == x-p ]; then
 fi
 dirname=$1
 installroot=$2
-plugin_srcdir="$installroot/Library/Internet Plug-Ins/$dirname.plugin"
+plugin_srcdir="$installroot/Library/Internet Plug-Ins/$plugin_name"
 if [ x$dirname == x ]; then
-	echo Usage: $0 [-n pluginname] dirname [installroot]
+	echo Usage: $0 [-p pluginname] dirname [installroot]
 	echo dirname is where the distribution will be created.
-	echo Default for pluginname is \"$pluginname\"
-	echo Something like Ambulant-2.4-plugin is what we usually use.
+	echo Something like npambulant-2.4-mac is what we usually use.
 	exit 2
 fi
 if [ -d $dirname ]; then
@@ -27,7 +26,7 @@ if [ -f $dirname.dmg ]; then
 	exit 1
 fi
 if [ ! -d "$plugin_srcdir" ]; then
-	echo "$plugin_name must be build and installed in $installroot before building the installer"
+	echo "$plugin_name must be built and installed in $installroot before building the installer"
 	exit 3
 fi
 #
@@ -38,15 +37,14 @@ mkdir $dirname
 # Unpack the template (which contains files needed and their icon position, etc)
 #
 
-(cd $dirname ; tar xf ../plugintemplate.tar; mv placeholder.plugin $dirname.plugin)
+(cd $dirname ; tar xf $scriptdir/plugintemplate.tar; mv placeholder.plugin $plugin_name)
+
 #
 # Copy the files, overwriting placeholders
 #
-#cp -R "$installroot/Library/Internet Plug-Ins/$dirname".plugin/ $dirname.plugin
-(cd $dirname;(cd "$plugin_srcdir/.."; tar cf - -L ./$dirname.plugin)|tar xf -)
-cp "$dirname-installer-bg.png" $dirname/.folderbg/folderbg.png
+cp -r $plugin_srcdir $dirname/$plugin_name
 #
-# Create temoporry disk image (.dmg) and mount it
+# Create temporary disk image (.dmg) and mount it
 #
 hdiutil create -srcfolder $dirname $dirname-rw.dmg -format UDRW -attach
 #
