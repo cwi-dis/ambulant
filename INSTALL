@@ -4,6 +4,8 @@ Installation Instructions for AmbulantPlayer
 =======
 This file contains instructions for building AmbulantPlayer from
 source, for all of Windows, Windows Mobile 5, Unix and Mac OS X.
+The information density in this file is high (a lot of things are explained
+in only very few sentences), so please read everything carefully.
 
 This file is part of the Ambulant Player source distribution,
 which can be downloaded via <http://www.ambulantplayer.org>.
@@ -38,7 +40,6 @@ After unpacking Ambulant you should first download and build the required
 	
 or
 	
-
 	python ../scripts/build-third-party-packages.py linux
 	
 The first version will install all needed packages (insofar they are not installed
@@ -51,7 +52,6 @@ packages will be installed system-wide through the package manager.
 This is actually preferred for most users, as components like the
 Ambulant Python module will now automatically pick up the packages
 without needing LD_LIBRARY_PATH or such tricks.
-
 
 After this, the normal "configure"/"make"/"make install" combo can be used here
 in the toplevel directory to create the player, see further down
@@ -166,15 +166,15 @@ Building for Windows
 --------------------
 
 All projects are located in the "projects" folder
-at the toplevel folder. "vc9" is for Visual Studio 2008, SP2, "vc10" for
-Visual Studio 2010.
+at the toplevel folder.  "vc10" for Visual Studio 2010. There is also
+an older, less maintained, "vc9" is for Visual Studio 2008, SP2.
 
 You must not only have Visual Studio, but also the Microsoft DirectX SDK. This
 can be downloaded from the Microsoft site. NOTE: the version of June 2010 does
 not seem to work, it is missing a library (ddraw.lib) that Ambulant needs. The
 February 2010 is the last version known to work. 
 
-Next, you need the Microsoft Windows SDK, v7.0A or v7.1. You also need the
+Next, for vc9, you need the Microsoft Windows SDK, v7.0A or v7.1. You also need the
 "Samples" subdirectory, and even though the SDK is usually installed by default
 with Visual Studio the samples are not. Google and install.
 
@@ -183,18 +183,23 @@ You also need 7-Zip and Python 2.6 or 2.7.
 First, you build the third party packages, by opening a "cmd" command window
 and navigating to ambulant/third_party_packages. You now run the following
 two commands:
-	xxx> call "c:\Program Files\Microsoft Visual Studio xxx\VC\bin\vcvars.bat"
-	xxx> call "c:\PythonXX\python.exe" ..\scripts\build-third-party-packages.py win32
+	third_party_packages> call "c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\vcvars.bat"
+	third_party_packages> call "c:\Python27\python.exe" ..\scripts\build-third-party-packages.py win32
+(replace the "10.0" with "9.0" for vc9, "Python27" with "Python26" for Python 2.6)
+
 This should build all third party packages and put them where the Ambulant
 build expects them. If you have to change anything in this python script, for
 example because a new version of some package has replaced an older one,
 you will probably also have to change the project properties files. Sometimes
 you need to re-run the Python script after fixing the property files.
   
-At this point you may want to inspect projects/vc9/Ambulant-win32.vsprops
-and/or projects/vc10/Ambulant-win32.props. These files
+At this point you may want to inspect projects/vc10/Ambulant-win32.props
+(or projects/vc9/Ambulant-win32.vsprops for vc9). These files
 have the pathnames of all the components, etc. Change things here to reflect
-your setup.
+your setup. Some of the variables here depend on some other variables, so if
+you have installed some of the dependencies mentioned above in non-standard
+places or if you want to do things like building plugins out-of-tree: examine
+the variables carefully.
 
 After these steps you are ready to build AmbulantPlayer itself. Open
 Ambulant-win32.sln and select "Ambulant Player" as the default
@@ -209,8 +214,8 @@ If you want to build the Firefox or IE plugin you may need to install some
 additional tools such as CabArc. Also, to build the IE plugin you must run
 Visual Studio (sic!) with Administrator permissions.
 
-Building for iPhane iOS4
-------------------------
+Building for iPhone/iPad iOS4
+-----------------------------
 
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
