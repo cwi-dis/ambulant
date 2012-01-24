@@ -37,12 +37,12 @@ mkdir $dirname
 # Unpack the template (which contains files needed and their icon position, etc)
 #
 
-(cd $dirname ; tar xf $scriptdir/plugintemplate.tar; mv placeholder.plugin $plugin_name)
+cat $scriptdir/plugintemplate.tar | (cd $dirname ; tar xf -; mv placeholder.plugin $plugin_name)
 
 #
 # Copy the files, overwriting placeholders
 #
-cp -r $plugin_srcdir $dirname/$plugin_name
+cp -r "$plugin_srcdir" $dirname/$plugin_name
 #
 # Create temporary disk image (.dmg) and mount it
 #
