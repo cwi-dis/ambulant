@@ -8,7 +8,7 @@ rem See http://www.techrepublic.com/blog/window-on-windows/make-vista-launch-uac
 rem
 rem It will not work correctly as gpedit.msc login script, for some reason.
 
-set python="c:\python26\python.exe"
+set python="c:\python27\python.exe"
 
 cd \users\jack\documents
 set
