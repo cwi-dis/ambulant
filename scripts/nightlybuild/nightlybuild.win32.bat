@@ -30,7 +30,7 @@ set vcdir="vc10"
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
 set pscp="c:\Program Files\Putty\pscp.exe" -i %KEYFILE%
 set nsis="c:\Program Files\NSIS\makensis.exe"
-set python="c:\python26\python.exe"
+set python="c:\python27\python.exe"
 
 rem
 rem Getting the date in a reasonable format depends on the machine:
