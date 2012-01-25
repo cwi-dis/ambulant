@@ -534,11 +534,11 @@ void smil_player::stop_playable(const lib::node *n) {
 			// Jack is not sure, but anything that forestalls me diving into this code is a welcome excuse:-)
 			AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
 			//xxxbo 2012-01-25
-			// Changing the buffer time from 20 millisecond to 5 seconds for MyVideos  
+			// Changing the buffer time from 20 millisecond to 30 seconds for MyVideos  
 #if 0
 			m_event_processor->add_event(destroy_event, 20, lib::ep_low);
 #else
-			m_event_processor->add_event(destroy_event, 5000, lib::ep_low);
+			m_event_processor->add_event(destroy_event, 30000, lib::ep_low);
 #endif		//xxxbo end
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer without destructor callback", victim.first->get_sig().c_str());
