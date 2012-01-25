@@ -186,7 +186,7 @@ copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\plugi
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>$(projectdir);$(xulrunner_dir);$(xulrunner_dir)\include;$(xulrunner_dir)\sdk\include;$(xulrunner_dir)\include\plugin;$(xulrunner_dir)\include\nspr;$(xulrunner_dir)\include\java;$(xulrunner_dir)\include\js;$(xulrunner_dir)\include\xpcom;..\..\include;..\..\src\npambulant;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WITH_D2D;WIN32;NDEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WITH_D2D;WIN32;NDEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;MOZ_NO_MOZALLOC;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -206,7 +206,7 @@ copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\plugi
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s_nomozalloc.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
