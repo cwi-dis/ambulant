@@ -108,14 +108,11 @@ x)	;;
 esac
 sh autogen.sh
 cd third_party_packages
-# We are building for distribution, so we want to force local copies of packages
-PKG_CONFIG_LIBDIR=`pwd`/installed/lib/pkgconfig
-export PKG_CONFIG_LIBDIR
-
-python ../scripts/build-third-party-packages.py -x $BUILD3PPARGS
+# We are building for distribution, so we want to force local copies of packages.
+# But we do want to obtain packages we don't buil ourselves (such as gtk).
+PKG_CONFIG_LIBDIR=`pwd`/installed/lib/pkgconfig python ../scripts/build-third-party-packages.py -x $BUILD3PPARGS
 PATH=`pwd`/installed/bin:$PATH
 cd ..
-
 
 #
 # Build source distribution, upload
