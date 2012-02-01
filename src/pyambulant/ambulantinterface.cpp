@@ -5656,6 +5656,10 @@ player_feedback::player_feedback(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "node_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_started");
 		if (!PyObject_HasAttrString(itself, "node_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_stopped");
 		if (!PyObject_HasAttrString(itself, "node_focussed")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_focussed");
+		if (!PyObject_HasAttrString(itself, "playable_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_started");
+		if (!PyObject_HasAttrString(itself, "playable_seek")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_seek");
+		if (!PyObject_HasAttrString(itself, "playable_cached")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_cached");
+		if (!PyObject_HasAttrString(itself, "playable_deleted")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_deleted");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5771,6 +5775,84 @@ void player_feedback::node_focussed(const ambulant::lib::node* n)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, bool from_cache, bool is_prefetch)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+	PyObject *py_from_cache = Py_BuildValue("O&", bool_New, from_cache);
+	PyObject *py_is_prefetch = Py_BuildValue("O&", bool_New, is_prefetch);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_started", "(OOOO)", py_p, py_n, py_from_cache, py_is_prefetch);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::playable_started() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_from_cache);
+	Py_XDECREF(py_is_prefetch);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::playable_seek(const ambulant::common::playable* p)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_seek", "(O)", py_p);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::playable_seek() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::playable_cached(const ambulant::common::playable* p)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_cached", "(O)", py_p);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::playable_cached() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::playable_deleted(const ambulant::common::playable* p)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_deleted", "(O)", py_p);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::playable_deleted() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
 
 	PyGILState_Release(_GILState);
 }

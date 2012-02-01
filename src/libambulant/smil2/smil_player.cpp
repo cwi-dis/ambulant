@@ -330,11 +330,14 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	assert(n);
 
 	common::playable *np = NULL;
+	bool is_prefetch = n->get_local_name() == "prefetch";
+	bool from_cache = false;
 	if (n->get_attribute("src")) {
 		// It may be in the URL-based playable cache. Let us look.
 		std::map<const std::string, common::playable *>::iterator it_url_based =
 			m_cached_playables.find(n->get_url("src").get_url());
 		if (it_url_based != m_cached_playables.end()) {
+			from_cache = true;
 			np = (*it_url_based).second;
 			m_playables_cs.enter();
 			m_cached_playables.erase(it_url_based);
@@ -350,7 +353,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 			common::renderer *rend = np->get_renderer();
 
 			// XXXJACK: Dirty hack, for now: we don't want prefetch to render to a surface so we zap it. Need to fix.
-			if (n->get_local_name() == "prefetch") { 
+			if (is_prefetch) { 
 				surf = NULL;
 			}
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: cached playable 0x%x, renderer 0x%x, surface 0x%x", n, n->get_sig().c_str(), np, rend, surf);
@@ -386,6 +389,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	}
 	if (np) {
+		playable_started(np, n, from_cache, is_prefetch);
 		// Update the context info of np, for example, clipbegin, clipend, and cookie according to the node
 		np->init_with_node(n);
 	}
@@ -1029,6 +1033,7 @@ void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 
 		m_logger->debug("%s[%s]._destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 	}
+	playable_deleted(np);
 	long rem = np->release();
 	if (rem > 0)
 		m_logger->debug("smil_player::_destroy_playable: playable(0x%x) %s still has refcount of %ld", np, np->get_sig().c_str(), rem);
@@ -1059,6 +1064,7 @@ void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::
 		m_playables_cs.leave();
 		AM_DBG lib::logger::get_logger()->debug("smil_player::destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
 		victim.second->post_stop();
+		playable_deleted(victim.second);
 		long rem = victim.second->release();
 		if (rem > 0) m_logger->debug("smil_player::destroy_playable_in_cache: playable(0x%x) %s still has refcount of %ld", victim.second, victim.second->get_sig().c_str(), rem);
 	} else {

@@ -10560,6 +10560,75 @@ static PyObject *player_feedbackObj_node_focussed(player_feedbackObject *_self, 
 	return _res;
 }
 
+static PyObject *player_feedbackObj_playable_started(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable* p;
+	ambulant::lib::node* n;
+	bool from_cache;
+	bool is_prefetch;
+	if (!PyArg_ParseTuple(_args, "O&O&O&O&",
+	                      playableObj_Convert, &p,
+	                      nodeObj_Convert, &n,
+	                      bool_Convert, &from_cache,
+	                      bool_Convert, &is_prefetch))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->playable_started(p,
+	                                   n,
+	                                   from_cache,
+	                                   is_prefetch);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *player_feedbackObj_playable_seek(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable* p;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playableObj_Convert, &p))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->playable_seek(p);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *player_feedbackObj_playable_cached(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable* p;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playableObj_Convert, &p))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->playable_cached(p);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *player_feedbackObj_playable_deleted(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable* p;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playableObj_Convert, &p))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->playable_deleted(p);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef player_feedbackObj_methods[] = {
 	{"document_loaded", (PyCFunction)player_feedbackObj_document_loaded, 1,
 	 PyDoc_STR("(ambulant::lib::document* doc) -> None")},
@@ -10573,6 +10642,14 @@ static PyMethodDef player_feedbackObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"node_focussed", (PyCFunction)player_feedbackObj_node_focussed, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"playable_started", (PyCFunction)player_feedbackObj_playable_started, 1,
+	 PyDoc_STR("(ambulant::common::playable* p, ambulant::lib::node* n, bool from_cache, bool is_prefetch) -> None")},
+	{"playable_seek", (PyCFunction)player_feedbackObj_playable_seek, 1,
+	 PyDoc_STR("(ambulant::common::playable* p) -> None")},
+	{"playable_cached", (PyCFunction)player_feedbackObj_playable_cached, 1,
+	 PyDoc_STR("(ambulant::common::playable* p) -> None")},
+	{"playable_deleted", (PyCFunction)player_feedbackObj_playable_deleted, 1,
+	 PyDoc_STR("(ambulant::common::playable* p) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -16758,11 +16835,7 @@ static PyObject *PyAm_event_processor_factory(PyObject *_self, PyObject *_args)
 	                      timerObj_Convert, &t))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-#ifdef WITH_GCD_EVENT_PROCESSOR
-	assert(0);
-#else
 	_rv = ambulant::lib::event_processor_factory(t);
-#endif
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     event_processorObj_New, _rv);

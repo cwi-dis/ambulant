@@ -921,6 +921,10 @@ public:
 	void node_started(const ambulant::lib::node* n);
 	void node_stopped(const ambulant::lib::node* n);
 	void node_focussed(const ambulant::lib::node* n);
+	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, bool from_cache, bool is_prefetch);
+	void playable_seek(const ambulant::common::playable* p);
+	void playable_cached(const ambulant::common::playable* p);
+	void playable_deleted(const ambulant::common::playable* p);
   private:
 	PyObject *py_player_feedback;
 

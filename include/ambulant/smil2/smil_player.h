@@ -154,6 +154,12 @@ class smil_player :
 	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }
 	void node_stopped(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_stopped(n); }
 	void node_focussed(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_focussed(n); }
+	void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) {
+		if (m_feedback_handler) m_feedback_handler->playable_started(p, n, from_cache, is_prefetch);
+	}
+	void playable_seek(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_seek(p); }
+	void playable_cached(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_cached(p); }
+	void playable_deleted(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_deleted(p); }
 
 	virtual bool goto_node(const lib::node *n);
 

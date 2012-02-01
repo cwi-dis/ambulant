@@ -76,6 +76,18 @@ class player_feedback {
 	/// Called by the player to signal the given node received focus.
 	/// This can happen either through a mouseover event or a tabindex event.
 	virtual void node_focussed(const lib::node *n) = 0;
+	
+	/// Called by the player when a new renderer is assigned to a node.
+	virtual void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) = 0;
+	
+	/// Called by the playable when it does a seek.
+	virtual void playable_seek(const playable *p) = 0;
+	
+	/// Called when a playable is entered into the cache.
+	virtual void playable_cached(const playable *p) = 0;
+	
+	/// Called when a playable is deleted.
+	virtual void playable_deleted(const playable *p) = 0;
 };
 
 /// Baseclass for all players.
