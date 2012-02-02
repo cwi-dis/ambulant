@@ -33,12 +33,30 @@
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/renderer_select.h"
-
+#ifdef __GNUC__
+#include <cxxabi.h>
+#endif
 namespace ambulant {
 
 namespace common {
 
 class global_playable_factory;
+
+
+inline std::string _get_playable_sig(const playable *p, const lib::node *n) {
+	std::stringstream ss;
+	std::string typenm = typeid(*p).name();
+#ifdef __GNUC__
+	int status;
+	char *realname = abi::__cxa_demangle(typenm.c_str(), 0, 0, &status);
+	if (status == 0) {
+		typenm = realname;
+		free(realname);
+	}
+#endif // __GNUC__
+	ss << typenm << "(" << std::hex << (void*)p << ", " << n->get_sig() << ")";
+	return ss.str();
+};
 
 /// A convenience class implementing some of the common code for playables.
 /// Most of the methods in this class store parameters that are common
@@ -78,7 +96,7 @@ class AMBULANTAPI playable_imp : public playable {
 	}
 	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
-	std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; }
+	std::string get_sig() const { return _get_playable_sig(this, m_node); }
 
   protected:
 	playable_notification *m_context;	///< Status feedback object.
@@ -271,7 +289,6 @@ class background_renderer : public bgrenderer {
 	const region_info *m_src;	///< Where we get our parameters (such as color) from.
 	surface *m_dst;				///< Where we should render to.
 };
-
 
 } // namespace common
 
