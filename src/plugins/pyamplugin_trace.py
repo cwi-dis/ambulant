@@ -3,6 +3,94 @@ import time
 import ambulant
 DEBUG=True
 
+class TimeRange:
+	"""Records a single continuous time range"""
+	
+	def __init__(self, start):
+		"""Create a timerange, given the start time"""
+		self.start = start
+		self.stop = None
+		
+	def setStop(self, stop):
+		"""Finalise a timerange by giving the stop time"""
+		assert self.stop is None
+		self.stop = stop
+		
+	def is_active(self):
+		"""Return true if the timerange has not been finished yet"""
+		return self.stop is None
+		
+class NodeRun(TimeRange):
+	"""Records a single execution of a SMIL node"""
+	
+	def __init__(self, descr, start):
+		TimeRange.__init__(self, start)
+		self.descr = descr
+		
+class DocumentRun(TimeRange):
+	"""Records a single execution of a document"""
+	
+	def __init__(self, start):
+		TimeRange.__init__(self, start)
+		self.nodes = {}
+		
+	def addNode(self, node_id, descr, start):
+		"""Add a run for a specific node"""
+		if self.nodes.has_key(node_id):
+			last = self.nodes[node_id][-1]
+			assert not last.is_active()
+		else:
+			self.nodes[node_id] = []
+		new_run = NodeRun(descr, start)
+		self.nodes[node_id].append(new_run)
+		
+	def getNodeRun(self, node_id):
+		"""Get the current active run for a given node"""
+		assert self.nodes.has_key(node_id)
+		run = self.nodes[node_id][-1]
+		assert run.is_active()
+		return run
+		
+class Collector(DocumentRun):
+	"""Collect and dump information about a document run"""
+	def __init__(self, filename, descr, start):
+		DocumentRun.__init__(self, start)
+		self.filename = filename
+		self.descr = descr
+		
+	def setStop(self, stop):
+		DocumentRun.setStop(self, stop)
+		self.dump()
+		
+	def dump(self):
+		if DEBUG: print 'dumping data to', self.filename
+		fp = open(self.filename, 'w')
+		
+		# Dump the header and the document data
+		fp.write('object, description, start, stop\n')
+		fp.write('"/", "%s", %f, %f\n' % (self.descr, 0, self.stop - self.start))
+		
+		# Get the (node, [run, ...]) items sorted by first begin time
+		nodes = self.nodes.items()
+		nodes.sort(cmp=(lambda a, b: cmp(a[1][0].start, b[1][0].start)))
+		for node, runlist in nodes:
+
+			# Get the description. If the node has different descriptions
+			# (because it is using smil-state-based urls, for example) we
+			# want to record this fact
+			descrlist = map(lambda a: a.descr, runlist)
+			descrlist.sort()
+			if descrlist[0] == descrlist[-1]:
+				descr = descrlist[0]
+			else:
+				descr = "multiple values"
+			
+			# Dump the data
+			fp.write('"%s", "%s"' % (node, descr))
+			for run in runlist:
+				fp.write(', %f, %f' % (run.start-self.start, run.stop-self.start))
+			fp.write('\n')
+
 class TracePlayerFeedback(ambulant.player_feedback):
     """This class is the observer for events that happen during playback.
     The various methods emit output for all events, this output can then
@@ -11,23 +99,36 @@ class TracePlayerFeedback(ambulant.player_feedback):
     def timestamp(self):
         return time.strftime("%H:%M:%S") + " EXEC  "
         
+    def now(self):
+    	return time.time()
+    	
     def __init__(self):
-        pass
+        self.collector = None
+        self.doc_url = None
         
     def document_loaded(self, doc):
         if DEBUG: print self.timestamp(), 'document_loaded(%s)' % doc
+        self.doc_url = doc.get_url()
         
     def document_started(self):
         if DEBUG: print self.timestamp(), 'document_started()'
+        self.collector = Collector('/tmp/smilrun.csv', self.doc_url, self.now())
 
     def document_stopped(self):
         if DEBUG: print self.timestamp(), 'document_stopped()'
+        self.collector.setStop(self.now())
 
     def node_started(self, node):
         if DEBUG: print self.timestamp(), 'node_started(%s)' % node.get_sig()
+        node_id = node.get_xpath()
+        node_descr = node.get_sig()
+        self.collector.addNode(node_id, node_descr, self.now())
 
     def node_stopped(self, node):
         if DEBUG: print self.timestamp(), 'node_stopped(%s)' % node.get_sig()
+        node_id = node.get_xpath()
+        run = self.collector.getNodeRun(node_id)
+        run.setStop(self.now())
 
     def node_focussed(self, node):
         if DEBUG:
@@ -77,7 +178,7 @@ class TraceEmbedder(ambulant.embedder):
         
     def aux_open(self, url):
         return self.old_embedder.aux_open(url)
-
+			
 def initialize(apiversion, factories, gui_player):
     """Called every time the plugin is loaded. This happens both at application
     startup time and at document startup time"""

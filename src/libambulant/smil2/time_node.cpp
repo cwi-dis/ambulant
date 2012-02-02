@@ -1765,8 +1765,9 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 		if(n) n->raise_update_event(timestamp);
 	}
 
-	if(is_root()) m_context->done_playback();
 	m_context->node_stopped(m_node);
+	if(is_root()) 
+        m_context->done_playback();
 }
 
 void time_node::raise_activate_event(qtime_type timestamp) {
