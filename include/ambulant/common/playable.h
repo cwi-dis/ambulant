@@ -204,7 +204,7 @@ class playable_notification {
 	virtual void stopped(cookie_type n, double t = 0) = 0;
 
 	/// Playable corresponding to cookie n is stalled.
-	virtual void stalled(cookie_type n, double t = 0) = 0;
+	virtual void stalled(cookie_type n, const char *reason, double t = 0) = 0;
 
 	/// Playable corresponding to cookie n is no longer stalled.
 	virtual void unstalled(cookie_type n, double t = 0) = 0;

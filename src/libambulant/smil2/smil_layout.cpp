@@ -628,7 +628,7 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 	/// playable_notification interface:
 	void started(cookie_type n, double t = 0) {};
 	void stopped(cookie_type n, double t = 0);
-	void stalled(cookie_type n, double t = 0) {};
+	void stalled(cookie_type n, const char *reason, double t = 0) {};
 	void unstalled(cookie_type n, double t = 0) {};
 	void clicked(cookie_type n, double t = 0) {};
 	void pointed(cookie_type n, double t = 0) {};

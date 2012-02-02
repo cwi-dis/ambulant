@@ -262,7 +262,7 @@ class empty_playable_notification : public playable_notification {
 	// Playables nodifications
 	void started(cookie_type n, double t = 0)  {};
 	void stopped(cookie_type n, double t = 0)  {};
-	void stalled(cookie_type n, double t = 0)  {} ;
+	void stalled(cookie_type n, const char *reason, double t = 0)  {} ;
 	void unstalled(cookie_type n, double t = 0) {};
 	void clicked(cookie_type n, double t = 0)  {};
 	void pointed(cookie_type n, double t = 0)  {}; // mouse over

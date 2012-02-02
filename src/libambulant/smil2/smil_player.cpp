@@ -521,6 +521,7 @@ void smil_player::stop_playable(const lib::node *n) {
 	}
 	if (can_cache) {
 		AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer", victim.first->get_sig().c_str());
+		playable_cached(victim.second);
 		m_playables_cs.enter();
 		m_cached_playables[(victim.first->get_url("src")).get_url()] = victim.second;
 		m_playables_cs.leave();
@@ -878,13 +879,33 @@ smil_player::marker_seen_async(async_string_arg asa) {
 }
 
 // Playable notification for a stall event.
-void smil_player::stalled(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::stalled(%d, %f)", n, t);
+void smil_player::stalled(int ni, const char *reason, double t) {
+	AM_DBG m_logger->debug("smil_player::stalled(%d, %s, %f)", ni, reason, t);
+	if (m_feedback_handler) {
+		std::map<int, time_node*>::iterator it = m_dom2tn->find(ni);
+		if (it != m_dom2tn->end()) {
+			const lib::node* n = (*it).second->dom_node();
+			if (n) {
+				common::playable *p = m_playables[n];
+				m_feedback_handler->playable_stalled(p, reason);
+			}
+		}
+	}
 }
 
 // Playable notification for an unstall event.
-void smil_player::unstalled(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::unstalled(%d, %f)", n, t);
+void smil_player::unstalled(int ni, double t) {
+	AM_DBG m_logger->debug("smil_player::unstalled(%d, %f)", ni, t);
+	if (m_feedback_handler) {
+		std::map<int, time_node*>::iterator it = m_dom2tn->find(ni);
+		if (it != m_dom2tn->end()) {
+			const lib::node* n = (*it).second->dom_node();
+			if (n) {
+				common::playable *p = m_playables[n];
+				m_feedback_handler->playable_unstalled(p);
+			}
+		}
+	}
 }
 
 // UI notification for a char event.

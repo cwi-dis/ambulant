@@ -9601,13 +9601,16 @@ static PyObject *playable_notificationObj_stalled(playable_notificationObject *_
 {
 	PyObject *_res = NULL;
 	ambulant::common::playable::cookie_type n;
+	char* reason;
 	double t;
-	if (!PyArg_ParseTuple(_args, "ld",
+	if (!PyArg_ParseTuple(_args, "lsd",
 	                      &n,
+	                      &reason,
 	                      &t))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
 	_self->ob_itself->stalled(n,
+	                          reason,
 	                          t);
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
@@ -9714,7 +9717,7 @@ static PyMethodDef playable_notificationObj_methods[] = {
 	{"stopped", (PyCFunction)playable_notificationObj_stopped, 1,
 	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
 	{"stalled", (PyCFunction)playable_notificationObj_stalled, 1,
-	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, char* reason, double t) -> None")},
 	{"unstalled", (PyCFunction)playable_notificationObj_unstalled, 1,
 	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
 	{"clicked", (PyCFunction)playable_notificationObj_clicked, 1,
@@ -10584,7 +10587,25 @@ static PyObject *player_feedbackObj_playable_started(player_feedbackObject *_sel
 	return _res;
 }
 
-static PyObject *player_feedbackObj_playable_seek(player_feedbackObject *_self, PyObject *_args)
+static PyObject *player_feedbackObj_playable_stalled(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable* p;
+	char* reason;
+	if (!PyArg_ParseTuple(_args, "O&s",
+	                      playableObj_Convert, &p,
+	                      &reason))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->playable_stalled(p,
+	                                   reason);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *player_feedbackObj_playable_unstalled(player_feedbackObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	ambulant::common::playable* p;
@@ -10592,7 +10613,7 @@ static PyObject *player_feedbackObj_playable_seek(player_feedbackObject *_self, 
 	                      playableObj_Convert, &p))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->playable_seek(p);
+	_self->ob_itself->playable_unstalled(p);
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
 	_res = Py_None;
@@ -10644,7 +10665,9 @@ static PyMethodDef player_feedbackObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"playable_started", (PyCFunction)player_feedbackObj_playable_started, 1,
 	 PyDoc_STR("(ambulant::common::playable* p, ambulant::lib::node* n, bool from_cache, bool is_prefetch) -> None")},
-	{"playable_seek", (PyCFunction)player_feedbackObj_playable_seek, 1,
+	{"playable_stalled", (PyCFunction)player_feedbackObj_playable_stalled, 1,
+	 PyDoc_STR("(ambulant::common::playable* p, char* reason) -> None")},
+	{"playable_unstalled", (PyCFunction)player_feedbackObj_playable_unstalled, 1,
 	 PyDoc_STR("(ambulant::common::playable* p) -> None")},
 	{"playable_cached", (PyCFunction)player_feedbackObj_playable_cached, 1,
 	 PyDoc_STR("(ambulant::common::playable* p) -> None")},

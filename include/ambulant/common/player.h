@@ -80,8 +80,11 @@ class player_feedback {
 	/// Called by the player when a new renderer is assigned to a node.
 	virtual void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) = 0;
 	
-	/// Called by the playable when it does a seek.
-	virtual void playable_seek(const playable *p) = 0;
+	/// Called by the playable when it stalls.
+	virtual void playable_stalled(const playable *p, const char *reason) = 0;
+	
+	/// Called by the playable when the stall is over.
+	virtual void playable_unstalled(const playable *p) = 0;
 	
 	/// Called when a playable is entered into the cache.
 	virtual void playable_cached(const playable *p) = 0;

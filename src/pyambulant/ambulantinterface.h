@@ -841,7 +841,7 @@ public:
 
 	void started(ambulant::common::playable::cookie_type n, double t);
 	void stopped(ambulant::common::playable::cookie_type n, double t);
-	void stalled(ambulant::common::playable::cookie_type n, double t);
+	void stalled(ambulant::common::playable::cookie_type n, const char* reason, double t);
 	void unstalled(ambulant::common::playable::cookie_type n, double t);
 	void clicked(ambulant::common::playable::cookie_type n, double t);
 	void pointed(ambulant::common::playable::cookie_type n, double t);
@@ -922,7 +922,8 @@ public:
 	void node_stopped(const ambulant::lib::node* n);
 	void node_focussed(const ambulant::lib::node* n);
 	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, bool from_cache, bool is_prefetch);
-	void playable_seek(const ambulant::common::playable* p);
+	void playable_stalled(const ambulant::common::playable* p, const char* reason);
+	void playable_unstalled(const ambulant::common::playable* p);
 	void playable_cached(const ambulant::common::playable* p);
 	void playable_deleted(const ambulant::common::playable* p);
   private:

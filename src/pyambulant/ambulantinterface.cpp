@@ -5339,13 +5339,14 @@ void playable_notification::stopped(ambulant::common::playable::cookie_type n, d
 	PyGILState_Release(_GILState);
 }
 
-void playable_notification::stalled(ambulant::common::playable::cookie_type n, double t)
+void playable_notification::stalled(ambulant::common::playable::cookie_type n, const char* reason, double t)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_reason = Py_BuildValue("s", reason);
 	PyObject *py_t = Py_BuildValue("d", t);
 
-	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "stalled", "(OO)", py_n, py_t);
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "stalled", "(OOO)", py_n, py_reason, py_t);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during playable_notification::stalled() callback:\n");
@@ -5354,6 +5355,7 @@ void playable_notification::stalled(ambulant::common::playable::cookie_type n, d
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_n);
+	Py_XDECREF(py_reason);
 	Py_XDECREF(py_t);
 
 	PyGILState_Release(_GILState);
@@ -5657,7 +5659,8 @@ player_feedback::player_feedback(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "node_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_stopped");
 		if (!PyObject_HasAttrString(itself, "node_focussed")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_focussed");
 		if (!PyObject_HasAttrString(itself, "playable_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_started");
-		if (!PyObject_HasAttrString(itself, "playable_seek")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_seek");
+		if (!PyObject_HasAttrString(itself, "playable_stalled")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_stalled");
+		if (!PyObject_HasAttrString(itself, "playable_unstalled")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_unstalled");
 		if (!PyObject_HasAttrString(itself, "playable_cached")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_cached");
 		if (!PyObject_HasAttrString(itself, "playable_deleted")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_deleted");
 	}
@@ -5803,15 +5806,35 @@ void player_feedback::playable_started(const ambulant::common::playable* p, cons
 	PyGILState_Release(_GILState);
 }
 
-void player_feedback::playable_seek(const ambulant::common::playable* p)
+void player_feedback::playable_stalled(const ambulant::common::playable* p, const char* reason)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+	PyObject *py_reason = Py_BuildValue("s", reason);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_stalled", "(OO)", py_p, py_reason);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::playable_stalled() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+	Py_XDECREF(py_reason);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::playable_unstalled(const ambulant::common::playable* p)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
 
-	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_seek", "(O)", py_p);
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_unstalled", "(O)", py_p);
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during player_feedback::playable_seek() callback:\n");
+		PySys_WriteStderr("Python exception during player_feedback::playable_unstalled() callback:\n");
 		PyErr_Print();
 	}
 

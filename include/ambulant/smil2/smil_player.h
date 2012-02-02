@@ -115,7 +115,7 @@ class smil_player :
 	virtual void stopped(int n, double t);
 	virtual void clicked(int n, double t);
 	virtual void pointed(int n, double t);
-	virtual void stalled(int n, double t);
+	virtual void stalled(int n, const char *reason, double t);
 	virtual void unstalled(int n, double t);
 	virtual void transitioned(int n, double t);
 	virtual void marker_seen(cookie_type n, const char *name, double t);
@@ -157,7 +157,8 @@ class smil_player :
 	void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) {
 		if (m_feedback_handler) m_feedback_handler->playable_started(p, n, from_cache, is_prefetch);
 	}
-	void playable_seek(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_seek(p); }
+	void playable_stalled(const playable *p, const char *reason) { if (m_feedback_handler) m_feedback_handler->playable_stalled(p, reason); }
+	void playable_unstalled(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_unstalled(p); }
 	void playable_cached(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_cached(p); }
 	void playable_deleted(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_deleted(p); }
 

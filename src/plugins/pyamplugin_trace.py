@@ -39,8 +39,11 @@ class TracePlayerFeedback(ambulant.player_feedback):
     def playable_started(self, playable, node, from_cache, is_prefetch):
         if DEBUG: print self.timestamp(), 'playable_started(%s, %s, %s, %s)' % (playable.get_sig(), node.get_sig(), from_cache, is_prefetch)
 
-    def playable_seek(self, playable):
-        if DEBUG: print self.timestamp(), 'playable_seek(%s)' % playable.get_sig()
+    def playable_stalled(self, playable, reason):
+        if DEBUG: print self.timestamp(), 'playable_stalled(%s, %s)' % (playable.get_sig(), reason)
+
+    def playable_unstalled(self, playable):
+        if DEBUG: print self.timestamp(), 'playable_unstalled(%s)' % playable.get_sig()
 
     def playable_cached(self, playable):
         if DEBUG: print self.timestamp(), 'playable_cached(%s)' % playable.get_sig()

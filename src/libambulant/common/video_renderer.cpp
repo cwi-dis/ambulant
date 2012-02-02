@@ -45,6 +45,7 @@ video_renderer::video_renderer(
 	m_epoch(0),
 	m_activated(false),
 	m_post_stop_called(false),
+	m_is_stalled(false),
 	m_is_paused(false),
 	m_paused_epoch(0),
 	m_last_frame_timestamp(-1),
@@ -207,6 +208,8 @@ video_renderer::preroll(double when, double where, double how_much)
 	net::timestamp_t wtd_position = m_clip_begin+(net::timestamp_t)(where*1000000);
 	if (wtd_position != m_previous_clip_position) {
 		m_previous_clip_position = wtd_position;
+		m_context->stalled(m_cookie, "seek");
+		m_is_stalled = true;
 		m_src->seek(wtd_position);
 	}
 
@@ -267,7 +270,11 @@ video_renderer::seek(double t)
 	AM_DBG lib::logger::get_logger()->trace("video_renderer: seek(%f) curtime=%f", t, (double)m_timer->elapsed()/1000.0);
 	assert( t >= 0);
 	net::timestamp_t t_us= (net::timestamp_t)(t*1000000);
-	if (m_src) m_src->seek(t_us);
+	if (m_src) {
+		m_context->stalled(m_cookie, "seek");
+		m_is_stalled = true;
+		m_src->seek(t_us);
+	}
 	m_lock.leave();
 }
 
@@ -351,6 +358,10 @@ video_renderer::data_avail()
 		m_activated = false;
 		m_lock.leave();
 		return;
+	}
+	if (m_is_stalled) {
+		m_is_stalled = false;
+		m_context->unstalled(m_cookie);
 	}
 	assert(m_dest);
 
@@ -486,7 +497,9 @@ video_renderer::data_avail()
 			m_src->frame_processed(frame_ts_micros);
 		}
 	}
-
+	// XXXJACK we could check here whether the next frame is already in the queue for us, and if it isn't
+	// emit a stalled(..., "rebuffer") callback
+	
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
 	// Grmpf. frame_ts_micros is on the movie timescale, but start_frame() expects a time relative to
