@@ -1,0 +1,14 @@
+object,description,start,stop
+"/", "None", 0.000000, 24.264289
+"/smil/body", "<body>", 0.000148, 16.859600
+"/smil/body/par", "<par>", 0.000248, 16.859384
+"/smil/body/par/img", "<img src="data/background.png">", 0.000344, 0.647287
+"/smil/body/par/audio", "<audio src="data/AmbulantTune.mp3">", 0.000856, 8.648946
+"/smil/body/par/par", "<par>", 0.646561, 4.769032
+"/smil/body/par/par/img", "<img src="data/ambulant.png">", 0.646686, 0.846216
+"/smil/body/par/par/img[2]", "<img src="data/extensible.png">", 2.745124, 2.847796
+"/smil/body/par/par/img[3]", "<img src="data/fast.png">", 3.249015, 3.343933
+"/smil/body/par/par/img[4]", "<img src="data/portable.png">", 3.745717, 3.848785
+"/smil/body/par/par/img[5]", "<img src="data/opensource.png">", 4.250536, 4.353691
+"/smil/body/par/par/img[6]", "<img src="data/visit.png">", 4.757557, 4.768873
+"/smil/body/par/par/img[6]/area", "<area>", 4.757980, 4.768796
