@@ -1,0 +1,132 @@
+[
+    {
+        "object": "/", 
+        "runs": [
+            {
+                "descr": null, 
+                "start": 0.0, 
+                "stop": 16.34071922302246
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body", 
+        "runs": [
+            {
+                "descr": "<body>", 
+                "start": 0.00010013580322265625, 
+                "stop": 16.340688228607178
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par", 
+        "runs": [
+            {
+                "descr": "<par>", 
+                "start": 0.0002300739288330078, 
+                "stop": 16.34045720100403
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/img", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/background.png\">", 
+                "start": 0.0003371238708496094, 
+                "stop": 0.1324460506439209
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/audio", 
+        "runs": [
+            {
+                "descr": "<audio src=\"data/AmbulantTune.mp3\">", 
+                "start": 0.0009200572967529297, 
+                "stop": 8.138402223587036
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par", 
+        "runs": [
+            {
+                "descr": "<par>", 
+                "start": 0.13176202774047852, 
+                "stop": 4.34594202041626
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/ambulant.png\">", 
+                "start": 0.13188719749450684, 
+                "stop": 0.3312861919403076
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img[2]", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/extensible.png\">", 
+                "start": 2.230295181274414, 
+                "stop": 2.3329360485076904
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img[3]", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/fast.png\">", 
+                "start": 2.7346131801605225, 
+                "stop": 2.8392560482025146
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img[4]", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/portable.png\">", 
+                "start": 3.240866184234619, 
+                "stop": 3.333806037902832
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img[5]", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/opensource.png\">", 
+                "start": 3.7355380058288574, 
+                "stop": 3.8388941287994385
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img[6]", 
+        "runs": [
+            {
+                "descr": "<img src=\"data/visit.png\">", 
+                "start": 4.242627143859863, 
+                "stop": 4.345807075500488
+            }
+        ]
+    }, 
+    {
+        "object": "/smil/body/par/par/img[6]/area", 
+        "runs": [
+            {
+                "descr": "<area>", 
+                "start": 4.24309515953064, 
+                "stop": 4.345751047134399
+            }
+        ]
+    }
+]

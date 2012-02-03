@@ -1,5 +1,7 @@
 import sys
+import os
 import time
+import json
 import ambulant
 DEBUG=True
 
@@ -10,6 +12,7 @@ class TimeRange:
 		"""Create a timerange, given the start time"""
 		self.start = start
 		self.stop = None
+		self.descr = ""
 		
 	def setStop(self, stop):
 		"""Finalise a timerange by giving the stop time"""
@@ -19,6 +22,9 @@ class TimeRange:
 	def is_active(self):
 		"""Return true if the timerange has not been finished yet"""
 		return self.stop is None
+		
+	def asDict(self, globStart=0):
+		return { "start":self.start-globStart, "stop":self.stop-globStart , "descr" : self.descr}
 		
 class NodeRun(TimeRange):
 	"""Records a single execution of a SMIL node"""
@@ -63,6 +69,12 @@ class Collector(DocumentRun):
 		self.dump()
 		
 	def dump(self):
+		if os.path.splitext(self.filename)[1] == '.json':
+			self.dump_json()
+		else:
+			self.dump_csv()
+			
+	def dump_csv(self):
 		if DEBUG: print 'dumping data to', self.filename
 		fp = open(self.filename, 'w')
 		
@@ -91,6 +103,22 @@ class Collector(DocumentRun):
 				fp.write(', %f, %f' % (run.start-self.start, run.stop-self.start))
 			fp.write('\n')
 
+	def dump_json(self):
+		if DEBUG: print 'dumping data to', self.filename
+		fp = open(self.filename, 'w')
+		objects = [{"object":"/", "runs":[self.asDict(globStart=self.start)]}]
+
+		# Get the (node, [run, ...]) items sorted by first begin time
+		nodes = self.nodes.items()
+		nodes.sort(cmp=(lambda a, b: cmp(a[1][0].start, b[1][0].start)))
+		for node, runlist in nodes:
+			rundata = []
+			for run in runlist:
+				rundata.append(run.asDict(globStart=self.start))
+			object = {"object":node, "runs" : rundata}
+			objects.append(object)
+		fp.write(json.dumps(objects, sort_keys=True, indent=4))
+	
 class TracePlayerFeedback(ambulant.player_feedback):
     """This class is the observer for events that happen during playback.
     The various methods emit output for all events, this output can then
@@ -112,7 +140,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
         
     def document_started(self):
         if DEBUG: print self.timestamp(), 'document_started()'
-        self.collector = Collector('/tmp/smilrun.csv', self.doc_url, self.now())
+        self.collector = Collector('/tmp/smilrun.json', self.doc_url, self.now())
 
     def document_stopped(self):
         if DEBUG: print self.timestamp(), 'document_stopped()'
