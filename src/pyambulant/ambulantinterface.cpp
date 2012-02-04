@@ -5645,6 +5645,49 @@ void global_playable_factory::preferred_renderer(const char* name)
 	PyGILState_Release(_GILState);
 }
 
+/* ---------------------- Class focus_feedback ---------------------- */
+
+focus_feedback::focus_feedback(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "node_focussed")) PyErr_Warn(PyExc_Warning, "focus_feedback: missing attribute: node_focussed");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_focus_feedback = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+focus_feedback::~focus_feedback()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_focus_feedback);
+	py_focus_feedback = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void focus_feedback::node_focussed(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_focus_feedback, "node_focussed", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during focus_feedback::node_focussed() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
 /* --------------------- Class player_feedback ---------------------- */
 
 player_feedback::player_feedback(PyObject *itself)
@@ -5658,7 +5701,6 @@ player_feedback::player_feedback(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "node_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_started");
 		if (!PyObject_HasAttrString(itself, "node_filled")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_filled");
 		if (!PyObject_HasAttrString(itself, "node_stopped")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_stopped");
-		if (!PyObject_HasAttrString(itself, "node_focussed")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: node_focussed");
 		if (!PyObject_HasAttrString(itself, "playable_started")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_started");
 		if (!PyObject_HasAttrString(itself, "playable_stalled")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_stalled");
 		if (!PyObject_HasAttrString(itself, "playable_unstalled")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_unstalled");
@@ -5774,24 +5816,6 @@ void player_feedback::node_stopped(const ambulant::lib::node* n)
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during player_feedback::node_stopped() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_n);
-
-	PyGILState_Release(_GILState);
-}
-
-void player_feedback::node_focussed(const ambulant::lib::node* n)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
-
-	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "node_focussed", "(O)", py_n);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during player_feedback::node_focussed() callback:\n");
 		PyErr_Print();
 	}
 

@@ -910,6 +910,27 @@ inline global_playable_factory *Py_WrapAs_global_playable_factory(PyObject *o)
 	return rv;
 }
 
+class focus_feedback : public cpppybridge, public ambulant::common::focus_feedback {
+public:
+	focus_feedback(PyObject *itself);
+	virtual ~focus_feedback();
+
+	void node_focussed(const ambulant::lib::node* n);
+  private:
+	PyObject *py_focus_feedback;
+
+	friend PyObject *focus_feedbackObj_New(ambulant::common::focus_feedback *itself);
+};
+#define BGEN_BACK_SUPPORT_focus_feedback
+inline focus_feedback *Py_WrapAs_focus_feedback(PyObject *o)
+{
+	focus_feedback *rv = dynamic_cast<focus_feedback*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new focus_feedback(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
 class player_feedback : public cpppybridge, public ambulant::common::player_feedback {
 public:
 	player_feedback(PyObject *itself);
@@ -921,7 +942,6 @@ public:
 	void node_started(const ambulant::lib::node* n);
 	void node_filled(const ambulant::lib::node* n);
 	void node_stopped(const ambulant::lib::node* n);
-	void node_focussed(const ambulant::lib::node* n);
 	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, bool from_cache, bool is_prefetch);
 	void playable_stalled(const ambulant::common::playable* p, const char* reason);
 	void playable_unstalled(const ambulant::common::playable* p);

@@ -146,6 +146,9 @@ class smil_player :
 	virtual bool wait_for_eom() const { return m_wait_for_eom_flag;}
 	virtual void set_wait_for_eom(bool b) { m_wait_for_eom_flag = b;}
 
+    // Focus feedback stuff
+	void set_focus_feedback(common::focus_feedback *h) { m_focus_handler = h; }
+	void node_focussed(const lib::node *n) { if (m_focus_handler) m_focus_handler->node_focussed(n); }
 	// Feedback stuff
 	void set_feedback(common::player_feedback *h) { m_feedback_handler = h; }
 	void document_loaded(lib::document *doc) { if (m_feedback_handler) m_feedback_handler->document_loaded(doc); }
@@ -154,7 +157,6 @@ class smil_player :
 	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }
 	void node_filled(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_filled(n); }
 	void node_stopped(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_stopped(n); }
-	void node_focussed(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_focussed(n); }
 	void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) {
 		if (m_feedback_handler) m_feedback_handler->playable_started(p, n, from_cache, is_prefetch);
 	}
@@ -203,6 +205,7 @@ class smil_player :
 	//common::window_factory *m_wf;
 	//common::playable_factory *m_pf;
 	common::embedder *m_system;
+	common::focus_feedback *m_focus_handler;
 	common::player_feedback *m_feedback_handler;
 	animation_engine *m_animation_engine;
 	time_node* m_root;

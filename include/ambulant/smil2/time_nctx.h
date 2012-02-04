@@ -125,7 +125,6 @@ class dummy_time_node_context : public time_node_context {
 	virtual void node_started(const lib::node *n) {}
 	virtual void node_filled(const lib::node *n) {}
 	virtual void node_stopped(const lib::node *n) {}
-	virtual void node_focussed(const lib::node *n) {}
 	virtual void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) {};
 	virtual void playable_stalled(const playable *p, const char *reason) {};
 	virtual void playable_unstalled(const playable *p) {};

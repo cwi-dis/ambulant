@@ -48,6 +48,14 @@ enum play_state {
 	ps_done	 ///< The player has finished playing the document
 };
 
+/// This class may be implemented by gui players, to show mouseover.
+class focus_feedback {
+  public:
+	/// Called by the player to signal the given node received focus.
+	/// This can happen either through a mouseover event or a tabindex event.
+	virtual void node_focussed(const lib::node *n) = 0;
+};	
+
 /// Interface for getting feedback from the player.
 /// The player will call methods here so a UI can synchronise
 /// any external views with what the player is doing.
@@ -76,10 +84,6 @@ class player_feedback {
 	/// Called by the player to signal the given node stopped playing
 	virtual void node_stopped(const lib::node *n) = 0;
 
-	/// Called by the player to signal the given node received focus.
-	/// This can happen either through a mouseover event or a tabindex event.
-	virtual void node_focussed(const lib::node *n) = 0;
-	
 	/// Called by the player when a new renderer is assigned to a node.
 	virtual void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) = 0;
 	
@@ -163,6 +167,9 @@ class player : public state_change_callback, virtual public lib::ref_counted
 
 	/// Call this to activate/select the current focus.
 	virtual void on_focus_activate() {}
+
+	/// Set the focus feedback handler.
+	virtual void set_focus_feedback(focus_feedback *fb) {}
 
 	/// Set the feedback handler.
 	virtual void set_feedback(player_feedback *fb) {}

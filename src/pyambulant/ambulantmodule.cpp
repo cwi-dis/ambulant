@@ -10410,6 +10410,184 @@ PyTypeObject renderer_select_Type = {
 /* ---------------- End object type renderer_select ----------------- */
 
 
+/* ------------------- Object type focus_feedback ------------------- */
+
+extern PyTypeObject focus_feedback_Type;
+
+inline bool focus_feedbackObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &focus_feedback_Type);
+}
+
+typedef struct focus_feedbackObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::focus_feedback* ob_itself;
+} focus_feedbackObject;
+
+PyObject *focus_feedbackObj_New(ambulant::common::focus_feedback* itself)
+{
+	focus_feedbackObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_focus_feedback
+	focus_feedback *encaps_itself = dynamic_cast<focus_feedback *>(itself);
+	if (encaps_itself && encaps_itself->py_focus_feedback)
+	{
+		Py_INCREF(encaps_itself->py_focus_feedback);
+		return encaps_itself->py_focus_feedback;
+	}
+#endif
+	it = PyObject_NEW(focus_feedbackObject, &focus_feedback_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int focus_feedbackObj_Convert(PyObject *v, ambulant::common::focus_feedback* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_focus_feedback
+	if (!focus_feedbackObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_focus_feedback(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!focus_feedbackObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "focus_feedback required");
+		return 0;
+	}
+	*p_itself = ((focus_feedbackObject *)v)->ob_itself;
+	return 1;
+}
+
+static void focus_feedbackObj_dealloc(focus_feedbackObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *focus_feedbackObj_node_focussed(focus_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->node_focussed(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef focus_feedbackObj_methods[] = {
+	{"node_focussed", (PyCFunction)focus_feedbackObj_node_focussed, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define focus_feedbackObj_getsetlist NULL
+
+
+static int focus_feedbackObj_compare(focus_feedbackObject *self, focus_feedbackObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define focus_feedbackObj_repr NULL
+
+static long focus_feedbackObj_hash(focus_feedbackObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int focus_feedbackObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::focus_feedback* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, focus_feedbackObj_Convert, &itself))
+	{
+		((focus_feedbackObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define focus_feedbackObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *focus_feedbackObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((focus_feedbackObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define focus_feedbackObj_tp_free PyObject_Del
+
+
+PyTypeObject focus_feedback_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.focus_feedback", /*tp_name*/
+	sizeof(focus_feedbackObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) focus_feedbackObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) focus_feedbackObj_compare, /*tp_compare*/
+	(reprfunc) focus_feedbackObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) focus_feedbackObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	focus_feedbackObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	focus_feedbackObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	focus_feedbackObj_tp_init, /* tp_init */
+	focus_feedbackObj_tp_alloc, /* tp_alloc */
+	focus_feedbackObj_tp_new, /* tp_new */
+	focus_feedbackObj_tp_free, /* tp_free */
+};
+
+/* ----------------- End object type focus_feedback ----------------- */
+
+
 /* ------------------ Object type player_feedback ------------------- */
 
 extern PyTypeObject player_feedback_Type;
@@ -10563,21 +10741,6 @@ static PyObject *player_feedbackObj_node_stopped(player_feedbackObject *_self, P
 	return _res;
 }
 
-static PyObject *player_feedbackObj_node_focussed(player_feedbackObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::lib::node* n;
-	if (!PyArg_ParseTuple(_args, "O&",
-	                      nodeObj_Convert, &n))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->node_focussed(n);
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
 static PyObject *player_feedbackObj_playable_started(player_feedbackObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10677,8 +10840,6 @@ static PyMethodDef player_feedbackObj_methods[] = {
 	{"node_filled", (PyCFunction)player_feedbackObj_node_filled, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"node_stopped", (PyCFunction)player_feedbackObj_node_stopped, 1,
-	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
-	{"node_focussed", (PyCFunction)player_feedbackObj_node_focussed, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"playable_started", (PyCFunction)player_feedbackObj_playable_started, 1,
 	 PyDoc_STR("(ambulant::common::playable* p, ambulant::lib::node* n, bool from_cache, bool is_prefetch) -> None")},
@@ -17904,6 +18065,11 @@ void initambulant(void)
 	if (PyType_Ready(&renderer_select_Type) < 0) return;
 	Py_INCREF(&renderer_select_Type);
 	PyModule_AddObject(m, "renderer_select", (PyObject *)&renderer_select_Type);
+	focus_feedback_Type.ob_type = &PyType_Type;
+	focus_feedback_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&focus_feedback_Type) < 0) return;
+	Py_INCREF(&focus_feedback_Type);
+	PyModule_AddObject(m, "focus_feedback", (PyObject *)&focus_feedback_Type);
 	player_feedback_Type.ob_type = &PyType_Type;
 	player_feedback_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&player_feedback_Type) < 0) return;
