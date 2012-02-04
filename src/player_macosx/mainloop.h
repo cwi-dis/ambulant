@@ -46,6 +46,7 @@ class mainloop :
 	void document_started() {};
 	void document_stopped() {};
 	void node_started(const ambulant::lib::node *n) {};
+	void node_filled(const ambulant::lib::node *n) {};
 	void node_stopped(const ambulant::lib::node *n) {};
 	void node_focussed(const ambulant::lib::node *n);
 	void playable_started(const ambulant::common::playable *p, const ambulant::lib::node *n, bool from_cache, bool is_prefetch) {};

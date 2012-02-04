@@ -70,6 +70,9 @@ class player_feedback {
 	/// Called by the player to signal that the given node starts playing
 	virtual void node_started(const lib::node *n) = 0;
 
+    /// Called by the player when a node goes into fill mode
+    virtual void node_filled(const lib::node *n) = 0;
+    
 	/// Called by the player to signal the given node stopped playing
 	virtual void node_stopped(const lib::node *n) = 0;
 

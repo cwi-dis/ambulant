@@ -236,24 +236,29 @@ void smil_player::start() {
 	}
 	m_lock.leave();
 }
-
-// Command to stop playback
-void smil_player::stop() {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
-
+void smil_player::empty_playable_cache()
+{
 	m_playables_cs.enter();
 	while (!m_cached_playables.empty()) {
 		std::map<const std::string, common::playable *>::iterator it_url_based = m_cached_playables.begin();
-		lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
 		(*it_url_based).second->post_stop();
+        playable_deleted((*it_url_based).second);
 		(*it_url_based).second->release();
 		m_cached_playables.erase(it_url_based);
 	}
 	assert(m_cached_playables.empty());
 	m_playables_cs.leave();
+}
 
+// Command to stop playback
+void smil_player::stop() {
+	AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
+
+    empty_playable_cache();
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
+        m_state = common::ps_done;
 		m_timer->pause();
 		cancel_all_events();
 		m_scheduler->reset_document();
@@ -319,6 +324,7 @@ void smil_player::done_playback() {
 	m_state = common::ps_done;
 	// m_lock.leave();
 	m_timer->pause();
+    empty_playable_cache();
 	document_stopped();
 	if(m_system)
 		m_system->done(this);
@@ -485,7 +491,8 @@ void smil_player::stop_playable(const lib::node *n) {
 	// 1. Not cachable, or no URL. Destroy. 
 	// 2. Cachable, fill=continue. Store in cache, don't stop playback.
 	// 3. Cachable, no fill=continue. Store in cache, but stop playback.
-	bool can_cache = true;
+    // Also, we don't cache if we are stopping anyway.
+	bool can_cache = (m_state != common::ps_done);
 	bool must_post_stop;
 
 	must_post_stop = !victim.second->stop();

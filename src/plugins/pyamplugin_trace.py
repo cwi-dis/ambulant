@@ -11,8 +11,15 @@ class TimeRange:
 	def __init__(self, start):
 		"""Create a timerange, given the start time"""
 		self.start = start
+		self.fill = None
 		self.stop = None
 		self.descr = ""
+		
+	def setFill(self, fill):
+		"""Set the time that fill begain"""
+		assert self.stop is None
+		if not self.fill is None:
+			self.fill = fill
 		
 	def setStop(self, stop):
 		"""Finalise a timerange by giving the stop time"""
@@ -24,7 +31,10 @@ class TimeRange:
 		return self.stop is None
 		
 	def asDict(self, globStart=0):
-		return { "start":self.start-globStart, "stop":self.stop-globStart , "descr" : self.descr}
+		rv = { "start":self.start-globStart, "stop":self.stop-globStart , "descr" : self.descr}
+		if not self.fill is None:
+			rv["fill"] = self.fill - globStart
+		return rv
 		
 class NodeRun(TimeRange):
 	"""Records a single execution of a SMIL node"""
@@ -66,6 +76,11 @@ class Collector(DocumentRun):
 		
 	def setStop(self, stop):
 		DocumentRun.setStop(self, stop)
+		# End-of-document implies end-of-node for all nodes (this may not
+		# have triggered if the stop was because of the user pressing stop).
+		for runs in self.nodes.values():
+			if runs[-1].is_active():
+				runs[-1].setStop(stop)
 		self.dump()
 		
 	def dump(self):
@@ -151,6 +166,12 @@ class TracePlayerFeedback(ambulant.player_feedback):
         node_id = node.get_xpath()
         node_descr = node.get_sig()
         self.collector.addNode(node_id, node_descr, self.now())
+
+    def node_filled(self, node):
+        if DEBUG: print self.timestamp(), 'node_filled(%s)' % node.get_sig()
+        node_id = node.get_xpath()
+        run = self.collector.getNodeRun(node_id)
+        run.setFill(self.now())
 
     def node_stopped(self, node):
         if DEBUG: print self.timestamp(), 'node_stopped(%s)' % node.get_sig()

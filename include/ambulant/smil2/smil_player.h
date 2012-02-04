@@ -152,6 +152,7 @@ class smil_player :
 	void document_started() { if (m_feedback_handler) m_feedback_handler->document_started(); }
 	void document_stopped() { if (m_feedback_handler) m_feedback_handler->document_stopped(); }
 	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }
+	void node_filled(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_filled(n); }
 	void node_stopped(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_stopped(n); }
 	void node_focussed(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_focussed(n); }
 	void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) {
@@ -185,6 +186,7 @@ class smil_player :
 	common::playable* _new_playable(const lib::node *n);
 	void _destroy_playable(common::playable *r, const lib::node *n);
 	void destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim);
+    void empty_playable_cache();
 	common::playable* _get_playable(const lib::node *n) {
 		std::map<const lib::node*, common::playable *>::iterator it =
 			m_playables.find(n);

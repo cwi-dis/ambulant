@@ -10533,6 +10533,21 @@ static PyObject *player_feedbackObj_node_started(player_feedbackObject *_self, P
 	return _res;
 }
 
+static PyObject *player_feedbackObj_node_filled(player_feedbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->node_filled(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *player_feedbackObj_node_stopped(player_feedbackObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10658,6 +10673,8 @@ static PyMethodDef player_feedbackObj_methods[] = {
 	{"document_stopped", (PyCFunction)player_feedbackObj_document_stopped, 1,
 	 PyDoc_STR("() -> None")},
 	{"node_started", (PyCFunction)player_feedbackObj_node_started, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
+	{"node_filled", (PyCFunction)player_feedbackObj_node_filled, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"node_stopped", (PyCFunction)player_feedbackObj_node_stopped, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
