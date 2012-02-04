@@ -18,7 +18,7 @@ class TimeRange:
 	def setFill(self, fill):
 		"""Set the time that fill begain"""
 		assert self.stop is None
-		if not self.fill is None:
+		if self.fill is None:
 			self.fill = fill
 		
 	def setStop(self, stop):
@@ -178,13 +178,6 @@ class TracePlayerFeedback(ambulant.player_feedback):
         node_id = node.get_xpath()
         run = self.collector.getNodeRun(node_id)
         run.setStop(self.now())
-
-    def node_focussed(self, node):
-        if DEBUG:
-            if node:
-                print self.timestamp(), 'node_focussed(%s)' % node.get_sig()
-            else:
-                print self.timestamp(), 'node_focussed(None)'
 
     def playable_started(self, playable, node, from_cache, is_prefetch):
         if DEBUG: print self.timestamp(), 'playable_started(%s, %s, %s, %s)' % (playable.get_sig(), node.get_sig(), from_cache, is_prefetch)
