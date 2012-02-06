@@ -71,6 +71,13 @@ class PlayableRun(TimeRange):
 		assert self.stalls
 		assert self.stalls[-1].is_active()
 		self.stalls[-1].setStop(stop)
+		
+	def inheritStall(self):
+		"""Called by the successor to inherit a stall"""
+		if self.stalls and self.stalls[-1].is_active():
+			self.stalls[-1].setStop(self.stop)
+			return True
+		return False
 	
 	def setPredecessor(self, plrun):
 		self.predecessor = plrun
@@ -248,17 +255,21 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		 
 	def playable_started(self, playable, node, from_cache, is_prefetch):
 		if DEBUG: print self.timestamp(), 'playable_started(%s, %s, %s, %s)' % (playable.get_sig(), node.get_sig(), from_cache, is_prefetch)
+		now = self.now()
 		node_id = node.get_xpath()
 		run = self.collector.getNodeRun(node_id)
 		plid = self._id_for_playable(playable)
-		playrun = PlayableRun(plid, playable.get_sig(), self.now())
+		playrun = PlayableRun(plid, playable.get_sig(), now)
 		predecessor = None
 		if from_cache:
 			predecessor = self.collector.getPlayable(plid)
 			assert predecessor
 			assert predecessor.is_active()
-			predecessor.setStop(self.now())
+			predecessor.setStop(now)
 			playrun.setPredecessor(predecessor)
+			# And inherit any "stalled" flag
+			if predecessor.inheritStall():
+				playrun.stallStart(now)
 		self.collector.setPlayable(plid, playrun)
 		run.addPlayable(playrun)
 
