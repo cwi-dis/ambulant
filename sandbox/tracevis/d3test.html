@@ -94,8 +94,37 @@ var svg = d3.select("body").append("svg")
 	.append("g")
 	.attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
+var showTypes = new Array();
+showTypes["medianode"] = true;
+showTypes["prefetch"] = true;
+showTypes["playable"] = true;
+showTypes[""] = true;
+
+svg.append("g")
+	.attr("class", "x axis");
+
+svg.append("g")
+	.attr("class", "y axis");
+
 genGraph = function(data) {
 
+	// Select only the ones we want
+	newData = [];
+	for( var dataItemIndex in data) {
+		var dataItem = data[dataItemIndex];
+		var objType = dataItem.objtype;
+		if (objType in showTypes) {
+			if (showTypes[objType])
+				newData.push(dataItem);
+		} else {
+			if (showTypes[""])
+				newData.push(dataItem);
+		}
+	}
+	console.log("old data " + data);
+	data = newData;
+	console.log("new data " + data);
+	
 	// Parse numbers, and sort by value.
 	data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
 	// data.sort(function(a, b) { return b.start - a.start; });
@@ -144,20 +173,36 @@ genGraph = function(data) {
 		.attr("dy", ".35em")
 		.text(function(d) { return d.descr; });
 	
-	svg.append("g")
-		.attr("class", "x axis")
+	svg.select("g.x.axis")
 		.call(xAxis);
 	
-	svg.append("g")
-		.attr("class", "y axis")
+	svg.select("g.y.axis")
 		.call(yAxis);
 }
 
-// d3.csv("smilrun.csv", genGraph);
-d3.text("/tmp/smilrun.json", "text/json", function(text) {
-	genGraph(eval('(' + text + ')'))
-});
+regenGraph = function() {
+	// d3.csv("smilrun.csv", genGraph);
+	d3.text("/tmp/smilrun.json", "text/json", function(text) {
+		genGraph(eval('(' + text + ')'))
+		});
+};
+
+regenShowAndGraph = function() {
+	for (var i=0; i < document.selections.show.length; i++) {
+		showTypes[document.selections.show[i].value] = document.selections.show[i].checked;
+		console.log("checked for " + document.selections.show[i].value + " is " + document.selections.show[i].checked);
+	}
+	regenGraph();
+};
+
+regenGraph();
 
     </script>
+    <form name="selections">
+    	<input type="checkbox" name="show" value="other" checked="checked" onClick="regenShowAndGraph();">Interior</br>
+    	<input type="checkbox" name="show" value="media" checked="checked" onClick="regenShowAndGraph();">Media</br>
+    	<input type="checkbox" name="show" value="renderers" checked="checked" onClick="regenShowAndGraph();">Renderers</br>
+    	<input type="button" value="Reload" onClick="regenGraph();">
+    </form>
   </body>
 </html>
