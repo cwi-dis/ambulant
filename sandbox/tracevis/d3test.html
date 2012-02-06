@@ -70,13 +70,13 @@ genGraph = function(data) {
 	
 	// Set the scale domain.
 	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
-	y.domain(data.map(function(d) { return d.object; }));
+	y.domain(data.map(function(d) { return d.objid; }));
 	
 	var bars = svg.selectAll("g.bar")
 		.data(data)
 		.enter().append("g")
 		.attr("class", "bar")
-		.attr("transform", function(d) { return "translate(0," + y(d.object) + ")"; });
+		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
 
 	var rungroup = bars.selectAll("g.rungroup")
 		.data(function(d) { return d.runs; })

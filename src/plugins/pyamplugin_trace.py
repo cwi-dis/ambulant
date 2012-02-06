@@ -43,13 +43,18 @@ class NodeRun(TimeRange):
 		TimeRange.__init__(self, start)
 		self.descr = descr
 		self.playables = []
+		
+	def addPlayable(self, pl):
+	    self.playables.append(pl)
 				
 class PlayableRun(TimeRange):
 	"""Records a single run of a playable"""
-	def __init__(self, descr, start):
+	def __init__(self, objid, descr, start):
 		TimeRange.__init__(self, start)
+		self.objid = objid
 		self.descr = descr
 		self.stalls = []
+		self.predecessor = None
 		
 	def stallStart(self, start):
 		if self.stalls and self.stalls[-1].is_active():
@@ -61,6 +66,9 @@ class PlayableRun(TimeRange):
 		assert self.stalls[-1].is_active()
 		self.stalls[-1].setStop(stop)
 	
+	def setPredecessor(self, plrun):
+	    self.predecessor = plrun
+	    
 class DocumentRun(TimeRange):
 	"""Records a single execution of a document"""
 	
@@ -91,6 +99,7 @@ class Collector(DocumentRun):
 		DocumentRun.__init__(self, start)
 		self.filename = filename
 		self.descr = descr
+		self.curPlayable = {}
 		
 	def setStop(self, stop):
 		DocumentRun.setStop(self, stop)
@@ -101,6 +110,12 @@ class Collector(DocumentRun):
 				runs[-1].setStop(stop)
 		self.dump()
 		
+	def setPlayable(self, plid, plrun):
+	    self.curPlayable[plid] = plrun
+	    
+	def getPlayable(self, plid):
+	    return self.curPlayable.get(plid, None)
+	    
 	def dump(self):
 		if os.path.splitext(self.filename)[1] == '.json':
 			self.dump_json()
@@ -139,17 +154,38 @@ class Collector(DocumentRun):
 	def dump_json(self):
 		if DEBUG: print 'dumping data to', self.filename
 		fp = open(self.filename, 'w')
-		objects = [{"object":"/", "runs":[self.asDict(globStart=self.start)]}]
+		objects = [{"objtype": "document", "objid":"/", "runs":[self.asDict(globStart=self.start)]}]
 
 		# Get the (node, [run, ...]) items sorted by first begin time
 		nodes = self.nodes.items()
 		nodes.sort(cmp=(lambda a, b: cmp(a[1][0].start, b[1][0].start)))
 		for node, runlist in nodes:
 			rundata = []
+			playables = {}
 			for run in runlist:
+			    
+			    # For each run, append the times to the rundata for this node
 				rundata.append(run.asDict(globStart=self.start))
-			object = {"object":node, "runs" : rundata}
+				
+				# For each playable corresponding to this run, append/create the playable run
+				for playable in run.playables:
+				    if playables.has_key(playable.objid):
+				        playables[playable.objid].append(playable.asDict(globStart=self.start))
+				    else:
+				        playables[playable.objid] = [playable.asDict(globStart=self.start)]
+
+			# Output the data for the node runs
+			object = {"objtype" : "node", "objid":node, "runs" : rundata}
 			objects.append(object)
+			
+			# Now sort the playable runs by first start time and output them too
+			playableitems = playables.items()
+			playableitems.sort(cmp=(lambda a, b: cmp(a[1][0].start, b[1][0].start)))
+			for playableid, playableruns in playableitems:
+			    object = {"objtype" : "playable", "objid" : playableid, "runs" : playableruns}
+    			objects.append(object)
+
+        # All done. Dump the data.
 		fp.write(json.dumps(objects, sort_keys=True, indent=4))
 	
 class TracePlayerFeedback(ambulant.player_feedback):
@@ -197,20 +233,51 @@ class TracePlayerFeedback(ambulant.player_feedback):
         run = self.collector.getNodeRun(node_id)
         run.setStop(self.now())
 
+    def _id_for_playable(self, playable):
+        sig = playable.get_sig()
+        commapos = sig.find(',')
+        if commapos:
+            sig = sig[:commapos]
+        return sig.replace('(', ' ')
+         
     def playable_started(self, playable, node, from_cache, is_prefetch):
         if DEBUG: print self.timestamp(), 'playable_started(%s, %s, %s, %s)' % (playable.get_sig(), node.get_sig(), from_cache, is_prefetch)
+        node_id = node.get_xpath()
+        run = self.collector.getNodeRun(node_id)
+        plid = self._id_for_playable(playable)
+        playrun = PlayableRun(plid, playable.get_sig(), self.now())
+        predecessor = None
+        if from_cache:
+            predecessor = self.collector.getPlayable(plid)
+            assert predecessor
+            playrun.setPredecessor(predecessor)
+        self.collector.setPlayable(plid, playrun)
+        run.addPlayable(playrun)
 
     def playable_stalled(self, playable, reason):
         if DEBUG: print self.timestamp(), 'playable_stalled(%s, %s)' % (playable.get_sig(), reason)
+        plid = self._id_for_playable(playable)
+        playrun = self.collector.getPlayable(plid)
+        playrun.stallStart(self.now())
 
     def playable_unstalled(self, playable):
         if DEBUG: print self.timestamp(), 'playable_unstalled(%s)' % playable.get_sig()
+        plid = self._id_for_playable(playable)
+        playrun = self.collector.getPlayable(plid)
+        playrun.stallStop(self.now())
 
     def playable_cached(self, playable):
         if DEBUG: print self.timestamp(), 'playable_cached(%s)' % playable.get_sig()
+        plid = self._id_for_playable(playable)
+        playrun = self.collector.getPlayable(plid)
+        playrun.setFill(self.now())
 
     def playable_deleted(self, playable):
         if DEBUG: print self.timestamp(), 'playable_deleted(%s)' % playable.get_sig()
+        plid = self._id_for_playable(playable)
+        playrun = self.collector.getPlayable(plid)
+        playrun.setStop(self.now())
+        self.collector.setPlayable(playable, None)
 
 class TraceEmbedder(ambulant.embedder):
     """Helper class. We must insert our TracePlayerFeedback into the player
