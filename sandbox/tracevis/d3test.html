@@ -10,12 +10,12 @@ body {
   font: 10px sans-serif;
 }
 
-.bar rect {
+rect.noderun {
   fill: steelblue;
 }
 
-.bar rect rect {
-	fill: yellow;
+rect.nodefill {
+  fill: lightblue;
 }
 
 .bar text.value {
@@ -57,55 +57,62 @@ var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
     yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
 
 var svg = d3.select("body").append("svg")
-    .attr("width", w + m[1] + m[3])
-    .attr("height", h + m[0] + m[2])
-  .append("g")
-    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+	.attr("width", w + m[1] + m[3])
+	.attr("height", h + m[0] + m[2])
+	.append("g")
+	.attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
 genGraph = function(data) {
 
-  // Parse numbers, and sort by value.
-  data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
-  // data.sort(function(a, b) { return b.start - a.start; });
+	// Parse numbers, and sort by value.
+	data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
+	// data.sort(function(a, b) { return b.start - a.start; });
+	
+	// Set the scale domain.
+	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
+	y.domain(data.map(function(d) { return d.object; }));
+	
+	var bar = svg.selectAll("g.bar")
+		.data(data)
+		.enter().append("g")
+		.attr("class", "bar")
+		.attr("transform", function(d) { return "translate(0," + y(d.object) + ")"; });
+	
+	rungroup = bar.append("g")
+		.attr("class", "rungroup");
 
-  // Set the scale domain.
-  x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
-  y.domain(data.map(function(d) { return d.object; }));
-
-  var bar = svg.selectAll("g.bar")
-      .data(data)
-      .enter().append("g")
-      .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(0," + y(d.object) + ")"; });
-
-  barrect = bar.append("rect")
-      .attr("x", function(d) { return x(d.runs[0].start); })
-      .attr("width", function(d) { return x(d.runs[0].stop-d.runs[0].start); })
-      .attr("height", y.rangeBand());
-      
-  barrect.append("rect")
-      .attr("width", 30)
-      .attr("height", 40);
-
-  bar.append("text")
-      .attr("class", "value")
-      .attr("x", function(d) { return x(d.runs[0].start); })
-      .attr("y", y.rangeBand() / 2)
-      .attr("dx", 3)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.runs[0].descr; });
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
+	
+	barrect = rungroup.append("rect")
+		.attr("class", "noderun")
+		.attr("x", function(d) { return x(d.runs[0].start); })
+		.attr("width", function(d) { return x(d.runs[0].stop-d.runs[0].start); })
+		.attr("height", y.rangeBand());
+	  
+	rungroup.append("rect")
+		.attr("class", "nodefill")
+		.attr("x", function(d) { return x(d.runs[0].fill); })
+		.attr("width", function(d) { return x(d.runs[0].stop-d.runs[0].fill); })
+		.attr("height", y.rangeBand());
+	
+	rungroup.append("text")
+		.attr("class", "value")
+		.attr("x", function(d) { return x(d.runs[0].start); })
+		.attr("y", y.rangeBand() / 2)
+		.attr("dx", 3)
+		.attr("dy", ".35em")
+		.text(function(d) { return d.runs[0].descr; });
+	
+	svg.append("g")
+		.attr("class", "x axis")
+		.call(xAxis);
+	
+	svg.append("g")
+		.attr("class", "y axis")
+		.call(yAxis);
 }
 
 // d3.csv("smilrun.csv", genGraph);
-d3.text("smilrun.json", "text/json", function(text) {
+d3.text("/tmp/smilrun.json", "text/json", function(text) {
 	genGraph(eval('(' + text + ')'))
 });
 
