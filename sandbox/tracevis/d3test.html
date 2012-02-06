@@ -98,7 +98,7 @@ var showTypes = new Array();
 showTypes["medianode"] = true;
 showTypes["prefetch"] = true;
 showTypes["playable"] = true;
-showTypes[""] = true;
+showTypes["*"] = true;
 
 svg.append("g")
 	.attr("class", "x axis");
@@ -117,13 +117,11 @@ genGraph = function(data) {
 			if (showTypes[objType])
 				newData.push(dataItem);
 		} else {
-			if (showTypes[""])
+			if (showTypes["*"])
 				newData.push(dataItem);
 		}
 	}
-	console.log("old data " + data);
 	data = newData;
-	console.log("new data " + data);
 	
 	// Parse numbers, and sort by value.
 	data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
@@ -133,39 +131,55 @@ genGraph = function(data) {
 	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
 	y.domain(data.map(function(d) { return d.objid; }));
 	
+	// First set up the bars (rows). Do this separately for existing/new/deleted data.
 	var bars = svg.selectAll("g.bar")
-		.data(data)
-		.enter().append("g")
+		.data(data, function(d) { return d.objid; })
+		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
+
+	bars.enter().append("g")
 		.attr("class", function(d) { return "bar"; })
 		.classed("medianode", function(d) { return d.objtype == "medianode"; })
 		.classed("playable", function(d) { return d.objtype == "playable"; })
 		.classed("prefetch", function(d) { return d.objtype == "prefetch"; })
-		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
-
-	var rungroup = bars.selectAll("g.rungroup")
-		.data(function(d) { return d.runs; })
-		.enter().append("g")
-		.attr("class", "rungroup");
-
-	bars.append("line")
+		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
+		
+		.append("line")
 		.attr("x1", -10)
 		.attr("x2", 10)
 		.attr("y1", 0)
 		.attr("y2", 0);
 		
-	rungroup.append("rect")
+	bars.exit().remove();
+
+	// Next, set up the grouped data (runs) within a horizontal bar. Again existing/new/removed.
+	var rungroup = bars.selectAll("g.rungroup")
+		.data(function(d) { return d.runs; });
+	
+	rungroup.selectAll("rect")
+		.attr("height", y.rangeBand());
+	rungroup.selectAll("text")
+		.attr("y", y.rangeBand()/2);
+		
+	var newrungroup = rungroup.enter()
+		.append("g")
+		.attr("class", "rungroup");
+		
+	rungroup.exit().remove();
+
+	// Now for all the new rungroups, create the active/postactive bars and the text field.
+	newrungroup.append("rect")
 		.attr("class", "run")
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
 		.attr("height", y.rangeBand());
 	  
-	rungroup.append("rect")
+	newrungroup.append("rect")
 		.attr("class", "fill")
 		.attr("x", function(d) { return x(d.fill); })
 		.attr("width", function(d) { return x(d.stop-d.fill); })
 		.attr("height", y.rangeBand());
 	
-	rungroup.append("text")
+	newrungroup.append("text")
 		.attr("class", "value")
 		.attr("x", function(d) { return x(d.start); })
 		.attr("y", y.rangeBand() / 2)
@@ -173,6 +187,7 @@ genGraph = function(data) {
 		.attr("dy", ".35em")
 		.text(function(d) { return d.descr; });
 	
+	// Finally setup the axes for the whole graph
 	svg.select("g.x.axis")
 		.call(xAxis);
 	
@@ -190,7 +205,6 @@ regenGraph = function() {
 regenShowAndGraph = function() {
 	for (var i=0; i < document.selections.show.length; i++) {
 		showTypes[document.selections.show[i].value] = document.selections.show[i].checked;
-		console.log("checked for " + document.selections.show[i].value + " is " + document.selections.show[i].checked);
 	}
 	regenGraph();
 };
@@ -199,9 +213,9 @@ regenGraph();
 
     </script>
     <form name="selections">
-    	<input type="checkbox" name="show" value="other" checked="checked" onClick="regenShowAndGraph();">Interior</br>
-    	<input type="checkbox" name="show" value="media" checked="checked" onClick="regenShowAndGraph();">Media</br>
-    	<input type="checkbox" name="show" value="renderers" checked="checked" onClick="regenShowAndGraph();">Renderers</br>
+    	<input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media</br>
+    	<input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers</br>
+    	<input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">All the rest</br>
     	<input type="button" value="Reload" onClick="regenGraph();">
     </form>
   </body>

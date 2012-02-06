@@ -222,7 +222,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		if DEBUG: print self.timestamp(), 'node_started(%s)' % node.get_sig()
 		node_id = node.get_xpath()
 		node_type = node.get_local_name()
-		if node_type in ("audio", "video", "text", "smilText", "img", "animation", "ref"):
+		if node_type in ("audio", "video", "text", "smilText", "img", "animation", "ref", "area"):
 			node_type = "medianode"
 		node_descr = node.get_sig()
 		self.collector.addNode(node_id, node_type, node_descr, self.now())
