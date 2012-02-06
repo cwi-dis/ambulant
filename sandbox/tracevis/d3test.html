@@ -72,35 +72,36 @@ genGraph = function(data) {
 	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
 	y.domain(data.map(function(d) { return d.object; }));
 	
-	var bar = svg.selectAll("g.bar")
+	var bars = svg.selectAll("g.bar")
 		.data(data)
 		.enter().append("g")
 		.attr("class", "bar")
 		.attr("transform", function(d) { return "translate(0," + y(d.object) + ")"; });
-	
-	rungroup = bar.append("g")
+
+	var rungroup = bars.selectAll("g.rungroup")
+		.data(function(d) { return d.runs; })
+		.enter().append("g")
 		.attr("class", "rungroup");
 
-	
-	barrect = rungroup.append("rect")
+	rungroup.append("rect")
 		.attr("class", "noderun")
-		.attr("x", function(d) { return x(d.runs[0].start); })
-		.attr("width", function(d) { return x(d.runs[0].stop-d.runs[0].start); })
+		.attr("x", function(d) { return x(d.start); })
+		.attr("width", function(d) { return x(d.stop-d.start); })
 		.attr("height", y.rangeBand());
 	  
 	rungroup.append("rect")
 		.attr("class", "nodefill")
-		.attr("x", function(d) { return x(d.runs[0].fill); })
-		.attr("width", function(d) { return x(d.runs[0].stop-d.runs[0].fill); })
+		.attr("x", function(d) { return x(d.fill); })
+		.attr("width", function(d) { return x(d.stop-d.fill); })
 		.attr("height", y.rangeBand());
 	
 	rungroup.append("text")
 		.attr("class", "value")
-		.attr("x", function(d) { return x(d.runs[0].start); })
+		.attr("x", function(d) { return x(d.start); })
 		.attr("y", y.rangeBand() / 2)
 		.attr("dx", 3)
 		.attr("dy", ".35em")
-		.text(function(d) { return d.runs[0].descr; });
+		.text(function(d) { return d.descr; });
 	
 	svg.append("g")
 		.attr("class", "x axis")
