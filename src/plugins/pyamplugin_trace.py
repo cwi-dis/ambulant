@@ -42,7 +42,25 @@ class NodeRun(TimeRange):
 	def __init__(self, descr, start):
 		TimeRange.__init__(self, start)
 		self.descr = descr
+		self.playables = []
+				
+class PlayableRun(TimeRange):
+	"""Records a single run of a playable"""
+	def __init__(self, descr, start):
+		TimeRange.__init__(self, start)
+		self.descr = descr
+		self.stalls = []
 		
+	def stallStart(self, start):
+		if self.stalls and self.stalls[-1].is_active():
+			return
+		self.stalls.append(TimeRange(start))
+		
+	def stallStop(self, stop):
+		assert self.stalls
+		assert self.stalls[-1].is_active()
+		self.stalls[-1].setStop(stop)
+	
 class DocumentRun(TimeRange):
 	"""Records a single execution of a document"""
 	
