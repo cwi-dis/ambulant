@@ -149,6 +149,8 @@ genGraph = function(data) {
 	// First set up the bars (rows). Do this separately for existing/new/deleted data.
 	var bars = svg.selectAll("g.bar")
 		.data(data, function(d) { return d.objid; })
+	
+	bars.transition().duration(1000)
 		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
 
 	bars.enter().append("g")
@@ -171,8 +173,11 @@ genGraph = function(data) {
 		.data(function(d) { return d.runs; });
 	
 	rungroup.selectAll("rect")
+		.transition().duration(1000)
 		.attr("height", y.rangeBand());
+		
 	rungroup.selectAll("text")
+		.transition().duration(1000)
 		.attr("y", y.rangeBand()/2);
 		
 	var newrungroup = rungroup.enter()
