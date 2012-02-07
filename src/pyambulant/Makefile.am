@@ -26,33 +26,44 @@ EXTRA_DIST=setup.py \
 # Various flags for optional features
 
 if WITH_QT
-extra_qt_cflags=-DWITH_QT
-extra_qt_ldflags=-lambulant_qt -L$(QT_PREFIX)/lib -lqt-mt
+extra_qt_cflags=-DWITH_QT=1 $(QT_CFLAGS)
+extra_qt_ldflags=-lambulant_qt $(QT_LIBS)
 else
 extra_qt_cflags=
 extra_qt_ldflags=
 endif
 if WITH_GTK
-extra_gtk_cflags=-DWITH_GTK $(GTK_CFLAGS)
+extra_gtk_cflags=-DWITH_GTK=1 $(GTK_CFLAGS)
 extra_gtk_ldflags=-lambulant_gtk $(GTK_LIBS)
 else
 extra_gtk_cflags=
 extra_gtk_ldflags=
 endif
 if WITH_FFMPEG
+extra_ffmpeg_cflags=-DWITH_FFMPEG=1
 extra_ffmpeg_ldflags=-lambulant_ffmpeg $(FFMPEG_LIBS)
 else
 extra_ffmpeg_ldflags=
 endif
 if WITH_SDL
+extra_sdl_cflags=-DWITH_SDL=1 $(SDL_CFLAGS)
 extra_sdl_ldflags=-lambulant_sdl $(SDL_LIBS)
 else
+extra_sdl_cflags=
 extra_sdl_ldflags=
+endif
+if WITH_LIVE
+extra_live_cflags=-DWITH_LIVE=1 $(LIVE_CFLAGS)
+extra_live_ldflags=-lambulant_live $(LIVE_LIBS)
+else
+extra_live_cflags=
+extra_live_ldflags=
 endif
 
 # Get all the extra bits together
 # XXXX Why does this not work??? EXTRA_LDFLAGS=$(extra_qt_ldflags)
-EXTRA_CFLAGS=$(extra_qt_cflags) $(extra_gtk_cflags)
+extra_cflags=$(extra_qt_cflags) $(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags) $(extra_live_cflags)
+extra_ldflags=$(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(extra_live_ldflags)
 
 # These targets are magic for automake
 
@@ -92,7 +103,7 @@ BUILDLIBDIR=`echo ./build/lib.*`
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; chmod +w . ; \
-	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LDFLAGS)" $(PYTHON) setup.py build ; \
+	  LDFLAGS="-L$$a $(extra_ldflags) $(LDFLAGS)" CFLAGS="$(extra_cflags) $(CFLAGS)" $(PYTHON) setup.py build ; \
 	)
 
 check-pyambulant:
