@@ -78,6 +78,14 @@ g.playable rect.stall {
     </style>
   </head>
   <body>
+    <form name="selections">
+    	<input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media
+    	<input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch
+    	<input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers
+    	<input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">All the rest
+    	<input type="button" value="Reload" onClick="regenGraph();">
+    </form>
+    <div id="graphlocation"></div>
     <script type="text/javascript">
 
 var m = [30, 10, 10, 330],
@@ -92,7 +100,7 @@ var x = d3.scale.linear().range([0, w]),
 var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
     yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
 
-var svg = d3.select("body").append("svg")
+var svg = d3.selectAll("div#graphlocation").append("svg")
 	.attr("width", w + m[1] + m[3])
 	.attr("height", h + m[0] + m[2])
 	.append("g")
@@ -134,6 +142,9 @@ genGraph = function(data) {
 	// Set the scale domain.
 	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
 	y.domain(data.map(function(d) { return d.objid; }));
+	var new_h = data.length * 3 * 10; // Number(getComputedStyle('graphlocation', '').fontSize.match(/(\d+)px/)[1]);
+	if (new_h > h) new_h = h;
+	y.rangeRoundBands([0, h], .1);
 	
 	// First set up the bars (rows). Do this separately for existing/new/deleted data.
 	var bars = svg.selectAll("g.bar")
@@ -194,8 +205,8 @@ genGraph = function(data) {
 	var stallgroup = bars.selectAll("g.stallgroup")
 		.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
 		
-	stallgroup.selectAll("rect")
-		.attr("height", y.rangeBand());
+	stallgroup.selectAll("rect.stall")
+		.attr("height", y.rangeBand()/6);
 		
 	var newstallgroup = stallgroup.enter()
 		.append("g")
@@ -235,11 +246,5 @@ regenShowAndGraph = function() {
 regenGraph();
 
     </script>
-    <form name="selections">
-    	<input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media</br>
-    	<input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers</br>
-    	<input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">All the rest</br>
-    	<input type="button" value="Reload" onClick="regenGraph();">
-    </form>
   </body>
 </html>
