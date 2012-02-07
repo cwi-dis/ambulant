@@ -8,12 +8,12 @@ DEBUG=True
 class TimeRange:
 	"""Records a single continuous time range"""
 	
-	def __init__(self, start):
+	def __init__(self, start, descr=""):
 		"""Create a timerange, given the start time"""
 		self.start = start
 		self.fill = None
 		self.stop = None
-		self.descr = ""
+		self.descr = descr
 		self.run_type = ""
 		
 	def setFill(self, fill):
@@ -62,10 +62,10 @@ class PlayableRun(TimeRange):
 		self.predecessor = None
 		self.run_type = "playable"
 		
-	def stallStart(self, start):
+	def stallStart(self, start, descr=""):
 		if self.stalls and self.stalls[-1].is_active():
 			return
-		self.stalls.append(TimeRange(start))
+		self.stalls.append(TimeRange(start, descr))
 		
 	def stallStop(self, stop):
 		assert self.stalls
@@ -82,6 +82,18 @@ class PlayableRun(TimeRange):
 	def setPredecessor(self, plrun):
 		self.predecessor = plrun
 		
+	def asDict(self, globStart=0, globStop=0):
+		stop = self.stop
+		if stop is None:
+			stop = globStop
+		rv = TimeRange.asDict(self, globStart, globStop)
+		if self.stalls:
+			stallList = []
+			for stall in self.stalls:
+				stallList.append(stall.asDict(globStart, globStop))
+			rv['stalls'] = stallList
+		return rv
+				
 class DocumentRun(TimeRange):
 	"""Records a single execution of a document"""
 	
@@ -192,7 +204,14 @@ class Collector(DocumentRun):
 			playableitems = playables.items()
 			playableitems.sort(cmp=(lambda a, b: cmp(a[1][0].start, b[1][0].start)))
 			for playableid, playableruns in playableitems:
+				stalls = []
+				for run in playableruns:
+					if run.has_key("stalls"):
+						stalls += run["stalls"]
+						del run["stalls"]
 				object = {"objtype" : "playable", "objid" : node + ' ' + playableid, "runs" : playableruns}
+				if stalls:
+					object["stalls"] = stalls
 				objects.append(object)
 
 		# All done. Dump the data.
@@ -277,7 +296,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		if DEBUG: print self.timestamp(), 'playable_stalled(%s, %s)' % (playable.get_sig(), reason)
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
-		playrun.stallStart(self.now())
+		playrun.stallStart(self.now(), reason)
 
 	def playable_unstalled(self, playable):
 		if DEBUG: print self.timestamp(), 'playable_unstalled(%s)' % playable.get_sig()
