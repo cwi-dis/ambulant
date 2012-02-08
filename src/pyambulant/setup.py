@@ -46,12 +46,20 @@ if cflags:
 				DEFS.append((name, value))
 			else:
 				DEFS.append((cflag[2:], '1'))
-				
+
 ldflags=os.getenv("LDFLAGS")
-if ldflags:
-    EXTRA_LINK_ARGS=ldflags.split()
-if sys.platform == 'darwin':
-    EXTRA_LINK_ARGS += ['-framework', 'QuickTime', '-framework', 'CoreFoundation', '-framework', 'Cocoa']
+if sys.platform == "win32":
+	ldflags=ldflags.split()
+	for flag in ldflags:
+		if flag[:2] == '-L':
+			LIBDIRS.append(flag[2:])
+		else:
+			LIBRARIES.append(flag)
+else:				
+	if ldflags:
+		EXTRA_LINK_ARGS=ldflags.split()
+	if sys.platform == 'darwin':
+		EXTRA_LINK_ARGS += ['-framework', 'QuickTime', '-framework', 'CoreFoundation', '-framework', 'Cocoa']
 
 if sys.platform != 'win32':
     DEFS.append(('ENABLE_NLS', '1'))
