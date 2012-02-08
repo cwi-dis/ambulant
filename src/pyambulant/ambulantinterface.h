@@ -985,7 +985,9 @@ public:
 	ambulant::common::state_component* get_state_engine();
 	void on_focus_advance();
 	void on_focus_activate();
+	void set_focus_feedback(ambulant::common::focus_feedback* fb);
 	void set_feedback(ambulant::common::player_feedback* fb);
+	ambulant::common::player_feedback* get_feedback();
 	bool goto_node(const ambulant::lib::node* n);
 	bool highlight(const ambulant::lib::node* n, bool on);
 	long add_ref() { return 1; }

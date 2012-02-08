@@ -5948,7 +5948,9 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_state_engine")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_state_engine");
 		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_advance");
 		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_activate");
+		if (!PyObject_HasAttrString(itself, "set_focus_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_focus_feedback");
 		if (!PyObject_HasAttrString(itself, "set_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_feedback");
+		if (!PyObject_HasAttrString(itself, "get_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_feedback");
 		if (!PyObject_HasAttrString(itself, "goto_node")) PyErr_Warn(PyExc_Warning, "player: missing attribute: goto_node");
 		if (!PyObject_HasAttrString(itself, "highlight")) PyErr_Warn(PyExc_Warning, "player: missing attribute: highlight");
 	}
@@ -6310,6 +6312,24 @@ void player::on_focus_activate()
 	PyGILState_Release(_GILState);
 }
 
+void player::set_focus_feedback(ambulant::common::focus_feedback* fb)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_fb = Py_BuildValue("O&", focus_feedbackObj_New, fb);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "set_focus_feedback", "(O)", py_fb);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::set_focus_feedback() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_fb);
+
+	PyGILState_Release(_GILState);
+}
+
 void player::set_feedback(ambulant::common::player_feedback* fb)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -6326,6 +6346,30 @@ void player::set_feedback(ambulant::common::player_feedback* fb)
 	Py_XDECREF(py_fb);
 
 	PyGILState_Release(_GILState);
+}
+
+ambulant::common::player_feedback* player::get_feedback()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::player_feedback* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "get_feedback", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::get_feedback() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", player_feedbackObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::get_feedback() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
 }
 
 bool player::goto_node(const ambulant::lib::node* n)

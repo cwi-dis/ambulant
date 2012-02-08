@@ -151,6 +151,7 @@ class smil_player :
 	void node_focussed(const lib::node *n) { if (m_focus_handler) m_focus_handler->node_focussed(n); }
 	// Feedback stuff
 	void set_feedback(common::player_feedback *h) { m_feedback_handler = h; }
+    common::player_feedback *get_feedback() { return m_feedback_handler; }
 	void document_loaded(lib::document *doc) { if (m_feedback_handler) m_feedback_handler->document_loaded(doc); }
 	void document_started() { if (m_feedback_handler) m_feedback_handler->document_started(); }
 	void document_stopped() { if (m_feedback_handler) m_feedback_handler->document_stopped(); }

@@ -173,6 +173,9 @@ class player : public state_change_callback, virtual public lib::ref_counted
 
 	/// Set the feedback handler.
 	virtual void set_feedback(player_feedback *fb) {}
+    
+    /// Get the feedback handler.
+    virtual player_feedback* get_feedback() { return NULL; }
 
 	/// Tell the player to start playing a specific node.
 	/// Return true if successful.

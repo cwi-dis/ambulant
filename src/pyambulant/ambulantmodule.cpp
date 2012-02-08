@@ -11251,6 +11251,21 @@ static PyObject *playerObj_on_focus_activate(playerObject *_self, PyObject *_arg
 	return _res;
 }
 
+static PyObject *playerObj_set_focus_feedback(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::focus_feedback* fb;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      focus_feedbackObj_Convert, &fb))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_focus_feedback(fb);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *playerObj_set_feedback(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -11263,6 +11278,19 @@ static PyObject *playerObj_set_feedback(playerObject *_self, PyObject *_args)
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
 	_res = Py_None;
+	return _res;
+}
+
+static PyObject *playerObj_get_feedback(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::player_feedback* _rv = _self->ob_itself->get_feedback();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     player_feedbackObj_New, _rv);
 	return _res;
 }
 
@@ -11336,8 +11364,12 @@ static PyMethodDef playerObj_methods[] = {
 	 PyDoc_STR("() -> None")},
 	{"on_focus_activate", (PyCFunction)playerObj_on_focus_activate, 1,
 	 PyDoc_STR("() -> None")},
+	{"set_focus_feedback", (PyCFunction)playerObj_set_focus_feedback, 1,
+	 PyDoc_STR("(ambulant::common::focus_feedback* fb) -> None")},
 	{"set_feedback", (PyCFunction)playerObj_set_feedback, 1,
 	 PyDoc_STR("(ambulant::common::player_feedback* fb) -> None")},
+	{"get_feedback", (PyCFunction)playerObj_get_feedback, 1,
+	 PyDoc_STR("() -> (ambulant::common::player_feedback* _rv)")},
 	{"goto_node", (PyCFunction)playerObj_goto_node, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
 	{"highlight", (PyCFunction)playerObj_highlight, 1,

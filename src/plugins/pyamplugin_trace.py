@@ -231,18 +231,25 @@ class TracePlayerFeedback(ambulant.player_feedback):
 	def __init__(self):
 		self.collector = None
 		self.doc_url = None
+		self.next_feedback = None
+		
+	def set_next_feedback(self, next_feedback):
+		self.next_feedback = next_feedback
 		
 	def document_loaded(self, doc):
 		if DEBUG: print self.timestamp(), 'document_loaded(%s)' % doc
 		self.doc_url = doc.get_url()
+		if self.next_feedback: self.next_feedback.document_loaded(doc)
 		
 	def document_started(self):
 		if DEBUG: print self.timestamp(), 'document_started()'
 		self.collector = Collector('/tmp/smilrun.json', self.doc_url, self.now())
+		if self.next_feedback: self.next_feedback.document_started()
 
 	def document_stopped(self):
 		if DEBUG: print self.timestamp(), 'document_stopped()'
 		self.collector.setStop(self.now())
+		if self.next_feedback: self.next_feedback.document_stopped()
 
 	def node_started(self, node):
 		if DEBUG: print self.timestamp(), 'node_started(%s)' % node.get_sig()
@@ -252,18 +259,21 @@ class TracePlayerFeedback(ambulant.player_feedback):
 			node_type = "medianode"
 		node_descr = node.get_sig()
 		self.collector.addNode(node_id, node_type, node_descr, self.now())
+		if self.next_feedback: self.next_feedback.node_started(node)
 
 	def node_filled(self, node):
 		if DEBUG: print self.timestamp(), 'node_filled(%s)' % node.get_sig()
 		node_id = node.get_xpath()
 		run = self.collector.getNodeRun(node_id)
 		run.setFill(self.now())
+		if self.next_feedback: self.next_feedback.node_filled(node)
 
 	def node_stopped(self, node):
 		if DEBUG: print self.timestamp(), 'node_stopped(%s)' % node.get_sig()
 		node_id = node.get_xpath()
 		run = self.collector.getNodeRun(node_id)
 		run.setStop(self.now())
+		if self.next_feedback: self.next_feedback.node_stopped(node)
 
 	def _id_for_playable(self, playable):
 		sig = playable.get_sig()
@@ -291,24 +301,28 @@ class TracePlayerFeedback(ambulant.player_feedback):
 				playrun.stallStart(now)
 		self.collector.setPlayable(plid, playrun)
 		run.addPlayable(playrun)
+		if self.next_feedback: self.next_feedback.playable_started(playable, node, from_cache, is_prefetch)
 
 	def playable_stalled(self, playable, reason):
 		if DEBUG: print self.timestamp(), 'playable_stalled(%s, %s)' % (playable.get_sig(), reason)
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
 		playrun.stallStart(self.now(), reason)
+		if self.next_feedback: self.next_feedback.playable_stalled(playable, reason)
 
 	def playable_unstalled(self, playable):
 		if DEBUG: print self.timestamp(), 'playable_unstalled(%s)' % playable.get_sig()
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
 		playrun.stallStop(self.now())
+		if self.next_feedback: self.next_feedback.playable_unstalled(playable)
 
 	def playable_cached(self, playable):
 		if DEBUG: print self.timestamp(), 'playable_cached(%s)' % playable.get_sig()
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
 		playrun.setFill(self.now())
+		if self.next_feedback: self.next_feedback.playable_cached(playable)
 
 	def playable_deleted(self, playable):
 		if DEBUG: print self.timestamp(), 'playable_deleted(%s)' % playable.get_sig()
@@ -316,6 +330,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		playrun = self.collector.getPlayable(plid)
 		playrun.setStop(self.now())
 		self.collector.setPlayable(playable, None)
+		if self.next_feedback: self.next_feedback.playable_deleted(playable)
 
 class TraceEmbedder(ambulant.embedder):
 	"""Helper class. We must insert our TracePlayerFeedback into the player
@@ -338,6 +353,8 @@ class TraceEmbedder(ambulant.embedder):
 		return self.old_embedder.done(player)
 		
 	def starting(self, player):
+		old_feedback = player.get_feedback()
+		self.feedback.set_next_feedback(old_feedback)
 		player.set_feedback(self.feedback)
 		return self.old_embedder.starting(player)
 		
