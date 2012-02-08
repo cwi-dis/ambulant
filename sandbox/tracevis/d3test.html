@@ -83,7 +83,10 @@ g.playable rect.stall {
     	<input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch
     	<input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers
     	<input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">All the rest
-    	<input type="button" value="Reload" onClick="regenGraph();">
+    	<input type="button" value="zoomin time" onClick="zoom(1.414, 1.0);">
+    	<input type="button" value="zoomout time" onClick="zoom(0.707, 1.0);">
+    	<input type="button" value="larger nodes" onClick="zoom(1.0, 1.414);">
+    	<input type="button" value="smaller nodes" onClick="zoom(1.0, 0.707);">
     </form>
     <div id="graphlocation"></div>
     <script type="text/javascript">
@@ -92,17 +95,20 @@ var m = [30, 10, 10, 330],
     w = 960 - m[1] - m[3],
     h = 930 - m[0] - m[2];
 
+var h_scale = 1.0;
+var v_scale = 1.0;
+
 var format = d3.format(",.1f");
 
-var x = d3.scale.linear().range([0, w]),
-    y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
+var x = d3.scale.linear().range([0, w*h_scale]),
+    y = d3.scale.ordinal().rangeRoundBands([0, h*v_scale], .1);
 
 var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
     yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
 
 var svg = d3.selectAll("div#graphlocation").append("svg")
-	.attr("width", w + m[1] + m[3])
-	.attr("height", h + m[0] + m[2])
+	.attr("width", w*h_scale + m[1] + m[3])
+	.attr("height", h*v_scale + m[0] + m[2])
 	.append("g")
 	.attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
@@ -139,18 +145,24 @@ genGraph = function(data) {
 	data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
 	// data.sort(function(a, b) { return b.start - a.start; });
 	
-	// Set the scale domain.
+	// Set the scale domain and ranges
 	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
 	y.domain(data.map(function(d) { return d.objid; }));
 	var new_h = data.length * 3 * 10; // Number(getComputedStyle('graphlocation', '').fontSize.match(/(\d+)px/)[1]);
-	if (new_h > h) new_h = h;
-	y.rangeRoundBands([0, h], .1);
+	// if (new_h < h) new_h = h;
+	x.range([0, w*h_scale]);
+	y.rangeRoundBands([0, new_h*v_scale], .1);
+	console.log('width ' + w*h_scale + ' height ' + new_h*v_scale);
+	d3.selectAll("div#graphlocation svg")
+		.transition().duration(500)
+		.attr("width", w*h_scale + m[1] + m[3])
+		.attr("height", new_h*v_scale + m[0] + m[2]);
 	
 	// First set up the bars (rows). Do this separately for existing/new/deleted data.
 	var bars = svg.selectAll("g.bar")
 		.data(data, function(d) { return d.objid; })
 	
-	bars.transition().duration(1000)
+	bars.transition().duration(500)
 		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
 
 	bars.enter().append("g")
@@ -172,13 +184,22 @@ genGraph = function(data) {
 	var rungroup = bars.selectAll("g.rungroup")
 		.data(function(d) { return d.runs; });
 	
-	rungroup.selectAll("rect")
-		.transition().duration(1000)
+	rungroup.selectAll("rect.run")
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("width", function(d) { return x(d.stop-d.start); })
+		.attr("height", y.rangeBand());
+
+	rungroup.selectAll("rect.fill")
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.fill); })
+		.attr("width", function(d) { return x(d.stop-d.fill); })
 		.attr("height", y.rangeBand());
 		
 	rungroup.selectAll("text")
-		.transition().duration(1000)
-		.attr("y", y.rangeBand()/2);
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("y", y.rangeBand() / 2)
 		
 	var newrungroup = rungroup.enter()
 		.append("g")
@@ -211,6 +232,9 @@ genGraph = function(data) {
 		.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
 		
 	stallgroup.selectAll("rect.stall")
+		.transition(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("width", function(d) { return x(d.stop-d.start); })
 		.attr("height", y.rangeBand()/6);
 		
 	var newstallgroup = stallgroup.enter()
@@ -245,6 +269,12 @@ regenShowAndGraph = function() {
 	for (var i=0; i < document.selections.show.length; i++) {
 		showTypes[document.selections.show[i].value] = document.selections.show[i].checked;
 	}
+	regenGraph();
+};
+
+zoom = function(yfactor, xfactor) {
+	h_scale *= yfactor;
+	v_scale *= xfactor;
 	regenGraph();
 };
 
