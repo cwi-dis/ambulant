@@ -152,7 +152,6 @@ genGraph = function(data) {
 	// if (new_h < h) new_h = h;
 	x.range([0, w*h_scale]);
 	y.rangeRoundBands([0, new_h*v_scale], .1);
-	console.log('width ' + w*h_scale + ' height ' + new_h*v_scale);
 	d3.selectAll("div#graphlocation svg")
 		.transition().duration(500)
 		.attr("width", w*h_scale + m[1] + m[3])
@@ -182,31 +181,35 @@ genGraph = function(data) {
 
 	// Next, set up the grouped data (runs) within a horizontal bar. Again existing/new/removed.
 	var rungroup = bars.selectAll("g.rungroup")
-		.data(function(d) { return d.runs; });
+		.data(function(d) {return d.runs; });
 	
-	rungroup.selectAll("rect.run")
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand());
-
-	rungroup.selectAll("rect.fill")
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.fill); })
-		.attr("width", function(d) { return x(d.stop-d.fill); })
-		.attr("height", y.rangeBand());
-		
-	rungroup.selectAll("text")
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("y", y.rangeBand() / 2)
-		
 	var newrungroup = rungroup.enter()
 		.append("g")
 		.attr("class", "rungroup");
 		
 	rungroup.exit().remove();
 
+	// Now modify the rects in the existing rungroups
+	rungroup.selectAll("rect.run")
+//		.data(function(d) { return d;} )
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("width", function(d) { return x(d.stop-d.start); })
+		.attr("height", y.rangeBand());
+
+	rungroup.selectAll("rect.fill")
+//		.data(function(d) { return d;} )
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.fill); })
+		.attr("width", function(d) { return x(d.stop-d.fill); })
+		.attr("height", y.rangeBand());
+		
+	rungroup.selectAll("text")
+//		.data(function(d) { return d;} )
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("y", y.rangeBand() / 2)
+		
 	// Now for all the new rungroups, create the active/postactive bars and the text field.
 	newrungroup.append("rect")
 		.attr("class", "run")
@@ -232,7 +235,8 @@ genGraph = function(data) {
 		.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
 		
 	stallgroup.selectAll("rect.stall")
-		.transition(500)
+//		.data(function (d) { return d; })
+		.transition().duration(500)
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
 		.attr("height", y.rangeBand()/6);
@@ -260,7 +264,7 @@ genGraph = function(data) {
 
 regenGraph = function() {
 	d3.text("data.json", "text/json", function(text) {
-		genGraph(eval('(' + text + ')'))
+		genGraph(eval(text))
 		});
 };
 
