@@ -260,7 +260,7 @@ genGraph = function(data) {
 
 regenGraph = function() {
 	// d3.csv("smilrun.csv", genGraph);
-	d3.text("/tmp/smilrun.json", "text/json", function(text) {
+	d3.text("data.json", "text/json", function(text) {
 		genGraph(eval('(' + text + ')'))
 		});
 };
