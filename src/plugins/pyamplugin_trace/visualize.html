@@ -3,7 +3,6 @@
   <head>
     <title>Bar Chart</title>
     <script type="text/javascript" src="d3.js"></script>
-    <script type="text/javascript" src="d3.csv.js"></script>
     <style type="text/css">
 
 body {
@@ -87,6 +86,7 @@ g.playable rect.stall {
     	<input type="button" value="zoomout time" onClick="zoom(0.707, 1.0);">
     	<input type="button" value="larger nodes" onClick="zoom(1.0, 1.414);">
     	<input type="button" value="smaller nodes" onClick="zoom(1.0, 0.707);">
+    	<input type="checkbox" name="autoreload" value="*" checked="checked" onClick="autoReloadChanged();">Auto-reload
     </form>
     <div id="graphlocation"></div>
     <script type="text/javascript">
@@ -259,7 +259,6 @@ genGraph = function(data) {
 }
 
 regenGraph = function() {
-	// d3.csv("smilrun.csv", genGraph);
 	d3.text("data.json", "text/json", function(text) {
 		genGraph(eval('(' + text + ')'))
 		});
@@ -280,6 +279,13 @@ zoom = function(yfactor, xfactor) {
 
 regenGraph();
 
+var interval = setInterval("regenGraph()", 1000);
+autoReloadChanged = function() {
+	if (interval) clearInterval(interval);
+	if (document.selections.autoreload.value) {
+		interval = setInterval("regenGraph()", 1000);
+	}
+}
     </script>
   </body>
 </html>
