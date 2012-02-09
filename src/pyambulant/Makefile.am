@@ -33,8 +33,8 @@ extra_qt_cflags=
 extra_qt_ldflags=
 endif
 if WITH_GTK
-extra_gtk_cflags=-DWITH_GTK=1 $(GTK_CFLAGS)
-extra_gtk_ldflags=-lambulant_gtk $(GTK_LIBS)
+extra_gtk_cflags=-DWITH_GTK=1 $(GTK_CFLAGS) `pkg-config --cflags pygtk-2.0`
+extra_gtk_ldflags=-lambulant_gtk $(GTK_LIBS) `pkg-config --libs pygtk-2.0`
 else
 extra_gtk_cflags=
 extra_gtk_ldflags=

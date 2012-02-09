@@ -25,8 +25,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
-				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
 				CleanCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;"
 				Output="..\..\bin\win32\pyambulant.pyd"
 				PreprocessorDefinitions=""
@@ -88,8 +88,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py build --debug&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
-				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py build --debug&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;$(python_dir)\python.exe setup.py build --debug&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py build --debug&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
 				CleanCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;"
 				Output="..\..\bin\win32\pyambulant.pyd"
 				PreprocessorDefinitions=""
