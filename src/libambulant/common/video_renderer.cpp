@@ -487,12 +487,12 @@ video_renderer::data_avail()
 		}
 	}
 
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)frame_ts_micros);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %lld)", frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
 	// Grmpf. frame_ts_micros is on the movie timescale, but start_frame() expects a time relative to
 	// the m_event_processor clock (even though it is in microseconds, not milliseconds). Very bad design,
 	// for now we hack around it.
-	m_src->start_frame (m_event_processor, e, frame_ts_micros+(m_epoch*1000));
+	m_src->start_frame (m_event_processor, e, frame_ts_micros+((net::timestamp_t)m_epoch*1000));
 	m_lock.leave();
 }
 
