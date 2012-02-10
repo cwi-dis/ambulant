@@ -396,7 +396,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	}
 	if (np) {
-		playable_started(np, n, from_cache, is_prefetch);
+		playable_started(np, n, from_cache ? "cached" : "");
 		// Update the context info of np, for example, clipbegin, clipend, and cookie according to the node
 		np->init_with_node(n);
 	}
@@ -886,35 +886,33 @@ smil_player::marker_seen_async(async_string_arg asa) {
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
+#if 0
 // Playable notification for a stall event.
-void smil_player::stalled(int ni, const char *reason, double t) {
-	AM_DBG m_logger->debug("smil_player::stalled(%d, %s, %f)", ni, reason, t);
+void smil_player::playable_stalled(const playable *p, const char *reason) {
 	if (m_feedback_handler) {
-		std::map<int, time_node*>::iterator it = m_dom2tn->find(ni);
-		if (it != m_dom2tn->end()) {
-			const lib::node* n = (*it).second->dom_node();
-			if (n) {
-				common::playable *p = m_playables[n];
-				m_feedback_handler->playable_stalled(p, reason);
-			}
-		}
+		m_feedback_handler->playable_stalled(p, reason);
 	}
 }
 
 // Playable notification for an unstall event.
-void smil_player::unstalled(int ni, double t) {
-	AM_DBG m_logger->debug("smil_player::unstalled(%d, %f)", ni, t);
+void smil_player::playable_unstalled(const playable *p, double t) {
 	if (m_feedback_handler) {
-		std::map<int, time_node*>::iterator it = m_dom2tn->find(ni);
-		if (it != m_dom2tn->end()) {
-			const lib::node* n = (*it).second->dom_node();
-			if (n) {
-				common::playable *p = m_playables[n];
-				m_feedback_handler->playable_unstalled(p);
-			}
-		}
+		m_feedback_handler->playable_unstalled(p);
 	}
 }
+
+void smil_player::playable_started(const playable *p, const lib::node *n, const char *comment) {
+	if (m_feedback_handler) {
+		m_feedback_handler->playable_unstalled(p, n, comment);
+	}
+}
+
+void smil_player::playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {
+	if (m_feedback_handler) {
+		m_feedback_handler->playable_resource(p, resource, starttime, endtime, amount);
+	}
+}
+#endif
 
 // UI notification for a char event.
 void smil_player::on_char(int ch) {

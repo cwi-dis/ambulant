@@ -5276,12 +5276,14 @@ playable_notification::playable_notification(PyObject *itself)
 	{
 		if (!PyObject_HasAttrString(itself, "started")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: started");
 		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: stopped");
-		if (!PyObject_HasAttrString(itself, "stalled")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: stalled");
-		if (!PyObject_HasAttrString(itself, "unstalled")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: unstalled");
 		if (!PyObject_HasAttrString(itself, "clicked")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: clicked");
 		if (!PyObject_HasAttrString(itself, "pointed")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: pointed");
 		if (!PyObject_HasAttrString(itself, "transitioned")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: transitioned");
 		if (!PyObject_HasAttrString(itself, "marker_seen")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: marker_seen");
+		if (!PyObject_HasAttrString(itself, "playable_stalled")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: playable_stalled");
+		if (!PyObject_HasAttrString(itself, "playable_unstalled")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: playable_unstalled");
+		if (!PyObject_HasAttrString(itself, "playable_started")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: playable_started");
+		if (!PyObject_HasAttrString(itself, "playable_resource")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: playable_resource");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5329,48 +5331,6 @@ void playable_notification::stopped(ambulant::common::playable::cookie_type n, d
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during playable_notification::stopped() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_n);
-	Py_XDECREF(py_t);
-
-	PyGILState_Release(_GILState);
-}
-
-void playable_notification::stalled(ambulant::common::playable::cookie_type n, const char* reason, double t)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_n = Py_BuildValue("l", n);
-	PyObject *py_reason = Py_BuildValue("s", reason);
-	PyObject *py_t = Py_BuildValue("d", t);
-
-	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "stalled", "(OOO)", py_n, py_reason, py_t);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during playable_notification::stalled() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_n);
-	Py_XDECREF(py_reason);
-	Py_XDECREF(py_t);
-
-	PyGILState_Release(_GILState);
-}
-
-void playable_notification::unstalled(ambulant::common::playable::cookie_type n, double t)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_n = Py_BuildValue("l", n);
-	PyObject *py_t = Py_BuildValue("d", t);
-
-	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "unstalled", "(OO)", py_n, py_t);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during playable_notification::unstalled() callback:\n");
 		PyErr_Print();
 	}
 
@@ -5459,6 +5419,92 @@ void playable_notification::marker_seen(ambulant::common::playable::cookie_type 
 	Py_XDECREF(py_n);
 	Py_XDECREF(py_name);
 	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::playable_stalled(const ambulant::common::playable* p, const char* reason)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+	PyObject *py_reason = Py_BuildValue("s", reason);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "playable_stalled", "(OO)", py_p, py_reason);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::playable_stalled() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+	Py_XDECREF(py_reason);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::playable_unstalled(const ambulant::common::playable* p)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "playable_unstalled", "(O)", py_p);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::playable_unstalled() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+	PyObject *py_comment = Py_BuildValue("s", comment);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "playable_started", "(OOO)", py_p, py_n, py_comment);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::playable_started() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_comment);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+	PyObject *py_resource = Py_BuildValue("s", resource);
+	PyObject *py_starttime = Py_BuildValue("d", starttime);
+	PyObject *py_endtime = Py_BuildValue("d", endtime);
+	PyObject *py_amount = Py_BuildValue("d", amount);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "playable_resource", "(OOOOO)", py_p, py_resource, py_starttime, py_endtime, py_amount);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::playable_resource() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+	Py_XDECREF(py_resource);
+	Py_XDECREF(py_starttime);
+	Py_XDECREF(py_endtime);
+	Py_XDECREF(py_amount);
 
 	PyGILState_Release(_GILState);
 }
@@ -5706,6 +5752,7 @@ player_feedback::player_feedback(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "playable_unstalled")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_unstalled");
 		if (!PyObject_HasAttrString(itself, "playable_cached")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_cached");
 		if (!PyObject_HasAttrString(itself, "playable_deleted")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_deleted");
+		if (!PyObject_HasAttrString(itself, "playable_resource")) PyErr_Warn(PyExc_Warning, "player_feedback: missing attribute: playable_resource");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5825,15 +5872,14 @@ void player_feedback::node_stopped(const ambulant::lib::node* n)
 	PyGILState_Release(_GILState);
 }
 
-void player_feedback::playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, bool from_cache, bool is_prefetch)
+void player_feedback::playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
 	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
-	PyObject *py_from_cache = Py_BuildValue("O&", bool_New, from_cache);
-	PyObject *py_is_prefetch = Py_BuildValue("O&", bool_New, is_prefetch);
+	PyObject *py_comment = Py_BuildValue("s", comment);
 
-	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_started", "(OOOO)", py_p, py_n, py_from_cache, py_is_prefetch);
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_started", "(OOO)", py_p, py_n, py_comment);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during player_feedback::playable_started() callback:\n");
@@ -5843,8 +5889,7 @@ void player_feedback::playable_started(const ambulant::common::playable* p, cons
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_p);
 	Py_XDECREF(py_n);
-	Py_XDECREF(py_from_cache);
-	Py_XDECREF(py_is_prefetch);
+	Py_XDECREF(py_comment);
 
 	PyGILState_Release(_GILState);
 }
@@ -5919,6 +5964,32 @@ void player_feedback::playable_deleted(const ambulant::common::playable* p)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_p);
+
+	PyGILState_Release(_GILState);
+}
+
+void player_feedback::playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
+	PyObject *py_resource = Py_BuildValue("s", resource);
+	PyObject *py_starttime = Py_BuildValue("d", starttime);
+	PyObject *py_endtime = Py_BuildValue("d", endtime);
+	PyObject *py_amount = Py_BuildValue("d", amount);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_resource", "(OOOOO)", py_p, py_resource, py_starttime, py_endtime, py_amount);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player_feedback::playable_resource() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_p);
+	Py_XDECREF(py_resource);
+	Py_XDECREF(py_starttime);
+	Py_XDECREF(py_endtime);
+	Py_XDECREF(py_amount);
 
 	PyGILState_Release(_GILState);
 }

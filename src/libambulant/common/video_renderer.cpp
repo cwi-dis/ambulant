@@ -208,7 +208,7 @@ video_renderer::preroll(double when, double where, double how_much)
 	net::timestamp_t wtd_position = m_clip_begin+(net::timestamp_t)(where*1000000);
 	if (wtd_position != m_previous_clip_position) {
 		m_previous_clip_position = wtd_position;
-		m_context->stalled(m_cookie, "seek");
+		m_context->playable_stalled(this, "seek");
 		m_is_stalled = true;
 		m_src->seek(wtd_position);
 	}
@@ -271,7 +271,7 @@ video_renderer::seek(double t)
 	assert( t >= 0);
 	net::timestamp_t t_us= (net::timestamp_t)(t*1000000);
 	if (m_src) {
-		m_context->stalled(m_cookie, "seek");
+		m_context->playable_stalled(this, "seek");
 		m_is_stalled = true;
 		m_src->seek(t_us);
 	}
@@ -361,7 +361,7 @@ video_renderer::data_avail()
 	}
 	if (m_is_stalled) {
 		m_is_stalled = false;
-		m_context->unstalled(m_cookie);
+		m_context->playable_unstalled(this);
 	}
 	assert(m_dest);
 

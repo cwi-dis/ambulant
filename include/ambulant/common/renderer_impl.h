@@ -262,12 +262,14 @@ class empty_playable_notification : public playable_notification {
 	// Playables nodifications
 	void started(cookie_type n, double t = 0)  {};
 	void stopped(cookie_type n, double t = 0)  {};
-	void stalled(cookie_type n, const char *reason, double t = 0)  {} ;
-	void unstalled(cookie_type n, double t = 0) {};
 	void clicked(cookie_type n, double t = 0)  {};
 	void pointed(cookie_type n, double t = 0)  {}; // mouse over
 	void transitioned(cookie_type n, double t = 0) {};
 	void marker_seen(cookie_type n, const char *name, double t = 0) {};
+	void playable_stalled(const playable *p, const char *reason)  {} ;
+	void playable_unstalled(const playable *p) {};
+	void playable_started(const playable *p, const lib::node *n, const char *comment) {};
+	void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {};
 };
 
 /// Convenience class for background renderers.

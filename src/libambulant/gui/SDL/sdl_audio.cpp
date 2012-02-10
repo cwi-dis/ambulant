@@ -507,14 +507,14 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
             m_audio_clock -= pushback_audio_clock;
 			// This also means we are stalling, due to rebuffering. Report it.
 			if (!m_is_stalled) {
-				m_context->stalled(m_cookie, "buffer");
+				m_context->playable_stalled(this, "buffer");
 				m_is_stalled = true;
 			}
         } else {
 			// We have all the data we want. Report we are no longer stalled.
 			if (m_is_stalled) {
 				m_is_stalled = false;
-				m_context->unstalled(m_cookie);
+				m_context->playable_unstalled(this);
 			}
 		}
 
@@ -822,7 +822,7 @@ gui::sdl::sdl_audio_renderer::preroll(double when, double where, double how_much
 		net::timestamp_t wtd_position = m_clip_begin + (net::timestamp_t)(where*1000000);
 		if (wtd_position != m_previous_clip_position) {
 			m_previous_clip_position = wtd_position;
-			m_context->stalled(m_cookie, "seek");
+			m_context->playable_stalled(this, "seek");
 			m_is_stalled = true;
 			m_audio_src->seek(wtd_position);
 		}
@@ -841,7 +841,7 @@ gui::sdl::sdl_audio_renderer::seek(double where)
 	AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer: seek(0x%x, %f)", this, where);
 	assert( where >= 0);
 	if (m_audio_src) {
-		m_context->stalled(m_cookie, "seek");
+		m_context->playable_stalled(this, "seek");
 		m_is_stalled = true;
 		m_audio_src->seek((net::timestamp_t)(where*1000000));
 	}

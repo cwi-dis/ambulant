@@ -841,12 +841,14 @@ public:
 
 	void started(ambulant::common::playable::cookie_type n, double t);
 	void stopped(ambulant::common::playable::cookie_type n, double t);
-	void stalled(ambulant::common::playable::cookie_type n, const char* reason, double t);
-	void unstalled(ambulant::common::playable::cookie_type n, double t);
 	void clicked(ambulant::common::playable::cookie_type n, double t);
 	void pointed(ambulant::common::playable::cookie_type n, double t);
 	void transitioned(ambulant::common::playable::cookie_type n, double t);
 	void marker_seen(ambulant::common::playable::cookie_type n, const char* name, double t);
+	void playable_stalled(const ambulant::common::playable* p, const char* reason);
+	void playable_unstalled(const ambulant::common::playable* p);
+	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment);
+	void playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount);
   private:
 	PyObject *py_playable_notification;
 
@@ -942,11 +944,12 @@ public:
 	void node_started(const ambulant::lib::node* n);
 	void node_filled(const ambulant::lib::node* n);
 	void node_stopped(const ambulant::lib::node* n);
-	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, bool from_cache, bool is_prefetch);
+	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment);
 	void playable_stalled(const ambulant::common::playable* p, const char* reason);
 	void playable_unstalled(const ambulant::common::playable* p);
 	void playable_cached(const ambulant::common::playable* p);
 	void playable_deleted(const ambulant::common::playable* p);
+	void playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount);
   private:
 	PyObject *py_player_feedback;
 

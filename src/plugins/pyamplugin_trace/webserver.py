@@ -22,7 +22,6 @@ class WebServer(HTTPServer):
         HTTPServer.__init__(self, ('', PORT), MyHandler)
     
     def setTracer(self, tracer):
-        print 'TRACER SET', tracer
         self.tracer = tracer
         
     def _still_running(self):
@@ -42,10 +41,8 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         _, _, path, _, query, _ = urlparse.urlparse(self.path)
         if path[-1] == '/': path += 'index.html'
-        print path
         data = None
         if path == '/data.json':
-            print 'TRACER IS NOW', self.server.tracer
             if self.server.tracer:
                 data = self.server.tracer.dump_json()
                 mimetype = "application/json"
@@ -56,7 +53,6 @@ class MyHandler(BaseHTTPRequestHandler):
                 filename = os.path.join(dirname, filename)
                 fp = open(filename)
                 data = fp.read()
-                if DEBUG: print 'webserver: read %d bytes' % len(data)
             except IOError:
                 pass
         if data is None:

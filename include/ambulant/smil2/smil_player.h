@@ -115,10 +115,13 @@ class smil_player :
 	virtual void stopped(int n, double t);
 	virtual void clicked(int n, double t);
 	virtual void pointed(int n, double t);
-	virtual void stalled(int n, const char *reason, double t);
-	virtual void unstalled(int n, double t);
 	virtual void transitioned(int n, double t);
 	virtual void marker_seen(cookie_type n, const char *name, double t);
+// Defined below
+//	virtual void playable_stalled(const playable *p, const char *reason);
+//	virtual void playable_unstalled(const playable *p);
+//	virtual void playable_started(const playable *p, const lib::node *n, const char *comment);
+//	virtual void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount);
 
 	//////////////////////
 	// Time node context: Playable queries
@@ -158,14 +161,17 @@ class smil_player :
 	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }
 	void node_filled(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_filled(n); }
 	void node_stopped(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_stopped(n); }
-	void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) {
-		if (m_feedback_handler) m_feedback_handler->playable_started(p, n, from_cache, is_prefetch);
+	void playable_started(const playable *p, const lib::node *n, const char *comment) {
+		if (m_feedback_handler) m_feedback_handler->playable_started(p, n, comment);
 	}
 	void playable_stalled(const playable *p, const char *reason) { if (m_feedback_handler) m_feedback_handler->playable_stalled(p, reason); }
 	void playable_unstalled(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_unstalled(p); }
 	void playable_cached(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_cached(p); }
 	void playable_deleted(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_deleted(p); }
-
+	void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {
+		if (m_feedback_handler) m_feedback_handler->playable_resource(p, resource, starttime, endtime, amount);
+	}
+	
 	virtual bool goto_node(const lib::node *n);
 
 	bool highlight(const lib::node *n, bool on=true);

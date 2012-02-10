@@ -85,7 +85,7 @@ class player_feedback {
 	virtual void node_stopped(const lib::node *n) = 0;
 
 	/// Called by the player when a new renderer is assigned to a node.
-	virtual void playable_started(const playable *p, const lib::node *n, bool from_cache, bool is_prefetch) = 0;
+	virtual void playable_started(const playable *p, const lib::node *n, const char *comment) = 0;
 	
 	/// Called by the playable when it stalls.
 	virtual void playable_stalled(const playable *p, const char *reason) = 0;
@@ -98,6 +98,9 @@ class player_feedback {
 	
 	/// Called when a playable is deleted.
 	virtual void playable_deleted(const playable *p) = 0;
+	
+	/// Called when a playable consumes a resource.
+	virtual void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) = 0;
 };
 
 /// Baseclass for all players.

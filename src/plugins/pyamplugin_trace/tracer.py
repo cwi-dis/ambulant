@@ -257,15 +257,15 @@ class TracePlayerFeedback(ambulant.player_feedback):
 			sig = sig[:commapos]
 		return sig.replace('(', ' ')
 		 
-	def playable_started(self, playable, node, from_cache, is_prefetch):
-		if DEBUG: print self.timestamp(), 'playable_started(%s, %s, %s, %s)' % (playable.get_sig(), node.get_sig(), from_cache, is_prefetch)
+	def playable_started(self, playable, node, comment):
+		if DEBUG: print self.timestamp(), 'playable_started(%s, %s, %s)' % (playable.get_sig(), node.get_sig(), comment)
 		now = self.now()
 		node_id = node.get_xpath()
 		run = self.collector.getNodeRun(node_id)
 		plid = self._id_for_playable(playable)
 		playrun = PlayableRun(plid, playable.get_sig(), now)
 		predecessor = None
-		if from_cache:
+		if comment == "cached":
 			predecessor = self.collector.getPlayable(plid)
 			assert predecessor
 			assert predecessor.is_active()
@@ -276,7 +276,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 				playrun.stallStart(now)
 		self.collector.setPlayable(plid, playrun)
 		run.addPlayable(playrun)
-		if self.next_feedback: self.next_feedback.playable_started(playable, node, from_cache, is_prefetch)
+		if self.next_feedback: self.next_feedback.playable_started(playable, node, comment)
 
 	def playable_stalled(self, playable, reason):
 		if DEBUG: print self.timestamp(), 'playable_stalled(%s, %s)' % (playable.get_sig(), reason)
@@ -306,3 +306,6 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		playrun.setStop(self.now())
 		self.collector.setPlayable(playable, None)
 		if self.next_feedback: self.next_feedback.playable_deleted(playable)
+
+	def playable_resource(self, playable, resource, start, stop, amount):
+		if DEBUG: print self.timestamp(), "playable_resource(%s, %s, %f, %f, %f)" % (playable.get_sig(), resource, start, stop, amount)
