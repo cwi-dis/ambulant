@@ -17,6 +17,10 @@ g.bar rect.fill {
   fill: #999999;
 }
 
+g.bar rect.selected {
+	stroke: #666666;
+}
+
 g.bar line {
 	stroke: #666666;
 }
@@ -90,6 +94,8 @@ g.playable rect.stall {
     </form>
     <div id="graphlocation"></div>
     <script type="text/javascript">
+
+var formatTime = d3.format(".3f");
 
 var m = [30, 10, 10, 330],
     w = 960 - m[1] - m[3],
@@ -183,10 +189,6 @@ genGraph = function(data) {
 	var rungroup = bars.selectAll("g.rungroup")
 		.data(function(d) {return d.runs; });
 	
-	var newrungroup = rungroup.enter()
-		.append("g")
-		.attr("class", "rungroup");
-		
 	rungroup.exit().remove();
 
 	// Now modify the rects in the existing rungroups
@@ -213,27 +215,30 @@ genGraph = function(data) {
 	// Now for all the new rungroups, create the active/postactive bars and the text field.
 	var tooltipfunc = function(d) {
 		var rv = "node: \t" + d.descr + "\n\n" +
-			"begin:\t" + d.start + "\n";
-		if (d.fill) rv += "fill:\t\t" + d.fill + "\n";
-		rv += "stop: \t" + d.stop + "\n";
+			"begin:\t" + formatTime(d.start) + "\n";
+		if (d.fill) rv += "fill:\t\t" + formatTime(d.fill) + "\n";
+		rv += "stop: \t" + formatTime(d.stop) + "\n";
 		return rv;
 	}
+		
+	var newrungroup = rungroup.enter()
+		.append("g")
+		.attr("class", "rungroup");
+		
+	newrungroup.append("svg:title")
+		.text(tooltipfunc);
 		
 	newrungroup.append("rect")
 		.attr("class", "run")
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand())
-		.append("svg:title")
-		.text(tooltipfunc);
+		.attr("height", y.rangeBand());
 	
 	newrungroup.append("rect")
 		.attr("class", "fill")
 		.attr("x", function(d) { return x(d.fill); })
 		.attr("width", function(d) { return x(d.stop-d.fill); })
-		.attr("height", y.rangeBand())
-		.append("svg:title")
-		.text(tooltipfunc);
+		.attr("height", y.rangeBand());
 	
 	newrungroup.append("text")
 		.attr("class", "value")
@@ -241,14 +246,12 @@ genGraph = function(data) {
 		.attr("y", y.rangeBand() / 2)
 		.attr("dx", 3)
 		.attr("dy", ".35em")
-		.text(function(d) { return d.descr; })
-		.append("svg:title")
-		.text(tooltipfunc);
+		.text(function(d) { return d.descr; });
 	
 	tooltipfunc = function(d) {
 		var rv = "reason:\t" + d.descr + "\n" +
-			"begin:\t" + d.start + "\n" +
-			"stop: \t" + d.stop + "\n";
+			"begin:\t" + formatTime(d.start) + "\n" +
+			"stop: \t" + formatTime(d.stop) + "\n";
 		return rv;
 	}
 
