@@ -201,30 +201,6 @@ genGraph = function(data) {
 	rungroup.exit().remove();
 
 	// Now modify the rects in the existing rungroups
-	rungroup.selectAll("rect.run")
-//		.data(function(d) { return d;} )
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand());
-
-	rungroup.selectAll("rect.fill")
-//		.data(function(d) { return d;} )
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.fill); })
-		.attr("width", function(d) { return x(d.stop-d.fill); })
-		.attr("height", y.rangeBand());
-		
-	rungroup.selectAll("text")
-//		.data(function(d) { return d;} )
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("y", y.rangeBand() / 2)
-		
-	// Now for all the new rungroups, create the active/postactive bars and the text field.
 	var tooltipfunc = function(d) {
 		var rv = "node: \t" + d.descr + "\n\n" +
 			"begin:\t" + formatTime(d.start) + "\n";
@@ -233,6 +209,31 @@ genGraph = function(data) {
 		return rv;
 	}
 		
+	rungroup.selectAll("rect.run")
+		.map(function(d) { return this.parentNode.__data__; })
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("width", function(d) { return x(d.stop-d.start); })
+		.attr("height", y.rangeBand());
+
+	rungroup.selectAll("rect.fill")
+		.map(function(d) { return this.parentNode.__data__; })
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.fill); })
+		.attr("width", function(d) { return x(d.stop-d.fill); })
+		.attr("height", y.rangeBand());
+		
+	rungroup.selectAll("text")
+		.map(function(d) { return this.parentNode.__data__; })
+		.transition().duration(500)
+		.attr("x", function(d) { return x(d.start); })
+		.attr("y", y.rangeBand() / 2);
+		
+	rungroup.selectAll("title")
+		.map(function(d) { return this.parentNode.__data__; })
+		.text(tooltipfunc);
+	
+	// Now for all the new rungroups, create the active/postactive bars and the text field.
 	var newrungroup = rungroup.enter()
 		.append("g")
 		.attr("class", "rungroup")
