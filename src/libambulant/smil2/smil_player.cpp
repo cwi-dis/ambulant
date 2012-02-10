@@ -907,9 +907,9 @@ void smil_player::playable_started(const playable *p, const lib::node *n, const 
 	}
 }
 
-void smil_player::playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {
+void smil_player::playable_resource(const playable *p, const char *resource, long amount) {
 	if (m_feedback_handler) {
-		m_feedback_handler->playable_resource(p, resource, starttime, endtime, amount);
+		m_feedback_handler->playable_resource(p, resource, amount);
 	}
 }
 #endif

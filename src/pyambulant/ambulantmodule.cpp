@@ -9731,21 +9731,15 @@ static PyObject *playable_notificationObj_playable_resource(playable_notificatio
 	PyObject *_res = NULL;
 	ambulant::common::playable* p;
 	char* resource;
-	double starttime;
-	double endtime;
-	double amount;
-	if (!PyArg_ParseTuple(_args, "O&sddd",
+	long amount;
+	if (!PyArg_ParseTuple(_args, "O&sl",
 	                      playableObj_Convert, &p,
 	                      &resource,
-	                      &starttime,
-	                      &endtime,
 	                      &amount))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
 	_self->ob_itself->playable_resource(p,
 	                                    resource,
-	                                    starttime,
-	                                    endtime,
 	                                    amount);
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
@@ -9773,7 +9767,7 @@ static PyMethodDef playable_notificationObj_methods[] = {
 	{"playable_started", (PyCFunction)playable_notificationObj_playable_started, 1,
 	 PyDoc_STR("(ambulant::common::playable* p, ambulant::lib::node* n, char* comment) -> None")},
 	{"playable_resource", (PyCFunction)playable_notificationObj_playable_resource, 1,
-	 PyDoc_STR("(ambulant::common::playable* p, char* resource, double starttime, double endtime, double amount) -> None")},
+	 PyDoc_STR("(ambulant::common::playable* p, char* resource, long amount) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -10876,21 +10870,15 @@ static PyObject *player_feedbackObj_playable_resource(player_feedbackObject *_se
 	PyObject *_res = NULL;
 	ambulant::common::playable* p;
 	char* resource;
-	double starttime;
-	double endtime;
-	double amount;
-	if (!PyArg_ParseTuple(_args, "O&sddd",
+	long amount;
+	if (!PyArg_ParseTuple(_args, "O&sl",
 	                      playableObj_Convert, &p,
 	                      &resource,
-	                      &starttime,
-	                      &endtime,
 	                      &amount))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
 	_self->ob_itself->playable_resource(p,
 	                                    resource,
-	                                    starttime,
-	                                    endtime,
 	                                    amount);
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
@@ -10922,7 +10910,7 @@ static PyMethodDef player_feedbackObj_methods[] = {
 	{"playable_deleted", (PyCFunction)player_feedbackObj_playable_deleted, 1,
 	 PyDoc_STR("(ambulant::common::playable* p) -> None")},
 	{"playable_resource", (PyCFunction)player_feedbackObj_playable_resource, 1,
-	 PyDoc_STR("(ambulant::common::playable* p, char* resource, double starttime, double endtime, double amount) -> None")},
+	 PyDoc_STR("(ambulant::common::playable* p, char* resource, long amount) -> None")},
 	{NULL, NULL, 0}
 };
 

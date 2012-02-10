@@ -269,7 +269,7 @@ class empty_playable_notification : public playable_notification {
 	void playable_stalled(const playable *p, const char *reason)  {} ;
 	void playable_unstalled(const playable *p) {};
 	void playable_started(const playable *p, const lib::node *n, const char *comment) {};
-	void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {};
+	void playable_resource(const playable *p, const char *resource, long amount) {};
 };
 
 /// Convenience class for background renderers.

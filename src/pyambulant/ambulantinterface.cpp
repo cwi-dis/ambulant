@@ -5483,16 +5483,14 @@ void playable_notification::playable_started(const ambulant::common::playable* p
 	PyGILState_Release(_GILState);
 }
 
-void playable_notification::playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount)
+void playable_notification::playable_resource(const ambulant::common::playable* p, const char* resource, long amount)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
 	PyObject *py_resource = Py_BuildValue("s", resource);
-	PyObject *py_starttime = Py_BuildValue("d", starttime);
-	PyObject *py_endtime = Py_BuildValue("d", endtime);
-	PyObject *py_amount = Py_BuildValue("d", amount);
+	PyObject *py_amount = Py_BuildValue("l", amount);
 
-	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "playable_resource", "(OOOOO)", py_p, py_resource, py_starttime, py_endtime, py_amount);
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "playable_resource", "(OOO)", py_p, py_resource, py_amount);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during playable_notification::playable_resource() callback:\n");
@@ -5502,8 +5500,6 @@ void playable_notification::playable_resource(const ambulant::common::playable* 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_p);
 	Py_XDECREF(py_resource);
-	Py_XDECREF(py_starttime);
-	Py_XDECREF(py_endtime);
 	Py_XDECREF(py_amount);
 
 	PyGILState_Release(_GILState);
@@ -5968,16 +5964,14 @@ void player_feedback::playable_deleted(const ambulant::common::playable* p)
 	PyGILState_Release(_GILState);
 }
 
-void player_feedback::playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount)
+void player_feedback::playable_resource(const ambulant::common::playable* p, const char* resource, long amount)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	PyObject *py_p = Py_BuildValue("O&", playableObj_New, p);
 	PyObject *py_resource = Py_BuildValue("s", resource);
-	PyObject *py_starttime = Py_BuildValue("d", starttime);
-	PyObject *py_endtime = Py_BuildValue("d", endtime);
-	PyObject *py_amount = Py_BuildValue("d", amount);
+	PyObject *py_amount = Py_BuildValue("l", amount);
 
-	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_resource", "(OOOOO)", py_p, py_resource, py_starttime, py_endtime, py_amount);
+	PyObject *py_rv = PyObject_CallMethod(py_player_feedback, "playable_resource", "(OOO)", py_p, py_resource, py_amount);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during player_feedback::playable_resource() callback:\n");
@@ -5987,8 +5981,6 @@ void player_feedback::playable_resource(const ambulant::common::playable* p, con
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_p);
 	Py_XDECREF(py_resource);
-	Py_XDECREF(py_starttime);
-	Py_XDECREF(py_endtime);
 	Py_XDECREF(py_amount);
 
 	PyGILState_Release(_GILState);

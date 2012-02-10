@@ -225,7 +225,7 @@ class playable_notification {
 	virtual void playable_started(const playable *p, const lib::node *n, const char *comment) = 0;
 
 	/// Trace notification callback: resource usage.
-	virtual void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) = 0;
+	virtual void playable_resource(const playable *p, const char *resource, long amount) = 0;
 };
 
 /// Machine-dependent auxiliary object to be passed to renderer factories.

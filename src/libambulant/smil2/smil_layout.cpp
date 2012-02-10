@@ -635,7 +635,7 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 	void playable_stalled(const playable *p, const char *reason) {};
 	void playable_unstalled(const playable *p) {};
 	void playable_started(const playable *p, const lib::node *n, const char *comment) {};
-	void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {};
+	void playable_resource(const playable *p, const char *resource, long amount) {};
   private:
 	const lib::node *m_layout_root;
 	common::factories *m_factories;

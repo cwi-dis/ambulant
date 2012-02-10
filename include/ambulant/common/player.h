@@ -100,7 +100,7 @@ class player_feedback {
 	virtual void playable_deleted(const playable *p) = 0;
 	
 	/// Called when a playable consumes a resource.
-	virtual void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) = 0;
+	virtual void playable_resource(const playable *p, const char *resource, long amount) = 0;
 };
 
 /// Baseclass for all players.

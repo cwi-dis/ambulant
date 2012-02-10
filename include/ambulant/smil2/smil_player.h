@@ -121,7 +121,7 @@ class smil_player :
 //	virtual void playable_stalled(const playable *p, const char *reason);
 //	virtual void playable_unstalled(const playable *p);
 //	virtual void playable_started(const playable *p, const lib::node *n, const char *comment);
-//	virtual void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount);
+//	virtual void playable_resource(const playable *p, const char *resource, long amount);
 
 	//////////////////////
 	// Time node context: Playable queries
@@ -168,8 +168,8 @@ class smil_player :
 	void playable_unstalled(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_unstalled(p); }
 	void playable_cached(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_cached(p); }
 	void playable_deleted(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_deleted(p); }
-	void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {
-		if (m_feedback_handler) m_feedback_handler->playable_resource(p, resource, starttime, endtime, amount);
+	void playable_resource(const playable *p, const char *resource, long amount) {
+		if (m_feedback_handler) m_feedback_handler->playable_resource(p, resource, amount);
 	}
 	
 	virtual bool goto_node(const lib::node *n);

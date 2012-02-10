@@ -848,7 +848,7 @@ public:
 	void playable_stalled(const ambulant::common::playable* p, const char* reason);
 	void playable_unstalled(const ambulant::common::playable* p);
 	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment);
-	void playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount);
+	void playable_resource(const ambulant::common::playable* p, const char* resource, long amount);
   private:
 	PyObject *py_playable_notification;
 
@@ -949,7 +949,7 @@ public:
 	void playable_unstalled(const ambulant::common::playable* p);
 	void playable_cached(const ambulant::common::playable* p);
 	void playable_deleted(const ambulant::common::playable* p);
-	void playable_resource(const ambulant::common::playable* p, const char* resource, double starttime, double endtime, double amount);
+	void playable_resource(const ambulant::common::playable* p, const char* resource, long amount);
   private:
 	PyObject *py_player_feedback;
 

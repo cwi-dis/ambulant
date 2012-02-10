@@ -168,7 +168,7 @@ class Collector(DocumentRun):
 			
 			# Now sort the playable runs by first start time and output them too
 			playableitems = playables.items()
-			playableitems.sort(cmp=(lambda a, b: cmp(a[1][0].start, b[1][0].start)))
+			playableitems.sort(cmp=(lambda a, b: cmp(a[1][0]["start"], b[1][0]["start"])))
 			for playableid, playableruns in playableitems:
 				stalls = []
 				for run in playableruns:

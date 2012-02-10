@@ -130,7 +130,7 @@ class dummy_time_node_context : public time_node_context {
 	virtual void playable_unstalled(const playable *p) {};
 	virtual void playable_cached(const playable *p) {};
 	virtual void playable_deleted(const playable *p) {};
-	virtual void playable_resource(const playable *p, const char *resource, double starttime, double endtime, double amount) {};
+	virtual void playable_resource(const playable *p, const char *resource, long amount) {};
 };
 
 } // namespace smil2

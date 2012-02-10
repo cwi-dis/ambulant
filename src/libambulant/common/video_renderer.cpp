@@ -74,6 +74,7 @@ video_renderer::video_renderer(
 		if (m_audio_ds) {
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: creating audio renderer !");
 			m_audio_renderer = factory->get_playable_factory()->new_aux_audio_playable(context, cookie, node, evp, (net::audio_datasource*) m_audio_ds);
+            m_context->playable_started(m_audio_renderer, m_node, "aux");
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
 		} else {
 			m_audio_renderer = NULL;
@@ -352,6 +353,14 @@ void
 video_renderer::data_avail()
 {
 	m_lock.enter();
+    {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
+    
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(this = 0x%x):", (void *) this);
 	if (m_post_stop_called || !m_activated || !m_src) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: returning (already shutting down)");

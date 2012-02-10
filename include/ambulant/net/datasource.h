@@ -463,6 +463,8 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0
 	virtual timestamp_t get_start_time() = 0;
 
+    /// Return bandwidth usage data since last report.
+    virtual long get_bandwidth_usage_data(const char **resource) { return -1; }
 };
 
 /// Interface to create a datasource for a given URL.
