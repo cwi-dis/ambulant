@@ -211,17 +211,29 @@ genGraph = function(data) {
 		.attr("y", y.rangeBand() / 2)
 		
 	// Now for all the new rungroups, create the active/postactive bars and the text field.
+	var tooltipfunc = function(d) {
+		var rv = "node: \t" + d.descr + "\n\n" +
+			"begin:\t" + d.start + "\n";
+		if (d.fill) rv += "fill:\t\t" + d.fill + "\n";
+		rv += "stop: \t" + d.stop + "\n";
+		return rv;
+	}
+		
 	newrungroup.append("rect")
 		.attr("class", "run")
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand());
-	  
+		.attr("height", y.rangeBand())
+		.append("svg:title")
+		.text(tooltipfunc);
+	
 	newrungroup.append("rect")
 		.attr("class", "fill")
 		.attr("x", function(d) { return x(d.fill); })
 		.attr("width", function(d) { return x(d.stop-d.fill); })
-		.attr("height", y.rangeBand());
+		.attr("height", y.rangeBand())
+		.append("svg:title")
+		.text(tooltipfunc);
 	
 	newrungroup.append("text")
 		.attr("class", "value")
@@ -229,13 +241,21 @@ genGraph = function(data) {
 		.attr("y", y.rangeBand() / 2)
 		.attr("dx", 3)
 		.attr("dy", ".35em")
-		.text(function(d) { return d.descr; });
+		.text(function(d) { return d.descr; })
+		.append("svg:title")
+		.text(tooltipfunc);
 	
+	tooltipfunc = function(d) {
+		var rv = "reason:\t" + d.descr + "\n" +
+			"begin:\t" + d.start + "\n" +
+			"stop: \t" + d.stop + "\n";
+		return rv;
+	}
+
 	var stallgroup = bars.selectAll("g.stallgroup")
 		.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
 		
 	stallgroup.selectAll("rect.stall")
-//		.data(function (d) { return d; })
 		.transition().duration(500)
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
@@ -251,7 +271,9 @@ genGraph = function(data) {
 		.attr("class", "stall")
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand()/6);
+		.attr("height", y.rangeBand()/6)
+		.append("svg:title")
+		.text(tooltipfunc);
 	  
 	
 	// Finally setup the axes for the whole graph
