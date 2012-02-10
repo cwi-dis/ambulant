@@ -9,56 +9,56 @@ body {
   font: 10px sans-serif;
 }
 
-g.bar rect.run {
-  fill: #666666;
-}
-
-g.bar rect.fill {
-  fill: #999999;
+g.bar line {
+	stroke: #666666;
 }
 
 g.bar rect.selected {
 	stroke: black;
 }
 
-g.bar line {
-	stroke: #666666;
-}
-
 g.playable line {
 	stroke: #ffffff;
 }
 
+g.bar rect.run {
+  fill: #1f77b4;
+}
+
+g.bar rect.fill {
+  fill: #aec7e8;
+}
+
 g.medianode rect.run {
-  fill: #99cccc;
+  fill: #17becf;
 }
 
 g.medianode rect.fill {
-  fill: #ccffff;
+  fill: #9edae5;
 }
 
 g.prefetch rect.run {
-  fill: #99cc00;
+  fill: #bcbd22;
 }
 
 g.prefetch rect.fill {
-  fill: #ccff00;
+  fill: #dbdb8d;
 }
 
 g.playable rect.run {
-  fill: #cccc00;
+  fill: #2ca02c;
 }
 
 g.playable rect.fill {
-  fill: #ffff99;
+  fill: #98df8a;
 }
 
 g.playable rect.stall {
-  fill: #ff3030;
+  fill: #d62728;
 }
 
 .bar text.value {
-  fill: red;
+  fill: black;
 }
 
 .axis {
@@ -203,6 +203,7 @@ genGraph = function(data) {
 	// Now modify the rects in the existing rungroups
 	rungroup.selectAll("rect.run")
 //		.data(function(d) { return d;} )
+		.map(function(d) { return this.parentNode.__data__; })
 		.transition().duration(500)
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
@@ -210,6 +211,7 @@ genGraph = function(data) {
 
 	rungroup.selectAll("rect.fill")
 //		.data(function(d) { return d;} )
+		.map(function(d) { return this.parentNode.__data__; })
 		.transition().duration(500)
 		.attr("x", function(d) { return x(d.fill); })
 		.attr("width", function(d) { return x(d.stop-d.fill); })
@@ -217,6 +219,7 @@ genGraph = function(data) {
 		
 	rungroup.selectAll("text")
 //		.data(function(d) { return d;} )
+		.map(function(d) { return this.parentNode.__data__; })
 		.transition().duration(500)
 		.attr("x", function(d) { return x(d.start); })
 		.attr("y", y.rangeBand() / 2)
@@ -270,6 +273,7 @@ genGraph = function(data) {
 		.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
 		
 	stallgroup.selectAll("rect.stall")
+		.map(function(d) { return this.parentNode.__data__; })
 		.transition().duration(500)
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
