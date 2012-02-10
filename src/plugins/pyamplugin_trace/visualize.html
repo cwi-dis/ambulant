@@ -18,7 +18,7 @@ g.bar rect.fill {
 }
 
 g.bar rect.selected {
-	stroke: #666666;
+	stroke: black;
 }
 
 g.bar line {
@@ -130,6 +130,15 @@ svg.append("g")
 svg.append("g")
 	.attr("class", "y axis");
 
+var selectFunc = function() {
+	// Deselect old selection
+	svg.selectAll(".selected")
+		.classed("selected", 0);
+	// Select the currrent run rectangle
+	d3.select(this).selectAll("rect.run")
+		.classed("selected", 1);
+};
+
 genGraph = function(data) {
 
 	// Select only the ones we want
@@ -223,7 +232,8 @@ genGraph = function(data) {
 		
 	var newrungroup = rungroup.enter()
 		.append("g")
-		.attr("class", "rungroup");
+		.attr("class", "rungroup")
+		.on("mousedown", selectFunc);
 		
 	newrungroup.append("svg:title")
 		.text(tooltipfunc);
@@ -232,7 +242,8 @@ genGraph = function(data) {
 		.attr("class", "run")
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand());
+		.attr("height", y.rangeBand())
+		.on("mousedown", selectFunc);
 	
 	newrungroup.append("rect")
 		.attr("class", "fill")
