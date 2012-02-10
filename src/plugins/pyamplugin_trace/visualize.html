@@ -286,7 +286,7 @@ regenGraph();
 var interval = setInterval("regenGraph()", 1000);
 autoReloadChanged = function() {
 	if (interval) clearInterval(interval);
-	if (document.selections.autoreload.value) {
+	if (document.selections.autoreload.checked) {
 		interval = setInterval("regenGraph()", 1000);
 	}
 }
