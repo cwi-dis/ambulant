@@ -38,11 +38,11 @@ g.medianode rect.fill {
 }
 
 g.prefetch rect.run {
-  fill: #bcbd22;
+  fill: #9467bd;
 }
 
 g.prefetch rect.fill {
-  fill: #dbdb8d;
+  fill: #c5b0d5;
 }
 
 g.playable rect.run {
@@ -266,7 +266,7 @@ genGraph = function(data) {
 	tooltipfunc = function(d) {
 		var rv = "reason:\t" + d.descr + "\n" +
 			"begin:\t" + formatTime(d.start) + "\n" +
-			"stop: \t" + formatTime(d.stop) + "\n";
+			"end:\t" + formatTime(d.stop) + "\n";
 		return rv;
 	}
 
@@ -280,6 +280,10 @@ genGraph = function(data) {
 		.attr("width", function(d) { return x(d.stop-d.start); })
 		.attr("height", y.rangeBand()/6);
 		
+	stallgroup.selectAll("title")
+		.map(function(d) { return this.parentNode.__data__; })
+		.text(tooltipfunc);
+
 	var newstallgroup = stallgroup.enter()
 		.append("g")
 		.attr("class", "stallgroup");
