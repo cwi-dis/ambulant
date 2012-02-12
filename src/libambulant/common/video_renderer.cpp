@@ -231,6 +231,14 @@ video_renderer::stop()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 
+    {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
+
 	if (m_audio_renderer) {
 		m_audio_renderer->stop();
 	} else {

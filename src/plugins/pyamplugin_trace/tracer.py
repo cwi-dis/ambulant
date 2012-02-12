@@ -307,5 +307,5 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		self.collector.setPlayable(playable, None)
 		if self.next_feedback: self.next_feedback.playable_deleted(playable)
 
-	def playable_resource(self, playable, resource, start, stop, amount):
-		if DEBUG: print self.timestamp(), "playable_resource(%s, %s, %f, %f, %f)" % (playable.get_sig(), resource, start, stop, amount)
+	def playable_resource(self, playable, resource, amount):
+		if DEBUG: print self.timestamp(), "playable_resource(%s, %s, %f)" % (playable.get_sig(), resource, amount)

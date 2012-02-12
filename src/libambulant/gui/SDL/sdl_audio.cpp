@@ -631,6 +631,13 @@ void
 gui::sdl::sdl_audio_renderer::data_avail()
 {
 	m_lock.enter();
+    {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_audio_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
 	AM_DBG {
 		std::string tag = m_node->get_local_name();
 		assert(tag != "prefetch");
@@ -705,6 +712,13 @@ gui::sdl::sdl_audio_renderer::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::stop() this=0x%x, dest=0x%x, cookie=%d", (void *) this, (void*)m_dest, (int)m_cookie);
+    {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_audio_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
 	m_context->stopped(m_cookie, 0);
 
 	m_lock.leave();

@@ -57,7 +57,7 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 	bool end_of_file() { return m_databuf.size() == 0; };
 	char* get_read_ptr() { return m_databuf.get_read_ptr(); };
 	size_t size() const { return m_databuf.size(); } ;
-
+    long get_bandwidth_usage_data(const char **resource) { return -1; }
   private:
 	databuffer m_databuf;
 };

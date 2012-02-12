@@ -93,6 +93,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	timestamp_t get_elapsed();
 
+    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
   protected:
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(audio_format &fmt);
@@ -145,6 +146,8 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_src->get_start_time(); }
+
+    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
   protected:
 	int init();
 

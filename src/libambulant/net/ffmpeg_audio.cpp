@@ -110,7 +110,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 		lib::logger::get_logger()->trace("ffmpeg: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	ffmpeg_demux *thread = new ffmpeg_demux(context, clip_begin, clip_end);
+	ffmpeg_demux *thread = new ffmpeg_demux(context, url, clip_begin, clip_end);
 
 	// Now, we can check that there is actually audio in the file.
 	if (thread->audio_stream_nr() < 0) {

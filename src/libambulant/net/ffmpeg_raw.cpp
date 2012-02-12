@@ -125,6 +125,18 @@ detail::ffmpeg_rawreader::set_datasink(detail::rawdatasink *parent)
 	m_lock.leave();
 }
 
+long
+detail::ffmpeg_rawreader::get_bandwidth_usage_data(const char **resource)
+{
+    m_lock.enter();
+    long rv = m_bytes_read;
+    m_bytes_read = 0;
+    *resource = "unknown"; // XXX
+    m_lock.leave();
+    return rv;
+}
+
+
 unsigned long
 detail::ffmpeg_rawreader::run()
 {
@@ -146,9 +158,10 @@ detail::ffmpeg_rawreader::run()
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run: calling url_read(size=%d)", (int)sinkbuffersize);
 			bytecount = url_read(m_con, sinkbuffer, (int)sinkbuffersize);
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run:url_read() returned %d", bytecount);
-			if (bytecount >= 0)
+			if (bytecount >= 0) {
+                m_bytes_read += bytecount;
 				m_sink->pushdata((size_t)bytecount);
-			else {
+			} else {
 				m_sink->pushdata(0);
 			}
 

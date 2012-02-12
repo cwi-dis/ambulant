@@ -124,8 +124,9 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 // **************************** ffmpeg_demux *****************************
 
 
-ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end)
+ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 :	m_con(con),
+    m_url(url),
 	m_nstream(0),
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
@@ -155,7 +156,9 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 		m_video_fmt.parameters = NULL;
 	}
 	memset(m_sinks, 0, sizeof m_sinks);
+    memset(m_data_consumed, 0, sizeof m_data_consumed);
 	m_current_sink = NULL;
+    m_bandwidth_resource = m_url.get_protocol();
 }
 
 ffmpeg_demux::~ffmpeg_demux()
@@ -358,6 +361,18 @@ ffmpeg_demux::set_clip_end(timestamp_t clip_end)
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_set_clip_end(0x%x): clip_end=%d", this, clip_end);
 	m_clip_end = clip_end;
 	m_lock.leave();
+}
+
+long
+ffmpeg_demux::get_bandwidth_usage_data(int stream_index, const char **resource)
+{
+	m_lock.enter();
+    assert(stream_index >= 0 && stream_index <= MAX_STREAMS);
+    long rv = m_data_consumed[stream_index];
+    m_data_consumed[stream_index] = 0;
+    *resource = m_bandwidth_resource.c_str();
+	m_lock.leave();
+    return rv;
 }
 
 void

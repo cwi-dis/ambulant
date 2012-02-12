@@ -264,6 +264,10 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 
 	/// Called by the client to signal it has consumed len bytes.
 	virtual void readdone(size_t len) = 0;
+
+    /// Called by the client to obtain bandwidth usage data.
+    virtual long get_bandwidth_usage_data(const char **resource) = 0;
+
 };
 
 /// Interface for an object that provides packetized data to a consumer.
@@ -289,6 +293,9 @@ class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
 
 	/// Return the next timestamped packet and discard it.
 	virtual ts_packet_t get_ts_packet_t() = 0;
+
+    /// Called by the client to obtain bandwidth usage data.
+    virtual long get_bandwidth_usage_data(const char **resource) = 0;
 };
 
 /// Mixin interface to an object that supplies audio data to a consumer.
@@ -377,6 +384,7 @@ class raw_audio_datasource:
 
 	common::duration get_dur() {	return m_duration; };
 
+    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
   private:
 	datasource* m_src;
 	audio_format m_fmt;
@@ -655,6 +663,7 @@ class AMBULANTAPI filter_datasource_impl :
 	char* get_read_ptr();
 	size_t size() const;
 	void readdone(size_t len);
+    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
   protected:
   	/// Callback function passed to upstream datasource, called when new data is available.
 	void data_avail();
@@ -743,6 +752,9 @@ class abstract_demux : public BASE_THREAD, public lib::ref_counted_obj {
 
 	/// Returns the timestamp at which the data starts streaming (m_clip_begin or 0).
 	virtual timestamp_t get_start_time() = 0;
+
+    /// Return bandwidth consumed for a given stream number
+    virtual long get_bandwidth_usage_data(int stream_index, const char **resource) = 0;
 };
 
 

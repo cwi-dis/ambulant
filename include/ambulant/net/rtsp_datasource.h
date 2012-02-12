@@ -114,6 +114,7 @@ struct rtsp_context_t {
 		first_sync_time.tv_sec = 0;
 		first_sync_time.tv_usec = 0;
 		memset(sinks, 0, sizeof sinks);
+        memset(data_consumed, 0, sizeof data_consumed);
 	}
 	~rtsp_context_t() {
 		//Have to tear down session here, so that the server is not left hanging till timeout.
@@ -175,6 +176,7 @@ struct rtsp_context_t {
 	audio_format audio_fmt;
 	video_format video_fmt;
 	demux_datasink *sinks[MAX_STREAMS];
+    long data_consumed[MAX_STREAMS];
 	int nsinks;
 
 };
@@ -203,6 +205,7 @@ class rtsp_demux : public abstract_demux {
 	// These next two should be protected, but I don't know how to make a static function a friend.
 	void after_reading_audio(size_t sz, unsigned truncated, struct timeval pts, unsigned duration);
 	void after_reading_video(size_t sz, unsigned truncated, struct timeval pts, unsigned duration);
+    long get_bandwidth_usage_data(int stream_index, const char **resource);
   protected:
 	unsigned long run();
   private:
