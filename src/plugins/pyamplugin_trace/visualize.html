@@ -29,12 +29,20 @@ g.bar rect.fill {
   fill: #aec7e8;
 }
 
+.legend-rest {
+  background-color: #1f77b4;
+}
+
 g.medianode rect.run {
   fill: #17becf;
 }
 
 g.medianode rect.fill {
   fill: #9edae5;
+}
+
+.legend-medianode {
+  background-color: #17becf;
 }
 
 g.prefetch rect.run {
@@ -45,12 +53,20 @@ g.prefetch rect.fill {
   fill: #c5b0d5;
 }
 
+.legend-prefetch {
+  background-color: #9467bd;
+}
+
 g.playable rect.run {
   fill: #2ca02c;
 }
 
 g.playable rect.fill {
   fill: #98df8a;
+}
+
+.legend-playable {
+  background-color: #2ca02c;
 }
 
 g.playable rect.stall {
@@ -82,10 +98,10 @@ g.playable rect.stall {
   </head>
   <body>
     <form name="selections">
-    	<input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media
-    	<input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch
-    	<input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers
-    	<input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">All the rest
+    	<span class="legend-rest"><input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">Structure</span>
+    	<span class="legend-medianode"><input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media</span>
+    	<span class="legend-prefetch"><input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch</span>
+    	<span class="legend-playable"><input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers</span>
     	<input type="button" value="zoomin time" onClick="zoom(1.414, 1.0);">
     	<input type="button" value="zoomout time" onClick="zoom(0.707, 1.0);">
     	<input type="button" value="larger nodes" onClick="zoom(1.0, 1.414);">
