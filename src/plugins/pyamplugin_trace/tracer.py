@@ -35,6 +35,12 @@ class BandwidthCollector:
 				return i
 		self.bw.append((time, 0))
 		return len(self.bw)-1
+		
+	def asList(self, start):
+	    rv = []
+	    for time, bps in self.bw:
+	        rv.append((time-start, bps))
+	    return rv
 					
 class TimeRange:
 	"""Records a single continuous time range"""
@@ -73,7 +79,7 @@ class TimeRange:
 		if self.bw_collectors:
 			rv["bandwidth"] = {}
 			for k, v in self.bw_collectors.items():
-			    rv["bandwidth"][k] = v.bw
+			    rv["bandwidth"][k] = v.asList(globStart)
 		return rv
 		
 	def getBandwidthCollector(self, name, topnode):

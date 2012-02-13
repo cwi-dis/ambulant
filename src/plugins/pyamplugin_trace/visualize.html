@@ -9,6 +9,12 @@ body {
   font: 10px sans-serif;
 }
 
+g.bandwidth path {
+	stroke: steelblue;
+	stroke-width: 2;
+	fill: none;
+}
+
 g.bar line {
 	stroke: #666666;
 }
@@ -161,6 +167,7 @@ genGraph = function(data) {
 
 	// Select only the ones we want
 	var newData = [];
+	var newBandwidthData = [];
 	for( var dataItemIndex in data) {
 		var dataItem = data[dataItemIndex];
 		var objType = dataItem.objtype;
@@ -181,12 +188,13 @@ genGraph = function(data) {
 				newbw.objid = "bandwidth " + k;
 				newbw.objtype = "bandwidth";
 				newbw.runs = [];
-				newData.unshift(newbw);
+				newbw.stripdata = v;
+				newBandwidthData.unshift(newbw);
 			}
 		}
 	}
-		
-	data = newData;
+	data = [];	
+	data = data.concat(newBandwidthData, newData);
 	
 	// Parse numbers, and sort by value.
 	//data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
@@ -207,19 +215,47 @@ genGraph = function(data) {
 		.attr("height", new_h*v_scale + m[0] + m[2]);
 	
 	// Set up the bandwidth indicators
+	var bwgroup = svg.selectAll("g.bandwidth")
+		.data(newBandwidthData, function(d) { return d.objid; });
+		
+	bwgroup.exit().remove();
+	
+	bwgroup.enter().append("g")
+		.attr("class", "bandwidth")
+		.attr("transform", function(d) { console.log("bwdata "+d); return "translate(0," + y(d.objid) + ")"; })
+		.append("path")
+		.attr("d", function(d) {
+			var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
+			console.log("max stripdata " + maxy);
+			var line = d3.svg.line()
+				.x(function(d, i) { return x(d[0]); })
+				.y(function(d, i) { return y.rangeBand() * (1-d[1]/maxy); });
+			return line(d.stripdata);
+		});
+		
+	bwgroup.selectAll("path")
+		.map(function(d) { return this.parentNode.__data__; })
+		.attr("d", function(d) {
+			var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
+			console.log("max stripdata " + maxy);
+			var line = d3.svg.line()
+				.x(function(d) { console.log("line.x point is" + d); return x(d[0]); })
+				.y(function(d) { return y.rangeBand() * (d[1]/maxy); });
+			return line(d.stripdata);
+		});
+		
 	// Now set up the bars (rows). Do this separately for existing/new/deleted data.
 	var bars = svg.selectAll("g.bar")
-		.data(data, function(d) { return d.objid; })
+		.data(newData, function(d) { return d.objid; })
 	
 	bars.transition().duration(500)
 		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
 
 	bars.enter().append("g")
-		.attr("class", function(d) { return "bar"; })
+		.attr("class", "bar")
 		.classed("medianode", function(d) { return d.objtype == "medianode"; })
 		.classed("playable", function(d) { return d.objtype == "playable"; })
 		.classed("prefetch", function(d) { return d.objtype == "prefetch"; })
-		.classed("bandwidth", function(d) { return d.objtype == "bandwidth"; })
 		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
 		
 		.append("line")
