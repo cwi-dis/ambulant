@@ -798,8 +798,10 @@ done:
 void
 rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* inbuf, size_t sz) {
 	demux_datasink* sink = m_context->sinks[sink_index];
-
 	bool accepted = false;
+
+	// Keep statistics
+	m_context->data_consumed[sink_index] += sz;
 
 	while (sink && ! exit_requested() && ! accepted) {
 		m_critical_section.leave();

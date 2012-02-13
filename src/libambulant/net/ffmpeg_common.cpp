@@ -480,6 +480,9 @@ ffmpeg_demux::run()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
+		// Keep statistics
+		m_data_consumed[pkt->stream_index] += pkt->size;
+		
 		demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);

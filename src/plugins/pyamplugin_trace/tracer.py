@@ -5,6 +5,37 @@ import json
 import ambulant
 DEBUG=True
 
+class BandwidthCollector:
+	"""Record bandwidth"""
+	def __init__(self, now, master):
+		self.bw = [(now, 0)]
+		self.master = master
+		
+	def addMeasurement(self, now, bw):
+		oldstart, _ = self.bw[-1]
+		bps = float(bw) / float(now - oldstart)
+		self.bw.append((now, bps))
+		if bps > 0 and self.master:
+			self.master.addCumulative(oldstart, now, bps)
+		
+	def addCumulative(self, start, end, bps):
+		i0 = self._split(start)
+		i1 = self._split(end)
+		for i in range(i0, i1):
+			time, oldbps = self.bw[i]
+			self.bw[i] = (time, oldbps+bps)
+			
+	def _split(self, time):
+		for i in range(len(self.bw)):
+			oldtime, oldbps = self.bw[i]
+			if oldtime == time:
+				return i
+			if oldtime > time:
+				self.bw.insert(i, (time, oldbps))
+				return i
+		self.bw.append((time, 0))
+		return len(self.bw)-1
+					
 class TimeRange:
 	"""Records a single continuous time range"""
 	
@@ -15,6 +46,7 @@ class TimeRange:
 		self.stop = None
 		self.descr = descr
 		self.run_type = ""
+		self.bw_collectors = {}
 		
 	def setFill(self, fill):
 		"""Set the time that fill begain"""
@@ -38,8 +70,22 @@ class TimeRange:
 		rv = {"start":self.start-globStart, "stop":stop-globStart , "descr" : self.descr}
 		if not self.fill is None:
 			rv["fill"] = self.fill - globStart
+		if self.bw_collectors:
+			rv["bandwidth"] = {}
+			for k, v in self.bw_collectors.items():
+			    rv["bandwidth"][k] = v.bw
 		return rv
 		
+	def getBandwidthCollector(self, name, topnode):
+		if self.bw_collectors.has_key(name):
+			return self.bw_collectors[name]
+		master = None
+		if topnode:
+			master = topnode.getBandwidthCollector(name, None)
+		bwc = BandwidthCollector(self.start, master)
+		self.bw_collectors[name] = bwc
+		return bwc
+					
 class NodeRun(TimeRange):
 	"""Records a single execution of a SMIL node"""
 	
@@ -309,3 +355,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 
 	def playable_resource(self, playable, resource, amount):
 		if DEBUG: print self.timestamp(), "playable_resource(%s, %s, %f)" % (playable.get_sig(), resource, amount)
+		plid = self._id_for_playable(playable)
+		playrun = self.collector.getPlayable(plid)
+		bwc = playrun.getBandwidthCollector(resource, self.collector)
+		bwc.addMeasurement(self.now(), amount)
