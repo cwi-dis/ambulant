@@ -227,7 +227,6 @@ class Collector(DocumentRun):
 				objects.append(object)
 
 		# All done. Dump the data.
-		print 'RETURNING', objects
 		return json.dumps(objects, sort_keys=True, indent=4)
 	
 class TracePlayerFeedback(ambulant.player_feedback):
@@ -248,7 +247,6 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		
 	def dump_json(self):
 		if self.collector:
-			if DEBUG: print self.timestamp(), 'generating json data'
 			return self.collector.dump_json()
 		else:
 			if DEBUG: print self.timestamp(), 'not generating json data: no collector available'
