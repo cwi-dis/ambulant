@@ -102,6 +102,7 @@ g.playable rect.stall {
     	<span class="legend-medianode"><input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media</span>
     	<span class="legend-prefetch"><input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch</span>
     	<span class="legend-playable"><input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers</span>
+    	<span class="legend-bandwidth"><input type="checkbox" name="show" value="bandwidth" checked="checked" onClick="regenShowAndGraph();">Bandwidth</span>
     	<input type="button" value="zoomin time" onClick="zoom(1.414, 1.0);">
     	<input type="button" value="zoomout time" onClick="zoom(0.707, 1.0);">
     	<input type="button" value="larger nodes" onClick="zoom(1.0, 1.414);">
@@ -138,6 +139,7 @@ var showTypes = new Array();
 showTypes["medianode"] = true;
 showTypes["prefetch"] = true;
 showTypes["playable"] = true;
+showTypes["bandwidth"] = true;
 showTypes["*"] = true;
 
 svg.append("g")
@@ -158,7 +160,7 @@ var selectFunc = function() {
 genGraph = function(data) {
 
 	// Select only the ones we want
-	newData = [];
+	var newData = [];
 	for( var dataItemIndex in data) {
 		var dataItem = data[dataItemIndex];
 		var objType = dataItem.objtype;
@@ -170,25 +172,42 @@ genGraph = function(data) {
 				newData.push(dataItem);
 		}
 	}
+	// Get the global bandwidth data, if needed
+	if ("bandwidth" in showTypes && showTypes["bandwidth"]) {
+		if ("bandwidth" in data[0].runs[0]) {
+			for (var k in data[0].runs[0].bandwidth) {
+				var v = data[0].runs[0].bandwidth[k];
+				var newbw = new Object();
+				newbw.objid = "bandwidth " + k;
+				newbw.objtype = "bandwidth";
+				newbw.runs = [];
+				newData.unshift(newbw);
+			}
+		}
+	}
+		
 	data = newData;
 	
 	// Parse numbers, and sort by value.
-	data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
+	//data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
 	// data.sort(function(a, b) { return b.start - a.start; });
 	
 	// Set the scale domain and ranges
-	x.domain([0, d3.max(data, function(d) { return d.runs[0].stop; })]);
+	x.domain([0, d3.max(data, function(d) { return d.runs.length ? d.runs[0].stop : 0; })]);
 	y.domain(data.map(function(d) { return d.objid; }));
 	var new_h = data.length * 3 * 10; // Number(getComputedStyle('graphlocation', '').fontSize.match(/(\d+)px/)[1]);
 	// if (new_h < h) new_h = h;
 	x.range([0, w*h_scale]);
 	y.rangeRoundBands([0, new_h*v_scale], .1);
+	
+	// Get the graph, and set height and width
 	d3.selectAll("div#graphlocation svg")
 		.transition().duration(500)
 		.attr("width", w*h_scale + m[1] + m[3])
 		.attr("height", new_h*v_scale + m[0] + m[2]);
 	
-	// First set up the bars (rows). Do this separately for existing/new/deleted data.
+	// Set up the bandwidth indicators
+	// Now set up the bars (rows). Do this separately for existing/new/deleted data.
 	var bars = svg.selectAll("g.bar")
 		.data(data, function(d) { return d.objid; })
 	
@@ -200,6 +219,7 @@ genGraph = function(data) {
 		.classed("medianode", function(d) { return d.objtype == "medianode"; })
 		.classed("playable", function(d) { return d.objtype == "playable"; })
 		.classed("prefetch", function(d) { return d.objtype == "prefetch"; })
+		.classed("bandwidth", function(d) { return d.objtype == "bandwidth"; })
 		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
 		
 		.append("line")
