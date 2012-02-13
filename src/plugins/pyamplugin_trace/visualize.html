@@ -10,9 +10,7 @@ body {
 }
 
 g.bandwidth path {
-	stroke: steelblue;
-	stroke-width: 2;
-	fill: none;
+	fill: orange;
 }
 
 g.bar line {
@@ -188,7 +186,14 @@ genGraph = function(data) {
 				newbw.objid = "bandwidth " + k;
 				newbw.objtype = "bandwidth";
 				newbw.runs = [];
-				newbw.stripdata = v;
+				newbw.stripdata = [[0, 0]];
+				var lasttime = 0;
+				v.forEach(function(d) {
+					newbw.stripdata.push([lasttime, d[1]]);
+					newbw.stripdata.push(d);
+					lasttime = d[0];
+					});
+				newbw.stripdata.push([0, 0]);
 				newBandwidthData.unshift(newbw);
 			}
 		}
@@ -228,8 +233,8 @@ genGraph = function(data) {
 			var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
 			console.log("max stripdata " + maxy);
 			var line = d3.svg.line()
-				.x(function(d, i) { return x(d[0]); })
-				.y(function(d, i) { return y.rangeBand() * (1-d[1]/maxy); });
+				.x(function(d) { return x(d[0]); })
+				.y(function(d) { return y.rangeBand() * (0.5-(d[1]/maxy)); });
 			return line(d.stripdata);
 		});
 		
