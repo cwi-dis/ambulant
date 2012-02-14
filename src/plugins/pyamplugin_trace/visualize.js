@@ -1,166 +1,109 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Bar Chart</title>
-    <script type="text/javascript" src="d3.js"></script>
-    <style type="text/css">
+// Semi-constants.
 
-body {
-  font: 10px sans-serif;
-}
-
-g.bandwidth path {
-	fill: orange;
-}
-
-g.bar line {
-	stroke: #666666;
-}
-
-g.bar rect.selected {
-	stroke: black;
-}
-
-g.playable line {
-	stroke: #ffffff;
-}
-
-g.bar rect.run {
-  fill: #1f77b4;
-}
-
-g.bar rect.fill {
-  fill: #aec7e8;
-}
-
-.legend-rest {
-  background-color: #1f77b4;
-}
-
-g.medianode rect.run {
-  fill: #17becf;
-}
-
-g.medianode rect.fill {
-  fill: #9edae5;
-}
-
-.legend-medianode {
-  background-color: #17becf;
-}
-
-g.prefetch rect.run {
-  fill: #9467bd;
-}
-
-g.prefetch rect.fill {
-  fill: #c5b0d5;
-}
-
-.legend-prefetch {
-  background-color: #9467bd;
-}
-
-g.playable rect.run {
-  fill: #2ca02c;
-}
-
-g.playable rect.fill {
-  fill: #98df8a;
-}
-
-.legend-playable {
-  background-color: #2ca02c;
-}
-
-g.playable rect.stall {
-  fill: #d62728;
-}
-
-.bar text.value {
-  fill: black;
-}
-
-.axis {
-  shape-rendering: crispEdges;
-}
-
-.axis path {
-  fill: none;
-}
-
-.x.axis line {
-  stroke: #fff;
-  stroke-opacity: .8;
-}
-
-.y.axis path {
-  stroke: black;
-}
-
-    </style>
-  </head>
-  <body>
-    <form name="selections">
-    	<span class="legend-rest"><input type="checkbox" name="show" value="*" checked="checked" onClick="regenShowAndGraph();">Structure</span>
-    	<span class="legend-medianode"><input type="checkbox" name="show" value="medianode" checked="checked" onClick="regenShowAndGraph();">Media</span>
-    	<span class="legend-prefetch"><input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch</span>
-    	<span class="legend-playable"><input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers</span>
-    	<span class="legend-bandwidth"><input type="checkbox" name="show" value="bandwidth" checked="checked" onClick="regenShowAndGraph();">Bandwidth</span>
-    	<br><br>
-    	<input type="button" value="zoomin time" onClick="zoom(1.414, 1.0);">
-    	<input type="button" value="zoomout time" onClick="zoom(0.707, 1.0);">
-    	<input type="button" value="larger nodes" onClick="zoom(1.0, 1.414);">
-    	<input type="button" value="smaller nodes" onClick="zoom(1.0, 0.707);">
-    	<input type="checkbox" name="autoreload" value="*" checked="checked" onClick="autoReloadChanged();">Auto-reload
-    	<br><br>
-    	Load data: <input name="inputdata" type="text"><input type="button" value="Open Data" onClick="loadData()">
-    	<br>
-    	Save data: <input type="button" value="Save to New Window" onClick="saveData()">
-    </form>
-    <div id="graphlocation"></div>
-    <script type="text/javascript">
-
-var formatTime = d3.format(".3f");
-
-var dataFile="data.json";
-var lastReadData = [];
-
-var m = [30, 10, 10, 330],
+var formatTime = d3.format(".3f");	// How to format times
+var m = [30, 10, 10, 330],			// Margins and default width and height of the graph
     w = 960 - m[1] - m[3],
     h = 930 - m[0] - m[2];
 
-var h_scale = 1.0;
-var v_scale = 1.0;
+var dataFile="data.json";	// Relative URL of the datafile. Shared with pyamplugin_trace/tracer.py.
+var lastReadData = [];		// Copy of last read data, for saving.
 
-var format = d3.format(",.1f");
+// Global variables.
+var svg = null;		// Will hold the svg element, set by initVisualize().
 
-var x = d3.scale.linear().range([0, w*h_scale]),
-    y = d3.scale.ordinal().rangeRoundBands([0, h*v_scale], .1);
+var h_scale = 1.0;	// Current horizontal scale factor.
+var v_scale = 1.0;	// Current vertical scale factor.
 
-var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
-    yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+// XXX var format = d3.format(",.1f");
 
-var svg = d3.selectAll("div#graphlocation").append("svg")
-	.attr("width", w*h_scale + m[1] + m[3])
-	.attr("height", h*v_scale + m[0] + m[2])
-	.append("g")
-	.attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+// The scales and axes. Note that these are functions!
 
-var showTypes = new Array();
+var x = d3.scale.linear().range([0, w*h_scale]);
+var y = d3.scale.ordinal().rangeRoundBands([0, h*v_scale], .1);
+
+var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h);
+var yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+
+// Datastructure for which items to show. Mirrors "selections" form in visualize.html.
+var showTypes = new Object();
 showTypes["medianode"] = true;
 showTypes["prefetch"] = true;
 showTypes["playable"] = true;
 showTypes["bandwidth"] = true;
 showTypes["*"] = true;
 
-svg.append("g")
-	.attr("class", "x axis");
+var interval = null;	// Will be set to auto-recurring reload
 
-svg.append("g")
-	.attr("class", "y axis");
+// Initialize the visualizer. 
+var initVisualize = function() {
 
-var selectFunc = function() {
+	// Create the main SVG object and the placeholders for the axes
+	svg = d3.selectAll("div#graphlocation").append("svg")
+	.attr("width", w*h_scale + m[1] + m[3])
+	.attr("height", h*v_scale + m[0] + m[2])
+	.append("g")
+	.attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+	svg.append("g")
+		.attr("class", "x axis");
+	
+	svg.append("g")
+		.attr("class", "y axis");
+
+	// Framework complete. Fill in the data.
+	regenGraph();
+
+	visualizerAutoReloadChanged();
+}
+
+// Function that loads JSON data and regenerates the graph.
+var regenGraph = function() {
+	d3.text(dataFile, "text/json", function(text) {
+		genGraph(JSON.parse(text))
+		});
+};
+
+// Called (from html form) when visualizer options have changed. Re-display the data.
+var visualizerOptionsChanged = function() {
+	for (var i=0; i < document.selections.show.length; i++) {
+		showTypes[document.selections.show[i].value] = document.selections.show[i].checked;
+	}
+	regenGraph();
+};
+
+// Called (from html form) for implementaing h/v zooming.
+var visualizerZoom = function(yfactor, xfactor) {
+	h_scale *= yfactor;
+	v_scale *= xfactor;
+	regenGraph();
+};
+
+// Function to implement changing the autoreload flag.
+var visualizerAutoReloadChanged = function() {
+	if (interval) clearInterval(interval);
+	interval = null;
+	if (document.selections.autoreload.checked) {
+		interval = setInterval("regenGraph()", 1000);
+	}
+}
+
+// Load visualizer JSON data from HTML form text field.
+var loadData = function() {
+	var data = JSON.parse(document.selections.inputdata.value);
+	document.selections.autoreload.checked = false;
+	autoReloadChanged();
+	genGraph(data);
+}
+
+// Save data to a new window.
+var saveData = function() {
+	var stringData = JSON.stringify(lastReadData);
+	var uriContent = "data:application/json," + encodeURIComponent(stringData);
+	var newWindow = window.open(uriContent, "Ambulant Visualizer JSON Data");
+}
+
+// Function that handles the global aspects of a node being selected.
+var prepareForSelect = function() {
 	// Deselect old selection
 	svg.selectAll(".selected")
 		.classed("selected", 0);
@@ -169,6 +112,7 @@ var selectFunc = function() {
 		.classed("selected", 1);
 };
 
+// Function that updates (or creates) the graph with new data.
 genGraph = function(data) {
 	// Keep the data (for saving)
 	lastReadData = data;
@@ -325,7 +269,7 @@ genGraph = function(data) {
 	var newrungroup = rungroup.enter()
 		.append("g")
 		.attr("class", "rungroup")
-		.on("mousedown", selectFunc);
+		.on("mousedown", prepareForSelect);
 		
 	newrungroup.append("svg:title")
 		.text(tooltipfunc);
@@ -335,7 +279,7 @@ genGraph = function(data) {
 		.attr("x", function(d) { return x(d.start); })
 		.attr("width", function(d) { return x(d.stop-d.start); })
 		.attr("height", y.rangeBand())
-		.on("mousedown", selectFunc);
+		.on("mousedown", prepareForSelect);
 	
 	newrungroup.append("rect")
 		.attr("class", "fill")
@@ -395,47 +339,3 @@ genGraph = function(data) {
 		.call(yAxis);
 }
 
-regenGraph = function() {
-	d3.text(dataFile, "text/json", function(text) {
-		genGraph(JSON.parse(text))
-		});
-};
-
-regenShowAndGraph = function() {
-	for (var i=0; i < document.selections.show.length; i++) {
-		showTypes[document.selections.show[i].value] = document.selections.show[i].checked;
-	}
-	regenGraph();
-};
-
-zoom = function(yfactor, xfactor) {
-	h_scale *= yfactor;
-	v_scale *= xfactor;
-	regenGraph();
-};
-
-regenGraph();
-
-var interval = setInterval("regenGraph()", 1000);
-autoReloadChanged = function() {
-	if (interval) clearInterval(interval);
-	if (document.selections.autoreload.checked) {
-		interval = setInterval("regenGraph()", 1000);
-	}
-}
-
-loadData = function() {
-	var data = JSON.parse(document.selections.inputdata.value);
-	document.selections.autoreload.checked = false;
-	autoReloadChanged();
-	genGraph(data);
-}
-
-saveData = function() {
-	var stringData = JSON.stringify(lastReadData);
-	var uriContent = "data:application/json," + encodeURIComponent(stringData);
-	var newWindow = window.open(uriContent, "Ambulant Visualizer JSON Data");
-}
-    </script>
-  </body>
-</html>
