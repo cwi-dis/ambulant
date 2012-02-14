@@ -6,6 +6,7 @@ import posixpath
 import thread
 import urlparse
 import webbrowser
+import urllib
 
 PORT=8842
 DEBUG=True
@@ -21,22 +22,32 @@ class WebServer(HTTPServer):
     def __init__(self):
         self.tracer = None
         HTTPServer.__init__(self, ('', PORT), MyHandler)
+        self.stopped = False
     
     def setTracer(self, tracer):
         self.tracer = tracer
         
     def _still_running(self):
-        return True
+        return not self.stopped
         
     def _run(self):
         while self._still_running():
             self.handle_request()
             
     def start(self):
+    	if DEBUG: print 'Starting webserver'
         thread.start_new_thread(self._run, ())
         url = "http://localhost:%d/visualize.html" % PORT
         #os.system("open %s" % url)
         webbrowser.open(url)
+        
+    def stop(self):
+    	if DEBUG: print 'Stopping webserver'
+    	self.stopped = True
+    	try:
+    		urllib.urlopen("http://localhost:%d/shutdown" % PORT)
+    	except IOError:
+    		pass
         
 class MyHandler(BaseHTTPRequestHandler):
     

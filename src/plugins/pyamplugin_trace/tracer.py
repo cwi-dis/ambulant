@@ -3,7 +3,7 @@ import os
 import time
 import json
 import ambulant
-DEBUG=True
+DEBUG=False
 
 class BandwidthCollector:
 	"""Record bandwidth"""
@@ -245,6 +245,11 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		
 	def now(self):
 		return time.time()
+		
+	def done(self):
+		if hasattr(self.next_feedback, 'done'):
+			self.next_feedback.done()
+		self.next_feedback = None
 		
 	def __init__(self):
 		self.collector = None

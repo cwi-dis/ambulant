@@ -16,14 +16,25 @@ class TraceEmbedder(ambulant.embedder):
 		self.feedback = feedback
 		self.server = server
 		
+	def __del__(self):
+		if DEBUG: print 'TraceEmbedder deleted'
+		
 	def close(self, player):
+		if DEBUG: print 'TraceEmbedder.close()'
 		return self.old_embedder.close(player)
 		
 	def open(self, newdoc, start, oldplayer):
 		return self.old_embedder.open(newdoc, start, oldplayer)
 		
 	def done(self, player):
-		return self.old_embedder.done(player)
+		if DEBUG: print 'TraceEmbedder.done()'
+		self.feedback.done()
+		self.server.stop()
+		self.feedback = None
+		self.server = None
+		rv = self.old_embedder.done(player)
+		self.old_embedder = None
+		return rv
 		
 	def starting(self, player):
 		old_feedback = player.get_feedback()
@@ -39,12 +50,13 @@ def initialize(apiversion, factories, gui_player):
 	"""Called every time the plugin is loaded. This happens both at application
 	startup time and at document startup time"""
 	
-	print 'pyamplugin_trace: initialize() called'
 	if not gui_player:
 		# This is the initial initialize call, before a document
 		# is opened. Ignore, we'll get another one later.
+		print 'pyamplugin_trace: initialize() called without document'
 		return
 
+	print 'pyamplugin_trace: initialize() called for document'
 	# Create the trace object, the web server  and the embedder helper object that
 	# will insert the trace object into the player (once it is initialized)
 	collector = tracer.TracePlayerFeedback()
