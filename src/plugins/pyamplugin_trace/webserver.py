@@ -5,6 +5,7 @@ import mimetypes
 import posixpath
 import thread
 import urlparse
+import webbrowser
 
 PORT=8842
 DEBUG=True
@@ -34,7 +35,8 @@ class WebServer(HTTPServer):
     def start(self):
         thread.start_new_thread(self._run, ())
         url = "http://localhost:%d/visualize.html" % PORT
-        os.system("open %s" % url)
+        #os.system("open %s" % url)
+        webbrowser.open(url)
         
 class MyHandler(BaseHTTPRequestHandler):
     
