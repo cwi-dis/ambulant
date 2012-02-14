@@ -121,7 +121,7 @@ int gui::dx::dx_gui_region::s_counter = 0;
 
 gui::d2::d2_player::d2_player(
 	d2_player_callbacks &hoster,
-	common::player_feedback *feedback,
+	common::focus_feedback *feedback,
 	const net::url& u)
 :	m_d2d(NULL),
 	m_WICFactory(NULL),
@@ -208,7 +208,7 @@ gui::d2::d2_player::d2_player(
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 
-	if (feedback) m_player->set_feedback(feedback);
+	if (feedback) m_player->set_focus_feedback(feedback);
 	m_player->initialize();
 
 }

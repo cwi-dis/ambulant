@@ -42,12 +42,16 @@ class win32_file_datasource : virtual public win32_datasource
 	win32_file_datasource(const url& url, HANDLE hf)
 	:	win32_datasource(url),
 		m_hf(hf)
-	{ if (hf==NULL) m_end_of_file = true; }
+	{
+		m_resourcetype = "file";
+		if (hf==NULL) m_end_of_file = true; 
+	}
 	~win32_file_datasource();
   protected:
 	void _read_file();
 
 	HANDLE m_hf;
+	long m_bytes_read;
 };
 
 class win32_net_datasource : virtual public win32_datasource
@@ -57,13 +61,17 @@ class win32_net_datasource : virtual public win32_datasource
 	:	win32_datasource(url),
 		m_hinet(hinet),
 		m_hf(hf)
-	{ if (hf==NULL) m_end_of_file = true; }
+	{ 
+		m_resourcetype = "http";
+		if (hf==NULL) m_end_of_file = true;
+	}
 	~win32_net_datasource();
   protected:
 	void _read_file();
 
 	HINTERNET m_hinet;
 	HINTERNET m_hf;
+	long m_bytes_read;
 };
 
 
@@ -139,6 +147,8 @@ win32_datasource_factory::new_raw_datasource(const url& url)
 win32_datasource::win32_datasource(const url& url)
 :	m_url(url),
 	m_buffer(NULL),
+	m_bytes_read(0),
+	m_resourcetype(NULL),
 	m_end_of_file(false)
 {
 		m_buffer = new databuffer();
@@ -234,6 +244,17 @@ win32_datasource::readdone(size_t sz)
 	m_lock.leave();
 }
 
+long
+win32_datasource::get_bandwidth_usage_data(const char **resource)
+{
+	m_lock.enter();
+	long rv = m_bytes_read;
+	m_bytes_read = 0;
+	*resource = m_resourcetype;
+	m_lock.leave();
+	return rv;
+}
+
 void
 win32_file_datasource::_read_file()
 {
@@ -251,6 +272,7 @@ win32_file_datasource::_read_file()
 			lib::win32::win_report_last_error("InternetReadFile()");
 			break;
 		}
+		m_bytes_read += nread;
 		if (nread) m_buffer->pushdata(nread);
 	} while(nread > 0);
 	m_buffer->pushdata(0);
@@ -283,6 +305,7 @@ win32_net_datasource::_read_file()
 			lib::win32::win_report_last_error("InternetReadFile()");
 			break;
 		}
+		m_bytes_read += nread;
 		if (nread) m_buffer->pushdata(nread);
 	} while(nread > 0);
 	m_buffer->pushdata(0);

@@ -68,13 +68,15 @@ class win32_datasource : virtual public datasource, virtual public lib::ref_coun
 	size_t size() const;
 	void read(char *data, size_t size);
 	void start_prefetch(ambulant::lib::event_processor *evp){};
-
-  protected:
+	long get_bandwidth_usage_data(const char **resource);
+ protected:
 	bool _end_of_file();
 	virtual void _read_file() = 0; // Defined in the concrete subclasses
 	const url m_url;
 	databuffer *m_buffer;
 	bool m_end_of_file;
+	long m_bytes_read;
+	char* m_resourcetype;
 	lib::critical_section m_lock;
 };
 
