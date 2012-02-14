@@ -107,16 +107,24 @@ g.playable rect.stall {
     	<span class="legend-prefetch"><input type="checkbox" name="show" value="prefetch" checked="checked" onClick="regenShowAndGraph();">Prefetch</span>
     	<span class="legend-playable"><input type="checkbox" name="show" value="playable" checked="checked" onClick="regenShowAndGraph();">Renderers</span>
     	<span class="legend-bandwidth"><input type="checkbox" name="show" value="bandwidth" checked="checked" onClick="regenShowAndGraph();">Bandwidth</span>
+    	<br><br>
     	<input type="button" value="zoomin time" onClick="zoom(1.414, 1.0);">
     	<input type="button" value="zoomout time" onClick="zoom(0.707, 1.0);">
     	<input type="button" value="larger nodes" onClick="zoom(1.0, 1.414);">
     	<input type="button" value="smaller nodes" onClick="zoom(1.0, 0.707);">
     	<input type="checkbox" name="autoreload" value="*" checked="checked" onClick="autoReloadChanged();">Auto-reload
+    	<br><br>
+    	Load data: <input name="inputdata" type="text"><input type="button" value="Open Data" onClick="loadData()">
+    	<br>
+    	Save data: <input type="button" value="Save to New Window" onClick="saveData()">
     </form>
     <div id="graphlocation"></div>
     <script type="text/javascript">
 
 var formatTime = d3.format(".3f");
+
+var dataFile="data.json";
+var lastReadData = [];
 
 var m = [30, 10, 10, 330],
     w = 960 - m[1] - m[3],
@@ -162,7 +170,9 @@ var selectFunc = function() {
 };
 
 genGraph = function(data) {
-
+	// Keep the data (for saving)
+	lastReadData = data;
+	
 	// Select only the ones we want
 	var newData = [];
 	var newBandwidthData = [];
@@ -193,6 +203,7 @@ genGraph = function(data) {
 					newbw.stripdata.push(d);
 					lasttime = d[0];
 					});
+				newbw.stripdata.push([lasttime, 0]);
 				newbw.stripdata.push([0, 0]);
 				newBandwidthData.unshift(newbw);
 			}
@@ -385,8 +396,8 @@ genGraph = function(data) {
 }
 
 regenGraph = function() {
-	d3.text("data.json", "text/json", function(text) {
-		genGraph(eval(text))
+	d3.text(dataFile, "text/json", function(text) {
+		genGraph(JSON.parse(text))
 		});
 };
 
@@ -411,6 +422,19 @@ autoReloadChanged = function() {
 	if (document.selections.autoreload.checked) {
 		interval = setInterval("regenGraph()", 1000);
 	}
+}
+
+loadData = function() {
+	var data = JSON.parse(document.selections.inputdata.value);
+	document.selections.autoreload.checked = false;
+	autoReloadChanged();
+	genGraph(data);
+}
+
+saveData = function() {
+	var stringData = JSON.stringify(lastReadData);
+	var uriContent = "data:application/json," + encodeURIComponent(stringData);
+	var newWindow = window.open(uriContent, "Ambulant Visualizer JSON Data");
 }
     </script>
   </body>
