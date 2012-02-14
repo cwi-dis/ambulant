@@ -79,7 +79,7 @@ class rawdatasink {
 
 class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
   public:
-	ffmpeg_rawreader(URLContext *con);
+	ffmpeg_rawreader(URLContext *con, const net::url& url);
 	~ffmpeg_rawreader();
 
 	static URLContext *supported(const net::url& url);
@@ -93,6 +93,7 @@ class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
 	URLContext *m_con;
 	rawdatasink *m_sink;
     long m_bytes_read;
+    std::string m_resource_type;
 	lib::critical_section m_lock;
 };
 

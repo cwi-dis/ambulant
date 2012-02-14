@@ -61,7 +61,7 @@ ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	detail::ffmpeg_rawreader *thread = new detail::ffmpeg_rawreader(context);
+	detail::ffmpeg_rawreader *thread = new detail::ffmpeg_rawreader(context, url);
 	datasource *ds = new ffmpeg_raw_datasource(url, context, thread);
 	if (ds == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: could not allocate ffmpeg_video_datasource");
@@ -75,12 +75,14 @@ ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 // **************************** ffmpeg_rawreader *****************************
 
 
-detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con)
+detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con, const net::url &url)
 :   m_con(con),
 	m_sink(NULL),
+    m_resource_type("unknown"),
 	m_bytes_read(0)
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::ffmpeg_rawreader() m_con=0x%x", con);
+    m_resource_type = url.get_protocol();
 }
 
 detail::ffmpeg_rawreader::~ffmpeg_rawreader()
@@ -132,7 +134,7 @@ detail::ffmpeg_rawreader::get_bandwidth_usage_data(const char **resource)
     m_lock.enter();
     long rv = m_bytes_read;
     m_bytes_read = 0;
-    *resource = "unknown"; // XXX
+    *resource = m_resource_type.c_str();
     m_lock.leave();
     return rv;
 }
