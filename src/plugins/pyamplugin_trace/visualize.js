@@ -192,8 +192,7 @@ genGraph = function(data) {
 			.append("path")
 			.attr("d", stripDataFunc);
 			
-		bwgroup.selectAll("path")
-			.map(function(d) { return this.parentNode.__data__; })
+		bwgroup.select("path")
 			.attr("d", stripDataFunc);
 	};
 	
@@ -237,28 +236,24 @@ genGraph = function(data) {
 		rungroup.exit().remove();
 	
 		// Now modify the rects in the existing rungroups
-		rungroup.selectAll("rect.run")
-			.map(function(d) { return this.parentNode.__data__; })
+		rungroup.select("rect.run")
 			.transition().duration(500)
 			.attr("x", function(d) { return x(d.start); })
 			.attr("width", function(d) { return x(d.stop-d.start); })
 			.attr("height", y.rangeBand());
 	
-		rungroup.selectAll("rect.fill")
-			.map(function(d) { return this.parentNode.__data__; })
+		rungroup.select("rect.fill")
 			.transition().duration(500)
 			.attr("x", function(d) { return x(d.fill); })
 			.attr("width", function(d) { return x(d.stop-d.fill); })
 			.attr("height", y.rangeBand());
 			
-		rungroup.selectAll("text")
-			.map(function(d) { return this.parentNode.__data__; })
+		rungroup.select("text")
 			.transition().duration(500)
 			.attr("x", function(d) { return x(d.start); })
 			.attr("y", y.rangeBand() / 2);
 			
-		rungroup.selectAll("title")
-			.map(function(d) { return this.parentNode.__data__; })
+		rungroup.select("title")
 			.text(tooltipfunc);
 		
 		// Now for all the new rungroups, create the active/postactive bars and the text field.
@@ -308,15 +303,13 @@ genGraph = function(data) {
 		var stallgroup = bars.selectAll("g.stallgroup")
 			.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
 			
-		stallgroup.selectAll("rect.stall")
-			.map(function(d) { return this.parentNode.__data__; })
+		stallgroup.select("rect.stall")
 			.transition().duration(500)
 			.attr("x", function(d) { return x(d.start); })
 			.attr("width", function(d) { return x(d.stop-d.start); })
 			.attr("height", y.rangeBand()/6);
 			
-		stallgroup.selectAll("title")
-			.map(function(d) { return this.parentNode.__data__; })
+		stallgroup.select("title")
 			.text(tooltipfunc);
 	
 		var newstallgroup = stallgroup.enter()
