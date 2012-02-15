@@ -19,12 +19,12 @@ g.bar line {
 }
 
 line.guideline {
-	opacity: 0;
+	stroke: yellow;
 }
 
-line.selectedGuideline {
-	color: yellow;
-	opacity: 0.7;
+line.successor {
+	color: orange;
+	stroke-width: 2;
 }
 
 g.bar rect.selected {

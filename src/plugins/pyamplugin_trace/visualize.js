@@ -11,6 +11,7 @@ var lastReadData = [];		// Copy of last read data, for saving.
 // Global variables.
 var svg = null;		// Will hold the svg element, set by initVisualize().
 var background = null;	// Will hold the background placeholder.
+var selectHelpers = null; // Will hold foreground selection helper graphics.
 
 var h_scale = 1.0;	// Current horizontal scale factor.
 var v_scale = 1.0;	// Current vertical scale factor.
@@ -58,6 +59,9 @@ var initVisualize = function() {
 	// Framework complete. Fill in the data.
 	regenGraph();
 
+	selectionHelpers = svg.append("g")
+		.attr("class", "selectionHelpers");
+		
 	visualizerAutoReloadChanged();
 }
 
@@ -112,9 +116,29 @@ var prepareForSelect = function() {
 	// Deselect old selection
 	svg.selectAll(".selected")
 		.classed("selected", 0);
+	
+	// Remove selection helpers
+	svg.selectAll(".guideline").remove()
+	
 	// Select the currrent run rectangle
 	d3.select(this).selectAll("rect.run")
 		.classed("selected", 1);
+	
+	// Create new helper objects
+	var guideline = function(d) {
+		svg.append("line")
+			.attr("class", "guideline")
+			.attr('x1', x(d))
+			.attr('x2', x(d))
+			.attr('y1', 0)
+			.attr('y2', h);
+	}
+	var guidelines = function(n) {
+		if ('__data__' in n && 'start' in n.__data__) guideline(n.__data__.start);
+		if ('__data__' in n && 'fill' in n.__data__) guideline(n.__data__.fill);
+		if ('__data__' in n && 'stop' in n.__data__) guideline(n.__data__.stop);
+	}
+	guidelines(this);
 };
 
 // Function that updates (or creates) the graph with new data.
