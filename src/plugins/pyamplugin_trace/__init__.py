@@ -27,14 +27,16 @@ class TraceEmbedder(ambulant.embedder):
 		return self.old_embedder.open(newdoc, start, oldplayer)
 		
 	def done(self, player):
-		if DEBUG: print 'TraceEmbedder.done()'
+		rv = self.old_embedder.done(player)
+		return rv
+		
+	def terminate(self):
+		if DEBUG: print 'TraceEmbedder.terminate()'
 		self.feedback.done()
 		self.server.stop()
 		self.feedback = None
 		self.server = None
-		rv = self.old_embedder.done(player)
 		self.old_embedder = None
-		return rv
 		
 	def starting(self, player):
 		old_feedback = player.get_feedback()

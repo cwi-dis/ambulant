@@ -10,6 +10,7 @@ var lastReadData = [];		// Copy of last read data, for saving.
 
 // Global variables.
 var svg = null;		// Will hold the svg element, set by initVisualize().
+var background = null;	// Will hold the background placeholder.
 
 var h_scale = 1.0;	// Current horizontal scale factor.
 var v_scale = 1.0;	// Current vertical scale factor.
@@ -44,11 +45,15 @@ var initVisualize = function() {
 	.append("g")
 	.attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
+	background = svg.append("g")
+		.attr("class", "background");
+		
 	svg.append("g")
 		.attr("class", "x axis");
 	
 	svg.append("g")
 		.attr("class", "y axis");
+		
 
 	// Framework complete. Fill in the data.
 	regenGraph();
@@ -120,15 +125,22 @@ genGraph = function(data) {
 	// Filter the data on the nodes that we want to visualize
 	var nodeData = [];
 	var bandwidthData = [];
+	var is_odd = false;
 	for( var dataItemIndex in data) {
 		var dataItem = data[dataItemIndex];
 		var objType = dataItem.objtype;
 		if (objType in showTypes) {
-			if (showTypes[objType])
+			if (showTypes[objType]) {
+				if (dataItem.objtype != "playable") is_odd = !is_odd;
+				dataItem.odd = is_odd;
 				nodeData.push(dataItem);
+			}
 		} else {
-			if (showTypes["*"])
+			if (showTypes["*"]) {
+				if (dataItem.objtype != "playable") is_odd = !is_odd;
+				dataItem.odd = is_odd;
 				nodeData.push(dataItem);
+			}
 		}
 	}
 	
@@ -198,6 +210,31 @@ genGraph = function(data) {
 	
 	setupGlobalBandwidth(bandwidthData);
 			
+	// Setup the background.
+	var setupBackground = function(data) {
+		var bgbars = background.selectAll("rect.background")
+			.data(data, function(d) { return d.objid; } );
+			
+		bgbars.select("rect")
+			.classed("oddbackground", function(d) { return d.odd; })
+			.attr("x", -m[3])
+			.attr("y", function(d) { return y(d.objid); })
+			.attr("width", w*h_scale + m[3])
+			.attr("height", y.rangeBand()*1.1);
+
+		bgbars.exit().remove();
+		
+		bgbars.enter().append("rect")
+			.attr("class", "background")
+			.classed("oddbackground", function(d) { return d.odd; })
+			.attr("x", -m[3])
+			.attr("y", function(d) { return y(d.objid); })
+			.attr("width", w*h_scale + m[3])
+			.attr("height", y.rangeBand()*1.1);
+	}
+	
+	setupBackground(nodeData);
+	
 	// Now set up the bars (rows). Do this separately for existing/new/deleted data.
 	
 	var setupBars = function(data) {
@@ -212,13 +249,7 @@ genGraph = function(data) {
 			.classed("medianode", function(d) { return d.objtype == "medianode"; })
 			.classed("playable", function(d) { return d.objtype == "playable"; })
 			.classed("prefetch", function(d) { return d.objtype == "prefetch"; })
-			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
-			
-			.append("line")
-			.attr("x1", -10)
-			.attr("x2", 10)
-			.attr("y1", 0)
-			.attr("y2", 0);
+			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
 			
 		bars.exit().remove();
 		

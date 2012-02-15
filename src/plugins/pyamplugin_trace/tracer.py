@@ -256,6 +256,9 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		self.doc_url = None
 		self.next_feedback = None
 		
+	def __del__(self):
+		if DEBUG: print 'TracePlayerFeedback deleted'
+
 	def dump_json(self):
 		if self.collector:
 			return self.collector.dump_json()
