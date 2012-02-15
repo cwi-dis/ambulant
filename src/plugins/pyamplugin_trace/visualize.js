@@ -117,20 +117,21 @@ genGraph = function(data) {
 	// Keep the data (for saving)
 	lastReadData = data;
 	
-	// Select only the ones we want
-	var newData = [];
-	var newBandwidthData = [];
+	// Filter the data on the nodes that we want to visualize
+	var nodeData = [];
+	var bandwidthData = [];
 	for( var dataItemIndex in data) {
 		var dataItem = data[dataItemIndex];
 		var objType = dataItem.objtype;
 		if (objType in showTypes) {
 			if (showTypes[objType])
-				newData.push(dataItem);
+				nodeData.push(dataItem);
 		} else {
 			if (showTypes["*"])
-				newData.push(dataItem);
+				nodeData.push(dataItem);
 		}
 	}
+	
 	// Get the global bandwidth data, if needed
 	if ("bandwidth" in showTypes && showTypes["bandwidth"]) {
 		if ("bandwidth" in data[0].runs[0]) {
@@ -149,22 +150,17 @@ genGraph = function(data) {
 					});
 				newbw.stripdata.push([lasttime, 0]);
 				newbw.stripdata.push([0, 0]);
-				newBandwidthData.unshift(newbw);
+				bandwidthData.unshift(newbw);
 			}
 		}
 	}
-	data = [];	
-	data = data.concat(newBandwidthData, newData);
-	
-	// Parse numbers, and sort by value.
-	//data.forEach(function(d) { d.runs[0].start = +d.runs[0].start; d.runs[0].stop = +d.runs[0].stop; });
-	// data.sort(function(a, b) { return b.start - a.start; });
-	
+	var allData = [];	
+	allData = allData.concat(bandwidthData, nodeData);
+		
 	// Set the scale domain and ranges
-	x.domain([0, d3.max(data, function(d) { return d.runs.length ? d.runs[0].stop : 0; })]);
-	y.domain(data.map(function(d) { return d.objid; }));
-	var new_h = data.length * 3 * 10; // Number(getComputedStyle('graphlocation', '').fontSize.match(/(\d+)px/)[1]);
-	// if (new_h < h) new_h = h;
+	x.domain([0, d3.max(allData, function(d) { return d.runs.length ? d.runs[0].stop : 0; })]);
+	y.domain(allData.map(function(d) { return d.objid; }));
+	var new_h = allData.length * 3 * 10; // Number(getComputedStyle('graphlocation', '').fontSize.match(/(\d+)px/)[1]);
 	x.range([0, w*h_scale]);
 	y.rangeRoundBands([0, new_h*v_scale], .1);
 	
@@ -174,127 +170,170 @@ genGraph = function(data) {
 		.attr("width", w*h_scale + m[1] + m[3])
 		.attr("height", new_h*v_scale + m[0] + m[2]);
 	
+	// Helper function: return the line() object given a d.stripdata object.
+	var stripDataFunc = function(d) {
+		var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
+		var line = d3.svg.line()
+			.x(function(d) { return x(d[0]); })
+			.y(function(d) { return y.rangeBand() * (d[1]/maxy); });
+		return line(d.stripdata);
+	};
+	
 	// Set up the bandwidth indicators
-	var bwgroup = svg.selectAll("g.bandwidth")
-		.data(newBandwidthData, function(d) { return d.objid; });
+	var setupGlobalBandwidth = function(data) {
+		var bwgroup = svg.selectAll("g.bandwidth")
+		.data(data, function(d) { return d.objid; });
 		
-	bwgroup.exit().remove();
+		bwgroup.exit().remove();
+		
+		bwgroup.enter().append("g")
+			.attr("class", "bandwidth")
+			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
+			.append("path")
+			.attr("d", stripDataFunc);
+			
+		bwgroup.selectAll("path")
+			.map(function(d) { return this.parentNode.__data__; })
+			.attr("d", stripDataFunc);
+	};
 	
-	bwgroup.enter().append("g")
-		.attr("class", "bandwidth")
-		.attr("transform", function(d) { console.log("bwdata "+d); return "translate(0," + y(d.objid) + ")"; })
-		.append("path")
-		.attr("d", function(d) {
-			var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
-			console.log("max stripdata " + maxy);
-			var line = d3.svg.line()
-				.x(function(d) { return x(d[0]); })
-				.y(function(d) { return y.rangeBand() * (0.5-(d[1]/maxy)); });
-			return line(d.stripdata);
-		});
-		
-	bwgroup.selectAll("path")
-		.map(function(d) { return this.parentNode.__data__; })
-		.attr("d", function(d) {
-			var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
-			console.log("max stripdata " + maxy);
-			var line = d3.svg.line()
-				.x(function(d) { console.log("line.x point is" + d); return x(d[0]); })
-				.y(function(d) { return y.rangeBand() * (d[1]/maxy); });
-			return line(d.stripdata);
-		});
-		
+	setupGlobalBandwidth(bandwidthData);
+			
 	// Now set up the bars (rows). Do this separately for existing/new/deleted data.
-	var bars = svg.selectAll("g.bar")
-		.data(newData, function(d) { return d.objid; })
 	
-	bars.transition().duration(500)
-		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
-
-	bars.enter().append("g")
-		.attr("class", "bar")
-		.classed("medianode", function(d) { return d.objtype == "medianode"; })
-		.classed("playable", function(d) { return d.objtype == "playable"; })
-		.classed("prefetch", function(d) { return d.objtype == "prefetch"; })
-		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
+	var setupBars = function(data) {
+		var bars = svg.selectAll("g.bar")
+			.data(data, function(d) { return d.objid; })
 		
-		.append("line")
-		.attr("x1", -10)
-		.attr("x2", 10)
-		.attr("y1", 0)
-		.attr("y2", 0);
-		
-	bars.exit().remove();
-
-	// Next, set up the grouped data (runs) within a horizontal bar. Again existing/new/removed.
-	var rungroup = bars.selectAll("g.rungroup")
-		.data(function(d) {return d.runs; });
+		bars.transition().duration(500)
+			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
 	
-	rungroup.exit().remove();
+		bars.enter().append("g")
+			.attr("class", "bar")
+			.classed("medianode", function(d) { return d.objtype == "medianode"; })
+			.classed("playable", function(d) { return d.objtype == "playable"; })
+			.classed("prefetch", function(d) { return d.objtype == "prefetch"; })
+			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
+			
+			.append("line")
+			.attr("x1", -10)
+			.attr("x2", 10)
+			.attr("y1", 0)
+			.attr("y2", 0);
+			
+		bars.exit().remove();
+		
+		return bars;
+	}
+	
+	var bars = setupBars(nodeData);
 
-	// Now modify the rects in the existing rungroups
+	// Set up the grouped data (runs) within a horizontal bar.
+	
+	var setupRungroup = function(bars, tooltipfunc) {
+		var rungroup = bars.selectAll("g.rungroup")
+			.data(function(d) {return d.runs; });
+		
+		rungroup.exit().remove();
+	
+		// Now modify the rects in the existing rungroups
+		rungroup.selectAll("rect.run")
+			.map(function(d) { return this.parentNode.__data__; })
+			.transition().duration(500)
+			.attr("x", function(d) { return x(d.start); })
+			.attr("width", function(d) { return x(d.stop-d.start); })
+			.attr("height", y.rangeBand());
+	
+		rungroup.selectAll("rect.fill")
+			.map(function(d) { return this.parentNode.__data__; })
+			.transition().duration(500)
+			.attr("x", function(d) { return x(d.fill); })
+			.attr("width", function(d) { return x(d.stop-d.fill); })
+			.attr("height", y.rangeBand());
+			
+		rungroup.selectAll("text")
+			.map(function(d) { return this.parentNode.__data__; })
+			.transition().duration(500)
+			.attr("x", function(d) { return x(d.start); })
+			.attr("y", y.rangeBand() / 2);
+			
+		rungroup.selectAll("title")
+			.map(function(d) { return this.parentNode.__data__; })
+			.text(tooltipfunc);
+		
+		// Now for all the new rungroups, create the active/postactive bars and the text field.
+		var newrungroup = rungroup.enter()
+			.append("g")
+			.attr("class", "rungroup")
+			.on("mousedown", prepareForSelect);
+			
+		newrungroup.append("svg:title")
+			.text(tooltipfunc);
+			
+		newrungroup.append("rect")
+			.attr("class", "run")
+			.attr("x", function(d) { return x(d.start); })
+			.attr("width", function(d) { return x(d.stop-d.start); })
+			.attr("height", y.rangeBand())
+			.on("mousedown", prepareForSelect);
+		
+		newrungroup.append("rect")
+			.attr("class", "fill")
+			.attr("x", function(d) { return x(d.fill); })
+			.attr("width", function(d) { return x(d.stop-d.fill); })
+			.attr("height", y.rangeBand());
+		
+		newrungroup.append("text")
+			.attr("class", "value")
+			.attr("x", function(d) { return x(d.start); })
+			.attr("y", y.rangeBand() / 2)
+			.attr("dx", 3)
+			.attr("dy", ".35em")
+			.text(function(d) { return d.descr; });
+	}
+	
 	var tooltipfunc = function(d) {
 		var rv = "node: \t" + d.descr + "\n\n" +
-			"begin:\t" + formatTime(d.start) + "\n";
+			"start:\t" + formatTime(d.start) + "\n";
 		if (d.fill) rv += "fill:\t\t" + formatTime(d.fill) + "\n";
 		rv += "stop: \t" + formatTime(d.stop) + "\n";
 		return rv;
 	}
-		
-	rungroup.selectAll("rect.run")
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand());
 
-	rungroup.selectAll("rect.fill")
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.fill); })
-		.attr("width", function(d) { return x(d.stop-d.fill); })
-		.attr("height", y.rangeBand());
-		
-	rungroup.selectAll("text")
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("y", y.rangeBand() / 2);
-		
-	rungroup.selectAll("title")
-		.map(function(d) { return this.parentNode.__data__; })
-		.text(tooltipfunc);
+	setupRungroup(bars, tooltipfunc);
+			
+	// Setup the indicators for the stalls in the playables.
 	
-	// Now for all the new rungroups, create the active/postactive bars and the text field.
-	var newrungroup = rungroup.enter()
-		.append("g")
-		.attr("class", "rungroup")
-		.on("mousedown", prepareForSelect);
+	var setupStalls = function(bars, tooltipfunc) {
+		var stallgroup = bars.selectAll("g.stallgroup")
+			.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
+			
+		stallgroup.selectAll("rect.stall")
+			.map(function(d) { return this.parentNode.__data__; })
+			.transition().duration(500)
+			.attr("x", function(d) { return x(d.start); })
+			.attr("width", function(d) { return x(d.stop-d.start); })
+			.attr("height", y.rangeBand()/6);
+			
+		stallgroup.selectAll("title")
+			.map(function(d) { return this.parentNode.__data__; })
+			.text(tooltipfunc);
+	
+		var newstallgroup = stallgroup.enter()
+			.append("g")
+			.attr("class", "stallgroup");
+			
+		stallgroup.exit().remove();
 		
-	newrungroup.append("svg:title")
-		.text(tooltipfunc);
-		
-	newrungroup.append("rect")
-		.attr("class", "run")
-		.attr("x", function(d) { return x(d.start); })
-		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand())
-		.on("mousedown", prepareForSelect);
-	
-	newrungroup.append("rect")
-		.attr("class", "fill")
-		.attr("x", function(d) { return x(d.fill); })
-		.attr("width", function(d) { return x(d.stop-d.fill); })
-		.attr("height", y.rangeBand());
-	
-	newrungroup.append("text")
-		.attr("class", "value")
-		.attr("x", function(d) { return x(d.start); })
-		.attr("y", y.rangeBand() / 2)
-		.attr("dx", 3)
-		.attr("dy", ".35em")
-		.text(function(d) { return d.descr; });
-	
+		newstallgroup.append("rect")
+			.attr("class", "stall")
+			.attr("x", function(d) { return x(d.start); })
+			.attr("width", function(d) { return x(d.stop-d.start); })
+			.attr("height", y.rangeBand()/6)
+			.append("svg:title")
+			.text(tooltipfunc);
+	}
+	  
 	tooltipfunc = function(d) {
 		var rv = "reason:\t" + d.descr + "\n" +
 			"begin:\t" + formatTime(d.start) + "\n" +
@@ -302,34 +341,7 @@ genGraph = function(data) {
 		return rv;
 	}
 
-	var stallgroup = bars.selectAll("g.stallgroup")
-		.data(function(d) { if ("stalls" in d) return d.stalls; return []; });
-		
-	stallgroup.selectAll("rect.stall")
-		.map(function(d) { return this.parentNode.__data__; })
-		.transition().duration(500)
-		.attr("x", function(d) { return x(d.start); })
-		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand()/6);
-		
-	stallgroup.selectAll("title")
-		.map(function(d) { return this.parentNode.__data__; })
-		.text(tooltipfunc);
-
-	var newstallgroup = stallgroup.enter()
-		.append("g")
-		.attr("class", "stallgroup");
-		
-	stallgroup.exit().remove();
-	
-	newstallgroup.append("rect")
-		.attr("class", "stall")
-		.attr("x", function(d) { return x(d.start); })
-		.attr("width", function(d) { return x(d.stop-d.start); })
-		.attr("height", y.rangeBand()/6)
-		.append("svg:title")
-		.text(tooltipfunc);
-	  
+	setupStalls(bars, tooltipfunc);
 	
 	// Finally setup the axes for the whole graph
 	svg.select("g.x.axis")
