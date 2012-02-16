@@ -927,6 +927,7 @@ third_party_packages={
             url2="DrPizza-libdispatch-1ed626c.zip",
             checkcmd="if not exist DrPizza-libdispatch-1ed626c\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
             buildcmd="cd DrPizza-libdispatch-1ed626c && " +
+				"if not defined VS100COMNTOOLS exit 0 && " +
                 "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
                 "devenv libdispatch.sln /build StaticDebug /project libdispatch "
         ),
