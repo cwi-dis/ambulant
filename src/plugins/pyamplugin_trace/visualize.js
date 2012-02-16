@@ -299,19 +299,19 @@ genGraph = function(data) {
 			.transition().duration(500)
 			.attr('x1', function(d) { return x(d.start); })
 			.attr('x2', function(d) { return x(d.start); })
-			.attr('y1', 0)
+			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
 		rungroup.select("line.guidelineFill")
 			.transition().duration(500)
 			.attr('x1', function(d) { return x(d.fill); })
 			.attr('x2', function(d) { return x(d.fill); })
-			.attr('y1', 0)
+			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
 		rungroup.select("line.guidelineStop")
 			.transition().duration(500)
 			.attr('x1', function(d) { return x(d.stop); })
 			.attr('x2', function(d) { return x(d.stop); })
-			.attr('y1', 0)
+			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
 
 		// Now for all the new rungroups, create the active/postactive bars and the text field.
@@ -348,19 +348,19 @@ genGraph = function(data) {
 			.attr("class", "guideline guidelineStart")
 			.attr('x1', function(d) { return x(d.start); })
 			.attr('x2', function(d) { return x(d.start); })
-			.attr('y1', 0)
+			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
 		newrungroup.append("line")
 			.attr("class", "guideline guidelineFill")
 			.attr('x1', function(d) { return x(d.fill); })
 			.attr('x2', function(d) { return x(d.fill); })
-			.attr('y1', 0)
+			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
 		newrungroup.append("line")
 			.attr("class", "guideline guidelineStop")
 			.attr('x1', function(d) { return x(d.stop); })
 			.attr('x2', function(d) { return x(d.stop); })
-			.attr('y1', 0)
+			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
 	}
 	

@@ -16,7 +16,7 @@ g.bandwidth path {
 
 line.selected {
 	stroke: yellow;
-	stroke-width: 4;
+	stroke-width: 2;
 }
 
 line.successor {
@@ -27,10 +27,6 @@ line.successor {
 g.bar rect.selected {
 	stroke: black;
 	stroke-width: 2;
-}
-
-g.playable line {
-	stroke: #ffffff;
 }
 
 g.bar rect.run {
