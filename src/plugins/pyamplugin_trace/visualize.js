@@ -117,28 +117,12 @@ var prepareForSelect = function() {
 	svg.selectAll(".selected")
 		.classed("selected", 0);
 	
-	// Remove selection helpers
-	svg.selectAll(".guideline").remove()
-	
 	// Select the currrent run rectangle
 	d3.select(this).selectAll("rect.run")
 		.classed("selected", 1);
+	d3.select(this).selectAll("line.guideline")
+		.classed("selected", 1);
 	
-	// Create new helper objects
-	var guideline = function(d) {
-		svg.append("line")
-			.attr("class", "guideline")
-			.attr('x1', x(d))
-			.attr('x2', x(d))
-			.attr('y1', 0)
-			.attr('y2', h);
-	}
-	var guidelines = function(n) {
-		if ('__data__' in n && 'start' in n.__data__) guideline(n.__data__.start);
-		if ('__data__' in n && 'fill' in n.__data__) guideline(n.__data__.fill);
-		if ('__data__' in n && 'stop' in n.__data__) guideline(n.__data__.stop);
-	}
-	guidelines(this);
 };
 
 // Function that updates (or creates) the graph with new data.
@@ -311,6 +295,25 @@ genGraph = function(data) {
 		rungroup.select("title")
 			.text(tooltipfunc);
 		
+		rungroup.select("line.guidelineStart")
+			.transition().duration(500)
+			.attr('x1', function(d) { return x(d.start); })
+			.attr('x2', function(d) { return x(d.start); })
+			.attr('y1', 0)
+			.attr('y2', h);
+		rungroup.select("line.guidelineFill")
+			.transition().duration(500)
+			.attr('x1', function(d) { return x(d.fill); })
+			.attr('x2', function(d) { return x(d.fill); })
+			.attr('y1', 0)
+			.attr('y2', h);
+		rungroup.select("line.guidelineStop")
+			.transition().duration(500)
+			.attr('x1', function(d) { return x(d.stop); })
+			.attr('x2', function(d) { return x(d.stop); })
+			.attr('y1', 0)
+			.attr('y2', h);
+
 		// Now for all the new rungroups, create the active/postactive bars and the text field.
 		var newrungroup = rungroup.enter()
 			.append("g")
@@ -340,6 +343,25 @@ genGraph = function(data) {
 			.attr("dx", 3)
 			.attr("dy", ".35em")
 			.text(function(d) { return d.descr; });
+
+		newrungroup.append("line")
+			.attr("class", "guideline guidelineStart")
+			.attr('x1', function(d) { return x(d.start); })
+			.attr('x2', function(d) { return x(d.start); })
+			.attr('y1', 0)
+			.attr('y2', h);
+		newrungroup.append("line")
+			.attr("class", "guideline guidelineFill")
+			.attr('x1', function(d) { return x(d.fill); })
+			.attr('x2', function(d) { return x(d.fill); })
+			.attr('y1', 0)
+			.attr('y2', h);
+		newrungroup.append("line")
+			.attr("class", "guideline guidelineStop")
+			.attr('x1', function(d) { return x(d.stop); })
+			.attr('x2', function(d) { return x(d.stop); })
+			.attr('y1', 0)
+			.attr('y2', h);
 	}
 	
 	var tooltipfunc = function(d) {

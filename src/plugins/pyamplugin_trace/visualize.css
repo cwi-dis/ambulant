@@ -14,12 +14,9 @@ g.bandwidth path {
 	fill: orange;
 }
 
-g.bar line {
-	stroke: #666666;
-}
-
-line.guideline {
+line.selected {
 	stroke: yellow;
+	stroke-width: 4;
 }
 
 line.successor {
