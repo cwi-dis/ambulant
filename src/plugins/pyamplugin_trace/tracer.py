@@ -21,7 +21,7 @@ class BandwidthCollector:
 	def addCumulative(self, start, end, bps):
 		i0 = self._split(start)
 		i1 = self._split(end)
-		for i in range(i0, i1):
+		for i in range(i0+1, i1+1):
 			time, oldbps = self.bw[i]
 			self.bw[i] = (time, oldbps+bps)
 			
@@ -37,10 +37,10 @@ class BandwidthCollector:
 		return len(self.bw)-1
 		
 	def asList(self, start):
-	    rv = []
-	    for time, bps in self.bw:
-	        rv.append((time-start, bps))
-	    return rv
+		rv = []
+		for time, bps in self.bw:
+			rv.append((time-start, bps))
+		return rv
 					
 class TimeRange:
 	"""Records a single continuous time range"""
@@ -79,7 +79,7 @@ class TimeRange:
 		if self.bw_collectors:
 			rv["bandwidth"] = {}
 			for k, v in self.bw_collectors.items():
-			    rv["bandwidth"][k] = v.asList(globStart)
+				rv["bandwidth"][k] = v.asList(globStart)
 		return rv
 		
 	def getBandwidthCollector(self, name, topnode):
@@ -145,6 +145,9 @@ class PlayableRun(TimeRange):
 				stallList.append(stall.asDict(globStart, globStop))
 			rv['stalls'] = stallList
 		return rv
+		
+	def isStalled(self):
+		return self.stalls and self.stalls[-1].is_active()
 				
 class DocumentRun(TimeRange):
 	"""Records a single execution of a document"""
@@ -347,7 +350,10 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		if DEBUG: print self.timestamp(), 'playable_unstalled(%s)' % playable.get_sig()
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
-		playrun.stallStop(self.now())
+		if playrun.isStalled:
+			playrun.stallStop(self.now())
+		else:
+			print self.timestamp(), "playable_unstalled(%s): ignored, playable is not stalled" % playable.get_sig()
 		if self.next_feedback: self.next_feedback.playable_unstalled(playable)
 
 	def playable_cached(self, playable):
@@ -366,7 +372,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		if self.next_feedback: self.next_feedback.playable_deleted(playable)
 
 	def playable_resource(self, playable, resource, amount):
-		if DEBUG: print self.timestamp(), "playable_resource(%s, %s, %f)" % (playable.get_sig(), resource, amount)
+		if 1: print self.timestamp(), "playable_resource(%s, %s, %f)" % (playable.get_sig(), resource, amount)
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
 		bwc = playrun.getBandwidthCollector(resource, self.collector)

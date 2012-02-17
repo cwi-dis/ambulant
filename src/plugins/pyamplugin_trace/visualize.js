@@ -164,6 +164,10 @@ genGraph = function(data) {
 				newbw.runs = [];
 				newbw.stripdata = [[0, 0]];
 				var lasttime = 0;
+				if (v.length) {
+					newbw.stripdata.push([v[0][0], 0]);
+					lasttime = v[0][0];
+				}
 				v.forEach(function(d) {
 					newbw.stripdata.push([lasttime, d[1]]);
 					newbw.stripdata.push(d);
@@ -224,7 +228,7 @@ genGraph = function(data) {
 			.transition().duration(500)
 			.attr("d", stripDataFunc);
 		bwgroup.select("text")
-			.text(function(d) { return "max: " + formatBps(d3.max(d.stripdata, function(d) { return d[1]; })) + "Bps"; });
+			.text(function(d) { return "max: " + formatBps(d3.max(this.parentNode.__data__.stripdata, function(d) { return d[1]; })) + "Bps"; });
 	};
 	
 	setupGlobalBandwidth(bandwidthData);
