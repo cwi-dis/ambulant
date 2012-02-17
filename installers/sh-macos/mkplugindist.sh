@@ -11,6 +11,9 @@ fi
 dirname=$1
 installroot=$2
 plugin_srcdir="$installroot/Library/Internet Plug-Ins/$plugin_name"
+#
+# Check arguments and build environment sanity
+#
 if [ x$dirname == x ]; then
 	echo Usage: $0 [-p pluginname] dirname [installroot]
 	echo dirname is where the distribution will be created.
@@ -36,13 +39,11 @@ mkdir $dirname
 #
 # Unpack the template (which contains files needed and their icon position, etc)
 #
-
 cat $scriptdir/plugintemplate.tar | (cd $dirname ; tar xf -; mv placeholder.plugin $plugin_name)
-
 #
 # Copy the files, overwriting placeholders
 #
-cp -r "$plugin_srcdir" $dirname/$plugin_name
+cp -r "$plugin_srcdir" $dirname
 #
 # Create temporary disk image (.dmg) and mount it
 #
@@ -87,5 +88,5 @@ hdiutil convert $dirname-rw.dmg -format UDZO -o $dirname.dmg
 #
 # Cleanup
 #
-#rm $dirname-rw.dmg
-#rm -r $dirname
+rm $dirname-rw.dmg
+rm -fr $dirname
