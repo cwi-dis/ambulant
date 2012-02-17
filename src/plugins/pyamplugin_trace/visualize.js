@@ -195,7 +195,7 @@ genGraph = function(data) {
 		var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
 		var line = d3.svg.line()
 			.x(function(d) { return x(d[0]); })
-			.y(function(d) { return y.rangeBand() * (d[1]/maxy); });
+			.y(function(d) { return y.rangeBand() * (1-(d[1]/maxy)); });
 		return line(d.stripdata);
 	};
 	
@@ -213,6 +213,7 @@ genGraph = function(data) {
 			.attr("d", stripDataFunc);
 			
 		bwgroup.select("path")
+			.transition().duration(500)
 			.attr("d", stripDataFunc);
 	};
 	
