@@ -1,6 +1,7 @@
 // Semi-constants.
 
 var formatTime = d3.format(".3f");	// How to format times
+var formatBps = d3.format(".3s");	// How to format bandwidth numbers
 var m = [30, 10, 10, 330],			// Margins and default width and height of the graph
     w = 960 - m[1] - m[3],
     h = 930 - m[0] - m[2];
@@ -206,15 +207,24 @@ genGraph = function(data) {
 		
 		bwgroup.exit().remove();
 		
-		bwgroup.enter().append("g")
+		var newbwgroup = bwgroup.enter();
+		newbwgroup.append("g")
 			.attr("class", "bandwidth")
 			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
 			.append("path")
 			.attr("d", stripDataFunc);
+
+		newbwgroup.append("text")
+			.attr("y", y.rangeBand() / 2)
+			.attr("dx", 3)
+			.attr("dy", ".35em")
+			.text(function(d) { return "max: " + formatBps(d3.max(d.stripdata, function(d) { return d[1]; })) + "Bps"; });
 			
 		bwgroup.select("path")
 			.transition().duration(500)
 			.attr("d", stripDataFunc);
+		bwgroup.select("text")
+			.text(function(d) { return "max: " + formatBps(d3.max(d.stripdata, function(d) { return d[1]; })) + "Bps"; });
 	};
 	
 	setupGlobalBandwidth(bandwidthData);
