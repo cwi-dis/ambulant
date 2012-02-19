@@ -211,11 +211,11 @@ genGraph = function(data) {
 		
 		bwgroup.exit().remove();
 		
-		var newbwgroup = bwgroup.enter();
-		newbwgroup.append("g")
+		var newbwgroup = bwgroup.enter().append("g")
 			.attr("class", "bandwidth")
-			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
-			.append("path")
+			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
+			
+		newbwgroup.append("path")
 			.attr("d", stripDataFunc);
 
 		newbwgroup.append("text")

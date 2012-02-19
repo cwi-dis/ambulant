@@ -7,39 +7,35 @@ DEBUG=False
 
 class BandwidthCollector:
 	"""Record bandwidth"""
-	def __init__(self, now, master):
-		self.bw = [(now, 0)]
+	BIN_DURATION=1
+	
+	def __init__(self, starttime, master):
+		self.starttime = starttime
+		self.bw = []
 		self.master = master
+		self.lasttime = self.starttime
 		
 	def addMeasurement(self, now, bw):
-		oldstart, _ = self.bw[-1]
-		bps = float(bw) / float(now - oldstart)
-		self.bw.append((now, bps))
-		if bps > 0 and self.master:
-			self.master.addCumulative(oldstart, now, bps)
+		self.addCumulative(self.lasttime, now, bw)
+		self.lasttime = now
 		
-	def addCumulative(self, start, end, bps):
-		i0 = self._split(start)
-		i1 = self._split(end)
-		for i in range(i0+1, i1+1):
-			time, oldbps = self.bw[i]
-			self.bw[i] = (time, oldbps+bps)
-			
-	def _split(self, time):
-		for i in range(len(self.bw)):
-			oldtime, oldbps = self.bw[i]
-			if oldtime == time:
-				return i
-			if oldtime > time:
-				self.bw.insert(i, (time, oldbps))
-				return i
-		self.bw.append((time, 0))
-		return len(self.bw)-1
-		
-	def asList(self, start):
-		rv = []
-		for time, bps in self.bw:
-			rv.append((time-start, bps))
+	def addCumulative(self, start, end, bw):
+		startbin = int((start-self.starttime) / self.BIN_DURATION)
+		endbin = int((end-self.starttime) / self.BIN_DURATION)
+		bytes_per_bin = float(bw) / ((1+endbin-startbin)*self.BIN_DURATION)
+		if len(self.bw) <= endbin:
+			self.bw += [0]*((endbin+1)-len(self.bw))
+		for i in range(startbin, endbin+1):
+			self.bw[i] += bytes_per_bin
+		if bw > 0 and self.master:
+			self.master.addCumulative(start, end, bw)
+
+	def asList(self, globStart):
+		rv = [(self.starttime-globStart, 0)]
+		time = self.starttime
+		for bps in self.bw:
+			time += self.BIN_DURATION
+			rv.append((time-globStart, bps))
 		return rv
 					
 class TimeRange:
