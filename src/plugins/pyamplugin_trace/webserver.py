@@ -9,7 +9,7 @@ import webbrowser
 import urllib
 
 PORT=8842
-DEBUG=True
+DEBUG=False
 
 try:
     modfile = __file__
@@ -19,6 +19,8 @@ else:
     dirname = os.path.dirname(modfile)
 
 class WebServer(HTTPServer):
+    allow_reuse_address = 1
+    
     def __init__(self):
         self.tracer = None
         HTTPServer.__init__(self, ('', PORT), MyHandler)
@@ -33,21 +35,22 @@ class WebServer(HTTPServer):
     def _run(self):
         while self._still_running():
             self.handle_request()
+        self.server_close()
             
     def start(self):
-    	if DEBUG: print 'Starting webserver'
+        if DEBUG: print 'Starting webserver'
         thread.start_new_thread(self._run, ())
         url = "http://localhost:%d/visualize.html" % PORT
         #os.system("open %s" % url)
         webbrowser.open(url)
         
     def stop(self):
-    	if DEBUG: print 'Stopping webserver'
-    	self.stopped = True
-    	try:
-    		urllib.urlopen("http://localhost:%d/shutdown" % PORT)
-    	except IOError:
-    		pass
+        if DEBUG: print 'Stopping webserver'
+        self.stopped = True
+        try:
+            urllib.urlopen("http://localhost:%d/shutdown" % PORT)
+        except IOError:
+            pass
         
 class MyHandler(BaseHTTPRequestHandler):
     

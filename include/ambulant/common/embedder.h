@@ -64,6 +64,9 @@ class AMBULANTAPI embedder : public lib::system_embedder {
 	/// keyboard input, and has some limited control over playback of the
 	/// underlying document.
 	virtual bool aux_open(const ambulant::net::url& href) {return false;}
+    
+    /// Tell the embedder that the player is about to terminate.
+    virtual void terminate() { }
 };
 
 } // namespace common

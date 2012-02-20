@@ -2381,6 +2381,7 @@ embedder::embedder(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "done")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: done");
 		if (!PyObject_HasAttrString(itself, "starting")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: starting");
 		if (!PyObject_HasAttrString(itself, "aux_open")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: aux_open");
+		if (!PyObject_HasAttrString(itself, "terminate")) PyErr_Warn(PyExc_Warning, "embedder: missing attribute: terminate");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2498,6 +2499,21 @@ bool embedder::aux_open(const ambulant::net::url& href)
 
 	PyGILState_Release(_GILState);
 	return _rv;
+}
+
+void embedder::terminate()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_embedder, "terminate", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during embedder::terminate() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
 }
 
 /* ------------------------ Class factories ------------------------- */

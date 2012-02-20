@@ -5125,6 +5125,19 @@ static PyObject *embedderObj_aux_open(embedderObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *embedderObj_terminate(embedderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->terminate();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef embedderObj_methods[] = {
 	{"close", (PyCFunction)embedderObj_close, 1,
 	 PyDoc_STR("(ambulant::common::player* p) -> None")},
@@ -5136,6 +5149,8 @@ static PyMethodDef embedderObj_methods[] = {
 	 PyDoc_STR("(ambulant::common::player* p) -> None")},
 	{"aux_open", (PyCFunction)embedderObj_aux_open, 1,
 	 PyDoc_STR("(ambulant::net::url href) -> (bool _rv)")},
+	{"terminate", (PyCFunction)embedderObj_terminate, 1,
+	 PyDoc_STR("() -> None")},
 	{NULL, NULL, 0}
 };
 

@@ -391,6 +391,7 @@ public:
 	void done(ambulant::common::player* p);
 	void starting(ambulant::common::player* p);
 	bool aux_open(const ambulant::net::url& href);
+	void terminate();
 	void show_file(const ambulant::net::url& url) { system_embedder::show_file(url); }
   private:
 	PyObject *py_embedder;
