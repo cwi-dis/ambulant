@@ -16,6 +16,13 @@ g.bandwidth path {
 	stroke-width: 1;
 }
 
+g.nodeBandwidth path {
+	fill: red;
+	stroke: red;
+	stroke-width: 1;
+	fill-opacity: 50%;
+}
+
 line.selected {
 	stroke: yellow;
 	stroke-width: 2;

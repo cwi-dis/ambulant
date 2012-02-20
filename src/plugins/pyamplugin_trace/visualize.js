@@ -112,17 +112,97 @@ var saveData = function() {
 	var newWindow = window.open(uriContent, "Ambulant Visualizer JSON Data");
 }
 
+// Set up the bandwidth indicators
+var setupBandwidth = function(data, isGlobal) {
+	var classname = isGlobal ? "bandwidth" : "nodeBandwidth";
+
+	// Helper function: return the line() object given a d.stripdata object.
+	var stripDataFunc = function(d) {
+		var domNode = this;
+		var area = d3.svg.area()
+			.x(function(d) { return x(d[0]); })
+			.y0(function(d) { 
+				return y.rangeBand() * (1-(d[1]/domNode.parentNode.maxBandwidth)); })
+			.y1(function(d) { return y.rangeBand(); })
+			.interpolate("step-before");
+		return area(d.stripdata);
+	};
+	
+	var setupMaxFunc = function(d) {
+		if (isGlobal) {
+			this.maxBandwidth = d3.max(d.stripdata, function(d) { return d[1];});
+		} else {
+			// XXX Incorrect
+			var max = 0;
+			svg.selectAll("g.bandwidth")
+				.each(function(d) { if (this.maxBandwidth > max) max = this.maxBandwidth; });
+			this.maxBandwidth = max;
+			
+		}
+	}
+	
+	var bwgroup = svg.selectAll("g."+ classname)
+		.data(data, function(d) { return d.objid; })
+		.each(setupMaxFunc);
+	
+	bwgroup.exit().remove();
+	
+	var newbwgroup = bwgroup.enter().append("g")
+		.attr("class", classname)
+		.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
+		.each(setupMaxFunc);
+	
+		
+	newbwgroup.append("path")
+		.attr("d", stripDataFunc);
+
+	if (isGlobal) {
+		newbwgroup.append("text")
+			.attr("y", y.rangeBand() / 2)
+			.attr("dx", 3)
+			.attr("dy", ".35em")
+			.text(function(d) { return "max: " + formatBps(this.parentNode.maxBandwidth) + "Bps"; });
+	}
+	
+	bwgroup.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
+	
+	bwgroup.select("path")
+		.transition().duration(500)
+		.attr("d", stripDataFunc);
+	if (isGlobal) {
+		bwgroup.select("text")
+			.text(function(d) { return "max: " + formatBps(this.parentNode.maxBandwidth) + "Bps"; });
+	}
+};
+
 // Function that handles the global aspects of a node being selected.
 var prepareForSelect = function() {
 	// Deselect old selection
 	svg.selectAll(".selected")
 		.classed("selected", 0);
+		
+	// Remove old per-node bandwidth
+	svg.selectAll(".nodeBandwidth").remove();
 	
 	// Select the currrent run rectangle
 	d3.select(this).selectAll("rect.run")
 		.classed("selected", 1);
 	d3.select(this).selectAll("line.guideline")
 		.classed("selected", 1);
+	if ("bandwidth" in this.__data__) {
+		console.log("Should setup bandwidth data");
+		var bandwidthData = [];
+		for (var k in this.__data__.bandwidth) {
+			var v = this.__data__.bandwidth[k];
+			var newbw = new Object();
+			newbw.objid = "bandwidth " + k;
+			newbw.objtype = "bandwidth";
+			newbw.runs = [];
+			newbw.stripdata = v;
+			bandwidthData.unshift(newbw);
+		}
+		setupBandwidth(bandwidthData, false);
+	}
 	
 };
 
@@ -183,50 +263,7 @@ genGraph = function(data) {
 		.attr("width", w*h_scale + m[1] + m[3])
 		.attr("height", new_h*v_scale + m[0] + m[2]);
 	
-	// Helper function: return the line() object given a d.stripdata object.
-	var stripDataFunc = function(d) {
-		var domNode = this;
-		var area = d3.svg.area()
-			.x(function(d) { return x(d[0]); })
-			.y0(function(d) { 
-				return y.rangeBand() * (1-(d[1]/domNode.parentNode.maxBandwidth)); })
-			.y1(function(d) { return y.rangeBand(); })
-			.interpolate("step-before");
-		return area(d.stripdata);
-	};
-	
-	// Set up the bandwidth indicators
-	var setupGlobalBandwidth = function(data) {
-		var bwgroup = svg.selectAll("g.bandwidth")
-		.data(data, function(d) { return d.objid; })
-		.each(function(d) { 
-			this.maxBandwidth = d3.max(d.stripdata, function(d) { return d[1]; }); });
-		
-		bwgroup.exit().remove();
-		
-		var newbwgroup = bwgroup.enter().append("g")
-			.attr("class", "bandwidth")
-			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
-			.each(function(d) { 
-				this.maxBandwidth = d3.max(d.stripdata, function(d) { return d[1]; }); });
-			
-		newbwgroup.append("path")
-			.attr("d", stripDataFunc);
-
-		newbwgroup.append("text")
-			.attr("y", y.rangeBand() / 2)
-			.attr("dx", 3)
-			.attr("dy", ".35em")
-			.text(function(d) { return "max: " + formatBps(this.parentNode.maxBandwidth) + "Bps"; });
-			
- 		bwgroup.select("path")
- 			.transition().duration(500)
- 			.attr("d", stripDataFunc);
-		bwgroup.select("text")
-			.text(function(d) { return "max: " + formatBps(this.parentNode.maxBandwidth) + "Bps"; });
-	};
-	
-	setupGlobalBandwidth(bandwidthData);
+	setupBandwidth(bandwidthData, true);
 			
 	// Setup the background.
 	var setupBackground = function(data) {
