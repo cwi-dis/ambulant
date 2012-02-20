@@ -50,6 +50,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(ProjectDir)\..\..\src\pyambulant
+set LDFLAGS=-L..\..\lib\win32
 $(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32
 </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd $(ProjectDir)\..\..\src\pyambulant

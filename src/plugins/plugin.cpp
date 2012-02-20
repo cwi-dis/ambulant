@@ -77,7 +77,7 @@ class basic_plugin : public common::playable_imp
 	void seek(double where) {};
 	//void stop();
 	bool stop();
-	void pause();
+	void pause(common::pause_display d=common::display_show);
 	void resume();
 };
 
@@ -145,7 +145,7 @@ basic_plugin::stop()
 }
 
 void
-basic_plugin::pause()
+basic_plugin::pause(common::pause_display)
 {
 }
 

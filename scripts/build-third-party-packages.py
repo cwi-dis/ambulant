@@ -925,7 +925,7 @@ third_party_packages={
         WinTPP("libdispatch",
             url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
             url2="DrPizza-libdispatch-1ed626c.zip",
-            checkcmd="if not exist DrPizza-libdispatch-1ed626c\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
+            checkcmd="if defined VS100COMNTOOLS if not exist DrPizza-libdispatch-1ed626c\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
             buildcmd="cd DrPizza-libdispatch-1ed626c && " +
                 "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
                 "devenv libdispatch.sln /build StaticDebug /project libdispatch "
