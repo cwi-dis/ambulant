@@ -185,10 +185,11 @@ genGraph = function(data) {
 	
 	// Helper function: return the line() object given a d.stripdata object.
 	var stripDataFunc = function(d) {
-		var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
+		var domNode = this;
 		var area = d3.svg.area()
 			.x(function(d) { return x(d[0]); })
-			.y0(function(d) { return y.rangeBand() * (1-(d[1]/maxy)); })
+			.y0(function(d) { 
+				return y.rangeBand() * (1-(d[1]/domNode.parentNode.maxBandwidth)); })
 			.y1(function(d) { return y.rangeBand(); })
 			.interpolate("step-before");
 		return area(d.stripdata);
@@ -197,13 +198,17 @@ genGraph = function(data) {
 	// Set up the bandwidth indicators
 	var setupGlobalBandwidth = function(data) {
 		var bwgroup = svg.selectAll("g.bandwidth")
-		.data(data, function(d) { return d.objid; });
+		.data(data, function(d) { return d.objid; })
+		.each(function(d) { 
+			this.maxBandwidth = d3.max(d.stripdata, function(d) { return d[1]; }); });
 		
 		bwgroup.exit().remove();
 		
 		var newbwgroup = bwgroup.enter().append("g")
 			.attr("class", "bandwidth")
-			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; });
+			.attr("transform", function(d) { return "translate(0," + y(d.objid) + ")"; })
+			.each(function(d) { 
+				this.maxBandwidth = d3.max(d.stripdata, function(d) { return d[1]; }); });
 			
 		newbwgroup.append("path")
 			.attr("d", stripDataFunc);
@@ -212,13 +217,13 @@ genGraph = function(data) {
 			.attr("y", y.rangeBand() / 2)
 			.attr("dx", 3)
 			.attr("dy", ".35em")
-			.text(function(d) { return "max: " + formatBps(d3.max(d.stripdata, function(d) { return d[1]; })) + "Bps"; });
+			.text(function(d) { return "max: " + formatBps(this.parentNode.maxBandwidth) + "Bps"; });
 			
  		bwgroup.select("path")
  			.transition().duration(500)
  			.attr("d", stripDataFunc);
 		bwgroup.select("text")
-			.text(function(d) { return "max: " + formatBps(d3.max(this.parentNode.__data__.stripdata, function(d) { return d[1]; })) + "Bps"; });
+			.text(function(d) { return "max: " + formatBps(this.parentNode.maxBandwidth) + "Bps"; });
 	};
 	
 	setupGlobalBandwidth(bandwidthData);
