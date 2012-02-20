@@ -162,19 +162,7 @@ genGraph = function(data) {
 				newbw.objid = "bandwidth " + k;
 				newbw.objtype = "bandwidth";
 				newbw.runs = [];
-				newbw.stripdata = [[0, 0]];
-				var lasttime = 0;
-				if (v.length) {
-					newbw.stripdata.push([v[0][0], 0]);
-					lasttime = v[0][0];
-				}
-				v.forEach(function(d) {
-					newbw.stripdata.push([lasttime, d[1]]);
-					newbw.stripdata.push(d);
-					lasttime = d[0];
-					});
-				newbw.stripdata.push([lasttime, 0]);
-				newbw.stripdata.push([0, 0]);
+				newbw.stripdata = v;
 				bandwidthData.unshift(newbw);
 			}
 		}
@@ -198,10 +186,12 @@ genGraph = function(data) {
 	// Helper function: return the line() object given a d.stripdata object.
 	var stripDataFunc = function(d) {
 		var maxy = d3.max(d.stripdata, function(d) { return d[1]; });
-		var line = d3.svg.line()
+		var area = d3.svg.area()
 			.x(function(d) { return x(d[0]); })
-			.y(function(d) { return y.rangeBand() * (1-(d[1]/maxy)); });
-		return line(d.stripdata);
+			.y0(function(d) { return y.rangeBand() * (1-(d[1]/maxy)); })
+			.y1(function(d) { return y.rangeBand(); })
+			.interpolate("step-before");
+		return area(d.stripdata);
 	};
 	
 	// Set up the bandwidth indicators
@@ -224,9 +214,9 @@ genGraph = function(data) {
 			.attr("dy", ".35em")
 			.text(function(d) { return "max: " + formatBps(d3.max(d.stripdata, function(d) { return d[1]; })) + "Bps"; });
 			
-		bwgroup.select("path")
-			.transition().duration(500)
-			.attr("d", stripDataFunc);
+ 		bwgroup.select("path")
+ 			.transition().duration(500)
+ 			.attr("d", stripDataFunc);
 		bwgroup.select("text")
 			.text(function(d) { return "max: " + formatBps(d3.max(this.parentNode.__data__.stripdata, function(d) { return d[1]; })) + "Bps"; });
 	};

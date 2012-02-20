@@ -12,6 +12,8 @@ rect.oddbackground {
 
 g.bandwidth path {
 	fill: orange;
+	stroke: orange;
+	stroke-width: 1;
 }
 
 line.selected {
