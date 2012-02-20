@@ -7,7 +7,7 @@ DEBUG=False
 
 class BandwidthCollector:
 	"""Record bandwidth"""
-	BIN_DURATION=1
+	BIN_DURATION=0.1
 	
 	def __init__(self, starttime, master):
 		self.starttime = starttime
