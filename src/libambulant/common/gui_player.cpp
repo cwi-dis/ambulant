@@ -20,6 +20,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/smil2/test_attrs.h"
+#include "ambulant/common/embedder.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
