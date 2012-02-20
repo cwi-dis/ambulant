@@ -368,7 +368,7 @@ class TracePlayerFeedback(ambulant.player_feedback):
 		if self.next_feedback: self.next_feedback.playable_deleted(playable)
 
 	def playable_resource(self, playable, resource, amount):
-		if 1: print self.timestamp(), "playable_resource(%s, %s, %f)" % (playable.get_sig(), resource, amount)
+		if DEBUG: print self.timestamp(), "playable_resource(%s, %s, %f)" % (playable.get_sig(), resource, amount)
 		plid = self._id_for_playable(playable)
 		playrun = self.collector.getPlayable(plid)
 		bwc = playrun.getBandwidthCollector(resource, self.collector)

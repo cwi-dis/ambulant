@@ -1,7 +1,7 @@
 import tracer
 import webserver
 import ambulant
-DEBUG=True
+DEBUG=False
 
 
 class TraceEmbedder(ambulant.embedder):
