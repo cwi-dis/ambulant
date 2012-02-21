@@ -175,6 +175,22 @@ var setupBandwidth = function(data, isGlobal) {
 	}
 };
 
+
+// Mangle the bandwidth data to the form we need
+var mangleBandwidthData = function(origBWdata) {
+	var bandwidthData = [];
+	for (var k in origBWdata) {
+		var v = origBWdata[k];
+		var newbw = new Object();
+		newbw.objid = "bandwidth \"" + k + ":\"";
+		newbw.objtype = "bandwidth";
+		newbw.runs = [];
+		newbw.stripdata = v;
+		bandwidthData.unshift(newbw);
+	}
+	return bandwidthData;
+}
+
 // Function that handles the global aspects of a node being selected.
 var prepareForSelect = function() {
 	// Deselect old selection
@@ -191,16 +207,7 @@ var prepareForSelect = function() {
 		.classed("selected", 1);
 	if ("bandwidth" in this.__data__) {
 		console.log("Should setup bandwidth data");
-		var bandwidthData = [];
-		for (var k in this.__data__.bandwidth) {
-			var v = this.__data__.bandwidth[k];
-			var newbw = new Object();
-			newbw.objid = "bandwidth " + k;
-			newbw.objtype = "bandwidth";
-			newbw.runs = [];
-			newbw.stripdata = v;
-			bandwidthData.unshift(newbw);
-		}
+		var bandwidthData = mangleBandwidthData(this.__data__.bandwidth);
 		setupBandwidth(bandwidthData, false);
 	}
 	
@@ -236,15 +243,7 @@ genGraph = function(data) {
 	// Get the global bandwidth data, if needed
 	if ("bandwidth" in showTypes && showTypes["bandwidth"]) {
 		if ("bandwidth" in data[0].runs[0]) {
-			for (var k in data[0].runs[0].bandwidth) {
-				var v = data[0].runs[0].bandwidth[k];
-				var newbw = new Object();
-				newbw.objid = "bandwidth " + k;
-				newbw.objtype = "bandwidth";
-				newbw.runs = [];
-				newbw.stripdata = v;
-				bandwidthData.unshift(newbw);
-			}
+			bandwidthData = mangleBandwidthData(data[0].runs[0].bandwidth)
 		}
 	}
 	var allData = [];	
@@ -360,6 +359,17 @@ genGraph = function(data) {
 			.attr('x2', function(d) { return x(d.stop); })
 			.attr('y1', function(d) { return -y(this.parentNode.parentNode.__data__.objid); })
 			.attr('y2', h);
+			
+		// And modify bandwidth, if this node was already selected
+		rungroup.selectAll("rect.selected")
+			.each(function(d) {
+				if ("bandwidth" in this.__data__) {
+					console.log("Should setup bandwidth data");
+					var bandwidthData = mangleBandwidthData(this.__data__.bandwidth);
+					setupBandwidth(bandwidthData, false);
+				}
+			});
+				
 
 		// Now for all the new rungroups, create the active/postactive bars and the text field.
 		var newrungroup = rungroup.enter()
