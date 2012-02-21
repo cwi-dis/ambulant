@@ -257,6 +257,13 @@ void
 renderer_playable_dsall::readdone()
 {
 	if (!m_src) return;
+    {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
 	size_t cur_size = m_src->size();
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d) cookie=%d", (void *)this, cur_size, m_cookie);
 

@@ -87,6 +87,7 @@ OBJECTS=[
 	("renderer_select", "ambulant::common::renderer_select", None),
 	
 	"common/player.h",
+	("focus_feedback", "ambulant::common::focus_feedback", None),
 	("player_feedback", "ambulant::common::player_feedback", None),
 	("player", "ambulant::common::player", None),
 	

@@ -115,10 +115,13 @@ class smil_player :
 	virtual void stopped(int n, double t);
 	virtual void clicked(int n, double t);
 	virtual void pointed(int n, double t);
-	virtual void stalled(int n, double t);
-	virtual void unstalled(int n, double t);
 	virtual void transitioned(int n, double t);
 	virtual void marker_seen(cookie_type n, const char *name, double t);
+// Defined below
+//	virtual void playable_stalled(const playable *p, const char *reason);
+//	virtual void playable_unstalled(const playable *p);
+//	virtual void playable_started(const playable *p, const lib::node *n, const char *comment);
+//	virtual void playable_resource(const playable *p, const char *resource, long amount);
 
 	//////////////////////
 	// Time node context: Playable queries
@@ -146,15 +149,29 @@ class smil_player :
 	virtual bool wait_for_eom() const { return m_wait_for_eom_flag;}
 	virtual void set_wait_for_eom(bool b) { m_wait_for_eom_flag = b;}
 
+    // Focus feedback stuff
+	void set_focus_feedback(common::focus_feedback *h) { m_focus_handler = h; }
+	void node_focussed(const lib::node *n) { if (m_focus_handler) m_focus_handler->node_focussed(n); }
 	// Feedback stuff
 	void set_feedback(common::player_feedback *h) { m_feedback_handler = h; }
+    common::player_feedback *get_feedback() { return m_feedback_handler; }
 	void document_loaded(lib::document *doc) { if (m_feedback_handler) m_feedback_handler->document_loaded(doc); }
 	void document_started() { if (m_feedback_handler) m_feedback_handler->document_started(); }
 	void document_stopped() { if (m_feedback_handler) m_feedback_handler->document_stopped(); }
 	void node_started(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_started(n); }
+	void node_filled(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_filled(n); }
 	void node_stopped(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_stopped(n); }
-	void node_focussed(const lib::node *n) { if (m_feedback_handler) m_feedback_handler->node_focussed(n); }
-
+	void playable_started(const playable *p, const lib::node *n, const char *comment) {
+		if (m_feedback_handler) m_feedback_handler->playable_started(p, n, comment);
+	}
+	void playable_stalled(const playable *p, const char *reason) { if (m_feedback_handler) m_feedback_handler->playable_stalled(p, reason); }
+	void playable_unstalled(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_unstalled(p); }
+	void playable_cached(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_cached(p); }
+	void playable_deleted(const playable *p) { if (m_feedback_handler) m_feedback_handler->playable_deleted(p); }
+	void playable_resource(const playable *p, const char *resource, long amount) {
+		if (m_feedback_handler) m_feedback_handler->playable_resource(p, resource, amount);
+	}
+	
 	virtual bool goto_node(const lib::node *n);
 
 	bool highlight(const lib::node *n, bool on=true);
@@ -178,6 +195,7 @@ class smil_player :
 	common::playable* _new_playable(const lib::node *n);
 	void _destroy_playable(common::playable *r, const lib::node *n);
 	void destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim);
+    void empty_playable_cache();
 	common::playable* _get_playable(const lib::node *n) {
 		std::map<const lib::node*, common::playable *>::iterator it =
 			m_playables.find(n);
@@ -194,6 +212,7 @@ class smil_player :
 	//common::window_factory *m_wf;
 	//common::playable_factory *m_pf;
 	common::embedder *m_system;
+	common::focus_feedback *m_focus_handler;
 	common::player_feedback *m_feedback_handler;
 	animation_engine *m_animation_engine;
 	time_node* m_root;

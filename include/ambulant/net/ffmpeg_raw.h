@@ -79,18 +79,21 @@ class rawdatasink {
 
 class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
   public:
-	ffmpeg_rawreader(URLContext *con);
+	ffmpeg_rawreader(URLContext *con, const net::url& url);
 	~ffmpeg_rawreader();
 
 	static URLContext *supported(const net::url& url);
 
 	void set_datasink(rawdatasink *parent);
 	void cancel();
+    long get_bandwidth_usage_data(const char **resource);
   protected:
 	unsigned long run();
   private:
 	URLContext *m_con;
 	rawdatasink *m_sink;
+    long m_bytes_read;
+    std::string m_resource_type;
 	lib::critical_section m_lock;
 };
 
@@ -117,6 +120,7 @@ class ffmpeg_raw_datasource:
 	size_t get_sinkbuffer(uint8_t **datap);
 	void pushdata(size_t size);
 
+    long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(resource); }
   private:
 	bool _end_of_file();
 	const net::url m_url;

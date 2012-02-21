@@ -61,7 +61,7 @@ ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	detail::ffmpeg_rawreader *thread = new detail::ffmpeg_rawreader(context);
+	detail::ffmpeg_rawreader *thread = new detail::ffmpeg_rawreader(context, url);
 	datasource *ds = new ffmpeg_raw_datasource(url, context, thread);
 	if (ds == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: could not allocate ffmpeg_video_datasource");
@@ -75,11 +75,14 @@ ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 // **************************** ffmpeg_rawreader *****************************
 
 
-detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con)
+detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con, const net::url &url)
 :   m_con(con),
-	m_sink(NULL)
+	m_sink(NULL),
+    m_resource_type("unknown"),
+	m_bytes_read(0)
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::ffmpeg_rawreader() m_con=0x%x", con);
+    m_resource_type = url.get_protocol();
 }
 
 detail::ffmpeg_rawreader::~ffmpeg_rawreader()
@@ -125,6 +128,18 @@ detail::ffmpeg_rawreader::set_datasink(detail::rawdatasink *parent)
 	m_lock.leave();
 }
 
+long
+detail::ffmpeg_rawreader::get_bandwidth_usage_data(const char **resource)
+{
+    m_lock.enter();
+    long rv = m_bytes_read;
+    m_bytes_read = 0;
+    *resource = m_resource_type.c_str();
+    m_lock.leave();
+    return rv;
+}
+
+
 unsigned long
 detail::ffmpeg_rawreader::run()
 {
@@ -146,9 +161,10 @@ detail::ffmpeg_rawreader::run()
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run: calling url_read(size=%d)", (int)sinkbuffersize);
 			bytecount = url_read(m_con, sinkbuffer, (int)sinkbuffersize);
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run:url_read() returned %d", bytecount);
-			if (bytecount >= 0)
+			if (bytecount >= 0) {
+                m_bytes_read += bytecount;
 				m_sink->pushdata((size_t)bytecount);
-			else {
+			} else {
 				m_sink->pushdata(0);
 			}
 

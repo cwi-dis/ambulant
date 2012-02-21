@@ -1442,6 +1442,7 @@ void time_node::fill(qtime_type timestamp) {
 		AM_DBG m_logger->debug("%s.pause() ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(),
 			timestamp.as_time_value_down_to(this), timestamp.second(),
 			timestamp.as_doc_time_value());
+        m_context->node_filled(m_node);
 		if(down()) {
 			std::list<time_node*> cl;
 			get_children(cl);
@@ -1497,7 +1498,8 @@ void time_node::remove(qtime_type timestamp) {
 	else if(is_playable()) stop_playable();
 	/* else nothing to do for statecommands */
 	if(m_timer) m_timer->stop();
-	m_needs_remove = false;
+	m_context->node_stopped(m_node);
+    m_needs_remove = false;
 }
 
 ///////////////////////////////
@@ -1765,8 +1767,8 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 		if(n) n->raise_update_event(timestamp);
 	}
 
-	if(is_root()) m_context->done_playback();
-	m_context->node_stopped(m_node);
+	if(is_root()) 
+        m_context->done_playback();
 }
 
 void time_node::raise_activate_event(qtime_type timestamp) {

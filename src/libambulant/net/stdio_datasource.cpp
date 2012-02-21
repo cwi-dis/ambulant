@@ -197,3 +197,15 @@ stdio_datasource::readdone(size_t sz)
 	m_buffer->readdone(sz);
 	m_lock.leave();
 }
+
+
+long
+stdio_datasource::get_bandwidth_usage_data(const char **resource)
+{
+    m_lock.enter();
+    long rv = m_filesize;
+    m_filesize = 0;
+    *resource = "file";
+    m_lock.leave();
+    return rv;
+}

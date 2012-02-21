@@ -123,7 +123,7 @@ class AMBULANTAPI d2_player :
 	public d2_capture_callback
 {
   public:
-	d2_player(d2_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
+	d2_player(d2_player_callbacks &hoster, common::focus_feedback *feedback, const net::url& u);
 	~d2_player();
 
 	/// Call on application termination

@@ -91,7 +91,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	}
 
 
-	ffmpeg_demux *thread = new ffmpeg_demux(context, clip_begin, clip_end);
+	ffmpeg_demux *thread = new ffmpeg_demux(context, url, clip_begin, clip_end);
 
 	// Now, we can check that there is actually video in the file.
 	if (thread->video_stream_nr() < 0) {

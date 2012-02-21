@@ -114,6 +114,7 @@ class video_renderer : public common::renderer_playable {
 	long int m_epoch;
 	bool m_activated;			// True if a datasource callback is outstanding
 	bool m_post_stop_called;	// True if we are expecting only one more callback
+	bool m_is_stalled;			// True if we emitted a stalled() feedback call
 	bool m_is_paused;
 	long int m_paused_epoch;
 	net::timestamp_t m_last_frame_timestamp;

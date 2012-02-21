@@ -203,12 +203,6 @@ class playable_notification {
 	/// Playable corresponding to cookie n has finished.
 	virtual void stopped(cookie_type n, double t = 0) = 0;
 
-	/// Playable corresponding to cookie n is stalled.
-	virtual void stalled(cookie_type n, double t = 0) = 0;
-
-	/// Playable corresponding to cookie n is no longer stalled.
-	virtual void unstalled(cookie_type n, double t = 0) = 0;
-
 	/// Playable corresponding to cookie n received a mouse click.
 	virtual void clicked(cookie_type n, double t = 0) = 0;
 
@@ -220,6 +214,18 @@ class playable_notification {
 
 	/// Playable corresponding to cookie n has seen a marker.
 	virtual void marker_seen(cookie_type n, const char *name, double t = 0) = 0;
+
+	/// Trace notification callback: playable has stalled.
+	virtual void playable_stalled(const playable *p, const char *reason) = 0;
+
+	/// Trace notification callback: playable is no longer stalled.
+	virtual void playable_unstalled(const playable *p) = 0;
+
+	/// Trace notification callback: new auxiliary renderer has started.
+	virtual void playable_started(const playable *p, const lib::node *n, const char *comment) = 0;
+
+	/// Trace notification callback: resource usage.
+	virtual void playable_resource(const playable *p, const char *resource, long amount) = 0;
 };
 
 /// Machine-dependent auxiliary object to be passed to renderer factories.

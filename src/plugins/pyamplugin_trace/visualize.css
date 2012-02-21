@@ -1,0 +1,113 @@
+body {
+  font: 10px sans-serif;
+}
+
+rect.background {
+	fill: #f5f5f5;
+}
+
+rect.oddbackground {
+	fill: #ffffff;
+}
+
+g.bandwidth path {
+	fill: orange;
+	stroke: orange;
+	stroke-width: 1;
+}
+
+g.nodeBandwidth path {
+	fill: red;
+	stroke: red;
+	stroke-width: 1;
+	fill-opacity: 50%;
+}
+
+line.selected {
+	stroke: yellow;
+	stroke-width: 2;
+}
+
+line.successor {
+	color: orange;
+	stroke-width: 2;
+}
+
+g.bar rect.selected {
+	stroke: black;
+	stroke-width: 2;
+}
+
+g.bar rect.run {
+  fill: #1f77b4;
+}
+
+g.bar rect.fill {
+  fill: #aec7e8;
+}
+
+.legend-rest {
+  background-color: #1f77b4;
+}
+
+g.medianode rect.run {
+  fill: #17becf;
+}
+
+g.medianode rect.fill {
+  fill: #9edae5;
+}
+
+.legend-medianode {
+  background-color: #17becf;
+}
+
+g.prefetch rect.run {
+  fill: #9467bd;
+}
+
+g.prefetch rect.fill {
+  fill: #c5b0d5;
+}
+
+.legend-prefetch {
+  background-color: #9467bd;
+}
+
+g.playable rect.run {
+  fill: #2ca02c;
+}
+
+g.playable rect.fill {
+  fill: #98df8a;
+}
+
+.legend-playable {
+  background-color: #2ca02c;
+}
+
+g.playable rect.stall {
+  fill: #d62728;
+}
+
+.bar text.value {
+  fill: black;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.axis path {
+  fill: none;
+}
+
+.x.axis line {
+  stroke: #fff;
+  stroke-opacity: .8;
+}
+
+.y.axis path {
+  stroke: black;
+}
+

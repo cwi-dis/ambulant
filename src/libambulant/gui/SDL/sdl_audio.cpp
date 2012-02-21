@@ -304,6 +304,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_is_playing(false),
 	m_is_reading(false),
 	m_is_paused(false),
+	m_is_stalled(false),
 	m_read_ptr_called(false),
 	m_volcount(0),
 	m_intransition(NULL),
@@ -504,7 +505,18 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
         if (rv < bytes_wanted) {
             lib::timer::time_type pushback_audio_clock = (lib::timer::time_type)(((bytes_wanted-rv) * 1000) / (44100*2*2));
             m_audio_clock -= pushback_audio_clock;
-        }
+			// This also means we are stalling, due to rebuffering. Report it.
+			if (!m_is_stalled) {
+				m_context->playable_stalled(this, "buffer");
+				m_is_stalled = true;
+			}
+        } else {
+			// We have all the data we want. Report we are no longer stalled.
+			if (m_is_stalled) {
+				m_is_stalled = false;
+				m_context->playable_unstalled(this);
+			}
+		}
 
         // Also set volume(s)
         m_volcount = 0;
@@ -619,6 +631,13 @@ void
 gui::sdl::sdl_audio_renderer::data_avail()
 {
 	m_lock.enter();
+    if (m_audio_src) {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_audio_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
 	AM_DBG {
 		std::string tag = m_node->get_local_name();
 		assert(tag != "prefetch");
@@ -693,6 +712,13 @@ gui::sdl::sdl_audio_renderer::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::stop() this=0x%x, dest=0x%x, cookie=%d", (void *) this, (void*)m_dest, (int)m_cookie);
+    if (m_audio_src) {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_audio_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
 	m_context->stopped(m_cookie, 0);
 
 	m_lock.leave();
@@ -810,6 +836,8 @@ gui::sdl::sdl_audio_renderer::preroll(double when, double where, double how_much
 		net::timestamp_t wtd_position = m_clip_begin + (net::timestamp_t)(where*1000000);
 		if (wtd_position != m_previous_clip_position) {
 			m_previous_clip_position = wtd_position;
+			m_context->playable_stalled(this, "seek");
+			m_is_stalled = true;
 			m_audio_src->seek(wtd_position);
 		}
 		m_audio_src->start_prefetch(m_event_processor);
@@ -827,6 +855,8 @@ gui::sdl::sdl_audio_renderer::seek(double where)
 	AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer: seek(0x%x, %f)", this, where);
 	assert( where >= 0);
 	if (m_audio_src) {
+		m_context->playable_stalled(this, "seek");
+		m_is_stalled = true;
 		m_audio_src->seek((net::timestamp_t)(where*1000000));
 	}
 	m_lock.leave();

@@ -25,7 +25,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
-#define AMBULANT_PLUGIN_API_VERSION 6
+#define AMBULANT_PLUGIN_API_VERSION 8
 
 namespace ambulant {
 

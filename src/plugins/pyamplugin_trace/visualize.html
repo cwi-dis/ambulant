@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="visualize.css">
+    <title>Bar Chart</title>
+    <script type="text/javascript" src="d3.js"></script>
+    <script type="text/javascript" src="visualize.js"></script>
+  </head>
+  <body>
+    <form name="selections">
+    	<span class="legend-rest"><input type="checkbox" name="show" value="*" checked="checked" onClick="visualizerOptionsChanged();">Structure</span>
+    	<span class="legend-medianode"><input type="checkbox" name="show" value="medianode" checked="checked" onClick="visualizerOptionsChanged();">Media</span>
+    	<span class="legend-prefetch"><input type="checkbox" name="show" value="prefetch" checked="checked" onClick="visualizerOptionsChanged();">Prefetch</span>
+    	<span class="legend-playable"><input type="checkbox" name="show" value="playable" checked="checked" onClick="visualizerOptionsChanged();">Renderers</span>
+    	<span class="legend-bandwidth"><input type="checkbox" name="show" value="bandwidth" checked="checked" onClick="visualizerOptionsChanged();">Bandwidth</span>
+    	<br><br>
+    	<input type="button" value="zoomin time" onClick="visualizerZoom(1.414, 1.0);">
+    	<input type="button" value="zoomout time" onClick="visualizerZoom(0.707, 1.0);">
+    	<input type="button" value="larger nodes" onClick="visualizerZoom(1.0, 1.414);">
+    	<input type="button" value="smaller nodes" onClick="visualizerZoom(1.0, 0.707);">
+    	<input type="checkbox" name="autoreload" value="*" checked="checked" onClick="visualizerAutoReloadChanged();">Auto-reload
+    	<br><br>
+    	Load data: <input name="inputdata" type="text"><input type="button" value="Open Data" onClick="loadData()">
+    	<br>
+    	Save data: <input type="button" value="Save to New Window" onClick="saveData()">
+    </form>
+    <div id="graphlocation">
+    </div>
+    <script type="text/javascript">
+		initVisualize();
+    </script>
+  </body>
+</html>
