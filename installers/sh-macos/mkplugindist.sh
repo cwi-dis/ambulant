@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+# set -x
 scriptdir=`dirname $0`
 topdir=$scriptdir/../..
 plugin_name="npambulant.plugin"
