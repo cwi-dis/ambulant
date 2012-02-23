@@ -76,8 +76,7 @@ tell application "Finder"
             set label position to bottom
      	end tell
        	set background picture of opts to file ".folderbg:folderbg.png"		
-	get the background picture of opts
-	set background picture of opts to file ".folderbg:folderbg.png" 
+		update
    end tell
 end tell
 END-OF-SCRIPT
