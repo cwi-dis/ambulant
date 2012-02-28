@@ -34,18 +34,22 @@ if [ ! -d "$plugin_srcdir" ]; then
 fi
 #
 # This installer is constructed from a template 'npambulant-template.dmg', which was created
-# using 'Disk Utility', were its Volume name (npambulant-plugin) was defined, and
-# the background image was defined by creating and copying an initial background image
-# in /Volumes/npambulant-plugin/.background/background.png, then in 'Terminal' entering
-# the commands 'open  /Volumes/npambulant-plugin/.background' and using the 'Finder'
+# using 'Disk Utility', were its Volume name (npambulant-plugin) was defined (read-write).
+# The background image was defined by creating and copying an initial background image
+# in /Volumes/npambulant-plugin/.background/background.png.
+# Next, in 'Terminal' the command 'open  /Volumes/npambulant-plugin/.background' and using the 'Finder'
 # window 'npambulant-plugin' select 'View->Show View Option'. Then, in the 'View Options' window
-# under 'Background' select 'Image' and drag file 'backgound.png' in the '.background' window
-# into the provided space. Then the disk 'npambulant-plugin' was 'Eject'ed and its corresponding .dmg
-# was compressed using: 'hdiutil convert npambulant-plugin-rw.dmg -format UDZO -o npambulant-plugin.dmg'
+# under 'Background' select 'Image' and drag file 'backgound.png' from the '.background' window
+# into the provided space.
+# Finally, the disk 'npambulant-plugin' was 'Eject'ed and its corresponding .dmg was compressed using:
+# 'hdiutil convert npambulant-plugin-rw.dmg -format UDZO -o npambulant-plugin.dmg'
 # The template has all visuals (icons and background), but the files are empty.
 # Their contents are copied in by executing this script.
-# This seems to be more reliable than fiddling with 'osascript', because some
-# 'Finder' versions seem ot use "optimized" techniques to handle folder backgrounds. Based on:
+# All content files are easily modifyable and under version control.
+# To change the disk layout, repeat the disk creation procedure described above.
+#
+# This method seems to be more reliable than fiddling appearnace using 'osascript', because some
+# 'Finder' versions seem to use "optimized" techniques to handle folder backgrounds, etc. Based on:
 # http://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools, 8th answer
 #
 # Create the new .dmg by copying the template
