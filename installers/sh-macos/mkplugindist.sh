@@ -10,7 +10,8 @@ if [ x$1 == x-p ]; then
 fi
 dirname=$1
 installroot=$2
-plugin_srcdir="$installroot/Library/Internet Plug-Ins/$plugin_name"
+# A slash is added here at the end to force the desired behaviour of the 'cp' program
+plugin_srcdir="$installroot/Library/Internet Plug-Ins/$plugin_name/"
 #
 # Check arguments and build environment sanity
 #
@@ -63,9 +64,10 @@ hdiutil attach $dirname-rw.dmg
 #
 # Copy the files, overwriting placeholders
 #
-cp -r "$plugin_srcdir"/ /Volumes/npambulant-plugin/npambulant.plugin
 cp npambulant-installer-README /Volumes/npambulant-plugin/README
 cp npambulant-installer-bg.png /Volumes/npambulant-plugin/.background/background.png
+# Copy recursively the Contents of $plugin_srcdir to the target directory
+cp -R "$plugin_srcdir" /Volumes/npambulant-plugin/npambulant.plugin
 #
 # Done, detach and compress the new disk
 #
