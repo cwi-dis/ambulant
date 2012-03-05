@@ -124,23 +124,23 @@ class TPP(CommonTPP):
     def download(self, trymirror=None):
         if trymirror is None:
             trymirror = TRYMIRROR
+
+        if trymirror and self.url2:
+            # Try the mirror
+            print >>self.output, "+ mirror download:", MIRRORBASE+self.url2
+            try:
+                myurlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
+            except IOError, arg:
+                print >>self.output, "+ download status: error:", arg
+            else:
+                print >>self.output, "+ download status: success"
+                return True
+
         print >>self.output, "+ download:", self.url
         try:
             myurlretrieve(self.url, self.downloadedfile)
         except IOError, arg:
             print >>self.output, "+ download status: error:", arg
-            if not trymirror or not self.url2:
-                return False
-        else:
-            print >>self.output, "+ download status: success"
-            return True
-        # Try the mirror
-        print >>self.output, "+ mirror download:", MIRRORBASE+self.url2
-        try:
-            myurlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
-        except IOError, arg:
-            print >>self.output, "+ download status: error:", arg
-            return False
         else:
             print >>self.output, "+ download status: success"
             return True
