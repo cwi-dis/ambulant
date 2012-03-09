@@ -245,6 +245,7 @@ class AMBULANTAPI d2_player :
 		ID2D1SolidColorBrush *m_bgbrush;
 		d2_window *m_window;
 		D2D1::Matrix3x2F m_mouse_matrix;
+		D2D1_MATRIX_3X2_F m_transform;
 
 	};
 
