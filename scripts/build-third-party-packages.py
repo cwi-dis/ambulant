@@ -889,11 +889,11 @@ third_party_packages={
         #                 "%s VisualC.zip && "
         # and WINDOWS_UNZIP to the arglist if that turns out to happen again in future.
         WinTPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.0-6248.zip",
-            url2="SDL-1.3.0-6248.zip",
-            checkcmd="if not exist SDL-1.3.0-6248\\VisualC\\SDL\\Win32\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
+            url="http://www.libsdl.org/tmp/SDL-1.3.0-6050.zip",
+            url2="SDL-1.3.0-6050.zip",
+            checkcmd="if not exist SDL-1.3.0-6050\\VisualC\\SDL\\Win32\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
-                "cd SDL-1.3.0-6248 && "
+                "cd SDL-1.3.0-6050 && "
                 "cd VisualC && "
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
                 "set LIB=%s\\Lib\\x86;%%LIB%% && "
