@@ -16,7 +16,7 @@ TRYMIRROR=True
 #   python build-third-party-packages.py -m
 # in the directory on the server.
 MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.3/"
-LIVE_MIRRORDATE="20110522"
+LIVE_MIRRORDATE="2012.02.29"
 SDL_MIRRORDATE="20120306"
 
 #
@@ -510,6 +510,7 @@ third_party_packages={
             ),
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -887,11 +888,11 @@ third_party_packages={
         #                 "%s VisualC.zip && "
         # and WINDOWS_UNZIP to the arglist if that turns out to happen again in future.
         WinTPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.0-6248.zip",
-            url2="SDL-1.3.0-6248.zip",
-            checkcmd="if not exist SDL-1.3.0-6248\\VisualC\\SDL\\Win32\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
+            url="http://www.libsdl.org/tmp/SDL-1.3.0-6050.zip",
+            url2="SDL-1.3.0-6050.zip",
+            checkcmd="if not exist SDL-1.3.0-6050\\VisualC\\SDL\\Win32\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
-                "cd SDL-1.3.0-6248 && "
+                "cd SDL-1.3.0-6050 && "
                 "cd VisualC && "
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
                 "set LIB=%s\\Lib\\x86;%%LIB%% && "
