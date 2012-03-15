@@ -17,6 +17,7 @@ TRYMIRROR=True
 # in the directory on the server.
 MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.3/"
 MIRRORDATE="20110522"
+LIVEMIRRORDATE="2012.02.29"
 
 #
 # Path names for Windows programs and such
@@ -417,7 +418,7 @@ third_party_packages={
             ),
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVEMIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -512,6 +513,7 @@ third_party_packages={
             ),
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%LIVEMIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -614,7 +616,7 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVEMIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "set -x;cd live && "
@@ -703,7 +705,7 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVEMIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -812,7 +814,7 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVEMIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
@@ -902,7 +904,7 @@ third_party_packages={
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVEMIRRORDATE,
             extractcmd='cmd /c "%s live555-latest.tar.gz && %s live555-latest.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
