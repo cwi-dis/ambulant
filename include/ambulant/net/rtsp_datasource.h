@@ -47,6 +47,7 @@
 #endif
 
 // LiveMedia includes
+#define RTSPCLIENT_SYNCHRONOUS_INTERFACE 1
 #include "BasicUsageEnvironment.hh"
 #include "liveMedia.hh"
 
