@@ -422,7 +422,7 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles macosx3264 && "
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
@@ -513,7 +513,7 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles macosxfat && "
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
@@ -616,7 +616,7 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "set -x;cd live && "
-                "tar xf %s/third_party_packages/live-iOS-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles iOS-Device-armv6 && "
                 "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&" 
                  "./genMakefiles iOS-Device-armv7 && "
@@ -705,7 +705,7 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-iOS-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles iOS-Simulator && "
                 "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
@@ -814,7 +814,7 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                        "( grep fPIC config.linux >/dev/null || patch -i %s/third_party_packages/live.patch config.linux ) &&"
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles linux && "
                 "make ${MAKEFLAGS} " % (AMBULANT_DIR)
             ),
