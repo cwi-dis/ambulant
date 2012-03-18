@@ -8,7 +8,7 @@
 	products (shared lib, plugins, browser plugins, etc) built.
 	Picked up by many projects inside Ambulant_win32.sln.
 -->
-<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN" PerformEnvironmentSet="false"/>
+<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR" PerformEnvironmentSet="false"/>
 
 <!--
 	Set the following variables to the locations where you downloaded the various
@@ -43,6 +43,15 @@
 <UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-3.1.1" PerformEnvironmentSet="true"/>
 <UserMacro Name="xerces_major" Value="3" PerformEnvironmentSet="true"/>
 <UserMacro Name="xerces_minor" Value="1" PerformEnvironmentSet="true"/>
+<!-- 
+	If WITH_GCD_EVENT_PROCESSOR is included in global_ambulant_defines, above, 
+	these variables make sure we build with libdispatch.
+	If it is not included set the variables to empty.
+-->
+<UserMacro Name="libdispatch_release" Value="libdispatch.lib" PerformEnvironmentSet="true"/>
+<UserMacro Name="libdispatch_debug" Value="libdispatchD.lib" PerformEnvironmentSet="true"/>
+<UserMacro Name="libdispatch_dir" Value="..\..\..\libdispatch\libdispatch" PerformEnvironmentSet="true"/>
+	
 <!--
 	The next three are only needed if you want to build the firefox plugin.
 	If you don't have these: disable npambulant and npambulant-installer.
