@@ -254,6 +254,7 @@ gui::d2::d2_player::~d2_player() {
 	assert(m_d2d);
 	m_d2d->Release();
 	m_d2d = NULL;
+	set_embedder(NULL);
 	CoUninitialize();
 }
 

@@ -42,6 +42,7 @@ gui_player::~gui_player()
 	if (m_player) m_player->release();
 	m_player = NULL;
     if (m_embedder) m_embedder->terminate();
+	m_embedder = NULL;
 	m_lock.leave();
 }
 
