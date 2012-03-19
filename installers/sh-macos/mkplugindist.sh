@@ -49,7 +49,7 @@ fi
 # All content files are easily modifyable and under version control.
 # To change the disk layout, repeat the disk creation procedure described above.
 #
-# This method seems to be more reliable than fiddling appearnace using 'osascript', because some
+# This method seems to be more reliable than fiddling appearance using 'osascript', because some
 # 'Finder' versions seem to use "optimized" techniques to handle folder backgrounds, etc. Based on:
 # http://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools, 8th answer
 #

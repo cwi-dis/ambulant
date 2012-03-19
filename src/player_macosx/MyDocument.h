@@ -125,6 +125,10 @@ class document_embedder : public ambulant::common::embedder {
 #endif
 - (IBAction)showHUD: (id)sender;
 - (IBAction)hideHUD: (id)sender;
+
+- (int) countDoc: (int) incr; // count # of simultaneous open docs
+
+
 @end
 
 @interface NSDocumentController(MyDocumentControllerCategory)

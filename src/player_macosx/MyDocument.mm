@@ -33,6 +33,7 @@
 typedef float CGFloat;
 #endif
 
+//#define	AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -419,11 +420,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)openTheDocument
 {
+	NSLog(@"openTheDocument called\n");
 	NSString *url;
 	url = [[self fileURL] absoluteString];
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
-	[self play: self];
+	if ([self countDoc:1 ] == 0) {
+		[self play: self];
+	}
 }
 
 - (void)showWindows
@@ -449,7 +453,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (BOOL) validateUIItem:(id)UIItem
 {
-	AM_DBG NSLog(@"Validating %@", UIItem);
+//	AM_DBG NSLog(@"Validating %@", UIItem);
 	SEL theAction = [UIItem action];
 	if (!myMainloop) {
 		// No document: no checkmarks and grayed for all items
@@ -524,6 +528,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (IBAction)play:(id)sender
 {
 	if (!myMainloop) return;
+	
 	[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
 	[self validateButtons: nil];
 }
@@ -541,11 +546,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// thread, and at that time the window (and the ambulantWidget) is
 	// gone. So the main thread does the cleanup and zaps myMainloop.
 	while (myMainloop && (myMainloop->is_play_active()||myMainloop->is_pause_active())) {
-		AM_DBG NSLog(@"validating in separate thread");
+//		AM_DBG NSLog(@"validating in separate thread");
 		[self validateButtons: nil];
 		sleep(1);
 	}
-	AM_DBG NSLog(@"validating in separate thread - final");
+//	AM_DBG NSLog(@"validating in separate thread - final");
 	[self validateButtons: nil];
 	[pool release];
 	// myMainloop->release();
@@ -581,6 +586,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	myMainloop = NULL;
 	delete embedder;
 	embedder = NULL;
+	[self countDoc: -1];
 	[super close];
 }
 
@@ -910,5 +916,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (IBAction)hideHUD: (id)sender
 {
     [hud_controls removeFromSuperview];
+}
+
+- (int) countDoc: (int) incr
+{
+	static int n_doc;
+	AM_DBG NSLog(@"countDoc: n_doc=%d incr=%d", n_doc, incr);
+	int rv = n_doc;
+	n_doc += incr;
+	return rv;
 }
 @end

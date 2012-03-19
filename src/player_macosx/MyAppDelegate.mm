@@ -25,6 +25,7 @@
 #include <locale.h>
 #include <crt_externs.h>
 
+//#define	AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -99,6 +100,7 @@ initialize_logger()
 @implementation MyAppDelegate
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender
 {
+    NSLog(@"applicationShouldOpenUntitledFile called\n");
 	return NO;
 }
 
@@ -111,6 +113,7 @@ initialize_logger()
 
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification
 {
+	NSLog(@"applicationWillFinishLaunching called\n");
 	// First get our bundle, various initializations need it.
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 
