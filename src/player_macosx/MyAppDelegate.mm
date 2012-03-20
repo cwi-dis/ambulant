@@ -101,6 +101,20 @@ initialize_logger()
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender
 {
     NSLog(@"applicationShouldOpenUntitledFile called\n");
+
+#ifdef WITH_SPLASH_SCREEN
+	// For Ta2 (and other embedded apps) we always show the splash screen
+	// (which takes the place of the welcome document)
+	[self playWelcome: self];
+#else
+	// Test whether we want to run the welcome document (on first run only)
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	if ( ![defaults boolForKey: @"welcomeDocumentSeen"] ) {
+		[self playWelcome: self];
+		[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
+	}
+#endif
+
 	return NO;
 }
 
@@ -120,11 +134,6 @@ initialize_logger()
 	// Install our preferences handler
 	mypreferences::install_singleton();
     
-    // Process command line options
-    char **argv = *_NSGetArgv();
-    int argc = *_NSGetArgc();
-    // process args
-
 	// Install our logger
 	if (initialize_logger() == 0 && getenv("AMBULANT_LOGGER_NOWINDOW") == NULL) {
 		// Show the logger window immedeately if log level is DEBUG
@@ -231,20 +240,11 @@ initialize_logger()
 	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:)
 		forEventClass:'GURL'
 		andEventID:'GURL'];
+}
 
-#ifdef WITH_SPLASH_SCREEN
-	// For Ta2 (and other embedded apps) we always show the splash screen
-	// (which takes the place of the welcome document)
-	[self playWelcome: self];
-#else
-	// Test whether we want to run the welcome document (on first run only)
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	if ( ![defaults boolForKey: @"welcomeDocumentSeen"] ) {
-		[self playWelcome: self];
-		[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
-	}
-#endif
-
+- (void) applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+	NSLog(@"applicationDidFinishLaunching called\n");
 }
 
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
