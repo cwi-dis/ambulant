@@ -316,7 +316,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	CGFloat scaleX = self.bounds.size.width / playerView.bounds.size.width;
 	CGFloat scaleY = self.bounds.size.height / playerView.bounds.size.height;
 	CGFloat scale = fmin(scaleX, scaleY);
-    NSLog(@"scale is %f", scale);
+    AM_DBG NSLog(@"scale is %f", scale);
 
 	// Set the frame of the player view to the new size, while maintaing the inner coordinate
 	// system of the player view.
@@ -420,7 +420,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)openTheDocument
 {
-	NSLog(@"openTheDocument called\n");
+	AM_DBG NSLog(@"openTheDocument called\n");
 	
 	// Pause other players (actually also sent to ourselves, but we are not inited yet)
 	NSDocumentController *dc = [NSDocumentController sharedDocumentController];
@@ -528,6 +528,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)pause:(id)sender
 {
+	/*AM_DBG*/ NSLog(@"pause for %@, myMainloop=0x%x", self, myMainloop);
 	if (myMainloop) myMainloop->pause();
 	[self validateButtons: nil];
 }

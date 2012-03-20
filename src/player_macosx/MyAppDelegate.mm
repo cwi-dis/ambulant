@@ -100,7 +100,7 @@ initialize_logger()
 @implementation MyAppDelegate
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender
 {
-    NSLog(@"applicationShouldOpenUntitledFile called\n");
+    AM_DBG NSLog(@"applicationShouldOpenUntitledFile called\n");
 
 #ifdef WITH_SPLASH_SCREEN
 	// For Ta2 (and other embedded apps) we always show the splash screen
@@ -120,14 +120,14 @@ initialize_logger()
 
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError
 {
-    NSLog(@"typeForContentsOfURL called\n");
+    AM_DBG NSLog(@"typeForContentsOfURL called\n");
     outError = nil;
     return [NSString stringWithUTF8String: "SMIL document"];
 }
 
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification
 {
-	NSLog(@"applicationWillFinishLaunching called\n");
+	AM_DBG NSLog(@"applicationWillFinishLaunching called\n");
 	// First get our bundle, various initializations need it.
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 
@@ -204,7 +204,7 @@ initialize_logger()
 	unsigned int i;
 	for (i=0; i < [langNames count]; i++) {
 		NSString *langName = [langNames objectAtIndex: i];
-		NSLog(@"Language %d: %@", i, langName);
+		AM_DBG NSLog(@"Language %d: %@", i, langName);
 		std::string cLang([langName UTF8String]);
 		ambulant::smil2::test_attrs::add_language(cLang, float(1.0-(factor*i)));
 	}
@@ -244,12 +244,12 @@ initialize_logger()
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	NSLog(@"applicationDidFinishLaunching called\n");
+	AM_DBG NSLog(@"applicationDidFinishLaunching called\n");
 }
 
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
 {
-	NSLog(@"applicationDidChangeScreenParameters");
+	AM_DBG NSLog(@"applicationDidChangeScreenParameters");
 }
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
