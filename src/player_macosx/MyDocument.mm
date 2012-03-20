@@ -421,13 +421,20 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)openTheDocument
 {
 	NSLog(@"openTheDocument called\n");
+	
+	// Pause other players (actually also sent to ourselves, but we are not inited yet)
+	NSDocumentController *dc = [NSDocumentController sharedDocumentController];
+	NSArray *docs = [dc documents];
+	[docs makeObjectsPerformSelector:@selector(pause:) withObject: self];
+	
+	// Create the mainloop (and player, etc) objects
 	NSString *url;
 	url = [[self fileURL] absoluteString];
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
-	if ([self countDoc:1 ] == 0) {
-		[self play: self];
-	}
+	
+	// and play self
+	[self play: self];
 }
 
 - (void)showWindows
