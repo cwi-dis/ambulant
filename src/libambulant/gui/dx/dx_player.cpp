@@ -53,7 +53,7 @@
 #include "ambulant/gui/dx/dx_brush.h"
 
 
-#if 0 // Kees: this causes multiple definitions on my Windows 7
+#if 1 // Kees: this causes multiple definitions on my Windows 7
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
 // order can mess up standard include files.

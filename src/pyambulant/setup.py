@@ -49,12 +49,13 @@ if cflags:
 
 ldflags=os.getenv("LDFLAGS")
 if sys.platform == "win32":
-	ldflags=ldflags.split()
-	for flag in ldflags:
-		if flag[:2] == '-L':
-			LIBDIRS.append(flag[2:])
-		else:
-			LIBRARIES.append(flag)
+	if ldflags:
+		ldflags=ldflags.split()
+		for flag in ldflags:
+			if flag[:2] == '-L':
+				LIBDIRS.append(flag[2:])
+			else:
+				LIBRARIES.append(flag)
 else:				
 	if ldflags:
 		EXTRA_LINK_ARGS=ldflags.split()

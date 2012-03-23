@@ -39,8 +39,8 @@
 		</Configuration>
 		<Configuration
 			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>
@@ -60,8 +60,8 @@
 		</Configuration>
 		<Configuration
 			Name="DebugShlibDX|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>
@@ -81,8 +81,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>
