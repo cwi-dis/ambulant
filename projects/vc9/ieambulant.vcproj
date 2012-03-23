@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="..\..\bin\win32\"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
@@ -123,7 +123,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="..\..\bin\win32\"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
@@ -228,7 +228,7 @@
 		</Configuration>
 		<Configuration
 			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="..\..\bin\win32\"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
@@ -294,7 +294,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies=""
-				OutputFile="$(OutDir)\AmbulantActiveX.dll"
+				OutputFile="$(OutDir)\AmbulantActiveXDX.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib\win32"
@@ -333,7 +333,7 @@
 		</Configuration>
 		<Configuration
 			Name="DebugShlibDX|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="..\..\bin\win32\"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
@@ -400,7 +400,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="comsuppwd.lib"
-				OutputFile="$(OutDir)\AmbulantActiveX_D.dll"
+				OutputFile="$(OutDir)\AmbulantActiveXDX_D.dll"
 				LinkIncremental="0"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""

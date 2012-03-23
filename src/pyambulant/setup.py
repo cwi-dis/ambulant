@@ -94,7 +94,10 @@ if sys.platform != 'win32':
 ##    LIBRARIES.append('ambulant_sdl')
 
 if sys.platform == 'win32':
-    if "--debug" in sys.argv: # THIS IS GROSS!!
+    libambulant = os.getenv("LIBAMBULANT")
+    if libambulant:
+        LIBRARIES.append(libambulant)
+    elif "--debug" in sys.argv:
         LIBRARIES.append('libambulant_shwin32_D')
     else:
         LIBRARIES.append('libambulant_shwin32')
