@@ -1,0 +1,26 @@
+diff -rc gettext-0.18.1.1/gettext-tools/gnulib-lib/stpncpy.c gettext-0.18.1.1mod/gettext-tools/gnulib-lib/stpncpy.c
+*** gettext-0.18.1.1/gettext-tools/gnulib-lib/stpncpy.c	2010-05-24 11:42:47.000000000 +0200
+--- gettext-0.18.1.1mod/gettext-tools/gnulib-lib/stpncpy.c	2012-04-02 23:57:09.000000000 +0200
+***************
+*** 24,29 ****
+--- 24,30 ----
+  /* Specification.  */
+  #include <string.h>
+  
++ #undef stpncpy
+  #ifndef weak_alias
+  # define __stpncpy stpncpy
+  #endif
+diff -rc gettext-0.18.1.1/gettext-tools/src/msgmerge.c gettext-0.18.1.1mod/gettext-tools/src/msgmerge.c
+*** gettext-0.18.1.1/gettext-tools/src/msgmerge.c	2010-06-06 14:49:58.000000000 +0200
+--- gettext-0.18.1.1mod/gettext-tools/src/msgmerge.c	2012-04-03 17:27:32.000000000 +0200
+***************
+*** 71,76 ****
+--- 71,77 ----
+  #define obstack_chunk_alloc xmalloc
+  #define obstack_chunk_free free
+  
++ #undef stpncpy
+  
+  /* If true do not print unneeded messages.  */
+  static bool quiet;

@@ -394,13 +394,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.1.tar.gz",
-            url2="ffmpeg-0.6.1.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
             checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "mkdir ffmpeg-0.6.1-universal && "
-                "cd ffmpeg-0.6.1-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.1 all" % 
+            	"rm -rf ffmpeg-0.6.5-universal && "
+                "mkdir ffmpeg-0.6.5-universal && "
+                "cd ffmpeg-0.6.5-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.5 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
@@ -427,14 +428,15 @@ third_party_packages={
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
-            url2="gettext-0.18.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+            url2="gettext-0.18.1.1.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18 && "
+                "cd gettext-0.18.1.1 && "
+            	"patch -p1 --forward < %s/third_party_packages/gettext-0.18.1.1.patch && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
-                "make install" % MAC106_COMMON_CONFIGURE
+                "make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
             ),
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
@@ -519,10 +521,10 @@ third_party_packages={
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18 && "
+                "cd gettext-0.18.1.1 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
@@ -626,10 +628,10 @@ third_party_packages={
             ),
 
 ##      TPP("gettext",
-##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.18 && "
+##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -712,10 +714,10 @@ third_party_packages={
             ),
 
 ##      TPP("gettext",
-##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.18 && "
+##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -821,11 +823,11 @@ third_party_packages={
             ),
 
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
-            url2="gettext-0.18.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+            url2="gettext-0.18.1.1.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18 && "
+                "cd gettext-0.18.1.1 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
