@@ -567,11 +567,11 @@ third_party_packages={
             ),
 # create fat libraries for armv6/7: foreach arch do configure ...;make; rename lib...a to lib..$arch, then use lipo to combine them 
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            url2="ffmpeg-export-2010-01-22.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "cd ffmpeg-export-2010-01-22 && "
+                "cd ffmpeg-0.6.5 && "
 				"export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
 			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
@@ -581,7 +581,7 @@ third_party_packages={
                 "--extra-cflags='-arch armv6 -I../installed/include' "
 				"--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
-				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-doc;"
+				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
 				"for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
@@ -592,7 +592,7 @@ third_party_packages={
                 "--extra-cflags='-arch armv7 -I../installed/include' "
 				"--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
-				"--disable-ffserver --disable-ffplay --disable-doc;"
+				"--disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
 				"for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
                 "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done;" 
@@ -675,16 +675,16 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            url2="ffmpeg-export-2010-01-22.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "cd ffmpeg-export-2010-01-22 && "
+                "cd ffmpeg-0.6.5 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
                 "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
                 "--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
-                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm;"
+                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
                 "make clean;make ${MAKEFLAGS}; make install" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
@@ -790,11 +790,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            url2="ffmpeg-export-2010-01-22.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "cd ffmpeg-export-2010-01-22 && "
+                "cd ffmpeg-0.6.5&& "
                 "%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
