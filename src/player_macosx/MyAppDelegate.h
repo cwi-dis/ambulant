@@ -28,6 +28,7 @@
 }
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender;
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification;
+- (void) applicationDidFinishLaunching:(NSNotification *)aNotification;
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError;

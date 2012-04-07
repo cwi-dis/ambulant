@@ -25,6 +25,7 @@
 #include <locale.h>
 #include <crt_externs.h>
 
+//#define	AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -99,29 +100,40 @@ initialize_logger()
 @implementation MyAppDelegate
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender
 {
+    AM_DBG NSLog(@"applicationShouldOpenUntitledFile called\n");
+
+#ifdef WITH_SPLASH_SCREEN
+	// For Ta2 (and other embedded apps) we always show the splash screen
+	// (which takes the place of the welcome document)
+	[self playWelcome: self];
+#else
+	// Test whether we want to run the welcome document (on first run only)
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	if ( ![defaults boolForKey: @"welcomeDocumentSeen"] ) {
+		[self playWelcome: self];
+		[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
+	}
+#endif
+
 	return NO;
 }
 
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError
 {
-    NSLog(@"typeForContentsOfURL called\n");
+    AM_DBG NSLog(@"typeForContentsOfURL called\n");
     outError = nil;
     return [NSString stringWithUTF8String: "SMIL document"];
 }
 
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification
 {
+	AM_DBG NSLog(@"applicationWillFinishLaunching called\n");
 	// First get our bundle, various initializations need it.
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 
 	// Install our preferences handler
 	mypreferences::install_singleton();
     
-    // Process command line options
-    char **argv = *_NSGetArgv();
-    int argc = *_NSGetArgc();
-    // process args
-
 	// Install our logger
 	if (initialize_logger() == 0 && getenv("AMBULANT_LOGGER_NOWINDOW") == NULL) {
 		// Show the logger window immedeately if log level is DEBUG
@@ -192,7 +204,7 @@ initialize_logger()
 	unsigned int i;
 	for (i=0; i < [langNames count]; i++) {
 		NSString *langName = [langNames objectAtIndex: i];
-		NSLog(@"Language %d: %@", i, langName);
+		AM_DBG NSLog(@"Language %d: %@", i, langName);
 		std::string cLang([langName UTF8String]);
 		ambulant::smil2::test_attrs::add_language(cLang, float(1.0-(factor*i)));
 	}
@@ -228,25 +240,16 @@ initialize_logger()
 	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:)
 		forEventClass:'GURL'
 		andEventID:'GURL'];
+}
 
-#ifdef WITH_SPLASH_SCREEN
-	// For Ta2 (and other embedded apps) we always show the splash screen
-	// (which takes the place of the welcome document)
-	[self playWelcome: self];
-#else
-	// Test whether we want to run the welcome document (on first run only)
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	if ( ![defaults boolForKey: @"welcomeDocumentSeen"] ) {
-		[self playWelcome: self];
-		[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
-	}
-#endif
-
+- (void) applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+	AM_DBG NSLog(@"applicationDidFinishLaunching called\n");
 }
 
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
 {
-	NSLog(@"applicationDidChangeScreenParameters");
+	AM_DBG NSLog(@"applicationDidChangeScreenParameters");
 }
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent

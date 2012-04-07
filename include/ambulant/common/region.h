@@ -86,6 +86,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	rect get_fit_rect_noalign(const size& src_real_size, rect* out_src_rect) const;
 	void draw_background(const rect &r, gui_window *window);
 	bool _is_active();                  // Return true if region is active
+	void set_forced_redraw();			// Make sure the next redraw is propagated even if empty.
 
   protected:
 	virtual void transition_done(lib::rect area);
@@ -117,6 +118,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	bgrenderer *m_bg_renderer;			// Background renderer
 	renderer_private_data *m_renderer_data;	// per-renderer private data pointer
 	renderer_private_id m_renderer_id;		// owner of m_renderer_data
+	bool m_forced_redraw;
 };
 
 class toplevel_surface_impl : public surface_impl {

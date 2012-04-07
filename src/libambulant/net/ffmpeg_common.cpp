@@ -607,3 +607,10 @@ ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
 	ffcontext->codec_id = codecid->get_codec_id(name);
 	return ffcontext;
 }
+
+lib::critical_section&
+ambulant::net::ffmpeg_global_critical_section()
+{
+	static lib::critical_section lock;
+	return lock;
+}

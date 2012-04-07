@@ -121,8 +121,12 @@ class ffmpeg_demux : public abstract_demux {
 	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
 };
 
-// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.
+/// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.
 AVCodecContext *ffmpeg_alloc_partial_codec_context(bool video, const char *name);
+
+/// Helper routine: return a reference to a global lock (needed for ffmpeg serialization)
+lib::critical_section& ffmpeg_global_critical_section();
+
 
 }	// end namespace net
 }	// end namespace ambulant
