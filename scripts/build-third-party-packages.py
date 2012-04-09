@@ -37,6 +37,11 @@ WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
 XULRUNNER_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/"
 XULRUNNER_VERSION="xulrunner-8.0"
+
+#
+# FFMPEG GIT version-id for Windows
+FFMPEG_WIN_GIT_ID="7f83db3"
+
 #
 # urlretrieve silently ignores 404 errors. We want them, so we can download
 # our shadow copies.
@@ -879,9 +884,15 @@ third_party_packages={
             # No build needed
             ),
 
-        WinTPP("ffmpeg",
-            url="https://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant%2C%20win32/20110119-win32-prebuilt/ffmpeg-20110119-win32-prebuilt.zip/download",
-            checkcmd="if not exist ffmpeg-20110119-win32-prebuilt\\libavformat\\avformat-52.dll exit 1",
+        WinTPP("ffmpeg-bin",
+            url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-git-%s-win32-shared.7z" % FFMPEG_WIN_GIT_ID,
+            checkcmd="if not exist ffmpeg-git-%s-win32-shared\\bin\\avformat-53.dll exit 1" % FFMPEG_WIN_GIT_ID,
+            # No build needed
+            ),
+
+        WinTPP("ffmpeg-dev",
+            url="http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-git-%s-win32-dev.7z" % FFMPEG_WIN_GIT_ID,
+            checkcmd="if not exist ffmpeg-git-%s-win32-dev\\lib\\avformat.lib exit 1" % FFMPEG_WIN_GIT_ID,
             # No build needed
             ),
 
