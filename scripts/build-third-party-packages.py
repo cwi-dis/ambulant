@@ -923,11 +923,19 @@ third_party_packages={
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
-        WinTPP("libdispatch",
+        WinTPP("libdispatch-vs2010",
             url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
-            url2="DrPizza-libdispatch-1ed626c.zip",
-            checkcmd="if defined VS100COMNTOOLS if not exist DrPizza-libdispatch-1ed626c\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
-            buildcmd="cd DrPizza-libdispatch-1ed626c && " +
+            url2="libdispatch-jack-hg284.zip",
+            checkcmd="if defined VS100COMNTOOLS if not exist libdispatch-jack-hg284\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
+            buildcmd="cd libdispatch-jack-hg284 && " +
+                "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
+                "devenv libdispatch.sln /build StaticDebug /project libdispatch "
+        ),
+        WinTPP("libdispatch-vs2008",
+            url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
+            url2="libdispatch-jack-hg284.zip",
+            checkcmd="if defined VS90COMNTOOLS if not exist libdispatch-jack-hg284\\VS2008\\StaticRelease\\libdispatch.lib exit 1",
+            buildcmd="cd libdispatch-jack-hg284\\VS2008 && " +
                 "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
                 "devenv libdispatch.sln /build StaticDebug /project libdispatch "
         ),

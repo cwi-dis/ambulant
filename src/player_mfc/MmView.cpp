@@ -251,7 +251,23 @@ MmView::MmView()
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	ambulant::lib::logger::get_logger()->set_level(level);
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
-	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC"), __DATE__);
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC with VS%s%s"), __DATE__,
+#if _MSC_VER < 1500
+		"2005 or earlier"
+#elif _MSC_VER < 1600
+		"2008"
+#elif _MSC_VER < 1700
+		"2010"
+#else
+		" newer than 2010"
+#endif
+		,
+#ifdef WITH_GCD_EVENT_PROCESSOR
+		" with GCD"
+#else
+		""
+#endif
+		);
 #if ENABLE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif

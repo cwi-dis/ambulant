@@ -49,12 +49,13 @@ if cflags:
 
 ldflags=os.getenv("LDFLAGS")
 if sys.platform == "win32":
-	ldflags=ldflags.split()
-	for flag in ldflags:
-		if flag[:2] == '-L':
-			LIBDIRS.append(flag[2:])
-		else:
-			LIBRARIES.append(flag)
+	if ldflags:
+		ldflags=ldflags.split()
+		for flag in ldflags:
+			if flag[:2] == '-L':
+				LIBDIRS.append(flag[2:])
+			else:
+				LIBRARIES.append(flag)
 else:				
 	if ldflags:
 		EXTRA_LINK_ARGS=ldflags.split()
@@ -93,7 +94,10 @@ if sys.platform != 'win32':
 ##    LIBRARIES.append('ambulant_sdl')
 
 if sys.platform == 'win32':
-    if "--debug" in sys.argv: # THIS IS GROSS!!
+    libambulant = os.getenv("LIBAMBULANT")
+    if libambulant:
+        LIBRARIES.append(libambulant)
+    elif "--debug" in sys.argv:
         LIBRARIES.append('libambulant_shwin32_D')
     else:
         LIBRARIES.append('libambulant_shwin32')

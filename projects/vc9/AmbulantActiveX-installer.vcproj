@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\bin\win32"
+			OutputDirectory="..\..\bin\win32"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			>
@@ -60,8 +60,8 @@
 		</Configuration>
 		<Configuration
 			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\bin\win32"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			BuildLogFile="Ambulant-ActiveX-installer-BuildLog.htm"
@@ -82,8 +82,8 @@
 		</Configuration>
 		<Configuration
 			Name="DebugShlibDX|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\bin\win32"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			>
 			<Tool
