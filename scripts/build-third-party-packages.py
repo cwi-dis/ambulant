@@ -585,7 +585,7 @@ third_party_packages={
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv6 -I../installed/include' "
 				"--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
-                "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
+                " --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
 				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
 				"for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
@@ -596,7 +596,7 @@ third_party_packages={
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv7 -I../installed/include' "
 				"--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
-                "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
+                " --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
 				"--disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
 				"for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
@@ -689,7 +689,7 @@ third_party_packages={
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
                 "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
                 "--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
-                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
+                " --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
                 "make clean;make ${MAKEFLAGS}; make install" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
@@ -800,7 +800,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
             buildcmd=
                 "cd ffmpeg-0.10.2&& "
-                "%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
+                "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
