@@ -23,10 +23,15 @@ rem
 
 set hg="C:\Program Files\TortoiseHg\hg.exe"
 set pageant="C:\Program Files\PuTTY\pageant.exe"
+
 rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
 rem ALTERNATIVE set vcdir="vc9"
+rem ALTERNATIVE set VS100COMNTOOLS=
+
 set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
 set vcdir="vc10"
+set VS90COMNTOOLS=
+
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
 set pscp="c:\Program Files\Putty\pscp.exe" -i %KEYFILE%
 set nsis="c:\Program Files\NSIS\makensis.exe"
