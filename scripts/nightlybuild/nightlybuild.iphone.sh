@@ -8,7 +8,7 @@ set -x
 PATH=$PATH:/Developer/usr/bin
 
 # Unlock the nightly build keychain
-security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuild.keychain
+security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
