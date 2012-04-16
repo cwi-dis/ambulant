@@ -20,7 +20,7 @@
 !define PRODUCT_VERSION "2.3"
 !define PRODUCT_VERSION_BASE "2.3"
 !define DISTRIBUTE_DLL_BUILD
-!define DISTRIBUTE_PYTHON_PLUGIN
+; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
 !define PRODUCT_WEB_SITE "http://www.ambulantplayer.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AmbulantPlayer.exe"
@@ -38,11 +38,11 @@
 ; !define DISTRIBUTE_VC9_RT
 ; !define VC9_DISTDIR "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86"
 
-!define DOWNLOAD_VC9_RT
-!define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
+; !define DOWNLOAD_VC9_RT
+; !define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
 
-; !define DOWNLOAD_VC10_RT
-; !define DOWNLOAD_VC10_RT_URL "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe"
+!define DOWNLOAD_VC10_RT
+!define DOWNLOAD_VC10_RT_URL "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe"
 
 ; File associations
 !include "FileAssociation.nsh"
