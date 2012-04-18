@@ -16,6 +16,8 @@ x)
 esac
 
 # Tunable parameters, to some extent
+SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
+MACOSX_DEPLOYMENT_TARGET=10.6
 AMBULANTVERSION=2.3
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
