@@ -964,7 +964,6 @@ third_party_packages={
         ],
     
 }
-third_party_packages['mac10.7'] = third_party_packages['mac10.6']
 
 def checkenv_win32(target):
     ok = True
@@ -1006,12 +1005,6 @@ def checkenv_unix(target):
         rv = False
     return rv
     
-def get_mac_build_platform():
-	un = os.uname()
-	if un[0] != 'Darwin': return None
-	major, minor, micro = un[2].split('.')
-	osx_minor = int(major)-4
-	return "mac10.%d" % osx_minor
 
 def checkenv_mac(target):
     rv = True
@@ -1020,17 +1013,9 @@ def checkenv_mac(target):
     if os.system("xcodebuild -version >/dev/null") != 0:
         print "** xcodebuild not in $PATH"
         rv = False
-    # Make sure we have MACOSX_DEPLOYMENT_TARGET set, if needed
-    build_platform = get_mac_build_platform()
-    if target != build_platform and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
-        print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development on %s' % (target, build_platform)
-        rv = False
-    if target != build_platform and not os.environ.has_key('SDKROOT'):
-        print '** SDKROOT must be set for %s development on %s' % (target, build_platform)
-        rv = False
-    # We need gas-preprocessor, for ffmpeg
-    if os.system("gas-preprocessor.pl 2>&1 | grep Unrecognized >/dev/null") != 0:
-        print '** Need gas-preprocessor.pl on $PATH. See https://github.com/yuvi/gas-preprocessor'
+    # Make sure we have MACOSX_DEPLOYMENT_TARGET set
+    if target != 'mac10.6' and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
+        print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     return rv
 
@@ -1072,7 +1057,6 @@ def checkenv_iphone(target):
     return rv
         
 environment_checkers = {
-    'mac10.7' : checkenv_mac,
     'mac10.6' : checkenv_mac,
     'mac10.4' : checkenv_mac,
     'iOS-Simulator' : checkenv_iphone,

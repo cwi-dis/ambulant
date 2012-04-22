@@ -172,9 +172,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DSTROOT = /;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = third_party_packages_3264;
-				SDKROOT = /Developer/SDKs/MacOSX10.6.sdk;
 				ZERO_LINK = NO;
 			};
 			name = Common;
