@@ -82,13 +82,18 @@ x)	;;
 esac
 sh autogen.sh
 #
-# The keychain may have been locked again in the mean time
-#
-security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
-#
 # Build CG player
 #
 cd projects/xcode32
+xcodebuild -project libambulant.xcodeproj \
+	-target libambulantiPhone \
+	-configuration Release \
+	-sdk iphoneos4.3 \
+	build
+#
+# The keychain may have been locked again in the mean time
+#
+security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
