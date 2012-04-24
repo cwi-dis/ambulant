@@ -82,6 +82,10 @@ x)	;;
 esac
 sh autogen.sh
 #
+# The keychain may have been locked again in the mean time
+#
+security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
+#
 # Build CG player
 #
 cd projects/xcode32
