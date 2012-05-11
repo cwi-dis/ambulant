@@ -350,6 +350,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_is_playing(false),
 	m_is_reading(false),
 	m_is_paused(false),
+	m_is_stalled(false),
 	m_read_ptr_called(false),
 	m_volcount(0),
 	m_intransition(NULL),
