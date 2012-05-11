@@ -211,12 +211,14 @@ endif
 
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core)
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core) 
 libambulant_sdl_la_DEPENDENCIES=libambulant.la
 sdlincludes = -DWITH_SDL $(SDL_CFLAGS)
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \
-    gui/SDL/sdl_audio.cpp
+    gui/SDL/sdl_audio.cpp \
+    gui/SDL/sdl_fill.cpp  \
+    gui/SDL/sdl_video.cpp
 else
 sdlincludes=
 toolkit_sdl_libraries =
