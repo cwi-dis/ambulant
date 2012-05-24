@@ -19,6 +19,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+#ifdef  WITH_SDL2 
 //X #include "ambulant/gui/sdl/sdl_factory.h"
 //X #include "ambulant/gui/sdl/sdl_includes.h"
 //X #include "ambulant/gui/sdl/sdl_renderer.h"
@@ -98,7 +99,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 {
 	//XXXX locking at this point may result in deadly embrace with internal lock,
 	//XXXX but as far as we know this has never happened
-	m_lock.enter();
+	//XXXXX m_lock.enter(); TMP disabled
 	if (m_data){
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(0x%x)",(void*) this);
 
@@ -131,7 +132,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 //X			g_object_unref (G_OBJECT (gc));
 		}
 
-	int width = m_size.w;
+		int width = m_size.w;
 		int height = m_size.h;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
 		static SDL_Renderer* s_renderer = NULL; //XXXX member !
@@ -170,5 +171,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		rect.h = height;
 		SDL_RenderCopy(s_renderer, s_texture, NULL, &rect);
 	}
-	m_lock.leave();
+	//XXXXX m_lock.leave();
 }
+
+#endif//WITH_SDL2

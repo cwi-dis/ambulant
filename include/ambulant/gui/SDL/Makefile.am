@@ -4,4 +4,6 @@ library_include_HEADERS= \
 	sdl_fill.h \
 	sdl_video.h \
 	sdl_factory.h \
-	sdl_gui.h
+	sdl_window.h
+
+#	sdl_gui.h

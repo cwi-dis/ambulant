@@ -42,6 +42,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
 	src/player_gtk/Makefile
+	src/player_sdl/Makefile
 	src/player_macosx/Makefile
 	src/plugins/Makefile
 	src/pyambulant/Makefile
@@ -588,32 +589,39 @@ dnl Test for SDL
 dnl ======================================================================
 
 test_sdl=true
+test_sdl2=false
 AC_MSG_CHECKING(for sdl - Simple Direct Media layer)
 AC_ARG_WITH(sdl,
-	AS_HELP_STRING([--with-sdl], [Turn on/off SDL support]),
+	AS_HELP_STRING([--with-sdl], [Turn on/off SDL support (=sdl2 for SDL2)]),
 	[
 		if test "x$withval" = "xno"; then
 			test_sdl=false
+		elif test "x$withval" = "xsdl2" ; then
+		     	test_sdl2=true
 		fi
 	])
 if $test_sdl; then
 	# sdl2-config will work for sdl 2.0.X
-    	if sdl2-config --version > /dev/null; then
-    		SDL_CFLAGS=`sdl2-config --cflags`
-    		SDL_LIBS=`sdl2-config --libs`
-	# sdl-config will work for sdl 1.2.X
-	# if sdl-config --version > /dev/null; then
-	#	SDL_CFLAGS=`sdl-config --cflags`
-	#	SDL_LIBS=`sdl-config --libs`
-	else
-		# for 1.3 we need to use pkg-config
-		PKG_CHECK_MODULES(SDL, [sdl >= 1.3.0], test_sdl=true, test_sdl=false)
+    	if  test "x$test_sdl" = "xtrue"; then
+	        if test "x$test_sdl2" = "xtrue" -a sdl2-config --version > /dev/null; then
+    		   	SDL_CFLAGS=`sdl2-config --cflags`
+    			SDL_LIBS=`sdl2-config --libs`
+			with_frontend=true
+		elif sdl-config --version > /dev/null; then
+	       		# sdl-config will work for sdl 1.2.X (audio only)
+     	 	    	SDL_CFLAGS=`sdl-config --cflags`
+			SDL_LIBS=`sdl-config --libs`
+		else	# for 1.3 we need to use pkg-config
+			PKG_CHECK_MODULES(SDL, [sdl >= 1.3.0], test_sdl=true, test_sdl=false)
+		fi
 	fi
 fi
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
+AM_CONDITIONAL(WITH_SDL2, test x$test_sdl2 = xtrue)
 AC_MSG_RESULT($test_sdl)
+AC_MSG_RESULT($test_sdl2)
 
 dnl Testing for GTK
 dnl ====================================================================
@@ -1190,6 +1198,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Enable Xerces as plugin:        ${xerces_plugin}
     Build with ffmpeg:              ${test_ffmpeg}
     Build with SDL:                 ${test_sdl}
+    Build with SDL2:                ${test_sdl2}
     Build with live555.com RTSP:    ${test_live}
     Build with gstreamer:           ${test_gstreamer}
 

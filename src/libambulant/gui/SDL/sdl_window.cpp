@@ -1,0 +1,677 @@
+// This file is part of Ambulant Player, www.ambulantplayer.org.
+//
+// Copyright (C) 2003-2011 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
+//
+// Ambulant Player is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2.1 of the License, or
+// (at your option) any later version.
+//
+// Ambulant Player is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with Ambulant Player; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+#ifdef  WITH_SDL2 // work in prpgress
+
+#define AM_DBG if(1)
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
+#include "ambulant/lib/colors.h"
+#include "ambulant/gui/SDL/sdl_factory.h"
+#include "ambulant/gui/SDL/sdl_window.h"
+//X #include "ambulant/gui/SDL/sdl_image_renderer.h"
+//X #include "ambulant/gui/SDL/sdl_smiltext.h"
+//X #include "ambulant/gui/SDL/sdl_util.h"
+//X #include "ambulant/gui/SDL/sdl_text_renderer.h"
+//X #include "ambulant/gui/SDL/sdl_video_renderer.h"
+
+using namespace ambulant;
+using namespace gui::sdl;
+using namespace common;
+using namespace lib;
+using namespace net;
+//
+// ambulant_sdl_window
+//
+ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
+	lib::rect* bounds,
+	common::gui_events *region)
+:	common::gui_window(region),
+	m_bounds(*bounds),
+	m_ambulant_surface(NULL),
+	m_gui_player(NULL)
+//X	m_oldpixmap(NULL),
+//X	m_tmppixmap(NULL),
+//X	m_arrow_cursor(NULL),
+//X	m_hand1_cursor(NULL),
+//X	m_hand2_cursor(NULL),
+//X	m_fullscreen_count(0),
+//X	m_fullscreen_prev_pixmap(NULL),
+//X	m_fullscreen_old_pixmap(NULL),
+//X	m_fullscreen_engine(NULL),
+//X	m_fullscreen_now(0),
+//X	m_surface(NULL)
+{
+//X	m_pixmap = NULL;
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_sdl_window(0x%x)",(void *)this);
+}
+
+ambulant_sdl_window::~ambulant_sdl_window()
+{
+
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::~ambulant_sdl_window(0x%x): m_ambulant_surface=0x%x",this,m_ambulant_surface);
+	// Note that we don't destroy the surface, only sver the connection.
+	// the surface itself is destroyed independently.
+	if (m_ambulant_surface ) {
+		m_ambulant_surface->set_sdl_window(NULL);
+		m_ambulant_surface = NULL;
+	}
+//X	if (m_pixmap != NULL) {
+//X		g_object_unref(G_OBJECT(m_pixmap));
+//X		m_pixmap = NULL;
+//X	}
+/** m_oldpixmap not to be deleted, it points to either m_pixmap or m_tmppixmap
+	if (m_oldpixmap != NULL) {
+		g_object_unref(G_OBJECT(m_oldpixmap));
+		m_oldpixmap = NULL;
+	}
+**/
+/** m_tmppixmap not to be deleted, it is not a copy anymore
+	if (m_tmppixmap != NULL) {
+		g_object_unref(G_OBJECT(m_tmppixmap));
+		m_tmppixmap = NULL;
+	}
+**/
+}
+
+#ifdef JNK
+void
+ambulant_sdl_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gdk_cursor)
+{
+	switch (gdk_cursor_type) {
+	case GDK_ARROW: m_arrow_cursor = gdk_cursor;
+	case GDK_HAND1: m_hand1_cursor = gdk_cursor;
+	case GDK_HAND2: m_hand2_cursor = gdk_cursor;
+	default:	return;
+	}
+
+}
+
+GdkCursor*
+ambulant_sdl_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
+{
+	switch (gdk_cursor_type) {
+	case GDK_ARROW: return m_arrow_cursor;
+	case GDK_HAND1: return m_hand1_cursor;
+	case GDK_HAND2: return m_hand2_cursor;
+	default:	return NULL;
+	}
+}
+#endif//JNK
+
+void
+ambulant_sdl_window::need_redraw(const lib::rect &r)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
+	if (m_ambulant_surface == NULL) {
+		lib::logger::get_logger()->error("ambulant_sdl_window::need_redraw(0x%x): m_ambulant_surface == NULL !!!", (void*) this);
+		return;
+	}
+#ifdef JNK
+	// we use the parent window for redraw in case this window has been deleted at the time
+	// the callback function is actually called (e.g. the user selects a different file)
+	SDL_Surface* this_surface = m_ambulant_surface->get_sdl_surface();
+	dirty_area_surface* dirty = new dirty_area_surface();
+	dirty->surface = (sdl_ambulant_surface*) sdl_surface_get_parent(this_surface);
+	dirty->area = r;
+	if ( ! sdl_surface_translate_coordinates (this_surface, dirty->surface, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): sdl_surface_translate_coordinates failed.", (void *)this);
+	}
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
+	dirty->ambulant_surface = m_ambulant_surface;
+	sdl_ambulant_surface::s_lock.enter();
+//X	guint draw_area_tag = g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) sdl_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
+	dirty->tag = draw_area_tag;
+	dirty->ambulant_surface->m_draw_area_tags.insert(draw_area_tag);
+	sdl_ambulant_surface::s_lock.leave();
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=0x%x", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, sdl_C_callback_helper_queue_draw_area);
+#endif//JNK
+	// as we don't have a SDL event loop yet, directly call redraw()
+	redraw(r);//XXXX !!!!!
+}
+
+void
+ambulant_sdl_window::redraw(const lib::rect &r)
+{
+
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
+//X	_screenTransitionPreRedraw();
+	clear();
+	m_handler->redraw(r, this);
+#ifdef JNK
+//XXXX	if ( ! isEqualToPrevious(m_pixmap))
+	_screenTransitionPostRedraw(r);
+	gdk_pixmap_bitblt(
+		m_ambulant_surface->get_sdl_surface()->window, r.left(), r.top(),
+		m_pixmap, r.left(), r.top(),
+		r.width(), r.height());
+#ifdef WITH_SCREENSHOTS
+	GError *error = NULL;
+	gint width; gint height;
+
+	gdk_drawable_get_size(m_ambulant_surface->get_sdl_surface()->window, &width, &height);
+
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(
+		NULL,
+		m_ambulant_surface->get_sdl_surface()->window,
+		0, 0, 0, 0, 0, width, height);
+//	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
+	if (m_ambulant_surface->m_screenshot_data) {
+		g_free(m_ambulant_surface->m_screenshot_data);
+		m_ambulant_surface->m_screenshot_data = NULL;
+		m_ambulant_surface->m_screenshot_size = 0;
+	}
+
+	if (!gdk_pixbuf_save_to_buffer (
+		pixbuf,
+		&m_ambulant_surface->m_screenshot_data,
+		&m_ambulant_surface->m_screenshot_size,
+		"jpeg", &error, "quality", "100", NULL))
+	{
+		printf (" Tenemos un error%s", error->message);
+		g_error_free (error);
+	}
+	g_object_unref (G_OBJECT (pixbuf));
+#endif //WITH_SCREENSHOTS
+	DUMPPIXMAP(m_pixmap, "top");
+#endif//JNK
+}
+
+void
+ambulant_sdl_window::redraw_now()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw_now()");
+}
+
+bool
+ambulant_sdl_window::user_event(const lib::point &where, int what)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
+	return m_handler->user_event(where, what);
+}
+
+void
+ambulant_sdl_window::need_events(bool want)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_events(0x%x): want=%d", this, want);
+}
+
+void
+ambulant_sdl_window::set_ambulant_surface(sdl_ambulant_surface* sdlas)
+{
+
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_surface(0x%x)",(void *)sdlas);
+	// Don't destroy!
+	//if (m_ambulant_surface != NULL)
+	//	delete m_ambulant_surface;
+	m_ambulant_surface = sdlas;
+
+#ifdef JNK
+	if (sdlas != NULL) {
+		GdkColor color;
+		GdkColormap *cmap = gdk_colormap_get_system();
+		// color is white
+		gdk_color_parse("white", &color);
+
+		// in debugging mode, initialize with purple background
+		AM_DBG gdk_color_parse("Purple", &color);
+		gdk_colormap_alloc_color(cmap, &color, FALSE, TRUE);
+
+		// set the color in the surface
+		sdl_surface_modify_bg (SDL_SURFACE (sdlaw->get_sdl_surface()), SDL_STATE_NORMAL, &color );
+
+		// Initialize m_pixmap
+		gint width; gint height;
+		sdl_surface_get_size_request(SDL_SURFACE (sdlaw->get_sdl_surface()), &width, &height);
+		m_pixmap = gdk_pixmap_new(sdlaw->get_sdl_surface()->window, width, height, -1);
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_surface(0x%x); size (%i,%i)",(void *)sdlaw, width, height);
+		// User Interaction
+	}
+//	}else{
+//		sdl_surface_hide(SDL_SURFACE (sdlaw->get_sdl_surface()));
+//		sdl_box_pack_start (SDL_BOX (parent_surface), SDL_SURFACE (m_surface), TRUE, TRUE, 0);
+//		sdl_container_remove(SDL_CONTAINER (sdlaw->get_sdl_surface()->parent), SDL_SURFACE (sdlaw->get_sdl_surface()));
+//		free(sdlaw->get_sdl_surface());
+//	}
+#endif//JNK
+}
+
+sdl_ambulant_surface*
+ambulant_sdl_window::get_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_ambulant_surface(0x%x)",(void *)m_ambulant_surface);
+	return m_ambulant_surface;
+}
+
+#ifdef JNK
+GdkPixmap*
+ambulant_sdl_window::get_ambulant_pixmap()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_pixmap(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
+	return m_pixmap;
+}
+#endif//JNK
+
+void
+ambulant_sdl_window::set_gui_player(gui_player* gpl)
+{
+	m_gui_player = gpl;
+}
+
+gui_player*
+ambulant_sdl_window::get_gui_player()
+{
+	return m_gui_player;
+}
+
+#ifdef JNK
+GdkPixmap*
+ambulant_sdl_window::new_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+	if (m_surface != NULL) delete m_surface;
+	gint width; gint height;
+	gdk_drawable_get_size(GDK_DRAWABLE (m_pixmap), &width, &height);
+	m_surface = gdk_pixmap_new(m_pixmap, width, height, -1);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+	return m_surface;
+}
+#endif//JNK
+
+#ifdef JNK
+GdkPixmap*
+ambulant_sdl_window::get_ambulant_oldpixmap()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
+	if (m_fullscreen_count && m_fullscreen_old_pixmap)
+		return m_fullscreen_old_pixmap;
+	return m_oldpixmap;
+}
+#endif//JNK
+
+#ifdef JNK
+GdkPixmap*
+ambulant_sdl_window::get_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_ambulant_surface(0x%x) = 0x%x",(void *)this,(void *)m_surface);
+	return m_surface;
+}
+#endif//JNK
+
+#ifdef JNK
+GdkPixmap*
+ambulant_sdl_window::get_pixmap_from_screen(const lib::rect &r)
+{
+	GdkPixmap *rv = gdk_pixmap_new(m_ambulant_surface->get_sdl_surface()->window, r.width(), r.height(), -1);
+	gdk_pixmap_bitblt(rv, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_pixmap_from_screen(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
+	return rv;
+}
+#endif//JNK
+
+#ifdef JNK
+void
+ambulant_sdl_window::reset_ambulant_surface(void)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::reset_ambulant_surface(0x%x) m_oldpixmap = 0x%x",(void *)this,(void *)m_oldpixmap);
+	if (m_oldpixmap != NULL) m_pixmap = m_oldpixmap;
+}
+#endif//JNK
+
+#ifdef JNK
+void
+ambulant_sdl_window::set_ambulant_surface(GdkPixmap* surf)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_surface(0x%x) surf = 0x%x",(void *)this,(void *)surf);
+	m_oldpixmap = m_pixmap;
+	if (surf != NULL) m_pixmap = surf;
+}
+#endif//JNK
+
+#ifdef JNK
+void
+ambulant_sdl_window::delete_ambulant_surface()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::delete_ambulant_surface(0x%x) m_surface = 0x%x",(void *)this, (void *)m_surface);
+	delete m_surface;
+	m_surface = NULL;
+}
+#endif//JNK
+
+#ifdef JNK
+
+// Transitions
+
+void
+ambulant_sdl_window::startScreenTransition()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::startScreenTransition()");
+	if (m_fullscreen_count)
+		logger::get_logger()->trace("%s:multiple Screen transitions in progress (m_fullscreen_count=%d)","ambulant_sdl_window::startScreenTransition()",m_fullscreen_count);
+	m_fullscreen_count++;
+	if (m_fullscreen_old_pixmap) g_object_unref(G_OBJECT(m_fullscreen_old_pixmap));
+	m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
+	m_fullscreen_prev_pixmap = NULL;
+}
+
+void
+ambulant_sdl_window::endScreenTransition()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::endScreenTransition()");
+	assert(m_fullscreen_count > 0);
+	m_fullscreen_count--;
+}
+
+void
+ambulant_sdl_window::screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now)
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::screenTransitionStep()");
+	assert(m_fullscreen_count > 0);
+	m_fullscreen_engine = engine;
+	m_fullscreen_now = now;
+}
+
+void
+ambulant_sdl_window::_screenTransitionPreRedraw()
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPreRedraw()");
+	if (m_fullscreen_count == 0) return;
+	// XXX setup drawing to transition surface
+}
+
+void
+ambulant_sdl_window::_screenTransitionPostRedraw(const lib::rect &r)
+{
+
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw()");
+	if (m_fullscreen_count == 0 && m_fullscreen_old_pixmap == NULL) {
+		// Neither in fullscreen transition nor wrapping one up.
+		// Take a snapshot of the screen and return.
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw: screen snapshot");
+		if (m_fullscreen_prev_pixmap) g_object_unref(G_OBJECT(m_fullscreen_prev_pixmap));
+		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
+		DUMPPIXMAP(m_fullscreen_prev_pixmap, "snap");
+		return;
+	}
+	if (m_fullscreen_old_pixmap == NULL) {
+		// Just starting a new fullscreen transition. Get the
+		//	bits from the snapshot saved during the previous
+		// redraw.
+		m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
+		m_fullscreen_prev_pixmap = NULL;
+	}
+
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw: bitblit");
+	if (m_fullscreen_engine) {
+		// Do the transition step
+		GdkPixmap* new_src = get_ambulant_surface();
+		if ( ! new_src) new_src = new_ambulant_surface();
+		gdk_pixmap_bitblt(m_surface, 0, 0, m_pixmap, r.left(), r.top(), r.width(), r.height());
+		gdk_pixmap_bitblt(m_pixmap, 0, 0, m_fullscreen_old_pixmap, r.left(), r.top(), r.width(), r.height());
+		DUMPPIXMAP(new_src, "fnew");
+		DUMPPIXMAP(m_pixmap, "fold");
+		m_fullscreen_engine->step(m_fullscreen_now);
+		DUMPPIXMAP(m_pixmap, "fres");
+	}
+
+	if (m_fullscreen_count == 0) {
+		// Finishing a fullscreen transition.
+\		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw: cleanup after transition done");
+		if (m_fullscreen_old_pixmap) g_object_unref(G_OBJECT(m_fullscreen_old_pixmap));
+		m_fullscreen_old_pixmap = NULL;
+		m_fullscreen_engine = NULL;
+	}
+}
+#endif//JNK
+
+void
+ambulant_sdl_window::clear()
+// private helper: clear the surface
+{
+	// Fill with <brush> color
+#ifdef JNK
+	if (m_pixmap == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear(): m_pixmap == NULL!!");
+		return;
+	}
+#endif//JNK
+	color_t color = lib::to_color(255, 255, 255);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear(): clearing to 0x%x", (long)color);
+#ifdef JNK
+	GdkColor bgc;
+	bgc.red = redc(color)*0x101;
+	bgc.blue = bluec(color)*0x101;
+	bgc.green = greenc(color)*0x101;
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
+	gdk_gc_set_rgb_fg_color (gc, &bgc);
+	gdk_draw_rectangle (GDK_DRAWABLE (m_pixmap), gc, TRUE,
+		m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
+	g_object_unref (G_OBJECT (gc));
+#endif//JNK
+}
+
+//
+// sdl_ambulant_surface
+//
+// sdl_ambulant_surface::s_surfaces is a counter to check for the liveliness of sdl_surface during
+// execution of sdl*draw() functions by a callback function in the main thread
+// sdl_ambulant_surface::s_lock is for the protection of the counter
+// TBD: a better approach would be to have s static protected std::vector<dirty_surface>
+// to be updated when callbacks are scheduled and executed
+// and use these entries to remove any scheduled callbacks with
+// gboolean g_idle_remove_by_data (gpointer data); when the sdl_surface is destroyed
+// then the ugly dependence on the parent surface couls also be removed
+int sdl_ambulant_surface::s_surfaces = 0;
+lib::critical_section sdl_ambulant_surface::s_lock;
+
+sdl_ambulant_surface::sdl_ambulant_surface(SDL_Surface* surface)
+:	m_sdl_window(NULL),
+	m_screenshot_data(NULL),
+	m_screenshot_size(0)
+{
+	m_surface = surface;
+#ifdef JNK
+	GObject* ancestor_surface = G_OBJECT (SDL_SURFACE (sdl_surface_get_ancestor(m_surface, SDL_TYPE_SURFACE)));
+
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::sdl_ambulant_surface(0x%x-0x%x) s_surfaces=%d",
+		(void *)this,
+		(void*) surface, sdl_ambulant_surface::s_surfaces);
+	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_surface),
+		"expose_event", G_CALLBACK (sdl_C_callback_do_paint_event), (void*) this);
+	m_motion_notify_handler_id = g_signal_connect_swapped (ancestor_surface,
+		"motion_notify_event", G_CALLBACK (sdl_C_callback_do_motion_notify_event), (void*) this);
+	m_button_release_handler_id = g_signal_connect_swapped (ancestor_surface,
+		"button_release_event", G_CALLBACK (sdl_C_callback_do_button_release_event), (void*) this);
+	m_key_release_handler_id = g_signal_connect_swapped (ancestor_surface,
+		"key_release_event", G_CALLBACK (sdl_C_callback_do_key_release_event), (void*) this);
+	lib::logger::get_logger()->debug("sdl_ambulant_surface::sdl_ambulant_surface(0x%x-0x%x) m_key_release_handler_id=%0x%x", this, surface, m_key_release_handler_id);
+	sdl_surface_add_events(SDL_SURFACE (ancestor_surface),
+		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
+	// surface needs focus for receiving key press/release events
+	SDL_SURFACE_SET_FLAGS(ancestor_surface, SDL_CAN_FOCUS);
+	sdl_surface_grab_focus(SDL_SURFACE(ancestor_surface));
+#endif//JNK
+	sdl_ambulant_surface::s_lock.enter();
+	sdl_ambulant_surface::s_surfaces++;
+	sdl_ambulant_surface::s_lock.leave();
+}
+
+sdl_ambulant_surface::~sdl_ambulant_surface()
+{
+	sdl_ambulant_surface::s_lock.enter();
+	sdl_ambulant_surface::s_surfaces--;
+#ifdef JNK
+	if ( ! m_draw_area_tags.empty()) {
+		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
+			AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_surface::~sdl_ambulant_surface removing tag %d", (*it));
+			g_source_remove((*it));
+
+		}
+	}
+#endif//JNK
+	sdl_ambulant_surface::s_lock.leave();
+#ifdef JNK
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::~sdl_ambulant_surface(0x%x): m_sdl_window=0x%x s_surfaces=%d", (void*)this, m_sdl_window, sdl_ambulant_surface::s_surfaces);
+	GObject* ancestor_surface = G_OBJECT (SDL_SURFACE (sdl_surface_get_ancestor(m_surface, SDL_TYPE_SURFACE)));
+	if (g_signal_handler_is_connected (G_OBJECT (m_surface), m_expose_event_handler_id))
+		g_signal_handler_disconnect(G_OBJECT (m_surface), m_expose_event_handler_id);
+	if (g_signal_handler_is_connected (ancestor_surface, m_motion_notify_handler_id))
+		g_signal_handler_disconnect(ancestor_surface, m_motion_notify_handler_id);
+	if (g_signal_handler_is_connected (ancestor_surface, m_button_release_handler_id))
+		g_signal_handler_disconnect(ancestor_surface, m_button_release_handler_id);
+	if (g_signal_handler_is_connected (ancestor_surface, m_key_release_handler_id))
+		g_signal_handler_disconnect(ancestor_surface, m_key_release_handler_id);
+	if (m_sdl_window) {
+		m_sdl_window->set_ambulant_surface(NULL);
+		m_sdl_window = NULL;
+	}
+	if (m_screenshot_data) {
+		g_free(m_screenshot_data);
+		m_screenshot_data = NULL;
+		m_screenshot_size = 0;
+	}
+#endif//JNK
+}
+
+void
+sdl_ambulant_surface::set_sdl_window( ambulant_sdl_window* asdlw)
+{
+	// Note: the window and surface are destucted independently.
+	//	if (m_sdl_window != NULL)
+	//	  delete m_sdl_window;
+	m_sdl_window = asdlw;
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::set_sdl_window(0x%x): m_sdl_window==0x%x)",
+		(void*) this, (void*) m_sdl_window);
+}
+
+ambulant_sdl_window*
+sdl_ambulant_surface::sdl_window() {
+	return m_sdl_window;
+}
+
+SDL_Surface*
+sdl_ambulant_surface::get_sdl_surface()
+{
+	return m_surface;
+}
+
+#ifdef JNK
+void
+sdl_ambulant_surface::do_paint_event (GdkEventExpose *e) {
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::paintEvent(0x%x): e=0x%x)", (void*) this, (void*) e);
+	lib::rect r = lib::rect(
+		lib::point(e->area.x, e->area.y),
+		lib::size(e->area.width, e->area.height));
+	if (m_sdl_window == NULL) {
+		lib::logger::get_logger()->debug("sdl_ambulant_surface::paintEvent(0x%x): e=0x%x m_sdl_window==NULL",
+			(void*) this, (void*) e);
+		return;
+	}
+	m_sdl_window->redraw(r);
+}
+
+void
+sdl_ambulant_surface::do_motion_notify_event(GdkEventMotion *e) {
+	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainSurface
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::mouseMoveEvent(0x%x) e=(%ld,%ld) m_sdl_window=0x%x\n", this, e->x,e->y, m_sdl_window);
+	if (! m_sdl_window) return;
+	//XXXX This is not right!!!
+	ambulant::lib::point ap = ambulant::lib::point((int)e->x, (int)e->y);
+	gui_player* gui_player =  m_sdl_window->get_gui_player();
+	if (gui_player) {
+		gui_player->before_mousemove(0);
+		m_sdl_window->user_event(ap, 1);
+	}
+	int cursid = 0;
+	if (gui_player)
+		cursid = gui_player->after_mousemove();
+
+	// Set hand cursor if cursid==1, arrow if cursid==0.
+	GdkCursor* cursor;
+	// gdk cursors need to be cached by the window factory
+	cursor = cursid == 0 
+		? m_sdl_window->get_gdk_cursor(GDK_ARROW)
+		: m_sdl_window->get_gdk_cursor(GDK_HAND1);
+	if (cursor)
+		gdk_window_set_cursor (m_surface->window, cursor);
+}
+
+void
+sdl_ambulant_surface::do_button_release_event(GdkEventButton *e) {
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::do_button_release_event(0x%x): e=0x%x, position=(%d, %d))", (void*) this, (void*) e, e->x, e->y);
+	if (m_sdl_window == NULL) {
+		lib::logger::get_logger()->debug("sdl_ambulant_surface::do_button_release_event(0x%x): e=0x%x  position=(%d, %d) m_sdl_window==NULL", (void*) this, (void*) e, e->x, e->y);
+		return;
+	}
+	if (e->type == GDK_BUTTON_RELEASE){
+		lib::point amwhere = lib::point((int)e->x, (int)e->y);
+		m_sdl_window->user_event(amwhere);
+	}
+}
+
+void
+sdl_ambulant_surface::do_key_release_event(GdkEventKey *e) {
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_surface::do_key_release_event(0x%x): e=0x%x  key=%d, length=%d string=%s) m_sdl_window==NULL", (void*) this, (void*) e, e->keyval, e->length, e->string);
+	if (m_sdl_window == NULL) {
+		lib::logger::get_logger()->debug("sdl_ambulant_surface::do_key_release_event(0x%x): e=0x%x  key=%d, length=%d string=%s) m_sdl_window==NULL", (void*) this, (void*) e, e->keyval, e->length, e->string);
+		return;
+	}
+	if (e->type == GDK_KEY_RELEASE){
+		lib::logger::get_logger()->debug("sdl_ambulant_surface::do_key_release_event(0x%x): e=0x%x  key=%d, length=%d string=%s) m_sdl_window==NULL", (void*) this, (void*) e, e->keyval, e->length, e->string);
+//		m_sdl_window->user_event(amwhere);
+		m_sdl_window->get_gui_player()->on_char((int) *e->string);
+	}
+}
+
+void sdl_ambulant_surface::get_size(int *width, int *height){
+	gdk_drawable_get_size(m_surface->window, width, height);
+}
+
+bool sdl_ambulant_surface::get_screenshot(const char *type, char **out_data, size_t *out_size){
+	*out_data = NULL;
+	*out_size = 0;
+#ifndef WITH_SCREENSHOTS
+	lib::logger::get_logger()->error("get_screenshot: no support for screenshots");
+#endif // WITH_SCREENSHOTS
+	*out_data= m_screenshot_data;
+	*out_size = m_screenshot_size;
+	return TRUE;
+}
+
+// Not implemented
+bool sdl_ambulant_surface::set_overlay(const char *type, const char *data, size_t size){
+	return FALSE;
+}
+
+// Not implemented
+bool sdl_ambulant_surface::clear_overlay(){
+	return FALSE;
+}
+
+
+bool sdl_ambulant_surface::set_screenshot(char **screenshot_data, size_t *screenshot_size){
+	return TRUE;
+}
+
+#endif//JNK
+
+#endif//WITH_SDL2
+

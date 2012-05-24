@@ -83,21 +83,15 @@ sdl_renderer_factory::new_playable(
 		const lib::node *node,
 		lib::event_processor *evp)
 {
-	common::playable *rv;
+	common::playable *rv = NULL;
 	lib::xml_string tag = node->get_local_name();
 	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio" || tag == "prefetch") {
 		rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_audio_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
-	} else if  ( tag == "video") {
+	} else if (tag == "video") {
 		rv = new gui::sdl::sdl_video_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_video_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
-	} else if  ( tag == "brush") {
-		rv = new gui::sdl::sdl_fill_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
-		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_fill_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
-	} else {
-		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
-			return NULL;
 	}
 	return rv;
 }
