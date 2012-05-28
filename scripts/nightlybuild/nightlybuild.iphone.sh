@@ -93,6 +93,7 @@ xcodebuild -project libambulant.xcodeproj \
 #
 # The keychain may have been locked again in the mean time
 #
+security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
 security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
