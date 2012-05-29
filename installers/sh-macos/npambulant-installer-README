@@ -1,0 +1,17 @@
+npambulant -- AmbulantPlayer plugin for Web browsers on MacOS 10.6.2
+
+Tested with:
+
+Firefox 10.0.2
+Google Chrome 15.0.874.106
+Safari Version 5.1.2 (6534.52.7)
+
+Known not to work as yet with Omniweb, Opera.
+
+Installation: copy the entire directory npambulant.plugin either to:
+/Library/Internet Plugins
+or  to:
+$HOME//Library/Internet Plugins
+
+for system-wide or single user installation, respectively.
+

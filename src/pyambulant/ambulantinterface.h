@@ -463,6 +463,7 @@ public:
 	void done(ambulant::common::player* p);
 	void starting(ambulant::common::player* p);
 	bool aux_open(const ambulant::net::url& href);
+	void terminate();
 	void show_file(const ambulant::net::url& url) { system_embedder::show_file(url); }
   private:
 	PyObject *py_embedder;
@@ -916,12 +917,14 @@ public:
 
 	void started(ambulant::common::playable::cookie_type n, double t);
 	void stopped(ambulant::common::playable::cookie_type n, double t);
-	void stalled(ambulant::common::playable::cookie_type n, double t);
-	void unstalled(ambulant::common::playable::cookie_type n, double t);
 	void clicked(ambulant::common::playable::cookie_type n, double t);
 	void pointed(ambulant::common::playable::cookie_type n, double t);
 	void transitioned(ambulant::common::playable::cookie_type n, double t);
 	void marker_seen(ambulant::common::playable::cookie_type n, const char* name, double t);
+	void playable_stalled(const ambulant::common::playable* p, const char* reason);
+	void playable_unstalled(const ambulant::common::playable* p);
+	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment);
+	void playable_resource(const ambulant::common::playable* p, const char* resource, long amount);
   private:
 	PyObject *py_playable_notification;
 
@@ -985,6 +988,27 @@ inline global_playable_factory *Py_WrapAs_global_playable_factory(PyObject *o)
 	return rv;
 }
 
+class focus_feedback : public cpppybridge, public ambulant::common::focus_feedback {
+public:
+	focus_feedback(PyObject *itself);
+	virtual ~focus_feedback();
+
+	void node_focussed(const ambulant::lib::node* n);
+  private:
+	PyObject *py_focus_feedback;
+
+	friend PyObject *focus_feedbackObj_New(ambulant::common::focus_feedback *itself);
+};
+#define BGEN_BACK_SUPPORT_focus_feedback
+inline focus_feedback *Py_WrapAs_focus_feedback(PyObject *o)
+{
+	focus_feedback *rv = dynamic_cast<focus_feedback*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new focus_feedback(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
 class player_feedback : public cpppybridge, public ambulant::common::player_feedback {
 public:
 	player_feedback(PyObject *itself);
@@ -994,8 +1018,14 @@ public:
 	void document_started();
 	void document_stopped();
 	void node_started(const ambulant::lib::node* n);
+	void node_filled(const ambulant::lib::node* n);
 	void node_stopped(const ambulant::lib::node* n);
-	void node_focussed(const ambulant::lib::node* n);
+	void playable_started(const ambulant::common::playable* p, const ambulant::lib::node* n, const char* comment);
+	void playable_stalled(const ambulant::common::playable* p, const char* reason);
+	void playable_unstalled(const ambulant::common::playable* p);
+	void playable_cached(const ambulant::common::playable* p);
+	void playable_deleted(const ambulant::common::playable* p);
+	void playable_resource(const ambulant::common::playable* p, const char* resource, long amount);
   private:
 	PyObject *py_player_feedback;
 
@@ -1034,7 +1064,9 @@ public:
 	ambulant::common::state_component* get_state_engine();
 	void on_focus_advance();
 	void on_focus_activate();
+	void set_focus_feedback(ambulant::common::focus_feedback* fb);
 	void set_feedback(ambulant::common::player_feedback* fb);
+	ambulant::common::player_feedback* get_feedback();
 	bool goto_node(const ambulant::lib::node* n);
 	bool highlight(const ambulant::lib::node* n, bool on);
 	long add_ref() { return 1; }
@@ -1290,6 +1322,7 @@ public:
 	long add_ref() { return 1; }
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }
+	long get_bandwidth_usage_data(const char **resource) { return -1; }
 	char *get_read_ptr() { abort(); return NULL; }
   private:
 	PyObject *py_datasource;
@@ -1318,6 +1351,7 @@ public:
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }
 	char *get_read_ptr() { abort(); return NULL; }
+	long get_bandwidth_usage_data(const char **resource) { return -1; }
 	ambulant::net::ts_packet_t get_ts_packet_t() { abort(); return ambulant::net::ts_packet_t(0, NULL, 0); }
   private:
 	PyObject *py_pkt_datasource;

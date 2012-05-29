@@ -15,7 +15,7 @@ BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=linux
 #X CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
-CONFIGOPTS="--prefix=$PWD/$DESTDIR --with-qt --with-gtk --with-xerces --with-xerces-plugin --without-npambulant -with-python --with-python-plugin"
+CONFIGOPTS="--prefix=$PWD/$DESTDIR --with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npambulant -with-python --with-python-plugin"
 MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
@@ -102,9 +102,9 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 #
 # Build plugin installer, upload
 #
-#X cd src/npambulant
-#X make installer
-#X mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
+cd src/npambulant
+make installer
+mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
 #X scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION_NPAMBULANT
 cd ../..
 #

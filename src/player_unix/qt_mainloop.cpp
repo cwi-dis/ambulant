@@ -116,6 +116,9 @@ qt_mainloop::~qt_mainloop() {
 		m_player->release();
 		m_player = NULL;
 	}
+	if (m_embedder) {
+		set_embedder(NULL);
+	}
 	if (m_doc) {
 		delete m_doc;
 		m_doc = NULL;

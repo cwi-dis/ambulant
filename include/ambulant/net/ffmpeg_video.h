@@ -109,6 +109,7 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
+    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
 
   private:
 	bool _select_decoder(const char* file_ext);

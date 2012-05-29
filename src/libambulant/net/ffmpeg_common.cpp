@@ -124,8 +124,9 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 // **************************** ffmpeg_demux *****************************
 
 
-ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end)
+ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 :	m_con(con),
+    m_url(url),
 	m_nstream(0),
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
@@ -155,7 +156,9 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 		m_video_fmt.parameters = NULL;
 	}
 	memset(m_sinks, 0, sizeof m_sinks);
+    memset(m_data_consumed, 0, sizeof m_data_consumed);
 	m_current_sink = NULL;
+    m_bandwidth_resource = m_url.get_protocol();
 }
 
 ffmpeg_demux::~ffmpeg_demux()
@@ -360,6 +363,18 @@ ffmpeg_demux::set_clip_end(timestamp_t clip_end)
 	m_lock.leave();
 }
 
+long
+ffmpeg_demux::get_bandwidth_usage_data(int stream_index, const char **resource)
+{
+	m_lock.enter();
+    assert(stream_index >= 0 && stream_index <= MAX_STREAMS);
+    long rv = m_data_consumed[stream_index];
+    m_data_consumed[stream_index] = 0;
+    *resource = m_bandwidth_resource.c_str();
+	m_lock.leave();
+    return rv;
+}
+
 void
 ffmpeg_demux::remove_datasink(int stream_index)
 {
@@ -465,6 +480,9 @@ ffmpeg_demux::run()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
+		// Keep statistics
+		m_data_consumed[pkt->stream_index] += pkt->size;
+		
 		demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
@@ -588,4 +606,11 @@ ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
 	}
 	ffcontext->codec_id = codecid->get_codec_id(name);
 	return ffcontext;
+}
+
+lib::critical_section&
+ambulant::net::ffmpeg_global_critical_section()
+{
+	static lib::critical_section lock;
+	return lock;
 }

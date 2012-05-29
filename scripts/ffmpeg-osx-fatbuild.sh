@@ -18,7 +18,7 @@ PREFIX="--prefix=`cd ../installed ; pwd`"
 # Set this to the global options you want to configure ffmpeg with.
 #
 #CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-static --enable-shared --enable-libfaad --disable-libfaac"
-CONFIGOPTS="$PREFIX --disable-encoders --enable-runtime-cpudetect --enable-gpl --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-static --enable-shared --enable-libfaad --disable-libfaac"
+CONFIGOPTS="$PREFIX --disable-encoders --enable-runtime-cpudetect --enable-gpl --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-static --enable-shared"
 #
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET
@@ -46,7 +46,7 @@ ANY_RANDOM_ARCH=i386
 PPC_CONFIGOPTS="--arch=powerpc --cpu=g4 --enable-altivec --enable-shared"
 case `uname -r` in
 11.*)
-	I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.2 --extra-cflags='-arch i386' --extra-ldflags='-arch i386'"
+	I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.2 --disable-mmx"
 	;;
 *)
 	I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.0"
@@ -141,6 +141,7 @@ if $configure; then
 	if $I386; then
 		echo $0: configure i386
 		(
+			set -vx
 			cd build-i386
 			$srcdir/configure \
 				--extra-cflags="-arch i386 $SYSROOT" \

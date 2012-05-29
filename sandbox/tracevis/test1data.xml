@@ -1,0 +1,16 @@
+<data>
+	<event
+		start="2012-02-03T10:47:58.1234"
+		end="2012-02-03T10:47:59.5678"
+		isDuration="true"
+		title="second interval">
+			And here is the second interval.
+		</event>
+	<event
+		start="2012-02-03T10:44:58"
+		end="2012-02-05T10:48:59"
+		isDuration="true"
+		title="first interval">
+			First intervale long description text
+		</event>
+</data>

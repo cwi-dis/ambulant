@@ -76,6 +76,7 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 		os << "posix_datasource(" << (void *)&n << ", \"" << n.m_filename << "\")";
 		return os;
 	}
+    long get_bandwidth_usage_data(const char **resource);
   private:
 	bool _end_of_file();
 	void filesize();

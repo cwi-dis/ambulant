@@ -628,12 +628,14 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 	/// playable_notification interface:
 	void started(cookie_type n, double t = 0) {};
 	void stopped(cookie_type n, double t = 0);
-	void stalled(cookie_type n, double t = 0) {};
-	void unstalled(cookie_type n, double t = 0) {};
 	void clicked(cookie_type n, double t = 0) {};
 	void pointed(cookie_type n, double t = 0) {};
 	void transitioned(cookie_type n, double t = 0) {};
 	void marker_seen(cookie_type n, const char *name, double t = 0) {};
+	void playable_stalled(const common::playable *p, const char *reason) {};
+	void playable_unstalled(const common::playable *p) {};
+	void playable_started(const common::playable *p, const lib::node *n, const char *comment) {};
+	void playable_resource(const common::playable *p, const char *resource, long amount) {};
   private:
 	const lib::node *m_layout_root;
 	common::factories *m_factories;

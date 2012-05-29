@@ -3,8 +3,8 @@
 # Script to do a nightly clean build of a full Ambulant
 # Mac 10.6 version
 #
-set -e
 set -x
+PATH=$PATH:/Developer/usr/bin
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -16,6 +16,8 @@ x)
 esac
 
 # Tunable parameters, to some extent
+SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
+MACOSX_DEPLOYMENT_TARGET=10.6
 AMBULANTVERSION=2.3
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -43,9 +45,10 @@ DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
-##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
+PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
+PLUGINDMGNAME=$PLUGINNAME.dmg
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
-##DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
+DESTINATION_PLUGIN=$DESTINATION/mac-intel-firefoxplugin/
 DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
 
 echo
@@ -127,32 +130,29 @@ cd installers/sh-macos
 sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
 scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
-###
-### Build webkit plugin.
-###
-##cd projects/xcode32
-##rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
-##mkdir -p "$HOME/Library/Internet Plug-Ins"
-##xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
-##	-target AmbulantWebKitPlugin \
-##	-configuration Release -sdk macosx10.6 \
-##	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-##	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
-##	DSTROOT=$BUILDHOME/$DESTDIR \
-##	INSTALL_PATH="/Library/Internet Plug-ins" \
-##	install
-##cd ../..
-###
-### Build plugin installer, upload
-###
-##mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-##cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-##rm -rf $PLUGINDMGNAME
-##mkdir $PLUGINDMGNAME
-##mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
-##cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
-##zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
-##scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
+#
+# Build npambulant (Internet Plugin).
+#
+cd $BUILDHOME/$BUILDDIR
+cd projects/xcode32
+rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
+mkdir -p "$HOME/Library/Internet Plug-Ins"
+xcodebuild -project npambulant.xcodeproj \
+	-target npambulant \
+	-configuration Release -sdk macosx10.6 \
+	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
+	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
+	DSTROOT=$BUILDHOME/$DESTDIR \
+	INSTALL_PATH="/Library/Internet Plug-ins" \
+	install
+cd ../..
+#
+# Build plugin installer, upload
+#
+cd "$BUILDHOME/$BUILDDIR/installers/sh-macos"
+rm -fr $PLUGINNAME $PLUGINNAME-rw.dmg $PLUGINNAME.dmg 
+sh ./mkplugindist.sh $PLUGINNAME $BUILDHOME/$DESTDIR
+scp $PLUGINNAME.dmg $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current
 #

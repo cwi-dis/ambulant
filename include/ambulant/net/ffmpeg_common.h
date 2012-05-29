@@ -81,7 +81,7 @@ class ffmpeg_codec_id {
 
 class ffmpeg_demux : public abstract_demux {
   public:
-	ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end);
+	ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 	~ffmpeg_demux();
 
 	static AVFormatContext *supported(const net::url& url);
@@ -102,14 +102,18 @@ class ffmpeg_demux : public abstract_demux {
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };
+    long get_bandwidth_usage_data(int stream_index, const char **resource);
   protected:
 	unsigned long run();
   private:
 	audio_format m_audio_fmt;
 	video_format m_video_fmt;
 	demux_datasink *m_sinks[MAX_STREAMS];
+    long m_data_consumed[MAX_STREAMS];
+    std::string m_bandwidth_resource;
 	demux_datasink *m_current_sink;
 	AVFormatContext *m_con;
+    net::url m_url;
 	int m_nstream;
 	lib::critical_section m_lock;
 	timestamp_t m_clip_begin;
@@ -117,8 +121,12 @@ class ffmpeg_demux : public abstract_demux {
 	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
 };
 
-// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.
+/// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.
 AVCodecContext *ffmpeg_alloc_partial_codec_context(bool video, const char *name);
+
+/// Helper routine: return a reference to a global lock (needed for ffmpeg serialization)
+lib::critical_section& ffmpeg_global_critical_section();
+
 
 }	// end namespace net
 }	// end namespace ambulant

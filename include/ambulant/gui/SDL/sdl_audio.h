@@ -120,6 +120,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	bool m_is_playing;  // Invariant: m_is_playing === register_renderer() has been called.
 	bool m_is_reading;	// Invariant: m_is_reading === m_audio_src->start() has been called.
 	bool m_is_paused;
+	bool m_is_stalled;	// True if a stalled() callback was emitted previously
 	bool m_read_ptr_called;
 	bool m_audio_started;
 	int m_volcount;

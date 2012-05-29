@@ -141,13 +141,9 @@ my_player_callbacks::new_html_browser(int left, int top, int width, int height)
 	return ::new_html_browser(left, top, width, height);
 }
 
-class my_player_feedback : public common::player_feedback {
+class my_player_feedback : public common::focus_feedback {
   public:
 	void document_loaded(lib::document *doc) {}
-	void document_started() { set_status_line("Playing"); }
-	void document_stopped() { set_status_line("Stopped"); }
-	void node_started(const lib::node *n) {};
-	void node_stopped(const lib::node *n) {};
 	void node_focussed(const lib::node *n) {
 		if (n == NULL) {
 			set_status_line("");
@@ -178,7 +174,7 @@ void create_player_hook(void *player);
 #endif
 
 static dg_or_dx_player*
-create_player_instance(const net::url& u, common::player_feedback *feedback) {
+create_player_instance(const net::url& u, common::focus_feedback *feedback) {
 	dg_or_dx_player *rv = new dg_or_dx_player(s_player_callbacks, feedback, u);
 #ifdef WITH_CREATE_PLAYER_HOOK
 	create_player_hook((void*)rv);
@@ -255,7 +251,23 @@ MmView::MmView()
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	ambulant::lib::logger::get_logger()->set_level(level);
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
-	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC"), __DATE__);
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC with VS%s%s"), __DATE__,
+#if _MSC_VER < 1500
+		"2005 or earlier"
+#elif _MSC_VER < 1600
+		"2008"
+#elif _MSC_VER < 1700
+		"2010"
+#else
+		" newer than 2010"
+#endif
+		,
+#ifdef WITH_GCD_EVENT_PROCESSOR
+		" with GCD"
+#else
+		""
+#endif
+		);
 #if ENABLE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif

@@ -20,7 +20,7 @@
 !define PRODUCT_VERSION "2.3"
 !define PRODUCT_VERSION_BASE "2.3"
 !define DISTRIBUTE_DLL_BUILD
-!define DISTRIBUTE_PYTHON_PLUGIN
+; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
 !define PRODUCT_WEB_SITE "http://www.ambulantplayer.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AmbulantPlayer.exe"

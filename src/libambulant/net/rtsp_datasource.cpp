@@ -290,6 +290,19 @@ ambulant::net::rtsp_demux::set_clip_end(timestamp_t clip_end)
 	m_critical_section.leave();
 }
 
+long
+ambulant::net::rtsp_demux::get_bandwidth_usage_data(int stream_index, const char **resource)
+{
+	m_critical_section.enter();
+    assert(stream_index >= 0 && stream_index <= MAX_STREAMS);
+    long rv = m_context->data_consumed[stream_index];
+    m_context->data_consumed[stream_index] = 0;
+    *resource = "rtsp";
+	m_critical_section.leave();
+    return rv;
+}
+
+
 static unsigned char* parseH264ConfigStr(char const* configStr, size_t& configSize);
 
 rtsp_context_t *
@@ -785,8 +798,10 @@ done:
 void
 rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* inbuf, size_t sz) {
 	demux_datasink* sink = m_context->sinks[sink_index];
-
 	bool accepted = false;
+
+	// Keep statistics
+	m_context->data_consumed[sink_index] += sz;
 
 	while (sink && ! exit_requested() && ! accepted) {
 		m_critical_section.leave();

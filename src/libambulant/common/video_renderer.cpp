@@ -45,6 +45,7 @@ video_renderer::video_renderer(
 	m_epoch(0),
 	m_activated(false),
 	m_post_stop_called(false),
+	m_is_stalled(false),
 	m_is_paused(false),
 	m_paused_epoch(0),
 	m_last_frame_timestamp(-1),
@@ -73,6 +74,7 @@ video_renderer::video_renderer(
 		if (m_audio_ds) {
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: creating audio renderer !");
 			m_audio_renderer = factory->get_playable_factory()->new_aux_audio_playable(context, cookie, node, evp, (net::audio_datasource*) m_audio_ds);
+            m_context->playable_started(m_audio_renderer, m_node, "aux");
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
 		} else {
 			m_audio_renderer = NULL;
@@ -207,6 +209,8 @@ video_renderer::preroll(double when, double where, double how_much)
 	net::timestamp_t wtd_position = m_clip_begin+(net::timestamp_t)(where*1000000);
 	if (wtd_position != m_previous_clip_position) {
 		m_previous_clip_position = wtd_position;
+		m_context->playable_stalled(this, "seek");
+		m_is_stalled = true;
 		m_src->seek(wtd_position);
 	}
 
@@ -226,6 +230,14 @@ video_renderer::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
+
+    if (m_src) {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
 
 	if (m_audio_renderer) {
 		m_audio_renderer->stop();
@@ -267,7 +279,11 @@ video_renderer::seek(double t)
 	AM_DBG lib::logger::get_logger()->trace("video_renderer: seek(%f) curtime=%f", t, (double)m_timer->elapsed()/1000.0);
 	assert( t >= 0);
 	net::timestamp_t t_us= (net::timestamp_t)(t*1000000);
-	if (m_src) m_src->seek(t_us);
+	if (m_src) {
+		m_context->playable_stalled(this, "seek");
+		m_is_stalled = true;
+		m_src->seek(t_us);
+	}
 	m_lock.leave();
 }
 
@@ -345,12 +361,24 @@ void
 video_renderer::data_avail()
 {
 	m_lock.enter();
+    if (m_src) {
+        // Get bandwidth usage data
+        const char *resource;
+        long bw_amount = m_src->get_bandwidth_usage_data(&resource);
+        if (bw_amount >= 0) 
+            m_context->playable_resource(this, resource, bw_amount);
+    }
+    
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(this = 0x%x):", (void *) this);
 	if (m_post_stop_called || !m_activated || !m_src) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: returning (already shutting down)");
 		m_activated = false;
 		m_lock.leave();
 		return;
+	}
+	if (m_is_stalled) {
+		m_is_stalled = false;
+		m_context->playable_unstalled(this);
 	}
 	assert(m_dest);
 
@@ -487,12 +515,12 @@ video_renderer::data_avail()
 		}
 	}
 
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)frame_ts_micros);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %lld)", frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
 	// Grmpf. frame_ts_micros is on the movie timescale, but start_frame() expects a time relative to
 	// the m_event_processor clock (even though it is in microseconds, not milliseconds). Very bad design,
 	// for now we hack around it.
-	m_src->start_frame (m_event_processor, e, frame_ts_micros+(m_epoch*1000));
+	m_src->start_frame (m_event_processor, e, frame_ts_micros+((net::timestamp_t)m_epoch*1000));
 	m_lock.leave();
 }
 

@@ -53,7 +53,7 @@
 #include "ambulant/gui/dx/dx_brush.h"
 
 
-#if 1 // Kees: this causes multiple definitions on my Windows 7
+#if 0 // Kees: this causes multiple definitions on my Windows 7
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
 // order can mess up standard include files.
@@ -137,7 +137,7 @@ using namespace ambulant;
 
 int gui::dx::dx_gui_region::s_counter = 0;
 
-gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u)
+gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::focus_feedback *feedback, const net::url& u)
 :	m_hoster(hoster),
 	m_update_event(0),
 	m_logger(lib::logger::get_logger())
@@ -180,7 +180,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 
-	if (feedback) m_player->set_feedback(feedback);
+	if (feedback) m_player->set_focus_feedback(feedback);
 	m_player->initialize();
 	lib::event_processor *evp = m_player->get_evp();
 	assert(evp);

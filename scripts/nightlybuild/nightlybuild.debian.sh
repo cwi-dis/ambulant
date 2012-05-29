@@ -125,6 +125,7 @@ cd ..
 #
 
 cd ..
+rm -rf $DESTINATION_STAGING
 mkdir -p $RELPATH_SRC/debian-$TODAY
 mkdir -p $RELPATH_BIN/debian-$TODAY
 mv *.tar.gz *.dsc *.changes *.build $RELPATH_SRC/debian-$TODAY/

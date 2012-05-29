@@ -60,6 +60,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_doc(doc),
 	m_factory(factory),
 	m_system(sys),
+    m_focus_handler(0),
 	m_feedback_handler(0),
 	m_animation_engine(0),
 	m_root(0),
@@ -251,24 +252,29 @@ void smil_player::start() {
 	}
 	m_lock.leave();
 }
-
-// Command to stop playback
-void smil_player::stop() {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
-
+void smil_player::empty_playable_cache()
+{
 	m_playables_cs.enter();
 	while (!m_cached_playables.empty()) {
 		std::map<const std::string, common::playable *>::iterator it_url_based = m_cached_playables.begin();
-		lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
 		(*it_url_based).second->post_stop();
+        playable_deleted((*it_url_based).second);
 		(*it_url_based).second->release();
 		m_cached_playables.erase(it_url_based);
 	}
 	assert(m_cached_playables.empty());
 	m_playables_cs.leave();
+}
 
+// Command to stop playback
+void smil_player::stop() {
+	AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
+
+    empty_playable_cache();
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
+        m_state = common::ps_done;
 		m_timer->pause();
 		cancel_all_events();
 		m_scheduler->reset_document();
@@ -334,6 +340,7 @@ void smil_player::done_playback() {
 	m_state = common::ps_done;
 	// m_lock.leave();
 	m_timer->pause();
+    empty_playable_cache();
 	document_stopped();
 	if(m_system)
 		m_system->done(this);
@@ -345,11 +352,14 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	assert(n);
 
 	common::playable *np = NULL;
+	bool is_prefetch = n->get_local_name() == "prefetch";
+	bool from_cache = false;
 	if (n->get_attribute("src")) {
 		// It may be in the URL-based playable cache. Let us look.
 		std::map<const std::string, common::playable *>::iterator it_url_based =
 			m_cached_playables.find(n->get_url("src").get_url());
 		if (it_url_based != m_cached_playables.end()) {
+			from_cache = true;
 			np = (*it_url_based).second;
 			m_playables_cs.enter();
 			m_cached_playables.erase(it_url_based);
@@ -365,7 +375,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 			common::renderer *rend = np->get_renderer();
 
 			// XXXJACK: Dirty hack, for now: we don't want prefetch to render to a surface so we zap it. Need to fix.
-			if (n->get_local_name() == "prefetch") { 
+			if (is_prefetch) { 
 				surf = NULL;
 			}
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: cached playable 0x%x, renderer 0x%x, surface 0x%x", n, n->get_sig().c_str(), np, rend, surf);
@@ -401,6 +411,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	}
 	if (np) {
+		playable_started(np, n, from_cache ? "cached" : "");
 		// Update the context info of np, for example, clipbegin, clipend, and cookie according to the node
 		np->init_with_node(n);
 	}
@@ -496,7 +507,8 @@ void smil_player::stop_playable(const lib::node *n) {
 	// 1. Not cachable, or no URL. Destroy. 
 	// 2. Cachable, fill=continue. Store in cache, don't stop playback.
 	// 3. Cachable, no fill=continue. Store in cache, but stop playback.
-	bool can_cache = true;
+    // Also, we don't cache if we are stopping anyway.
+	bool can_cache = (m_state != common::ps_done);
 	bool must_post_stop;
 
 	must_post_stop = !victim.second->stop();
@@ -532,6 +544,7 @@ void smil_player::stop_playable(const lib::node *n) {
 	}
 	if (can_cache) {
 		AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer", victim.first->get_sig().c_str());
+		playable_cached(victim.second);
 		m_playables_cs.enter();
 		m_cached_playables[(victim.first->get_url("src")).get_url()] = victim.second;
 		m_playables_cs.leave();
@@ -888,15 +901,33 @@ smil_player::marker_seen_async(async_string_arg asa) {
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
+#if 0
 // Playable notification for a stall event.
-void smil_player::stalled(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::stalled(%d, %f)", n, t);
+void smil_player::playable_stalled(const playable *p, const char *reason) {
+	if (m_feedback_handler) {
+		m_feedback_handler->playable_stalled(p, reason);
+	}
 }
 
 // Playable notification for an unstall event.
-void smil_player::unstalled(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::unstalled(%d, %f)", n, t);
+void smil_player::playable_unstalled(const playable *p, double t) {
+	if (m_feedback_handler) {
+		m_feedback_handler->playable_unstalled(p);
+	}
 }
+
+void smil_player::playable_started(const playable *p, const lib::node *n, const char *comment) {
+	if (m_feedback_handler) {
+		m_feedback_handler->playable_unstalled(p, n, comment);
+	}
+}
+
+void smil_player::playable_resource(const playable *p, const char *resource, long amount) {
+	if (m_feedback_handler) {
+		m_feedback_handler->playable_resource(p, resource, amount);
+	}
+}
+#endif
 
 // UI notification for a char event.
 void smil_player::on_char(int ch) {
@@ -1044,6 +1075,7 @@ void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 
 		m_logger->debug("%s[%s]._destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 	}
+	playable_deleted(np);
 	long rem = np->release();
 	if (rem > 0)
 		m_logger->debug("smil_player::_destroy_playable: playable(0x%x) %s still has refcount of %ld", np, np->get_sig().c_str(), rem);
@@ -1074,6 +1106,7 @@ void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::
 		m_playables_cs.leave();
 		AM_DBG lib::logger::get_logger()->debug("smil_player::destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
 		victim.second->post_stop();
+		playable_deleted(victim.second);
 		long rem = victim.second->release();
 		if (rem > 0) m_logger->debug("smil_player::destroy_playable_in_cache: playable(0x%x) %s still has refcount of %ld", victim.second, victim.second->get_sig().c_str(), rem);
 	} else {

@@ -44,7 +44,7 @@
 #include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/smil2/transition.h"
 
-#if 0 // Kees: this causes multiple definitions on my Windows 7
+#if 1 // Kees: this causes multiple definitions on my Windows 7
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
 // order can mess up standard include files.
@@ -123,7 +123,7 @@ class AMBULANTAPI d2_player :
 	public d2_capture_callback
 {
   public:
-	d2_player(d2_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
+	d2_player(d2_player_callbacks &hoster, common::focus_feedback *feedback, const net::url& u);
 	~d2_player();
 
 	/// Call on application termination
@@ -245,6 +245,7 @@ class AMBULANTAPI d2_player :
 		ID2D1SolidColorBrush *m_bgbrush;
 		d2_window *m_window;
 		D2D1::Matrix3x2F m_mouse_matrix;
+		D2D1_MATRIX_3X2_F m_transform;
 
 	};
 

@@ -121,7 +121,7 @@ int gui::dx::dx_gui_region::s_counter = 0;
 
 gui::d2::d2_player::d2_player(
 	d2_player_callbacks &hoster,
-	common::player_feedback *feedback,
+	common::focus_feedback *feedback,
 	const net::url& u)
 :	m_d2d(NULL),
 	m_WICFactory(NULL),
@@ -208,7 +208,7 @@ gui::d2::d2_player::d2_player(
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 
-	if (feedback) m_player->set_feedback(feedback);
+	if (feedback) m_player->set_focus_feedback(feedback);
 	m_player->initialize();
 
 }
@@ -254,6 +254,7 @@ gui::d2::d2_player::~d2_player() {
 	assert(m_d2d);
 	m_d2d->Release();
 	m_d2d = NULL;
+	set_embedder(NULL);
 	CoUninitialize();
 }
 
@@ -747,15 +748,13 @@ RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
 	RECT rv = {r.left(), r.top(), r.right(), r.bottom()};
 	wininfo *wi = _get_wininfo(w);
 	assert(wi);
-	ID2D1HwndRenderTarget*rt = wi->m_rendertarget;
+	ID2D1HwndRenderTarget *rt = wi->m_rendertarget;
 	if (rt) {
 		// Note: this code knows the matrix is scale/translate only.
-		D2D1_MATRIX_3X2_F transform;
-		rt->GetTransform(&transform);
-		rv.left = long(rv.left*transform._11 + transform._31);
-		rv.right = long(rv.right*transform._11 + transform._31 + 0.99);
-		rv.top = long(rv.top*transform._22 + transform._32);
-		rv.bottom = long(rv.bottom*transform._22 + transform._32 + 0.99);
+		rv.left = long(rv.left*wi->m_transform._11 + wi->m_transform._31);
+		rv.right = long(rv.right*wi->m_transform._11 + wi->m_transform._31 + 0.99);
+		rv.top = long(rv.top*wi->m_transform._22 + wi->m_transform._32);
+		rv.bottom = long(rv.bottom*wi->m_transform._22 + wi->m_transform._32 + 0.99);
 	}
 	AM_DBG lib::logger::get_logger()->debug("screen_rect(%d, %d, %d, %d) -> (%d, %d, %d, %d)",
 		r.left(), r.top(), r.right(), r.bottom(),
@@ -803,6 +802,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	const lib::rect& wanted_rect = wi->m_window->get_rect();
 	float xoff, yoff, factor;
 	AM_DBG lib::logger::get_logger()->debug("d2_player::redraw(%d, %d, %d, %d)", client_rect.left, client_rect.top, client_rect.right, client_rect.bottom);
+	rt->GetTransform(&wi->m_transform);
 	if (_calc_fit(client_rect, wanted_rect.size(), xoff, yoff, factor)) {
 		// WE have to do scaling. Setup the matrix.
 		D2D1_MATRIX_3X2_F transform = {
@@ -811,10 +811,9 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 			xoff, yoff
 		};
 		AM_DBG lib::logger::get_logger()->debug("d2_player::redraw offset %f,%f factor %f", xoff, yoff, factor);
-		D2D1_MATRIX_3X2_F oldTransform;
-		rt->GetTransform(&oldTransform);
-		if (memcmp(&oldTransform, &transform, sizeof(D2D1_MATRIX_3X2_F)) != 0) {
+		if (memcmp(&wi->m_transform, &transform, sizeof(D2D1_MATRIX_3X2_F)) != 0) {
 			rt->SetTransform(transform);
+			wi->m_transform = transform;
 			wi->m_mouse_matrix = *D2D1::Matrix3x2F::ReinterpretBaseType(&transform);
 			wi->m_mouse_matrix.Invert();
 		}

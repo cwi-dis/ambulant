@@ -93,7 +93,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	lib::logger::get_logger()->debug(" creating smil2 player %s", prefs->repr().c_str());
 	m_player = common::create_smil2_player(m_doc, this, m_embedder);
 
-	m_player->set_feedback(this);
+	m_player->set_focus_feedback(this);
 	m_player->initialize();
 
 	const std::string& id = url.get_ref();
@@ -234,7 +234,7 @@ mainloop::restart(bool reparse)
 	// XXXX
 	m_player = common::create_smil2_player(m_doc, this, m_embedder);
 
-	m_player->set_feedback(this);
+	m_player->set_focus_feedback(this);
 	m_player->initialize();
 
 	if (playing || pausing) play();

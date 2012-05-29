@@ -68,7 +68,8 @@ surface_impl::surface_impl(const std::string &name, surface_impl *parent, rect b
 //	m_alignment(NULL),
 	m_bg_renderer(bgrenderer),
 	m_renderer_data(NULL),
-	m_renderer_id(NULL)
+	m_renderer_id(NULL),
+	m_forced_redraw(false)
 {
 	if (parent) m_window_topleft += parent->get_global_topleft();
 	if (m_bg_renderer) {
@@ -129,15 +130,9 @@ surface_impl::animated()
 	clear_cache();
 	need_bounds();
 	to_redraw |= m_outer_bounds;
-	// Optimization: if the new are completely contains the old one we do the
-	// redraw ourselves.
-	// The general case is to forward to our parent (but this may lead to flashing)
 	AM_DBG lib::logger::get_logger()->debug("animated: to_redraw=(%d, %d, %d, %d)", to_redraw.left(), to_redraw.top(), to_redraw.width(), to_redraw.height());
-	if (to_redraw == m_outer_bounds) {
-		need_redraw(m_inner_bounds);
-	} else {
-		m_parent->need_redraw(to_redraw);
-	}
+	set_forced_redraw();
+	m_parent->need_redraw(to_redraw);
 }
 
 void
@@ -184,7 +179,13 @@ surface_impl::renderer_done(gui_events *cur)
 		m_parent->del_subregion(z, this);
 	}
 
+	//xxxbo 2012-01-24
+	// comment out the following line will remmove the flash between two video clips for MyVideos.
+	// However, the disadvantage is the last frame of the whole playlist will freeze in stead of 
+	// redraw to the background. 
+#if 0
 	need_redraw(m_inner_bounds);
+#endif //xxxbo end
 	if (m_renderers.size() == 0) background_render_changed();
 }
 
@@ -203,10 +204,11 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s, ltrb=(%d, %d, %d, %d))", (void *)this, m_name.c_str(), r.left(), r.top(), r.right(), r.bottom());
 	rect our_outer_rect = r & m_outer_bounds;
 	rect our_rect = m_outer_bounds.innercoordinates(our_outer_rect);
-	if (our_rect.empty()) {
+	if (our_rect.empty() && !m_forced_redraw) {
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) returning: nothing to draw", (void *)this, m_name.c_str());
 		return;
 	}
+	m_forced_redraw = false;
 
 	////////////////
 	// Draw the content of this
@@ -778,6 +780,12 @@ surface_impl::highlight(bool onoff)
 	need_redraw(m_inner_bounds);
 }
 
+void
+surface_impl::set_forced_redraw()
+{
+	m_forced_redraw = true;
+	if (m_parent) m_parent->set_forced_redraw();
+}
 
 // toplevel_surface_impl
 

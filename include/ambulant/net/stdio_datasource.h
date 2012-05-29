@@ -79,6 +79,7 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 		os << "stdio_datasource(" << (void *)&n << ", source=" << n.m_url.get_url() << ")";
 		return os;
 	}
+    long get_bandwidth_usage_data(const char **resource);
   private:
 	bool _end_of_file();
 	void filesize();

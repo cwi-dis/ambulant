@@ -72,6 +72,8 @@ class demux_audio_datasource:
 
 	common::duration get_dur();
 
+    long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
+
   private:
 	bool _end_of_file();
 	bool _buffer_full();
@@ -135,6 +137,7 @@ class demux_video_datasource:
 
 	common::duration get_dur();
 
+    long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
   private:
 	bool _end_of_file();
 	bool _buffer_full();

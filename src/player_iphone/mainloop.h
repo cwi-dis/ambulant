@@ -30,7 +30,8 @@
 
 class mainloop :
 	public ambulant::common::gui_player,
-	public ambulant::common::player_feedback
+	public ambulant::common::player_feedback,
+	public ambulant::common::focus_feedback
 {
   public:
 	mainloop(const char *filename, void *view, ambulant::common::embedder *app);
@@ -52,6 +53,13 @@ class mainloop :
 	void node_started(const ambulant::lib::node *n);
 	void node_stopped(const ambulant::lib::node *n);
 	void node_focussed(const ambulant::lib::node *n);
+	void node_filled(const ambulant::lib::node*) {};
+	void playable_started(const ambulant::common::playable*, const ambulant::lib::node*, const char*) {};
+	void playable_stalled(const ambulant::common::playable*, const char*) {};
+	void playable_unstalled(const ambulant::common::playable*) {};
+	void playable_cached(const ambulant::common::playable*) {};
+	void playable_deleted(const ambulant::common::playable*) {};
+	void playable_resource(const ambulant::common::playable*, const char*, long int) {};	
 	void goto_node_repr(const std::string node_repr);
 	PlaylistItem* get_current_item();
 

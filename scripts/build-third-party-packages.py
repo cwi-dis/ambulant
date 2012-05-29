@@ -4,6 +4,7 @@ import subprocess
 import urllib
 import urlparse
 import posixpath
+from optparse import OptionParser
 
 NOCHECK=False
 NORUN=False
@@ -15,7 +16,8 @@ TRYMIRROR=True
 #   python build-third-party-packages.py -m
 # in the directory on the server.
 MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.3/"
-MIRRORDATE="20110522"
+LIVE_MIRRORDATE="2012.02.29"
+SDL_MIRRORDATE="20120306"
 
 #
 # Path names for Windows programs and such
@@ -33,6 +35,8 @@ if not os.path.exists(WINDOWS_DXSDK_PATH) and os.path.exists(WINDOWS_PROGRAMFILE
     WINDOWS_DXSDK_PATH="%s\\Microsoft DirectX SDK (February 2010)" % WINDOWS_PROGRAMFILES32
 WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
+XULRUNNER_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/"
+XULRUNNER_VERSION="xulrunner-8.0"
 #
 # urlretrieve silently ignores 404 errors. We want them, so we can download
 # our shadow copies.
@@ -121,23 +125,23 @@ class TPP(CommonTPP):
     def download(self, trymirror=None):
         if trymirror is None:
             trymirror = TRYMIRROR
+
+        if trymirror and self.url2:
+            # Try the mirror
+            print >>self.output, "+ mirror download:", MIRRORBASE+self.url2
+            try:
+                myurlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
+            except IOError, arg:
+                print >>self.output, "+ download status: error:", arg
+            else:
+                print >>self.output, "+ download status: success"
+                return True
+
         print >>self.output, "+ download:", self.url
         try:
             myurlretrieve(self.url, self.downloadedfile)
         except IOError, arg:
             print >>self.output, "+ download status: error:", arg
-            if not trymirror or not self.url2:
-                return False
-        else:
-            print >>self.output, "+ download status: success"
-            return True
-        # Try the mirror
-        print >>self.output, "+ mirror download:", MIRRORBASE+self.url2
-        try:
-            myurlretrieve(MIRRORBASE+self.url2, self.downloadedfile)
-        except IOError, arg:
-            print >>self.output, "+ download status: error:", arg
-            return False
         else:
             print >>self.output, "+ download status: success"
             return True
@@ -390,18 +394,20 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.1.tar.gz",
-            url2="ffmpeg-0.6.1.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
             checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "mkdir ffmpeg-0.6.1-universal && "
-                "cd ffmpeg-0.6.1-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.1 all" % 
+            	"rm -rf ffmpeg-0.6.5-universal && "
+                "mkdir ffmpeg-0.6.5-universal && "
+                "cd ffmpeg-0.6.5-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.5 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
+#			url="http://www.ambulantplayer.org/thirdpartymirror/2.3/SDL-1.3-20110522.tar.gz",
+            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
@@ -413,23 +419,24 @@ third_party_packages={
             ),
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles macosx3264 && "
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
-            url2="gettext-0.18.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+            url2="gettext-0.18.1.1.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18 && "
+                "cd gettext-0.18.1.1 && "
+            	"patch -p1 --forward < %s/third_party_packages/gettext-0.18.1.1.patch && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
-                "make install" % MAC106_COMMON_CONFIGURE
+                "make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
             ),
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
@@ -440,11 +447,14 @@ third_party_packages={
                 "%s --disable-dependency-tracking && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
+            ),
+        TPP("xulrunner-sdk", # no libraries used, 32 bit version also works w. 64 bit build
+            url="%s%s.en-US.mac-i386.sdk.tar.bz2" % (XULRUNNER_URL, XULRUNNER_VERSION),
+            url2="%s.en-US.mac-i386.sdk.tar.bz2" % XULRUNNER_VERSION,
+            checkcmd="test -d xulrunner-sdk",
+            buildcmd="test -d xulrunner-sdk"
             )
         ],
-
-
-
 
     'mac10.4' : [
         TPP("expat", 
@@ -502,18 +512,19 @@ third_party_packages={
             ),
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles macosxfat && "
                 "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18 && "
+                "cd gettext-0.18.1.1 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
@@ -556,45 +567,45 @@ third_party_packages={
             ),
 # create fat libraries for armv6/7: foreach arch do configure ...;make; rename lib...a to lib..$arch, then use lipo to combine them 
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            url2="ffmpeg-export-2010-01-22.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "cd ffmpeg-export-2010-01-22 && "
-                "export DEPLOYMENT_TARGET=%s;"
+                "cd ffmpeg-0.6.5 && "
+				"export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
-                " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$DEPLOYMENT_TARGET.sdk "
-                "--cpu=arm1176jzf-s "
+				"--cpu=arm1176jzf-s "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv6 -I../installed/include' "
-                "--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
+				"--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
-                "--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-doc;"
+				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
-                "for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
+				"for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
-                "--cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+				"--cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
                 "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$DEPLOYMENT_TARGET.sdk "
-                "--cpu=cortex-a8 "
+				"--cpu=cortex-a8 "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv7 -I../installed/include' "
-                "--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
+				"--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
                 "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
-                "--disable-ffserver --disable-ffplay --disable-doc;"
+				"--disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
-                "for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
+				"for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
                 "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done;" 
-                "make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
+				"make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
+            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
+                "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  &&"                
                 "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -604,11 +615,11 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "set -x;cd live && "
-                "tar xf %s/third_party_packages/live-iOS-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles iOS-Device-armv6 && "
                 "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&" 
                  "./genMakefiles iOS-Device-armv7 && "
@@ -617,10 +628,10 @@ third_party_packages={
             ),
 
 ##      TPP("gettext",
-##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.18 && "
+##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -664,26 +675,26 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            url2="ffmpeg-export-2010-01-22.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "cd ffmpeg-export-2010-01-22 && "
+                "cd ffmpeg-0.6.5 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
                 "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
                 "--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
-                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm;"
+                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
                 "make clean;make ${MAKEFLAGS}; make install" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
+            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "./configure --enable-video-x11=no  --enable-video-opengl=no &&"                
+                "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  &&"                
                 "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug ARCHS='i386 x86_64' &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
@@ -693,20 +704,20 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-iOS-patches.tar && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles iOS-Simulator && "
                 "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
 
 ##      TPP("gettext",
-##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
+##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.18 && "
+##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -772,26 +783,26 @@ third_party_packages={
             ),
 
         TPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
-            url2="xulrunner-1.9.2.17.en-US.linux-i686.sdk.tar.bz2",
+            url="%s%s.en-US.linux-i686.sdk.tar.bz2" % (XULRUNNER_URL, XULRUNNER_VERSION),
+            url2="%s.en-US.linux-i686.sdk.tar.bz2" % XULRUNNER_VERSION,
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
 
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            url2="ffmpeg-export-2010-01-22.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
+            url2="ffmpeg-0.6.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "cd ffmpeg-export-2010-01-22 && "
+                "cd ffmpeg-0.6.5&& "
                 "%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
 
         TPP("SDL",
-            url="http://non.existent/non.existent", # TMP, because of SDL error. WAS: url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%MIRRORDATE,
+            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
             buildcmd=
                 "cd SDL-1.3.0-* && "
@@ -802,21 +813,21 @@ third_party_packages={
 
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                        "( grep fPIC config.linux >/dev/null || patch -i %s/third_party_packages/live.patch config.linux ) &&"
+                "tar xf %s/third_party_packages/live-patches.tar && "
                 "./genMakefiles linux && "
                 "make ${MAKEFLAGS} " % (AMBULANT_DIR)
             ),
 
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.tar.gz",
-            url2="gettext-0.18.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+            url2="gettext-0.18.1.1.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18 && "
+                "cd gettext-0.18.1.1 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
@@ -859,9 +870,11 @@ third_party_packages={
                 "devenv xerces-all.sln /build Release /project XercesLib" % (WIN32_VCVERSION)
             ),
             
-        WinTPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-            url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+        WinTPP("xulunner-sdk",
+            #url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+	    #url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
+	    url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
+            url2="%s.en-US.win32.sdk.zip" % XULRUNNER_VERSION,
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
             ),
@@ -890,7 +903,7 @@ third_party_packages={
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%MIRRORDATE,
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
             extractcmd='cmd /c "%s live555-latest.tar.gz && %s live555-latest.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
@@ -910,11 +923,19 @@ third_party_packages={
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
-        WinTPP("libdispatch",
+        WinTPP("libdispatch-vs2010",
             url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
-            url2="DrPizza-libdispatch-1ed626c.zip",
-            checkcmd="if not exist DrPizza-libdispatch-1ed626c\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
-            buildcmd="cd DrPizza-libdispatch-1ed626c && " +
+            url2="libdispatch-jack-hg284.zip",
+            checkcmd="if defined VS100COMNTOOLS if not exist libdispatch-jack-hg284\\libdispatch\\bin\\Win32\\StaticRelease\\libdispatch.lib exit 1",
+            buildcmd="cd libdispatch-jack-hg284 && " +
+                "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
+                "devenv libdispatch.sln /build StaticDebug /project libdispatch "
+        ),
+        WinTPP("libdispatch-vs2008",
+            url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
+            url2="libdispatch-jack-hg284.zip",
+            checkcmd="if defined VS90COMNTOOLS if not exist libdispatch-jack-hg284\\VS2008\\StaticRelease\\libdispatch.lib exit 1",
+            buildcmd="cd libdispatch-jack-hg284\\VS2008 && " +
                 "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
                 "devenv libdispatch.sln /build StaticDebug /project libdispatch "
         ),
@@ -932,6 +953,7 @@ third_party_packages={
         ],
     
 }
+third_party_packages['mac10.7'] = third_party_packages['mac10.6']
 
 def checkenv_win32(target):
     ok = True
@@ -973,6 +995,12 @@ def checkenv_unix(target):
         rv = False
     return rv
     
+def get_mac_build_platform():
+	un = os.uname()
+	if un[0] != 'Darwin': return None
+	major, minor, micro = un[2].split('.')
+	osx_minor = int(major)-4
+	return "mac10.%d" % osx_minor
 
 def checkenv_mac(target):
     rv = True
@@ -981,9 +1009,17 @@ def checkenv_mac(target):
     if os.system("xcodebuild -version >/dev/null") != 0:
         print "** xcodebuild not in $PATH"
         rv = False
-    # Make sure we have MACOSX_DEPLOYMENT_TARGET set
-    if target != 'mac10.6' and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
-        print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
+    # Make sure we have MACOSX_DEPLOYMENT_TARGET set, if needed
+    build_platform = get_mac_build_platform()
+    if target != build_platform and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
+        print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development on %s' % (target, build_platform)
+        rv = False
+    if target != build_platform and not os.environ.has_key('SDKROOT'):
+        print '** SDKROOT must be set for %s development on %s' % (target, build_platform)
+        rv = False
+    # We need gas-preprocessor, for ffmpeg
+    if os.system("gas-preprocessor.pl 2>&1 | grep Unrecognized >/dev/null") != 0:
+        print '** Need gas-preprocessor.pl on $PATH. See https://github.com/yuvi/gas-preprocessor'
         rv = False
     return rv
 
@@ -1025,6 +1061,7 @@ def checkenv_iphone(target):
     return rv
         
 environment_checkers = {
+    'mac10.7' : checkenv_mac,
     'mac10.6' : checkenv_mac,
     'mac10.4' : checkenv_mac,
     'iOS-Simulator' : checkenv_iphone,
@@ -1036,7 +1073,26 @@ environment_checkers = {
 
 def main():
     global TRYMIRROR
-    if len(sys.argv) == 2 and sys.argv[1] == '-m':
+    global NOCHECK
+    global NORUN
+
+    parser = OptionParser(usage="Usage: %prog [options] platform")
+    parser.add_option("-M", "--nomirror", dest="nomirror", action="store_true",
+        help="Ignore mirrored packages, download packages from original location")
+    parser.add_option("-f", "--force", dest="nocheck", action="store_true",
+        help="Force rebuild of all packages")
+    parser.add_option("-x", "--crossbuild", dest="crossbuild", action="store_true",
+        help="Build packages here, ignoring whether they are installed system-wide already")
+    parser.add_option("-n", "--dry_run", dest="norun", action="store_true",
+        help="Don't run commands, only print them")
+    parser.add_option("-m", "--loadmirror", dest="mirror", action="store_true",
+        help="Mirror all third party packages in the current directory")
+    options, args = parser.parse_args()
+        
+    if options.mirror:
+        if args:
+            print '-m and platform argument are mutually exclusive'
+            return 2
         good = 0
         bad = 0
         all = []
@@ -1050,21 +1106,28 @@ def main():
         print '+ mirrored: %d packages' % good
         print '+ failed: %d packages' % bad
         sys.exit(bad)
-    if len(sys.argv) > 1 and sys.argv[1] == '-M':
-        del sys.argv[1]
-        TRYMIRROR=False
-    if len(sys.argv) != 2 or sys.argv[1] not in third_party_packages:
-        print "Usage: %s [-M] platform" % sys.argv[0]
-        print "Platform is one of:", ' '.join(third_party_packages.keys())
-        print "-M argument ignores mirror directory"
-        print "Use %s -m to populate mirror directory" % sys.argv[0]
+    
+    if len(args) != 1 or args[0] not in third_party_packages:
+        parser.print_help()
+        print "\nPlatform is one of:", ' '.join(third_party_packages.keys())
         return 2
-    ok = environment_checkers[sys.argv[1]](sys.argv[1])
+
+        
+    if options.nomirror:
+        TRYMIRROR=False
+    NOCHECK=options.nocheck
+    NORUN=options.norun
+    if options.crossbuild:
+        if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
+            print '** PKG_CONFIG_LIBDIR must be set for cross-development'
+            return 1
+
+    ok = environment_checkers[args[0]](args[0])
     if not ok:
         return 1
     allok = True
     final_package = None
-    for pkg in third_party_packages[sys.argv[1]]:
+    for pkg in third_party_packages[args[0]]:
         if pkg.name == "FINAL":
             # Do this package last
             final_package=pkg
