@@ -85,6 +85,7 @@ class sdl_gui_player :
 //TBD	void player_start(char* document_name, bool start, bool old);
 //TBD	ambulant::common::gui_screen *get_gui_screen();
 //	char* convert_data_to_image(const guchar* m_data, gsize size);
+	void redraw();
   private:
 #if 0
 	// from dx_player
@@ -96,8 +97,12 @@ class sdl_gui_player :
 	std::stack<frame*> m_frames;
 #endif
 	ambulant::common::player* create_player(const char* filename);
+	// top level drawing window
 	void create_top_window ();
+	lib::point m_origin;
 	lib::size m_size;
+	lib::rect m_rect;
+	// gui, logger and drawing surface
 	sdl_gui *m_gui;
 	lib::logger *m_logger;
 	bool m_running;

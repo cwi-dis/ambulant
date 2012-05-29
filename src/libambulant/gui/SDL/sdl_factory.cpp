@@ -114,7 +114,7 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	sdl_rect.y = r.top();
 	sdl_rect.w = r.width();
 	sdl_rect.h = r.height();
-	SDL_Window* win = SDL_CreateWindow ("Ambulant_SDL",r.left(),r.top(),r.width(),r.height(),0);
+//X	SDL_Window* win = SDL_CreateWindow ("Ambulant_SDL",r.left(),r.top(),r.width(),r.height(),0);
 	return asdlw;
 }
 

@@ -26,6 +26,7 @@
 #define __STDC_CONSTANT_MACROS //XXXX Grrr.. for ‘UINT64_C’ not declared
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_video.h"
+#include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/factory.h"
 #include <stdlib.h>
@@ -135,16 +136,16 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		int width = m_size.w;
 		int height = m_size.h;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
+		static SDL_Window* s_window = NULL; //XXXX member !
 		static SDL_Renderer* s_renderer = NULL; //XXXX member !
 		static SDL_Texture* s_texture = NULL; //XXXX member !
-		static SDL_Window* s_window = NULL; //XXXX member, embed  !
-		if (s_texture == NULL) {
-			s_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
-			assert (s_window);
-			s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED);
+		if (s_texture == NULL) {			
+			ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
+			s_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID)
+			s_renderer = SDL_CreateRenderer(/*asw->window()*/ s_window, -1, SDL_RENDERER_ACCELERATED);
 			if (s_renderer == NULL) {
 				AM_DBG lib::logger::get_logger()->trace("sdl_video_renderer.redraw(0x%x): trying software renderer", this);
-				s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_SOFTWARE);
+				s_renderer = SDL_CreateRenderer(/*asw->window()*/ s_window, -1, SDL_RENDERER_SOFTWARE);
 				if (s_renderer == NULL) {
 					lib::logger::get_logger()->warn("Cannot open: %s", "SDL video renderer");
 					return;

@@ -88,11 +88,12 @@ class ambulant_sdl_window : public common::gui_window {
 
 //X	void _screenTransitionPreRedraw();
 //X	void _screenTransitionPostRedraw(const lib::rect &r);
-
+	lib::rect get_redraw_rect() { return m_redraw_rect; }
   private:
 	void clear();
 	lib::rect  m_bounds;
 	sdl_ambulant_surface* m_ambulant_surface;
+	lib::rect   m_redraw_rect; 
 //X	GdkPixmap* m_pixmap;
 //X	GdkPixmap* m_oldpixmap;
 //X	GdkPixmap* m_surface;
@@ -105,6 +106,10 @@ class ambulant_sdl_window : public common::gui_window {
 //X	GdkPixmap* m_fullscreen_old_pixmap;
 //X	smil2::transition_engine* m_fullscreen_engine;
 //X	lib::transition_info::time_type m_fullscreen_now;
+
+// The total number of SDL events at any moment is maintained in order to clear
+// the SDL Event Queue of pointers to this structure upon deletion
+	static long unsigned int s_num_events;
 
   public:
 //X	GdkPixmap* m_tmppixmap;

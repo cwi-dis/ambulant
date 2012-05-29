@@ -636,9 +636,11 @@ sdl_gui::quit() {
 }
 
 void
-sdl_loop() {
+sdl_gui::sdl_loop() {
 	bool busy = true;
 	SDL_Event event;
+	ambulant::gui::sdl::ambulant_sdl_window* asw;
+
 	while (busy) {
 		if (SDL_WaitEvent(&event) == 0) {
 			lib::logger::get_logger()->fatal("ambulant::sdl_gui::sdl_loop(0x%x): SDL error %s",/*(void *)this*/0, SDL_GetError());
@@ -648,6 +650,13 @@ sdl_loop() {
 		case SDL_QUIT:
 			busy = false;
 			break;
+		case SDL_USEREVENT:
+			lib::logger::get_logger()->debug("%s SDLUserEvent code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
+			if (event.user.code == 317107) {
+				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
+				asw->redraw(asw->get_redraw_rect());
+			}
+			break;		  
 		default:
 			break;
 		}
@@ -680,8 +689,7 @@ main (int argc, char*argv[]) {
 //TBD	unix_prefs.load_preferences();
 
 	/* Setup surface */
-	sdl_gui *gui = new sdl_gui(argv[0], argc > 1 ? strdup(argv[1]) : NULL);
-
+	sdl_gui *gui = new sdl_gui(argv[0], NULL);
 	// take log level from preferences
 //TBD	sdl_logger::set_sdl_logger_gui(gui);
 //TBD	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
@@ -723,11 +731,13 @@ main (int argc, char*argv[]) {
 		}
 		exec_flag = true;
 	}
-	sdl_loop();
+	gui->sdl_loop();
 //TBD	unix_prefs.save_preferences();
 //TBD	delete sdl_logger::get_sdl_logger();
 	gui->quit();
 	delete gui;
+
+	SDL_Quit();
 
 	return exec_flag ? 0 : -1;
 }

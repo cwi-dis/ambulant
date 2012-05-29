@@ -177,6 +177,16 @@ sdl_gui_player::init_datasource_factory()
 
 
 void
+sdl_gui_player::redraw() {
+	if (m_sdl_surface != NULL) {
+		ambulant_sdl_window* sdl_window = m_sdl_surface->sdl_window();
+		if (sdl_window != NULL) {
+			sdl_window->redraw(m_rect);
+		}
+	}
+}
+
+void
 sdl_gui_player::init_playable_factory()
 {
 	common::global_playable_factory *pf = common::get_global_playable_factory();
@@ -220,7 +230,9 @@ sdl_gui_player::create_top_window () {
 	m_size = get_window_factory()->get_default_size();
 	int width = m_size.w;
 	int height = m_size.h;
-	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
+	m_origin = lib::point(0,0);
+	m_rect = lib::rect(m_origin, m_size);
+	AM_DBG lib::logger::get_logger()->debug("sdl_gui_player::create_top_window(0x%x): width = %d, height = %d",(void *)this, width, height);
 	static SDL_Renderer* s_renderer = NULL; //XXXX member !
 	static SDL_Texture* s_texture = NULL; //XXXX member !
 	static SDL_Window* s_window = NULL; //XXXX member, embed  !

@@ -59,6 +59,7 @@ class sdl_gui {
 	void need_redraw(const void*, void*, const void*);
 	void player_done();
 	void player_start(char*,bool,bool);
+	void sdl_loop(); // the SDL Event loop in main thread
 
 	// major containers
 	SDL_Surface* get_gui_container();

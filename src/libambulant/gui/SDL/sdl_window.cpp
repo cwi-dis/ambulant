@@ -63,6 +63,7 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 //X	m_pixmap = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_sdl_window(0x%x)",(void *)this);
 }
+long unsigned int ambulant_sdl_window::s_num_events = 0;
 
 ambulant_sdl_window::~ambulant_sdl_window()
 {
@@ -74,6 +75,29 @@ ambulant_sdl_window::~ambulant_sdl_window()
 		m_ambulant_surface->set_sdl_window(NULL);
 		m_ambulant_surface = NULL;
 	}
+	if (ambulant_sdl_window::s_num_events == 0) {
+		return;
+	}
+	// Remove any outstanding SDL_Events from the SDL Event Queue that contain 'this'
+	// but leave all others
+	SDL_Event* events = (SDL_Event*) malloc (s_num_events*sizeof(SDL_Event)), * events_left =  (SDL_Event*) NULL;
+	int n_events_left = 0;
+	SDL_PeepEvents(events, ambulant_sdl_window::s_num_events, SDL_GETEVENT, SDL_USEREVENT, SDL_USEREVENT);
+	for (int i = 0; i < ambulant_sdl_window::s_num_events; i++) {
+		if (events[i].user.data1 != this) {
+			if (events_left == NULL) {
+				events_left =  (SDL_Event*) malloc (ambulant_sdl_window::s_num_events*sizeof(SDL_Event));
+				assert (events_left);
+			}
+			events_left[n_events_left++] = events[i];
+		}
+	}
+	if (events_left != NULL) { 
+		SDL_PeepEvents(events, ambulant_sdl_window::s_num_events, SDL_ADDEVENT, SDL_USEREVENT, SDL_USEREVENT);
+		free (events_left);
+	}
+	free (events);
+	ambulant_sdl_window::s_num_events = n_events_left;
 //X	if (m_pixmap != NULL) {
 //X		g_object_unref(G_OBJECT(m_pixmap));
 //X		m_pixmap = NULL;
@@ -144,14 +168,26 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 	sdl_ambulant_surface::s_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=0x%x", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, sdl_C_callback_helper_queue_draw_area);
 #endif//JNK
-	// as we don't have a SDL event loop yet, directly call redraw()
-	redraw(r);//XXXX !!!!!
+	//X as we don't have a SDL event loop yet, directly call redraw()
+	//X redraw(r);//XXXX !!!!!
+	//X SDL_Event* e = (SDL_Event*) malloc (sizeof SDL_Event);;
+	static int hack = 1;
+	SDL_Event e;
+	m_redraw_rect = r;
+	e.user.code = 317107;
+	e.type = SDL_USEREVENT;
+	e.user.data1 = (void*) this;
+	e.user.data2 = (void*) 0;
+	SDL_PushEvent(&e);
+	ambulant_sdl_window::s_num_events++;
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): SDL_PushEvent called r=(%d,%d,%d,%d) e={type=%d user.code=%d user.data1=0x%x user.data2=0x%x}", this,r.left(),r.top(),r.width(),r.height(), e.type, e.user.code, e.user.data1, e.user.data2);
 }
 
 void
 ambulant_sdl_window::redraw(const lib::rect &r)
 {
 
+	ambulant_sdl_window::s_num_events--;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 //X	_screenTransitionPreRedraw();
 	clear();
