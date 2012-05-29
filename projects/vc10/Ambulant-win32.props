@@ -27,7 +27,7 @@
     <xerces_minor>1</xerces_minor>
     <xulrunner_dir>$(third_party_dir)\xulrunner-sdk</xulrunner_dir>
     <firefox_plugin_dir>C:\Program Files\Mozilla Firefox\plugins\</firefox_plugin_dir>
-    <libdispatch_dir>$(third_party_dir)\DrPizza-libdispatch-1ed626c\libdispatch</libdispatch_dir>
+    <libdispatch_dir>$(third_party_dir)\libdispatch-jack-hg284\libdispatch</libdispatch_dir>
     <zip_executable>C:\Program Files\7-Zip\7z.exe</zip_executable>
     <python_dir>C:\Python27</python_dir>
     <python_version>2.7</python_version>
