@@ -147,10 +147,11 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	m_pMainWnd->DragAcceptFiles(TRUE);
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
-
+#ifndef WITH_REMOTE_SYNC
 	if(mmdoc /*&& cmdInfo.m_autostart*/) {
 		mmdoc->StartPlayback();
 	}
+#endif
 
 	return TRUE;
 }
