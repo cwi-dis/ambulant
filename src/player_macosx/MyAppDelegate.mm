@@ -275,7 +275,9 @@ initialize_logger()
 	NSError *error;
 	MyDocument *doc = [controller openDocumentWithContentsOfURL:url display:YES error:&error];
 	if (doc) {
+#ifndef WITH_REMOTE_SYNC
         [doc play: self];
+#endif
     } else {
 		NSLog(@"handleGetURLEvent: error: %@\n", error);
     }
