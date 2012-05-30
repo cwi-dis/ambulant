@@ -432,9 +432,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	url = [[self fileURL] absoluteString];
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
-	
+#ifndef WITH_REMOTE_SYNC
 	// and play self
 	[self play: self];
+#endif
 }
 
 - (void)showWindows
