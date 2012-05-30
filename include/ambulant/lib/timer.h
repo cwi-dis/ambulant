@@ -229,8 +229,8 @@ class timer_control_impl : public timer_control {
   private:
 	void _start(time_type t = 0);
 	void _stop();
-	void _pause();
-	void _resume();
+	void _pause(bool tell_observer);
+	void _resume(bool tell_observer);
 	time_type _elapsed() const;
 	time_type _elapsed(time_type pt) const;
 	time_type _apply_speed_manip(time_type dt) const;

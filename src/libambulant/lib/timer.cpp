@@ -135,16 +135,17 @@ lib::timer_control_impl::_stop() {
 void
 lib::timer_control_impl::pause() {
 	m_lock.enter();
-	_pause();
+	_pause(true);
 	m_lock.leave();
 }
+
 void
-lib::timer_control_impl::_pause() {
+lib::timer_control_impl::_pause(bool tell_observer) {
 	if(m_running) {
 		m_local_epoch += _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 		m_running = false;
 #ifdef WITH_REMOTE_SYNC
-		if (m_observer) m_observer->paused();
+		if (tell_observer && m_observer) m_observer->paused();
 #endif
 	}
 }
@@ -152,17 +153,17 @@ lib::timer_control_impl::_pause() {
 void
 lib::timer_control_impl::resume() {
 	m_lock.enter();
-	_resume();
+	_resume(true);
 	m_lock.leave();
 }
 
 void
-lib::timer_control_impl::_resume() {
+lib::timer_control_impl::_resume(bool tell_observer) {
 	if(!m_running) {
 		m_parent_epoch = m_parent->elapsed();
 		m_running = true;
 #ifdef WITH_REMOTE_SYNC
-		if (m_observer) m_observer->resumed();
+		if (tell_observer && m_observer) m_observer->resumed();
 #endif
 	}
 }
@@ -177,14 +178,14 @@ lib::timer_control_impl::set_time(time_type t) {
 		}
 		m_local_epoch = t;
 	} else {
-		_pause();
+		_pause(false);
 		// XXXJACK: Hard-setting a running clock is a bad idea: it makes things like animations and
 		// transitions "stutter". One possible solution would be to skew the clock if
 		if (t < m_local_epoch) {
 			AM_DBG lib::logger::get_logger()->debug("timer: setting running timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
 		m_local_epoch = t;
-		_resume();
+		_resume(false);
 	}
 	m_lock.leave();
 }
@@ -196,9 +197,9 @@ lib::timer_control_impl::set_speed(double speed)
 	if(!m_running) {
 		m_speed = speed;
 	} else {
-		_pause();
+		_pause(false);
 		m_speed = speed;
-		_resume();
+		_resume(false);
 	}
 	m_lock.leave();
 }
