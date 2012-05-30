@@ -429,8 +429,10 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	m_curDocFilename = u.get_url().c_str();
 	player = dummy;
 	set_status_line("Ready");
+#ifndef WITH_REMOTE_SYNC
 	if(autostart || m_autoplay)
 		PostMessage(WM_COMMAND, ID_FILE_PLAY);
+#endif
 }
 
 void MmView::OnFilePlay()
