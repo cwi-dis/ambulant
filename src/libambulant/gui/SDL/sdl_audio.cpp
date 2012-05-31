@@ -144,13 +144,13 @@ gui::sdl::sdl_audio_renderer::quit()
 }
 
 bool
-gui::sdl::sdl_audio_renderer::can_be_clock_master()
+gui::sdl::sdl_audio_renderer::_can_be_clock_master()
 {
-	return false; // true;  // should depend on syncMaster and remote-sync
+	return true;  // should depend on syncMaster and remote-sync
 }
 
 bool
-gui::sdl::sdl_audio_renderer::can_slip()
+gui::sdl::sdl_audio_renderer::_can_slip()
 {
 	return true;	// should depend on synBehaviour=canSlip
 }
@@ -160,7 +160,7 @@ gui::sdl::sdl_audio_renderer::register_renderer(sdl_audio_renderer *rnd)
 {
 	s_static_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer(0x%x)", rnd);
-	if (s_master_clock_renderer == NULL && rnd->can_be_clock_master()) s_master_clock_renderer = rnd;
+	if (s_master_clock_renderer == NULL && rnd->_can_be_clock_master()) s_master_clock_renderer = rnd;
 	std::list<sdl_audio_renderer *>::iterator i;
 	for( i=s_renderers.begin(); i != s_renderers.end(); i++) {
 		if ((*i) == rnd) {
@@ -210,7 +210,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, size_t len)
 
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling 0x%x.get_data()", (void*) stream, len, *first);
 		size_t insert_count = 0;
-		size_t single_len = (*first)->get_data(len, &single_data, &insert_count);
+		size_t single_len = (*first)->_get_data(len, &single_data, &insert_count);
 		assert(single_len + insert_count <= len);
 		if (insert_count) {
 			memset(stream, 0, insert_count);
@@ -223,7 +223,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, size_t len)
 
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling get_data_done(%d)", (void*) stream, len, single_len);
 
-		(*first)->get_data_done(single_len);
+		(*first)->_get_data_done(single_len);
 		if (single_len < len)
 			memset(stream+single_len, 0, (len-single_len));
 	} else {
@@ -236,12 +236,12 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, size_t len)
 			Uint8 *next_data;
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
 			size_t next_insert_count = 0;
-			size_t next_len = (*i)->get_data(len, &next_data, &next_insert_count);
+			size_t next_len = (*i)->_get_data(len, &next_data, &next_insert_count);
 			if (next_len)
 				add_samples((short*)(stream+next_insert_count), (short*)next_data, std::min((len-next_insert_count)/2, next_len/2), (*i)->m_volumes, (*i)->m_volcount);
 
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
-			(*i)->get_data_done(next_len);
+			(*i)->_get_data_done(next_len);
 		}
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback: got data from %d renderers", dbg_nstream);
 	}
@@ -441,7 +441,7 @@ gui::sdl::sdl_audio_renderer::start_outtransition(const lib::transition_info* in
 }
 
 size_t
-gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr, size_t *insert_count)
+gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t *insert_count)
 {
 	m_lock.enter();
 
@@ -488,7 +488,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr, size_t 
 		if (clock_drift) {
 			/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: audio clock %dms ahead of document clock", clock_drift);
 			// First, if there is no master clock, we assume that role
-			if (s_master_clock_renderer == NULL && can_be_clock_master() )
+			if (s_master_clock_renderer == NULL && _can_be_clock_master() )
 				s_master_clock_renderer = this;
 
 			lib::timer::signed_time_type residual_clock_drift;
@@ -502,7 +502,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr, size_t 
 			}
 			if (residual_clock_drift) {
 				/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: should adjust audio clock by %ld ms", residual_clock_drift);
-				if (can_slip()) {
+				if (_can_slip()) {
 					/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: can-slip, adjust audio clock by %ld ms", residual_clock_drift);
 					m_audio_clock -= residual_clock_drift;
 				} else {
@@ -604,7 +604,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr, size_t 
 }
 
 void
-gui::sdl::sdl_audio_renderer::get_data_done(size_t size)
+gui::sdl::sdl_audio_renderer::_get_data_done(size_t size)
 {
 	m_lock.enter();
 	// Acknowledge that we are ready with the data provided to us
@@ -623,7 +623,7 @@ gui::sdl::sdl_audio_renderer::get_data_done(size_t size)
     // Check whether we are expecting more audio data (regardless of clip_end)
 	bool still_busy;
 	still_busy = (size != 0);
-	still_busy |= restart_audio_input();
+	still_busy |= _restart_audio_input();
 	if (!still_busy) {
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::playdone: calling m_context->stopped() this = (x%x)",this);
 		m_previous_clip_position = m_clip_end;
@@ -649,7 +649,7 @@ gui::sdl::sdl_audio_renderer::get_data_done(size_t size)
 }
 
 bool
-gui::sdl::sdl_audio_renderer::restart_audio_input()
+gui::sdl::sdl_audio_renderer::_restart_audio_input()
 {
 	// private method - no need to lock.
 
@@ -666,7 +666,7 @@ gui::sdl::sdl_audio_renderer::restart_audio_input()
 
 	if (m_audio_src->size() < s_min_buffer_size_bytes ) {
 		// If we have buffer space: start reading
-		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
+		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::_data_avail);
 		m_audio_src->start(m_event_processor, e);
 	} else {
         // If we don't have buffer space we tell the reader to start, but we don't
@@ -677,7 +677,7 @@ gui::sdl::sdl_audio_renderer::restart_audio_input()
 }
 
 void
-gui::sdl::sdl_audio_renderer::data_avail()
+gui::sdl::sdl_audio_renderer::_data_avail()
 {
 	m_lock.enter();
     if (m_audio_src) {
@@ -700,7 +700,7 @@ gui::sdl::sdl_audio_renderer::data_avail()
 	}
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: %d bytes available", m_audio_src->size());
 
-	restart_audio_input();
+	_restart_audio_input();
 
 	m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: done");
@@ -808,7 +808,7 @@ gui::sdl::sdl_audio_renderer::start(double where)
 		}
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::start(0x%x): m_audio_src=0x%x m_is_reading=%d", this, (void*)m_audio_src, m_is_reading);
 		if (!m_is_reading) {
-			lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
+			lib::event *e = new readdone_callback(this, &sdl_audio_renderer::_data_avail);
 			m_audio_src->start(m_event_processor, e);
 		}
 		m_is_playing = true;
