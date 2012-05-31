@@ -3929,6 +3929,32 @@ static PyObject *timerObj_skew(timerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *timerObj_running(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->running();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *timerObj_is_slaved(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_slaved();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyMethodDef timerObj_methods[] = {
 	{"elapsed", (PyCFunction)timerObj_elapsed, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -3940,6 +3966,10 @@ static PyMethodDef timerObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timerObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
+	{"running", (PyCFunction)timerObj_running, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"is_slaved", (PyCFunction)timerObj_is_slaved, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 
@@ -4309,6 +4339,34 @@ static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObj
 	return _res;
 }
 
+static PyObject *timer_controlObj_set_slaved(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool slaved;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &slaved))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_slaved(slaved);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_controlObj_is_slaved(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_slaved();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyMethodDef timer_controlObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_controlObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -4340,6 +4398,10 @@ static PyMethodDef timer_controlObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
 	{"set_observer", (PyCFunction)timer_controlObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
+	{"set_slaved", (PyCFunction)timer_controlObj_set_slaved, 1,
+	 PyDoc_STR("(bool slaved) -> None")},
+	{"is_slaved", (PyCFunction)timer_controlObj_is_slaved, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 
@@ -4709,6 +4771,34 @@ static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_s
 	return _res;
 }
 
+static PyObject *timer_control_implObj_set_slaved(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	bool slaved;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      bool_Convert, &slaved))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_slaved(slaved);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *timer_control_implObj_is_slaved(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_slaved();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyMethodDef timer_control_implObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_control_implObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -4740,6 +4830,10 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew_) -> None")},
 	{"set_observer", (PyCFunction)timer_control_implObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
+	{"set_slaved", (PyCFunction)timer_control_implObj_set_slaved, 1,
+	 PyDoc_STR("(bool slaved) -> None")},
+	{"is_slaved", (PyCFunction)timer_control_implObj_is_slaved, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 

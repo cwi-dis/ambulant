@@ -333,6 +333,8 @@ public:
 	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
+	bool running() const;
+	bool is_slaved() const;
   private:
 	PyObject *py_timer;
 
@@ -368,6 +370,8 @@ public:
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
 	void set_observer(ambulant::lib::timer_observer* obs);
+	void set_slaved(bool slaved);
+	bool is_slaved() const;
   private:
 	PyObject *py_timer_control;
 

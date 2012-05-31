@@ -77,6 +77,9 @@ class timer {
 	
 	/// Return true if the clock is running.
 	virtual bool running() const { return true; }
+	
+	/// Return true if the clock is slaved to another one.
+	virtual bool is_slaved() const { return false; }
 };
 
 /// Controller interface to timer objects.
@@ -144,6 +147,13 @@ class timer_control : public timer {
 #ifdef WITH_REMOTE_SYNC
 	/// Set the observer.
 	virtual void set_observer(timer_observer *obs) = 0;
+	
+	/// Indicate that this clock is slaved to another one, i.e. it may be adjusted by an
+	/// externap agent. This affects clock resyncing by continuous mediia items.
+	virtual void set_slaved(bool slaved) = 0;
+	
+	/// Returns true if this clock is slaved to another one.
+	virtual bool is_slaved() const = 0;
 #endif
 
 };
@@ -227,6 +237,13 @@ class timer_control_impl : public timer_control {
 #ifdef WITH_REMOTE_SYNC
 	/// Set the observer.
 	void set_observer(timer_observer *obs);
+	
+	/// Indicate that this clock is slaved to another one, i.e. it may be adjusted by an
+	/// externap agent. This affects clock resyncing by continuous mediia items.
+	void set_slaved(bool slaved) { m_slaved = true; }
+	
+	/// Returns true if this clock is slaved to another one.
+	bool is_slaved() const { return m_slaved || m_parent->is_slaved(); }
 #endif
 
   private:
@@ -247,6 +264,7 @@ class timer_control_impl : public timer_control {
 	signed_time_type m_drift;
 #ifdef WITH_REMOTE_SYNC
 	timer_observer *m_observer;
+	bool m_slaved;
 #endif
 	critical_section m_lock;
 };

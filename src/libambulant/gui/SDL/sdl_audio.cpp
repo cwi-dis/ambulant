@@ -146,13 +146,15 @@ gui::sdl::sdl_audio_renderer::quit()
 bool
 gui::sdl::sdl_audio_renderer::_can_be_clock_master()
 {
-	return true;  // should depend on syncMaster and remote-sync
+	// Audio renderers can always be clock master (even with syncMaster=false), except when the
+	// document timer is controlled by an external agent.
+	return !m_event_processor->get_timer()->is_slaved();
 }
 
 bool
 gui::sdl::sdl_audio_renderer::_can_slip()
 {
-	return true;	// should depend on synBehaviour=canSlip
+	return true;	// XXXJACK should depend on synBehaviour=canSlip
 }
 
 void

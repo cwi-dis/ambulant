@@ -48,6 +48,7 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_drift(0)
 #ifdef WITH_REMOTE_SYNC
     , m_observer(NULL)
+	, m_slaved(false)
 #endif
 {
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);

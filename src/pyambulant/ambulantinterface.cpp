@@ -1952,6 +1952,8 @@ timer::timer(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_drift")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: set_drift");
 		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: get_drift");
 		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: skew");
+		if (!PyObject_HasAttrString(itself, "running")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: running");
+		if (!PyObject_HasAttrString(itself, "is_slaved")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: is_slaved");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2090,6 +2092,54 @@ void timer::skew(ambulant::lib::timer::signed_time_type skew)
 	PyGILState_Release(_GILState);
 }
 
+bool timer::running() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "running", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::running() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer::running() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool timer::is_slaved() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "is_slaved", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::is_slaved() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer::is_slaved() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ---------------------- Class timer_control ----------------------- */
 
 timer_control::timer_control(PyObject *itself)
@@ -2113,6 +2163,8 @@ timer_control::timer_control(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_drift");
 		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: skew");
 		if (!PyObject_HasAttrString(itself, "set_observer")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_observer");
+		if (!PyObject_HasAttrString(itself, "set_slaved")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_slaved");
+		if (!PyObject_HasAttrString(itself, "is_slaved")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: is_slaved");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2440,6 +2492,48 @@ void timer_control::set_observer(ambulant::lib::timer_observer* obs)
 	Py_XDECREF(py_obs);
 
 	PyGILState_Release(_GILState);
+}
+
+void timer_control::set_slaved(bool slaved)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_slaved = Py_BuildValue("O&", bool_New, slaved);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_slaved", "(O)", py_slaved);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::set_slaved() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_slaved);
+
+	PyGILState_Release(_GILState);
+}
+
+bool timer_control::is_slaved() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "is_slaved", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::is_slaved() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::is_slaved() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
 }
 
 /* ---------------------- Class timer_observer ---------------------- */
@@ -6213,8 +6307,13 @@ focus_feedback::focus_feedback(PyObject *itself)
 focus_feedback::~focus_feedback()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	Py_XDECREF(py_focus_feedback);
+	PyObject *itself = py_focus_feedback;
 	py_focus_feedback = NULL;
+	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
+	{
+		pycppbridge_setwrapper(itself, NULL);
+	}
+	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
