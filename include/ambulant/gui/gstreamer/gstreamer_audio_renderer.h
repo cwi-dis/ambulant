@@ -70,10 +70,6 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 
 	static bool is_supported(const lib::node *node);
 
-	bool is_paused();
-	bool is_stopped();
-	bool is_playing();
-
 	common::duration get_dur();
 	void start(double where);
 	bool stop();

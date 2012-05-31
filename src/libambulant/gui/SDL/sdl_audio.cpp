@@ -658,36 +658,6 @@ gui::sdl::sdl_audio_renderer::data_avail()
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::data_avail: done");
 }
 
-bool
-gui::sdl::sdl_audio_renderer::is_paused()
-{
-	m_lock.enter();
-	bool rv;
-	rv = m_is_paused;
-	m_lock.leave();
-	return rv;
-}
-
-bool
-gui::sdl::sdl_audio_renderer::is_stopped()
-{
-	m_lock.enter();
-	bool rv;
-	rv = !m_is_playing;
-	m_lock.leave();
-	return rv;
-}
-
-bool
-gui::sdl::sdl_audio_renderer::is_playing()
-{
-	m_lock.enter();
-	bool rv;
-	rv = m_is_playing;
-	m_lock.leave();
-	return rv;
-}
-
 void
 gui::sdl::sdl_audio_renderer::init_with_node(const lib::node *n)
 {

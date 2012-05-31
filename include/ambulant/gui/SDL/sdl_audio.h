@@ -83,10 +83,6 @@ class sdl_audio_renderer : public common::renderer_playable {
 	long release();
 #endif//SDL_REFCOUNT_TRACKING
 
-	bool is_paused();
-	bool is_stopped();
-	bool is_playing();
-
 	common::duration get_dur();
 	void start(double where);
 //	void stop();

@@ -293,11 +293,13 @@ void smil_player::pause() {
 #ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
 		//m_event_processor->pause();
 #endif
+#ifndef WITH_REMOTE_SYNC
 		std::map<const lib::node*, common::playable *>::iterator it;
 		m_playables_cs.enter();
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->pause();
 		m_playables_cs.leave();
+#endif WITH_REMOTE_SYNC
 	}
 
 	m_lock.leave();

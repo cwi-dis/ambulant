@@ -136,36 +136,6 @@ gstreamer_audio_renderer::is_supported(const lib::node *node)
 }
 
 bool
-gstreamer_audio_renderer::is_paused()
-{
-	m_lock.enter();
-	bool rv;
-	rv = m_is_paused;
-	m_lock.leave();
-	return rv;
-}
-
-bool
-gstreamer_audio_renderer::is_stopped()
-{
-	m_lock.enter();
-	bool rv;
-	rv = !m_is_playing;
-	m_lock.leave();
-	return rv;
-}
-
-bool
-gstreamer_audio_renderer::is_playing()
-{
-	m_lock.enter();
-	bool rv;
-	rv = m_is_playing;
-	m_lock.leave();
-	return rv;
-}
-
-bool
 gstreamer_audio_renderer::stop()
 {
 	m_lock.enter();
