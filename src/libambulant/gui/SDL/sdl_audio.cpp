@@ -486,7 +486,7 @@ gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t
 
 		// Now communicate it to the clock.
 		if (clock_drift) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: audio clock %dms ahead of document clock", clock_drift);
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: audio clock %dms ahead of document clock", clock_drift);
 			// First, if there is no master clock, we assume that role
 			if (s_master_clock_renderer == NULL && _can_be_clock_master() )
 				s_master_clock_renderer = this;
@@ -501,9 +501,9 @@ gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t
 				residual_clock_drift = clock_drift;
 			}
 			if (residual_clock_drift) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: should adjust audio clock by %ld ms", residual_clock_drift);
+				AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: should adjust audio clock by %ld ms", residual_clock_drift);
 				if (_can_slip()) {
-					/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: can-slip, adjust audio clock by %ld ms", residual_clock_drift);
+					AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: can-slip, adjust audio clock by %ld ms", residual_clock_drift);
 					m_audio_clock -= residual_clock_drift;
 				} else {
 					// We should also read and throw away audio data if residual_clock_drift is < 0, or insert zero bytes if it is > 0.
@@ -520,14 +520,14 @@ gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t
 						
 						// Adjust the audio clock for the dropped bytes
 						lib::timer::signed_time_type audio_clock_adjust = -((long)drop_count * 1000) / (44100*2*2);
-						/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: removed %d bytes, adjust audio clock by %d ms", drop_count, audio_clock_adjust);
+						AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: removed %d bytes, adjust audio clock by %d ms", drop_count, audio_clock_adjust);
 						m_audio_clock -= audio_clock_adjust;
 					} else {
 						// Tell the lowlevel SDL callback how many silent bytes of silence should be inserted
 						*insert_count = ((residual_clock_drift*44100)/1000)*2*2;
 						if (*insert_count > bytes_wanted) *insert_count = bytes_wanted;
 						lib::timer::signed_time_type audio_clock_adjust = (*insert_count * 1000) / (44100*2*2);
-						/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer: inserting %d bytes, adjust audio clock by %d ms", *insert_count, audio_clock_adjust);
+						AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: inserting %d bytes, adjust audio clock by %d ms", *insert_count, audio_clock_adjust);
 						
 						// Adjust the maximum number of data bytes we will return for the inserted silence. Note that
 						// this will also cause the audio clock to be advanced less (below)
