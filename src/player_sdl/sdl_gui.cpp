@@ -90,33 +90,91 @@ find_datafile(const char **locations)
 sdl_gui::sdl_gui(const char* title, const char* initfile)
 :
 	m_programfilename(NULL),
-	m_smilfilename(initfile)
-//TBD	m_settings(NULL),
-//TBD	m_toplevelcontainer(NULL),
+	m_smilfilename(initfile),
+	m_toplevelcontainer(NULL),
+	m_guicontainer(NULL),
+	m_documentcontainer(NULL),
+	m_window(NULL)
+//JNK	m_renderer(NULL),
+//JNK	m_texture(NULL)
 //TBD	menubar(NULL),
-//TBD	m_guicontainer(NULL),
-//TBD	m_documentcontainer(NULL),
+//TBD	m_settings(NULL),
 //TBD	m_actions(NULL)
 {
 	// create the player
+	int width = 640, height = 420;
+	m_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+	assert (m_window);
+#ifdef JNK
+	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+	if (m_renderer == NULL) {
+	       	AM_DBG lib::logger::get_logger()->trace("sdl_video_renderer.redraw(0x%x): trying software renderer", this);
+       		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
+		if (m_renderer == NULL) {
+			lib::logger::get_logger()->warn("Cannot open: %s, error: %s", "SDL CreateRenderer", SDL_GetError());
+       			return;
+		}
+	}
+	assert(m_renderer);
+	// From SDL documentation
+	/* Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
+	   as expected by OpenGL for textures */
+	//X SDL_Surface *surface;
+	Uint32 rmask, gmask, bmask, amask;
+	
+	/* SDL interprets each pixel as a 32-bit number, so our masks must depend
+	   on the endianness (byte order) of the machine */
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+	amask = 0x000000ff;
+#else
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = 0xff000000;
+#endif	
+	m_surface = SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
+	if (m_surface == NULL) {
+		/* or using the default masks for the depth: */
+    		m_surface = SDL_CreateRGBSurface(0,width,height,32,0,0,0,0);
+		lib::logger::get_logger()->warn("Cannot open %s, error: %s", "SDL_CreateRGBSurface",SDL_GetError());
+		return;
+	}
+#endif//JNK
+	m_toplevelcontainer = m_documentcontainer = m_window;
 	m_gui_player = new sdl_gui_player(this);
 }
 
 sdl_gui::~sdl_gui() {
 
-	// remove all dynamic data in the same order as they are declared
+	// remove all dynamic data in reverse order as they are constructed
 	// m_programfilename - not dynamic
-
-	if	(m_smilfilename) {
+	if (m_smilfilename != NULL) {
 		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
 	}
 #ifdef JNK
-	if	(m_settings) {
+	if (m_surface != NULL) {
+		SDL_FreeSurface(m_surface);
+	}
+	if (m_renderer != NULL) {
+		SDL_DestroyRenderer(m_renderer);
+	}
+	if (m_renderer != NULL) {
+		SDL_DestroyRenderer(m_renderer);
+	}
+#endif//JNK
+	if (m_window != NULL) {
+		SDL_DestroyWindow(m_window);
+	}
+#ifdef JNK
+	if (m_settings != NULL) {
 		delete m_settings;
 		m_settings = NULL;
 	}
-	if (m_toplevelcontainer) {
+	if (m_toplevelcontainer != NULL) {
 		m_toplevelcontainer = NULL;
 	}
 	if (menubar) {
@@ -156,6 +214,7 @@ sdl_gui::~sdl_gui() {
 	}
 }
 
+#ifdef JNK
 SDL_Surface*
 sdl_gui::get_toplevel_container()
 {
@@ -167,8 +226,9 @@ sdl_gui::get_gui_container()
 {
 	return this->m_guicontainer;
 }
+#endif//JNK
 
-SDL_Surface*
+SDL_Window*
 sdl_gui::get_document_container()
 {
 	return this->m_documentcontainer;

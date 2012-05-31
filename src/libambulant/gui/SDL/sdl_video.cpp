@@ -136,23 +136,11 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		int width = m_size.w;
 		int height = m_size.h;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
-		static SDL_Window* s_window = NULL; //XXXX member !
-		static SDL_Renderer* s_renderer = NULL; //XXXX member !
+		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
 		static SDL_Texture* s_texture = NULL; //XXXX member !
 		if (s_texture == NULL) {			
 			ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
-			s_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID)
-			s_renderer = SDL_CreateRenderer(/*asw->window()*/ s_window, -1, SDL_RENDERER_ACCELERATED);
-			if (s_renderer == NULL) {
-				AM_DBG lib::logger::get_logger()->trace("sdl_video_renderer.redraw(0x%x): trying software renderer", this);
-				s_renderer = SDL_CreateRenderer(/*asw->window()*/ s_window, -1, SDL_RENDERER_SOFTWARE);
-				if (s_renderer == NULL) {
-					lib::logger::get_logger()->warn("Cannot open: %s", "SDL video renderer");
-					return;
-				}
-			}
-			assert(s_renderer);
-			s_texture = SDL_CreateTexture(s_renderer, SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
+			s_texture = SDL_CreateTexture(asw->get_sdl_ambulant_window()->get_sdl_renderer(), SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
 		}
 		assert(s_texture);
 		static struct SwsContext* s_sws_ctx = NULL; //XXX member !
@@ -165,12 +153,11 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, stride, 0, height, pixels, pitch);
 		SDL_UnlockTexture(s_texture);
 //TBD		sws_freeContext(sws_ctx);
-		SDL_RenderPresent(s_renderer);
 		SDL_Rect rect;
 		rect.x = rect.y = 0;
 		rect.w = width;
 		rect.h = height;
-		SDL_RenderCopy(s_renderer, s_texture, NULL, &rect);
+		SDL_RenderCopy(asw->get_sdl_ambulant_window()->get_sdl_renderer(), s_texture, NULL, &rect);
 	}
 	//XXXXX m_lock.leave();
 }

@@ -62,20 +62,38 @@ class sdl_gui {
 	void sdl_loop(); // the SDL Event loop in main thread
 
 	// major containers
+/* JNK
 	SDL_Surface* get_gui_container();
 	SDL_Surface* get_document_container();
 	SDL_Surface* get_toplevel_container();
-
+*/
+	SDL_Window* get_document_container();
+	// SDL interface
+	SDL_Window* get_window() { return m_window; }
+/* JNK
+	SDL_Renderer* get_renderer() { return m_renderer; }
+	SDL_Surface* get_surface() { return m_surface; }
+*/
 	sdl_gui_player* m_gui_player;
-
   private:
 	const char* m_programfilename;
 	const char* m_smilfilename;
+/* JNK
 	SDL_Surface* m_toplevelcontainer; // the actual top level window
-	SDL_Surface* m_guicontainer;	// The container (menubar + documentcontainer)
+	SDL_Surface* m_guicontainer;	  // The container (menubar + documentcontainer)
 	SDL_Surface* m_documentcontainer; // The drawable area
-
-#ifdef JNK // no visual gui, onlu Keyboars shortcuts 
+*/	
+	SDL_Window* m_toplevelcontainer; // the actual top level window
+	SDL_Window* m_guicontainer;	  // The container (menubar + documentcontainer)
+	SDL_Window* m_documentcontainer; // The drawable area
+	// SDL interface
+	SDL_Window* m_window;	// the top-level window, containing all visuals
+/* JNK
+	SDL_Renderer* m_renderer;// its associated 2D rendering context
+	SDL_Surface* m_surface;	// a (software) pixel destination
+	SDL_Texture* m_texture;	// the (accelerated) hardware card
+*/
+#ifdef JNK // no visual gui, only Keyboard shortcuts 
 	sdl_settings* m_settings;
 	SDL_Surface* menubar;		 // The UI (menubar)
 	SdlActionGroup *m_actions;

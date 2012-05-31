@@ -36,7 +36,7 @@ namespace sdl {
 
 /// ambulant_sdl_window is the SDL implementation of gui_window, it is the
 /// class that corresponds to a SMIL topLayout element.
-class sdl_ambulant_surface;
+class sdl_ambulant_window;
 
 class ambulant_sdl_window : public common::gui_window {
   public:
@@ -54,11 +54,11 @@ class ambulant_sdl_window : public common::gui_window {
 
 	// semi-private helpers:
 
-	/// Set the corresponding surface.
-	void set_ambulant_surface(sdl_ambulant_surface* sdlaw);
+	/// Set the corresponding window.
+	void set_ambulant_window(sdl_ambulant_window* sdlaw);
 
-	/// Get the SDL surface corresponding to this ambulant window.
-	sdl_ambulant_surface* get_ambulant_surface();
+	/// Get the sdl_ambulant_window corresponding to this ambulant window.
+	sdl_ambulant_window* get_sdl_ambulant_window();
 
 	/// Set our top-level gui_player.
 	void set_gui_player(common::gui_player* gpl);
@@ -74,13 +74,13 @@ class ambulant_sdl_window : public common::gui_window {
 
 	// XXX These need to be documented...
 //X	GdkPixmap* get_ambulant_pixmap();
-//X	GdkPixmap* new_ambulant_surface();
-//X	GdkPixmap* get_ambulant_surface();
+//X	GdkPixmap* new_ambulant_window();
+//X	GdkPixmap* get_ambulant_window();
 //X	GdkPixmap* get_ambulant_oldpixmap();
 //X	GdkPixmap* get_pixmap_from_screen(const lib::rect &r);
-//X	void reset_ambulant_surface(void);
-//X	void set_ambulant_surface(GdkPixmap* surf);
-	void delete_ambulant_surface();
+//X	void reset_ambulant_window(void);
+//X	void set_ambulant_window(GdkPixmap* surf);
+	void delete_ambulant_window();
 
 //X	void startScreenTransition();
 //X	void endScreenTransition();
@@ -92,11 +92,11 @@ class ambulant_sdl_window : public common::gui_window {
   private:
 	void clear();
 	lib::rect  m_bounds;
-	sdl_ambulant_surface* m_ambulant_surface;
+	sdl_ambulant_window* m_ambulant_window;
 	lib::rect   m_redraw_rect; 
 //X	GdkPixmap* m_pixmap;
 //X	GdkPixmap* m_oldpixmap;
-//X	GdkPixmap* m_surface;
+//X	GdkPixmap* m_window;
 	common::gui_player* m_gui_player;
 //X	GdkCursor* m_arrow_cursor;
 //X	GdkCursor* m_hand1_cursor;
@@ -116,28 +116,29 @@ class ambulant_sdl_window : public common::gui_window {
 //X	guint signal_redraw_id;
 };  // class ambulant_sdl_window
 
-/// sdl_ambulant_surface is the SDL-counterpart of ambulant_sdl_window: it is the
-/// SDL_Surface that corresponds to an Ambulant topLayout window.
+/// sdl_ambulant_window is the SDL-counterpart of ambulant_sdl_window: it is the
+/// SDL_Window that corresponds to an Ambulant topLayout window.
 /// Used mainly for communicating mouse events from SDL to ambulant
-class sdl_ambulant_surface : public ambulant::common::gui_screen
+class sdl_ambulant_window : public ambulant::common::gui_screen
 {
   public:
-//	sdl_ambulant_surface(const std::string &name,
+//	sdl_ambulant_window(const std::string &name,
 //			   lib::rect* bounds,
-//			   SdlSurface* parent_surface);
-	sdl_ambulant_surface(SDL_Surface* surface);
-	~sdl_ambulant_surface();
+//			   SdlWindow* parent_window);
+	sdl_ambulant_window(SDL_Window* window);
+	~sdl_ambulant_window();
 
 	/// Helper: set our counterpart gui_window.
 	void set_sdl_window( ambulant_sdl_window* asdlw);
 
 	/// Helper: get our counterpart gui_window.
-	ambulant_sdl_window* sdl_window();
+	ambulant_sdl_window* get_ambulant_sdl_window() { return m_ambulant_sdl_window; } 
+	/// Helper: get the actual SDL_Window
+	SDL_Window* get_sdl_window() { return m_sdl_window; }
+	/// Helper: get the actual SDL_Renderer
+	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
 
-	/// Helper: get the actual SDL_Surface
-	SDL_Surface* get_sdl_surface();
-
-//X	// SDLSurface API:
+//X	// SDLWindow API:
 //X	void do_paint_event (GdkEventExpose * event);
 //X	void do_motion_notify_event(GdkEventMotion *event);
 //X	void do_button_release_event(GdkEventButton *event);
@@ -157,29 +158,31 @@ class sdl_ambulant_surface : public ambulant::common::gui_screen
 //X	gsize m_screenshot_size;
 	void* m_screenshot_data;
 	long int m_screenshot_size;
-	// surface counter (with s_lock protection) is used to assuere that the SdlSurface
+	// window counter (with s_lock protection) is used to assuere that the SdlWindow
 	// in drawing callback functions are still valid pointers at the time the callback
 	// is executed by the main thread */
 	static lib::critical_section s_lock;
-	static int s_surfaces;
+	static int s_windows;
+	static std::map<SDL_Window*, SDL_Renderer*> s_window_map;
 
-	// sdl_ambulant_surface::m_draw_area_tags contains the set of tags returned by
+	// sdl_ambulant_window::m_draw_area_tags contains the set of tags returned by
 	// g_idle_queue_add() that are not yet processed. This set is maintained because
 	// in the npambulant plugin, when the plugin is unloaded all unprocessed queue entries
 	// must be removed from the main event loop, otherwise the callback will be done on
 	// removed code and the browser may crash.
 //X	std::set<guint> m_draw_area_tags;
   private:
-	ambulant_sdl_window* m_sdl_window;
-	SDL_Surface *m_surface;
-//X	SDL_Surface* m_parent_surface;
-//X	sdl_ambulant_surface* m_parent_surface;
+	ambulant_sdl_window* m_ambulant_sdl_window;
+	SDL_Window *m_sdl_window;
+	SDL_Renderer *m_sdl_renderer;
+//X	SDL_Window* m_parent_window;
+//X	sdl_ambulant_window* m_parent_window;
 //X	gulong m_expose_event_handler_id;
 //X	gulong m_motion_notify_handler_id;
 //X	gulong m_button_release_handler_id;
 //X	gulong m_key_release_handler_id;
 
-};  // class sdl_ambulant_surface
+};  // class sdl_ambulant_window
 
 } // namespace sdl
 

@@ -86,6 +86,9 @@ class sdl_gui_player :
 //TBD	ambulant::common::gui_screen *get_gui_screen();
 //	char* convert_data_to_image(const guchar* m_data, gsize size);
 	void redraw();
+	SDL_Window* get_window() { return m_gui->get_window(); }
+//JNK	SDL_Renderer* get_renderer() { return m_gui->get_renderer(); }
+//JNK	SDL_Surface* get_surface() { return m_gui->get_surface(); }
   private:
 #if 0
 	// from dx_player
@@ -106,6 +109,6 @@ class sdl_gui_player :
 	sdl_gui *m_gui;
 	lib::logger *m_logger;
 	bool m_running;
-	ambulant::gui::sdl::sdl_ambulant_surface *m_sdl_surface;
+	ambulant::gui::sdl::sdl_ambulant_window *m_sdl_window;
 };
 #endif/*__SDL_PLAYER_H__*/

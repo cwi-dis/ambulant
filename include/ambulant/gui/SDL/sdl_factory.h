@@ -34,15 +34,15 @@ namespace sdl {
 /// SDL implementation of window_factory
 class sdl_window_factory : public common::window_factory {
   public:
-//X	sdl_window_factory(sdl_ambulant_surface* sdl_surface, common::gui_player* gpl);
-	sdl_window_factory(void* sdl_surface, common::gui_player* gpl);
+//X	sdl_window_factory(sdl_ambulant_window* sdl_window, common::gui_player* gpl);
+	sdl_window_factory(void* sdl_window, common::gui_player* gpl);
 	~sdl_window_factory();
 	common::gui_window* new_window(const std::string &name, lib::size bounds, common::gui_events *region);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
 
 
   private:
-	void* m_parent_surface;
+	void* m_parent_window;
 	lib::point m_p;
 	common::gui_player* m_gui_player;
 //X	GdkCursor* m_arrow_cursor;
@@ -53,9 +53,9 @@ class sdl_window_factory : public common::window_factory {
 AMBULANTAPI common::playable_factory *create_sdl_playable_factory(common::factories *factory);
 
 // XXXX Needs to be implemented:
-// Create sdl_ambulant_surface inside sdl_parent_surface, call create_sdl_window_factory.
-AMBULANTAPI common::window_factory *create_sdl_window_factory(void* sdl_parent_surface, common::gui_player* gpl);
-//X AMBULANTAPI common::window_factory *create_sdl_window_factory(sdl_ambulant_surface* sdl_surface, common::gui_player* gpl);
+// Create sdl_ambulant_window inside sdl_parent_window, call create_sdl_window_factory.
+AMBULANTAPI common::window_factory *create_sdl_window_factory(void* sdl_parent_window, common::gui_player* gpl);
+//X AMBULANTAPI common::window_factory *create_sdl_window_factory(sdl_ambulant_window* sdl_window, common::gui_player* gpl);
 #ifdef WITH_SDL2XX
 // Playable factories
 AMBULANTAPI common::playable_factory *create_sdl_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);

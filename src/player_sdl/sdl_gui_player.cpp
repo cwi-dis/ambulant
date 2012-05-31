@@ -90,7 +90,7 @@ open_web_browser(const std::string &href)
 sdl_gui_player::sdl_gui_player(sdl_gui* gui)
 :	m_gui(gui),
 	m_logger(NULL),
-	m_sdl_surface(NULL),
+	m_sdl_window(NULL),
 	m_running(false)
 {
 	gui_player();
@@ -135,7 +135,7 @@ sdl_gui_player::~sdl_gui_player()
 		delete m_doc;
 		m_doc = NULL;
 	}
-//TBD	delete m_sdl_surface;
+//TBD	delete m_sdl_window;
 	//delete m_window_factory;
 }
 
@@ -178,8 +178,8 @@ sdl_gui_player::init_datasource_factory()
 
 void
 sdl_gui_player::redraw() {
-	if (m_sdl_surface != NULL) {
-		ambulant_sdl_window* sdl_window = m_sdl_surface->sdl_window();
+	if (m_sdl_window != NULL) {
+		ambulant_sdl_window* sdl_window = m_sdl_window->get_ambulant_sdl_window();
 		if (sdl_window != NULL) {
 			sdl_window->redraw(m_rect);
 		}
@@ -219,9 +219,9 @@ sdl_gui_player::create_player(const char* filename) {
 void
 sdl_gui_player::init_window_factory()
 {
-	m_sdl_surface = new sdl_ambulant_surface(m_gui->get_document_container());
-//JNK	common::window_factory* sdl_wf = create_sdl_window_factory(m_sdl_surface, this);
-	common::window_factory* sdl_wf = gui::sdl::create_sdl_window_factory(m_sdl_surface, this);
+	m_sdl_window = new sdl_ambulant_window(m_gui->get_document_container());
+//JNK	common::window_factory* sdl_wf = create_sdl_window_factory(m_sdl_window, this);
+	common::window_factory* sdl_wf = gui::sdl::create_sdl_window_factory(m_sdl_window, this);
 	set_window_factory(sdl_wf);
 }
 
@@ -233,6 +233,7 @@ sdl_gui_player::create_top_window () {
 	m_origin = lib::point(0,0);
 	m_rect = lib::rect(m_origin, m_size);
 	AM_DBG lib::logger::get_logger()->debug("sdl_gui_player::create_top_window(0x%x): width = %d, height = %d",(void *)this, width, height);
+#ifdef JNK
 	static SDL_Renderer* s_renderer = NULL; //XXXX member !
 	static SDL_Texture* s_texture = NULL; //XXXX member !
 	static SDL_Window* s_window = NULL; //XXXX member, embed  !
@@ -252,6 +253,7 @@ sdl_gui_player::create_top_window () {
 		s_texture = SDL_CreateTexture(s_renderer, SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
 	}
 	assert(s_texture);
+#endif//JNK
 }
 
 void
@@ -394,7 +396,7 @@ char* sdl_gui_player::convert_data_to_image(const guchar* data, gsize size){
 
 ambulant::common::gui_screen*
 sdl_gui_player::get_gui_screen(){
-	return m_sdl_surface;
+	return m_sdl_window;
 }
 #endif//JNK
 
