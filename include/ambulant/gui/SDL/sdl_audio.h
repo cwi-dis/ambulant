@@ -106,9 +106,11 @@ class sdl_audio_renderer : public common::renderer_playable {
 	void start_outtransition(const lib::transition_info* info);
 	static void quit();
   private:
+	bool can_be_clock_master();
+	bool can_slip();
 	void data_avail();
 	bool restart_audio_input();
-	size_t get_data(size_t bytes_wanted, Uint8 **ptr);
+	size_t get_data(size_t bytes_wanted, Uint8 **ptr, size_t *insert_count);
 	void get_data_done(size_t size);
 	net::audio_datasource *m_audio_src;
 	lib::critical_section m_lock;
