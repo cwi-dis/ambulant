@@ -433,7 +433,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 	assert(m_is_playing);
 	size_t rv;
 	*ptr = NULL;
-	if (m_is_paused||!m_audio_src) {
+	if (m_is_paused || !m_audio_src || !m_event_processor->get_timer()->running()) {
 		rv = 0;
 		m_read_ptr_called = false;
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source");

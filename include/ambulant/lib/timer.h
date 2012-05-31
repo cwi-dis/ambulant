@@ -74,6 +74,9 @@ class timer {
 
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
+	
+	/// Return true if the clock is running.
+	virtual bool running() const { return true; }
 };
 
 /// Controller interface to timer objects.
@@ -195,7 +198,7 @@ class timer_control_impl : public timer_control {
 	double get_speed() const { return m_speed;}
 
 	/// Returns true when this timer is running.
-	bool running() const { return m_running;}
+	bool running() const { return m_running && m_parent->running();}
 
 	/// Returns the realtime speed of this timer
 	/// as modulated by its parent.
