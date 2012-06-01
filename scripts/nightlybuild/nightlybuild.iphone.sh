@@ -29,7 +29,7 @@ BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
 if [ -f $HOME/.bashrc ]; then
-	. $HOME?.bashrc
+	. $HOME/.bashrc
 fi
 
 # The rest should be automatic
