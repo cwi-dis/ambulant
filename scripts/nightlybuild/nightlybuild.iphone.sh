@@ -28,6 +28,10 @@ DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
+if [ -f $HOME/.bashrc ]; then
+	. $HOME?.bashrc
+fi
+
 # The rest should be automatic
 case x$BRANCH in
 x)	
