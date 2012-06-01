@@ -106,6 +106,12 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
+		lib::rect dstrect_whole = r;
+		dstrect_whole.translate(p);
+		int L = dstrect_whole.left(),
+			T = dstrect_whole.top(),
+			W = dstrect_whole.width(),
+			H = dstrect_whole.height();
 
 		// XXXX WRONG! This is the info for the region, not for the node!
 		const common::region_info *info = m_dest->get_info();
@@ -114,12 +120,6 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		if (info && (info->get_bgopacity() > 0.5)) {
 			// First find our whole area (which we have to clear to
 			// background color)
-			lib::rect dstrect_whole = r;
-			dstrect_whole.translate(m_dest->get_global_topleft());
-			int L = dstrect_whole.left(),
-				T = dstrect_whole.top(),
-				W = dstrect_whole.width(),
-				H = dstrect_whole.height();
 			// XXXX Fill with background color
 			lib::color_t bgcolor = info->get_bgcolor();
 //			AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: clearing to 0x%x", (long)bgcolor);
@@ -132,7 +132,6 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 //X			gdk_draw_rectangle (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 //X			g_object_unref (G_OBJECT (gc));
 		}
-
 		int width = m_size.w;
 		int height = m_size.h;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
@@ -154,9 +153,10 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		SDL_UnlockTexture(s_texture);
 //TBD		sws_freeContext(sws_ctx);
 		SDL_Rect rect;
-		rect.x = rect.y = 0;
-		rect.w = width;
-		rect.h = height;
+		rect.x = L;
+		rect.y = T;
+		rect.w = W;
+		rect.h = H;
 		SDL_RenderCopy(asw->get_sdl_ambulant_window()->get_sdl_renderer(), s_texture, NULL, &rect);
 	}
 	//XXXXX m_lock.leave();
