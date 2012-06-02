@@ -38,7 +38,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 };
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -136,28 +136,51 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		int height = m_size.h;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
+/*
 		static SDL_Texture* s_texture = NULL; //XXXX member !
 		if (s_texture == NULL) {			
 			ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
 			s_texture = SDL_CreateTexture(asw->get_sdl_ambulant_window()->get_sdl_renderer(), SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
 		}
 		assert(s_texture);
+*/
+		SDL_Renderer* renderer = asw->get_sdl_ambulant_window()->get_sdl_renderer();
+		SDL_Surface* surface = NULL;
+//		SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
 		static struct SwsContext* s_sws_ctx = NULL; //XXX member !
 		s_sws_ctx = sws_getCachedContext(s_sws_ctx, width, height, SDL_SWS_PIX_FMT, width, height, SDL_SWS_PIX_FMT, SWS_BICUBIC, NULL, NULL, NULL);
 		uint8_t* pixels[AV_NUM_DATA_POINTERS];
 		int pitch[AV_NUM_DATA_POINTERS];
 		int stride[AV_NUM_DATA_POINTERS];
-		stride[0] = width*SDL_BPP;
-		SDL_LockTexture(s_texture, NULL/*SDL_Rect*/, (void**)&pixels, &pitch[0]);
-		sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, stride, 0, height, pixels, pitch);
-		SDL_UnlockTexture(s_texture);
-//TBD		sws_freeContext(sws_ctx);
+		pitch[0] = stride[0] = width*SDL_BPP;
+		for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
+			pixels[i] = NULL;
+			pitch[i] = stride[i] = 0;
+		}
+		pixels[0] = (uint8_t*) malloc(stride[0]*height);
+//		SDL_LockTexture(texture, NULL/*SDL_Rect*/, (void**)&pixels, &pitch[0]);
+		int rv = sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, stride, 0, height, pixels, pitch);
+		Uint32 rmask, gmask, bmask, amask;
+		// we use ARGB
+		amask = 0xff000000;
+		rmask = 0x00ff0000;
+		gmask = 0x0000ff00;
+		bmask = 0x000000ff;
+
+		surface = SDL_CreateRGBSurfaceFrom(pixels[0], W, H, 32, pitch[0], rmask, gmask, bmask, 0);
+//		SDL_UnlockTexture(texture);
+//		SDL_DestroyTexture(texture);
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
+//TBD	sws_freeContext(sws_ctx);
 		SDL_Rect rect;
 		rect.x = L;
 		rect.y = T;
 		rect.w = W;
 		rect.h = H;
-		SDL_RenderCopy(asw->get_sdl_ambulant_window()->get_sdl_renderer(), s_texture, NULL, &rect);
+		SDL_RenderCopy(renderer, texture, NULL, &rect);
+		SDL_DestroyTexture(texture);
+		SDL_FreeSurface(surface);
+		free (pixels[0]);
 	}
 	//XXXXX m_lock.leave();
 }

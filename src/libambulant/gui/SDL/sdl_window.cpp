@@ -184,7 +184,7 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 	e.user.data2 = (void*) 0;
 	SDL_PushEvent(&e);
 	ambulant_sdl_window::s_num_events++;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): SDL_PushEvent called r=(%d,%d,%d,%d) e={type=%d user.code=%d user.data1=0x%x user.data2=0x%x}", this,r.left(),r.top(),r.width(),r.height(), e.type, e.user.code, e.user.data1, e.user.data2);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): SDL_PushEvent called r=(%d,%d,%d,%d) e={type=%d user.code=%d user.data1=0x%x user.data2=0x%x}", this,r.left(),r.top(),r.width(),r.height(), e.type, e.user.code, e.user.data1, e.user.data2);
 }
 
 void

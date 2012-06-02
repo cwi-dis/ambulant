@@ -711,7 +711,7 @@ sdl_gui::sdl_loop() {
 			busy = false;
 			break;
 		case SDL_USEREVENT:
-			lib::logger::get_logger()->debug("%s SDLUserEvent code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
+			AM_DBG lib::logger::get_logger()->debug("%s SDLUserEvent code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
 			if (event.user.code == 317107) {
 				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
 				asw->redraw(asw->get_redraw_rect());
