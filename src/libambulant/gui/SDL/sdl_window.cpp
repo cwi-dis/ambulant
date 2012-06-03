@@ -31,7 +31,7 @@
 //X #include "ambulant/gui/SDL/sdl_smiltext.h"
 //X #include "ambulant/gui/SDL/sdl_util.h"
 //X #include "ambulant/gui/SDL/sdl_text_renderer.h"
-//X #include "ambulant/gui/SDL/sdl_video_renderer.h"
+#include "ambulant/gui/SDL/sdl_video.h"
 
 using namespace ambulant;
 using namespace gui::sdl;
@@ -47,7 +47,8 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 :	common::gui_window(region),
 	m_bounds(*bounds),
 	m_ambulant_window(NULL),
-	m_gui_player(NULL)
+	m_gui_player(NULL),
+	m_sdl_renderer(0)
 //X	m_oldpixmap(NULL),
 //X	m_tmppixmap(NULL),
 //X	m_arrow_cursor(NULL),
@@ -62,6 +63,10 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 {
 //X	m_pixmap = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_sdl_window(0x%x)",(void *)this);
+	m_pixels = (uint8_t*) malloc(bounds->width()*bounds->height()*SDL_BPP);
+	// we use ARGB
+	Uint32 amask=0xff000000, rmask = 0x00ff0000, gmask = 0x0000ff00, bmask = 0x000000ff;
+	m_sdl_surface = SDL_CreateRGBSurfaceFrom(m_pixels, bounds->width(), bounds->height(), 32, bounds->width()*SDL_BPP, rmask, gmask, bmask, 0);
 }
 long unsigned int ambulant_sdl_window::s_num_events = 0;
 
@@ -102,6 +107,10 @@ ambulant_sdl_window::~ambulant_sdl_window()
 	}
 	free (events);
 	ambulant_sdl_window::s_num_events = n_events_left;
+	free(m_pixels);
+	if (m_sdl_surface != NULL) {
+		SDL_FreeSurface(m_sdl_surface);
+	}
 //X	if (m_pixmap != NULL) {
 //X		g_object_unref(G_OBJECT(m_pixmap));
 //X		m_pixmap = NULL;
@@ -119,7 +128,6 @@ ambulant_sdl_window::~ambulant_sdl_window()
 	}
 **/
 }
-
 #ifdef JNK
 void
 ambulant_sdl_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gdk_cursor)
@@ -226,7 +234,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 		&m_ambulant_window->m_screenshot_size,
 		"jpeg", &error, "quality", "100", NULL))
 	{
-		printf (" Tenemos un error%s", error->message);
+		printf ("error%s", error->message);
 		g_error_free (error);
 	}
 	g_object_unref (G_OBJECT (pixbuf));
@@ -238,8 +246,11 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.y = r.top();
 	rect.w = r.width();
 	rect.h = r.height();
-//TBD	SDL_RenderCopy(asw->get_sdl_ambulant_window()->get_sdl_renderer(), s_texture, NULL, &rect);
-	SDL_RenderPresent(get_sdl_ambulant_window()->get_sdl_renderer());
+	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_ambulant_window()->get_sdl_surface());		
+	SDL_RenderCopy(renderer, texture, NULL, &rect);	
+	SDL_RenderPresent(renderer);
+	SDL_DestroyTexture(texture);
 }
 
 void
@@ -622,6 +633,14 @@ sdl_ambulant_window::set_sdl_window( ambulant_sdl_window* asdlw)
 	m_ambulant_sdl_window = asdlw;
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::set_sdl_window(0x%x): m_sdl_window==0x%x)",
 		(void*) this, (void*) m_sdl_window);
+}
+
+int
+sdl_ambulant_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect)
+{
+	if (src != NULL && dst_rect != NULL) {
+ 		return SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
+	}
 }
 
 #ifdef JNK

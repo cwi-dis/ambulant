@@ -64,7 +64,7 @@ sdl_video_renderer::sdl_video_renderer(
 
 	m_data(NULL),
 	m_datasize(0),
-	m_img_displayed(0)
+   	m_img_displayed(0)
 {
 	SDL_Init(SDL_INIT_VIDEO);
 }
@@ -157,7 +157,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 			pixels[i] = NULL;
 			pitch[i] = stride[i] = 0;
 		}
-		pixels[0] = (uint8_t*) malloc(stride[0]*height);
+		pixels[0] = (uint8_t*) malloc(stride[0]*height); 
 //		SDL_LockTexture(texture, NULL/*SDL_Rect*/, (void**)&pixels, &pitch[0]);
 		int rv = sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, stride, 0, height, pixels, pitch);
 		Uint32 rmask, gmask, bmask, amask;

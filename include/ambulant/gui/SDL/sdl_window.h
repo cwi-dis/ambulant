@@ -93,7 +93,10 @@ class ambulant_sdl_window : public common::gui_window {
 	void clear();
 	lib::rect  m_bounds;
 	sdl_ambulant_window* m_ambulant_window;
-	lib::rect   m_redraw_rect; 
+	lib::rect  m_redraw_rect; 
+	uint8_t* m_pixels;
+	SDL_Renderer* m_sdl_renderer;
+	SDL_Surface* m_sdl_surface;
 //X	GdkPixmap* m_pixmap;
 //X	GdkPixmap* m_oldpixmap;
 //X	GdkPixmap* m_window;
@@ -137,7 +140,10 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Window* get_sdl_window() { return m_sdl_window; }
 	/// Helper: get the actual SDL_Renderer
 	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
-
+	/// Helper: get the actual SDL_Surface
+	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
+	
+	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect);
 //X	// SDLWindow API:
 //X	void do_paint_event (GdkEventExpose * event);
 //X	void do_motion_notify_event(GdkEventMotion *event);
@@ -175,6 +181,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	ambulant_sdl_window* m_ambulant_sdl_window;
 	SDL_Window *m_sdl_window;
 	SDL_Renderer *m_sdl_renderer;
+	SDL_Surface *m_sdl_surface;
 //X	SDL_Window* m_parent_window;
 //X	sdl_ambulant_window* m_parent_window;
 //X	gulong m_expose_event_handler_id;

@@ -102,6 +102,7 @@ private:
 	long int m_img_displayed;
 	char* m_data;
 	unsigned int m_datasize;
+	void render_frame();
 };
 
 
