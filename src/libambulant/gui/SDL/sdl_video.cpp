@@ -168,17 +168,19 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		bmask = 0x000000ff;
 
 		surface = SDL_CreateRGBSurfaceFrom(pixels[0], W, H, 32, pitch[0], rmask, gmask, bmask, 0);
+		
 //		SDL_UnlockTexture(texture);
 //		SDL_DestroyTexture(texture);
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
+//T		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
 //TBD	sws_freeContext(sws_ctx);
 		SDL_Rect rect;
 		rect.x = L;
 		rect.y = T;
 		rect.w = W;
 		rect.h = H;
-		SDL_RenderCopy(renderer, texture, NULL, &rect);
-		SDL_DestroyTexture(texture);
+		asw->get_sdl_ambulant_window()->copy_sdl_surface (surface, &rect, &rect);
+//T		SDL_RenderCopy(renderer, texture, NULL, &rect);
+//T		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);
 		free (pixels[0]);
 	}
