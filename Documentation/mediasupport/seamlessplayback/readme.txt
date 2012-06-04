@@ -57,4 +57,6 @@ sptest-11:
 sptest-12:
 	Test that clipBegin/clipEnd work in the first place. (This happens to be
 	untrue for Quicktime playback of MPEG-1 movies...)
-	
+
+sptest-13:
+	Test navigation with hyperlinks.

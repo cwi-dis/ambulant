@@ -1,0 +1,75 @@
+<smil version="3.0">
+<head>
+<layout>
+<root-layout width="670" height="370" backgroundColor="black"/>
+<region xml:id="left" left="10" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="right" left="340" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="bottom" left="10" width="650" top="260" height="100" backgroundColor="white"/>
+<region xml:id="prev" left="12" top="12" width="24" height="24" zIndex="2"/>
+<region xml:id="next" left="294" top="12" width="24" height="24" zIndex="2"/>
+</layout>
+<state src="mediafiles.xml"/>
+</head>
+<body>
+<par>
+<smilText region="bottom">
+This presentation consists of 4 4-second parts.
+<br/>
+In the left region, you should see the animated score of Vader Jacob.
+In the right region, you should see the Karaoke-style words to it.
+On the speakers, you should hear the audio.
+<br/>
+You can seek, too.
+<clear begin="16s"/>
+</smilText>
+<seq>
+<par id="par-01">
+<smilText id="text-01" xml:space="preserve" region="right">
+Va<tev next="0.5s"/>der <tev next="0.5s"/>Ja<tev next="0.5s"/>cob,<tev next="0.5s"/>
+Va<tev next="0.5s"/>der <tev next="0.5s"/>Ja<tev next="0.5s"/>cob,<tev next="0.5s"/>
+</smilText>
+<video id="media-01" src="{av1}" region="left" clipEnd="4s"/>
+<img xml:id="next-01" src="Button-next-icon.png" region="next">
+<area href="#par-02"/>
+</img>
+</par>
+<par id="par-02">
+<smilText id="text-02" xml:space="preserve" region="right">
+Slaapt <tev next="0.5s"/>gij <tev next="0.5s"/>nog?<tev next="0.5s"/><tev next="0.5s"/>
+Slaapt <tev next="0.5s"/>gij <tev next="0.5s"/>nog?<tev next="0.5s"/><tev next="0.5s"/>
+</smilText>
+<video id="media-02" src="{av1}" region="left" clipBegin="4s" clipEnd="8s"/>
+<img xml:id="next-02" src="Button-next-icon.png" region="next">
+<area href="#par-03"/>
+</img>
+<img xml:id="prev-02" src="Button-prev-icon.png" region="prev">
+<area href="#par-01"/>
+</img>
+</par>
+<par id="par-03">
+<smilText id="text-03" xml:space="preserve" region="right">
+Al<tev next="0.25s"/>le <tev next="0.25s"/>klok<tev next="0.25s"/>ken <tev next="0.25s"/>lui<tev next="0.5s"/>den,<tev next="0.5s"/>
+Al<tev next="0.25s"/>le <tev next="0.25s"/>klok<tev next="0.25s"/>ken <tev next="0.25s"/>lui<tev next="0.5s"/>den,<tev next="0.5s"/>
+</smilText>
+<video id="media-03" src="{av1}" region="left" clipBegin="8s" clipEnd="12s"/>
+<img xml:id="next-03" src="Button-next-icon.png" region="next">
+<area href="#par-04"/>
+</img>
+<img xml:id="prev-03" src="Button-prev-icon.png" region="prev">
+<area href="#par-02"/>
+</img>
+</par>
+<par id="par-04">
+<smilText id="text-04" xml:space="preserve" region="right">
+Bim, <tev next="0.5s"/>bam, <tev next="0.5s"/>bom,<tev next="0.5s"/><tev next="0.5s"/>
+Bim, <tev next="0.5s"/>bam, <tev next="0.5s"/>bom!<tev next="0.5s"/><tev next="0.5s"/>
+</smilText>
+<video id="media-04" src="{av1}" region="left" clipBegin="12s"/>
+<img xml:id="prev-04" src="Button-prev-icon.png" region="prev">
+<area href="#par-03"/>
+</img>
+</par>
+</seq>
+</par>
+</body>
+</smil>
