@@ -25,6 +25,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/lib/event_processor.h"
 
 #include "SDL.h"
 
@@ -116,6 +117,7 @@ class ambulant_sdl_window : public common::gui_window {
 // the SDL Event Queue of pointers to this structure upon deletion
 	static long unsigned int s_num_events;
 	SDL_Surface*  m_sdl_surface;
+	bool m_record;
 
   public:
 //X	GdkPixmap* m_tmppixmap;
@@ -145,6 +147,9 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	/// Helper: get our counterpart gui_window.
 	ambulant_sdl_window* get_ambulant_sdl_window() { return m_ambulant_sdl_window; } 
+
+	void set_evp (lib::event_processor* evp) { m_evp = evp; }
+	lib::event_processor* get_evp() { return m_evp; }
 //X	// SDLWindow API:
 //X	void do_paint_event (GdkEventExpose * event);
 //X	void do_motion_notify_event(GdkEventMotion *event);
@@ -182,6 +187,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	ambulant_sdl_window* m_ambulant_sdl_window;
 	SDL_Window*   m_sdl_window;
 	SDL_Renderer* m_sdl_renderer;
+	lib::event_processor* m_evp;
 //X	SDL_Window* m_parent_window;
 //X	sdl_ambulant_window* m_parent_window;
 //X	gulong m_expose_event_handler_id;

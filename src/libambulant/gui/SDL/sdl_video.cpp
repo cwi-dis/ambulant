@@ -134,7 +134,11 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		}
 		int width = m_size.w;
 		int height = m_size.h;
+		lib::rect srcrect, dstrect;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
+		lib::rect croprect = m_dest->get_crop_rect(m_size);
+		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
+		dstrect.translate(p);
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
 /*
 		static SDL_Texture* s_texture = NULL; //XXXX member !
@@ -173,12 +177,11 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 //		SDL_DestroyTexture(texture);
 //T		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
 //TBD	sws_freeContext(sws_ctx);
-		SDL_Rect rect;
-		rect.x = L;
-		rect.y = T;
-		rect.w = W;
-		rect.h = H;
-		asw->copy_sdl_surface (surface, &rect, &rect);
+		lib::rect* drp = &dstrect;
+		lib::rect* srp = &srcrect;
+		SDL_Rect sdl_src_rect = {srp->left(), srp->top(), srp->width(), srp->height()};
+		SDL_Rect sdl_dst_rect = {drp->left(), drp->top(), drp->width(), drp->height()};
+		asw->copy_sdl_surface (surface, NULL, &sdl_src_rect);
 //T		SDL_RenderCopy(renderer, texture, NULL, &rect);
 //T		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);

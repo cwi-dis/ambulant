@@ -1,4 +1,4 @@
-// This file is part of Ambulant Player, www.ambulantplayer.org.
+/// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
 // Copyright (C) 2003-2011 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
@@ -48,7 +48,8 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 	m_bounds(*bounds),
 	m_ambulant_window(NULL),
 	m_gui_player(NULL),
-	m_sdl_surface(NULL)
+	m_sdl_surface(NULL),
+	m_record(true)
 //X	m_oldpixmap(NULL),
 //X	m_tmppixmap(NULL),
 //X	m_arrow_cursor(NULL),
@@ -247,10 +248,16 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.w = r.width();
 	rect.h = r.height();
 	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_surface());		
-	SDL_RenderCopy(renderer, texture, NULL, &rect);	
-	SDL_RenderPresent(renderer);
-	SDL_DestroyTexture(texture);
+	if (m_record) {
+		char filename[256];
+		sprintf(filename,"%%%0.16lu.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed());
+		SDL_SaveBMP(get_sdl_surface(), filename);
+	} else {
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_surface());		
+		SDL_RenderCopy(renderer, texture, NULL, &rect);	
+		SDL_RenderPresent(renderer);
+		SDL_DestroyTexture(texture);
+	}
 }
 
 void
