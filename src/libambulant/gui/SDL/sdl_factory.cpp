@@ -91,7 +91,7 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	AM_DBG lib::logger::get_logger()->debug("sdl_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 	ambulant_sdl_window * asdlw = new ambulant_sdl_window(name, &r, region);
 	asdlw->set_ambulant_window((sdl_ambulant_window*) m_parent_window);
-	((sdl_ambulant_window*)m_parent_window)->set_sdl_window(asdlw);
+	((sdl_ambulant_window*)m_parent_window)->set_ambulant_sdl_window(asdlw);
 #ifdef JNK
 	// We don't create this window anymore MainLoop does it!!
 	sdl_window_set_size_request(m_parent_window->get_sdl_window(), r.right(), r.bottom());
@@ -115,6 +115,7 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	sdl_rect.w = r.width();
 	sdl_rect.h = r.height();
 	sdl_ambulant_window* saw = (sdl_ambulant_window*) m_parent_window;
+	ambulant_sdl_window* asw = saw->get_ambulant_sdl_window();
 	/*JNK*/ SDL_SetWindowPosition(saw->get_sdl_window(), sdl_rect.w, sdl_rect.h);
 	SDL_SetWindowSize(saw->get_sdl_window(), sdl_rect.w, sdl_rect.h);
 //X	SDL_Window* win = SDL_CreateWindow ("Ambulant_SDL",r.left(),r.top(),r.width(),r.height(),0);
@@ -275,7 +276,6 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	AM_DBG lib::logger::get_logger()->debug("sdl_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 	ambulant_sdl_window * asdlw = new ambulant_sdl_window(name, &r, region);
 
-
 	// We don't create this window anymore MainLoop does it!!
 	sdl_window_set_size_request(m_parent_window->get_sdl_window(), r.right(), r.bottom());
 	sdl_window_set_size_request(
@@ -288,8 +288,8 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	// Wrong!!! I need to add the GUI size
 //	sdl_window_set_size_request(SDL_WINDOW (sdl_window_get_toplevel (sdlaw->get_sdl_window())), r.right(), r.bottom()+ 25);
 //	asdlw->set_ambulant_window(sdlaw);
-	asdlw->set_ambulant_window(m_parent_window);
-	m_parent_window->set_sdl_window(asdlw);
+	set_ambulant_window(m_parent_window);
+	m_parent_window->set_ambulant_sdl_window(asdlw);
 //	sdlaw->set_sdl_window(asdlw);
 	AM_DBG lib::logger::get_logger()->debug("sdl_window_factory::new_window(0x%x): ambulant_window=0x%x sdl_window=0x%x", (void*) this, (void*) m_parent_window, (void*) asdlw);
 	asdlw->set_gui_player(m_gui_player);

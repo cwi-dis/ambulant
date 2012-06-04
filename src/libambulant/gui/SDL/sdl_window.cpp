@@ -48,7 +48,7 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 	m_bounds(*bounds),
 	m_ambulant_window(NULL),
 	m_gui_player(NULL),
-	m_sdl_renderer(0)
+	m_sdl_surface(NULL)
 //X	m_oldpixmap(NULL),
 //X	m_tmppixmap(NULL),
 //X	m_arrow_cursor(NULL),
@@ -77,7 +77,7 @@ ambulant_sdl_window::~ambulant_sdl_window()
 	// Note that we don't destroy the window, only sver the connection.
 	// the window itself is destroyed independently.
 	if (m_ambulant_window ) {
-		m_ambulant_window->set_sdl_window(NULL);
+		m_ambulant_window->set_ambulant_sdl_window(NULL);
 		m_ambulant_window = NULL;
 	}
 	if (ambulant_sdl_window::s_num_events == 0) {
@@ -247,7 +247,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.w = r.width();
 	rect.h = r.height();
 	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_ambulant_window()->get_sdl_surface());		
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_surface());		
 	SDL_RenderCopy(renderer, texture, NULL, &rect);	
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
@@ -526,9 +526,18 @@ ambulant_sdl_window::clear()
 #endif//JNK
 }
 
+int
+ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect)
+{
+	if (src != NULL && dst_rect != NULL) {
+ 		return SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
+	}
+}
+
 //
 // sdl_ambulant_window
 //
+//*** The following is inherited from gtk_factory and probably garbage
 // sdl_ambulant_window::s_windows is a counter to check for the liveliness of sdl_window during
 // execution of sdl*draw() functions by a callback function in the main thread
 // sdl_ambulant_window::s_lock is for the protection of the counter
@@ -542,33 +551,10 @@ lib::critical_section sdl_ambulant_window::s_lock;
 std::map<SDL_Window*, SDL_Renderer*>  sdl_ambulant_window::s_window_map;
 
 sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
-:	m_sdl_renderer(NULL),
-	m_sdl_window(NULL),
-	m_screenshot_data(NULL),
+  :	m_screenshot_data(NULL),
 	m_screenshot_size(0)
 {
 	m_sdl_window = window;
-#ifdef JNK
-	GObject* ancestor_window = G_OBJECT (SDL_WINDOW (sdl_window_get_ancestor(m_window, SDL_TYPE_WINDOW)));
-
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::sdl_ambulant_window(0x%x-0x%x) s_windows=%d",
-		(void *)this,
-		(void*) window, sdl_ambulant_window::s_windows);
-	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_window),
-		"expose_event", G_CALLBACK (sdl_C_callback_do_paint_event), (void*) this);
-	m_motion_notify_handler_id = g_signal_connect_swapped (ancestor_window,
-		"motion_notify_event", G_CALLBACK (sdl_C_callback_do_motion_notify_event), (void*) this);
-	m_button_release_handler_id = g_signal_connect_swapped (ancestor_window,
-		"button_release_event", G_CALLBACK (sdl_C_callback_do_button_release_event), (void*) this);
-	m_key_release_handler_id = g_signal_connect_swapped (ancestor_window,
-		"key_release_event", G_CALLBACK (sdl_C_callback_do_key_release_event), (void*) this);
-	lib::logger::get_logger()->debug("sdl_ambulant_window::sdl_ambulant_window(0x%x-0x%x) m_key_release_handler_id=%0x%x", this, window, m_key_release_handler_id);
-	sdl_window_add_events(SDL_WINDOW (ancestor_window),
-		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
-	// window needs focus for receiving key press/release events
-	SDL_WINDOW_SET_FLAGS(ancestor_window, SDL_CAN_FOCUS);
-	sdl_window_grab_focus(SDL_WINDOW(ancestor_window));
-#endif//JNK
 	sdl_ambulant_window::s_lock.enter();
 	sdl_ambulant_window::s_windows++;
 	sdl_ambulant_window::s_lock.leave();
@@ -625,7 +611,7 @@ sdl_ambulant_window::~sdl_ambulant_window()
 }
 
 void
-sdl_ambulant_window::set_sdl_window( ambulant_sdl_window* asdlw)
+sdl_ambulant_window::set_ambulant_sdl_window( ambulant_sdl_window* asdlw)
 {
 	// Note: the window and window are destucted independently.
 	//	if (m_sdl_window != NULL)
@@ -633,14 +619,6 @@ sdl_ambulant_window::set_sdl_window( ambulant_sdl_window* asdlw)
 	m_ambulant_sdl_window = asdlw;
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::set_sdl_window(0x%x): m_sdl_window==0x%x)",
 		(void*) this, (void*) m_sdl_window);
-}
-
-int
-sdl_ambulant_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect)
-{
-	if (src != NULL && dst_rect != NULL) {
- 		return SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
-	}
 }
 
 #ifdef JNK

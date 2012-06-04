@@ -178,7 +178,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		rect.y = T;
 		rect.w = W;
 		rect.h = H;
-		asw->get_sdl_ambulant_window()->copy_sdl_surface (surface, &rect, &rect);
+		asw->copy_sdl_surface (surface, &rect, &rect);
 //T		SDL_RenderCopy(renderer, texture, NULL, &rect);
 //T		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);
