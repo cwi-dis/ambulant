@@ -587,7 +587,7 @@ ffmpeg_decoder_datasource::_clip_end() const
 	if (clip_end == -1) return false;
 
 	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
 	if (buffer_begin_elapsed > clip_end) {
 		return true;
 	}

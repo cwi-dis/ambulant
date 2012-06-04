@@ -456,7 +456,7 @@ gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t
 	if (m_is_paused || !m_audio_src || !m_event_processor->get_timer()->running()) {
 		rv = 0;
 		m_read_ptr_called = false;
-		/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source (%d, 0x%x, %d)", (int)m_is_paused, m_audio_src, m_event_processor->get_timer()->running());
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source (%d, 0x%x, %d)", (int)m_is_paused, m_audio_src, m_event_processor->get_timer()->running());
 	} else {
 
 		// XXXJACK Note that the following code is incorrect: we assume that the time samples arrive here (from
@@ -547,7 +547,7 @@ gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t
         rv = m_audio_src->size();
         *ptr = (Uint8 *) m_audio_src->get_read_ptr();
         if (rv) assert(*ptr);
-        /*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: %d bytes available", rv);
+        AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: %d bytes available", rv);
         if (rv > bytes_wanted)
             rv = bytes_wanted;
         AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio-clock=%d, wanted %d bytes, returning %d bytes", m_audio_clock, bytes_wanted, rv);
