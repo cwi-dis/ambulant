@@ -476,6 +476,19 @@ ffmpeg_decoder_datasource::data_avail()
 					assert(m_fmt.samplerate);
 					timestamp_t duration = ((timestamp_t) outsize) * sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
 					timestamp_t old_elapsed = audio_packet.timestamp;
+#if 1
+					// We only warn, we don't reset. Resetting has adverse consequences...
+					if (old_elapsed < m_elapsed) {
+						lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: got old data for timestamp %lld. Reset from %lld", old_elapsed, m_elapsed);
+					}
+#else
+					if (old_elapsed < m_elapsed) {
+						size_t to_discard = m_buffer.size();
+						(void)m_buffer.get_read_ptr();
+						m_buffer.readdone(to_discard);
+						lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: got old data for timestamp %lld. Flushing buffer (%d bytes) from %lld", old_elapsed, to_discard, m_elapsed);
+					}
+#endif
 					m_elapsed = old_elapsed + duration;
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail elapsed = %d ", m_elapsed);
 
@@ -573,8 +586,9 @@ ffmpeg_decoder_datasource::_clip_end() const
 	timestamp_t clip_end = m_src->get_clip_end();
 	if (clip_end == -1) return false;
 
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld , clip_end=%lld", m_elapsed, clip_end);
-	if (m_elapsed > clip_end) {
+	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
+	if (buffer_begin_elapsed > clip_end) {
 		return true;
 	}
 
