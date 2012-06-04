@@ -212,6 +212,10 @@ video_renderer::preroll(double when, double where, double how_much)
 		m_context->playable_stalled(this, "seek");
 		m_is_stalled = true;
 		m_src->seek(wtd_position);
+		// This is a nasty hack, to force the audio renderer to flush:
+		if (m_audio_renderer) {
+			m_audio_renderer->preroll(when, where, -1);
+		}
 	}
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::preroll(%f) seek to %lld", where, m_clip_begin);
