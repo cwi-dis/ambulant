@@ -318,12 +318,14 @@ void smil_player::resume() {
 void smil_player::_resume() {
 	if(m_state == common::ps_pausing) {
 		m_state = common::ps_playing;
+#ifndef WITH_REMOTE_SYNC
 		std::map<const lib::node*, common::playable *>::iterator it;
 
 		m_playables_cs.enter();
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->resume();
 		m_playables_cs.leave();
+#endif WITH_REMOTE_SYNC
 		m_timer->resume();
 	}
 }
