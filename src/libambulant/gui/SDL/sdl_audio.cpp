@@ -880,7 +880,8 @@ gui::sdl::sdl_audio_renderer::seek(double where)
 	if (m_audio_src) {
 		m_context->playable_stalled(this, "seek");
 		m_is_stalled = true;
-		m_audio_src->seek((net::timestamp_t)(where*1000000));
+		net::timestamp_t wtd_position = m_clip_begin + (net::timestamp_t)(where*1000000);
+		m_audio_src->seek(wtd_position);
 	}
 	m_lock.leave();
 }
