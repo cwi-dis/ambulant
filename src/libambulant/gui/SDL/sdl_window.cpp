@@ -49,7 +49,7 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 	m_ambulant_window(NULL),
 	m_gui_player(NULL),
 	m_sdl_surface(NULL),
-	m_record(true)
+	m_record(false)
 //X	m_oldpixmap(NULL),
 //X	m_tmppixmap(NULL),
 //X	m_arrow_cursor(NULL),
@@ -254,7 +254,9 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 		SDL_SaveBMP(get_sdl_surface(), filename);
 	} else {
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_surface());		
-		SDL_RenderCopy(renderer, texture, NULL, &rect);	
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x) rect={%d,%d,%d,%d}", this,
+						 rect.x, rect.y, rect.w, rect.h);
+		SDL_RenderCopy(renderer, texture, NULL, NULL);	
 		SDL_RenderPresent(renderer);
 		SDL_DestroyTexture(texture);
 	}
@@ -536,15 +538,27 @@ ambulant_sdl_window::clear()
 int
 ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect)
 {
+	int rv = 0;
 	if (src != NULL && dst_rect != NULL) {
- 		return SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
+//		dump_sdl_surface (m_sdl_surface, "befor"); 
+ 		rv = SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
+//		dump_sdl_surface (m_sdl_surface, "after"); 
 	}
+	return rv;
+}
+
+void
+ambulant_sdl_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
+{
+		char filename[256];
+		sprintf(filename,"%%%0.8lu%s.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed(), id);
+		SDL_SaveBMP(surf, filename);
 }
 
 //
 // sdl_ambulant_window
 //
-//*** The following is inherited from gtk_factory and probably garbage
+//*** The following comment is inherited from gtk_factory and probably garbage
 // sdl_ambulant_window::s_windows is a counter to check for the liveliness of sdl_window during
 // execution of sdl*draw() functions by a callback function in the main thread
 // sdl_ambulant_window::s_lock is for the protection of the counter

@@ -134,7 +134,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		}
 		int width = m_size.w;
 		int height = m_size.h;
-		lib::rect srcrect, dstrect;
+		lib::rect srcrect = lib::rect(lib::point(0,0), lib::size(width, height)), dstrect;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
@@ -158,8 +158,8 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		int stride[AV_NUM_DATA_POINTERS];
 		pitch[0] = stride[0] = width*SDL_BPP;
 		for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
-			pixels[i] = NULL;
-			pitch[i] = stride[i] = 0;
+				pixels[i] = NULL;
+				pitch[i] = stride[i] = 0;
 		}
 		pixels[0] = (uint8_t*) malloc(stride[0]*height); 
 //		SDL_LockTexture(texture, NULL/*SDL_Rect*/, (void**)&pixels, &pitch[0]);
@@ -180,8 +180,9 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		lib::rect* drp = &dstrect;
 		lib::rect* srp = &srcrect;
 		SDL_Rect sdl_src_rect = {srp->left(), srp->top(), srp->width(), srp->height()};
-		SDL_Rect sdl_dst_rect = {drp->left(), drp->top(), drp->width(), drp->height()};
-		asw->copy_sdl_surface (surface, NULL, &sdl_src_rect);
+		SDL_Rect sdl_dst_rect = {L,T,W,H};//{drp->left(), drp->top(), drp->width(), drp->height()};
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) dst_sdl_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+		asw->copy_sdl_surface (surface, NULL, &sdl_dst_rect);
 //T		SDL_RenderCopy(renderer, texture, NULL, &rect);
 //T		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);

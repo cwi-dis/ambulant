@@ -587,7 +587,7 @@ AC_MSG_RESULT($qthtmlwidget)
 
 dnl Test for SDL
 dnl ======================================================================
-
+set -x
 test_sdl=true
 test_sdl2=false
 AC_MSG_CHECKING(for sdl - Simple Direct Media layer)
@@ -603,7 +603,7 @@ AC_ARG_WITH(sdl,
 if $test_sdl; then
 	# sdl2-config will work for sdl 2.0.X
     	if  test "x$test_sdl" = "xtrue"; then
-	        if test "x$test_sdl2" = "xtrue" -a sdl2-config --version > /dev/null; then
+	        if test "x$test_sdl2" = "xtrue" -a "sdl2-config --version > /dev/null"; then
     		   	SDL_CFLAGS=`sdl2-config --cflags`
     			SDL_LIBS=`sdl2-config --libs`
 			with_frontend=true
@@ -622,7 +622,7 @@ AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
 AM_CONDITIONAL(WITH_SDL2, test x$test_sdl2 = xtrue)
 AC_MSG_RESULT($test_sdl)
 AC_MSG_RESULT($test_sdl2)
-
+set +x
 dnl Testing for GTK
 dnl ====================================================================
 

@@ -71,6 +71,8 @@ class ambulant_sdl_window : public common::gui_window {
 	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
 	
 	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect);
+
+	void dump_sdl_surface (SDL_Surface* surf, const char* id);
 	/// Initialize a GDK cached cursortype
 //X	void set_gdk_cursor(GdkCursorType, GdkCursor*);
 
