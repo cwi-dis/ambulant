@@ -29,7 +29,8 @@ factories::factories()
 	m_datasource_factory(NULL),
 	m_parser_factory(NULL),
 	m_node_factory(NULL),
-	m_state_component_factory(NULL)
+	m_state_component_factory(NULL),
+	m_recorder_factory(NULL)
 {
 }
 
@@ -41,6 +42,7 @@ factories::~factories()
 	// delete m_parser_factory; // singleton
 	// delete m_node_factory; // singleton
 	// delete m_state_component_factory; // singleton
+	// delete m_recorder_factory; // for now, owned by plugin
 }
 
 void
@@ -52,6 +54,7 @@ factories::init_factories()
 	init_parser_factory();
 	init_node_factory();
 	init_state_component_factory();
+	init_recorder_factory();
 }
 
 void
@@ -86,3 +89,7 @@ factories::init_state_component_factory()
 	m_state_component_factory = get_global_state_component_factory();
 }
 
+void
+factories::init_recorder_factory()
+{
+}

@@ -23,6 +23,7 @@
 #define AMBULANT_GUI_SDL_WINDOW_H
 
 #include "ambulant/common/factory.h"
+#include "ambulant/common/recorder.h"
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/event_processor.h"
@@ -119,6 +120,7 @@ class ambulant_sdl_window : public common::gui_window {
 // the SDL Event Queue of pointers to this structure upon deletion
 	static long unsigned int s_num_events;
 	SDL_Surface*  m_sdl_surface;
+	common::recorder* m_recorder;
 	bool m_record;
 
   public:

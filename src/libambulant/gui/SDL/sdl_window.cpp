@@ -49,6 +49,7 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 	m_ambulant_window(NULL),
 	m_gui_player(NULL),
 	m_sdl_surface(NULL),
+	m_recorder(NULL),
 	m_record(false)
 //X	m_oldpixmap(NULL),
 //X	m_tmppixmap(NULL),
@@ -248,11 +249,12 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.w = r.width();
 	rect.h = r.height();
 	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
-	if (m_record) {
+	if (m_recorder) {
 		char filename[256];
 		sprintf(filename,"%%%0.16lu.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed());
 		SDL_SaveBMP(get_sdl_surface(), filename);
-	} else {
+	}
+	{
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_surface());		
 		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x) rect={%d,%d,%d,%d}", this,
 						 rect.x, rect.y, rect.w, rect.h);
@@ -312,12 +314,6 @@ ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_window(0x%x); size (%i,%i)",(void *)sdlaw, width, height);
 		// User Interaction
 	}
-//	}else{
-//		sdl_window_hide(SDL_WINDOW (sdlaw->get_sdl_window()));
-//		sdl_box_pack_start (SDL_BOX (parent_window), SDL_WINDOW (m_window), TRUE, TRUE, 0);
-//		sdl_container_remove(SDL_CONTAINER (sdlaw->get_sdl_window()->parent), SDL_WINDOW (sdlaw->get_sdl_window()));
-//		free(sdlaw->get_sdl_window());
-//	}
 #endif//JNK
 }
 
@@ -341,6 +337,12 @@ void
 ambulant_sdl_window::set_gui_player(gui_player* gpl)
 {
 	m_gui_player = gpl;
+	if (gpl != NULL && gpl->get_recorder_factory() != NULL) {
+		m_recorder = gpl->get_recorder_factory()->new_recorder();
+	} else if (m_recorder != NULL) {
+		delete m_recorder;
+		m_recorder = NULL;
+	}
 }
 
 gui_player*
