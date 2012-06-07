@@ -33,20 +33,15 @@ namespace ambulant {
 namespace common {
 
 class recorder_plugin : recorder {
-	/// Initialize for receiving video frames of a particular type
-  virtual void initalize_frames(recorder::frame_type)  { assert(0); }
 
-	/// Initialize for receiving audio packets of a particular type
-	virtual void initalize_packets(packet_format)  { assert(0); }
+	/// Initialize the recorder to accept pixels of the given 'pixel_order'
+	recorder_plugin (net::pixel_order pixel_order);
+	
+	/// Record new video data with timestamp (ms) in document time
+	void new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp);
 
-	/// Initialize for producing an AV stream of a particular type
-	virtual void initalize_output_stream(stream_type, const char* name="")  { assert(0); }
-
-	/// Record a (video) frame.
-	virtual void new_frame(void* data, size_t datasize, lib::timer::time_type documenttimestamp, frame_type=default_frame_type)  { assert(0); }
-
-	/// Record a (audio) packet.
-	virtual void new_packet(void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp,  packet_format=default_format)  { assert(0); }
+	/// Record new audio data with timestamp (ms) in document time
+	void new_audio_data(void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp)  { assert(0); }
 
 
 }; // class recorder_plugin
@@ -54,14 +49,14 @@ class recorder_plugin : recorder {
 class recorder_plugin_factory : public recorder_factory {
   public:
 
-	recorder_plugin_factory(common::factories* factory)
-	:	m_factory(factory) {}
+	recorder_plugin_factory(common::factories* factories);
+
 	~recorder_plugin_factory() {};
 
-	recorder_plugin* new_recorder_plugin();
+	recorder* new_recorder(net::pixel_order);
 
   private:
-	common::factories* m_factory;
+	factories* m_factories;
 
 }; // class recorder_plugin_factory 
 

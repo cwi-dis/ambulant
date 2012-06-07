@@ -54,3 +54,15 @@ void initialize(int api_version, factories* factories, gui_player *player)
         factories->set_recorder_factory(rpf);
 	logger::get_logger()->trace("recorder_plugin: registered");
 }
+
+recorder_plugin_factory::recorder_plugin_factory (common::factories* factories)
+  :	recorder_factory(),
+	m_factories(factories)
+{
+}
+
+recorder*
+recorder_plugin_factory::new_recorder(net::pixel_order)
+{
+}
+

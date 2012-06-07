@@ -23,6 +23,7 @@
 #define RECORDER_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/net/datasource.h"
 
 namespace ambulant {
 
@@ -30,43 +31,29 @@ namespace common {
 
 class recorder {
 public:
-	/// API for recording audio/video in ambulant
-	/// Typical use is in a renderer/player to produce a file/stream of a SMIL presentation
-	/// Maybe usable for audio/video capture as well (through an extension 
-	/// a.o. implementing capture device details such as channel selection, etc.)
-	enum frame_type { default_frame_type };
-	enum packet_format { default_format };
-	enum stream_type { default_stream_type };
+	/// API for recording audio/video in ambulant to produce 
+	/// a file/stream of a SMIL presentation
 
-	/// Initialize for receiving video frames of a particular type and frame size
-	/// Multiple initializations may be allowed, to receive different types
-	virtual void initalize_frames(frame_type, lib::size) = 0;
+	/// Initialize a recorder to accept pixels of the given 'pixel_order'
+	recorder (net::pixel_order pixel_order);
+	
+	/// Destructor
+	virtual ~recorder() = 0;
+	/// Record new video data with timestamp (ms) in document time
+	virtual void new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp) = 0;
 
-	/// Initialize for receiving audio packets of a particular type
-	/// Multiple initializations may be allowed, to receive different formats
-	virtual void initalize_packets(packet_format) = 0;
-
-	/// Initialize for producing an AV stream of a particular type on a file or (named) stream
-	/// Multiple initializations may be allowed, to produce different streamtypes
-	virtual void initalize_output_stream(stream_type, const char* stream_name="") = 0;
-
-	/// Record a single (video) frame.
-	virtual void new_frame(void* data, size_t datasize, lib::timer::time_type documenttimestamp, frame_type=default_frame_type) = 0;
-
-	/// Record a single (audio) packet.
-	virtual void new_packet(void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp,  packet_format=default_format) = 0;
-
-	/// May be some (optional) methods could be provided for handling multiple
-	/// frames/packets e.g. benefiting from a datasource interface
+	/// Record new audio data  with timestamp (ms) in document time
+	virtual void new_audio_data (void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp) = 0;
 };
 
-class recorder_factory {  /*TBD: details not yet known*/
+class recorder_factory {  /*TBD: not all details known yet*/
 public:
-	recorder_factory() {} // factory constructor
-	~recorder_factory() {} // factory destructor
-	recorder* new_recorder() {} // return new recorder with default settings
-private:
-	std::list <recorder*> m_recorders; // register recorders produced
+	/// recorder factory destructor
+	virtual ~recorder_factory() = 0;
+
+	
+	/// return new recorder for the given 'pixel_order' or NULL if not supported
+ 	virtual recorder* new_recorder(net::pixel_order) = 0;
 };
 
 }; // namespace common

@@ -338,7 +338,7 @@ ambulant_sdl_window::set_gui_player(gui_player* gpl)
 {
 	m_gui_player = gpl;
 	if (gpl != NULL && gpl->get_recorder_factory() != NULL) {
-		m_recorder = gpl->get_recorder_factory()->new_recorder();
+	  m_recorder = gpl->get_recorder_factory()->new_recorder(net::pixel_argb);
 	} else if (m_recorder != NULL) {
 		delete m_recorder;
 		m_recorder = NULL;
