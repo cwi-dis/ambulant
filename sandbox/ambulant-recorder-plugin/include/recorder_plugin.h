@@ -28,22 +28,29 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/version.h"
 
+#include "SDL.h"
+
+// This version only works with sdl_renderer and dumps BMP files for each video frame
+
 namespace ambulant {
 
 namespace common {
 
 class recorder_plugin : recorder {
 
-	/// Initialize the recorder to accept pixels of the given 'pixel_order'
-	recorder_plugin (net::pixel_order pixel_order);
+public:
+	/// Construct a new recorder to accept pixels of the given 'pixel_order'
+	recorder_plugin (net::pixel_order pixel_order, lib::size window_size);
+	~recorder_plugin ();
 	
 	/// Record new video data with timestamp (ms) in document time
 	void new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp);
-
 	/// Record new audio data with timestamp (ms) in document time
 	void new_audio_data(void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp)  { assert(0); }
 
-
+private:
+	SDL_Surface* m_surface;
+	Uint32 m_amask, m_rmask, m_gmask, m_bmask;
 }; // class recorder_plugin
 
 class recorder_plugin_factory : public recorder_factory {
@@ -53,7 +60,7 @@ class recorder_plugin_factory : public recorder_factory {
 
 	~recorder_plugin_factory() {};
 
-	recorder* new_recorder(net::pixel_order);
+	recorder* new_recorder(net::pixel_order, lib::size window_size);
 
   private:
 	factories* m_factories;

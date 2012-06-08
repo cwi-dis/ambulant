@@ -22,8 +22,6 @@
 #ifndef AMBULANT_GUI_GTK_VIDEO_RENDERER_H
 #define AMBULANT_GUI_GTK_VIDEO_RENDERER_H
 
-#ifdef  WITH_SDL2
-
 #include "ambulant/config/config.h"
 #include "ambulant/common/video_renderer.h"
 #include "ambulant/lib/gtypes.h"
@@ -111,7 +109,5 @@ private:
 } // namespace gui
 
 } // namespace ambulant
-
-#endif // WITH_SDL2
 
 #endif // AMBULANT_GUI_SDL_VIDEO_RENDERER_H

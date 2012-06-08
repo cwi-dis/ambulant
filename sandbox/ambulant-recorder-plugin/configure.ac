@@ -33,11 +33,22 @@ if $test_ambulant; then
 else 
 	AC_MSG_ERROR([ambulant >= 2.3 not found])
 fi
+#
+# Find ambulant SDL 2 audio/video rendering library
+#
+AC_MSG_CHECKING(for ambulant libSDL 2.0 Audio/Video rendering library)
+test_sdl=true
+PKG_CHECK_MODULES(SDL, sdl2 >= 2.0.0, test_sdl=true, test_sdl=false)
+if $test_sdl; then
+	AC_DEFINE(WITH_SDL, 1, [Define to enable 'SDL' Audio/Video rendering library])
+else 
+	AC_MSG_ERROR([SDL >= 2.0.0 not found])
+fi
 
-AC_SUBST(AMBULANT_LIBS)
-AC_SUBST(AMBULANT_CFLAGS)
-AM_CONDITIONAL(WITH_AMBULANT, test x$test_ambulant = xtrue)
-AC_MSG_RESULT($test_ambulant)
+AC_SUBST(SDL_LIBS)
+AC_SUBST(SDL_CFLAGS)
+AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
+AC_MSG_RESULT($test_sdl)
 
 AC_CONFIG_FILES(Makefile src/Makefile tests/Makefile)
 AC_OUTPUT

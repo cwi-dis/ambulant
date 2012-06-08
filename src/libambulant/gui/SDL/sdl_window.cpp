@@ -250,9 +250,11 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.h = r.height();
 	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
 	if (m_recorder) {
+		timestamp_t timestamp = get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed();
 		char filename[256];
 		sprintf(filename,"%%%0.16lu.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed());
 		SDL_SaveBMP(get_sdl_surface(), filename);
+		m_recorder->new_video_data(get_sdl_surface()->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
 	}
 	{
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, get_sdl_surface());		
@@ -338,7 +340,7 @@ ambulant_sdl_window::set_gui_player(gui_player* gpl)
 {
 	m_gui_player = gpl;
 	if (gpl != NULL && gpl->get_recorder_factory() != NULL) {
-	  m_recorder = gpl->get_recorder_factory()->new_recorder(net::pixel_argb);
+		m_recorder = gpl->get_recorder_factory()->new_recorder(net::pixel_argb, m_bounds.size());
 	} else if (m_recorder != NULL) {
 		delete m_recorder;
 		m_recorder = NULL;
