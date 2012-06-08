@@ -790,25 +790,31 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
-            url2="ffmpeg-0.6.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.9.1.tar.gz",
+            url2="ffmpeg-0.9.1.tar.gz",
+            checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
             buildcmd=
-                "cd ffmpeg-0.6.5&& "
-                "%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
+                "cd ffmpeg-0.9.1&& "
+                "%s  --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
 
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
-            checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+#           url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-                "cd SDL-1.3.0-* && "
-                "%s &&"
+               "if [ ! -e SDL ] ; then hg clone http://hg.libsdl.org/SDL; "
+               "cd SDL && "
+               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch;" 
+               "fi; mkdir build; cd build &&"
+# Note: SDL 2.0 wants a different build directory, therefore one '.' is preprended
+                ".%s --disable-video-x11-xinput&&"
                 "make ${MAKEFLAGS} && "
-                "make install" % (LINUX_COMMON_CONFIGURE)
+                "make install &&"
+                "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
         TPP("live",
