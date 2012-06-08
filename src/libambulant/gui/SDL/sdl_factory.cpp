@@ -116,13 +116,19 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	sdl_rect.h = r.height();
 	sdl_ambulant_window* saw = (sdl_ambulant_window*) m_parent_window;
 	ambulant_sdl_window* asw = saw->get_ambulant_sdl_window();
-	// due to a bug in SDL2, the following function does not work.
-	// However, it has some effect when changing the window position as well.
-	// It is even possible to get the right effect with a bug fix in SDL_x11Window.c
+	// due to bug #1513 in SDL2, the following function does not work.
+	// However, it has some (erroneous) effect when changing the window position as well.
+	// It is even possible to get the right effect when SDL_x11Window.c is patched
+	// as in third_party_packages/SDL-bug-1513.patch
 	SDL_SetWindowSize(saw->get_sdl_window(), sdl_rect.w, sdl_rect.h);
-	/*JNK*/ SDL_SetWindowPosition(saw->get_sdl_window(), 100, 100); //sdl_rect.w, sdl_rect.h);
-	/*JNK*/ SDL_SetWindowPosition(saw->get_sdl_window(), sdl_rect.x, sdl_rect.y); //sdl_rect.w, sdl_rect.h);
-//X	SDL_Window* win = SDL_CreateWindow ("Ambulant_SDL",r.left(),r.top(),r.width(),r.height(),0);
+	int win_x, win_y;
+	// The following lines do work around the first part of SDL2 bug #1513:
+	// they make the new window size effective. The window must be moved to
+	// a different position, otherwise SetWindowPosition is a no-op/
+	SDL_GetWindowPosition(saw->get_sdl_window(), &win_x, &win_y);
+	SDL_SetWindowPosition(saw->get_sdl_window(), win_x+100, win_y+100);
+	SDL_SetWindowPosition(saw->get_sdl_window(), win_x, win_y);
+	// end of workaround for bug #1513 in SDL2
 	return asdlw;
 }
 
