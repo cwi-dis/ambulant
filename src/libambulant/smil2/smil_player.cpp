@@ -642,15 +642,24 @@ smil_player::clicked(int n, double t) {
 void
 smil_player::clicked_async(async_arg aa) {
 //XXXJACK thinks this isn't needed	m_scheduler->lock();
-#ifdef WITH_REMOTE_SYNCxx
-	if (xxx) {
-		lib::node *n = aa.first->dom_node();
-		time_type t = 0; // aa.second.blabla
-		xxxx->activated(n, t);
+#ifdef WITH_REMOTE_SYNC
+	if (m_timer_sync) {
+		const lib::node *n = aa.first->dom_node();
+		lib::timer::time_type t = 0; // aa.second.blabla
+		m_timer_sync->clicked(n, t);
+    }
 #endif
 	aa.first->raise_activate_event(aa.second);
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
+
+#ifdef WITH_REMOTE_SYNC
+void
+smil_player::clicked_external(lib::node *n, lib::timer::time_type t)
+{
+	clicked(n->get_numid(), (double)t/1000000.0);
+}
+#endif // WITH_REMOTE_SYNC
 
 void
 smil_player::before_mousemove(int cursorid)
