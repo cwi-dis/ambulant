@@ -421,6 +421,7 @@ public:
 	void stopped();
 	void paused();
 	void resumed();
+	void clicked(const ambulant::lib::node* n, ambulant::lib::timer::time_type t);
   private:
 	PyObject *py_timer_sync;
 

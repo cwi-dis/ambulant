@@ -2642,6 +2642,7 @@ timer_sync::timer_sync(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: stopped");
 		if (!PyObject_HasAttrString(itself, "paused")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: paused");
 		if (!PyObject_HasAttrString(itself, "resumed")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: resumed");
+		if (!PyObject_HasAttrString(itself, "clicked")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: clicked");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2738,6 +2739,26 @@ void timer_sync::resumed()
 	}
 
 	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void timer_sync::clicked(const ambulant::lib::node* n, ambulant::lib::timer::time_type t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+	PyObject *py_t = Py_BuildValue("l", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "clicked", "(OO)", py_n, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::clicked() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
 
 	PyGILState_Release(_GILState);
 }

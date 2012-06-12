@@ -5282,6 +5282,24 @@ static PyObject *timer_syncObj_resumed(timer_syncObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *timer_syncObj_clicked(timer_syncObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	ambulant::lib::timer::time_type t;
+	if (!PyArg_ParseTuple(_args, "O&l",
+	                      nodeObj_Convert, &n,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->clicked(n,
+	                          t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timer_syncObj_methods[] = {
 	{"initialize", (PyCFunction)timer_syncObj_initialize, 1,
 	 PyDoc_STR("(ambulant::lib::timer_control* timer) -> None")},
@@ -5293,6 +5311,8 @@ static PyMethodDef timer_syncObj_methods[] = {
 	 PyDoc_STR("() -> None")},
 	{"resumed", (PyCFunction)timer_syncObj_resumed, 1,
 	 PyDoc_STR("() -> None")},
+	{"clicked", (PyCFunction)timer_syncObj_clicked, 1,
+	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::timer::time_type t) -> None")},
 	{NULL, NULL, 0}
 };
 
