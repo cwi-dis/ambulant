@@ -260,13 +260,13 @@ ambulant::Playlist::replace_last_item (PlaylistItem* new_item)
 	[am_ios_playlist replaceObjectAtIndex:[am_ios_playlist count] - 1 withObject: new_item];
 }
 
-ambulant::PlaylistItem*
+PlaylistItem*
 ambulant::Playlist::get_last_item()
 {
 	if (am_ios_playlist == NULL || [am_ios_playlist count] == 0) {
 		return NULL;
 	} else {
-		return (ambulant::PlaylistItem*) [am_ios_playlist objectAtIndex: 0];
+		return (PlaylistItem*) [am_ios_playlist objectAtIndex: 0];
 	}
 
 }
