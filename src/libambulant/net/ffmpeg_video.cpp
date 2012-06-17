@@ -224,10 +224,10 @@ ffmpeg_video_decoder_datasource::stop()
 	m_src = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x)", (void*)this);
 	if (m_con && m_con_owned) {
-		lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock.enter();
+		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+		ffmpeg_lock->enter();
 		avcodec_close(m_con);
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 		av_free(m_con);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(): avcodec_close(m_con=0x%x) called", m_con);
 	}
@@ -880,15 +880,15 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 	m_con = avcodec_alloc_context();
 	m_con_owned = true;
 
-	lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-	ffmpeg_lock.enter();
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+	ffmpeg_lock->enter();
 	if(avcodec_open(m_con,codec) < 0) {
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 		lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
 		return false;
 	}
-	ffmpeg_lock.leave();
+	ffmpeg_lock->leave();
 	return true;
 }
 
@@ -921,14 +921,14 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		//m_con = avcodec_alloc_context();
 
-		lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock.enter();
+		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+		ffmpeg_lock->enter();
 		if(avcodec_open(m_con,codec) < 0) {
-			ffmpeg_lock.leave();
+			ffmpeg_lock->leave();
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
 			return false;
 		}
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 		if (fmt.width == 0) fmt.width = m_con->width;
 		if (fmt.height == 0) fmt.width = m_con->height;
 		return true;
@@ -945,16 +945,16 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 
 		m_con = avcodec_alloc_context();
 		m_con_owned = true;
-		lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock.enter();
+		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+		ffmpeg_lock->enter();
 		if((avcodec_open(m_con,codec) < 0) ) {
-			ffmpeg_lock.leave();
+			ffmpeg_lock->leave();
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open video codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_decoder_datasource(): succesfully opened codec");
 		}
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 
 		m_con->codec_type = CODEC_TYPE_VIDEO;
 		// We doe a fmt update here to sure that we have the correct values.

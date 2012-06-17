@@ -153,6 +153,7 @@ class ffmpeg_video_decoder_datasource:
 	int m_frame_count_temp;
 #endif
 
+    static lib::critical_section s_lock;
 };
 
 }	// end namespace net
