@@ -110,6 +110,49 @@ class simple_animation_f {
 	double m_decelerate;
 	bool m_auto_reverse;
 };
+    
+    // Distance for scalars
+    template <class T>
+    double dist(const T& v1, const T& v2) {
+        return std::max(v1, v2) - std::min(v1, v2);
+    }
+    
+    // Distance specialization for common::region_dim
+    template <>
+    inline double dist(const ambulant::common::region_dim& rd1, const ambulant::common::region_dim& rd2) {
+        if(rd1.relative())
+            return std::max(rd1.get_as_dbl(), rd2.get_as_dbl()) - std::min(rd1.get_as_dbl(), rd2.get_as_dbl());
+        else if(rd1.absolute())
+            return std::max(rd1.get_as_int(), rd2.get_as_int()) - std::min(rd1.get_as_int(), rd2.get_as_int());
+        return 0;
+    }
+    
+    template <>
+    inline double dist(const ambulant::common::region_dim_spec& rds1, const ambulant::common::region_dim_spec& rds2) {
+        double dx = dist(rds1.left, rds2.left);
+        double dy = dist(rds1.top, rds2.top);
+        double dw = dist(rds1.width, rds2.width);
+        double dh = dist(rds1.height, rds2.height);
+        return std::max(std::max(dx, dy), std::max(dw, dh));
+    }
+    
+    // Distance specialization for lib::point
+    template <>
+    double dist(const lib::point& p1, const lib::point& p2) {
+        double dx = double(p2.x - p1.x);
+        double dy = double(p2.y - p1.y);
+        return ::sqrt(dx*dx + dy*dy);
+    }
+    
+    // Distance specialization for lib::color_t
+    template <>
+    double dist(const lib::color_t& c1, const lib::color_t& c2) {
+        double dr = double(lib::redc(c2) - lib::redc(c1));
+        double dg = double(lib::greenc(c2) - lib::greenc(c1));
+        double db = double(lib::bluec(c2) - lib::bluec(c1));
+        return ::sqrt(dr*dr + dg*dg + db*db);
+    }
+    
 
 // Simple duration animation function for continues attributes
 // The attribute type is T
@@ -404,49 +447,6 @@ void create_bezier_map(double *e, std::map<double, double>& gr) {
 	}
 }
 #endif
-
-// Distance for scalars
-template <class T>
-double dist(const T& v1, const T& v2) {
-	return std::max(v1, v2) - std::min(v1, v2);
-}
-
-// Distance specialization for common::region_dim
-template <>
-inline double dist(const ambulant::common::region_dim& rd1, const ambulant::common::region_dim& rd2) {
-	if(rd1.relative())
-		return std::max(rd1.get_as_dbl(), rd2.get_as_dbl()) - std::min(rd1.get_as_dbl(), rd2.get_as_dbl());
-	else if(rd1.absolute())
-		return std::max(rd1.get_as_int(), rd2.get_as_int()) - std::min(rd1.get_as_int(), rd2.get_as_int());
-	return 0;
-}
-
-template <>
-inline double dist(const ambulant::common::region_dim_spec& rds1, const ambulant::common::region_dim_spec& rds2) {
-	double dx = dist(rds1.left, rds2.left);
-	double dy = dist(rds1.top, rds2.top);
-	double dw = dist(rds1.width, rds2.width);
-	double dh = dist(rds1.height, rds2.height);
-	return std::max(std::max(dx, dy), std::max(dw, dh));
-}
-
-// Distance specialization for lib::point
-template <>
-double dist(const lib::point& p1, const lib::point& p2) {
-	double dx = double(p2.x - p1.x);
-	double dy = double(p2.y - p1.y);
-	return ::sqrt(dx*dx + dy*dy);
-}
-
-// Distance specialization for lib::color_t
-template <>
-double dist(const lib::color_t& c1, const lib::color_t& c2) {
-	double dr = double(lib::redc(c2) - lib::redc(c1));
-	double dg = double(lib::greenc(c2) - lib::greenc(c1));
-	double db = double(lib::bluec(c2) - lib::bluec(c1));
-	return ::sqrt(dr*dr + dg*dg + db*db);
-}
-
 
 } // namespace smil2
 
