@@ -322,6 +322,19 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 }
 
+- (void) enableGestureRecognizers: (BOOL) enable {
+    NSArray* gestureRecognizers = [scalerView.superview gestureRecognizers] ;
+    for (int i=0; i < gestureRecognizers.count; i++) {
+        NSObject* o = [gestureRecognizers objectAtIndex: i];
+        UIGestureRecognizer* gestureRecognizer = (UIGestureRecognizer*) o;
+        if (enable) {
+            gestureRecognizer.enabled = YES;
+        } else {
+            gestureRecognizer.enabled = NO;
+        }
+    }
+}
+
 // display the Control Panel (as a HUD) at the bottom of the player view 
 - (void) showInteractionView: (BOOL) want_show {
 	if (want_show && interactionView.hidden) {
@@ -331,6 +344,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         assert(self.view);
         assert(interactionView);
         [self.view bringSubviewToFront:interactionView];
+        [self enableGestureRecognizers: NO];
 		if (delegate.autoHideHUD) {
 			[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
 			[self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
@@ -338,6 +352,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	} else {
 		interactionView.hidden = true;
 		interactionView.opaque = false;
+        [self enableGestureRecognizers: YES];
         [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
 	}
 }
@@ -354,11 +369,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		} else {
 			finishedViewImage.image = [UIImage imageNamed: @"DefaultPoster.png"];
 		}
-
+        [self enableGestureRecognizers: NO];
 		[self.view bringSubviewToFront: finishedView];
 	} else {
 		finishedView.hidden = true;
 		finishedView.opaque = false;
+        [self enableGestureRecognizers: YES];
 	}
 }
 
@@ -366,6 +382,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     interactionView.hidden = true;
     interactionView.opaque = false;
+    [self enableGestureRecognizers: YES];
 }
 
 #pragma mark -
@@ -373,7 +390,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 /*	Code derived from Apple's developer documentation "Gesture Recognizers"*/
 
-- (IBAction) selectPointGesture:(UILongPressGestureRecognizer *)sender {
+- (void) selectPointGesture:(UILongPressGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController selectPointGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:playerView];
 	if ( ! [playerView tappedAtPoint:location]) {
@@ -381,12 +398,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 };
 
-- (IBAction) showHUDGesture:(UITapGestureRecognizer *)sender { // select
+- (void) showHUDGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController showHUDGesture(0x%x): sender=0x%x", self, sender);
 	[self showInteractionView: YES];
 }
 
-- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
+- (void) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:scalerView];
 	[scalerView autoZoomAtPoint:location];
