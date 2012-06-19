@@ -608,9 +608,9 @@ ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
 	return ffcontext;
 }
 
-lib::critical_section&
+lib::critical_section s_lock;
+lib::critical_section*
 ambulant::net::ffmpeg_global_critical_section()
 {
-	static lib::critical_section lock;
-	return lock;
+	return &s_lock;
 }

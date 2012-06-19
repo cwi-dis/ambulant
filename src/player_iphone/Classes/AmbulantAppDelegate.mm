@@ -450,6 +450,14 @@ document_stopped: (id) sender
     return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isKindOfClass:[UIControl class]]) {
+        // we touched a button, slider, or other UIControl
+        return NO; // ignore the touch
+    }
+    return YES; // handle the touch
+}
+
 #pragma mark -
 #pragma mark Memory management
 

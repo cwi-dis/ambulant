@@ -125,8 +125,8 @@ class ffmpeg_demux : public abstract_demux {
 AVCodecContext *ffmpeg_alloc_partial_codec_context(bool video, const char *name);
 
 /// Helper routine: return a reference to a global lock (needed for ffmpeg serialization)
-lib::critical_section& ffmpeg_global_critical_section();
-
+lib::critical_section* ffmpeg_global_critical_section();
+static lib::critical_section s_lock;
 
 }	// end namespace net
 }	// end namespace ambulant
