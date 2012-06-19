@@ -129,7 +129,6 @@ enum ZoomState {
 - (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (void) handlePinchGesture:(UIGestureRecognizer*) sender;
 - (void) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
-- (void) enableGestureRecognizers: (BOOL) enable;
 
 // User interaction through buttons
 - (IBAction) doRestartTapped: (id)sender;

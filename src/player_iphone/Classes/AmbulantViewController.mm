@@ -99,6 +99,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		initWithTarget:self
 		action:@selector(handleDoubleTapGesture:)];
 	doubleTapGesture.numberOfTapsRequired = 2;
+    doubleTapGesture.delegate = delegate;
 	[scalerView.superview addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
 
@@ -106,6 +107,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self
 		action:shortTapAction];
+    singleTapGesture.delegate = delegate;
 	[scalerView.superview addGestureRecognizer:singleTapGesture];	
     [singleTapGesture release];
 	// do not also errnoneously recognize a single tap when a double tap is recognized
@@ -115,6 +117,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
 		initWithTarget:self
 		action:longTapAction];
+    longPressGesture.delegate = delegate;
     [scalerView.superview addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 
@@ -122,6 +125,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
 		initWithTarget:self
 		action:@selector(handlePinchGesture:)];
+    pinchGesture.delegate = delegate;
 	[scalerView.superview addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 
@@ -129,6 +133,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
 		initWithTarget:self
 		action:@selector(handlePanGesture:)];
+    panGesture.delegate = delegate;
     [scalerView.superview addGestureRecognizer:panGesture];
     [panGesture release];
 }
@@ -322,19 +327,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 }
 
-- (void) enableGestureRecognizers: (BOOL) enable {
-    NSArray* gestureRecognizers = [scalerView.superview gestureRecognizers] ;
-    for (int i=0; i < gestureRecognizers.count; i++) {
-        NSObject* o = [gestureRecognizers objectAtIndex: i];
-        UIGestureRecognizer* gestureRecognizer = (UIGestureRecognizer*) o;
-        if (enable) {
-            gestureRecognizer.enabled = YES;
-        } else {
-            gestureRecognizer.enabled = NO;
-        }
-    }
-}
-
 // display the Control Panel (as a HUD) at the bottom of the player view 
 - (void) showInteractionView: (BOOL) want_show {
 	if (want_show && interactionView.hidden) {
@@ -344,7 +336,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         assert(self.view);
         assert(interactionView);
         [self.view bringSubviewToFront:interactionView];
-        [self enableGestureRecognizers: NO];
 		if (delegate.autoHideHUD) {
 			[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
 			[self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
@@ -352,7 +343,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	} else {
 		interactionView.hidden = true;
 		interactionView.opaque = false;
-        [self enableGestureRecognizers: YES];
         [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
 	}
 }
@@ -369,12 +359,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		} else {
 			finishedViewImage.image = [UIImage imageNamed: @"DefaultPoster.png"];
 		}
-        [self enableGestureRecognizers: NO];
 		[self.view bringSubviewToFront: finishedView];
 	} else {
 		finishedView.hidden = true;
 		finishedView.opaque = false;
-        [self enableGestureRecognizers: YES];
 	}
 }
 
@@ -382,7 +370,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 {
     interactionView.hidden = true;
     interactionView.opaque = false;
-    [self enableGestureRecognizers: YES];
 }
 
 #pragma mark -
