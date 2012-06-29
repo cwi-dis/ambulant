@@ -5026,7 +5026,7 @@ int embedderObj_Convert(PyObject *v, ambulant::common::embedder* *p_itself)
 #ifdef BGEN_BACK_SUPPORT_embedder
 	if (!embedderObj_Check(v))
 	{
-		*p_itself = Py_WrapAs_embedder(v);
+		*p_itself = (ambulant::common::embedder*) Py_WrapAs_embedder(v);
 		if (*p_itself) return 1;
 	}
 #endif
