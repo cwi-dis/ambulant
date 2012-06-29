@@ -74,7 +74,7 @@ show_message(int level, const char *format)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
-	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
+	MyAppDelegate *delegate = (MyAppDelegate*)[[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:)
 		withObject: message waitUntilDone: NO];
 //	[message release];
