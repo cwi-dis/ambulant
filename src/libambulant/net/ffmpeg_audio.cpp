@@ -298,10 +298,10 @@ ffmpeg_decoder_datasource::stop()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::stop(0x%x)", (void*)this);
 	if (m_con && m_con_owned) {
-		lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock.enter();
+		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+		ffmpeg_lock->enter();
 		avcodec_close(m_con);
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 		av_free(m_con);
 	}
 	m_con = NULL;
@@ -736,15 +736,15 @@ ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 	m_con = avcodec_alloc_context();
 	m_con_owned = true;
 
-	lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-	ffmpeg_lock.enter();
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+	ffmpeg_lock->enter();
 	if(avcodec_open(m_con,codec) < 0) {
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
 		return false;
 	}
-	ffmpeg_lock.leave();
+	ffmpeg_lock->leave();
 	return true;
 }
 
@@ -772,16 +772,16 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 //		m_con = avcodec_alloc_context();
 
-		lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock.enter();
+		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+		ffmpeg_lock->enter();
 		if(avcodec_open(m_con,codec) < 0) {
-			ffmpeg_lock.leave();
+			ffmpeg_lock->leave();
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
 			av_free(m_con);
 			m_con = NULL;
 			return false;
 		}
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
 		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
 		return true;
@@ -802,10 +802,10 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		m_con = avcodec_alloc_context();
 		m_con_owned = true;
 		m_con->channels = 0;
-		lib::critical_section ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock.enter();
+		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+		ffmpeg_lock->enter();
 		if((avcodec_open(m_con,codec) < 0) ) {
-			ffmpeg_lock.leave();
+			ffmpeg_lock->leave();
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			av_free(m_con);
 			m_con = NULL;
@@ -813,7 +813,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(): succesfully opened codec");
 		}
-		ffmpeg_lock.leave();
+		ffmpeg_lock->leave();
 
 		m_con->codec_type = CODEC_TYPE_AUDIO;
 		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);

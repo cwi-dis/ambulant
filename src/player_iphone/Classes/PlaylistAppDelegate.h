@@ -31,7 +31,6 @@
 - (void) auxViewControllerDidFinish: (UIViewController *)controller;
 - (void) playURL: (NSString*) whatString;
 - (void) playPresentation: (PlaylistItem*) item fromPresentationViewController: (PresentationViewController*) controller;
-- (void) auxViewControllerDidFinish: (PresentationViewController*) controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
 - (void) settingsHaveChanged: (UIViewController*) controller;
 - (void) showAmbulantPlayer: (id) sender;

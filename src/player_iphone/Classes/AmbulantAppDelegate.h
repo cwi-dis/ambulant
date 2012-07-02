@@ -25,7 +25,7 @@
 
 @class AmbulantViewController;
 
-@interface AmbulantAppDelegate : NSObject <UIApplicationDelegate, PlaylistViewControllerDelegate> {
+@interface AmbulantAppDelegate : NSObject <UIApplicationDelegate, UIGestureRecognizerDelegate, PlaylistViewControllerDelegate> {
     IBOutlet UIWindow *window;
 	IBOutlet UITabBarController* tabBarController;
     IBOutlet AmbulantViewController *viewController;
