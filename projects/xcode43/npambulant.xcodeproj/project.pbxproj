@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,7 +19,6 @@
 		932F6E361455A5D3003E08BD /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FEB3E113428FDB004D0667 /* libambulantCG.dylib */; };
 		932F6E9F1455AA39003E08BD /* libamplugin_xpath_state(CG).so in Copy Files - plugins */ = {isa = PBXBuildFile; fileRef = 0470A12E1346688600059573 /* libamplugin_xpath_state(CG).so */; };
 		932F6EA01455AA3F003E08BD /* libamplugin_python(CG).so in Copy Files - plugins */ = {isa = PBXBuildFile; fileRef = 04FEB3EE13428FDB004D0667 /* libamplugin_python(CG).so */; };
-		9380BC51145986E700DB0C07 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0470A317134676FD00059573 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -317,8 +316,11 @@
 /* Begin PBXProject section */
 		508817C409F0C9740071BF1A /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
 			buildConfigurationList = 508817C509F0C9740071BF1A /* Build configuration list for PBXProject "npambulant" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -419,7 +421,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9380BC51145986E700DB0C07 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,9 +512,8 @@
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin";
-				PREBINDING = NO;
 				PRODUCT_NAME = npambulant;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Debug;
@@ -527,9 +527,8 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 				PRODUCT_NAME = npambulant;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL $(AMBULANT_INCLUDE_3PP)/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include $(AMBULANT_3PP)/xulrunner-sdk/include";
 				WRAPPER_EXTENSION = plugin;
 			};
@@ -542,7 +541,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
