@@ -28,6 +28,10 @@ DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
+if [ -f $HOME/.bashrc ]; then
+	. $HOME/.bashrc
+fi
+
 # The rest should be automatic
 case x$BRANCH in
 x)	
@@ -93,6 +97,7 @@ xcodebuild -project libambulant.xcodeproj \
 #
 # The keychain may have been locked again in the mean time
 #
+security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
 security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
