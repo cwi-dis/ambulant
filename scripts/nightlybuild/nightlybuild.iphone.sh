@@ -7,6 +7,10 @@ set -e
 set -x
 PATH=$PATH:/Developer/usr/bin
 
+# Unlock the nightly build keychain
+security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
+security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
+
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
 case x$1 in
@@ -23,6 +27,10 @@ HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
+
+if [ -f $HOME/.bashrc ]; then
+	. $HOME/.bashrc
+fi
 
 # The rest should be automatic
 case x$BRANCH in
@@ -81,6 +89,16 @@ sh autogen.sh
 # Build CG player
 #
 cd projects/xcode32
+xcodebuild -project libambulant.xcodeproj \
+	-target libambulantiPhone \
+	-configuration Release \
+	-sdk iphoneos4.3 \
+	build
+#
+# The keychain may have been locked again in the mean time
+#
+security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
+security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \

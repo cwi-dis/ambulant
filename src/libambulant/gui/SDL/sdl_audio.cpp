@@ -350,6 +350,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_is_playing(false),
 	m_is_reading(false),
 	m_is_paused(false),
+	m_is_stalled(false),
 	m_read_ptr_called(false),
 	m_volcount(0),
 	m_intransition(NULL),
@@ -834,7 +835,9 @@ gui::sdl::sdl_audio_renderer::preroll(double when, double where, double how_much
 		}
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::preroll(): m_audio_src->start_prefetch(0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, this, (void*)m_audio_src);
 		net::timestamp_t wtd_position = m_clip_begin + (net::timestamp_t)(where*1000000);
-		if (wtd_position != m_previous_clip_position) {
+		// This "how_much < 0" is a hack. It is used by the video_renderer if thiis audio renderer is subservient
+		// to it, to signal that the video renderer has done a seek. It now needs us to flush our buffer.
+		if (wtd_position != m_previous_clip_position || how_much < 0) {
 			m_previous_clip_position = wtd_position;
 			m_context->playable_stalled(this, "seek");
 			m_is_stalled = true;
@@ -857,7 +860,8 @@ gui::sdl::sdl_audio_renderer::seek(double where)
 	if (m_audio_src) {
 		m_context->playable_stalled(this, "seek");
 		m_is_stalled = true;
-		m_audio_src->seek((net::timestamp_t)(where*1000000));
+		net::timestamp_t wtd_position = m_clip_begin + (net::timestamp_t)(where*1000000);
+		m_audio_src->seek(wtd_position);
 	}
 	m_lock.leave();
 }

@@ -127,7 +127,10 @@ gtk_mainloop::~gtk_mainloop()
 		m_player->release();
 		m_player = NULL;
 	}
-	if (m_doc) {
+	if (m_embedder) {
+		set_embedder(NULL);
+	}
+ 	if (m_doc) {
 		delete m_doc;
 		m_doc = NULL;
 	}

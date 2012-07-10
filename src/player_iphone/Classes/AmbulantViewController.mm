@@ -99,6 +99,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		initWithTarget:self
 		action:@selector(handleDoubleTapGesture:)];
 	doubleTapGesture.numberOfTapsRequired = 2;
+    doubleTapGesture.delegate = delegate;
 	[scalerView.superview addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
 
@@ -106,6 +107,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self
 		action:shortTapAction];
+    singleTapGesture.delegate = delegate;
 	[scalerView.superview addGestureRecognizer:singleTapGesture];	
     [singleTapGesture release];
 	// do not also errnoneously recognize a single tap when a double tap is recognized
@@ -115,6 +117,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
 		initWithTarget:self
 		action:longTapAction];
+    longPressGesture.delegate = delegate;
     [scalerView.superview addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 
@@ -122,6 +125,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
 		initWithTarget:self
 		action:@selector(handlePinchGesture:)];
+    pinchGesture.delegate = delegate;
 	[scalerView.superview addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 
@@ -129,6 +133,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
 		initWithTarget:self
 		action:@selector(handlePanGesture:)];
+    panGesture.delegate = delegate;
     [scalerView.superview addGestureRecognizer:panGesture];
     [panGesture release];
 }
@@ -354,7 +359,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		} else {
 			finishedViewImage.image = [UIImage imageNamed: @"DefaultPoster.png"];
 		}
-
 		[self.view bringSubviewToFront: finishedView];
 	} else {
 		finishedView.hidden = true;
@@ -373,7 +377,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 /*	Code derived from Apple's developer documentation "Gesture Recognizers"*/
 
-- (IBAction) selectPointGesture:(UILongPressGestureRecognizer *)sender {
+- (void) selectPointGesture:(UILongPressGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController selectPointGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:playerView];
 	if ( ! [playerView tappedAtPoint:location]) {
@@ -381,12 +385,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 };
 
-- (IBAction) showHUDGesture:(UITapGestureRecognizer *)sender { // select
+- (void) showHUDGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController showHUDGesture(0x%x): sender=0x%x", self, sender);
 	[self showInteractionView: YES];
 }
 
-- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
+- (void) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:scalerView];
 	[scalerView autoZoomAtPoint:location];
