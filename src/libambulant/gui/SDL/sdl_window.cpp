@@ -251,9 +251,6 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
 	if (m_recorder) {
 		timestamp_t timestamp = get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed();
-		char filename[256];
-		sprintf(filename,"%%%0.16lu.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed());
-		SDL_SaveBMP(get_sdl_surface(), filename);
 		m_recorder->new_video_data(get_sdl_surface()->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
 	}
 	{
