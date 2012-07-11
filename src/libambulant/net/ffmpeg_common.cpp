@@ -61,6 +61,8 @@ ambulant::net::ffmpeg_init()
 #endif
 	avcodec_init();
 	av_register_all();
+	//xxxbo: for ffmpeg-0.10.2
+	avformat_network_init();
 	is_inited = true;
 }
 
@@ -204,7 +206,7 @@ ffmpeg_demux::supported(const net::url& url)
 	// There appears to be some support for RTSP in ffmpeg, but it doesn'
 	// seem to work yet. Disable it so we don't get confused by error messages.
 	// XXXJACK need to test this with future ffmpeg versions.
-	if (url_str.substr(0, 5) == "rtsp:") return NULL;
+	//if (url_str.substr(0, 5) == "rtsp:") return NULL;
 #endif
 	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;

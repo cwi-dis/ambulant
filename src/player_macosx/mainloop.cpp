@@ -162,8 +162,8 @@ mainloop::init_datasource_factory()
 #ifndef NONE_PLAYER
 #ifdef WITH_LIVE
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add live_audio_datasource_factory");
-	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory());
+	//df->add_video_factory(net::create_live_video_datasource_factory());
+	//df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
