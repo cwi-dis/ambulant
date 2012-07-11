@@ -34,7 +34,10 @@
 
 // data_buffer
 
-#define DEFAULT_MAX_BUF_SIZE 1000000
+//#define DEFAULT_MAX_BUF_SIZE 1000000
+//xxxbo increasing the buffer size
+#define DEFAULT_MAX_BUF_SIZE 1000000000
+
 size_t ambulant::net::databuffer::s_default_max_size = DEFAULT_MAX_BUF_SIZE;
 size_t ambulant::net::databuffer::s_default_max_unused_size = DEFAULT_MAX_BUF_SIZE;
 
