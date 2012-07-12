@@ -1,0 +1,614 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstRTSPSession</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer RTSP Server Reference Manual">
+<link rel="up" href="ch01.html" title="">
+<link rel="prev" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool">
+<link rel="next" href="ges-hierarchy.html" title="Object Hierarchy">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GstRTSPSessionPool.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer RTSP Server Reference Manual</th>
+<td><a accesskey="n" href="ges-hierarchy.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstRTSPSession.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstRTSPSession.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstRTSPSession.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstRTSPSession.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="GstRTSPSession"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstRTSPSession.top_of_page"></a>GstRTSPSession</span></h2>
+<p>GstRTSPSession</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="GstRTSPSession.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="GstRTSPSession.html#GstRTSPSession-struct" title="struct GstRTSPSession">GstRTSPSession</a>;
+struct              <a class="link" href="GstRTSPSession.html#GstRTSPSessionClass" title="struct GstRTSPSessionClass">GstRTSPSessionClass</a>;
+struct              <a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream">GstRTSPSessionStream</a>;
+struct              <a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia">GstRTSPSessionMedia</a>;
+<a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="returnvalue">GstRTSPSession</span></a> *    <a class="link" href="GstRTSPSession.html#gst-rtsp-session-new" title="gst_rtsp_session_new ()">gst_rtsp_session_new</a>                (<em class="parameter"><code>const <span class="type">gchar</span> *sessionid</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="GstRTSPSession.html#gst-rtsp-session-get-sessionid" title="gst_rtsp_session_get_sessionid ()">gst_rtsp_session_get_sessionid</a>      (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-set-timeout" title="gst_rtsp_session_set_timeout ()">gst_rtsp_session_set_timeout</a>        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> timeout</code></em>);
+<span class="returnvalue">guint</span>               <a class="link" href="GstRTSPSession.html#gst-rtsp-session-get-timeout" title="gst_rtsp_session_get_timeout ()">gst_rtsp_session_get_timeout</a>        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-touch" title="gst_rtsp_session_touch ()">gst_rtsp_session_touch</a>              (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-prevent-expire" title="gst_rtsp_session_prevent_expire ()">gst_rtsp_session_prevent_expire</a>     (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-allow-expire" title="gst_rtsp_session_allow_expire ()">gst_rtsp_session_allow_expire</a>       (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);
+<span class="returnvalue">gint</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-next-timeout" title="gst_rtsp_session_next_timeout ()">gst_rtsp_session_next_timeout</a>       (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><span class="type">GTimeVal</span> *now</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="GstRTSPSession.html#gst-rtsp-session-is-expired" title="gst_rtsp_session_is_expired ()">gst_rtsp_session_is_expired</a>         (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><span class="type">GTimeVal</span> *now</code></em>);
+<a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="returnvalue">GstRTSPSessionMedia</span></a> * <a class="link" href="GstRTSPSession.html#gst-rtsp-session-manage-media" title="gst_rtsp_session_manage_media ()">gst_rtsp_session_manage_media</a>     (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">GstRTSPUrl</span> *uri</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html" title="GstRTSPMedia"><span class="type">GstRTSPMedia</span></a> *media</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="GstRTSPSession.html#gst-rtsp-session-release-media" title="gst_rtsp_session_release_media ()">gst_rtsp_session_release_media</a>      (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>);
+<a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="returnvalue">GstRTSPSessionMedia</span></a> * <a class="link" href="GstRTSPSession.html#gst-rtsp-session-get-media" title="gst_rtsp_session_get_media ()">gst_rtsp_session_get_media</a>        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">GstRTSPUrl</span> *url</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="GstRTSPSession.html#gst-rtsp-session-media-set-state" title="gst_rtsp_session_media_set_state ()">gst_rtsp_session_media_set_state</a>    (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>,
+                                                         <em class="parameter"><code><span class="type">GstState</span> state</code></em>);
+<a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="returnvalue">GstRTSPSessionStream</span></a> * <a class="link" href="GstRTSPSession.html#gst-rtsp-session-media-get-stream" title="gst_rtsp_session_media_get_stream ()">gst_rtsp_session_media_get_stream</a>
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> idx</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="GstRTSPSession.html#gst-rtsp-session-media-alloc-channels" title="gst_rtsp_session_media_alloc_channels ()">gst_rtsp_session_media_alloc_channels</a>
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>,
+                                                         <em class="parameter"><code><span class="type">GstRTSPRange</span> *range</code></em>);
+<span class="returnvalue">GstRTSPTransport</span> *  <a class="link" href="GstRTSPSession.html#gst-rtsp-session-stream-set-transport" title="gst_rtsp_session_stream_set_transport ()">gst_rtsp_session_stream_set_transport</a>
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> *stream</code></em>,
+                                                         <em class="parameter"><code><span class="type">GstRTSPTransport</span> *ct</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-stream-set-callbacks" title="gst_rtsp_session_stream_set_callbacks ()">gst_rtsp_session_stream_set_callbacks</a>
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> *stream</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendFunc" title="GstRTSPSendFunc ()"><span class="type">GstRTSPSendFunc</span></a> send_rtp</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendFunc" title="GstRTSPSendFunc ()"><span class="type">GstRTSPSendFunc</span></a> send_rtcp</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendListFunc" title="GstRTSPSendListFunc ()"><span class="type">GstRTSPSendListFunc</span></a> send_rtp_list</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendListFunc" title="GstRTSPSendListFunc ()"><span class="type">GstRTSPSendListFunc</span></a> send_rtcp_list</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">GDestroyNotify</span> notify</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPSession.html#gst-rtsp-session-stream-set-keepalive" title="gst_rtsp_session_stream_set_keepalive ()">gst_rtsp_session_stream_set_keepalive</a>
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> *stream</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPKeepAliveFunc" title="GstRTSPKeepAliveFunc ()"><span class="type">GstRTSPKeepAliveFunc</span></a> keep_alive</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">GDestroyNotify</span> notify</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPSession.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstRTSPSession
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPSession.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="GstRTSPSession.html#GstRTSPSession--sessionid" title='The "sessionid" property'>sessionid</a>"                <span class="type">gchar</span>*                : Read / Write / Construct Only
+  "<a class="link" href="GstRTSPSession.html#GstRTSPSession--timeout" title='The "timeout" property'>timeout</a>"                  <span class="type">guint</span>                 : Read / Write
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPSession.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="GstRTSPSession.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="GstRTSPSession-struct"></a><h3>struct GstRTSPSession</h3>
+<pre class="programlisting">struct GstRTSPSession;</pre>
+<p>
+Session information kept by the server for a specific client.
+One client session, identified with a session id, can handle multiple medias
+identified with the url of a media.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSessionClass"></a><h3>struct GstRTSPSessionClass</h3>
+<pre class="programlisting">struct GstRTSPSessionClass {
+  GObjectClass  parent_class;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSessionStream"></a><h3>struct GstRTSPSessionStream</h3>
+<pre class="programlisting">struct GstRTSPSessionStream {
+  GstRTSPMediaTrans trans;
+
+  /* the stream of the media */
+  GstRTSPMediaStream *media_stream;
+};
+</pre>
+<p>
+Configuration of a stream. A stream is an audio or video stream related to a
+media.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><a class="link" href="GstRTSPMedia.html#GstRTSPMediaTrans" title="struct GstRTSPMediaTrans"><span class="type">GstRTSPMediaTrans</span></a> <em class="structfield"><code><a name="GstRTSPSessionStream.trans"></a>trans</code></em>;</span></p></td>
+<td>the media transport</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="GstRTSPMedia.html#GstRTSPMediaStream" title="struct GstRTSPMediaStream"><span class="type">GstRTSPMediaStream</span></a> *<em class="structfield"><code><a name="GstRTSPSessionStream.media-stream"></a>media_stream</code></em>;</span></p></td>
+<td>the controlled media stream</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSessionMedia"></a><h3>struct GstRTSPSessionMedia</h3>
+<pre class="programlisting">struct GstRTSPSessionMedia {
+  /* the url of the media */
+  GstRTSPUrl   *url;
+
+  /* the pipeline for the media */
+  GstRTSPMedia *media;
+
+  /* the server state */
+  GstRTSPState  state;
+
+  /* counter for channels */
+  guint         counter;
+
+  /* configuration for the different streams */
+  GArray       *streams;
+};
+</pre>
+<p>
+State of a client session regarding a specific media identified by uri.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-new"></a><h3>gst_rtsp_session_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="returnvalue">GstRTSPSession</span></a> *    gst_rtsp_session_new                (<em class="parameter"><code>const <span class="type">gchar</span> *sessionid</code></em>);</pre>
+<p>
+Create a new <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> instance.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-get-sessionid"></a><h3>gst_rtsp_session_get_sessionid ()</h3>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       gst_rtsp_session_get_sessionid      (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);</pre>
+<p>
+Get the sessionid of <em class="parameter"><code>session</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the sessionid of <em class="parameter"><code>session</code></em>. The value remains valid as long as
+<em class="parameter"><code>session</code></em> is alive.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-set-timeout"></a><h3>gst_rtsp_session_set_timeout ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_session_set_timeout        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> timeout</code></em>);</pre>
+<p>
+Configure <em class="parameter"><code>session</code></em> for a timeout of <em class="parameter"><code>timeout</code></em> seconds. The session will be
+cleaned up when there is no activity for <em class="parameter"><code>timeout</code></em> seconds.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>timeout</code></em> :</span></p></td>
+<td>the new timeout</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-get-timeout"></a><h3>gst_rtsp_session_get_timeout ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint</span>               gst_rtsp_session_get_timeout        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);</pre>
+<p>
+Get the timeout value of <em class="parameter"><code>session</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the timeout of <em class="parameter"><code>session</code></em> in seconds.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-touch"></a><h3>gst_rtsp_session_touch ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_session_touch              (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);</pre>
+<p>
+Update the last_access time of the session to the current time.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-prevent-expire"></a><h3>gst_rtsp_session_prevent_expire ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_session_prevent_expire     (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-allow-expire"></a><h3>gst_rtsp_session_allow_expire ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_session_allow_expire       (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-next-timeout"></a><h3>gst_rtsp_session_next_timeout ()</h3>
+<pre class="programlisting"><span class="returnvalue">gint</span>                gst_rtsp_session_next_timeout       (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><span class="type">GTimeVal</span> *now</code></em>);</pre>
+<p>
+Get the amount of milliseconds till the session will expire.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>now</code></em> :</span></p></td>
+<td>the current system time</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the amount of milliseconds since the session will time out.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-is-expired"></a><h3>gst_rtsp_session_is_expired ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_rtsp_session_is_expired         (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *session</code></em>,
+                                                         <em class="parameter"><code><span class="type">GTimeVal</span> *now</code></em>);</pre>
+<p>
+Check if <em class="parameter"><code>session</code></em> timeout out.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>session</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>now</code></em> :</span></p></td>
+<td>the current system time</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<code class="literal">TRUE</code> if <em class="parameter"><code>session</code></em> timed out</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-manage-media"></a><h3>gst_rtsp_session_manage_media ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="returnvalue">GstRTSPSessionMedia</span></a> * gst_rtsp_session_manage_media     (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">GstRTSPUrl</span> *uri</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html" title="GstRTSPMedia"><span class="type">GstRTSPMedia</span></a> *media</code></em>);</pre>
+<p>
+Manage the media object <em class="parameter"><code>obj</code></em> in <em class="parameter"><code>sess</code></em>. <em class="parameter"><code>uri</code></em> will be used to retrieve this
+media from the session with <a class="link" href="GstRTSPSession.html#gst-rtsp-session-get-media" title="gst_rtsp_session_get_media ()"><code class="function">gst_rtsp_session_get_media()</code></a>.
+</p>
+<p>
+Ownership is taken from <em class="parameter"><code>media</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>uri</code></em> :</span></p></td>
+<td>the uri for the media</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>media</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPMedia.html" title="GstRTSPMedia"><span class="type">GstRTSPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <em class="parameter"><code>GstRTSPSessionMedia</code></em> object.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-release-media"></a><h3>gst_rtsp_session_release_media ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_rtsp_session_release_media      (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>);</pre>
+<p>
+Release the managed <em class="parameter"><code>media</code></em> in <em class="parameter"><code>sess</code></em>, freeing the memory allocated by it.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>media</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPMedia.html" title="GstRTSPMedia"><span class="type">GstRTSPMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<code class="literal">TRUE</code> if there are more media session left in <em class="parameter"><code>sess</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-get-media"></a><h3>gst_rtsp_session_get_media ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="returnvalue">GstRTSPSessionMedia</span></a> * gst_rtsp_session_get_media        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a> *sess</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">GstRTSPUrl</span> *url</code></em>);</pre>
+<p>
+Get the session media of the <em class="parameter"><code>url</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>sess</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html" title="GstRTSPSession"><span class="type">GstRTSPSession</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>url</code></em> :</span></p></td>
+<td>the url for the media</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the configuration for <em class="parameter"><code>url</code></em> in <em class="parameter"><code>sess</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-media-set-state"></a><h3>gst_rtsp_session_media_set_state ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_rtsp_session_media_set_state    (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>,
+                                                         <em class="parameter"><code><span class="type">GstState</span> state</code></em>);</pre>
+<p>
+Tell the media object <em class="parameter"><code>media</code></em> to change to <em class="parameter"><code>state</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>media</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>state</code></em> :</span></p></td>
+<td>the new state</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<code class="literal">TRUE</code> on success.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-media-get-stream"></a><h3>gst_rtsp_session_media_get_stream ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="returnvalue">GstRTSPSessionStream</span></a> * gst_rtsp_session_media_get_stream
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> idx</code></em>);</pre>
+<p>
+Get a previously created or create a new <a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> at <em class="parameter"><code>idx</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>media</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>idx</code></em> :</span></p></td>
+<td>the stream index</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> that is valid until the session of <em class="parameter"><code>media</code></em>
+is unreffed.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-media-alloc-channels"></a><h3>gst_rtsp_session_media_alloc_channels ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_rtsp_session_media_alloc_channels
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionMedia" title="struct GstRTSPSessionMedia"><span class="type">GstRTSPSessionMedia</span></a> *media</code></em>,
+                                                         <em class="parameter"><code><span class="type">GstRTSPRange</span> *range</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-stream-set-transport"></a><h3>gst_rtsp_session_stream_set_transport ()</h3>
+<pre class="programlisting"><span class="returnvalue">GstRTSPTransport</span> *  gst_rtsp_session_stream_set_transport
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> *stream</code></em>,
+                                                         <em class="parameter"><code><span class="type">GstRTSPTransport</span> *ct</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-stream-set-callbacks"></a><h3>gst_rtsp_session_stream_set_callbacks ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_session_stream_set_callbacks
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> *stream</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendFunc" title="GstRTSPSendFunc ()"><span class="type">GstRTSPSendFunc</span></a> send_rtp</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendFunc" title="GstRTSPSendFunc ()"><span class="type">GstRTSPSendFunc</span></a> send_rtcp</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendListFunc" title="GstRTSPSendListFunc ()"><span class="type">GstRTSPSendListFunc</span></a> send_rtp_list</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPSendListFunc" title="GstRTSPSendListFunc ()"><span class="type">GstRTSPSendListFunc</span></a> send_rtcp_list</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">GDestroyNotify</span> notify</code></em>);</pre>
+<p>
+Install callbacks that will be called when data for a stream should be sent
+to a client. This is usually used when sending RTP/RTCP over TCP.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>send_rtp</code></em> :</span></p></td>
+<td>a callback called when RTP should be sent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>send_rtcp</code></em> :</span></p></td>
+<td>a callback called when RTCP should be sent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>send_rtp_list</code></em> :</span></p></td>
+<td>a callback called when RTP should be sent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>send_rtcp_list</code></em> :</span></p></td>
+<td>a callback called when RTCP should be sent</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data passed to callbacks</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>notify</code></em> :</span></p></td>
+<td>called with the user_data when no longer needed.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-session-stream-set-keepalive"></a><h3>gst_rtsp_session_stream_set_keepalive ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_session_stream_set_keepalive
+                                                        (<em class="parameter"><code><a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a> *stream</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMedia.html#GstRTSPKeepAliveFunc" title="GstRTSPKeepAliveFunc ()"><span class="type">GstRTSPKeepAliveFunc</span></a> keep_alive</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>,
+                                                         <em class="parameter"><code><span class="type">GDestroyNotify</span> notify</code></em>);</pre>
+<p>
+Install callbacks that will be called when RTCP packets are received from the
+receiver of <em class="parameter"><code>stream</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>stream</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSession.html#GstRTSPSessionStream" title="struct GstRTSPSessionStream"><span class="type">GstRTSPSessionStream</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>keep_alive</code></em> :</span></p></td>
+<td>a callback called when the receiver is active</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data passed to callback</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>notify</code></em> :</span></p></td>
+<td>called with the user_data when no longer needed.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstRTSPSession.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstRTSPSession--sessionid"></a><h3>The <code class="literal">"sessionid"</code> property</h3>
+<pre class="programlisting">  "sessionid"                <span class="type">gchar</span>*                : Read / Write / Construct Only</pre>
+<p>the session id.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSession--timeout"></a><h3>The <code class="literal">"timeout"</code> property</h3>
+<pre class="programlisting">  "timeout"                  <span class="type">guint</span>                 : Read / Write</pre>
+<p>the timeout of the session (0 = never).</p>
+<p>Default value: 60</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.18</div>
+</body>
+</html>
