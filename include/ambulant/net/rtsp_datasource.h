@@ -30,7 +30,7 @@
 #include "ambulant/lib/event_processor.h"
 
 
-#define MAX_RTP_FRAME_SIZE 50000
+#define MAX_RTP_FRAME_SIZE 100000
 
 //#define CLIP_BEGIN_CHANGED 1 //xxxbo: a switch for m_clip_begin_changed and m_seektime_changed;
 

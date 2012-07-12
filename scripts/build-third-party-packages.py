@@ -9,7 +9,7 @@ from optparse import OptionParser
 NOCHECK=False
 NORUN=False
 TRYMIRROR=True
-
+10.6
 #
 # Where the mirrored copies of the Ambulant 3rd party packages for this release live.
 # Before cutting a release, update this directory name, and run

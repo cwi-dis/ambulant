@@ -171,7 +171,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		gmask = 0x0000ff00;
 		bmask = 0x000000ff;
 
-		surface = SDL_CreateRGBSurfaceFrom(pixels[0], W, H, 32, pitch[0], rmask, gmask, bmask, 0);
+		surface = SDL_CreateRGBSurfaceFrom(pixels[0], W, H, 32, pitch[0], rmask, gmask, bmask, amask);
 		
 //		SDL_UnlockTexture(texture);
 //		SDL_DestroyTexture(texture);

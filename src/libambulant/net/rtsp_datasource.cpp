@@ -636,7 +636,9 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 	m_context->audio_packet = NULL;
 	AM_DBG lib::logger::get_logger()->debug("after reading audio: rpts=%lld, end=%lld\n\n", rpts, m_context->last_expected_pts);
 
-	if (m_context->last_expected_pts >= 0 && rpts >= m_context->last_expected_pts) {
+	// Note by Jack: we use strict greater than zero for last_expected_pts. It seems live streams will have
+	// a duration of zero, and therefore a last_expected_pts of zero.
+	if (m_context->last_expected_pts > 0 && rpts >= m_context->last_expected_pts) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld\n\n", rpts);
 		m_context->eof = true;
 	}
@@ -790,7 +792,9 @@ done:
 	}
 	
 	AM_DBG lib::logger::get_logger()->debug("after reading video: pts=%lld, end=%lld", m_context->last_pts, m_context->last_expected_pts);
-	if (m_context->last_expected_pts >= 0 && m_context->last_pts >= m_context->last_expected_pts) {
+	// Note by Jack: we use strict greater than zero for last_expected_pts. It seems live streams will have
+	// a duration of zero, and therefore a last_expected_pts of zero.
+	if (m_context->last_expected_pts > 0 && m_context->last_pts >= m_context->last_expected_pts) {
 		lib::logger::get_logger()->debug("after_reading_video: last_pts = %lld", m_context->last_pts);
 		m_context->eof = true;
 	}
