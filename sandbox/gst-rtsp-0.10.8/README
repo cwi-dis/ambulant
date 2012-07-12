@@ -15,5 +15,5 @@ This version has been a little modified to include in 'examples':
   H:   480)
   This format is currently used by ambulant-recorder-plugin.
 
-Use: './configure LDFLAGS=-lgstapp-0.10\ -lgstvideo-0.10;make' to compile.
+Use: './configure LDFLAGS=-lgstapp-0.10\ -lgstvideo-0.10 --enable-gst-doc;make' to compile.
 
