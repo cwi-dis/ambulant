@@ -126,6 +126,27 @@ recorder_plugin::~recorder_plugin ()
 		SDL_FreeSurface(m_surface);
 	}
 }
+
+void*
+convert_bgra_to_rgb(void* data, size_t datasize, size_t* new_datasize)
+{
+	int length = ( datasize/4 ) * 3;
+	int rgb_idx = length - 1;
+	int bgra_idx = datasize - 1;
+	char* rgb_buffer = (char*) malloc(length);
+	char* bgra_buffer = (char*) data;
+	if (data != NULL) {
+	  for (; bgra_idx >= 0; bgra_idx -= 4) {
+	    rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 3];
+	    rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 2];
+	    rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 1];
+	  }
+	}
+	if (new_datasize != NULL) {
+	  *new_datasize = length;
+	}
+	return rgb_buffer;
+}
 	
 // Record new video data with timestamp (ms) in document time
 void
@@ -137,8 +158,11 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		return;
 	}
 	if (m_pipe != NULL) {
-		fprintf(m_pipe, "Time: %0.8u\n", documenttimestamp);
-		fwrite (data, 1, datasize, m_pipe);
+		unsigned int new_datasize;
+		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize);
+		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
+		fwrite (new_data, 1, new_datasize, m_pipe);
+		free (new_data);
 	} else {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
