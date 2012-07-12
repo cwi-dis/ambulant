@@ -452,6 +452,8 @@ ffmpeg_decoder_datasource::data_avail()
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 						ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
+						//xxxbo Over rtsp, one packet may contain multiple frames, so updating the beginning address of avpkt.data is needed  
+						avpkt.data = inbuf;
 						decoded = avcodec_decode_audio3(m_con, (short*) ffmpeg_outbuf, &outsize, &avpkt);
 						if (decoded < 0) outsize = 0;
 						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", decoded, cursz, outsize);
@@ -587,7 +589,7 @@ ffmpeg_decoder_datasource::_clip_end() const
 	if (clip_end == -1) return false;
 
 	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
 	if (buffer_begin_elapsed > clip_end) {
 		return true;
 	}
