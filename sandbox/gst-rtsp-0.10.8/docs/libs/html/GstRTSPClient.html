@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GstRTSPClient</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer RTSP Server Reference Manual">
+<link rel="up" href="ch01.html" title="">
+<link rel="prev" href="ch01.html" title="">
+<link rel="next" href="GstRTSPMediaFactory.html" title="GstRTSPMediaFactory">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer RTSP Server Reference Manual</th>
+<td><a accesskey="n" href="GstRTSPMediaFactory.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#GstRTSPClient.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#GstRTSPClient.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#GstRTSPClient.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#GstRTSPClient.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#GstRTSPClient.signals" class="shortcut">Signals</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="GstRTSPClient"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstRTSPClient.top_of_page"></a>GstRTSPClient</span></h2>
+<p>GstRTSPClient</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="GstRTSPClient.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">struct              <a class="link" href="GstRTSPClient.html#GstRTSPClient-struct" title="struct GstRTSPClient">GstRTSPClient</a>;
+struct              <a class="link" href="GstRTSPClient.html#GstRTSPClientClass" title="struct GstRTSPClientClass">GstRTSPClientClass</a>;
+<a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="returnvalue">GstRTSPClient</span></a> *     <a class="link" href="GstRTSPClient.html#gst-rtsp-client-new" title="gst_rtsp_client_new ()">gst_rtsp_client_new</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPClient.html#gst-rtsp-client-set-server" title="gst_rtsp_client_set_server ()">gst_rtsp_client_set_server</a>          (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="type">GstRTSPServer</span></a> *server</code></em>);
+<a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="returnvalue">GstRTSPServer</span></a> *     <a class="link" href="GstRTSPClient.html#gst-rtsp-client-get-server" title="gst_rtsp_client_get_server ()">gst_rtsp_client_get_server</a>          (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPClient.html#gst-rtsp-client-set-session-pool" title="gst_rtsp_client_set_session_pool ()">gst_rtsp_client_set_session_pool</a>    (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a> *pool</code></em>);
+<a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="returnvalue">GstRTSPSessionPool</span></a> * <a class="link" href="GstRTSPClient.html#gst-rtsp-client-get-session-pool" title="gst_rtsp_client_get_session_pool ()">gst_rtsp_client_get_session_pool</a>   (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPClient.html#gst-rtsp-client-set-media-mapping" title="gst_rtsp_client_set_media_mapping ()">gst_rtsp_client_set_media_mapping</a>   (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a> *mapping</code></em>);
+<a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="returnvalue">GstRTSPMediaMapping</span></a> * <a class="link" href="GstRTSPClient.html#gst-rtsp-client-get-media-mapping" title="gst_rtsp_client_get_media_mapping ()">gst_rtsp_client_get_media_mapping</a> (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstRTSPClient.html#gst-rtsp-client-set-auth" title="gst_rtsp_client_set_auth ()">gst_rtsp_client_set_auth</a>            (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="type">GstRTSPAuth</span></a> *auth</code></em>);
+<a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="returnvalue">GstRTSPAuth</span></a> *       <a class="link" href="GstRTSPClient.html#gst-rtsp-client-get-auth" title="gst_rtsp_client_get_auth ()">gst_rtsp_client_get_auth</a>            (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="GstRTSPClient.html#gst-rtsp-client-accept" title="gst_rtsp_client_accept ()">gst_rtsp_client_accept</a>              (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><span class="type">GIOChannel</span> *channel</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GObject
+   +----GstRTSPClient
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="GstRTSPClient.html#GstRTSPClient--media-mapping" title='The "media-mapping" property'>media-mapping</a>"            <a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a>*  : Read / Write
+  "<a class="link" href="GstRTSPClient.html#GstRTSPClient--session-pool" title='The "session-pool" property'>session-pool</a>"             <a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a>*   : Read / Write
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.signals"></a><h2>Signals</h2>
+<pre class="synopsis">
+  "<a class="link" href="GstRTSPClient.html#GstRTSPClient-closed" title='The "closed" signal'>closed</a>"                                         : <code class="literal">Run Last</code>
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="GstRTSPClient-struct"></a><h3>struct GstRTSPClient</h3>
+<pre class="programlisting">struct GstRTSPClient;</pre>
+<p>
+<em class="parameter"><code>connection</code></em>: the connection object handling the client request.
+<em class="parameter"><code>watch</code></em>: watch for the connection
+<em class="parameter"><code>watchid</code></em>: id of the watch
+<em class="parameter"><code>ip</code></em>: ip address used by the client to connect to us
+<em class="parameter"><code>session_pool</code></em>: handle to the session pool used by the client.
+<em class="parameter"><code>media_mapping</code></em>: handle to the media mapping used by the client.
+<em class="parameter"><code>uri</code></em>: cached uri
+<em class="parameter"><code>media</code></em>: cached media
+<em class="parameter"><code>streams</code></em>: a list of streams using <em class="parameter"><code>connection</code></em>.
+<em class="parameter"><code>sessions</code></em>: a list of sessions managed by <em class="parameter"><code>connection</code></em>.
+</p>
+<p>
+The client structure.
+</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPClientClass"></a><h3>struct GstRTSPClientClass</h3>
+<pre class="programlisting">struct GstRTSPClientClass {
+  GObjectClass  parent_class;
+
+  /* signals */
+  void     (*closed)        (GstRTSPClient *client);
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-new"></a><h3>gst_rtsp_client_new ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="returnvalue">GstRTSPClient</span></a> *     gst_rtsp_client_new                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>
+Create a new <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> instance.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a new <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-set-server"></a><h3>gst_rtsp_client_set_server ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_client_set_server          (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="type">GstRTSPServer</span></a> *server</code></em>);</pre>
+<p>
+Set <em class="parameter"><code>server</code></em> as the server that created <em class="parameter"><code>client</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>server</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="type">GstRTSPServer</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-get-server"></a><h3>gst_rtsp_client_get_server ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="returnvalue">GstRTSPServer</span></a> *     gst_rtsp_client_get_server          (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);</pre>
+<p>
+Get the <a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="type">GstRTSPServer</span></a> object that <em class="parameter"><code>client</code></em> was created from.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="GstRTSPServer.html" title="GstRTSPServer"><span class="type">GstRTSPServer</span></a>, unref after usage.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-set-session-pool"></a><h3>gst_rtsp_client_set_session_pool ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_client_set_session_pool    (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a> *pool</code></em>);</pre>
+<p>
+Set <em class="parameter"><code>pool</code></em> as the sessionpool for <em class="parameter"><code>client</code></em> which it will use to find
+or allocate sessions. the sessionpool is usually inherited from the server
+that created the client but can be overridden later.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>pool</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-get-session-pool"></a><h3>gst_rtsp_client_get_session_pool ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="returnvalue">GstRTSPSessionPool</span></a> * gst_rtsp_client_get_session_pool   (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);</pre>
+<p>
+Get the <a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a> object that <em class="parameter"><code>client</code></em> uses to manage its sessions.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a>, unref after usage.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-set-media-mapping"></a><h3>gst_rtsp_client_set_media_mapping ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_client_set_media_mapping   (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a> *mapping</code></em>);</pre>
+<p>
+Set <em class="parameter"><code>mapping</code></em> as the media mapping for <em class="parameter"><code>client</code></em> which it will use to map urls
+to media streams. These mapping is usually inherited from the server that
+created the client but can be overriden later.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>mapping</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-get-media-mapping"></a><h3>gst_rtsp_client_get_media_mapping ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="returnvalue">GstRTSPMediaMapping</span></a> * gst_rtsp_client_get_media_mapping (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);</pre>
+<p>
+Get the <a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a> object that <em class="parameter"><code>client</code></em> uses to manage its sessions.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a <a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a>, unref after usage.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-set-auth"></a><h3>gst_rtsp_client_set_auth ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_rtsp_client_set_auth            (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="type">GstRTSPAuth</span></a> *auth</code></em>);</pre>
+<p>
+configure <em class="parameter"><code>auth</code></em> to be used as the authentication manager of <em class="parameter"><code>client</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>auth</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="type">GstRTSPAuth</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-get-auth"></a><h3>gst_rtsp_client_get_auth ()</h3>
+<pre class="programlisting"><a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="returnvalue">GstRTSPAuth</span></a> *       gst_rtsp_client_get_auth            (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>);</pre>
+<p>
+Get the <a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="type">GstRTSPAuth</span></a> used as the authentication manager of <em class="parameter"><code>client</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>client</code></em> :</span></p></td>
+<td>a <a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the <a class="link" href="GstRTSPAuth.html" title="GstRTSPAuth"><span class="type">GstRTSPAuth</span></a> of <em class="parameter"><code>client</code></em>. <code class="function">g_object_unref()</code> after
+usage.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-rtsp-client-accept"></a><h3>gst_rtsp_client_accept ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_rtsp_client_accept              (<em class="parameter"><code><a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *client</code></em>,
+                                                         <em class="parameter"><code><span class="type">GIOChannel</span> *channel</code></em>);</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstRTSPClient--media-mapping"></a><h3>The <code class="literal">"media-mapping"</code> property</h3>
+<pre class="programlisting">  "media-mapping"            <a class="link" href="GstRTSPMediaMapping.html" title="GstRTSPMediaMapping"><span class="type">GstRTSPMediaMapping</span></a>*  : Read / Write</pre>
+<p>The media mapping to use for client session.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPClient--session-pool"></a><h3>The <code class="literal">"session-pool"</code> property</h3>
+<pre class="programlisting">  "session-pool"             <a class="link" href="GstRTSPSessionPool.html" title="GstRTSPSessionPool"><span class="type">GstRTSPSessionPool</span></a>*   : Read / Write</pre>
+<p>The session pool to use for client session.</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstRTSPClient.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstRTSPClient-closed"></a><h3>The <code class="literal">"closed"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="GstRTSPClient.html" title="GstRTSPClient"><span class="type">GstRTSPClient</span></a> *gstrtspclient,
+                                                        <span class="type">gpointer</span>       user_data)          : <code class="literal">Run Last</code></pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.18</div>
+</body>
+</html>
