@@ -68,7 +68,7 @@ po/stamp-po
 .*\.pyd
 .*\.psess
 .*\.bsc
-Makefile
+Makefile$
 Makefile.in
 .*\.xcodeproj/.*\.pbxuser
 .*\.xcodeproj/.*\.mode1v3
