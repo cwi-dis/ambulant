@@ -36,6 +36,10 @@
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libswscale/swscale.h"
+#ifndef AV_NUM_DATA_POINTERS
+// needed for older versions of ffmpeg (< 0.9)
+#define AV_NUM_DATA_POINTERS 4
+#endif// !  AV_NUM_DATA_POINTERS
 };
 
 //#define AM_DBG
