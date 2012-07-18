@@ -25,6 +25,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 #include "GroupsockHelper.hh"
+#include <cfloat>
 
 ///// Added by Bo Gao begin 2007-11-07
 //AVCodecParserContext * h264parserctx;
@@ -206,6 +207,9 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}
 	context->duration = context->media_session->playEndTime();
+	if (context->duration == 0) {
+		context->duration = DBL_MAX;
+	}
 	context->last_expected_pts = (timestamp_t) (context->duration*1000000); // do not skip last frame
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: last_expected_pts = %ld", context->last_expected_pts);
 	// next set up the rtp subsessions.
