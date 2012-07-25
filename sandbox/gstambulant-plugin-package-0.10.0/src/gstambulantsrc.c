@@ -192,7 +192,7 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
   gstbasesrc_class->stop = gst_ambulantsrc_stop;
 
   gstbasesrc_class->get_caps = gst_ambulantsrc_get_caps;
-  gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps;
+//gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
   gstbasesrc_class->get_size = gst_ambulantsrc_get_size;
   gstbasesrc_class->get_times = gst_ambulantsrc_get_times;
   gstbasesrc_class->create = gst_ambulantsrc_create;
@@ -308,9 +308,6 @@ static gboolean gst_ambulantsrc_get_size (GstBaseSrc *src, guint64 *size)
 static gboolean
 ambulantsrc_init (GstPlugin * ambulantsrc)
 {
-  GstAmbulantSrc *asrc = GST_AMBULANTSRC(ambulantsrc);
-  if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
-
   /* debug category for fltering log messages
    *
    * exchange the string 'Template ambulantsrc' with your description
@@ -365,7 +362,7 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   }
   asrc->gstbuffer = gst_buffer_new();
   GST_BUFFER_DATA (asrc->gstbuffer) = asrc->databuffer;
-  GST_BUFFER_SIZE (asrc->gstbuffer) = 216000; //  asrc->datasize;
+  GST_BUFFER_SIZE (asrc->gstbuffer) = asrc->datasize;
   GST_BUFFER_TIMESTAMP (asrc->gstbuffer) = asrc->timestamp * 1000000; // millis to nanos
   GST_BUFFER_DURATION (asrc->gstbuffer) = GST_CLOCK_TIME_NONE;
   GST_BUFFER_OFFSET (asrc->gstbuffer) = offset;
