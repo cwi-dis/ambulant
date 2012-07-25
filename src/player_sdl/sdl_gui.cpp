@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include "sdl_gui.h"
 #include "sdl_gui_player.h"
+#include "unix_preferences.h"
 
 //X #include "sdl_logger.h"
 //X #include "sdl_renderer.h"
@@ -745,8 +746,17 @@ main (int argc, char*argv[]) {
 #endif /*ENABLE_NLS*/
 
 	// Load preferences, initialize app and logger
-//TBD	unix_preferences unix_prefs;
-//TBD	unix_prefs.load_preferences();
+	unix_preferences unix_prefs;
+	unix_prefs.load_preferences();
+// TBD begin code from gtk_logger
+	common::preferences* prefs = common::preferences::get_preferences();
+	lib::logger* logger = lib::logger::get_logger();
+	// Connect logger to our message displayer and output processor
+	// logger->set_show_message(show_message);
+	// Tell the logger about the output level preference
+	int level = prefs->m_log_level;
+	logger->set_level(level);
+// TBD end code from gtk_logger
 
 	/* Setup surface */
 	sdl_gui *gui = new sdl_gui(argv[0], NULL);

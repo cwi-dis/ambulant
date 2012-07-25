@@ -86,16 +86,16 @@ AmbulantPlayer_sdl_SOURCES = \
 	sdl_gui_player.cpp \
 	sdl_gui.cpp \
 	sdl_gui_player.h \
-	sdl_gui.h 
+	sdl_gui.h \
+	unix_preferences.cpp \
+	unix_preferences.h
 
 ##X	sdl_logger.cpp \
 	sdl_logger.h \
 	sdl_mainloop.cpp \
 	sdl_mainloop.h \
 	sdl_settings.cpp \
-	sdl_settings.h \
-	unix_preferences.cpp \
-	unix_preferences.h
+	sdl_settings.h
 
 LDADD = $(libambulant_sdl) \
 	$(extra_expat_LDADD) \
