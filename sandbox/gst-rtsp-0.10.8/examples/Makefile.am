@@ -1,4 +1,4 @@
-noinst_PROGRAMS = test-appsrc test-screen test-webcam test-video test-ogg test-mp4 test-readme test-launch test-sdp test-uri test-auth
+noinst_PROGRAMS = test-screen test-webcam test-video test-ogg test-mp4 test-readme test-launch test-sdp test-uri test-auth
 
 INCLUDES = -I$(top_srcdir) -I$(srcdir)
 
