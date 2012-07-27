@@ -817,6 +817,40 @@ third_party_packages={
                 "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
+# Next 3 packages are only for Linux flavours where libdispatch is not directly available (Fedora)
+# libdispatch is not really necessary, but makes multicore machines more efficient
+        TPP("libblocksruntime",
+            url="http://mark.heily.com/sites/mark.heily.com/files/libblocksruntime-0.1.tar.gz",
+            url2="libblocksruntime-0.1.tar.gz",
+            checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/Blocks.h" % COMMON_INSTALLDIR ,
+            buildcmd=
+                "cd libBlocksRuntime-0.1 && "
+                "%s &&"
+                "make install " % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("libkqueue",
+            url="http://mark.heily.com/sites/mark.heily.com/files/libkqueue-1.0.6.tar.gz",
+            url2="libkqueue-1.0.6.tar.gz",
+            checkcmd="pkg-config --atleast-version=1.0.6 libkqueue",
+            buildcmd=
+                "cd libkqueue-1.0.6 && "
+                "%s &&"
+                "make; make install " % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("libdispatch",
+#           url="",   # no tar-balls available, got it from a 'git' repo
+#           url2="libdispatch.tar.gz",
+            checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/dispatch/dispatch.h" % COMMON_INSTALLDIR,
+            buildcmd=
+                "if test \! -e libdispatch ; then git clone git://git.macosforge.org/libdispatch.git libdispatch ; "
+                "patch -p1 < %s/third_party_packages/libdispatch-patches ; fi && "
+                "cd libdispatch && if test \! -e configure ; then bash ./autogen.sh ; fi && "
+                "%s CPPFLAGS=-I%s/include LDFLAGS=-L%s/lib &&"
+                "make install " % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
+            ),
+
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
