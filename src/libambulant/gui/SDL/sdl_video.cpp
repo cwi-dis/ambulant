@@ -104,7 +104,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 {
 	//XXXX locking at this point may result in deadly embrace with internal lock,
 	//XXXX but as far as we know this has never happened
-	//XXXXX m_lock.enter(); TMP disabled
+	m_lock.enter();
 	if (m_data){
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(0x%x)",(void*) this);
 
@@ -192,7 +192,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		SDL_FreeSurface(surface);
 		free (pixels[0]);
 	}
-	//XXXXX m_lock.leave();
+	m_lock.leave();
 }
 
 #endif//WITH_SDL2
