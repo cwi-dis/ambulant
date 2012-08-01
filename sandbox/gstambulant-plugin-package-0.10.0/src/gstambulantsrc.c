@@ -140,9 +140,9 @@ void read_buffer(GstAmbulantSrc* asrc)
   }
   if (asrc != NULL && asrc->datasize != 0) {
     if (asrc->databuffer == NULL) {
-      asrc->databuffer = malloc(asrc->datasize);
+      asrc->databuffer = g_malloc(asrc->datasize);
     } else {
-      asrc->databuffer = realloc(asrc->databuffer, asrc->datasize);
+      asrc->databuffer = g_realloc(asrc->databuffer, asrc->datasize);
     }
     clearerr(stdin);
     size_t n_bytes = fread (asrc->databuffer,1,asrc->datasize,stdin);
@@ -349,7 +349,7 @@ static GstFlowReturn
 gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuffer ** buffer)
 {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
-  if(!asrc->silent)fprintf(stderr,"%s(bsrc=0x%p,offset=%llu,length=%u,buffer=0x%p)\n", __PRETTY_FUNCTION__,bsrc, offset, length, buffer);
+  if(!asrc->silent)fprintf(stderr,"%s(bsrc=0x%p,offset=%lu,length=%u,buffer=0x%p)\n", __PRETTY_FUNCTION__,bsrc, offset, length, buffer);
 
   if (buffer == NULL) {
     return GST_FLOW_OK;
@@ -366,7 +366,7 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   GST_BUFFER_TIMESTAMP (asrc->gstbuffer) = asrc->timestamp * 1000000; // millis to nanos
   GST_BUFFER_DURATION (asrc->gstbuffer) = GST_CLOCK_TIME_NONE;
   GST_BUFFER_OFFSET (asrc->gstbuffer) = offset;
-
+  gst_buffer_ref(asrc->gstbuffer);
   *buffer = asrc->gstbuffer;
 
   read_header(asrc);

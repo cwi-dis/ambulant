@@ -76,7 +76,7 @@ struct _GstAmbulantSrc
   guint W, H;
   gulong datasize;
   gulong timestamp;
-  void* databuffer;
+  gpointer databuffer;
 };
 
 struct _GstAmbulantSrcClass 
