@@ -14,14 +14,15 @@ AC_PROG_CXX([g++])
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
-for incdir in /usr/include/ /usr/local/include/ ; do
+for incdir in /usr/include/ /usr/local/include/ ${prefix}/include; do
 if test -d ${incdir}; then
 CPPFLAGS="-I${incdir} $CPPFLAGS"
 fi
 done
 CPPFLAGS="-I../../include $CPPFLAGS"
+LDFLAGS="-L${prefix}/lib $LDFLAGS"
+export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:$PKG_CONFIG_PATH
 
-AC_MSG_RESULT($test_gtk)
 #
 # Find ambulant SMIL player library
 #
@@ -33,10 +34,15 @@ if $test_ambulant; then
 else 
 	AC_MSG_ERROR([ambulant >= 2.3 not found])
 fi
+AC_SUBST(AMBULANT_LIBS)
+AC_SUBST(AMBULANT_CFLAGS)
+AM_CONDITIONAL(WITH_AMBULANT, test x$test_ambulant = xtrue)
+AC_MSG_RESULT($test_ambulant)
+
 #
 # Find ambulant SDL 2 audio/video rendering library
 #
-AC_MSG_CHECKING(for ambulant libSDL 2.0 Audio/Video rendering library)
+AC_MSG_CHECKING(for libSDL 2.0 Audio/Video rendering library)
 test_sdl=true
 PKG_CHECK_MODULES(SDL, sdl2 >= 2.0.0, test_sdl=true, test_sdl=false)
 if $test_sdl; then
@@ -56,6 +62,7 @@ AC_OUTPUT
 AC_MSG_RESULT([
 Packageqs found: 
   Ambulant		  $test_ambulant
+  SDL 2:		  $test_sdl
 
 Now type 'make [[install]]' to build [[and install]] AC_PACKAGE_STRING
 ])

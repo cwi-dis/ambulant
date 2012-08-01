@@ -130,7 +130,7 @@ recorder_plugin::~recorder_plugin ()
 void*
 convert_bgra_to_rgb(void* data, size_t datasize, size_t* new_datasize)
 {
-	int length = ( datasize/4 ) * 3;
+	int length = ( datasize*3 ) / 4;
 	int rgb_idx = length - 1;
 	int bgra_idx = datasize - 1;
 	char* rgb_buffer = (char*) malloc(length);
@@ -158,16 +158,18 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		return;
 	}
 	if (m_pipe != NULL) {
-		unsigned int new_datasize;
+		unsigned long int new_datasize;
 		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize);
 		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
 		fwrite (new_data, 1, new_datasize, m_pipe);
 		free (new_data);
+//		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, datasize, m_window_size.w, m_window_size.h);
+//		fwrite (data, 1, datasize, m_pipe);
 	} else {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
 		}
-		m_surface = SDL_CreateRGBSurface (0, m_window_size.w, m_window_size.h, 32,
+		m_surface = SDL_CreateRGBSurfaceFrom (data, m_window_size.w, m_window_size.h, 32, m_window_size.w * 4,
 						  m_rmask, m_gmask, m_bmask, m_amask);
 		if (m_surface == NULL) {
 			logger::get_logger()->trace("%s: SDL_CreateSurface failed: %s)", fun, SDL_GetError());

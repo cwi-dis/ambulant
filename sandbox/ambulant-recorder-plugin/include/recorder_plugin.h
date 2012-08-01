@@ -26,7 +26,7 @@
 #include "ambulant/common/recorder.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
-#include "ambulant/version.h"
+#include "version.h"
 
 #include "SDL.h"
 #include <stdio.h>
