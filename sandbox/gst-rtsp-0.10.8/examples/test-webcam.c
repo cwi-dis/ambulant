@@ -31,7 +31,21 @@ main (int argc, char *argv[])
   GstRTSPMediaMapping *mapping;
   GstRTSPMediaFactory *factory;
   char pipeline[512];
+  char* webcam = "/dev/video0";
+  char* port = "8554"; // /etc/services: RTSP Alternate (see port 554)
+  char* url = "/test";
   const char* format =  "( v4l2src device=%s ! video/x-raw-yuv,width=640,height=480,framerate=15/1 ! x264enc tune=zerolatency ! rtph264pay name=pay0 pt=96 )";
+  if (argc > 1) {
+	webcam = argv[1];
+	if (argc > 2) {
+	  port = argv[2];
+	}
+	if (argc > 3) {
+	  url = argv[3];
+	}
+  }
+  strcpy(pipeline, format);
+  sprintf(pipeline, format, webcam);
 
   gst_init (&argc, &argv);
 
@@ -39,6 +53,7 @@ main (int argc, char *argv[])
 
   /* create a server instance */
   server = gst_rtsp_server_new ();
+  gst_rtsp_server_set_service (server, port);
 
   /* get the mapping for this server, every server has a default mapper object
    * that be used to map uri mount points to media factories */
@@ -49,18 +64,13 @@ main (int argc, char *argv[])
    * any launch line works as long as it contains elements named pay%d. Each
    * element with pay%d names will be a stream */
   factory = gst_rtsp_media_factory_new ();
-  strcpy(pipeline, format);
-  if (argc > 1) {
-    sprintf(pipeline, format, argv[1]);
-  } else {
-    sprintf(pipeline, format, "/dev/video0");
-  }
+  
   gst_rtsp_media_factory_set_launch (factory, pipeline);
 
   gst_rtsp_media_factory_set_shared (factory, TRUE);
 
   /* attach the test factory to the /test url */
-  gst_rtsp_media_mapping_add_factory (mapping, "/test", factory);
+  gst_rtsp_media_mapping_add_factory (mapping, url, factory);
 
   /* don't need the ref to the mapper anymore */
   g_object_unref (mapping);
