@@ -34,7 +34,7 @@ main (int argc, char *argv[])
   char* webcam = "/dev/video0";
   char* port = "8554"; // /etc/services: RTSP Alternate (see port 554)
   char* url = "/test";
-  const char* format =  "( v4l2src device=%s ! video/x-raw-yuv,width=640,height=480,framerate=15/1 ! x264enc tune=zerolatency ! rtph264pay name=pay0 pt=96 )";
+  const char* format =  "( v4l2src device=%s queue-size=2 ! video/x-raw-yuv,width=640,height=480,framerate=30/1 ! x264enc tune=zerolatency cabac=false bframes=0 ip-factor=2 ! rtph264pay name=pay0 pt=96 )";
   if (argc > 1) {
 	webcam = argv[1];
 	if (argc > 2) {
@@ -64,6 +64,7 @@ main (int argc, char *argv[])
    * any launch line works as long as it contains elements named pay%d. Each
    * element with pay%d names will be a stream */
   factory = gst_rtsp_media_factory_new ();
+  gst_rtsp_media_factory_set_shared(factory,TRUE);
   
   gst_rtsp_media_factory_set_launch (factory, pipeline);
 

@@ -52,6 +52,8 @@ main (int argc, char *argv[])
    * any launch line works as long as it contains elements named pay%d. Each
    * element with pay%d names will be a stream */
   factory = gst_rtsp_media_factory_new ();
+
+  gst_rtsp_media_factory_set_shared(factory,TRUE);
   gst_rtsp_media_factory_set_launch (factory, argv[1]);
 
   /* attach the test factory to the /test url */
