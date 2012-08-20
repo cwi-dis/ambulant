@@ -158,9 +158,9 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		return;
 	}
 	if (m_pipe != NULL) {
-		unsigned long int new_datasize;
+		size_t new_datasize;
 		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize);
-		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
+		fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
 		fwrite (new_data, 1, new_datasize, m_pipe);
 		free (new_data);
 //		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, datasize, m_window_size.w, m_window_size.h);
@@ -176,7 +176,7 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		}
 	  
 		char filename[256];
-		sprintf(filename,"%%%0.8lu.bmp", documenttimestamp);
+		sprintf(filename,"%%%.8lu.bmp", documenttimestamp);
 		SDL_SaveBMP(m_surface, filename);
 	}
 }
