@@ -37,7 +37,7 @@
 #endif
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
-//X #include "ambulant/gui/SDL/sdl_fill.h"
+#include "ambulant/gui/SDL/sdl_fill.h"
 //X #include "ambulant/gui/SDL/sdl_image_renderer.h"
 //X #include "ambulant/gui/SDL/sdl_smiltext.h"
 //X #include "ambulant/gui/SDL/sdl_text_renderer.h"
@@ -194,8 +194,8 @@ sdl_gui_player::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
-	AM_DBG m_logger->debug("sdl_gui_player: adding QSdl playable factories");
-//TBD	pf->add_factory(create_sdl_fill_playable_factory(this, NULL));
+	AM_DBG m_logger->debug("sdl_gui_player: adding sdl playable factories");
+	pf->add_factory(create_sdl_fill_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_image_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_smiltext_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_text_playable_factory(this, NULL));

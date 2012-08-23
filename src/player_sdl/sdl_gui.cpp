@@ -40,7 +40,7 @@
 #include "ambulant/version.h"
 #endif//TBD
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -106,10 +106,11 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 	int width = 640, height = 420;
 	m_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
 	assert (m_window);
+	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(0x%x): m_window=(SDL_Window*)0x%x", this, m_window);
 #ifdef JNK
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 	if (m_renderer == NULL) {
-	       	AM_DBG lib::logger::get_logger()->trace("sdl_video_renderer.redraw(0x%x): trying software renderer", this);
+	       	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(0x%x): trying software renderer", this);
        		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
 		if (m_renderer == NULL) {
 			lib::logger::get_logger()->warn("Cannot open: %s, error: %s", "SDL CreateRenderer", SDL_GetError());
