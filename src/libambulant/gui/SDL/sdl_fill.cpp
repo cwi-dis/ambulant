@@ -21,12 +21,13 @@
 //#include "ambulant/gui/sdl/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_fill.h"
+#include "ambulant/gui/SDL/sdl_window.h"
 //#include "ambulant/gui/sdl/sdl_transition.h"
 //#include "ambulant/gui/sdl/sdl_image_renderer.h"
 //#include "ambulant/gui/sdl/sdl_text_renderer.h"
 #include "ambulant/smil2/test_attrs.h"
 
-#ifdef  WITH_SDL22XX // TBD
+#ifdef  WITH_SDL2 // TBD
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -40,9 +41,9 @@ extern const char sdl_fill_playable_tag[] = "brush";
 extern const char sdl_fill_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererSdl");
 extern const char sdl_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererFill");
 
-/*JNK?
+/*JNK? */
 common::playable_factory *
-gui::sdl::create_sdl_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+ambulant::gui::sdl::create_sdl_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
@@ -53,7 +54,7 @@ gui::sdl::create_sdl_fill_playable_factory(common::factories *factory, common::p
 		sdl_fill_playable_renderer_uri2,
 		sdl_fill_playable_renderer_uri2>(factory, mdp);
 }
-JNK?*/
+/* JNK?*/
 
 sdl_fill_renderer::~sdl_fill_renderer()
 {
@@ -63,6 +64,9 @@ sdl_fill_renderer::~sdl_fill_renderer()
 	m_outtransition = NULL;
 //TBD	if (m_trans_engine) delete m_trans_engine;
 	m_trans_engine = NULL;
+	if (m_renderer != NULL) {
+		SDL_DestroyRenderer(m_renderer);
+	}
 	m_lock.leave();
 }
 
@@ -130,15 +134,16 @@ sdl_fill_renderer::redraw(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
-/*TBD
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
-	GdkPixmap *surf = NULL;
+	SDL_Surface* surf = NULL;
+//X GdkPixmap *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
 		delete m_trans_engine;
 		m_trans_engine = NULL;
 	}
 	// See whether we're in a transition
 	if (m_trans_engine) {
+/*TBD
 		GdkPixmap *qpm = asdlw->get_ambulant_pixmap();
 		surf = asdlw->get_ambulant_surface();
 		if (surf == NULL)
@@ -155,10 +160,12 @@ sdl_fill_renderer::redraw(const rect &dirty, gui_window *window)
 //				qpm,  dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw: drawing to transition surface");
 		}
+TBD*/
 	}
 
 	redraw_body(dirty, window);
 
+/*TBD
 	if (surf != NULL) {
 		asdlw->reset_ambulant_surface();
 	}
@@ -194,14 +201,15 @@ sdl_fill_renderer::user_event(const point &where, int what)
 	return true;
 }
 
-/* TBD
+
 void
 sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
 
-	const common::region_info *info = m_dest->get_info();
-	const lib::rect &r = m_dest->get_rect();
-	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
 	// <brush> drawing
+
+	const common::region_info *info = m_dest->get_info();
+	lib::rect r = m_dest->get_rect();
+	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
@@ -218,19 +226,28 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	// Fill with <brush> color
 	color_t color = lib::to_color(color_attr);
 	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
+	Uint8 alpha = info ? info->get_mediaopacity()* 255 : 255;
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
-	GdkColor bgc;
-	bgc.red = redc(color)*0x101;
-	bgc.blue = bluec(color)*0x101;
-	bgc.green = greenc(color)*0x101;
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()));
-	gdk_gc_set_rgb_fg_color (gc, &bgc);
-	gdk_draw_rectangle (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
-	g_object_unref (G_OBJECT (gc));
+	SDL_Rect sdl_dst_rect = {L, T, W, H};
+	if (m_renderer == NULL) {
+		m_renderer = asw->get_sdl_renderer();
+		if (m_renderer == NULL) {
+			return;
+		}
+	}
+	// Set and draw the background color for the region
+	int err = 0;
+	err = SDL_SetRenderDrawColor (m_renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), 255);
+	assert (err==0);
+	err = SDL_RenderFillRect (m_renderer, &sdl_dst_rect);
+	assert (err==0);
+	// Set and draw the  foreground color for the region
+	err = SDL_SetRenderDrawColor (m_renderer, redc(color), greenc(color), bluec(color), alpha);
+	assert (err==0);
+	err = SDL_RenderFillRect (m_renderer, &sdl_dst_rect);
+	assert (err==0);
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 }
-
-TBD*/
 
 void
 sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
@@ -239,29 +256,36 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		return;
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw(0x%x)", (void *)this);
-/*TBD
 	double opacity = m_src->get_bgopacity();
 	if (opacity > 0.0) {
 	// First find our whole area to be cleared to background color
-		ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
+		ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
 			T = dstrect_whole.top(),
 			W = dstrect_whole.width(),
 			H = dstrect_whole.height();
-		// XXXX Fill with background color
+		// Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asdlw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asdlw,L,T,W,H);
-		GdkColor bgc;
-		bgc.red = redc(bgcolor)*0x101;
-		bgc.blue = bluec(bgcolor)*0x101;
-		bgc.green = greenc(bgcolor)*0x101;
+		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
+
+		Uint8 red = redc(bgcolor), green = bluec(bgcolor), blue = greenc(bgcolor);
+		if (m_background_renderer == NULL) {
+			m_background_renderer = asw->get_sdl_renderer();
+			if (m_background_renderer == NULL) {
+				return;
+			}
+		}
+		// Set and draw the background color for the region
+		SDL_Rect sdl_dst_rect = {L, T, W, H};
+		int err = 0;
+		err = SDL_SetRenderDrawColor (m_background_renderer, red, green, blue, opacity*255);
+		assert (err==0);
+		err = SDL_RenderFillRect (m_background_renderer, &sdl_dst_rect);
+		assert (err==0);
+/*TBD*
 		if (opacity == 1.0) {
-			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()));
-			gdk_gc_set_rgb_fg_color (gc, &bgc);
-			gdk_draw_rectangle (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
-			g_object_unref (G_OBJECT (gc));
 		} else {  //XXXX adapted from sdl_transition. May be some code to be factored out
 			// Method:
 			// 1. Get the current on-screen image as a pixmap
@@ -291,8 +315,9 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: drawing pixmap");
 		//	paint.drawPixmap(L, T, *m_background_pixmap);
 		}
-	}
 TBD*/
+	}
+/*TBD*/
 }
 
 void sdl_background_renderer::highlight(gui_window *window)

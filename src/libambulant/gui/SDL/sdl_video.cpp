@@ -19,7 +19,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 
+//X #ifdef  WITH_SDL2 
 //X #include "ambulant/gui/sdl/sdl_factory.h"
 //X #include "ambulant/gui/sdl/sdl_includes.h"
 //X #include "ambulant/gui/sdl/sdl_renderer.h"
@@ -122,19 +122,8 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=0x%x", info);
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
-			// First find our whole area (which we have to clear to
-			// background color)
 			// XXXX Fill with background color
 			lib::color_t bgcolor = info->get_bgcolor();
-//			AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: clearing to 0x%x", (long)bgcolor);
-//X			GdkColor bgc;
-//X			bgc.red = redc(bgcolor)*0x101;
-//X			bgc.blue = bluec(bgcolor)*0x101;
-//X			bgc.green = greenc(bgcolor)*0x101;
-//X			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()));
-//X			gdk_gc_set_rgb_fg_color (gc, &bgc);
-//X			gdk_draw_rectangle (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
-//X			g_object_unref (G_OBJECT (gc));
 		}
 		int width = m_size.w;
 		int height = m_size.h;
@@ -144,17 +133,8 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
 		dstrect.translate(p);
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
-/*
-		static SDL_Texture* s_texture = NULL; //XXXX member !
-		if (s_texture == NULL) {			
-			ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
-			s_texture = SDL_CreateTexture(asw->get_sdl_ambulant_window()->get_sdl_renderer(), SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
-		}
-		assert(s_texture);
-*/
 		SDL_Renderer* renderer = asw->get_sdl_ambulant_window()->get_sdl_renderer();
 		SDL_Surface* surface = NULL;
-//		SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
 		static struct SwsContext* s_sws_ctx = NULL; //XXX member !
 		s_sws_ctx = sws_getCachedContext(s_sws_ctx, width, height, SDL_SWS_PIX_FMT, width, height, SDL_SWS_PIX_FMT, SWS_BICUBIC, NULL, NULL, NULL);
 		uint8_t* pixels[AV_NUM_DATA_POINTERS];
@@ -166,7 +146,6 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 				pitch[i] = stride[i] = 0;
 		}
 		pixels[0] = (uint8_t*) malloc(stride[0]*height); 
-//		SDL_LockTexture(texture, NULL/*SDL_Rect*/, (void**)&pixels, &pitch[0]);
 		int rv = sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, stride, 0, height, pixels, pitch);
 		Uint32 rmask, gmask, bmask, amask;
 		// we use ARGB
@@ -177,22 +156,16 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 
 		surface = SDL_CreateRGBSurfaceFrom(pixels[0], W, H, 32, pitch[0], rmask, gmask, bmask, amask);
 		
-//		SDL_UnlockTexture(texture);
-//		SDL_DestroyTexture(texture);
-//T		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
-//TBD	sws_freeContext(sws_ctx);
 		lib::rect* drp = &dstrect;
 		lib::rect* srp = &srcrect;
 		SDL_Rect sdl_src_rect = {srp->left(), srp->top(), srp->width(), srp->height()};
 		SDL_Rect sdl_dst_rect = {L,T,W,H};//{drp->left(), drp->top(), drp->width(), drp->height()};
 		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) dst_sdl_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 		asw->copy_sdl_surface (surface, NULL, &sdl_dst_rect);
-//T		SDL_RenderCopy(renderer, texture, NULL, &rect);
-//T		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);
 		free (pixels[0]);
 	}
 	m_lock.leave();
 }
 
-#endif//WITH_SDL2
+//#endif//WITH_SDL2

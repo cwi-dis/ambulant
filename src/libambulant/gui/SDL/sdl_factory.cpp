@@ -25,6 +25,7 @@
 #endif
 
 #include "ambulant/gui/SDL/sdl_factory.h"
+#include "ambulant/gui/SDL/sdl_fill.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 //X #include "ambulant/gui/SDL/sdl_includes.h"
 //X #include "ambulant/gui/SDL/sdl_image_renderer.h"
@@ -116,6 +117,10 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	sdl_rect.h = r.height();
 	sdl_ambulant_window* saw = (sdl_ambulant_window*) m_parent_window;
 	ambulant_sdl_window* asw = saw->get_ambulant_sdl_window();
+//#define SDL2_Bug1513_Workaround
+	// It appears when SDL is patched as described below, and this workarount code is enabled.
+	// although the Window is then sized properly, the drawables can be misformed.
+#ifdef  SDL2_Bug1513_Workaround
 	// due to bug #1513 in SDL2, the following function does not work.
 	// However, it has some (erroneous) effect when changing the window position as well.
 	// It is even possible to get the right effect when SDL_x11Window.c is patched
@@ -129,6 +134,7 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	SDL_SetWindowPosition(saw->get_sdl_window(), win_x+100, win_y+100);
 	SDL_SetWindowPosition(saw->get_sdl_window(), win_x, win_y);
 	// end of workaround for bug #1513 in SDL2
+#endif//SDL2_Bug1513_Workaround
 	return asdlw;
 }
 
@@ -136,8 +142,8 @@ common::bgrenderer *
 sdl_window_factory::new_background_renderer(const common::region_info *src)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_window_factory::new_background_renderer(0x%x): src=0x%x", (void*) this, src);
-//X	return new sdl_background_renderer(src);
-	return NULL;
+	return new ambulant::gui::sdl::sdl_background_renderer(src);
+//X	return NULL;
 }
 
 #ifdef JNK

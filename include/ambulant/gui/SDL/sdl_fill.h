@@ -26,13 +26,15 @@
 #ifndef AMBULANT_GUI_SDL_SDL_FILL_H
 #define AMBULANT_GUI_SDL_SDL_FILL_H
 
-#ifdef  WITH_SDL22XX // TBD
+#ifdef  WITH_SDL2 // TBD
 
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"
+#include "ambulant/common/region_info.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/smil2/smiltext.h"
+#include "ambulant/smil2/transition.h"
 //#include "sdl_renderer.h"
 #include "SDL.h"
 
@@ -57,8 +59,8 @@ class sdl_fill_renderer : public  renderer_playable {
 		m_is_showing(false),
 		m_intransition(NULL),
 		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
-
+		m_trans_engine(NULL),
+		m_renderer(NULL) {};
 	~sdl_fill_renderer();
 
 	//	void freeze() {}
@@ -79,22 +81,23 @@ class sdl_fill_renderer : public  renderer_playable {
 	bool m_is_showing;
 	lib::transition_info *m_intransition, *m_outtransition;
 	// TBD smil2::transition_engine *m_trans_engine;
-	void *m_trans_engine;
+	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
+
+	SDL_Renderer* m_renderer;
 };
 
 class sdl_background_renderer : public common::background_renderer {
   public:
 	sdl_background_renderer(const common::region_info *src)
 	:	common::background_renderer(src),
-		m_background_pixmap(NULL) {}
+		m_background_renderer(NULL) {}
 
 	void redraw(const lib::rect &dirty, common::gui_window *windo);
 	void highlight(gui_window *window);
 	void keep_as_background();
   private:
-//X	GdkPixmap *m_background_pixmap;
-	void* m_background_pixmap;
+	SDL_Renderer* m_background_renderer;
 };
 
 } // namespace sdl

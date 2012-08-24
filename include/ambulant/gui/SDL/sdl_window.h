@@ -71,6 +71,9 @@ class ambulant_sdl_window : public common::gui_window {
 	/// Helper: get the actual SDL_Surface
 	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
 	
+	/// Helper: get the actual (backscreen) SDL_Renderer
+	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
+
 	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect);
 
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
@@ -96,12 +99,10 @@ class ambulant_sdl_window : public common::gui_window {
 
 //X	void _screenTransitionPreRedraw();
 //X	void _screenTransitionPostRedraw(const lib::rect &r);
-	lib::rect get_redraw_rect() { return m_redraw_rect; }
   private:
 	void clear();
 	lib::rect  m_bounds;
 	sdl_ambulant_window* m_ambulant_window;
-	lib::rect  m_redraw_rect; 
 	uint8_t* m_pixels;
 //X	GdkPixmap* m_pixmap;
 //X	GdkPixmap* m_oldpixmap;
@@ -120,6 +121,7 @@ class ambulant_sdl_window : public common::gui_window {
 // the SDL Event Queue of pointers to this structure upon deletion
 	static long unsigned int s_num_events;
 	SDL_Surface*  m_sdl_surface;
+	SDL_Renderer* m_sdl_renderer; // the "backscreen" renderer
 	common::recorder* m_recorder;
 	bool m_record;
 
@@ -143,7 +145,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get the actual SDL_Window
 	SDL_Window* get_sdl_window() { return m_sdl_window; }
 
-	/// Helper: get the actual SDL_Renderer
+	/// Helper: get the actual (hardware) SDL_Renderer
 	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
 
 	/// Helper: set our counterpart gui_window.
@@ -190,7 +192,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
   private:
 	ambulant_sdl_window* m_ambulant_sdl_window;
 	SDL_Window*   m_sdl_window;
-	SDL_Renderer* m_sdl_renderer;
+	SDL_Renderer* m_sdl_renderer; // the "real" renderer, for SDL_Present()
 	lib::event_processor* m_evp;
 //X	SDL_Window* m_parent_window;
 //X	sdl_ambulant_window* m_parent_window;
