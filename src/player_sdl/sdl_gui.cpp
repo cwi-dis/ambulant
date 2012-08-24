@@ -40,7 +40,7 @@
 #include "ambulant/version.h"
 #endif//TBD
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -103,7 +103,7 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 //TBD	m_actions(NULL)
 {
 	// create the player
-	int width = 640, height = 420;
+	int width = 640, height = 480;
 	m_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
 	assert (m_window);
 	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(0x%x): m_window=(SDL_Window*)0x%x", this, m_window);
@@ -716,7 +716,9 @@ sdl_gui::sdl_loop() {
 			AM_DBG lib::logger::get_logger()->debug("%s SDLUserEvent code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
 			if (event.user.code == 317107) {
 				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
-				asw->redraw(asw->get_redraw_rect());
+				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
+				asw->redraw(*redraw_rectp);
+				free(redraw_rectp);
 			}
 			break;		  
 		default:
