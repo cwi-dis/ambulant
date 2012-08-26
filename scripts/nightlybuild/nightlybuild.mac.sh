@@ -15,6 +15,8 @@ x)
 *)	BRANCH=$1
 esac
 
+# Set this for 10.6 builds on 10.8:
+PATH=/Developer/usr/bin:$PATH
 # Tunable parameters, to some extent
 SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
 MACOSX_DEPLOYMENT_TARGET=10.6
