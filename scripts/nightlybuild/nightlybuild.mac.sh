@@ -3,8 +3,9 @@
 # Script to do a nightly clean build of a full Ambulant
 # Mac 10.6 version
 #
+set -e
 set -x
-PATH=$PATH:/Developer/usr/bin
+PATH=/Developer/usr/bin:/usr/local/bin:$PATH
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -15,8 +16,6 @@ x)
 *)	BRANCH=$1
 esac
 
-# Set this for 10.6 builds on 10.8:
-PATH=/Developer/usr/bin:$PATH
 # Tunable parameters, to some extent
 SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
 MACOSX_DEPLOYMENT_TARGET=10.6
