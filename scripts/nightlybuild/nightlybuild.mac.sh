@@ -5,7 +5,7 @@
 #
 set -e
 set -x
-PATH=/Developer/usr/bin:/usr/local/bin:$PATH
+export PATH=/Developer/usr/bin:/usr/local/bin:$PATH
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -17,8 +17,8 @@ x)
 esac
 
 # Tunable parameters, to some extent
-SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
-MACOSX_DEPLOYMENT_TARGET=10.6
+export SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
+export MACOSX_DEPLOYMENT_TARGET=10.6
 AMBULANTVERSION=2.3
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
