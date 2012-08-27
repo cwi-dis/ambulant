@@ -137,8 +137,8 @@ sdl_gui_player::~sdl_gui_player()
 		delete m_doc;
 		m_doc = NULL;
 	}
-//TBD	delete m_sdl_window;
-	//delete m_window_factory;
+	delete m_sdl_window;
+//	delete m_window_factory;
 }
 
 void
@@ -222,7 +222,6 @@ void
 sdl_gui_player::init_window_factory()
 {
 	m_sdl_window = new sdl_ambulant_window(m_gui->get_document_container());
-//JNK	common::window_factory* sdl_wf = create_sdl_window_factory(m_sdl_window, this);
 	common::window_factory* sdl_wf = gui::sdl::create_sdl_window_factory(m_sdl_window, this);
 	set_window_factory(sdl_wf);
 }

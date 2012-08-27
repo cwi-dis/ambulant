@@ -77,6 +77,9 @@ class ambulant_sdl_window : public common::gui_window {
 	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect);
 
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
+
+	lib::rect get_bounds() { return m_bounds; }
+
 	/// Initialize a GDK cached cursortype
 //X	void set_gdk_cursor(GdkCursorType, GdkCursor*);
 
@@ -181,7 +184,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// is executed by the main thread */
 	static lib::critical_section s_lock;
 	static int s_windows;
-	static std::map<SDL_Window*, SDL_Renderer*> s_window_map;
+	static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map;
+	static std::map<int, sdl_ambulant_window*> s_id_sdl_ambulant_window_map;
 
 	// sdl_ambulant_window::m_draw_area_tags contains the set of tags returned by
 	// g_idle_queue_add() that are not yet processed. This set is maintained because

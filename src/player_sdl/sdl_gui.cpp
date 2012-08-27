@@ -40,7 +40,7 @@
 #include "ambulant/version.h"
 #endif//TBD
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -702,6 +702,7 @@ sdl_gui::sdl_loop() {
 	bool busy = true;
 	SDL_Event event;
 	ambulant::gui::sdl::ambulant_sdl_window* asw;
+	ambulant::gui::sdl::sdl_ambulant_window* saw;
 
 	while (busy) {
 		if (SDL_WaitEvent(&event) == 0) {
@@ -725,7 +726,21 @@ sdl_gui::sdl_loop() {
 			}
 			break;
 		case SDL_WINDOWEVENT:
-			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d event=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event, event.user.code,event.window.data1,event.window.data2);
+			saw = ambulant::gui::sdl:: sdl_ambulant_window::s_id_sdl_ambulant_window_map[event.window.windowID];
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
+			if (saw != NULL && (asw = saw->get_ambulant_sdl_window()) != NULL) {
+				ambulant::lib::rect r;
+				switch ( event.window.event ) {
+				case  SDL_WINDOWEVENT_SHOWN:
+				case  SDL_WINDOWEVENT_EXPOSED:
+				case  SDL_WINDOWEVENT_FOCUS_GAINED:
+					r = asw->get_bounds();
+					asw->redraw(r);
+					break;
+				default:  
+					break;
+				}
+			}
 			break;
 		default:
 			break;

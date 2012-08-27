@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // work in prpgress
+#ifdef  WITH_SDL2 // work in progress
 
 //#define AM_DBG if(1)
 #ifndef AM_DBG
@@ -576,7 +576,8 @@ ambulant_sdl_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
 // then the ugly dependence on the parent window couls also be removed
 int sdl_ambulant_window::s_windows = 0;
 lib::critical_section sdl_ambulant_window::s_lock;
-std::map<SDL_Window*, SDL_Renderer*>  sdl_ambulant_window::s_window_map;
+std::map<SDL_Window*, SDL_Renderer*>  sdl_ambulant_window::s_window_renderer_map;
+std::map<int, sdl_ambulant_window*>  sdl_ambulant_window::s_id_sdl_ambulant_window_map;
 
 sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
   :	m_screenshot_data(NULL),
@@ -587,7 +588,7 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 	sdl_ambulant_window::s_lock.enter();
 	sdl_ambulant_window::s_windows++;
 	sdl_ambulant_window::s_lock.leave();
-	m_sdl_renderer = s_window_map[window];
+	m_sdl_renderer = s_window_renderer_map[window];
 	if (m_sdl_renderer == NULL) {
 		m_sdl_renderer = SDL_CreateRenderer(/*asw->window()*/ window, -1, SDL_RENDERER_ACCELERATED);
 		if (m_sdl_renderer == NULL) {
@@ -598,15 +599,29 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 				return;
 			}
 		}
-		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_renderer=(SDL_Renderer*)0x%x", this, m_sdl_renderer);
-		s_window_map[window] = m_sdl_renderer;
+		s_window_renderer_map[window] = m_sdl_renderer;
 	}
+	Uint32 win_ID = SDL_GetWindowID (window);
+	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
 }
 
 sdl_ambulant_window::~sdl_ambulant_window()
 {
 	sdl_ambulant_window::s_lock.enter();
+	AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(x%x) sdl_ambulant_window::s_windows=%d sdl_ambulant_window::s_id_sdl_ambulant_window_map.size()=%d", this, sdl_ambulant_window::s_windows, sdl_ambulant_window::s_id_sdl_ambulant_window_map.size());
 	sdl_ambulant_window::s_windows--;
+	// erase corresponding entries in the maps
+	for (std::map<int, sdl_ambulant_window*>::iterator it =  sdl_ambulant_window::s_id_sdl_ambulant_window_map.begin();
+		it !=  sdl_ambulant_window::s_id_sdl_ambulant_window_map.end(); it++) {
+	  int key = (*it).first;
+	  sdl_ambulant_window* value = (*it).second;
+	  AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(0x%x): key=0x%x value=0x%x", this, key, value);
+		if (value == this) {
+			sdl_ambulant_window::s_id_sdl_ambulant_window_map.erase(it);
+		}
+	}
+
 #ifdef JNK
 	if ( ! m_draw_area_tags.empty()) {
 		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
