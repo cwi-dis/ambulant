@@ -40,7 +40,7 @@
 #include "ambulant/version.h"
 #endif//TBD
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -713,14 +713,20 @@ sdl_gui::sdl_loop() {
 			busy = false;
 			break;
 		case SDL_USEREVENT:
-			AM_DBG lib::logger::get_logger()->debug("%s SDLUserEvent code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_USEREVENT: code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
 			if (event.user.code == 317107) {
 				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
 				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
+				SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
+				bool ok = SDL_SetClipRect(asw->get_sdl_surface(), &sdl_rect);
+				assert(ok);
 				asw->redraw(*redraw_rectp);
 				free(redraw_rectp);
 			}
-			break;		  
+			break;
+		case SDL_WINDOWEVENT:
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d event=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event, event.user.code,event.window.data1,event.window.data2);
+			break;
 		default:
 			break;
 		}
