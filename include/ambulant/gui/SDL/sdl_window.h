@@ -123,10 +123,12 @@ class ambulant_sdl_window : public common::gui_window {
 // The total number of SDL events at any moment is maintained in order to clear
 // the SDL Event Queue of pointers to this structure upon deletion
 	static long unsigned int s_num_events;
+	/// A renderer is used for drawing, contains all drawing attribute (like a grapohics context)
+	SDL_Renderer* m_sdl_renderer;
+	/// A surface contains the actual pixels
 	SDL_Surface*  m_sdl_surface;
-	SDL_Renderer* m_sdl_renderer; // the "backscreen" renderer
+	/// When the 'ambulant_recorder_plugin' (in sandbox) is installed, this renderer will feed it with screen grabs
 	common::recorder* m_recorder;
-	bool m_record;
 
   public:
 //X	GdkPixmap* m_tmppixmap;

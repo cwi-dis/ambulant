@@ -50,8 +50,7 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 	m_gui_player(NULL),
 	m_sdl_surface(NULL),
 	m_sdl_renderer(NULL),
-	m_recorder(NULL),
-	m_record(false)
+	m_recorder(NULL)
 //X	m_oldpixmap(NULL),
 //X	m_tmppixmap(NULL),
 //X	m_arrow_cursor(NULL),
@@ -71,6 +70,8 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 	Uint32 amask=0xff000000, rmask = 0x00ff0000, gmask = 0x0000ff00, bmask = 0x000000ff;
 	m_sdl_surface = SDL_CreateRGBSurfaceFrom(m_pixels, bounds->width(), bounds->height(), 32, bounds->width()*SDL_BPP, rmask, gmask, bmask, 0);
 	m_sdl_renderer = SDL_CreateSoftwareRenderer(get_sdl_surface());
+	// enable alpha blending
+	assert (m_sdl_surface != NULL && m_sdl_renderer != NULL && SDL_SetRenderDrawBlendMode(m_sdl_renderer, SDL_BLENDMODE_BLEND) == 0);
 }
 long unsigned int ambulant_sdl_window::s_num_events = 0;
 

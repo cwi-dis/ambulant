@@ -227,6 +227,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	color_t color = lib::to_color(color_attr);
 	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	Uint8 alpha = info ? info->get_mediaopacity()* 255 : 255;
+	Uint8 bgalpha = info ? info->get_bgopacity()* 255 : 255;
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	SDL_Rect sdl_dst_rect = {L, T, W, H};
 	if (m_renderer == NULL) {
@@ -237,7 +238,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	}
 	// Set and draw the background color for the region
 	int err = 0;
-	err = SDL_SetRenderDrawColor (m_renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), 255);
+	err = SDL_SetRenderDrawColor (m_renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha);
 	assert (err==0);
 	err = SDL_RenderFillRect (m_renderer, &sdl_dst_rect);
 	assert (err==0);
