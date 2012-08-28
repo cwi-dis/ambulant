@@ -216,9 +216,12 @@ libambulant_sdl_la_DEPENDENCIES=libambulant.la
 sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \
-    gui/SDL/sdl_factory.cpp \
     gui/SDL/sdl_audio.cpp \
+    gui/SDL/sdl_factory.cpp \
     gui/SDL/sdl_fill.cpp  \
+    gui/SDL/sdl_image_renderer.cpp  \
+    gui/SDL/sdl_renderer.cpp  \
+    gui/SDL/sdl_transition.cpp  \
     gui/SDL/sdl_window.cpp  \
     gui/SDL/sdl_video.cpp
 

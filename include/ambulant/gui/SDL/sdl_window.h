@@ -27,6 +27,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/event_processor.h"
+#include "ambulant/smil2/transition.h"
 
 #include "SDL.h"
 
@@ -87,36 +88,35 @@ class ambulant_sdl_window : public common::gui_window {
 //X	GdkCursor* get_gdk_cursor(GdkCursorType);
 
 	// XXX These need to be documented...
-//X	GdkPixmap* get_ambulant_pixmap();
-//X	GdkPixmap* new_ambulant_window();
-//X	GdkPixmap* get_ambulant_window();
-//X	GdkPixmap* get_ambulant_oldpixmap();
-//X	GdkPixmap* get_pixmap_from_screen(const lib::rect &r);
-//X	void reset_ambulant_window(void);
-//X	void set_ambulant_window(GdkPixmap* surf);
-	void delete_ambulant_window();
+	SDL_Surface* get_ambulant_surface();
+	SDL_Surface* new_ambulant_surface();
+	SDL_Surface* get_ambulant_window();
+	SDL_Surface* get_ambulant_oldsurface();
+	SDL_Surface* get_surface_from_screen(const lib::rect &r);
+	void reset_ambulant_surface(void);
+	void set_ambulant_surface(SDL_Surface* surf);
+	void delete_ambulant_surface();
 
-//X	void startScreenTransition();
-//X	void endScreenTransition();
-//X	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
+	void startScreenTransition();
+	void endScreenTransition();
+	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
 
-//X	void _screenTransitionPreRedraw();
-//X	void _screenTransitionPostRedraw(const lib::rect &r);
+	void _screenTransitionPreRedraw();
+	void _screenTransitionPostRedraw(const lib::rect &r);
   private:
 	void clear();
 	lib::rect  m_bounds;
 	sdl_ambulant_window* m_ambulant_window;
 	uint8_t* m_pixels;
-//X	GdkPixmap* m_pixmap;
-//X	GdkPixmap* m_oldpixmap;
-//X	GdkPixmap* m_window;
+	SDL_Surface* m_surface;
+	SDL_Surface* m_oldsurface;
 	common::gui_player* m_gui_player;
 //X	GdkCursor* m_arrow_cursor;
 //X	GdkCursor* m_hand1_cursor;
 //X	GdkCursor* m_hand2_cursor;
 	int m_fullscreen_count;
-//X	GdkPixmap* m_fullscreen_prev_pixmap;
-//X	GdkPixmap* m_fullscreen_old_pixmap;
+//X	SDL_Surface* m_fullscreen_prev_surface;
+//X	SDL_Surface* m_fullscreen_old_surface;
 //X	smil2::transition_engine* m_fullscreen_engine;
 //X	lib::transition_info::time_type m_fullscreen_now;
 
@@ -131,7 +131,7 @@ class ambulant_sdl_window : public common::gui_window {
 	common::recorder* m_recorder;
 
   public:
-//X	GdkPixmap* m_tmppixmap;
+	SDL_Surface* m_tmpsurface;
 //X	guint signal_redraw_id;
 };  // class ambulant_sdl_window
 
