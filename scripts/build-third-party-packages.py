@@ -817,6 +817,19 @@ third_party_packages={
                 "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
+        TPP("SDL_image",
+            url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.12.tar.gz",
+#           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
+            buildcmd=
+               "cd SDL_image && "
+                "%s &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
 # Next 3 packages are only for Linux flavours where libdispatch is not directly available (Fedora)
 # libdispatch is not really necessary, but makes multicore machines more efficient
         TPP("libblocksruntime",

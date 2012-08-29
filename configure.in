@@ -604,9 +604,12 @@ if $test_sdl; then
 	# sdl2-config will work for sdl 2.0.X
     	if  test "x$test_sdl" = "xtrue"; then
 	        if test "x$test_sdl2" = "xtrue" -a "sdl2-config --version > /dev/null"; then
-    		   	SDL_CFLAGS=`sdl2-config --cflags`
+		   	set -x
+    		   	SDL_CFLAGS=`sdl2-config --cflags &&`
     			SDL_LIBS=`sdl2-config --libs`
 			with_frontend=true
+			SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_image` "
+			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image`"
 		elif sdl-config --version > /dev/null; then
 	       		# sdl-config will work for sdl 1.2.X (audio only)
      	 	    	SDL_CFLAGS=`sdl-config --cflags`

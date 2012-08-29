@@ -196,7 +196,7 @@ sdl_gui_player::init_playable_factory()
 
 	AM_DBG m_logger->debug("sdl_gui_player: adding sdl playable factories");
 	pf->add_factory(create_sdl_fill_playable_factory(this, NULL));
-//TBD	pf->add_factory(create_sdl_image_playable_factory(this, NULL));
+	pf->add_factory(create_sdl_image_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_smiltext_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_text_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_video_playable_factory(this, NULL));

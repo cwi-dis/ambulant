@@ -27,8 +27,9 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/test_attrs.h"
+#include "SDL_image.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -58,8 +59,9 @@ gui::sdl::create_sdl_image_playable_factory(common::factories *factory, common::
 sdl_image_renderer::~sdl_image_renderer() {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::~sdl_image_renderer(0x%x), %s", this, this->get_sig().c_str());
-	if (m_image)
-//JNK		g_object_unref(G_OBJECT (m_image));
+	if (m_image != NULL) { 
+		SDL_FreeSurface(m_image);
+	}
 	m_lock.leave();
 }
 
@@ -77,37 +79,23 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
 
 	if (m_data && !m_image_loaded && m_data_size > 0) {
-#ifdef JNK
-		GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
 		AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): load data for %s", this, this->get_sig().c_str());
-		if (gdk_pixbuf_loader_write(loader, (const guchar*) m_data, (gsize) m_data_size, 0))
-		{
-			// for small files (m_data_size < 128) gdk_pixbuf_loader_close() is needed
-			// otherwise gdk_pixbuf_loader_get_pixbuf() doesn't get an image
-			gdk_pixbuf_loader_close(loader, NULL);
-			m_image = gdk_pixbuf_loader_get_pixbuf(loader);
-			if (m_image)
-				g_object_ref(G_OBJECT (m_image));
-		}else
-			g_message("Could not get Loader working\n");
-
-		if (!m_image) {
-			g_message ("Could not create the pixbuf\n");
-		}else{
-			m_image_loaded = TRUE;
+		SDL_RWops* rwops = SDL_RWFromMem (m_data, m_data_size);
+		assert (rwops != NULL);
+		m_image = IMG_Load_RW(rwops, 1);
+		if (m_image == NULL) {
+			logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): IMG_Load_RW failes. %s", this, this->get_sig().c_str());
+		} else {
+			m_image_loaded = true;
 		}
-		if (loader) {
-			g_object_unref(G_OBJECT (loader));
-		}
-#endif//JNK
 	}
 	if ( ! m_image_loaded) {
 		// Initially the image may not yet be loaded
 		m_lock.leave();
 		return;
-	}
-	int width = 640; //JNK = gdk_pixbuf_get_width(m_image);
-	int height = 480; //JNK = gdk_pixbuf_get_height(m_image);
+	} 
+	int width = m_image->w;
+	int height = m_image->h;
 	size srcsize = size(width, height);
 	rect srcrect;
 	rect dstrect;
@@ -245,7 +233,10 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	g_object_unref(G_OBJECT (new_image_pixbuf));
 	g_object_unref(G_OBJECT (gc));
 #endif//JNK
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x done.", (void *)this);
+	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
+	asdlw->copy_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
+
+	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x done.", this);
 	m_lock.leave();
 }
 
