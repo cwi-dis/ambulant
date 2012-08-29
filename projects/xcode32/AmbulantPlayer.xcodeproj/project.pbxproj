@@ -78,7 +78,6 @@
 		041DCB3412B64CF7003407C8 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2712B64CF7003407C8 /* libgroupsock.a */; };
 		041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2812B64CF7003407C8 /* libliveMedia.a */; };
 		041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */; };
-		041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB3912B64D1D003407C8 /* libltdl.a */; };
 		04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */; };
 		04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */; };
 		042ADA421152D83E009CA791 /* libamplugin_xpath_state(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */; };
@@ -361,7 +360,6 @@
 		041DCB2712B64CF7003407C8 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-3264/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		041DCB2812B64CF7003407C8 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-3264/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
 		041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		041DCB3912B64D1D003407C8 /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		042AD9511152CC13009CA791 /* plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin.xcodeproj; sourceTree = "<group>"; };
 		042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xpath_state.xcodeproj; sourceTree = "<group>"; };
 		042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xerces.xcodeproj; sourceTree = "<group>"; };
@@ -407,7 +405,6 @@
 				041DCB3412B64CF7003407C8 /* libgroupsock.a in Frameworks */,
 				041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */,
 				041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */,
-				041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,7 +503,6 @@
 				041DCB1D12B64CF6003407C8 /* libavcodec.dylib */,
 				041DCB1E12B64CF6003407C8 /* libavformat.dylib */,
 				041DCB1F12B64CF6003407C8 /* libavutil.dylib */,
-				041DCB3912B64D1D003407C8 /* libltdl.a */,
 				041DCB2012B64CF6003407C8 /* libexpat.dylib */,
 				041DCB2112B64CF7003407C8 /* libfaad.dylib */,
 				041DCB2212B64CF7003407C8 /* libintl.dylib */,
