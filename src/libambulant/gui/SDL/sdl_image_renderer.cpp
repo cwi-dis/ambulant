@@ -84,8 +84,10 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		assert (rwops != NULL);
 		m_image = IMG_Load_RW(rwops, 1);
 		if (m_image == NULL) {
-			logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): IMG_Load_RW failes. %s", this, this->get_sig().c_str());
+			logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): IMG_Load_RW failed. %s", this, this->get_sig().c_str());
 		} else {
+			// enable alpha blending for this image
+			SDL_SetSurfaceBlendMode(m_image, SDL_BLENDMODE_BLEND);
 			m_image_loaded = true;
 		}
 	}
