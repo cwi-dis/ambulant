@@ -697,6 +697,13 @@ sdl_gui::quit() {
 	SDL_Quit ();
 }
 
+// sdl_gather_events collects  all window and redraw events into a single redraw() call
+// using SDL_PeepEvents()
+void
+sdl_gather_events () {
+
+}
+
 void
 sdl_gui::sdl_loop() {
 	bool busy = true;
@@ -706,7 +713,7 @@ sdl_gui::sdl_loop() {
 
 	while (busy) {
 		if (SDL_WaitEvent(&event) == 0) {
-			lib::logger::get_logger()->fatal("ambulant::sdl_gui::sdl_loop(0x%x): SDL error %s",/*(void *)this*/0, SDL_GetError());
+			lib::logger::get_logger()->fatal("ambulant::sdl_gui::sdl_loop(0x%x): SDL error %s", this, SDL_GetError());
 			busy = false;
 		}
 		switch (event.type) {
