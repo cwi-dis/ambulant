@@ -818,12 +818,13 @@ third_party_packages={
             ),
 
         TPP("SDL_image",
-            url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.12.tar.gz",
-#           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+#           url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.13.tar.gz",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
             buildcmd=
-               "cd SDL_image && "
+                "if [ ! -e SDL_image ] then    mkdir SDL_image;(cd SDL_image; hg clone http://hg.libsdl.org/SDL_image) ; fi &&"
+                "cd SDL_image && "
                 "%s &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
