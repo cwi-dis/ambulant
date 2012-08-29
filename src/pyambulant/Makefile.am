@@ -100,8 +100,11 @@ PYTHONENV=
 
 BUILDLIBDIR=`echo ./build/lib.*`
 
+# XXX Note by Jack: the unset MACOSX_DEPLOYMENT_TARGET is a hack to get OSX 10.6 builds working
+# on OSX 10.7. Unsuer whether it is a good idea.
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
+	  unset MACOSX_DEPLOYMENT_TARGET ; \
 	  cd $(srcdir) ; chmod +w . ; \
 	  LDFLAGS="-L$$a $(extra_ldflags) $(LDFLAGS)" CFLAGS="$(extra_cflags) $(CFLAGS)" $(PYTHON) setup.py build ; \
 	)
