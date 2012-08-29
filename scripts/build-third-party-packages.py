@@ -460,8 +460,8 @@ third_party_packages={
                 "rm -rf ../libltdl &&"
                 "mkdir ../libltdl &&"
                 "cd ../libltdl &&"
-                "../../libltdl/configure &&"
-                "make"
+                "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
+                "make" % MAC106_COMMON_CFLAGS
             ),
         ],
 
