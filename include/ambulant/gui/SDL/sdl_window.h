@@ -74,7 +74,7 @@ class ambulant_sdl_window : public common::gui_window {
 	/// Helper: get the actual (backscreen) SDL_Renderer
 	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
 
-	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect);
+	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
 

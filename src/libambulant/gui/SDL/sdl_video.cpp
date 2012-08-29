@@ -161,7 +161,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		SDL_Rect sdl_src_rect = {srp->left(), srp->top(), srp->width(), srp->height()};
 		SDL_Rect sdl_dst_rect = {L,T,W,H};//{drp->left(), drp->top(), drp->width(), drp->height()};
 		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) dst_sdl_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
-		asw->copy_sdl_surface (surface, NULL, &sdl_dst_rect);
+		asw->copy_sdl_surface (surface, NULL, &sdl_dst_rect, 255 * info->get_mediaopacity());
 		SDL_FreeSurface(surface);
 		free (pixels[0]);
 	}

@@ -543,11 +543,12 @@ ambulant_sdl_window::clear()
 }
 
 int
-ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect)
+ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
 	if (src != NULL && dst_rect != NULL) {
 //		dump_sdl_surface (m_sdl_surface, "befor"); 
+		rv = SDL_SetSurfaceAlphaMod (src, alpha);
  		rv = SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
 //		dump_sdl_surface (m_sdl_surface, "after"); 
 	}
