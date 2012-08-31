@@ -221,10 +221,11 @@ libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl_fill.cpp  \
     gui/SDL/sdl_image_renderer.cpp  \
     gui/SDL/sdl_renderer.cpp  \
-    gui/SDL/sdl_transition.cpp  \
+    gui/SDL/sdl_transition.cpp \
     gui/SDL/sdl_window.cpp  \
     gui/SDL/sdl_video.cpp
 
+#   gui/SDL/sdl_renderer.cpp 
 else
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
