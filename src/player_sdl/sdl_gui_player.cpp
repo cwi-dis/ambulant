@@ -38,9 +38,9 @@
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_fill.h"
-//X #include "ambulant/gui/SDL/sdl_image_renderer.h"
+#include "ambulant/gui/SDL/sdl_image_renderer.h"
 //X #include "ambulant/gui/SDL/sdl_smiltext.h"
-//X #include "ambulant/gui/SDL/sdl_text_renderer.h"
+#include "ambulant/gui/SDL/sdl_text_renderer.h"
 #include "ambulant/gui/SDL/sdl_video.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/common/layout.h"
@@ -198,7 +198,7 @@ sdl_gui_player::init_playable_factory()
 	pf->add_factory(create_sdl_fill_playable_factory(this, NULL));
 	pf->add_factory(create_sdl_image_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_smiltext_playable_factory(this, NULL));
-//TBD	pf->add_factory(create_sdl_text_playable_factory(this, NULL));
+	pf->add_factory(create_sdl_text_playable_factory(this, NULL));
 //TBD	pf->add_factory(create_sdl_video_playable_factory(this, NULL));
 
 //#ifdef WITH_SDL

@@ -591,6 +591,8 @@ set -x
 test_sdl=true
 test_sdl2=false
 test_sdl2_image=false
+test_sdl2_ttf=false
+
 AC_MSG_CHECKING(for sdl - Simple Direct Media layer)
 AC_ARG_WITH(sdl,
 	AS_HELP_STRING([--with-sdl], [Turn on/off SDL support (=sdl2 for SDL2)]),
@@ -614,6 +616,11 @@ if $test_sdl; then
 			if test "x$test_sdl2_image" = "xtrue" ; then
 			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_image`"
 			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` -lpng12"
+			fi
+			PKG_CHECK_MODULES(SDL, [SDL2_ttf >= 2.0.12], test_sdl2_ttf=true, test_sdl2_ttf=false)
+			if test "x$test_sdl2_ttf" = "xtrue" ; then
+			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_ttf`"
+			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_ttf` -lpng12"
 			fi
 		elif sdl-config --version > /dev/null; then
 	   	# sdl-config will work for sdl 1.2.X (audio only)
@@ -1208,6 +1215,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL:                 ${test_sdl}
     Build with SDL2:                ${test_sdl2}
     Build with SDL_image:           ${test_sdl2_image}
+    Build with SDL_ttf:             ${test_sdl2_ttf}
     Build with live555.com RTSP:    ${test_live}
     Build with gstreamer:           ${test_gstreamer}
 

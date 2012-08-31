@@ -60,7 +60,7 @@ AMBULANTAPI common::window_factory *create_sdl_window_factory(void* sdl_parent_w
 #ifdef WITH_SDL2
 // Playable factories
 AMBULANTAPI common::playable_factory *create_sdl_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-//TBD  AMBULANTAPI common::playable_factory *create_sdl_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+AMBULANTAPI common::playable_factory *create_sdl_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 //TBD  AMBULANTAPI common::playable_factory *create_sdl_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_sdl_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_sdl_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);

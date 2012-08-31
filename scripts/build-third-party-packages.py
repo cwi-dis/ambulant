@@ -818,12 +818,29 @@ third_party_packages={
             ),
 
         TPP("SDL_image",
+# mercurial version needed for compatibilty with SDL2
 #           url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.13.tar.gz",
 #           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
             buildcmd=
                 "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
                 "cd SDL_image && "
+                "%s &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
+
+        TPP("SDL_ttf", # SDL  True Type Fonts
+# mercurial version needed for compatibilty with SDL2
+#           url="http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.11.tar.gz",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
+            buildcmd=
+                "if [ ! -e SDL_ttf ] ; then  hg clone http://hg.libsdl.org/SDL_ttf ; fi && "
+                "cd SDL_ttf && "
                 "%s &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
