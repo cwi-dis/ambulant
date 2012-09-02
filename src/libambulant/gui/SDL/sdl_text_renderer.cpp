@@ -71,8 +71,7 @@ sdl_text_renderer::sdl_text_renderer(
 	m_text_size(0),
 
 	m_ttf_font(NULL),
-	m_sdl_surface(NULL),
-	m_sdl_color({0,0,0}) // black
+	m_sdl_surface(NULL)
 {
 	smil2::params *params = smil2::params::for_node(node);
 	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(0x%x) params=0x%x",this,params);
@@ -83,6 +82,7 @@ sdl_text_renderer::sdl_text_renderer(
 		m_text_size = params->get_float("font-size", 0.0);
 		delete params;
 	}
+	m_sdl_color.r = m_sdl_color.g = m_sdl_color.b = 0; // black
 }
 
 sdl_text_renderer::~sdl_text_renderer() {
@@ -124,11 +124,11 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		(void *)this, r.left(), r.top(), r.width(), r.height(),
 		m_text_storage == NULL ? "(null)": (const char*) m_text_storage,
 		p.x, p.y, m_text_font == NULL ? "(null)": (const char*) m_text_font);
+	int L = r.left()+p.x,
+	    T = r.top()+p.y,
+	    W = r.width(),
+	    H = r.height();
 	if (m_text_storage != NULL && m_sdl_surface == NULL) {
-		int L = r.left()+p.x,
-			T = r.top()+p.y,
-			W = r.width(),
-			H = r.height();
 		ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
 		if (m_ttf_font == NULL) {
 			m_ttf_font =  TTF_OpenFont(DEFAULT_FONT_FILE, DEFAULT_FONT_HEIGHT);
@@ -144,8 +144,9 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		}
 		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, m_sdl_color);
 		assert (m_sdl_surface);
+
 	}
-	SDL_Rect sdl_dst_rect = {r.left(), r.top(), r.width(), r.height() };
+	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
 	asdlw->copy_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 #ifdef  JNK
 		// initialize the pango context, layout...
