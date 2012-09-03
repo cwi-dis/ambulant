@@ -34,7 +34,8 @@
 #endif
 
 #define FONT "Times 6"
-#define DEFAULT_FONT_FILE "/usr/local/etc/ginga/files/font/vera.ttf"
+#define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
+#define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
 #define DEFAULT_FONT_HEIGHT 16
 
 using namespace ambulant;
@@ -71,18 +72,26 @@ sdl_text_renderer::sdl_text_renderer(
 	m_text_size(0),
 
 	m_ttf_font(NULL),
+	m_ttf_style(TTF_STYLE_NORMAL),
 	m_sdl_surface(NULL)
 {
 	smil2::params *params = smil2::params::for_node(node);
 	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(0x%x) params=0x%x",this,params);
 	if (params) {
+		int ttf_font_style = TTF_STYLE_NORMAL;
+		const char* font_style = params->get_str("font-style");
+		const char* font_weight = params->get_str("font-weight");
+		if (font_style != NULL && (strcmp(font_style, "italic") == 0 || strcmp(font_style, "oblique") == 0 || strcmp(font_style, "reverseOblique") == 0)) {
+			m_ttf_style |= TTF_STYLE_ITALIC;
+		}
+		if (font_weight != NULL && strcmp(font_weight, "bold") == 0) {
+			m_ttf_style |= TTF_STYLE_BOLD;
+		}		 
 		m_text_font = params->get_str("font-family");
-//		const char *fontstyle = params->get_str("font-style");
 		m_text_color = params->get_color("color", 0);
-		m_text_size = params->get_float("font-size", 0.0);
+		m_text_size = params->get_float("font-size", DEFAULT_FONT_HEIGHT);
 		delete params;
 	}
-	m_sdl_color.r = m_sdl_color.g = m_sdl_color.b = 0; // black
 }
 
 sdl_text_renderer::~sdl_text_renderer() {
@@ -130,19 +139,23 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 	    H = r.height();
 	if (m_text_storage != NULL && m_sdl_surface == NULL) {
 		ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
-		if (m_ttf_font == NULL) {
-			m_ttf_font =  TTF_OpenFont(DEFAULT_FONT_FILE, DEFAULT_FONT_HEIGHT);
+		if (m_ttf_font == NULL) { // Fedora 16
+			m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size);
+			if (m_ttf_font == NULL) { // Ubuntu 12.04
+				TTF_OpenFont(DEFAULT_FONT_FILE2, m_text_size);
+			}
 //			assert(m_ttf_font);
 			if (m_ttf_font == NULL) {
-			  lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE, DEFAULT_FONT_HEIGHT, TTF_GetError());
-			  return;
+				lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE1, m_text_size, TTF_GetError());
+				return;
 			}
-			TTF_SetFontStyle(m_ttf_font, (int)TTF_STYLE_BOLD);
+			TTF_SetFontStyle(m_ttf_font, m_ttf_style);
 			TTF_SetFontOutline(m_ttf_font, 0);
 			TTF_SetFontKerning(m_ttf_font, 1);
 			TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
 		}
-		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, m_sdl_color);
+		SDL_Color sdl_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
+		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, sdl_color);
 		assert (m_sdl_surface);
 
 	}

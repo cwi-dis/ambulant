@@ -837,7 +837,7 @@ third_party_packages={
 #           url="http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.11.tar.gz",
 #           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
-            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_ttf",
             buildcmd=
                 "if [ ! -e SDL_ttf ] ; then  hg clone http://hg.libsdl.org/SDL_ttf ; fi && "
                 "cd SDL_ttf && "

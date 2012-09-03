@@ -66,13 +66,13 @@ class sdl_text_renderer : public sdl_renderer<renderer_playable_dsall> {
   private:
 	char* m_text_storage;
 	lib::color_t m_text_color;
-	const char *m_text_font;
 	float m_text_size;
+	const char* m_text_font;
 	lib::critical_section m_lock;
 
 	TTF_Font* m_ttf_font;       // font to be used for rendering
+	int m_ttf_style;            // style to be used for rendering (
 	SDL_Surface* m_sdl_surface; // surface that was rendered from the text 
-	SDL_Color m_sdl_color;
 };
 
 } // namespace sdl
