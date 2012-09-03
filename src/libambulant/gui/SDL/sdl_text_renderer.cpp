@@ -28,6 +28,13 @@
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
 
+//#define WITH_SDLPANGO // doesn't work yet...
+#ifdef  WITH_SDLPANGO
+#include <pango-1.0/pango/pango.h>
+#define __PANGO_H__ // this reveals some useful functions we need to use
+#include <SDL_Pango.h>
+#endif//WITH_SDLPANGO
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -108,12 +115,12 @@ sdl_text_renderer::~sdl_text_renderer() {
 void
 sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 // No m_lock needed, protected by base class
-#ifdef  JNK
+#ifdef  WITH_SDLPANGO
 	PangoContext *context;
 	PangoLanguage *language;
 	PangoFontDescription *font_desc;
 	PangoLayout *layout;
-#endif//JNK
+#endif//WITH_SDLPANGO
 	double alpha_media = 1.0;
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
 
@@ -137,8 +144,9 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 	    T = r.top()+p.y,
 	    W = r.width(),
 	    H = r.height();
+
 	if (m_text_storage != NULL && m_sdl_surface == NULL) {
-		ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
+#ifndef  WITH_SDLPANGO
 		if (m_ttf_font == NULL) { // Fedora 16
 			m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size);
 			if (m_ttf_font == NULL) { // Ubuntu 12.04
@@ -157,39 +165,45 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		SDL_Color sdl_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
 		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, sdl_color);
 		assert (m_sdl_surface);
-
-	}
-	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	asdlw->copy_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
-#ifdef  JNK
+#else //WITH_SDLPANGO
 		// initialize the pango context, layout...
-		context = gdk_pango_context_get();
-		language = sdl_get_default_language();
-		pango_context_set_language (context, language);
-		pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
-		// We initialize the font as Sans 10
-		font_desc = pango_font_description_from_string ("sans 10");
+//X		context = gdk_pango_context_get();
+		SDLPango_Context* sdl_pango_context = SDLPango_CreateContext();
+		context = *(PangoContext**) sdl_pango_context;
+		language = pango_language_get_default();
+//X		pango_context_set_language (context, language);
+		SDLPango_SetLanguage (sdl_pango_context, pango_language_to_string (language));
+//X		pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
+		SDLPango_SetBaseDirection (sdl_pango_context, SDLPANGO_DIRECTION_LTR);
+//X	We initialize the font as Sans 10
+//X		font_desc = pango_font_description_from_string ("sans 10");
+		font_desc = SDLPango_GetPangoFontDescription(sdl_pango_context);
 		// in case we have some specific font style and type
 		if (m_text_font) {
-			// TBD: smil font name/style to pango font name/style conversion
+		// TBD: smil font name/style to pango font name/style conversion
 			pango_font_description_set_family(font_desc, m_text_font);
 		}
-
-		// in case we have some point size (taken from sdl_smiltext.cpp)
+		// in case we have some point size (taken from gtk_smiltext.cpp)
 		if (m_text_size) {
 			// smil font size to pango font size conversion
 			double pango_font_size = m_text_size*PANGO_SCALE;
 			pango_font_description_set_absolute_size(font_desc, pango_font_size);
 		}
-
-		pango_context_set_font_description (context, font_desc);
-		layout = pango_layout_new(context);
+//X		pango_context_set_font_description (context, font_desc);
+// no equivalent in SDLPango, hope it does so by itself
+//X		layout = pango_layout_new(context);
+		layout = SDLPango_GetPangoLayout(sdl_pango_context);
 		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
-
-		// include the text
-		pango_layout_set_text (layout, m_text_storage, -1);
+		SDLPango_SetDefaultColor (sdl_pango_context, MATRIX_WHITE_BACK);               
+	// include the text
+//X		pango_layout_set_text (layout, m_text_storage, -1);
 		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
 		pango_layout_set_width(layout, W*1000);
+		SDLPango_SetText (sdl_pango_context, m_text_storage, -1);//m_text_size);
+		m_sdl_surface = SDLPango_CreateSurfaceDraw (sdl_pango_context);
+		SDLPango_Draw(sdl_pango_context, m_sdl_surface, L, T);
+
+#ifndef WITH_SDLPANGO
 		// Foreground Color of the text
 		GdkColor sdl_color;
 		sdl_color.red = redc(m_text_color)*0x101;
@@ -202,8 +216,12 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		g_object_unref (G_OBJECT (context));
 		g_object_unref(layout);
 		g_object_unref (G_OBJECT (gc));
-	}
-#endif//JNK
+#endif// ! WITH_SDLPANGO
+		SDLPango_FreeContext (sdl_pango_context);
+#endif//WITH_SDLPANGO
+	} // m_text_storage != NULL && m_sdl_surface == NULL)
+	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
+	asdlw->copy_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 }
 
 #endif//WITH_SDL2
