@@ -43,6 +43,7 @@
 #define FONT "Times 6"
 #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
 #define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
+#define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
 #define DEFAULT_FONT_HEIGHT 16
 
 using namespace ambulant;
@@ -76,7 +77,7 @@ sdl_text_renderer::sdl_text_renderer(
 	m_text_storage(NULL),
 	m_text_color(0),
 	m_text_font(NULL),
-	m_text_size(0),
+	m_text_size(DEFAULT_FONT_HEIGHT),
 
 	m_ttf_font(NULL),
 	m_ttf_style(TTF_STYLE_NORMAL),
@@ -150,7 +151,10 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		if (m_ttf_font == NULL) { // Fedora 16
 			m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size);
 			if (m_ttf_font == NULL) { // Ubuntu 12.04
-				TTF_OpenFont(DEFAULT_FONT_FILE2, m_text_size);
+				m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE2, m_text_size);
+			}
+			if (m_ttf_font == NULL) { // local
+				m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE3, m_text_size);
 			}
 //			assert(m_ttf_font);
 			if (m_ttf_font == NULL) {
@@ -201,7 +205,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		pango_layout_set_width(layout, W*1000);
 		SDLPango_SetText (sdl_pango_context, m_text_storage, -1);//m_text_size);
 		m_sdl_surface = SDLPango_CreateSurfaceDraw (sdl_pango_context);
-		SDLPango_Draw(sdl_pango_context, m_sdl_surface, L, T);
+		SDLPango_Draw(sdl_pango_context, m_sdl_surface, 0, 0);
 
 #ifndef WITH_SDLPANGO
 		// Foreground Color of the text
