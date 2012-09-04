@@ -1,0 +1,78 @@
+diff -ru a/configure.in b/configure.in
+--- a/configure.in	2012-09-04 23:01:35.000104000 +0200
++++ b/configure.in	2012-09-04 23:09:01.000450000 +0200
+@@ -14,7 +14,7 @@
+ 
+ MAJOR_VERSION=0
+ MINOR_VERSION=1
+-MICRO_VERSION=2
++MICRO_VERSION=3
+ INTERFACE_AGE=0
+ BINARY_AGE=1
+ VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
+@@ -79,15 +79,36 @@
+ CFLAGS="$CFLAGS $PANGOFT2_CFLAGS"
+ LIBS="$LIBS $PANGOFT2_LIBS"
+ 
+-# Check for SDL
+-
+-SDL_VERSION=1.2.4
+-AM_PATH_SDL($SDL_VERSION,
+-            :,
+-	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+-)
+-CFLAGS="$CFLAGS $SDL_CFLAGS"
+-LIBS="$LIBS $SDL_LIBS"
++# Check for SDL, use: --with-sdl2 for SDL2 
++test_sdl2=false
++AC_MSG_CHECKING(for SDL 2)
++AC_ARG_WITH(sdl2,
++     AS_HELP_STRING([--with-sdl2], [Enable SDL 2]),
++     [
++     	if test "x$withval" = "xyes"; then
++			test_sdl2=true	
++		  fi
++     ])
++if test "x$test_sdl2" = "xtrue"; then
++    export PKG_CONFIG_PATH=$prefix/lib/pkgconfig:$PKG_CONFIG_PATH
++	PKG_CHECK_MODULES(SDL2,[sdl2 >= 2.0.0], test_sdl2=true, test_sdl2=false)
++	if test x$test_sdl2 = xfalse; then
++	   AC_MSG_WARN([SDL2 not found])
++	else
++		CFLAGS="$CFLAGS $SDL2_CFLAGS -DWITH_SDL2"
++		LIBS="$LIBS $SDL2_LIBS"
++	fi
++else
++		# Check for SDL
++
++		SDL_VERSION=1.2.4
++		AM_PATH_SDL($SDL_VERSION,
++				    :,
++	    			AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
++					)
++		CFLAGS="$CFLAGS $SDL_CFLAGS"
++		LIBS="$LIBS $SDL_LIBS"
++fi
+ 
+ AC_CONFIG_FILES([Makefile src/Makefile SDL_Pango.pc docs/Makefile docs/Doxyfile VisualC2003/Makefile Wix/Makefile Wix/merge_module.xml Wix/dev.xml Wix/testbench.xml])
+ 
+Only in b: configure.in~
+diff -ru a/src/SDL_Pango.c b/src/SDL_Pango.c
+--- a/src/SDL_Pango.c	2012-09-04 23:04:17.002813000 +0200
++++ b/src/SDL_Pango.c	2012-09-04 23:04:38.001321000 +0200
+@@ -747,9 +747,14 @@
+ 	MAKE_FONT_NAME (DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE));
+ 
+     context->layout = pango_layout_new (context->context);
+-
++#ifdef WITH_SDL2
++	// flags are not used anymore by SDL_CreateRGBSurface
++    SDLPango_SetSurfaceCreateArgs(context, 0, DEFAULT_DEPTH,
++	DEFAULT_RMASK, DEFAULT_GMASK, DEFAULT_BMASK, DEFAULT_AMASK);
++#else // ! WITH_SDL2
+     SDLPango_SetSurfaceCreateArgs(context, SDL_SWSURFACE | SDL_SRCALPHA, DEFAULT_DEPTH,
+ 	DEFAULT_RMASK, DEFAULT_GMASK, DEFAULT_BMASK, DEFAULT_AMASK);
++#endif // ! WITH_SDL2
+ 
+     context->tmp_ftbitmap = NULL;
+ 

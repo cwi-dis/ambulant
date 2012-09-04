@@ -757,7 +757,8 @@ third_party_packages={
                 "autoconf && "
                 "%s && "
                 "make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+                "make install && "
+                "cp expat.pc %s/lib/pkgconfig" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR)
             ),
 
         TPP("xerces-c",
@@ -808,8 +809,8 @@ third_party_packages={
             buildcmd=
                "if [ ! -e SDL ] ; then hg clone http://hg.libsdl.org/SDL; "
                "cd SDL && "
-               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch;" 
-               "fi; mkdir build; cd build &&"
+               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch; " 
+               "else cd SDL; fi; mkdir -p build; cd build &&"
 # Note: SDL 2.0 wants a different build directory, therefore one '.' is preprended
                 ".%s --disable-video-x11-xinput&&"
                 "make ${MAKEFLAGS} && "
@@ -824,15 +825,15 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
             buildcmd=
                 "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
-                "cd SDL_image && "
-                "%s &&"
+                "cd SDL_image && mkdir -p build && cd build && "
+                ".%s &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % LINUX_COMMON_CONFIGURE
             ),
 
 
-        TPP("SDL_ttf", # SDL  True Type Fonts
+        TPP("SDL_ttf", # SDL True Type Fonts
 # mercurial version needed for compatibilty with SDL2
 #           url="http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.11.tar.gz",
 #           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
@@ -840,11 +841,25 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=1.2.13 SDL2_ttf",
             buildcmd=
                 "if [ ! -e SDL_ttf ] ; then  hg clone http://hg.libsdl.org/SDL_ttf ; fi && "
-                "cd SDL_ttf && "
-                "%s &&"
+                "cd SDL_ttf && mkdir -p build && cd build &&"
+                ".%s &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
+            url="http://sourceforge.net/projects/sdlpango/files/latest/download",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+# patch needed for compatibilty with SDL2
+            checkcmd="pkg-config --atleast-version=0.1.3 SDL_Pango",
+            buildcmd=
+                "cd SDL_Pango-0.1.2 && "
+                "patch -p1 < %s/third_party_packages/SDL2_Pango.patch && autoconf && " 
+                "%s --with-sdl2 &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
 # Next 3 packages are only for Linux flavours where libdispatch is not directly available (Fedora)
