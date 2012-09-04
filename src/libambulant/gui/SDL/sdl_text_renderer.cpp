@@ -28,7 +28,7 @@
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define WITH_SDLPANGO // doesn't work yet...
+#define WITH_SDLPANGO // doesn't work yet...
 #ifdef  WITH_SDLPANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions we need to use
@@ -198,8 +198,16 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 //X		layout = pango_layout_new(context);
 		layout = SDLPango_GetPangoLayout(sdl_pango_context);
 		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
-		SDLPango_SetDefaultColor (sdl_pango_context, MATRIX_WHITE_BACK);               
-	// include the text
+		SDLPango_Matrix color_matrix = *MATRIX_TRANSPARENT_BACK_BLACK_LETTER;
+		// 1st column of SDLPango_Matrix contains background color, 2nd foregroumd color
+		if (m_text_color != 0 /*black */ ) {
+			color_matrix.m[0][1] = redc(m_text_color);
+			color_matrix.m[1][1] = greenc(m_text_color);
+			color_matrix.m[2][1] = bluec(m_text_color);
+			color_matrix.m[3][1] = 255; // alpha pixel
+		}
+		SDLPango_SetDefaultColor (sdl_pango_context, &color_matrix);               
+		// include the text
 //X		pango_layout_set_text (layout, m_text_storage, -1);
 		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
 		pango_layout_set_width(layout, W*1000);
