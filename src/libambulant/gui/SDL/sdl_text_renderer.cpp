@@ -28,7 +28,7 @@
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
 
-#define WITH_SDLPANGO // doesn't work yet...
+#define WITH_SDLPANGO 
 #ifdef  WITH_SDLPANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions we need to use
