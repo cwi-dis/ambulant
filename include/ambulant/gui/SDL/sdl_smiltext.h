@@ -22,11 +22,19 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#ifdef  WITH_SDL2XX // TBD
+#ifdef  WITH_SDL2
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
+#include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
+
+#define WITH_SDLPANGO // if not defined, SDL_ttf is used
+#ifdef  WITH_SDLPANGO
+#include <pango-1.0/pango/pango.h>
+#define __PANGO_H__ // this reveals some useful functions we need to use
+#include <SDL_Pango.h>
+#endif//WITH_SDLPANGO
 
 namespace ambulant {
 
@@ -52,6 +60,7 @@ class sdl_smiltext_renderer :
 	~sdl_smiltext_renderer();
 
 	void redraw_body(const rect &dirty, gui_window *window);
+
 	void start(double t);
 	void seek(double t);
 	bool stop();
@@ -62,12 +71,16 @@ class sdl_smiltext_renderer :
 	void _sdl_smiltext_changed();
 	void _sdl_smiltext_render(const lib::rect r, const lib::point offset,
 		ambulant_sdl_window* window);
+#ifdef  TBD
+#endif//TBD
+
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
 	const smil2::smiltext_params& m_params;
 //TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
 	lib::timer::time_type m_epoch;
 
+#ifdef  TBD
 // pango specific stuff
 	void _sdl_set_color_attr(
 		PangoAttrList* pal, lib::color_t smiltext_color,
@@ -78,12 +91,17 @@ class sdl_smiltext_renderer :
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
 		unsigned int start_index, unsigned int end_index);
+#endif//TBD
+	SDLPango_Context* m_sdl_pango_context;
 
 	PangoAttrList* m_pango_attr_list;
 	PangoContext* m_pango_context;
 	PangoLayout* m_pango_layout;
+#ifdef  TBD
 	PangoAttrList* m_bg_pango_attr_list;
 	PangoLayout* m_bg_layout;
+#endif//TBD
+
 	const color_t m_transparent; // needed for blending
 	const color_t m_alternative; // when m_transparent to be drawn
 	double	m_alpha_media;

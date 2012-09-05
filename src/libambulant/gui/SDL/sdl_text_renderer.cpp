@@ -27,23 +27,17 @@
 
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
-
-#define WITH_SDLPANGO 
-#ifdef  WITH_SDLPANGO
-#include <pango-1.0/pango/pango.h>
-#define __PANGO_H__ // this reveals some useful functions we need to use
-#include <SDL_Pango.h>
-#endif//WITH_SDLPANGO
-
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
+#ifndef WITH_SDLPANGO
 #define FONT "Times 6"
 #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
 #define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
 #define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
+#endif// ! WITH_SDLPANGO
 #define DEFAULT_FONT_HEIGHT 16
 
 using namespace ambulant;
@@ -78,14 +72,16 @@ sdl_text_renderer::sdl_text_renderer(
 	m_text_color(0),
 	m_text_font(NULL),
 	m_text_size(DEFAULT_FONT_HEIGHT),
-
+#ifndef WITH_SDLPANGO
 	m_ttf_font(NULL),
 	m_ttf_style(TTF_STYLE_NORMAL),
+#endif// ! WITH_SDLPANGO
 	m_sdl_surface(NULL)
 {
 	smil2::params *params = smil2::params::for_node(node);
 	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(0x%x) params=0x%x",this,params);
 	if (params) {
+#ifndef WITH_SDLPANGO
 		int ttf_font_style = TTF_STYLE_NORMAL;
 		const char* font_style = params->get_str("font-style");
 		const char* font_weight = params->get_str("font-weight");
@@ -94,7 +90,8 @@ sdl_text_renderer::sdl_text_renderer(
 		}
 		if (font_weight != NULL && strcmp(font_weight, "bold") == 0) {
 			m_ttf_style |= TTF_STYLE_BOLD;
-		}		 
+		}
+#endif// ! WITH_SDLPANGO		 
 		m_text_font = params->get_str("font-family");
 		m_text_color = params->get_color("color", 0);
 		m_text_size = params->get_float("font-size", DEFAULT_FONT_HEIGHT);
@@ -156,7 +153,6 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			if (m_ttf_font == NULL) { // local
 				m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE3, m_text_size);
 			}
-//			assert(m_ttf_font);
 			if (m_ttf_font == NULL) {
 				lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE1, m_text_size, TTF_GetError());
 				return;

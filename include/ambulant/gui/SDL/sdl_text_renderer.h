@@ -42,7 +42,17 @@
 #include "ambulant/gui/none/none_gui.h"
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
+
+#define WITH_SDLPANGO // if not defined, SDL_ttf is used
+
+#ifdef  WITH_SDLPANGO
+#include <pango-1.0/pango/pango.h>
+#define __PANGO_H__ // this reveals some useful functions in SDL_Pango we want
+#include <SDL_Pango.h>
+
+#else //WITH_SDLPANGO
 #include "SDL_ttf.h"
+#endif//WITH_SDLPANGO
 
 namespace ambulant {
 
@@ -70,8 +80,10 @@ class sdl_text_renderer : public sdl_renderer<renderer_playable_dsall> {
 	const char* m_text_font;
 	lib::critical_section m_lock;
 
-	TTF_Font* m_ttf_font;       // font to be used for rendering
-	int m_ttf_style;            // style to be used for rendering (
+#ifndef WITH_SDLPANGO
+	TTF_Font* m_ttf_font;       // font to be used for ttf rendering
+	int m_ttf_style;            // style to be used for ttf rendering
+#endif// ! WITH_SDLPANGO
 	SDL_Surface* m_sdl_surface; // surface that was rendered from the text 
 };
 

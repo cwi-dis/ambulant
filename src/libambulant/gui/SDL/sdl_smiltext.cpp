@@ -17,13 +17,13 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL22XX // TBD
+#ifdef  WITH_SDL2
 
-#include "ambulant/gui/SDL/sdl_includes.h"
+//X #include "ambulant/gui/SDL/sdl_includes.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_smiltext.h"
-#include "ambulant/gui/SDL/sdl_util.h"
+//X #include "ambulant/gui/SDL/sdl_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
@@ -69,11 +69,6 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params()),
 	m_motion_done(false),
-	m_pango_attr_list(NULL),
-	m_bg_layout(NULL),
-	m_bg_pango_attr_list(NULL),
-	m_pango_layout(NULL),
-	m_pango_context(NULL),
 	m_transparent(SDL_TRANSPARENT_COLOR),
 	m_alternative(SDL_ALTERNATIVE_COLOR),
 	m_alpha_media(1.0),
@@ -88,7 +83,15 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 	m_wrap(true),
 	m_is_changed(false),
 	m_start(lib::point(0,0)),
-	m_origin(lib::point(0,0))
+	m_origin(lib::point(0,0)),
+
+	m_pango_attr_list(NULL),
+//TBD	m_bg_layout(NULL),
+//TBD	m_bg_pango_attr_list(NULL),
+	m_pango_layout(NULL),
+	m_pango_context(NULL),
+
+	m_sdl_pango_context(NULL)
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
@@ -98,6 +101,7 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 sdl_smiltext_renderer::~sdl_smiltext_renderer()
 {
 	m_engine.lock();
+#ifdef	TBD
 	if ( m_pango_attr_list != NULL) {
 		pango_attr_list_unref( m_pango_attr_list);
 		m_pango_attr_list = NULL;
@@ -118,6 +122,7 @@ sdl_smiltext_renderer::~sdl_smiltext_renderer()
 		g_object_unref(m_bg_layout);
 		m_bg_layout = NULL;
 	}
+#endif//TBD
 	m_engine.unlock();
 }
 
@@ -170,6 +175,7 @@ void
 sdl_smiltext_renderer::_sdl_smiltext_changed()
 {
 AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
+#ifdef  GDK_PANGO
 	if ( ! m_pango_context) {
 		// initialize the pango context, layout...
 		m_pango_context = gdk_pango_context_get();
@@ -213,8 +219,36 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		m_pango_layout = pango_layout_new (m_pango_context);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
+#else //SDL_PANGO
+	if (m_pango_context == NULL) {
+		// initialize the pango context, layout...
+		SDLPango_Context* m_sdl_pango_context = SDLPango_CreateContext();
+		m_pango_context = *(PangoContext**) m_sdl_pango_context;
+		PangoLanguage* language = pango_language_get_default();
+		SDLPango_SetLanguage (m_sdl_pango_context, pango_language_to_string (language));
+		SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_LTR);
+//TBD	font_desc = SDLPango_GetPangoFontDescription(sdl_pango_context);
+		m_writing_mode = m_engine.begin()->m_writing_mode;
+		switch (m_writing_mode) {
+		default:
+		case smil2::stw_lr_tb:
+//TBD		pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_LTR);
+		    SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_LTR);
+			break;
+		case smil2::stw_rl_tb:
+//TBD		pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_RTL);
+		    SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_RTL);
+			break;
+		}
+	}
+	if (m_pango_layout != NULL) {
+		m_pango_layout = SDLPango_GetPangoLayout(m_sdl_pango_context);
+		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
+	}
+#endif//SDL_PANGO
 	if ( ! m_pango_attr_list)
 		m_pango_attr_list = pango_attr_list_new();
+#ifdef  TBD
 	if ( ! m_bg_layout	&& (m_alpha_media != 1.0  || m_alpha_media_bg != 1.0 || m_alpha_chroma != 1.0)) {
 		// prepare for blending: layout is setup twice:
 		// m_bg_layout has textColor as m_transparent
@@ -224,6 +258,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_LEFT);
 		m_bg_pango_attr_list = pango_attr_list_new();
 	}
+#endif//TBD
 	if (m_is_changed) {
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
@@ -238,18 +273,24 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 				default:
 				case smil2::sta_left:
 					pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
+#ifdef  TBD
 					if (m_bg_layout)
 						pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_LEFT);
+#endif//TBD
 					break;
 				case smil2::sta_center:
 					pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_CENTER);
+#ifdef  TBD
 					if (m_bg_layout)
 						pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_CENTER);
+#endif//TBD
 					break;
 				case smil2::sta_right:
 					pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_RIGHT);
+#ifdef  TBD
 					if (m_bg_layout)
 						pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_RIGHT);
+#endif//TBD
 					break;
 				}
 				m_align = align;
@@ -323,6 +364,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 				break;
 			}
 			// Set font attributes
+#ifdef  TBD
 			_sdl_set_font_attr(m_pango_attr_list,
 				i->m_font_families[0].c_str(),
 				i->m_font_style,
@@ -330,6 +372,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 				i->m_font_size,
 				start_index,
 				m_text_storage.size());
+
 			if (m_bg_pango_attr_list) {
 				_sdl_set_font_attr(m_bg_pango_attr_list,
 					i->m_font_families[0].c_str(),
@@ -339,16 +382,19 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 					start_index,
 					m_text_storage.size());
 			}
+#endif//TBD
 			// text foreground/background color settings.
 			if ( ! i->m_transparent) {
 				// Set foreground color attribute
 				color_t fg_color = i->m_color == m_transparent ? m_alternative : i->m_color;
+#ifdef  TBD
 				_sdl_set_color_attr(
 					m_pango_attr_list,
 					fg_color,
 					pango_attr_foreground_new,
 					start_index,
 					m_text_storage.size());
+
 				if (m_bg_layout) {
 					_sdl_set_color_attr(
 						m_bg_pango_attr_list,
@@ -357,7 +403,9 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 						start_index,
 						m_text_storage.size());
 				}
+#endif//TBD
 			}
+#ifdef  TBD
 			if ( ! i->m_bg_transparent) {
 				// Set background color attribute
 				// Select altenative color for m_transparent
@@ -375,16 +423,19 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 						m_text_storage.size());
 				}
 			}
+#endif//TBD
 			// Set the foreground attributes and text
 			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_pango_layout);
+#ifdef  TBD
 			if (m_bg_layout) {
 				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
 				pango_layout_set_text(m_bg_layout, m_text_storage.c_str(), -1);
 				pango_layout_context_changed(m_bg_layout);
 			}
+#endif//TBD
 			i++;
 		}
 		m_engine.done();
@@ -394,12 +445,17 @@ AM_DBG	lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x), m_text_stor
 	if (finished)
 		m_context->stopped(m_cookie);
 }
+#ifdef  TBD
+#endif//TBD
 
 void
 sdl_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
+#ifdef  TBD
+#endif//TBD
 	PangoRectangle ink_rect;
 	PangoRectangle log_rect;
+
 	m_engine.lock();
 	const rect &r = m_dest->get_rect();
 AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
@@ -409,8 +465,10 @@ AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltr
 		m_is_changed = false;
 		// get the extents of the lines
 		pango_layout_set_width(m_pango_layout, m_wrap ? r.w*PANGO_SCALE : -1);
+#ifdef  TBD
 		if (m_bg_layout)
 			pango_layout_set_width(m_bg_layout, m_wrap ? r.w*PANGO_SCALE : -1);
+#endif//TBD
 		// get extents of first line (contains space for all lines in layout)
 		PangoLayoutIter* iter_p = pango_layout_get_iter(m_pango_layout);
 		PangoLayoutLine* line_p = pango_layout_iter_get_line(iter_p);
@@ -422,6 +480,8 @@ AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltr
 		m_log_rect.y = log_rect.y/PANGO_SCALE;
 		m_log_rect.w = log_rect.width/PANGO_SCALE;
 		m_log_rect.h = log_rect.height/PANGO_SCALE;
+#ifdef  TBD
+#endif//TBD
 	}
 // Compute the shifted position of what we want to draw w.r.t. the visible origin
 	switch (m_params.m_mode) {
@@ -520,8 +580,12 @@ AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltr
 	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw: logical_origin(%d,%d) log_rect(%d,%d) r(%d,%d)", m_origin.x, m_origin.y, m_log_rect.w, m_log_rect.h, r.w, r.h);
 
 	_sdl_smiltext_render(r, m_origin,(ambulant_sdl_window*)window);
+#ifdef  TBD
+#endif//TBD
 	m_engine.unlock();
 }
+
+#ifdef  TBD
 
 // private methods
 void
@@ -592,6 +656,7 @@ sdl_smiltext_renderer::_sdl_set_color_attr(PangoAttrList* pal,
 	pango_attribute->end_index = end_index;
 	pango_attr_list_insert(pal, pango_attribute);
 }
+#endif//TBD
 
 void
 sdl_smiltext_renderer::_sdl_smiltext_render(
@@ -611,6 +676,8 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 		T = r.top()+p.y,
 		W = r.width(),
 		H = r.height();
+
+#ifdef  GDK_PANGO
 	GdkRectangle gdk_rectangle;
 	gdk_rectangle.x = L;
 	gdk_rectangle.y = T;
@@ -729,7 +796,15 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 			m_pango_layout);
 	}
 	g_object_unref (G_OBJECT (gc));
+#else //GDK_PANGO
+//	SDLPango_SetText (m_sdl_pango_context, m_text_storage, -1);//m_text_size);
+	SDL_Surface* sdl_surface = SDLPango_CreateSurfaceDraw (m_sdl_pango_context);
+	SDLPango_Draw(m_sdl_pango_context, sdl_surface, 0, 0);
+	SDL_FreeSurface(sdl_surface);
+#endif//GDK_PANGO
 }
+#ifdef  TBD
+#endif//TBD
 
 } // namespace sdl
 
