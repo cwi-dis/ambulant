@@ -80,16 +80,20 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 
 	if (m_data && !m_image_loaded && m_data_size > 0) {
 		AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): load data for %s", this, this->get_sig().c_str());
-		net::url src = m_node->get_url("src");
-		std::string src_string = src.get_path(); 
-		std::string extension(src_string, src_string.rfind('.')+1, std::string::npos);
-		AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): src=%s extension=%s", this, src_string.c_str(), extension.c_str());
 		SDL_RWops* rwops = SDL_RWFromMem (m_data, m_data_size);
 		assert (rwops != NULL);
-		m_image = IMG_LoadTyped_RW(rwops, 1, extension.c_str());
+		m_image = IMG_Load_RW(rwops, 1);
 		if (m_image == NULL) {
 			logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): IMG_Load_RW failed. %s", this, this->get_sig().c_str());
 		} else {
+			// convert the image to RGBA compatible format (necessary for blending)
+			SDL_PixelFormat* new_pixel_format = (SDL_PixelFormat*) malloc (sizeof(SDL_PixelFormat));
+			*new_pixel_format = *asdlw->get_sdl_surface()->format;
+			SDL_Surface* new_image = SDL_ConvertSurface (m_image, new_pixel_format, 0);
+			if (new_image != NULL && new_image != m_image) {
+				SDL_FreeSurface (m_image);
+				m_image = new_image;
+			}
 			// enable alpha blending for this image
 //			asdlw->ambulant_sdl_window::dump_sdl_surface(m_image, "image");
 			SDL_SetSurfaceBlendMode(m_image, SDL_BLENDMODE_BLEND);
