@@ -856,7 +856,7 @@ third_party_packages={
             buildcmd=
                 "cd SDL_Pango-0.1.2 && "
                 "patch -p1 < %s/third_party_packages/SDL2_Pango.patch && autoconf && " 
-                "%s --with-sdl2 &&"
+                "which sdl2-config >/dev/null && %s --with-sdl2 && "
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
