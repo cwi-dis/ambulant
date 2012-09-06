@@ -758,7 +758,7 @@ third_party_packages={
                 "%s && "
                 "make ${MAKEFLAGS} && "
                 "make install && "
-                "cp expat.pc %s/lib/pkgconfig" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR)
+                "install -D -m 755 expat.pc %s/lib/pkgconfig/expat.pc" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR)
             ),
 
         TPP("xerces-c",
