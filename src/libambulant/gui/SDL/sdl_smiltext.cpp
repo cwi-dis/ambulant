@@ -220,9 +220,9 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
 #else //SDL_PANGO
-	if (m_pango_context == NULL) {
+	if (m_sdl_pango_context == NULL) {
 		// initialize the pango context, layout...
-		SDLPango_Context* m_sdl_pango_context = SDLPango_CreateContext();
+		m_sdl_pango_context = SDLPango_CreateContext();
 		m_pango_context = *(PangoContext**) m_sdl_pango_context;
 		PangoLanguage* language = pango_language_get_default();
 		SDLPango_SetLanguage (m_sdl_pango_context, pango_language_to_string (language));
@@ -241,7 +241,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 			break;
 		}
 	}
-	if (m_pango_layout != NULL) {
+	if (m_pango_layout == NULL) {
 		m_pango_layout = SDLPango_GetPangoLayout(m_sdl_pango_context);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
@@ -667,6 +667,7 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	// Determine current position and size.
 	const lib::point p = m_dest->get_global_topleft();
 	const char* data = m_text_storage.c_str();
+	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
 	if ( ! (m_pango_layout && window))
@@ -800,6 +801,9 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 //	SDLPango_SetText (m_sdl_pango_context, m_text_storage, -1);//m_text_size);
 	SDL_Surface* sdl_surface = SDLPango_CreateSurfaceDraw (m_sdl_pango_context);
 	SDLPango_Draw(m_sdl_pango_context, sdl_surface, 0, 0);
+	double alpha_media = 1.0;
+	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
+	asdlw->copy_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 	SDL_FreeSurface(sdl_surface);
 #endif//GDK_PANGO
 }
