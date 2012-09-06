@@ -559,11 +559,20 @@ ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL
 {
 	int rv = 0;
 	if (src != NULL && dst_rect != NULL) {
-		dump_sdl_surface(src, "src");
-//		dump_sdl_surface (m_sdl_surface, "befor"); 
+//		dump_sdl_surface(src, "src");
+//		dump_sdl_surface (m_sdl_surface, "befor");
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
+		if (rv < 0) {
+			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
+			return rv;
+		}
+		while (src->locked) SDL_UnlockSurface (src); //XXXX quick hack for SDL_Pange (I guess)
  		rv = SDL_BlitSurface(src, src_rect, m_sdl_surface, dst_rect);
-		dump_sdl_surface (m_sdl_surface, "after"); 
+//		dump_sdl_surface (m_sdl_surface, "after"); 
+		if (rv < 0) {
+			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_BlitSurface", SDL_GetError());
+			return rv;
+		}
 	}
 	return rv;
 }

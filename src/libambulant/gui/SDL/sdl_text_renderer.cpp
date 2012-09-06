@@ -202,6 +202,12 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			color_matrix.m[2][1] = bluec(m_text_color);
 			color_matrix.m[3][1] = 255; // alpha pixel
 		}
+#ifdef  JNK	 
+		color_matrix.m[1][0] = 255; //green  foreground
+		color_matrix.m[3][0] = 255; //opaque foreground
+		color_matrix.m[2][0] = 255; //blue  background
+		color_matrix.m[3][0] = 255; //opaque background
+#endif//JNK
 		SDLPango_SetDefaultColor (sdl_pango_context, &color_matrix);               
 		// include the text
 //X		pango_layout_set_text (layout, m_text_storage, -1);
