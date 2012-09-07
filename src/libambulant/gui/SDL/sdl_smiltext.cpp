@@ -86,8 +86,8 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 	m_origin(lib::point(0,0)),
 
 	m_pango_attr_list(NULL),
-//TBD	m_bg_layout(NULL),
-//TBD	m_bg_pango_attr_list(NULL),
+	m_bg_layout(NULL),
+	m_bg_pango_attr_list(NULL),
 	m_pango_layout(NULL),
 	m_pango_context(NULL),
 
@@ -101,7 +101,7 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 sdl_smiltext_renderer::~sdl_smiltext_renderer()
 {
 	m_engine.lock();
-#ifdef	TBD
+
 	if ( m_pango_attr_list != NULL) {
 		pango_attr_list_unref( m_pango_attr_list);
 		m_pango_attr_list = NULL;
@@ -122,7 +122,6 @@ sdl_smiltext_renderer::~sdl_smiltext_renderer()
 		g_object_unref(m_bg_layout);
 		m_bg_layout = NULL;
 	}
-#endif//TBD
 	m_engine.unlock();
 }
 
@@ -232,11 +231,9 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		switch (m_writing_mode) {
 		default:
 		case smil2::stw_lr_tb:
-//TBD		pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_LTR);
 		    SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_LTR);
 			break;
 		case smil2::stw_rl_tb:
-//TBD		pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_RTL);
 		    SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_RTL);
 			break;
 		}
@@ -364,7 +361,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 				break;
 			}
 			// Set font attributes
-#ifdef  TBD
 			_sdl_set_font_attr(m_pango_attr_list,
 				i->m_font_families[0].c_str(),
 				i->m_font_style,
@@ -372,7 +368,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 				i->m_font_size,
 				start_index,
 				m_text_storage.size());
-
+#ifdef  TBD
 			if (m_bg_pango_attr_list) {
 				_sdl_set_font_attr(m_bg_pango_attr_list,
 					i->m_font_families[0].c_str(),
@@ -387,14 +383,13 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 			if ( ! i->m_transparent) {
 				// Set foreground color attribute
 				color_t fg_color = i->m_color == m_transparent ? m_alternative : i->m_color;
-#ifdef  TBD
 				_sdl_set_color_attr(
 					m_pango_attr_list,
 					fg_color,
 					pango_attr_foreground_new,
 					start_index,
 					m_text_storage.size());
-
+#ifdef  TBD
 				if (m_bg_layout) {
 					_sdl_set_color_attr(
 						m_bg_pango_attr_list,
@@ -428,13 +423,14 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_pango_layout);
-#ifdef  TBD
+
 			if (m_bg_layout) {
 				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
 				pango_layout_set_text(m_bg_layout, m_text_storage.c_str(), -1);
 				pango_layout_context_changed(m_bg_layout);
 			}
+#ifdef  TBD
 #endif//TBD
 			i++;
 		}
@@ -473,8 +469,8 @@ AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltr
 		PangoLayoutIter* iter_p = pango_layout_get_iter(m_pango_layout);
 		PangoLayoutLine* line_p = pango_layout_iter_get_line(iter_p);
 		pango_layout_iter_get_layout_extents (iter_p, &ink_rect, &log_rect);
-//AM_DBG	std::string line(m_text_storage, line_p->start_index, line_p->length);
-//AM_DBG	logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
+		std::string line(m_text_storage, line_p->start_index, line_p->length);
+		logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
 		pango_layout_iter_free(iter_p);
 		m_log_rect.x = log_rect.x/PANGO_SCALE;
 		m_log_rect.y = log_rect.y/PANGO_SCALE;
@@ -585,7 +581,6 @@ AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltr
 	m_engine.unlock();
 }
 
-#ifdef  TBD
 
 // private methods
 void
@@ -656,6 +651,7 @@ sdl_smiltext_renderer::_sdl_set_color_attr(PangoAttrList* pal,
 	pango_attribute->end_index = end_index;
 	pango_attr_list_insert(pal, pango_attribute);
 }
+#ifdef  TBD
 #endif//TBD
 
 void

@@ -71,8 +71,6 @@ class sdl_smiltext_renderer :
 	void _sdl_smiltext_changed();
 	void _sdl_smiltext_render(const lib::rect r, const lib::point offset,
 		ambulant_sdl_window* window);
-#ifdef  TBD
-#endif//TBD
 
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
@@ -80,7 +78,6 @@ class sdl_smiltext_renderer :
 //TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
 	lib::timer::time_type m_epoch;
 
-#ifdef  TBD
 // pango specific stuff
 	void _sdl_set_color_attr(
 		PangoAttrList* pal, lib::color_t smiltext_color,
@@ -91,16 +88,13 @@ class sdl_smiltext_renderer :
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
 		unsigned int start_index, unsigned int end_index);
-#endif//TBD
 	SDLPango_Context* m_sdl_pango_context;
 
 	PangoAttrList* m_pango_attr_list;
 	PangoContext* m_pango_context;
 	PangoLayout* m_pango_layout;
-#ifdef  TBD
 	PangoAttrList* m_bg_pango_attr_list;
 	PangoLayout* m_bg_layout;
-#endif//TBD
 
 	const color_t m_transparent; // needed for blending
 	const color_t m_alternative; // when m_transparent to be drawn
