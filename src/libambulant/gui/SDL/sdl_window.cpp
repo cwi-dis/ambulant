@@ -558,6 +558,7 @@ int
 ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL && dst_rect != NULL) {
 //		dump_sdl_surface(src, "src");
 //		dump_sdl_surface (m_sdl_surface, "befor");
@@ -581,7 +582,7 @@ void
 ambulant_sdl_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
 {
 		char filename[256];
-		sprintf(filename,"%%%0.8lu%s.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed(), id);
+		sprintf(filename,"%%%.8lu%s.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed(), id);
 		SDL_SaveBMP(surf, filename);
 }
 

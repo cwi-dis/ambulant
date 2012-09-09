@@ -226,7 +226,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		PangoLanguage* language = pango_language_get_default();
 		SDLPango_SetLanguage (m_sdl_pango_context, pango_language_to_string (language));
 		SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_LTR);
-//TBD	font_desc = SDLPango_GetPangoFontDescription(sdl_pango_context);
+//TBD		font_desc = SDLPango_GetPangoFontDescription(sdl_pango_context);
 		m_writing_mode = m_engine.begin()->m_writing_mode;
 		switch (m_writing_mode) {
 		default:
@@ -237,6 +237,11 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		    SDLPango_SetBaseDirection (m_sdl_pango_context, SDLPANGO_DIRECTION_RTL);
 			break;
 		}
+#ifdef  DUMP_SCREEN
+// When screen dumps are used (for debugging), a white background is handy, otherwise you'll see nothing
+		SDLPango_Matrix color_matrix = *MATRIX_WHITE_BACK;
+		SDLPango_SetDefaultColor (m_sdl_pango_context, &color_matrix);
+#endif//DUMP_SCREEN
 	}
 	if (m_pango_layout == NULL) {
 		m_pango_layout = SDLPango_GetPangoLayout(m_sdl_pango_context);
@@ -420,17 +425,18 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 			}
 #endif//TBD
 			// Set the foreground attributes and text
-			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
+//			SDLPango_SetText (m_sdl_pango_context, m_text_storage.c_str(), -1);//m_text_size);
+			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_context_changed(m_pango_layout);
 
+#ifdef  TBD
 			if (m_bg_layout) {
 				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
 				pango_layout_set_text(m_bg_layout, m_text_storage.c_str(), -1);
 				pango_layout_context_changed(m_bg_layout);
 			}
-#ifdef  TBD
 #endif//TBD
 			i++;
 		}
@@ -454,7 +460,7 @@ sdl_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 	m_engine.lock();
 	const rect &r = m_dest->get_rect();
-AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (m_is_changed) {
 		// compute the changes
 		_sdl_smiltext_changed();
@@ -470,7 +476,7 @@ AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltr
 		PangoLayoutLine* line_p = pango_layout_iter_get_line(iter_p);
 		pango_layout_iter_get_layout_extents (iter_p, &ink_rect, &log_rect);
 		std::string line(m_text_storage, line_p->start_index, line_p->length);
-		logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
+		AM_DBG logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
 		pango_layout_iter_free(iter_p);
 		m_log_rect.x = log_rect.x/PANGO_SCALE;
 		m_log_rect.y = log_rect.y/PANGO_SCALE;
@@ -794,10 +800,12 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	}
 	g_object_unref (G_OBJECT (gc));
 #else //GDK_PANGO
-//	SDLPango_SetText (m_sdl_pango_context, m_text_storage, -1);//m_text_size);
+	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
 	SDL_Surface* sdl_surface = SDLPango_CreateSurfaceDraw (m_sdl_pango_context);
 	SDLPango_Draw(m_sdl_pango_context, sdl_surface, 0, 0);
 	double alpha_media = 1.0;
+	L -= offset.x;
+	T -= offset.y;
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
 	asdlw->copy_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 	SDL_FreeSurface(sdl_surface);
