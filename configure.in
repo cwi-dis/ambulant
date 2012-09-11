@@ -623,7 +623,7 @@ if $test_sdl; then
 			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_ttf`"
 			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_ttf`"
 			fi
-			PKG_CHECK_MODULES(SDL, [SDL_Pango >= 0.1.2], test_sdl_pango=true, test_sdl_pango=false)
+			PKG_CHECK_MODULES(SDL, [SDL_Pango >= 0.1.3], test_sdl_pango=true, test_sdl_pango=false)
 			if test "x$test_sdl_pango" = "xtrue" ; then
 			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL_Pango`"
 			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
