@@ -851,15 +851,16 @@ third_party_packages={
         TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
             url="http://sourceforge.net/projects/sdlpango/files/latest/download",
 #           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
-# patch needed for compatibilty with SDL2
+# patches needed for compatibilty with distributed versions and one for SDL2
             checkcmd="pkg-config --atleast-version=0.1.3 SDL_Pango",
             buildcmd=
                 "cd SDL_Pango-0.1.2 && "
-                "patch -p1 < %s/third_party_packages/SDL2_Pango.patch && autoconf && " 
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-API-Changes.patch && " 
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && autoreconf && libtoolize && " 
                 "which sdl2-config >/dev/null && %s --with-sdl2 && "
                 "make ${MAKEFLAGS} && "
                 "make install &&"
-                "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+                "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
 # Next 3 packages are only for Linux flavours where libdispatch is not directly available (Fedora)
