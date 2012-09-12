@@ -76,7 +76,8 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
 	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body: gui_window=0x%x info=0x%x",w,info);
-	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
+	ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
+	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 
 	if (m_data && !m_image_loaded && m_data_size > 0) {
 		AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): load data for %s", this, this->get_sig().c_str());
@@ -88,14 +89,14 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		} else {
 			// convert the image to RGBA compatible format (necessary for blending)
 			SDL_PixelFormat* new_pixel_format = (SDL_PixelFormat*) malloc (sizeof(SDL_PixelFormat));
-			*new_pixel_format = *asdlw->get_sdl_surface()->format;
+			*new_pixel_format = *saw->get_sdl_surface()->format;
 			SDL_Surface* new_image = SDL_ConvertSurface (m_image, new_pixel_format, 0);
 			if (new_image != NULL && new_image != m_image) {
 				SDL_FreeSurface (m_image);
 				m_image = new_image;
 			}
 			// enable alpha blending for this image
-//			asdlw->ambulant_sdl_window::dump_sdl_surface(m_image, "image");
+//			asw->ambulant_sdl_window::dump_sdl_surface(m_image, "image");
 			SDL_SetSurfaceBlendMode(m_image, SDL_BLENDMODE_BLEND);
 			m_image_loaded = true;
 		}
@@ -133,10 +134,10 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 				D_H = dstrect.height();
 			AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
 #ifdef JNK
-			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()));
+			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asw->get_ambulant_pixmap()));
 			gdk_pixbuf_render_to_drawable(
 				m_image,
-				GDK_DRAWABLE (asdlw->get_ambulant_pixmap()),
+				GDK_DRAWABLE (asw->get_ambulant_pixmap()),
 				gc,
 				S_L, S_T,
 				D_L, D_T,
@@ -180,7 +181,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		D_H = dstrect.height();
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
 #ifdef JNK
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()));
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asw->get_ambulant_pixmap()));
 #endif//JNK
 	
 	// scale image s.t. the viewbox specified fits in destination area:
@@ -204,7 +205,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 #ifdef JNK
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (
 			NULL,
-			asdlw->get_ambulant_pixmap(),
+			asw->get_ambulant_pixmap(),
 			NULL,
 			D_L, D_T,
 			0, 0,
@@ -220,7 +221,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			chroma_low,
 			chroma_high);
 		gdk_draw_pixbuf(GDK_DRAWABLE (
-			asdlw->get_ambulant_pixmap()),
+			asw->get_ambulant_pixmap()),
 			gc,
 			screen_pixbuf,
 			N_L, N_T,
@@ -231,7 +232,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	} else {
 #ifdef JNK
 		gdk_draw_pixbuf(
-			GDK_DRAWABLE(asdlw->get_ambulant_pixmap()),
+			GDK_DRAWABLE(asw->get_ambulant_pixmap()),
 			gc,
 			new_image_pixbuf,
 			N_L, N_T,
@@ -245,7 +246,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	g_object_unref(G_OBJECT (gc));
 #endif//JNK
 	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	asdlw->copy_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
+	asw->copy_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x done.", this);
 	m_lock.leave();

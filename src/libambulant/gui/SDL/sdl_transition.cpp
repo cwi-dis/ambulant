@@ -43,6 +43,7 @@ namespace sdl {
 static void
 setup_transition(bool outtrans, ambulant_sdl_window *agw, SDL_Surface** oldpxmp, SDL_Surface** newpxmp)
 {
+#ifdef TBD
 	if (outtrans) {
 		if (agw->m_tmpsurface == NULL) {
 			// make a copy
@@ -55,21 +56,22 @@ setup_transition(bool outtrans, ambulant_sdl_window *agw, SDL_Surface** oldpxmp,
 		*oldpxmp = agw->get_ambulant_surface();
 		*newpxmp = agw->get_ambulant_surface();
 	}
+#endif//TBD
 }
 static void
 finalize_transition(bool outtrans, ambulant_sdl_window *agw,  common::surface *dest)
 {
 	if (outtrans) {
 		// copy the pixels in m_tmpsurface to the on-screen surface
+#ifdef  TBD
 		SDL_Surface* dest_surface = agw->get_ambulant_surface();
 		SDL_Surface* temp_surface = agw->get_ambulant_surface();
 		const lib::rect &r=	 dest->get_clipped_screen_rect();
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_surface=0x%x: temp_surface=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_surface, temp_surface,r.left(),r.top(),r.width(), r.height());
-#ifdef  JNK
 		GdkGC *gc = gdk_gc_new (dest_surface);
 		gdk_draw_surface(dest_surface, gc, temp_surface, r.left(),r.top(),r.left(),r.top(),r.width(), r.height());
 		g_object_unref (G_OBJECT (gc));
-#endif//JNK
+#endif//TBD
 	}
 }
 

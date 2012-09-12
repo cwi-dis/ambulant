@@ -115,8 +115,8 @@ sdl_gui_player::sdl_gui_player(sdl_gui* gui)
 	common::preferences *prefs = common::preferences::get_preferences();
 	m_logger->debug(" creating smil2 player %s", prefs->repr().c_str());
 	m_player = create_player(filename);
-	m_sdl_window->set_evp(m_player->get_evp()); // for timestamps
-	m_sdl_window->get_ambulant_sdl_window()->set_gui_player (this);
+//	m_sdl_window->set_evp(m_player->get_evp()); // for timestamps
+//	m_sdl_window->get_ambulant_sdl_window()->set_gui_player (this);
 }
 
 sdl_gui_player::~sdl_gui_player()
@@ -221,7 +221,7 @@ sdl_gui_player::create_player(const char* filename) {
 void
 sdl_gui_player::init_window_factory()
 {
-	m_sdl_window = new sdl_ambulant_window(m_gui->get_document_container());
+//X	m_sdl_window = new sdl_ambulant_window(m_gui->get_document_container()); // delayed for correct size
 	common::window_factory* sdl_wf = gui::sdl::create_sdl_window_factory(m_sdl_window, this);
 	set_window_factory(sdl_wf);
 }

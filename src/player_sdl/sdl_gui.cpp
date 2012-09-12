@@ -104,10 +104,11 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 {
 	// create the player
 	int width = 640, height = 480;
+#ifdef  JNK
 	m_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
 	assert (m_window);
 	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(0x%x): m_window=(SDL_Window*)0x%x", this, m_window);
-#ifdef JNK
+#ifdef MORE_JNK
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 	if (m_renderer == NULL) {
 	       	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(0x%x): trying software renderer", this);
@@ -136,7 +137,7 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 	gmask = 0x0000ff00;
 	bmask = 0x00ff0000;
 	amask = 0xff000000;
-#endif	
+#endif
 	m_surface = SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 	if (m_surface == NULL) {
 		/* or using the default masks for the depth: */
@@ -144,6 +145,7 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 		lib::logger::get_logger()->warn("Cannot open %s, error: %s", "SDL_CreateRGBSurface",SDL_GetError());
 		return;
 	}
+#endif//MORE_JNK
 #endif//JNK
 	m_toplevelcontainer = m_documentcontainer = m_window;
 	m_gui_player = new sdl_gui_player(this);
@@ -726,14 +728,14 @@ sdl_gui::sdl_loop() {
 				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
 				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
 				SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
-				bool ok = SDL_SetClipRect(asw->get_sdl_surface(), &sdl_rect);
+				bool ok = SDL_SetClipRect(asw->get_sdl_ambulant_window()->get_sdl_surface(), &sdl_rect);
 				assert(ok);
 				asw->redraw(*redraw_rectp);
 				free(redraw_rectp);
 			}
 			break;
 		case SDL_WINDOWEVENT:
-			saw = ambulant::gui::sdl:: sdl_ambulant_window::s_id_sdl_ambulant_window_map[event.window.windowID];
+			saw = ambulant::gui::sdl::sdl_ambulant_window::get_sdl_ambulant_window (event.window.windowID);
 			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
 			if (saw != NULL && (asw = saw->get_ambulant_sdl_window()) != NULL) {
 				ambulant::lib::rect r;

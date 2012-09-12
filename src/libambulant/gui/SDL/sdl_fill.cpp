@@ -210,6 +210,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	const common::region_info *info = m_dest->get_info();
 	lib::rect r = m_dest->get_rect();
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
+	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
@@ -231,7 +232,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	SDL_Rect sdl_dst_rect = {L, T, W, H};
 	if (m_renderer == NULL) {
-		m_renderer = asw->get_sdl_renderer();
+		m_renderer = saw->get_sdl_renderer();
 		if (m_renderer == NULL) {
 			return;
 		}
@@ -261,6 +262,7 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 	if (opacity > 0.0) {
 	// First find our whole area to be cleared to background color
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
+		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
@@ -273,7 +275,7 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 
 		Uint8 red = redc(bgcolor), green = bluec(bgcolor), blue = greenc(bgcolor);
 		if (m_background_renderer == NULL) {
-			m_background_renderer = asw->get_sdl_renderer();
+			m_background_renderer = saw->get_sdl_renderer();
 			if (m_background_renderer == NULL) {
 				return;
 			}

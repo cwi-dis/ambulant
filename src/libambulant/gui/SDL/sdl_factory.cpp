@@ -91,8 +91,13 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	lib::rect r (m_p, bounds);
 	AM_DBG lib::logger::get_logger()->debug("sdl_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 	ambulant_sdl_window * asdlw = new ambulant_sdl_window(name, &r, region);
-	asdlw->set_ambulant_window((sdl_ambulant_window*) m_parent_window);
-	((sdl_ambulant_window*)m_parent_window)->set_ambulant_sdl_window(asdlw);
+	sdl_ambulant_window * sdlaw = (sdl_ambulant_window*) m_parent_window;
+	if (sdlaw == NULL) {
+		m_parent_window = sdlaw = new sdl_ambulant_window(NULL);
+		assert (sdlaw);
+	}
+	asdlw->set_ambulant_window(sdlaw);
+	sdlaw->set_ambulant_sdl_window(asdlw);
 #ifdef JNK
 	// We don't create this window anymore MainLoop does it!!
 	sdl_window_set_size_request(m_parent_window->get_sdl_window(), r.right(), r.bottom());

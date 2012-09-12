@@ -125,21 +125,21 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_transition_dest->get_rect();
-	ambulant_sdl_window* agw = (ambulant_sdl_window*) window;
-	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_surface());
+	sdl_ambulant_window* saw = ((ambulant_sdl_window*) window)->get_sdl_ambulant_window();
+	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_sdl_surface());
 
 	SDL_Surface* surf = NULL;
 	// See whether we're in a transition
 	if (m_trans_engine && !m_fullscreen) {
-		SDL_Surface* gpm = agw->get_ambulant_surface();
-		surf = agw->get_ambulant_surface();
-		if (surf == NULL)
-			surf = agw->new_ambulant_surface();
+//JNK	SDL_Surface* gpm = saw->get_ambulant_surface();
+//TBD	surf = saw->get_ambulant_surface();
+//TBD	if (surf == NULL)
+//TBD		surf = saw->new_ambulant_surface();
 		if (surf != NULL) {
 			// Copy the background pixels
 			rect dstrect = r;
 			dstrect.translate(m_transition_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), surf, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 #ifdef  JNK
 			GdkGC *gc = gdk_gc_new (surf);
 			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
@@ -147,7 +147,7 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 			g_object_unref (G_OBJECT (gc));
 #endif//JNK
 			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to transition surface");
-			agw->set_ambulant_surface(surf);
+//TBD		saw->set_ambulant_surface(surf);
 		}
 
 	}
@@ -159,19 +159,19 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 {
 	m_lock.enter();
 
-	ambulant_sdl_window* agw = (ambulant_sdl_window*) window;
-	SDL_Surface* surf = agw->get_ambulant_surface();
+	sdl_ambulant_window* saw = ((ambulant_sdl_window*) window)->get_sdl_ambulant_window();
+	SDL_Surface* surf = saw->get_sdl_surface();
 
 	if (surf != NULL) {
-		agw->reset_ambulant_surface();
+//TBD	saw->reset_ambulant_surface();
 	}
 
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
-			if (m_fullscreen)
-				agw->screenTransitionStep(NULL, 0);
-			else
+//TBD		if (m_fullscreen)
+//TBD			saw->screenTransitionStep(NULL, 0);
+//TBD		else
 				m_trans_engine->step(now);
 			typedef lib::no_arg_callback<sdl_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &sdl_transition_renderer::stop);
@@ -180,7 +180,7 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 			if ( 1 /* XXX was: surf */) {
 				AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to view");
 				if (m_fullscreen) {
-					agw->screenTransitionStep (m_trans_engine, now);
+//TBD				saw->screenTransitionStep (m_trans_engine, now);
 				} else {
 					m_trans_engine->step(now);
 				}
