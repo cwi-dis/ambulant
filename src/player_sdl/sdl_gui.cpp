@@ -738,6 +738,12 @@ sdl_gui::sdl_loop() {
 			saw = ambulant::gui::sdl::sdl_ambulant_window::get_sdl_ambulant_window (event.window.windowID);
 			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
 			if (saw != NULL && (asw = saw->get_ambulant_sdl_window()) != NULL) {
+				common::player* player = m_gui_player->get_player();
+				if (player != NULL && saw->get_evp() == NULL) {
+					// First window event after creation, complete initialization
+					saw->set_evp(player->get_evp()); // for timestamps
+					saw->get_ambulant_sdl_window()->set_gui_player (m_gui_player);
+				}
 				ambulant::lib::rect r;
 				switch ( event.window.event ) {
 				case  SDL_WINDOWEVENT_SHOWN:
