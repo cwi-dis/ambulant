@@ -92,6 +92,7 @@ class sdl_background_renderer : public common::background_renderer {
 	sdl_background_renderer(const common::region_info *src)
 	:	common::background_renderer(src),
 		m_background_renderer(NULL) {}
+	~sdl_background_renderer();
 
 	void redraw(const lib::rect &dirty, common::gui_window *windo);
 	void highlight(gui_window *window);

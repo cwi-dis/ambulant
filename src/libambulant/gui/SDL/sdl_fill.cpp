@@ -251,6 +251,11 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 }
 
+sdl_background_renderer::~sdl_background_renderer()
+{
+	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::~sdl_background_renderer(0x%x)", (void *)this);
+}
+
 void
 sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
@@ -274,12 +279,12 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
 
 		Uint8 red = redc(bgcolor), green = bluec(bgcolor), blue = greenc(bgcolor);
-		if (m_background_renderer == NULL) {
+//TMP		if (m_background_renderer == NULL) { // TMP disable SDL_Renderer* caching
 			m_background_renderer = saw->get_sdl_renderer();
 			if (m_background_renderer == NULL) {
 				return;
 			}
-		}
+//TMP  	}
 		// Set and draw the background color for the region
 		SDL_Rect sdl_dst_rect = {L, T, W, H};
 		int err = 0;
