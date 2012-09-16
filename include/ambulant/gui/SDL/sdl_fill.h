@@ -46,7 +46,7 @@ namespace gui {
 
 namespace sdl {
 
-class sdl_fill_renderer : public  renderer_playable {
+class sdl_fill_renderer : public renderer_playable {
   public:
 	sdl_fill_renderer(
 		common::playable_notification *context,
@@ -59,8 +59,7 @@ class sdl_fill_renderer : public  renderer_playable {
 		m_is_showing(false),
 		m_intransition(NULL),
 		m_outtransition(NULL),
-		m_trans_engine(NULL),
-		m_renderer(NULL) {};
+		m_trans_engine(NULL) {};
 	~sdl_fill_renderer();
 
 	//	void freeze() {}
@@ -83,22 +82,17 @@ class sdl_fill_renderer : public  renderer_playable {
 	// TBD smil2::transition_engine *m_trans_engine;
 	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
-
-	SDL_Renderer* m_renderer;
 };
 
 class sdl_background_renderer : public common::background_renderer {
   public:
 	sdl_background_renderer(const common::region_info *src)
-	:	common::background_renderer(src),
-		m_background_renderer(NULL) {}
+	  :	common::background_renderer(src) {}
 	~sdl_background_renderer();
 
-	void redraw(const lib::rect &dirty, common::gui_window *windo);
+	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void highlight(gui_window *window);
 	void keep_as_background();
-  private:
-	SDL_Renderer* m_background_renderer;
 };
 
 } // namespace sdl

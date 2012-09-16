@@ -70,14 +70,17 @@ class ambulant_sdl_window : public common::gui_window {
 	common::gui_player* get_gui_player();
 
 	/// Helper: get the actual SDL_Surface
-//	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
+//	SDL_Surface* get_sdl_surface() { return m_sdl_surface; } moved to sdl_ambulant_window
 	
 	/// Helper: get the actual (backscreen) SDL_Renderer
-//	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
+//	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; } moved to sdl_ambulant_window
 
-	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha); //XX
+	// Helper: copy the surface 'src' to the current surface (using a blit operation)
+	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 
 	void dump_sdl_surface (SDL_Surface* surf, const char* id); //XX
+
+	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id); //XX
 
 	lib::rect get_bounds() { return m_bounds; }
 
@@ -151,10 +154,13 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get the actual SDL_Window
 	SDL_Window* get_sdl_window() { return m_sdl_window; }
 
-	/// Helper: get the actual (hardware) SDL_Renderer
+	/// Helper: get the actual SDL_Renderer for the surface
 	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; }
 
-	/// Helper: get the actual (hardware) SDL_Surface
+	/// Helper: get the actual SDL_Renderer for the window
+	SDL_Renderer* get_sdl_window_renderer() { return m_sdl_window_renderer; }
+
+	/// Helper: get the actual SDL_Surface
 	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
 
 	/// Helper: set our counterpart gui_window.
@@ -194,17 +200,27 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// removed code and the browser may crash.
 //X	std::set<guint> m_draw_area_tags;
   private:
-	// Helper: create the actual SDL_Window*, SDL_Surface*, SDL_Renderer* and pixels. 
-	void create_sdl_window(lib::rect);
-
+	// Helper: create the actual SDL_Window*, foreground and background pixels, surfaces and renderers
+	int create_sdl_window_and_renderers(const char* window_name, lib::rect);
+	int create_sdl_surface_and_pixels(SDL_Rect*, uint8_t** pixels=NULL, SDL_Surface** surface=NULL, SDL_Renderer** renderer=NULL);
+	
 	ambulant_sdl_window* m_ambulant_sdl_window;
 	/// The actual SDL_Window*
 	SDL_Window*   m_sdl_window;
-	/// A surface contains the actual pixels of the window
+	SDL_Renderer* m_sdl_window_renderer;
+	/// A surface contains the current surface for drawing
 	SDL_Surface*  m_sdl_surface;
-	SDL_Renderer* m_sdl_renderer; // the "real" renderer, for SDL_Present()
+	SDL_Renderer* m_sdl_renderer;
+	// The screen_surface/renderer represent the actual pixels of the window
+	SDL_Surface*  m_sdl_screen_surface;
+	SDL_Renderer* m_sdl_screen_renderer; // the "real" renderer, for SDL_Present()
+	// The back_surface/renderer represent the actual pixels during drawing operations
+	// to be copied to the screen surface at the end of each redraw call during the loop
+	SDL_Surface*  m_sdl_back_surface;
+	SDL_Renderer* m_sdl_back_renderer;
 	lib::event_processor* m_evp;
-	uint8_t* m_pixels;
+	uint8_t* m_screen_pixels;
+	uint8_t* m_back_pixels;
 	// window counter (with s_lock protection) is used to assuere that the SdlWindow
 	// in drawing callback functions are still valid pointers at the time the callback
 	// is executed by the main thread */

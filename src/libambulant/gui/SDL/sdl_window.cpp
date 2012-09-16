@@ -244,21 +244,23 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.y = r.top();
 	rect.w = r.width();
 	rect.h = r.height();
-	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_renderer();
+	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_window_renderer();
 	SDL_Surface* surface = get_sdl_ambulant_window()->get_sdl_surface();
 
 	if (m_recorder) {
 		timestamp_t timestamp = get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed();
 		m_recorder->new_video_data(surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
 	}
-	dump_sdl_surface(surface, "scrn");
+//	dump_sdl_surface(surface, "surf");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x) surface=(SDL_Surface*)0x%x, renderer=(SDL_Renderer*)0x%x, texture=(SDL_Texture*)0x%x, rect=(SDL_Rect){%d,%d,%d,%d}", this, surface, renderer, texture, rect.x, rect.y, rect.w, rect.h);
+	assert(texture);
 	int err = SDL_RenderCopy(renderer, texture, NULL, NULL);	
+	assert (err==0);
+//	dump_sdl_renderer(renderer, rect, "rend");
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
-//X	SDL_DestroyRenderer(renderer);
 }
 
 void
@@ -316,7 +318,7 @@ ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 sdl_ambulant_window*
 ambulant_sdl_window::get_sdl_ambulant_window()
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_sdl_ambulant_window(0x%x) returns=(sdl_ambulant_window*)0x%x",this,m_ambulant_window);
+//	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_sdl_ambulant_window(0x%x) returns=(sdl_ambulant_window*)0x%x",this,m_ambulant_window);
 	return m_ambulant_window;
 }
 
@@ -466,7 +468,6 @@ ambulant_sdl_window::_screenTransitionPreRedraw()
 void
 ambulant_sdl_window::_screenTransitionPostRedraw(const lib::rect &r)
 {
-
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw()");
 #ifdef JNK
 	if (m_fullscreen_count == 0 && m_fullscreen_old_surface == NULL) {
@@ -571,9 +572,41 @@ ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL
 void
 ambulant_sdl_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
 {
-		char filename[256];
-		sprintf(filename,"%%%.8lu%s.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed(), id);
-		SDL_SaveBMP(surf, filename);
+	char filename[256];
+	sprintf(filename,"%%%.8lu%s.bmp", get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed(), id);
+	SDL_SaveBMP(surf, filename);
+}
+
+void
+ambulant_sdl_window::dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect r, const char* id)
+{
+	void* pixels = malloc(r.w*r.h*SDL_BPP);
+	int err = pixels ? 0 : -1;
+	if (err == 0) {
+		err = SDL_RenderReadPixels (renderer, &r, SDL_PIXELFORMAT_RGBA4444, pixels, r.w*SDL_BPP);
+	}
+	SDL_Surface* s = NULL;
+	if (err == 0) {
+ #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		Uint32 rmask=0xff000000, gmask = 0x00ff0000, bmask = 0x0000ff00, amask = 0x000000ff;
+ #else
+		Uint32 rmask=0x000000ff, gmask = 0x0000ff00, bmask = 0x00ff0000, amask = 0xff000000;
+ #endif	
+		s = SDL_CreateRGBSurfaceFrom(pixels, r.w, r.h, 32, r.w*SDL_BPP, rmask, gmask, bmask, amask);
+		if (s == NULL) {
+		  err = -1;
+		}
+	}
+	if (err == 0) {
+		dump_sdl_surface (s, id);
+	}
+	if (s != NULL) {
+		SDL_FreeSurface (s);
+	}
+	if (pixels != NULL) {
+		free (pixels);
+	}
+	assert(err==0);
 }
 
 //
@@ -595,6 +628,12 @@ std::map<int, sdl_ambulant_window*>  sdl_ambulant_window::s_id_sdl_ambulant_wind
 
 sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
   :	m_ambulant_sdl_window(NULL),
+	m_back_pixels(NULL),
+	m_sdl_back_renderer(NULL),
+	m_sdl_back_surface(NULL),
+	m_screen_pixels(NULL),
+	m_sdl_screen_renderer(NULL),
+	m_sdl_screen_surface(NULL),
 	m_sdl_renderer(NULL),
 	m_sdl_surface(NULL),
 	m_sdl_window(NULL),
@@ -621,12 +660,23 @@ sdl_ambulant_window::~sdl_ambulant_window()
 			sdl_ambulant_window::s_id_sdl_ambulant_window_map.erase(it);
 		}
 	}
-	free(m_pixels);
-	if (m_sdl_renderer != NULL) {
+	if (m_sdl_back_renderer != NULL) {
+ 		SDL_DestroyRenderer(m_sdl_back_renderer);
+	}
+	if (m_sdl_back_surface != NULL) {
+		SDL_FreeSurface(m_sdl_back_surface);
+	}
+	if (m_back_pixels != NULL) {
+		free(m_back_pixels);
+	}
+	if (m_sdl_screen_renderer != NULL) {
 		SDL_DestroyRenderer(m_sdl_renderer);
 	}
-	if (m_sdl_surface != NULL) {
+	if (m_sdl_screen_surface != NULL) {
 		SDL_FreeSurface(m_sdl_surface);
+	}
+	if(m_screen_pixels != NULL) {
+		free(m_screen_pixels);
 	}
 	if (m_sdl_window != NULL) {
 		SDL_DestroyWindow(m_sdl_window);
@@ -664,17 +714,67 @@ sdl_ambulant_window::~sdl_ambulant_window()
 	sdl_ambulant_window::s_lock.leave();
 }
 
-void
-sdl_ambulant_window::create_sdl_window(lib::rect r)
+int
+sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, lib::rect r)
 {
+	int err = 0;
 	if (m_sdl_window != NULL) {
-		return;
+		return err;
 	}
-	m_sdl_window = SDL_CreateWindow("SDL2 Video_Test", r.left(),r.top(),r.width(),r.height(),0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+	if (m_sdl_window == NULL) {
+		SDL_SetError("Out of memory");
+		err = -1;
+	}
+	if (err != 0) {
+		return err;
+	}
 	assert (m_sdl_window);
-	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(): m_window=(SDL_Window*)0x%x",  m_sdl_window);
-	m_pixels = (uint8_t*) malloc( r.width() * r.height() * SDL_BPP);
-	assert(m_pixels != NULL);
+	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(): m_window=(SDL_Window*)0x%x, window ID=%d",  m_sdl_window, SDL_GetWindowID(m_sdl_window));
+	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
+	err = create_sdl_surface_and_pixels(&sdl_rect, &m_screen_pixels, &m_sdl_screen_surface, &m_sdl_screen_renderer);
+	if (err != 0) {
+		return err;
+	}
+//	err = create_sdl_surface_and_pixels(&sdl_rect, &m_back_pixels, &m_sdl_back_surface, &m_sdl_back_renderer);
+	if (err != 0) {
+		return err;
+	}
+	m_sdl_surface = m_sdl_screen_surface; //TMP
+
+	// Everything OK, register the window for use by SDL_Loop in the embedder (it should have one)
+	sdl_ambulant_window::s_lock.enter();
+	sdl_ambulant_window::s_windows++;
+
+	// The screen_renderer is special, it is the rendering context for the window pixels instead the surface pixels
+	m_sdl_window_renderer = s_window_renderer_map[m_sdl_window]; //XXX is this mapping really needed ????
+	if (m_sdl_window_renderer == NULL) {
+		m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
+		if (m_sdl_window_renderer == NULL) {
+			AM_DBG lib::logger::get_logger()->trace("sdl_ambulant_window.sdl_ambulant_window(0x%x): trying software renderer", this);
+			m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
+			if (m_sdl_window_renderer == NULL) {
+				lib::logger::get_logger()->warn("Cannot open: %s, error: %s for window %d", "SDL Createrenderer", SDL_GetError(), SDL_GetWindowID(m_sdl_window));
+				return -1;
+			}
+		}
+		s_window_renderer_map[m_sdl_window] = m_sdl_window_renderer; //XXX is this mapping really needed ????
+	}
+	m_sdl_renderer = m_sdl_screen_renderer; //TMP
+	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
+	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_surface=(SDL_Surface*)0x%x m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
+	sdl_ambulant_window::s_lock.leave();
+	return err;
+}
+
+int
+sdl_ambulant_window::create_sdl_surface_and_pixels(SDL_Rect* r, uint8_t** pixels, SDL_Surface** surface, SDL_Renderer** renderer)
+{
+	int err = 0;
+	if (pixels != NULL) {
+		*pixels = (uint8_t*) malloc( r->w * r->h * SDL_BPP);
+	}
 	// From SDL documentation
  	/* Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
  	   as expected by OpenGL for textures */
@@ -683,42 +783,37 @@ sdl_ambulant_window::create_sdl_window(lib::rect r)
  	   on the endianness (byte order) of the machine */
 	// In ffmpeg_video, we use ARGB instead.
  #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	Uint32 amask=0xff000000, rmask = 0x00ff0000, gmask = 0x0000ff00, bmask = 0x000000ff;
+	Uint32 rmask=0xff000000, gmask = 0x00ff0000, bmask = 0x0000ff00, amask = 0x000000ff;
  #else
-	Uint32 amask=0x000000ff, rmask = 0x0000ff00, gmask = 0x00ff0000, bmask = 0xff000000;
+	Uint32 rmask=0x000000ff, gmask = 0x0000ff00, bmask = 0x00ff0000, amask = 0xff000000;
  #endif	
-	m_sdl_surface = SDL_CreateRGBSurfaceFrom(m_pixels, r.width(), r.height(), 32, r.width()*SDL_BPP, amask, rmask, gmask, bmask);
-	if (m_sdl_surface == NULL) {
-		/* or using the default masks for the depth: */
-		m_sdl_surface = SDL_CreateRGBSurfaceFrom(m_pixels, r.width(), r.height(), 32, r.width()*SDL_BPP, 0, 0, 0, 0);
-	}
-	int err = SDL_SetSurfaceBlendMode (m_sdl_surface, SDL_BLENDMODE_BLEND);
-	assert(err==0);
-
-	m_sdl_renderer = SDL_CreateSoftwareRenderer(m_sdl_surface);
-	// enable alpha blending
-	assert (m_sdl_surface != NULL && m_sdl_renderer != NULL && SDL_SetRenderDrawBlendMode(m_sdl_renderer, SDL_BLENDMODE_BLEND) == 0);
-
-	sdl_ambulant_window::s_lock.enter();
-	sdl_ambulant_window::s_windows++;
-	m_sdl_renderer = s_window_renderer_map[m_sdl_window]; //XXX is this really needed ????
-	if (m_sdl_renderer == NULL) {
-		m_sdl_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
-		if (m_sdl_renderer == NULL) {
-			AM_DBG lib::logger::get_logger()->trace("sdl_ambulant_window.sdl_ambulant_window(0x%x): trying software renderer", this);
-			m_sdl_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
-			if (m_sdl_renderer == NULL) {
-				lib::logger::get_logger()->warn("Cannot open: %s, error: %s", "SDL Createrenderer", SDL_GetError());
-				return;
+	if (surface != NULL) {
+		if (pixels != NULL) {
+// Using the following call will create a surface that fails to produce a proper SDL_Texture* later
+// using SDL_CreateTextureFromSurface(), although this function does not indicate an error.
+// The alternative using the default masks does not show this problem. Bug in SDL2 ?? 
+// disabled:		*surface = SDL_CreateRGBSurfaceFrom(*pixels, r->w, r->h, 32, r->w*SDL_BPP, rmask, gmask, bmask, amask);
+			if (*surface == NULL) {
+				/* or using the default masks for the depth: */
+				*surface = SDL_CreateRGBSurfaceFrom(*pixels, r->w, r->h, 32, r->w*SDL_BPP, 0, 0, 0, 0);
+			}
+		} else {
+			*surface = SDL_CreateRGBSurface(0, r->w, r->h, r->w*SDL_BPP, rmask, gmask, bmask, amask);
+			if (*surface == NULL) {
+				SDL_CreateRGBSurface(0, r->w, r->h, r->w*SDL_BPP, 0, 0, 0,0);
 			}
 		}
-		s_window_renderer_map[m_sdl_window] = m_sdl_renderer; //XXX is this really needed ????
+		err = SDL_SetSurfaceBlendMode (*surface, SDL_BLENDMODE_BLEND);
+		if (err != 0) {
+			return err;
+		}
 	}
-	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
-	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_surface=(SDL_Surface*)0x%x m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
-	sdl_ambulant_window::s_lock.leave();
-	return;
+	if (renderer != NULL) {
+		*renderer = SDL_CreateSoftwareRenderer(*surface);
+		// enable alpha blending
+		err = SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_BLEND);
+	}
+	return err;
 }
 
 sdl_ambulant_window*
@@ -741,7 +836,7 @@ sdl_ambulant_window::set_ambulant_sdl_window( ambulant_sdl_window* asw)
 	//	  delete m_sdl_window;
 	m_ambulant_sdl_window = asw;
 	if (asw != NULL) {
-		create_sdl_window(asw->get_bounds());
+		create_sdl_window_and_renderers("SDL2 Video_Test", asw->get_bounds());
 	}
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::set_sdl_window(0x%x): m_ambulant_sdl_window=(ambulant_sdl_window*)0x%x, m_sdl_window=(SDL_Window*)0x%x)",
 											this, m_ambulant_sdl_window, m_sdl_window);

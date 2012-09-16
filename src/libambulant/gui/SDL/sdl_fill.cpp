@@ -29,7 +29,7 @@
 
 #ifdef  WITH_SDL2 // TBD
 
-//#define AM_DBG
+///#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -54,7 +54,6 @@ ambulant::gui::sdl::create_sdl_fill_playable_factory(common::factories *factory,
 		sdl_fill_playable_renderer_uri2,
 		sdl_fill_playable_renderer_uri2>(factory, mdp);
 }
-/* JNK?*/
 
 sdl_fill_renderer::~sdl_fill_renderer()
 {
@@ -64,9 +63,7 @@ sdl_fill_renderer::~sdl_fill_renderer()
 	m_outtransition = NULL;
 //TBD	if (m_trans_engine) delete m_trans_engine;
 	m_trans_engine = NULL;
-	if (m_renderer != NULL) {
-		SDL_DestroyRenderer(m_renderer);
-	}
+ 
 	m_lock.leave();
 }
 
@@ -207,10 +204,16 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 
 	// <brush> drawing
 
+	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer::redraw_body(0x%x)", (void *)this);
+	int err = 0;
 	const common::region_info *info = m_dest->get_info();
 	lib::rect r = m_dest->get_rect();
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+	SDL_Renderer* renderer =  saw != NULL ? saw->get_sdl_renderer() : NULL;
+	if (renderer == NULL) {
+		return;
+	}
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
@@ -231,29 +234,24 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	Uint8 bgalpha = info ? info->get_bgopacity()* 255 : 255;
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	SDL_Rect sdl_dst_rect = {L, T, W, H};
-	if (m_renderer == NULL) {
-		m_renderer = saw->get_sdl_renderer();
-		if (m_renderer == NULL) {
-			return;
-		}
-	}
 	// Set and draw the background color for the region
-	int err = 0;
-	err = SDL_SetRenderDrawColor (m_renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha);
+	err = SDL_SetRenderDrawColor (renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha);
 	assert (err==0);
-	err = SDL_RenderFillRect (m_renderer, &sdl_dst_rect);
+	err = SDL_RenderFillRect (renderer, &sdl_dst_rect);
 	assert (err==0);
 	// Set and draw the  foreground color for the region
-	err = SDL_SetRenderDrawColor (m_renderer, redc(color), greenc(color), bluec(color), alpha);
+	err = SDL_SetRenderDrawColor (renderer, redc(color), greenc(color), bluec(color), alpha);
 	assert (err==0);
-	err = SDL_RenderFillRect (m_renderer, &sdl_dst_rect);
+	err = SDL_RenderFillRect (renderer, &sdl_dst_rect);
 	assert (err==0);
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
+	SDL_Rect sdl_src_rect = {0, 0, W, H};
+//TBD	err = asw->copy_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
+//	assert (err==0);
 }
 
 sdl_background_renderer::~sdl_background_renderer()
 {
-	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::~sdl_background_renderer(0x%x)", (void *)this);
 }
 
 void
@@ -268,6 +266,10 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 	// First find our whole area to be cleared to background color
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+		SDL_Renderer* background_renderer =  saw != NULL ? saw->get_sdl_renderer() : NULL;
+		if (background_renderer == NULL) {
+			return;
+		}
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
@@ -279,19 +281,23 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
 
 		Uint8 red = redc(bgcolor), green = bluec(bgcolor), blue = greenc(bgcolor);
-//TMP		if (m_background_renderer == NULL) { // TMP disable SDL_Renderer* caching
-			m_background_renderer = saw->get_sdl_renderer();
-			if (m_background_renderer == NULL) {
+//TMP		if (background_renderer == NULL) { // TMP disable SDL_Renderer* caching
+			background_renderer = saw->get_sdl_renderer();
+			if (background_renderer == NULL) {
 				return;
 			}
 //TMP  	}
 		// Set and draw the background color for the region
 		SDL_Rect sdl_dst_rect = {L, T, W, H};
 		int err = 0;
-		err = SDL_SetRenderDrawColor (m_background_renderer, red, green, blue, opacity*255);
+		err = SDL_SetRenderDrawColor (background_renderer, red, green, blue, opacity*255);
 		assert (err==0);
-		err = SDL_RenderFillRect (m_background_renderer, &sdl_dst_rect);
+//		err = SDL_RenderClear (background_renderer);
+		err = SDL_RenderFillRect (background_renderer, &sdl_dst_rect);
 		assert (err==0);
+		SDL_Rect sdl_src_rect = {0, 0, W, H};
+//TBD?		err = asw->copy_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
+//		assert (err==0);
 /*TBD*
 		if (opacity == 1.0) {
 		} else {  //XXXX adapted from sdl_transition. May be some code to be factored out

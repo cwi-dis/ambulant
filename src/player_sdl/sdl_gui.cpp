@@ -727,10 +727,16 @@ sdl_gui::sdl_loop() {
 			if (event.user.code == 317107) {
 				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
 				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
-				SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
-				bool ok = SDL_SetClipRect(asw->get_sdl_ambulant_window()->get_sdl_surface(), &sdl_rect);
-				assert(ok);
-				asw->redraw(*redraw_rectp);
+				saw = asw == NULL ? NULL : asw->get_sdl_ambulant_window();
+				if (saw != NULL) {
+					SDL_Surface* surf = saw->get_sdl_surface();
+					if (surf != NULL) {
+						SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
+						bool ok = SDL_SetClipRect(asw->get_sdl_ambulant_window()->get_sdl_surface(), &sdl_rect);
+						assert(ok);
+						asw->redraw(*redraw_rectp);
+					}
+				}
 				free(redraw_rectp);
 			}
 			break;
