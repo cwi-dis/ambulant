@@ -957,8 +957,6 @@
 		040DAB3412B790BB002C4DFD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		04A1E85E12B57DF20060F97E /* Frameworks */ = {
@@ -2568,6 +2566,7 @@
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2779,6 +2778,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
