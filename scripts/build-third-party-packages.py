@@ -453,7 +453,16 @@ third_party_packages={
             url2="%s.en-US.mac-i386.sdk.tar.bz2" % XULRUNNER_VERSION,
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
-            )
+            ),
+        TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
+            checkcmd="test -f ../libltdl/.libs/libltdlc.a",
+            buildcmd=
+                "rm -rf ../libltdl &&"
+                "mkdir ../libltdl &&"
+                "cd ../libltdl &&"
+                "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
+                "make" % MAC106_COMMON_CFLAGS
+            ),
         ],
 
     'mac10.4' : [

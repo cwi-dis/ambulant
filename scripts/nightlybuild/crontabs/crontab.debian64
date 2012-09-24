@@ -3,4 +3,4 @@ MAILTO=jack@cwi.nl
 PATH=/home/jack/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 30 5 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.linux.sh 
 30 6 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.debian.sh 
-15 7 * * * ssh moes prlctl stop Ubuntu-1104-64bit
+15 7 * * * ssh moes.sen.cwi.nl prlctl stop Ubuntu-1104-64bit
