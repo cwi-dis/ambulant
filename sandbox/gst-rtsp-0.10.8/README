@@ -1,0 +1,19 @@
+gst-rtsp-server is a library ion top of GStreamer for building an RTSP server
+
+There are some examples in the examples/ directory and more comprehensive
+documentation in docs/README.
+
+Retrieved from: http://gstreamer.freedesktop.org/src/gst-rtsp/gst-rtsp-0.10.8.tar.bz2
+
+This version has been a little modified to include in 'examples':
+* test-webcam: stream a webcam over rtsp
+* test-appsrc: stream input data from 'stdin' over rtsp
+  (supposed to contain rgb video data, preceded by an ASCII header like:
+  Time: 00000122
+  Size: 00921600	
+  W:   640
+  H:   480)
+  This format is currently used by ambulant-recorder-plugin.
+
+Use: './configure LDFLAGS=-lgstapp-0.10\ -lgstvideo-0.10 --enable-gtk-doc;make' to compile.
+

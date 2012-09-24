@@ -6,6 +6,7 @@ library_include_HEADERS= \
 	playable.h \
 	player.h \
 	preferences.h \
+	recorder.h \
 	region_dim.h \
 	region_eval.h \
 	region_info.h \
@@ -20,4 +21,4 @@ library_include_HEADERS= \
 	plugin_engine.h \
 	trace_playable.h \
 	video_renderer.h
-	
+

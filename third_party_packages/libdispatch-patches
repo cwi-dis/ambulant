@@ -1,0 +1,75 @@
+#!/bin/sh
+*** a/libdispatch/dispatch/dispatch.h  2012-07-26 15:55:49.000620000 +0200
+--- b/libdispatch/dispatch/dispatch.h  2012-07-26 15:47:59.001394000 +0200
+***************
+*** 33,39 ****
+--- 33,42 ----
+  #include <stdbool.h>
+  #include <stdarg.h>
+  #if HAVE_UNISTD_H
++ 
++ #undef __block
+  #include <unistd.h>
++ #define __block __attribute__((__blocks__(byref)))
+  #endif
+  
+  #if defined(__cplusplus)
+*** a/libdispatch/testing/dispatch_read.c     2012-07-26 15:55:49.001313000 +0200
+--- b/libdispatch/testing/dispatch_read.c     2012-07-26 16:13:18.002351000 +0200
+***************
+*** 20,25 ****
+--- 20,27 ----
+  
+  #include "config/config.h"
+  
++ #include <dispatch/dispatch.h>
++ 
+  #include <sys/stat.h>
+  #include <assert.h>
+  #include <fcntl.h>
+***************
+*** 28,34 ****
+  #include <unistd.h>
+  #include <errno.h>
+  
+- #include <dispatch/dispatch.h>
+  
+  #include "dispatch_test.h"
+  
+--- 30,35 ----
+*** a/libdispatch/testing/dispatch_test.c     2012-07-26 15:55:49.001345000 +0200
+--- b/libdispatch/testing/dispatch_test.c     2012-07-26 16:16:44.001199000 +0200
+***************
+*** 1,5 ****
+--- 1,7 ----
+  #include "config/config.h"
+  
++ #include "dispatch_test.h"
++ 
+  #include <sys/types.h>
+  #include <sys/wait.h>
+  
+***************
+*** 11,18 ****
+  #include <sys/errno.h>
+  #include <string.h>
+  
+- #include "dispatch_test.h"
+- 
+  #define _test_print(_file, _line, _desc, \
+        _expr, _fmt1, _val1, _fmt2, _val2) do { \
+        const char* _exprstr = _expr ? "PASS" : "FAIL"; \
+--- 13,18 ----
+*** a/libdispatch/testing/shims/arc4random.c     2012-07-26 15:55:49.001438000 +0200
+--- b/libdispatch/testing/shims/arc4random.c     2012-07-26 16:20:50.000395000 +0200
+***************
+*** 30,35 ****
+--- 30,37 ----
+  
+  #include "config/config.h"
+  
++ #include "dispatch/dispatch.h"
++ 
+  #ifndef HAVE_ARC4RANDOM
+  
+  #include <sys/types.h>

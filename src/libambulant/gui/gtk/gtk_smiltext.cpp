@@ -413,8 +413,8 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 		PangoLayoutIter* iter_p = pango_layout_get_iter(m_pango_layout);
 		PangoLayoutLine* line_p = pango_layout_iter_get_line(iter_p);
 		pango_layout_iter_get_layout_extents (iter_p, &ink_rect, &log_rect);
-//AM_DBG	std::string line(m_text_storage, line_p->start_index, line_p->length);
-//AM_DBG	logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
+/*AM_DBG*/	std::string line(m_text_storage, line_p->start_index, line_p->length);
+AM_DBG	logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
 		pango_layout_iter_free(iter_p);
 		m_log_rect.x = log_rect.x/PANGO_SCALE;
 		m_log_rect.y = log_rect.y/PANGO_SCALE;

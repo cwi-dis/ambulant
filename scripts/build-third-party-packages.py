@@ -745,17 +745,6 @@ third_party_packages={
         ],
 
     'linux' : [
-        TPP("libtool", 
-            url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
-            url2="libtool-2.2.6a.tar.gz",
-            checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
-            buildcmd=
-                "cd libtool-2.2.6 && "
-                        "%s --enable-ltdl-install &&"
-                "make ${MAKEFLAGS} && "
-                "make install" % LINUX_COMMON_CONFIGURE
-            ),
-
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
@@ -766,7 +755,8 @@ third_party_packages={
                 "autoconf && "
                 "%s && "
                 "make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+                "make install && "
+                "install -D -m 755 expat.pc %s/lib/pkgconfig/expat.pc" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR)
             ),
 
         TPP("xerces-c",
@@ -799,25 +789,110 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
-            url2="ffmpeg-0.6.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.9.1.tar.gz",
+            url2="ffmpeg-0.9.1.tar.gz",
+            checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
             buildcmd=
-                "cd ffmpeg-0.6.5&& "
-                "%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
+                "cd ffmpeg-0.9.1&& "
+                "%s  --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
 
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
-            checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+#           url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-                "cd SDL-1.3.0-* && "
-                "%s &&"
+               "if [ ! -e SDL ] ; then hg clone http://hg.libsdl.org/SDL; "
+               "cd SDL && "
+               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch; " 
+               "else cd SDL; fi; mkdir -p build; cd build &&"
+# Note: SDL 2.0 wants a different build directory, therefore one '.' is preprended
+                ".%s --disable-video-x11-xinput&&"
                 "make ${MAKEFLAGS} && "
-                "make install" % (LINUX_COMMON_CONFIGURE)
+                "make install &&"
+                "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+            ),
+
+        TPP("SDL_image",
+# mercurial version needed for compatibilty with SDL2
+#           url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.13.tar.gz",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
+            buildcmd=
+                "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
+                "cd SDL_image && mkdir -p build && cd build && "
+                ".%s &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
+
+        TPP("SDL_ttf", # SDL True Type Fonts
+# mercurial version needed for compatibilty with SDL2
+#           url="http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.11.tar.gz",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_ttf",
+            buildcmd=
+                "if [ ! -e SDL_ttf ] ; then  hg clone http://hg.libsdl.org/SDL_ttf ; fi && "
+                "cd SDL_ttf && mkdir -p build && cd build &&"
+                ".%s &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
+            url="http://sourceforge.net/projects/sdlpango/files/latest/download",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+# patches needed for compatibilty with distributed versions and one for SDL2
+            checkcmd="pkg-config --atleast-version=0.1.3 SDL_Pango",
+            buildcmd=
+                "cd SDL_Pango-0.1.2 && "
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-API-Changes.patch && " 
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && autoreconf && libtoolize && " 
+                "which sdl2-config >/dev/null && %s --with-sdl2 && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+            ),
+
+# Next 3 packages are only for Linux flavours where libdispatch is not directly available (Fedora)
+# libdispatch is not really necessary, but makes multicore machines more efficient
+        TPP("libblocksruntime",
+            url="http://mark.heily.com/sites/mark.heily.com/files/libblocksruntime-0.1.tar.gz",
+            url2="libblocksruntime-0.1.tar.gz",
+            checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/Blocks.h" % COMMON_INSTALLDIR ,
+            buildcmd=
+                "cd libBlocksRuntime-0.1 && "
+                "%s &&"
+                "make install " % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("libkqueue",
+            url="http://mark.heily.com/sites/mark.heily.com/files/libkqueue-1.0.6.tar.gz",
+            url2="libkqueue-1.0.6.tar.gz",
+            checkcmd="pkg-config --atleast-version=1.0.6 libkqueue",
+            buildcmd=
+                "cd libkqueue-1.0.6 && "
+                "%s &&"
+                "make; make install " % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("libdispatch",
+#           url="",   # no tar-balls available, got it from a 'git' repo
+#           url2="libdispatch.tar.gz",
+            checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/dispatch/dispatch.h" % COMMON_INSTALLDIR,
+            buildcmd=
+                "if test \! -e libdispatch ; then git clone git://git.macosforge.org/libdispatch.git libdispatch ; "
+                "patch --Np1 -r- < %s/third_party_packages/libdispatch-patches ; fi && "
+                "cd libdispatch && if test \! -e configure ; then bash ./autogen.sh ; fi && "
+                "%s CPPFLAGS=-I%s/include LDFLAGS=-L%s/lib &&"
+                "make install " % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
 
         TPP("live",

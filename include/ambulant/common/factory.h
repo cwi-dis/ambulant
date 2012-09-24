@@ -26,6 +26,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/common/recorder.h"
 #include "ambulant/common/state.h"
 #include "ambulant/lib/node.h"
 
@@ -36,6 +37,7 @@ namespace common {
 /// Convenience class that stores all per-document factory objects.
 /// As of Ambulant 1.8 this class is usually used through gui_player
 /// (which extends it).
+
 class AMBULANTAPI factories {
 public:
 	factories();
@@ -54,6 +56,8 @@ public:
 	virtual void init_node_factory();
 	/// Create the state factory.
 	virtual void init_state_component_factory();
+	/// Create the recorder factory.
+	virtual void init_recorder_factory();
 
 	/// Return the playable factory.
 	virtual global_playable_factory *get_playable_factory() const { return m_playable_factory; }
@@ -67,6 +71,8 @@ public:
 	virtual lib::node_factory *get_node_factory() const { return m_node_factory; }
 	/// Return the state factory.
 	virtual global_state_component_factory *get_state_component_factory() const { return m_state_component_factory; }
+	/// Return the recorder factory.
+	virtual recorder_factory *get_recorder_factory() const { return m_recorder_factory; }
 	/// Override the playable factory. Deletes the old one, if needed.
 	virtual void set_playable_factory(global_playable_factory *pf) { delete m_playable_factory; m_playable_factory = pf; }
 	/// Override the playable factory.
@@ -79,6 +85,8 @@ public:
 	virtual void set_node_factory(lib::node_factory *nf) { m_node_factory = nf; }
 	/// Override the state factory.
 	virtual void set_state_component_factory(global_state_component_factory *sf) { delete m_state_component_factory; m_state_component_factory = sf; }
+	/// Override the recorder factory. Deletes the old one, if needed.
+	virtual void set_recorder_factory(recorder_factory *rf) { if(m_recorder_factory) delete m_recorder_factory; m_recorder_factory = rf; }
 private:
 	global_playable_factory *m_playable_factory;
 	window_factory *m_window_factory;
@@ -86,6 +94,7 @@ private:
 	lib::global_parser_factory *m_parser_factory;
 	lib::node_factory *m_node_factory;
 	common::global_state_component_factory *m_state_component_factory;
+	recorder_factory *m_recorder_factory;
 };
 
 } // end namespaces
