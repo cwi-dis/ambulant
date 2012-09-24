@@ -889,7 +889,7 @@ third_party_packages={
             checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/dispatch/dispatch.h" % COMMON_INSTALLDIR,
             buildcmd=
                 "if test \! -e libdispatch ; then git clone git://git.macosforge.org/libdispatch.git libdispatch ; "
-                "patch --Np1 -r- < %s/third_party_packages/libdispatch-patches ; fi && "
+                "patch -Np1 -r- < %s/third_party_packages/libdispatch-patches ; fi && "
                 "cd libdispatch && if test \! -e configure ; then bash ./autogen.sh ; fi && "
                 "%s CPPFLAGS=-I%s/include LDFLAGS=-L%s/lib &&"
                 "make install " % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
