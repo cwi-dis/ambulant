@@ -182,9 +182,18 @@ You also need 7-Zip and Python 2.6 or 2.7.
 
 First, you build the third party packages, by opening a "cmd" command window
 and navigating to ambulant/third_party_packages. You now run the following
-two commands:
-	xxx> call "c:\Program Files\Microsoft Visual Studio xxx\VC\bin\vcvars.bat"
+commands:
+	xxx> call "c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\vcvars.bat"
+or
+	xxx> call "c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat"
+and
 	xxx> call "c:\PythonXX\python.exe" ..\scripts\build-third-party-packages.py win32
+
+If you have both VC9 and VC10 installed and you want to use VC10 to build you must unset
+the VC9 environment var:
+	xxx> set VS90COMNTOOLS=
+Failing to do so will result in an error trying to build libdispatch-vs2008.
+
 This should build all third party packages and put them where the Ambulant
 build expects them. If you have to change anything in this python script, for
 example because a new version of some package has replaced an older one,
