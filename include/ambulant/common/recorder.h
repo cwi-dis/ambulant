@@ -23,6 +23,7 @@
 #define RECORDER_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
 #include "ambulant/net/datasource.h"
 
 namespace ambulant {
