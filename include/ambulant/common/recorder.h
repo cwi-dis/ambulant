@@ -47,7 +47,7 @@ public:
 	virtual void new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp) = 0;
 
 	/// Record new audio data  with timestamp (ms) in document time
-	virtual void new_audio_data (void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp) = 0;
+	virtual void new_audio_data (void* data, size_t datasize, lib::timer::time_type _documentimestamp) = 0;
 };
 
 class recorder_factory {  /*TBD: not all details known yet*/
