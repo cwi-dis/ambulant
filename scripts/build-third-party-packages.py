@@ -830,22 +830,6 @@ third_party_packages={
                 "cd .." % LINUX_COMMON_CONFIGURE
             ),
 
-
-        TPP("SDL_ttf", # SDL True Type Fonts
-# mercurial version needed for compatibilty with SDL2
-#           url="http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.11.tar.gz",
-#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
-            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
-            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_ttf",
-            buildcmd=
-                "if [ ! -e SDL_ttf ] ; then  hg clone http://hg.libsdl.org/SDL_ttf ; fi && "
-                "cd SDL_ttf && mkdir -p build && cd build &&"
-                ".%s &&"
-                "make ${MAKEFLAGS} && "
-                "make install &&"
-                "cd .." % LINUX_COMMON_CONFIGURE
-            ),
-
         TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
             url="http://sourceforge.net/projects/sdlpango/files/latest/download",
 #           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
@@ -854,56 +838,11 @@ third_party_packages={
             buildcmd=
                 "cd SDL_Pango-0.1.2 && "
                 "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-API-Changes.patch && " 
-                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && autoreconf && libtoolize && " 
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && echo 'AC_DEFUN([AM_PATH_SDL])' > acinclude.m4 && autoreconf && libtoolize && " 
                 "which sdl2-config >/dev/null && %s --with-sdl2 && "
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
-            ),
-
-# Next 3 packages are only for Linux flavours where libdispatch is not directly available (Fedora)
-# libdispatch is not really necessary, but makes multicore machines more efficient
-        TPP("libblocksruntime",
-            url="http://mark.heily.com/sites/mark.heily.com/files/libblocksruntime-0.1.tar.gz",
-            url2="libblocksruntime-0.1.tar.gz",
-            checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/Blocks.h" % COMMON_INSTALLDIR ,
-            buildcmd=
-                "cd libBlocksRuntime-0.1 && "
-                "%s &&"
-                "make install " % LINUX_COMMON_CONFIGURE
-            ),
-
-        TPP("libkqueue",
-            url="http://mark.heily.com/sites/mark.heily.com/files/libkqueue-1.0.6.tar.gz",
-            url2="libkqueue-1.0.6.tar.gz",
-            checkcmd="pkg-config --atleast-version=1.0.6 libkqueue",
-            buildcmd=
-                "cd libkqueue-1.0.6 && "
-                "%s &&"
-                "make; make install " % LINUX_COMMON_CONFIGURE
-            ),
-
-        TPP("libdispatch",
-#           url="",   # no tar-balls available, got it from a 'git' repo
-#           url2="libdispatch.tar.gz",
-            checkcmd="test -f /usr/include/dispatch/dispatch.h -o -f %s/include/dispatch/dispatch.h" % COMMON_INSTALLDIR,
-            buildcmd=
-                "if test \! -e libdispatch ; then git clone git://git.macosforge.org/libdispatch.git libdispatch ; "
-                "patch -Np1 -r- < %s/third_party_packages/libdispatch-patches ; fi && "
-                "cd libdispatch && if test \! -e configure ; then bash ./autogen.sh ; fi && "
-                "%s CPPFLAGS=-I%s/include LDFLAGS=-L%s/lib &&"
-                "make install " % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
-            ),
-
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles linux && "
-                "make ${MAKEFLAGS} " % (AMBULANT_DIR)
             ),
 
         TPP("gettext",
