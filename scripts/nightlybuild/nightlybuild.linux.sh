@@ -6,15 +6,22 @@
 # If you are on Ubuntu, you will need to apt-get at least the following packages:
 #  mercurial
 #  chrpath
+#  autogen
 #  autoconf
 #  automake
 #  libtool
+#  g++
+#  yasm
+#  gettext
+#  libpango1.0-dev
+#  libgtk2.0-dev
+#  libqt3-mt-dev
 #  postfix
 #  mailutils
 #  curl
 #  ssh
-#  libgtk2.0-dev
 #  libxt-dev
+#  libxext-dev
 #
 set -e
 set -x
