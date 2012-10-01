@@ -3,7 +3,7 @@
 # Script to do a nightly clean build of a full Ambulant
 # Linux version
 #
-# If you are on Ubuntu, you will need to apt-get at least the following packages:
+# If you are on Ubuntu, you will need to 'apt-get install' at least the following packages:
 #  mercurial
 #  chrpath
 #  autogen
@@ -22,6 +22,7 @@
 #  ssh
 #  libxt-dev
 #  libxext-dev
+#  libsdl1.2-dev
 #
 set -e
 set -x
