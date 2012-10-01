@@ -37,7 +37,6 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
-#include "SDL_ttf.h"
 
 class sdl_gui_player;
 //X class sdl_settings;
