@@ -845,6 +845,17 @@ third_party_packages={
                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
+        TPP("live",
+            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+            buildcmd=
+                "cd live && "
+                "tar xf %s/third_party_packages/live-patches.tar && "
+                "./genMakefiles linux && "
+                "make ${MAKEFLAGS} " % (AMBULANT_DIR)
+            ),
+
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
             url2="gettext-0.18.1.1.tar.gz",
