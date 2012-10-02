@@ -1,0 +1,18 @@
+<smil version="3.0">
+<head>
+<layout>
+<root-layout width="640" height="480" backgroundColor="black"/>
+<region xml:id="all" left="0%" top="0%" width="100%" height="100%" backgroundColor="gray"  fit="meet"/>
+</layout>
+</head>
+<body>
+<par>
+<!-- works with gst-rtsp example test-webcam -->
+<video id="video-01" src="rtsp://localhost:8553/test" region="all" dur="3600"/>
+
+<!-- works with QtBroadCaster 
+<video id="video-01" src="rtsp://keesmacbook.local/mystream.sdp" region="all" dur="3600"/>
+-->
+</par>
+</body>
+</smil>

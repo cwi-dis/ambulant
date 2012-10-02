@@ -311,7 +311,8 @@ int main(int argc, char *argv[]) {
     // Is this a packet from the video stream?
     if(packet.stream_index==videoStream) {
       // Decode video frame
-      avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, packet);
+      avcodec_decode_video(pCodecCtx, pFrame, &frameFinished, 
+			   packet.data, packet.size);
       
       // Did we get a video frame?
       if(frameFinished) {

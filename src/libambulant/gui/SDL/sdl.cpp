@@ -28,6 +28,8 @@
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_gui.h"
 #include "ambulant/gui/SDL/sdl_audio.h"
+#include "ambulant/gui/SDL/sdl_fill.h"
+#include "ambulant/gui/SDL/sdl_video.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/smil2/test_attrs.h"
 
@@ -40,6 +42,8 @@ ambulant::gui::sdl::create_sdl_playable_factory(common::factories *factory)
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new sdl_renderer_factory(factory);
 }
 
@@ -52,7 +56,7 @@ bool
 sdl_renderer_factory::supports(common::renderer_select *rs)
 {
 	const lib::xml_string& tag = rs->get_tag();
-	if (tag != "" && tag != "ref" && tag != "audio" && tag != "prefetch") return false;
+	if (tag != "" && tag != "ref" && tag != "audio" && tag != "brush" && tag != "video" && tag != "prefetch") return false;
 	const char *renderer_uri = rs->get_renderer_uri();
 #if 1
 	// Stopgap for MyVideos: We don't want the SDL renderer to
@@ -63,7 +67,9 @@ sdl_renderer_factory::supports(common::renderer_select *rs)
 	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererSdl")) != 0 &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
-		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )
+		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0  &&
+		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererVideo")) != 0 &&
+		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererFill")) != 0 )
 	{
 		return false;
 	}
@@ -77,15 +83,17 @@ sdl_renderer_factory::new_playable(
 		const lib::node *node,
 		lib::event_processor *evp)
 {
-	common::playable *rv;
+	common::playable *rv = NULL;
 	lib::xml_string tag = node->get_local_name();
 	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio" || tag == "prefetch") {
 		rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_audio_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
-	} else {
-		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
-		return NULL;
+#ifdef WITH_SDL_VIDEO
+	} else if (tag == "video") {
+		rv = new gui::sdl::sdl_video_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
+		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_video_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
+#endif // WITH_SDL_VIDEO
 	}
 	return rv;
 }

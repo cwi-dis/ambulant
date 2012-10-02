@@ -24,7 +24,6 @@
 		0407034F115264F30094FB0B /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407034E115264F30094FB0B /* QTKit.framework */; };
 		040703511152650C0094FB0B /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040703501152650C0094FB0B /* QTKit.framework */; };
 		04070359115265220094FB0B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04070358115265220094FB0B /* WebKit.framework */; };
-		040707161152847A0094FB0B /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 040707151152847A0094FB0B /* libltdl.a */; };
 		040DAAE612B790BB002C4DFD /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		040DAAE712B790BB002C4DFD /* video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA1115194C10007DD71 /* video_renderer.cpp */; };
 		040DAAE812B790BB002C4DFD /* renderer_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9D115194C10007DD71 /* renderer_impl.cpp */; };
@@ -103,6 +102,8 @@
 		040DAB3312B790BB002C4DFD /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
 		041DCB3D12B64D75003407C8 /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D16115194C10007DD71 /* posix_datasource.cpp */; };
 		041DCB3E12B64D8E003407C8 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
+		0431EBD315EEC3B20066DE20 /* libltdlc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0431EBD215EEC3B20066DE20 /* libltdlc.a */; };
+		0431EBD415EEC3B20066DE20 /* libltdlc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0431EBD215EEC3B20066DE20 /* libltdlc.a */; };
 		044E012913D9A8E300E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		044E012A13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		044E012B13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
@@ -275,7 +276,6 @@
 		04A1E86E12B57DF20060F97E /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407034E115264F30094FB0B /* QTKit.framework */; };
 		04A1E86F12B57DF20060F97E /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040703501152650C0094FB0B /* QTKit.framework */; };
 		04A1E87012B57DF20060F97E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04070358115265220094FB0B /* WebKit.framework */; };
-		04A1E87112B57DF20060F97E /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 040707151152847A0094FB0B /* libltdl.a */; };
 		04A1E87B12B57E920060F97E /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA6115194C10007DD71 /* cg_dsvideo.mm */; };
 		04A1E87C12B57E920060F97E /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA7115194C10007DD71 /* cg_fill.mm */; };
 		04A1E87D12B57E930060F97E /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA8115194C10007DD71 /* cg_gui.mm */; };
@@ -493,9 +493,9 @@
 		0407034E115264F30094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		040703501152650C0094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		04070358115265220094FB0B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		040707151152847A0094FB0B /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		040DAB3812B790BB002C4DFD /* libambulantIPhone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libambulantIPhone.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
+		0431EBD215EEC3B20066DE20 /* libltdlc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdlc.a; path = "../../build-3264/libltdl/.libs/libltdlc.a"; sourceTree = SOURCE_ROOT; };
 		044E012713D9A81300E6A628 /* event_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = event_processor.cpp; sourceTree = "<group>"; };
 		04791B821151943B0007DD71 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		04791B831151943B0007DD71 /* state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
@@ -983,7 +983,7 @@
 				04A1E86E12B57DF20060F97E /* QTKit.framework in Frameworks */,
 				04A1E86F12B57DF20060F97E /* QTKit.framework in Frameworks */,
 				04A1E87012B57DF20060F97E /* WebKit.framework in Frameworks */,
-				04A1E87112B57DF20060F97E /* libltdl.a in Frameworks */,
+				0431EBD415EEC3B20066DE20 /* libltdlc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1022,7 +1022,7 @@
 				0407034F115264F30094FB0B /* QTKit.framework in Frameworks */,
 				040703511152650C0094FB0B /* QTKit.framework in Frameworks */,
 				04070359115265220094FB0B /* WebKit.framework in Frameworks */,
-				040707161152847A0094FB0B /* libltdl.a in Frameworks */,
+				0431EBD315EEC3B20066DE20 /* libltdlc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1043,10 +1043,10 @@
 		04070305115262DC0094FB0B /* Third Party Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				0431EBD215EEC3B20066DE20 /* libltdlc.a */,
 				04070306115263540094FB0B /* libavcodec.dylib */,
 				04070307115263540094FB0B /* libavformat.dylib */,
 				04070308115263540094FB0B /* libavutil.dylib */,
-				040707151152847A0094FB0B /* libltdl.a */,
 				04070309115263540094FB0B /* libexpat.dylib */,
 				0407030A115263540094FB0B /* libfaad.dylib */,
 				0407030B115263540094FB0B /* libintl.dylib */,
@@ -2595,6 +2595,7 @@
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\\\"",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
+					"\"$(SRCROOT)/../../build-3264/libltdl/.libs\"",
 				);
 				PRODUCT_NAME = libambulantCG;
 			};
@@ -2623,6 +2624,7 @@
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\\\"",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
+					"\"$(SRCROOT)/../../build-3264/libltdl/.libs\"",
 				);
 				PRODUCT_NAME = libambulantCG;
 			};
@@ -2723,6 +2725,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/libltdl/.libs\"",
 				);
 				PRODUCT_NAME = libambulant;
 			};
@@ -2751,6 +2754,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/libltdl/.libs\"",
 				);
 				PRODUCT_NAME = libambulant;
 			};
