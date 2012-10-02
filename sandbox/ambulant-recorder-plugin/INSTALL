@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# configure, build and install in the usual way, preferably using a build directory
+# You can use this file to do so.
+#
+if [ $SUDO = "" ]
+then
+    SUDO=sudo
+fi
+BUILD_DIR=build-`arch`
+if [ ! -e configure ]
+then # generate configure, if it does not exist
+    ./autogen.sh
+fi
+if [ ! -e $BUILD_DIR ]
+then # generate build directory, if it does not exist
+    mkdir $BUILD_DIR
+fi
+CURR_DIR=$PWD
+trap "cd $CURR_DIR" EXIT 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+cd $BUILD_DIR
+if [ -e ../configure ]
+then
+    ../configure
+fi
+if [ -e ./Makefile ]
+then
+    make
+    $SUDO make install
+fi
+

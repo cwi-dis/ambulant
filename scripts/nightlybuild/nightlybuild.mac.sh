@@ -3,8 +3,9 @@
 # Script to do a nightly clean build of a full Ambulant
 # Mac 10.6 version
 #
+set -e
 set -x
-PATH=$PATH:/Developer/usr/bin
+export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -16,8 +17,8 @@ x)
 esac
 
 # Tunable parameters, to some extent
-SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
-MACOSX_DEPLOYMENT_TARGET=10.6
+export SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
+export MACOSX_DEPLOYMENT_TARGET=10.6
 AMBULANTVERSION=2.3
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -43,7 +44,7 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
-CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin"
+CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin --with-included-ltdl"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=$PLUGINNAME.dmg
