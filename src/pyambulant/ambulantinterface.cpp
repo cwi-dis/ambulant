@@ -2530,6 +2530,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "init_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_parser_factory");
 		if (!PyObject_HasAttrString(itself, "init_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_node_factory");
 		if (!PyObject_HasAttrString(itself, "init_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_state_component_factory");
+		if (!PyObject_HasAttrString(itself, "init_recorder_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_recorder_factory");
 		if (!PyObject_HasAttrString(itself, "get_playable_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_playable_factory");
 		if (!PyObject_HasAttrString(itself, "get_window_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_window_factory");
 		if (!PyObject_HasAttrString(itself, "get_datasource_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_datasource_factory");
@@ -2656,6 +2657,21 @@ void factories::init_state_component_factory()
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during factories::init_state_component_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void factories::init_recorder_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "init_recorder_factory", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::init_recorder_factory() callback:\n");
 		PyErr_Print();
 	}
 
