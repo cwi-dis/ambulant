@@ -796,9 +796,6 @@ third_party_packages={
         TPP("ffmpeg",
             url="http://ffmpeg.org/releases/ffmpeg-0.10.2.tar.gz",
             url2="ffmpeg-0.10.2.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
-            url="http://ffmpeg.org/releases/ffmpeg-0.9.1.tar.gz",
-            url2="ffmpeg-0.9.1.tar.gz",
             checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
             buildcmd=
                 "cd ffmpeg-0.10.2&& "
