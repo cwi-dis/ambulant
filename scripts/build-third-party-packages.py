@@ -422,16 +422,16 @@ third_party_packages={
                 "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles macosx3264 && "
-                "make ${MAKEFLAGS} " % AMBULANT_DIR
-            ),
+#         TPP("live",
+#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+#             buildcmd=
+#                 "cd live && "
+#                 "tar xf %s/third_party_packages/live-patches.tar && "
+#                 "./genMakefiles macosx3264 && "
+#                 "make ${MAKEFLAGS} " % AMBULANT_DIR
+#             ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
             url2="gettext-0.18.1.1.tar.gz",
@@ -524,16 +524,16 @@ third_party_packages={
                 "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
             ),
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles macosxfat && "
-                "make ${MAKEFLAGS} " % AMBULANT_DIR
-            ),
+#         TPP("live",
+#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+#             buildcmd=
+#                 "cd live && "
+#                 "tar xf %s/third_party_packages/live-patches.tar && "
+#                 "./genMakefiles macosxfat && "
+#                 "make ${MAKEFLAGS} " % AMBULANT_DIR
+#             ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
@@ -627,19 +627,19 @@ third_party_packages={
                 "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
             ),
 
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "set -x;cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles iOS-Device-armv6 && "
-                "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&" 
-                 "./genMakefiles iOS-Device-armv7 && "
-                "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done &&"
-                "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done" % AMBULANT_DIR
-            ),
+#         TPP("live",
+#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+#             buildcmd=
+#                 "set -x;cd live && "
+#                 "tar xf %s/third_party_packages/live-patches.tar && "
+#                 "./genMakefiles iOS-Device-armv6 && "
+#                 "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&" 
+#                  "./genMakefiles iOS-Device-armv7 && "
+#                 "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done &&"
+#                 "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done" % AMBULANT_DIR
+#             ),
 
 ##      TPP("gettext",
 ##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
@@ -716,16 +716,16 @@ third_party_packages={
                 "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
  ),
 
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles iOS-Simulator && "
-                "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
-            ),
+#         TPP("live",
+#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+#             buildcmd=
+#                 "cd live && "
+#                 "tar xf %s/third_party_packages/live-patches.tar && "
+#                 "./genMakefiles iOS-Simulator && "
+#                 "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
+#             ),
 
 ##      TPP("gettext",
 ##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
@@ -850,16 +850,16 @@ third_party_packages={
                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles linux && "
-                "make ${MAKEFLAGS} " % (AMBULANT_DIR)
-            ),
+#         TPP("live",
+#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+#             buildcmd=
+#                 "cd live && "
+#                 "tar xf %s/third_party_packages/live-patches.tar && "
+#                 "./genMakefiles linux && "
+#                 "make ${MAKEFLAGS} " % (AMBULANT_DIR)
+#             ),
 
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
@@ -946,13 +946,13 @@ third_party_packages={
                 "devenv SDL_%s.sln /UseEnv /build %s" % (WINDOWS_DXSDK_PATH, WINDOWS_DXSDK_PATH, WIN32_VSVERSION, WIN32_COMMON_CONFIG)
             ),
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
-        WinTPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            extractcmd='cmd /c "%s live555-latest.tar.gz && %s live555-latest.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
-            checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
-            # Build is done by FINAL
-            ),
+#         WinTPP("live",
+#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
+#             extractcmd='cmd /c "%s live555-latest.tar.gz && %s live555-latest.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
+#             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
+#             # Build is done by FINAL
+#             ),
             
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
 ##        WinTPP("libxml2",
