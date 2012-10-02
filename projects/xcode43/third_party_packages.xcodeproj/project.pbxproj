@@ -113,7 +113,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "third_party_packages" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -171,6 +171,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AMBULANT_3PP = "../../build-3264/third_party_packages";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				"DEBUG_INFORMATION_FORMAT[arch=*]" = "dwarf-with-dsym";
@@ -187,11 +188,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AMBULANT_3PP = "../../build-iOS/third_party_packages";
+				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin::/Developer/usr/bin:/usr/local/bin:$PATH";
-				"PATH[arch=*]" = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
+				PATH = " /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH:/Developer/local/bin:/usr/local/bin";
 			};
@@ -201,10 +202,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AMBULANT_3PP = "../../build-iOS-Simulator/third_party_packages";
-				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				COMBINE_HIDPI_IMAGES = YES;
+				DSTROOT = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH";
+				PATH = "/Applications/Xcode.app/Contents//Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS-Simulator/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = third_party_packages_iOS_Simulator;
 			};
@@ -213,6 +215,7 @@
 		043EFD33130BF57E0050B2BA /* Common */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DSTROOT = /;

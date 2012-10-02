@@ -555,6 +555,17 @@ third_party_packages={
                 "make install" % (AMBULANT_DIR, IPHONE_DEVICE_COMMON_CONFIGURE)
             ),
 
+        TPP("libtool", 
+            url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
+            url2="libtool-2.2.6a.tar.gz",
+            checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
+            buildcmd=
+                "cd libtool-2.2.6 && "
+                        "%s --enable-ltdl-install &&"
+                "make ${MAKEFLAGS} && "
+                "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
+            ),
+
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
             url2="faad2-2.7.tar.gz",
@@ -661,6 +672,17 @@ third_party_packages={
                 "%s && "
                 "make clean;make ${MAKEFLAGS} && "
                 "make install" % (AMBULANT_DIR, IPHONE_SIMULATOR_COMMON_CONFIGURE)
+            ),
+
+        TPP("libtool", 
+            url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
+            url2="libtool-2.2.6a.tar.gz",
+            checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
+            buildcmd=
+                "cd libtool-2.2.6 && "
+                        "%s --enable-ltdl-install &&"
+                "make ${MAKEFLAGS} && "
+                "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
             ),
 
         TPP("faad2",

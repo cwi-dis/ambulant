@@ -229,7 +229,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "plugin_xpath_state" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -326,6 +326,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0441E7CB1343139B0025FCF9 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = so;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -342,6 +343,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0441E7CD1343139B0025FCF9 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = so;
 				GCC_MODEL_TUNING = G5;
@@ -357,6 +359,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96B912BA4DF100399893 /* ambulant-debug.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = so;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -373,6 +376,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96BA12BA4DF100399893 /* ambulant-release.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = so;
 				GCC_MODEL_TUNING = G5;

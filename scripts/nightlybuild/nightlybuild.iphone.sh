@@ -5,7 +5,7 @@
 #
 set -e
 set -x
-PATH=$PATH:/Developer/usr/bin
+PATH=/usr/local/bin:/Developer/usr/bin:$PATH
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
@@ -61,7 +61,7 @@ echo
 #
 mkdir -p $BUILDHOME
 cd $BUILDHOME
-rm -rf $BUILDDIR
+## rm -rf $BUILDDIR
 rm -rf $DESTDIR
 touch .empty
 echo If the following command fails you have no SSH key that matches the destination
@@ -69,7 +69,7 @@ scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
 ls -t | tail -n +6 | grep ambulant- | xargs rm -rf
-hg $HGARGS clone $HGCLONEARGS $BUILDDIR
+## hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 #
 # We are building a binary distribution, so we want to completely ignore any
 # library installed system-wide (in /usr/local, basically)
@@ -82,23 +82,23 @@ cd $BUILDDIR
 case x$BRANCH in
 x)	;;
 *)
-	hg up -r $BRANCH
+##	hg up -r $BRANCH
 esac
 sh autogen.sh
 #
 # Build CG player
 #
-cd projects/xcode32
+cd projects/xcode43
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos4.3 \
+	-sdk iphoneos5.1 \
 	build
 #
 # The keychain may have been locked again in the mean time
 #
-security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
-security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
+## security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
+## security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
@@ -110,7 +110,7 @@ cd ../..
 #
 # Create installer IPA file and upload
 #
-sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode32/build/Distribution-iphoneos/iAmbulant.app
+sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode43/build/Distribution-iphoneos/iAmbulant.app
 scp iAmbulant-$AMBULANTVERSION.$TODAY.ipa $DESTINATION_IPHONE
 #
 # Delete old installers, remember current
