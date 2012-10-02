@@ -101,7 +101,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\include;$(sdl_dir)\include;$(ffmpeg_dev_dir)\include;..\..\third_party_packages\ffmpeg-windows-compat;$(live555_dir)\UsageEnvironment\include;$(live555_dir)\liveMedia\include;$(live555_dir)\groupsock\include;$(live555_dir)\BasicUsageEnvironment\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO;WITH_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;WITH_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -130,7 +130,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include;$(sdl_dir)\include;$(ffmpeg_dev_dir)\include;..\..\third_party_packages\ffmpeg-windows-compat;$(live555_dir)\UsageEnvironment\include;$(live555_dir)\liveMedia\include;$(live555_dir)\groupsock\include;$(live555_dir)\BasicUsageEnvironment\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO;WITH_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;WITH_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>
@@ -157,7 +157,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include;$(sdl_dir)\include;$(ffmpeg_dev_dir)\include;..\..\third_party_packages\ffmpeg-windows-compat;$(live555_dir)\UsageEnvironment\include;$(live555_dir)\liveMedia\include;$(live555_dir)\groupsock\include;$(live555_dir)\BasicUsageEnvironment\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>
@@ -186,7 +186,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\include;$(sdl_dir)\include;$(ffmpeg_dev_dir)\include;..\..\third_party_packages\ffmpeg-windows-compat;$(live555_dir)\UsageEnvironment\include;$(live555_dir)\liveMedia\include;$(live555_dir)\groupsock\include;$(live555_dir)\BasicUsageEnvironment\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -222,8 +222,18 @@
     <ClCompile Include="..\..\src\libambulant\net\ffmpeg_video.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\SDL\sdl.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\SDL\sdl_audio.cpp" />
-    <ClCompile Include="..\..\src\libambulant\net\rtsp_datasource.cpp" />
-    <ClCompile Include="..\..\src\libambulant\net\rtsp_factory.cpp" />
+    <ClCompile Include="..\..\src\libambulant\net\rtsp_datasource.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\net\rtsp_factory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_dsvideo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
