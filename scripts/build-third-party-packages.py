@@ -832,7 +832,7 @@ third_party_packages={
 
         TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
             url="http://sourceforge.net/projects/sdlpango/files/latest/download",
-#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+            url2="SDL_Pango-0.1.2.tar.gz",
 # patches needed for compatibilty with distributed versions and one for SDL2
             checkcmd="pkg-config --atleast-version=0.1.3 SDL_Pango",
             buildcmd=
