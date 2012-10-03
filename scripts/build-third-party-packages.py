@@ -836,6 +836,7 @@ third_party_packages={
 # patches needed for compatibilty with distributed versions and one for SDL2
             checkcmd="pkg-config --atleast-version=0.1.3 SDL_Pango",
             buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
                 "cd SDL_Pango-0.1.2 && "
                 "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-API-Changes.patch && " 
                 "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && echo 'AC_DEFUN([AM_PATH_SDL])' > acinclude.m4 && autoreconf && libtoolize && " 
