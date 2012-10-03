@@ -399,14 +399,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.2.tar.gz",
-            url2="ffmpeg-0.10.2.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
+            url2="ffmpeg-0.10.5.tar.gz",
             checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
             buildcmd=
-            	"rm -rf ffmpeg-0.10.2-universal && "
-                "mkdir ffmpeg-0.10.2-universal && "
-                "cd ffmpeg-0.10.2-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.10.2 all" % 
+            	"rm -rf ffmpeg-0.10.5-universal && "
+                "mkdir ffmpeg-0.10.5-universal && "
+                "cd ffmpeg-0.10.5-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.10.5 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
@@ -581,11 +581,11 @@ third_party_packages={
             ),
 # create fat libraries for armv6/7: foreach arch do configure ...;make; rename lib...a to lib..$arch, then use lipo to combine them 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.2.tar.gz",
-            url2="ffmpeg-0.10.2.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
+            url2="ffmpeg-0.10.5.tar.gz",
             checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
             buildcmd=
-                "cd ffmpeg-0.10.2 && "
+                "cd ffmpeg-0.10.5 && "
 				"export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
 			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
@@ -689,11 +689,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.2.tar.gz",
-            url2="ffmpeg-0.10.2.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
+            url2="ffmpeg-0.10.5.tar.gz",
             checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
             buildcmd=
-                "cd ffmpeg-0.10.2 && "
+                "cd ffmpeg-0.10.5 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
                 "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
@@ -794,11 +794,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.2.tar.gz",
-            url2="ffmpeg-0.10.2.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
+            url2="ffmpeg-0.10.5.tar.gz",
             checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
             buildcmd=
-                "cd ffmpeg-0.10.2&& "
+                "cd ffmpeg-0.10.5&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
