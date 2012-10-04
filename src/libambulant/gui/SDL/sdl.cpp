@@ -1,3 +1,4 @@
+
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
 // Copyright (C) 2003-2011 Stichting CWI, 
@@ -44,7 +45,7 @@ ambulant::gui::sdl::create_sdl_playable_factory(common::factories *factory)
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
-	return new sdl_renderer_factory(factory);
+	return (common::playable_factory *) new sdl_renderer_factory(factory);
 }
 
 sdl_renderer_factory::~sdl_renderer_factory()

@@ -417,6 +417,10 @@
 		93DEE5E714475D5500091472 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A314475D5500091472 /* stdio_datasource.h */; };
 		93DEE5E814475D5500091472 /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A414475D5500091472 /* url.h */; };
 		93DEE5E914475D5500091472 /* win32_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A514475D5500091472 /* win32_datasource.h */; };
+		93F3ADBD161A3B09001DFDCA /* recorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 93F3ADBC161A3B09001DFDCA /* recorder.h */; };
+		93F3ADBE161A3B09001DFDCA /* recorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 93F3ADBC161A3B09001DFDCA /* recorder.h */; };
+		93F3ADBF161A3B09001DFDCA /* recorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 93F3ADBC161A3B09001DFDCA /* recorder.h */; };
+		93F3ADC0161A3B09001DFDCA /* recorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 93F3ADBC161A3B09001DFDCA /* recorder.h */; };
 		D2AAC0CC05546C4400DB518D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -925,6 +929,7 @@
 		93DEE5A314475D5500091472 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
 		93DEE5A414475D5500091472 /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
 		93DEE5A514475D5500091472 /* win32_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = win32_datasource.h; sourceTree = "<group>"; };
+		93F3ADBC161A3B09001DFDCA /* recorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = recorder.h; sourceTree = "<group>"; };
 		D2A6134D07B89F6200DD23D3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		D2AAC0C705546C1D00DB518D /* libambulant.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulant.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1079,7 +1084,6 @@
 		04791B811151943B0007DD71 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				04791B821151943B0007DD71 /* renderer_select.h */,
 				04791B831151943B0007DD71 /* state.h */,
 				04791B841151943B0007DD71 /* embedder.h */,
 				04791B851151943B0007DD71 /* factory.h */,
@@ -1090,11 +1094,13 @@
 				04791B8A1151943B0007DD71 /* player.h */,
 				04791B8B1151943B0007DD71 /* plugin_engine.h */,
 				04791B8C1151943B0007DD71 /* preferences.h */,
+				93F3ADBC161A3B09001DFDCA /* recorder.h */,
 				04791B8D1151943B0007DD71 /* region.h */,
 				04791B8E1151943B0007DD71 /* region_dim.h */,
 				04791B8F1151943B0007DD71 /* region_eval.h */,
 				04791B901151943B0007DD71 /* region_info.h */,
 				04791B911151943B0007DD71 /* renderer_impl.h */,
+				04791B821151943B0007DD71 /* renderer_select.h */,
 				04791B921151943B0007DD71 /* schema.h */,
 				04791B931151943B0007DD71 /* smil_alignment.h */,
 				04791B941151943B0007DD71 /* smil_handler.h */,
@@ -1913,6 +1919,7 @@
 				93DEE5E714475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5E814475D5500091472 /* url.h in Headers */,
 				93DEE5E914475D5500091472 /* win32_datasource.h in Headers */,
+				93F3ADC0161A3B09001DFDCA /* recorder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1935,6 +1942,7 @@
 				93DEE5B414475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5B514475D5500091472 /* url.h in Headers */,
 				93DEE5B614475D5500091472 /* win32_datasource.h in Headers */,
+				93F3ADBD161A3B09001DFDCA /* recorder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1958,6 +1966,7 @@
 				93DEE5D614475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5D714475D5500091472 /* url.h in Headers */,
 				93DEE5D814475D5500091472 /* win32_datasource.h in Headers */,
+				93F3ADBF161A3B09001DFDCA /* recorder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1979,6 +1988,7 @@
 				93DEE5C514475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5C614475D5500091472 /* url.h in Headers */,
 				93DEE5C714475D5500091472 /* win32_datasource.h in Headers */,
+				93F3ADBE161A3B09001DFDCA /* recorder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
