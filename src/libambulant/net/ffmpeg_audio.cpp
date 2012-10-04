@@ -918,8 +918,8 @@ ffmpeg_resample_datasource::data_avail()
 		assert(m_in_fmt.bits == 16);
 		assert(m_out_fmt.bits == 16);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,	 m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
-		SampleFormat samplefmt_out = SAMPLE_FMT_S16;
-		SampleFormat samplefmt_in = SAMPLE_FMT_S16;
+		AVSampleFormat samplefmt_out = AV_SAMPLE_FMT_S16;
+		AVSampleFormat samplefmt_in = AV_SAMPLE_FMT_S16;
 		// Note: the four filter parameters are taken from ffmpeg.c
 		// It is unclear how one could make a better determination of these parameters.
 		m_resample_context = av_audio_resample_init(

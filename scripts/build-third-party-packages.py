@@ -39,8 +39,9 @@ XULRUNNER_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk
 XULRUNNER_VERSION="xulrunner-8.0"
 
 #
-# FFMPEG GIT version-id for Windows
-FFMPEG_WIN_GIT_ID="7f83db3"
+# FFMPEG GIT version-id for Windows, from ffmpeg.zeranoe.com
+FFMPEG_WIN_GIT_ID="13f0cd6"
+FFMPEG_WIN_GIT_DATE="20120927"
 
 #
 # urlretrieve silently ignores 404 errors. We want them, so we can download
@@ -399,14 +400,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
-            url2="ffmpeg-0.10.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	"rm -rf ffmpeg-0.10.5-universal && "
-                "mkdir ffmpeg-0.10.5-universal && "
-                "cd ffmpeg-0.10.5-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.10.5 all" % 
+            	"rm -rf ffmpeg-1.0-universal && "
+                "mkdir ffmpeg-1.0-universal && "
+                "cd ffmpeg-1.0-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-1.0 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
@@ -581,11 +582,11 @@ third_party_packages={
             ),
 # create fat libraries for armv6/7: foreach arch do configure ...;make; rename lib...a to lib..$arch, then use lipo to combine them 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
-            url2="ffmpeg-0.10.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-                "cd ffmpeg-0.10.5 && "
+                "cd ffmpeg-1.0 && "
 				"export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
 			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
@@ -689,11 +690,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
-            url2="ffmpeg-0.10.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.32.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-                "cd ffmpeg-0.10.5 && "
+                "cd ffmpeg-1.0 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
                 "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
@@ -794,11 +795,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.10.5.tar.gz",
-            url2="ffmpeg-0.10.5.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
             buildcmd=
-                "cd ffmpeg-0.10.5&& "
+                "cd ffmpeg-1.0&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
@@ -919,14 +920,14 @@ third_party_packages={
             ),
 
         WinTPP("ffmpeg-bin",
-            url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-git-%s-win32-shared.7z" % FFMPEG_WIN_GIT_ID,
-            checkcmd="if not exist ffmpeg-git-%s-win32-shared\\bin\\avformat-53.dll exit 1" % FFMPEG_WIN_GIT_ID,
+            url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-%s-git-%s-win32-shared.7z" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
+            checkcmd="if not exist ffmpeg-%s-git-%s-win32-shared\\bin\\avformat-53.dll exit 1" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
             # No build needed
             ),
 
         WinTPP("ffmpeg-dev",
-            url="http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-git-%s-win32-dev.7z" % FFMPEG_WIN_GIT_ID,
-            checkcmd="if not exist ffmpeg-git-%s-win32-dev\\lib\\avformat.lib exit 1" % FFMPEG_WIN_GIT_ID,
+            url="http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-%s-git-%s-win32-dev.7z" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
+            checkcmd="if not exist ffmpeg-%s-git-%s-win32-dev\\lib\\avformat.lib exit 1" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
             # No build needed
             ),
 

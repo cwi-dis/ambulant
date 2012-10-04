@@ -59,7 +59,9 @@ ambulant::net::ffmpeg_init()
 	// Enable this line to get lots of ffmpeg debug output:
 	av_log_set_level(99);
 #endif
+#if FF_API_AVCODEC_INIT
 	avcodec_init();
+#endif
 	av_register_all();
 	//xxxbo: for ffmpeg-0.10.2
 	avformat_network_init();
@@ -224,7 +226,12 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), ffmpeg_name.c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
-	int err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
+	int err;
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 33, 0)
+    err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
+#else
+    err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, 0);
+#endif
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
@@ -237,7 +244,7 @@ ffmpeg_demux::supported(const net::url& url)
 		return NULL;
 	}
 
-	AM_DBG dump_format(ic, 0, ffmpeg_name.c_str(), 0);
+	AM_DBG av_dump_format(ic, 0, ffmpeg_name.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
 	assert(ic);
 	return ic;
