@@ -64,9 +64,6 @@ sh autogen.sh
 cd third_party_packages
 python ../scripts/build-third-party-packages.py $BUILD3PPARGS
 cd ..
-LIVE_DIR=$PWD/third_party_packages/live
-LIVE_INCLUDES="-I$LIVE_DIR/BasicUsageEnvironment\ -I$LIVE_DIR/UsageEnvironment\ -I$LIVE_DIR/groupsock\ -I$LIVE_DIR/liveMedia"
-LIVE_LIBRARIES="-L$LIVE_DIR/BasicUsageEnvironment\ -L$LIVE_DIR/UsageEnvironment\ -L$LIVE_DIR/groupsock\ -L$LIVE_DIR/liveMedia"
 #
 # Build source distribution, upload
 #
@@ -89,7 +86,7 @@ else
     echo "Xvfb not installed, skipping make check"
 fi
 unset DISPLAY
-DISTCHECK_CONFIGURE_FLAGS=--with-python\ --with-python-plugin\ CFLAGS=$LIVE_INCLUDES\ LDFLAGS=$LIVE_LIBRARIES\ PKG_CONFIG_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib/pkgconfig LD_LIBRARY_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib:$LD_LIBRARY_PATH make $MAKEOPTS distcheck
+DISTCHECK_CONFIGURE_FLAGS=--with-python\ --with-python-plugin\ PKG_CONFIG_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib/pkgconfig LD_LIBRARY_PATH=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib:$LD_LIBRARY_PATH make $MAKEOPTS distcheck
 mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
 #X scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install

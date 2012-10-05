@@ -35,6 +35,7 @@
 // data_buffer
 
 #define DEFAULT_MAX_BUF_SIZE 1000000
+
 size_t ambulant::net::databuffer::s_default_max_size = DEFAULT_MAX_BUF_SIZE;
 size_t ambulant::net::databuffer::s_default_max_unused_size = DEFAULT_MAX_BUF_SIZE;
 
@@ -169,6 +170,7 @@ databuffer::get_write_ptr(size_t sz)
 
 	} else {
 		lib::logger::get_logger()->trace("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
+		m_writing = false;
 		rv = NULL;
 	}
 	m_lock.leave();

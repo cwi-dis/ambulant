@@ -433,6 +433,8 @@ ffmpeg_decoder_datasource::data_avail()
 					av_init_packet(&avpkt);
 					avpkt.data = inbuf;
 					avpkt.size = (int)cursz;
+					AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: calling avcodec_decode_audio3(..., 0x%x, %d, ...)", (void*)ffmpeg_outbuf, (int)outsize);
+					assert(ffmpeg_outbuf);
 					int decoded = avcodec_decode_audio3(m_con, ffmpeg_outbuf, &outsize, &avpkt);
 					if (decoded < 0) outsize = 0;
 #if FFMPEG_OUTPUT_ALIGNMENT-1
@@ -451,7 +453,20 @@ ffmpeg_decoder_datasource::data_avail()
 						m_buffer.pushdata(outsize);
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+						if (outbuf == NULL) {
+							// At this point we are committed to push the data downstream. So if the output buffer is full our
+							// only option is to enlarge the buffer.
+							size_t newbufsize = m_buffer.size()*2;
+							lib::logger::get_logger()->trace("avcodec_decode_audio: enlarging audio output buffer to %d", newbufsize);
+							m_buffer.set_max_size(newbufsize);
+							outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+						}
+						assert(outbuf);
 						ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
+						//xxxbo Over rtsp, one packet may contain multiple frames, so updating the beginning address of avpkt.data is needed  
+						avpkt.data = inbuf;
+						AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio: again calling avcodec_decode_audio3(..., 0x%x, %d, ...)", (void*)ffmpeg_outbuf, (int)outsize);
+						assert(ffmpeg_outbuf);
 						decoded = avcodec_decode_audio3(m_con, (short*) ffmpeg_outbuf, &outsize, &avpkt);
 						if (decoded < 0) outsize = 0;
 						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", decoded, cursz, outsize);
@@ -587,7 +602,7 @@ ffmpeg_decoder_datasource::_clip_end() const
 	if (clip_end == -1) return false;
 
 	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
 	if (buffer_begin_elapsed > clip_end) {
 		return true;
 	}
@@ -916,8 +931,8 @@ ffmpeg_resample_datasource::data_avail()
 		assert(m_in_fmt.bits == 16);
 		assert(m_out_fmt.bits == 16);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,	 m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
-		SampleFormat samplefmt_out = SAMPLE_FMT_S16;
-		SampleFormat samplefmt_in = SAMPLE_FMT_S16;
+		AVSampleFormat samplefmt_out = AV_SAMPLE_FMT_S16;
+		AVSampleFormat samplefmt_in = AV_SAMPLE_FMT_S16;
 		// Note: the four filter parameters are taken from ffmpeg.c
 		// It is unclear how one could make a better determination of these parameters.
 		m_resample_context = av_audio_resample_init(

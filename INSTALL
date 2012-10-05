@@ -52,7 +52,6 @@ This is actually preferred for most users, as components like the
 Ambulant Python module will now automatically pick up the packages
 without needing LD_LIBRARY_PATH or such tricks.
 
-
 After this, the normal "configure"/"make"/"make install" combo can be used here
 in the toplevel directory to create the player, see further down
 in this document for details if you are not familiar with

@@ -47,8 +47,9 @@ Supported platforms
 -------------------
 
 Currently we have support for:
-- Windows
-- MacOSX 10.6
+- Windows 7
+- Windows XP (deprecated, may disappear)
+- MacOSX 10.6 and later
 - MacOSX 10.4/10.5 (deprecated, may disappear)
 - Linux
 
@@ -72,12 +73,12 @@ Supported media types
   - All platforms support audio through ffmpeg and SDL. This allows use
     of all common audio formats (mp3, aac, ogg, wav, wma, etc). Access can
     be from local file or over http or rtsp.
-  - Windows also supports audio through DirectX, which allows protected
+  - Windows also supports audio through DirectShow, which allows protected
     WMA file playback and a few less common formats.
 - Video:
   - All platforms support video through ffmpeg. This allows use of all
     common formats (mpeg-1/2/4, ogg, some quicktime and wm9).
-  - Windows also supports video through DirectX.
+  - Windows also supports video through DirectShow.
   - MacOSX also supports video through QuickTime.
 
 With audio and video there are some issues with specific combinations of
@@ -98,10 +99,7 @@ static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support is available, but there are issues with which server
 can actually serve which media types. This seems to be a marketing issue
 on the side of server manufacturers, and is outside our control.
-TCP fallback (if UDP is firewalled) is available on Mac and Windows, but
-must be done manually in the preferences dialog. It is not currently
-available in the Linux players. On some Linux systems (FC11, notably) you
-must disable iptables to allow RTSP playback.
+TCP fallback for RTSP (if UDP is firewalled) is available.
 
 SMIL support
 ------------

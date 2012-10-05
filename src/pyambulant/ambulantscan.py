@@ -79,6 +79,7 @@ class MyScanner(CxxScanner):
             "gdk_pixmap_bitblt",
             "create_gtk_window_factory",
             "single_playable_factory",
+            "create_sdl_window_factory", # XXXX for now
            
         ]
 
@@ -150,7 +151,10 @@ class MyScanner(CxxScanner):
             "event_processor_observer", # XXX Lazy right now, do later
             "event_processor_observer_ptr",
             "single_playable_factory",
-            "single_playable_factory_ptr"
+            "single_playable_factory_ptr",
+            "recorder_factory_ptr", # XXX for now
+            "sdl_window_factory_ptr", # XXX For now
+            "sdl_window_factory",
             
         ]
 
@@ -205,6 +209,14 @@ class MyScanner(CxxScanner):
             ),
             ('#ifndef CPP_TO_PYTHON_BRIDGE', [
                 'get_screenshot'
+                ]
+            ),
+            ('#ifdef WITH_SDL2', [
+                'create_sdl_video_playable_factory',
+                'create_sdl_text_playable_factory',
+                'create_sdl_smiltext_playable_factory',
+                'create_sdl_image_playable_factory',
+                'create_sdl_fill_playable_factory',
                 ]
             ),
         ]
