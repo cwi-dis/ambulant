@@ -31,7 +31,6 @@ debpackages="
   mailutils
   libxml2-dev 
   libqt3-mt-dev 
-  liblivemedia-dev 
   libsdl1.2-dev 
   libavformat-dev 
   libavcodec-dev 
