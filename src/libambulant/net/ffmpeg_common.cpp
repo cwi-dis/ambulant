@@ -233,7 +233,13 @@ ffmpeg_demux::supported(const net::url& url)
 #if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 0, 0)
     err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
 #else
-    err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, 0);
+	// Force rtsp-over-tcp, if that preference has been set.
+	common::preferences* prefs = common::preferences::get_preferences();
+	AVDictionary *options = 0;
+	if (prefs->m_prefer_rtsp_tcp) {
+		av_dict_set(&options, "rtsp_transport", "tcp", 0);
+	}
+    err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
 #endif
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
