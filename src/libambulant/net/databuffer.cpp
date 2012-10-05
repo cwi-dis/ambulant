@@ -170,6 +170,7 @@ databuffer::get_write_ptr(size_t sz)
 
 	} else {
 		lib::logger::get_logger()->trace("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
+		m_writing = false;
 		rv = NULL;
 	}
 	m_lock.leave();
