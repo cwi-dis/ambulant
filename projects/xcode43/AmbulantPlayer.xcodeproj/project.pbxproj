@@ -1207,6 +1207,7 @@
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Debug;
@@ -1222,6 +1223,7 @@
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Release;
@@ -1241,6 +1243,7 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayer;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
@@ -1256,6 +1259,7 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayer;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
@@ -1271,9 +1275,9 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
@@ -1288,8 +1292,8 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};

@@ -206,7 +206,7 @@
 				DSTROOT = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "/Applications/Xcode.app/Contents//Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/opt/local/bin:$PATH";
+				PATH = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS-Simulator/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = third_party_packages_iOS_Simulator;
 			};
