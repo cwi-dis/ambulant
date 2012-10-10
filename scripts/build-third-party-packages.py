@@ -616,7 +616,7 @@ third_party_packages={
                 "        --as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' "
                 "        --extra-cflags='-arch $arch -I../installed/include' "
 				"        --extra-ldflags='-arch $arch -L../installed/lib -L$SDK_PATH/usr/lib/system' "
-                "        --enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
+                "        --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
 				"        --disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "     make clean;make ${MAKEFLAGS}; "
 				"	  for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-$arch; done;echo $arch done ;"
@@ -724,7 +724,7 @@ third_party_packages={
                 "--as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' --enable-cross-compile "
                 "--sysroot=$SDK_PATH"
                 "--extra-cflags='$ARCH_ARGS -I../installed/include' --extra-ldflags='$ARCH_ARGS -L../installed/lib -L$SDK_PATH/usr/lib/system ' "
-                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
+                "--prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
                 "make clean;make ${MAKEFLAGS}; make install" %  (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
             ),
 
