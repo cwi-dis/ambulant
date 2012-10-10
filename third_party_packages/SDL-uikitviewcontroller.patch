@@ -1,0 +1,12 @@
+diff -Naur a/SDL_uikitviewcontroller.m b/SDL_uikitviewcontroller.m
+--- a/SDL_uikitviewcontroller.m	2012-10-05 15:26:54.000000000 +0200
++++ b/SDL_uikitviewcontroller.m	2012-10-05 15:30:18.000000000 +0200
+@@ -147,6 +147,6 @@
+     SDL_SendWindowEvent(self->window, SDL_WINDOWEVENT_RESIZED, w, h);
+ }
+ 
+-#endif /* SDL_VIDEO_DRIVER_UIKIT */
+-
+ @end
++
++#endif /* SDL_VIDEO_DRIVER_UIKIT */
