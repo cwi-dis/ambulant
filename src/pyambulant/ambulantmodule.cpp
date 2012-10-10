@@ -5402,6 +5402,19 @@ static PyObject *factoriesObj_init_state_component_factory(factoriesObject *_sel
 	return _res;
 }
 
+static PyObject *factoriesObj_init_recorder_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->init_recorder_factory();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *factoriesObj_get_playable_factory(factoriesObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -5584,6 +5597,8 @@ static PyMethodDef factoriesObj_methods[] = {
 	{"init_node_factory", (PyCFunction)factoriesObj_init_node_factory, 1,
 	 PyDoc_STR("() -> None")},
 	{"init_state_component_factory", (PyCFunction)factoriesObj_init_state_component_factory, 1,
+	 PyDoc_STR("() -> None")},
+	{"init_recorder_factory", (PyCFunction)factoriesObj_init_recorder_factory, 1,
 	 PyDoc_STR("() -> None")},
 	{"get_playable_factory", (PyCFunction)factoriesObj_get_playable_factory, 1,
 	 PyDoc_STR("() -> (ambulant::common::global_playable_factory* _rv)")},
@@ -17577,6 +17592,106 @@ static PyObject *PyAm_create_sdl_playable_factory(PyObject *_self, PyObject *_ar
 }
 #endif
 
+#ifdef WITH_SDL2
+
+static PyObject *PyAm_create_sdl_video_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::sdl::create_sdl_video_playable_factory(factory,
+	                                                            NULL);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_SDL2
+
+static PyObject *PyAm_create_sdl_text_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::sdl::create_sdl_text_playable_factory(factory,
+	                                                           NULL);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_SDL2
+
+static PyObject *PyAm_create_sdl_smiltext_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::sdl::create_sdl_smiltext_playable_factory(factory,
+	                                                               NULL);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_SDL2
+
+static PyObject *PyAm_create_sdl_image_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::sdl::create_sdl_image_playable_factory(factory,
+	                                                            NULL);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_SDL2
+
+static PyObject *PyAm_create_sdl_fill_playable_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::sdl::create_sdl_fill_playable_factory(factory,
+	                                                           NULL);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
 static PyObject *PyAm_read_data_from_url(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -17881,6 +17996,31 @@ static PyMethodDef PyAm_methods[] = {
 
 #ifdef WITH_SDL
 	{"create_sdl_playable_factory", (PyCFunction)PyAm_create_sdl_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_SDL2
+	{"create_sdl_video_playable_factory", (PyCFunction)PyAm_create_sdl_video_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_SDL2
+	{"create_sdl_text_playable_factory", (PyCFunction)PyAm_create_sdl_text_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_SDL2
+	{"create_sdl_smiltext_playable_factory", (PyCFunction)PyAm_create_sdl_smiltext_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_SDL2
+	{"create_sdl_image_playable_factory", (PyCFunction)PyAm_create_sdl_image_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_SDL2
+	{"create_sdl_fill_playable_factory", (PyCFunction)PyAm_create_sdl_fill_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 	{"read_data_from_url", (PyCFunction)PyAm_read_data_from_url, 1,

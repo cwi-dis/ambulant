@@ -420,6 +420,7 @@ public:
 	void init_parser_factory();
 	void init_node_factory();
 	void init_state_component_factory();
+	void init_recorder_factory();
 	ambulant::common::global_playable_factory* get_playable_factory() const;
 	ambulant::common::window_factory* get_window_factory() const;
 	ambulant::net::datasource_factory* get_datasource_factory() const;

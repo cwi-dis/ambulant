@@ -18,7 +18,7 @@ PREFIX="--prefix=`cd ../installed ; pwd`"
 # Set this to the global options you want to configure ffmpeg with.
 #
 #CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-static --enable-shared --enable-libfaad --disable-libfaac"
-CONFIGOPTS="$PREFIX --disable-encoders --enable-runtime-cpudetect --enable-gpl --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-static --enable-shared"
+CONFIGOPTS="$PREFIX --disable-encoders --enable-runtime-cpudetect --enable-gpl --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-yasm --enable-static --enable-shared"
 #
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET

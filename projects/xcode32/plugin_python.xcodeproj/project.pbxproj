@@ -365,7 +365,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_python(CG)";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers";
 			};
 			name = Debug;
 		};
@@ -382,7 +382,7 @@
 				PRODUCT_NAME = "libamplugin_python(CG)";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers";
 			};
 			name = Release;
 		};
@@ -400,7 +400,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_python(Cocoa)";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers";
 			};
 			name = Debug;
 		};
@@ -417,7 +417,7 @@
 				PRODUCT_NAME = "libamplugin_python(Cocoa)";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers";
 			};
 			name = Release;
 		};

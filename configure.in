@@ -720,10 +720,12 @@ AC_ARG_WITH(live,
 			;;
 		esac
 	],[
-		if test -f $third_party_packages/live/liveMedia/libliveMedia.a; then
-			live_root=$third_party_packages/live
-			test_live=true
-		fi
+		# Default is now to build without live555
+		test_live=false
+		#if test -f $third_party_packages/live/liveMedia/libliveMedia.a; then
+		#	live_root=$third_party_packages/live
+		#	test_live=true
+		#fi
 	])
 if $test_live; then
 	if test -f $live_root/liveMedia/libliveMedia.a; then
