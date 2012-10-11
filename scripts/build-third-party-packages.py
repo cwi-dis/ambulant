@@ -718,14 +718,14 @@ third_party_packages={
             url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	". %s/scripts/set_environment.py iPhoneSimulator %s; "
+            	". %s/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
             	"cd ffmpeg-1.0 && "
-                "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=$PLATFORM_PATH/Developer/usr/bin/gcc "
+                "./configure --enable-cross-compile --arch=i386 --target-os=darwin --sysroot=$SDK_PATH --cc=$PLATFORM_PATH/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' --enable-cross-compile "
-                "--sysroot=$SDK_PATH"
-                "--extra-cflags='$ARCH_ARGS -I../installed/include' --extra-ldflags='$ARCH_ARGS -L../installed/lib -L$SDK_PATH/usr/lib/system ' "
+                "--extra-cflags='$ARCH_ARGS -I../installed/include' "
+                "--extra-ldflags='$ARCH_ARGS -L../installed/lib -L$SDK_PATH/usr/lib/system ' "
                 "--prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
-                "make clean;make ${MAKEFLAGS}; make install" %  (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+                "make clean;make ${MAKEFLAGS}; make install" %  AMBULANT_DIR
             ),
 
         TPP("SDL",
@@ -733,15 +733,16 @@ third_party_packages={
             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
+            	"export AMBULANT_DIR=%s; . $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd SDL-1.3.0-*  && "
-                "(cd src/video/uikit; patch -p1 -N -r - < %s/third_party_packages/SDL-uikitviewcontroller.patch) && "
+                "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
                 "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
                 "cd Xcode-iOS/SDL  && "
-                "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug ARCHS='i386 x86_64' &&"
+                "xcodebuild -target libSDL -sdk iphonesimulator$IPHONEOS_DEPLOYMENT_TARGET -configuration Debug ARCHS=$ARCHS &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
- ),
+                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % AMBULANT_DIR
+		 ),
 
 #         TPP("live",
 #             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
@@ -761,7 +762,7 @@ third_party_packages={
 ##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
-##              "make install" % IPHONE__COMMON_CONFIGURE
+##              "make install" % IPHONE_COMMON_CONFIGURE
 ##          ),
 
         TPP("libxml2",
