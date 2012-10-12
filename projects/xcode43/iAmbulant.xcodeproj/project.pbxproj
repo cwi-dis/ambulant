@@ -10,10 +10,6 @@
 		0409070C12CB9375007B9D84 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D4212B80C2A00161EB5 /* Welcome.smil */; };
 		041E94CC12B816EE00399893 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 041E94CB12B816EE00399893 /* Entitlements.plist */; };
 		041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75D9612B80D1300161EB5 /* libambulantIPhone.a */; };
-		041E94FD12B81CCF00399893 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */; };
-		041E94FF12B81CDF00399893 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E94FE12B81CDF00399893 /* libgroupsock.a */; };
-		041E950112B81CEC00399893 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950012B81CEC00399893 /* libliveMedia.a */; };
-		041E950312B81CF500399893 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950212B81CF500399893 /* libUsageEnvironment.a */; };
 		041E950E12B81D1000399893 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950412B81D1000399893 /* libavcodec.a */; };
 		041E950F12B81D1000399893 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950512B81D1000399893 /* libavdevice.a */; };
 		041E951012B81D1000399893 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950612B81D1000399893 /* libavformat.a */; };
@@ -122,10 +118,6 @@
 
 /* Begin PBXFileReference section */
 		041E94CB12B816EE00399893 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Entitlements.plist; path = ../../src/player_iphone/Entitlements.plist; sourceTree = SOURCE_ROOT; };
-		041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		041E94FE12B81CDF00399893 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
-		041E950012B81CEC00399893 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
-		041E950212B81CF500399893 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		041E950412B81D1000399893 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		041E950512B81D1000399893 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
 		041E950612B81D1000399893 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
@@ -220,10 +212,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */,
-				041E94FD12B81CCF00399893 /* libBasicUsageEnvironment.a in Frameworks */,
-				041E94FF12B81CDF00399893 /* libgroupsock.a in Frameworks */,
-				041E950112B81CEC00399893 /* libliveMedia.a in Frameworks */,
-				041E950312B81CF500399893 /* libUsageEnvironment.a in Frameworks */,
 				041E950E12B81D1000399893 /* libavcodec.a in Frameworks */,
 				041E950F12B81D1000399893 /* libavdevice.a in Frameworks */,
 				041E951012B81D1000399893 /* libavformat.a in Frameworks */,
@@ -314,10 +302,6 @@
 				041E950B12B81D1000399893 /* libSDL.a */,
 				041E950C12B81D1000399893 /* libswscale.a */,
 				041E950D12B81D1000399893 /* libxml2.a */,
-				041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */,
-				041E94FE12B81CDF00399893 /* libgroupsock.a */,
-				041E950012B81CEC00399893 /* libliveMedia.a */,
-				041E950212B81CF500399893 /* libUsageEnvironment.a */,
 			);
 			name = third_party_packages;
 			sourceTree = "<group>";
