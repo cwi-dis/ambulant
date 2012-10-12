@@ -605,7 +605,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos5.1;
 			};
 			name = Distribution;
 		};
@@ -624,7 +624,7 @@
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -649,7 +649,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = iAmbulant;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -669,7 +669,7 @@
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -691,7 +691,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos5.1;
 			};
 			name = Debug;
 		};
@@ -710,7 +710,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "68C84755-FA62-4A8D-A458-32FF509DD26A";
-				SDKROOT = iphoneos6.0;
+				SDKROOT = iphoneos5.1;
 			};
 			name = Release;
 		};
