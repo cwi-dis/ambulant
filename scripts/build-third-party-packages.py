@@ -748,7 +748,7 @@ third_party_packages={
             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
-            	"export AMBULANT_DIR=%s; . $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd SDL-1.3.0-*  && "
                 "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
                 "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
