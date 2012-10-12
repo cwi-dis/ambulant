@@ -51,10 +51,15 @@ done
 XCODE_SDK_BASE=""
 if [ `xcodebuild -version|grep Xcode|awk '{print $2; exit}' | cut -c 1` -ge 4 ] ; 
 then
-	XCODE_SDK_BASE="/Applications/Xcode/Contents"
+	XCODE_SDK_BASE="/Applications/Xcode.app/Contents"
 fi
+# According to WWDC 2012 Building from the Command Line with Xcode (https://developer.apple.com/videos/wwdc/2012/?id=404),
+# before calling xcode build tools, the following environment variable should have the proper value
 DEVELOPER_DIR=$XCODE_SDK_BASE/Developer
+
+# export results
+export ARCHS ARCH_ARGS DEVELOPER_DIR PLATFORM_PATH SDK_PATH XCODE_SDK_BASE
+
 # clear temporary environment variables
-unset _PLATFORM _LC_PLATFORM _VERSION _XCODE_MAJOR_VERSION _arch
-export ARCHS ARCH_ARGS DEVELOPER_DIR PLATFORM_PATH SDK_PATH XCODE_SDK_BASE 
+unset _PLATFORM _LC_PLATFORM _VERSION _XCODE_MAJOR_VERSION _arch 
 # set +x

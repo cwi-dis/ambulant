@@ -4,6 +4,7 @@ import subprocess
 import urllib
 import urlparse
 import posixpath
+import platform
 from optparse import OptionParser
 
 NOCHECK=False
@@ -233,7 +234,13 @@ if dir == '/':
 print '+ Ambulant toplevel directory:', dir
 AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
-
+os.environ["AMBULANT_DIR"]=AMBULANT_DIR
+XCODE_SDK_BASE=""
+if platform.system() == "Darwin":
+	# The set_environment.sh script finds the values we need and puts them in the environment of the subshell.
+	# These then are available to 'set', but not to 'echo'. Therefore we use the former, and extract the desired value from its output.
+	XCODE_SDK_BASE=os.popen('bash -c "(. $AMBULANT_DIR/scripts/set_environment.sh; set | grep -v BASH_EXECUTION_STRING | grep  XCODE_SDK_BASE)"').read().partition("=")[2][:-1]
+# print "XCODE_SDK_BASE=", XCODE_SDK_BASE
 #
 # Common flags for MacOSX 10.4
 #
@@ -259,14 +266,14 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # SDL: based on SDL-1.3.0-4429/Xcode-iOS/SDL/SDLiPhoneOS.xcodeproj
 # live: use config.iphone42-Device/Simulator as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
 ##XXX IPHONE_DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
-# Starting from Xcode 4.0, all SDKs are stored relative to the Application. Comment out for earlier SDKs.
-XCODE_SDK_BASE="/Applications/Xcode.app/Contents"
-# no more runtime support for armv6, instead support for armv7s (iPhone 5)
-IPHONE_DEVICE_COMMON_CFLAGS="-arch armv7 -arch armv7s -isysroot %s/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS%s.sdk" % (XCODE_SDK_BASE, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
-IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' --disable-shared CFLAGS='%s' CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
+#
+# Starting from Xcode 4.0, all SDKs are stored relative to the Xcode Application.
+# The script set_environment.sh gets the proper values for DEVELOPER_DIR, ARCHS, ARCH_ARGS, SDK_PATH etc.
+IPHONE_DEVICE_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH"
+IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' --disable-shared CFLAGS=\"%s\" CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
-IPHONE_SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot %s/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator%s.sdk" % (XCODE_SDK_BASE, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
-IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s' CXXFLAGS=$CFLAGS  LDFLAGS=$CFLAGS " % (COMMON_INSTALLDIR, IPHONE_SIMULATOR_COMMON_CFLAGS)
+IPHONE_SIMULATOR_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH" 
+IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS=\"%s\" CXXFLAGS=$CFLAGS  LDFLAGS=$CFLAGS " % (COMMON_INSTALLDIR, IPHONE_SIMULATOR_COMMON_CFLAGS)
 
 #
 # Common flags for Linux
@@ -564,12 +571,13 @@ third_party_packages={
             url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
+            	" . $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
                 "set && cd expat-2.0.1 && "
-                "patch --forward < %s/third_party_packages/expat.patch && "
+                "patch --forward < $AMBULANT_DIR/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
                 "make clean;make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, IPHONE_DEVICE_COMMON_CONFIGURE)
+                "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
             ),
 
         TPP("libtool", 
@@ -577,10 +585,11 @@ third_party_packages={
             url2="libtool-2.2.6a.tar.gz",
             checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd libtool-2.2.6 && "
                         "%s --enable-ltdl-install --disable-dependency-tracking &&"
                 "make ${MAKEFLAGS} && "
-                "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
+                "make install"  % IPHONE_DEVICE_COMMON_CONFIGURE
             ),
 
         TPP("faad2",
@@ -588,6 +597,7 @@ third_party_packages={
             url2="faad2-2.7.tar.gz",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd faad2-2.7 && "
                 "%s --disable-dependency-tracking && "
                 "make clean;make ${MAKEFLAGS} && "
@@ -599,7 +609,7 @@ third_party_packages={
             url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	". %s/scripts/set_environment.sh iPhoneOS %s; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd ffmpeg-1.0 && "
                 "set -x; for arch in $ARCHS ; do"
 				"    export CPU_TYPE=unknown; "
@@ -622,7 +632,7 @@ third_party_packages={
 				"	  for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-$arch; done;echo $arch done ;"
                 "done &&"
                 "for i in `ls */*.a`; do rm $i; (cd `dirname $i`; lipo `basename $i .a`-arm* -create -output `basename $i`); done; "
- 				"make install" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+ 				"make install"
             ),
 
         TPP("SDL",
@@ -630,7 +640,7 @@ third_party_packages={
             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
-            	"export AMBULANT_DIR=%s; . $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd SDL-1.3.0-*  && "
                 "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  --host=`uname -m`-darwin &&"                
 	           "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
@@ -638,7 +648,7 @@ third_party_packages={
                 "xcodebuild -target libSDL $ARCH_ARGS -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
                 "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib" % AMBULANT_DIR
+                "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib"
             ),
 
 #         TPP("live",
@@ -647,22 +657,23 @@ third_party_packages={
 #             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
 #             buildcmd=
 #                 "set -x;cd live && "
-#                 "AMBULANT_DIR=%s; . $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS %s; "
+#                 ". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS %s; "
 #                 "tar xf $AMBULANT_DIR/third_party_packages/live-patches.tar && "
 #                 "export C=c; for arch in $ARCHS ; do export TARGET_CPU_ARCH=$arch; ./genMakefiles iOS && "
 #                 "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do cp $i `basename $i .a`-$arch; done; done &&" 
 #                 "for i in `ls */*.a`; do rm $i; (cd `dirname $i`; lipo `basename $i .a`-arm* -create -output `basename $i`); done; "
-#                 "" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+#                 "" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
 #             ),
 
 ##      TPP("gettext",
 ##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
+##           	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
 ##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
-##              "make install" % IPHONE__COMMON_CONFIGURE
+##              "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
 ##          ),
 
         TPP("libxml2",
@@ -670,6 +681,7 @@ third_party_packages={
             url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
@@ -683,12 +695,13 @@ third_party_packages={
             url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd expat-2.0.1 && "
-                "patch --forward < %s/third_party_packages/expat.patch && "
+                "patch --forward < $AMBULANT_DIR/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
                 "make clean;make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, IPHONE_SIMULATOR_COMMON_CONFIGURE)
+                "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
             ),
 
         TPP("libtool", 
@@ -696,6 +709,7 @@ third_party_packages={
             url2="libtool-2.2.6a.tar.gz",
             checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd libtool-2.2.6 && "
                 "%s --enable-ltdl-install &&"
                 "make ${MAKEFLAGS} && "
@@ -707,6 +721,7 @@ third_party_packages={
             url2="faad2-2.7.tar.gz",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd faad2-2.7 && "
                 "%s --disable-dependency-tracking && "
                 "make clean;make ${MAKEFLAGS} && "
@@ -718,14 +733,14 @@ third_party_packages={
             url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	". %s/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
             	"cd ffmpeg-1.0 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --sysroot=$SDK_PATH --cc=$PLATFORM_PATH/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' --enable-cross-compile "
                 "--extra-cflags='$ARCH_ARGS -I../installed/include' "
                 "--extra-ldflags='$ARCH_ARGS -L../installed/lib -L$SDK_PATH/usr/lib/system ' "
                 "--prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
-                "make clean;make ${MAKEFLAGS}; make install" %  AMBULANT_DIR
+                "make clean;make ${MAKEFLAGS}; make install"
             ),
 
         TPP("SDL",
@@ -741,7 +756,7 @@ third_party_packages={
                 "xcodebuild -target libSDL -sdk iphonesimulator$IPHONEOS_DEPLOYMENT_TARGET -configuration Debug ARCHS=$ARCHS &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % AMBULANT_DIR
+                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib"
 		 ),
 
 #         TPP("live",
@@ -749,6 +764,7 @@ third_party_packages={
 #             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
 #             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
 #             buildcmd=
+#            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
 #                 "cd live && "
 #                 "tar xf %s/third_party_packages/live-patches.tar && "
 #                 "./genMakefiles iOS-Simulator && "
@@ -759,10 +775,11 @@ third_party_packages={
 ##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
+##            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
 ##              "cd gettext-0.18.1.1 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
-##              "make install" % IPHONE_COMMON_CONFIGURE
+##              "make install"% IPHONE_SIMULATOR_COMMON_CONFIGURE
 ##          ),
 
         TPP("libxml2",
@@ -770,6 +787,7 @@ third_party_packages={
             url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
