@@ -1,0 +1,41 @@
+//
+// Prefix header for all source files of the 'libambulant' target in the 'libambulant' project.
+//
+#ifdef __OBJC__
+#ifdef WITH_UIKIT
+#define __WEBSERVICESCORE__
+    #import <UIKit/UIKit.h>
+#else
+    #import <Cocoa/Cocoa.h>
+#endif
+#endif
+
+#include "ambulant/config/config.h"
+#include "ambulant/version.h"
+
+#include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/node.h"
+#include "ambulant/lib/document.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/refcount.h"
+#include "ambulant/lib/timer.h"
+
+#include "ambulant/common/region.h"
+#include "ambulant/common/region_dim.h"
+#include "ambulant/common/playable.h"
+#include "ambulant/common/player.h"
+#include "ambulant/common/gui_player.h"
+
+#include "ambulant/smil2/smil_player.h"
+#include "ambulant/smil2/time_node.h"
+
+#include "ambulant/net/url.h"
+#include "ambulant/net/datasource.h"
+
+#ifdef WITH_CG
+#include "ambulant/gui/cg/cg_gui.h"
+#include "ambulant/gui/cg/cg_renderer.h"
+#else
+#include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/cocoa/cocoa_renderer.h"
+#endif

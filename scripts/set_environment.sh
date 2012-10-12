@@ -6,7 +6,7 @@
 
 # set default _PLATFORM, _VERSION
 _PLATFORM=iPhoneOS
-_VERSION=6.0
+_VERSION=5.1
 
 # get _PLATFORM, _VERSION from arguments, if any
 if [ $# -gt 0 ] ; then _PLATFORM=$1; shift; fi
