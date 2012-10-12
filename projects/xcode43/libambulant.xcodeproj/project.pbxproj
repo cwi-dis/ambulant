@@ -2537,7 +2537,7 @@
 				);
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.1;
 			};
 			name = Debug;
 		};
@@ -2565,7 +2565,7 @@
 				);
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.1;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};

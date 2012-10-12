@@ -190,7 +190,7 @@
 				AMBULANT_3PP = "../../build-iOS/third_party_packages";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PATH = " /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";
@@ -204,7 +204,7 @@
 				AMBULANT_3PP = "../../build-iOS-Simulator/third_party_packages";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PATH = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS-Simulator/third_party_packages/installed/lib/pkgconfig";
@@ -222,6 +222,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PATH = "/usr/local/bin:$(PATH)";
 				PRODUCT_NAME = third_party_packages_iOS_Fat;
+				SDKROOT = iphoneos5.1;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				ZERO_LINK = NO;
 			};
 			name = Common;
