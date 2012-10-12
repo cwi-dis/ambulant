@@ -6,7 +6,7 @@
 set -e
 set -x
 #export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
-PATH=$PATH:/opt/local/bin
+PATH=/usr/bin:/usr/local/bin:/Developer/usr/bin:$PATH
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
