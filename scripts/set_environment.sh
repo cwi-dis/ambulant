@@ -43,7 +43,10 @@ esac
 ARCH_ARGS=""
 for _arch in $ARCHS 
 do 
-   ARCH_ARGS="$ARCH_ARGS -arch $_arch"
+	if [ "$ARCH_ARGS" = "" ]
+	then ARCH_ARGS="-arch $_arch"
+	else ARCH_ARGS="$ARCH_ARGS -arch $_arch"
+	fi
 done
 
 # Starting from Xcode 4.0, all Developer extras are not in '/Developer/...' anymore,

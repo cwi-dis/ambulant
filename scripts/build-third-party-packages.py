@@ -273,7 +273,7 @@ IPHONE_DEVICE_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH"
 IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' --disable-shared CFLAGS=\"%s\" CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
 IPHONE_SIMULATOR_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH" 
-IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS=\"%s\" CXXFLAGS=$CFLAGS  LDFLAGS=$CFLAGS " % (COMMON_INSTALLDIR, IPHONE_SIMULATOR_COMMON_CFLAGS)
+IPHONE_SIMULATOR_COMMON_CONFIGURE="CFLAGS=\"%s\" && ./configure --prefix='%s' CFLAGS=\"$CFLAGS\" CXXFLAGS=\"$CFLAGS\"  LDFLAGS=\"$CFLAGS\" " % (IPHONE_SIMULATOR_COMMON_CFLAGS, COMMON_INSTALLDIR)
 
 #
 # Common flags for Linux
@@ -695,7 +695,7 @@ third_party_packages={
             url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
-            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET && "
                 "cd expat-2.0.1 && "
                 "patch --forward < $AMBULANT_DIR/third_party_packages/expat.patch && "
                 "autoconf && "
@@ -739,8 +739,8 @@ third_party_packages={
                 "--as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' --enable-cross-compile "
                 "--extra-cflags='$ARCH_ARGS -I../installed/include' "
                 "--extra-ldflags='$ARCH_ARGS -L../installed/lib -L$SDK_PATH/usr/lib/system ' "
-                "--prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
-                "make clean;make ${MAKEFLAGS}; make install"
+                "--prefix=%s --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
+                "make clean;make ${MAKEFLAGS}; make install" % COMMON_INSTALLDIR
             ),
 
         TPP("SDL",
@@ -751,12 +751,12 @@ third_party_packages={
             	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
                 "cd SDL-1.3.0-*  && "
                 "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
-                "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
+                "./configure --prefix=%s --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
                 "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator$IPHONEOS_DEPLOYMENT_TARGET -configuration Debug ARCHS=$ARCHS &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib"
+                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % COMMON_INSTALLDIR
 		 ),
 
 #         TPP("live",
