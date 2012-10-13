@@ -48,8 +48,8 @@
 
 // LiveMedia includes
 #define RTSPCLIENT_SYNCHRONOUS_INTERFACE 1
-#include "BasicUsageEnvironment.hh"
-#include "liveMedia.hh"
+// #include "BasicUsageEnvironment.hh"
+// #include "liveMedia.hh"
 
 // Needed for avcodec.h:
 // Needed for avcodec.h:
