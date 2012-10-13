@@ -103,7 +103,7 @@ security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos4.3 \
+	-sdk iphoneos5.1 \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
