@@ -5,8 +5,7 @@
 #
 set -e
 set -x
-#export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
-PATH=/usr/bin:/usr/local/bin:/Developer/usr/bin:$PATH
+export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
@@ -93,7 +92,7 @@ cd projects/xcode43
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos5.1 \
+	-sdk iphoneos4.3 \
 	build
 #
 # The keychain may have been locked again in the mean time
@@ -103,7 +102,7 @@ security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos5.1 \
+	-sdk iphoneos4.3 \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
