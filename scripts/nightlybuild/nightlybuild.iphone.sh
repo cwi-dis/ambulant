@@ -88,7 +88,7 @@ sh autogen.sh
 #
 # Build CG player
 #
-cd projects/xcode43
+cd projects/xcode32
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
