@@ -117,10 +117,6 @@
 
 /* Begin PBXFileReference section */
 		041E94CB12B816EE00399893 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Entitlements.plist; path = ../../src/player_iphone/Entitlements.plist; sourceTree = SOURCE_ROOT; };
-		041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		041E94FE12B81CDF00399893 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
-		041E950012B81CEC00399893 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
-		041E950212B81CF500399893 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		041E950412B81D1000399893 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		041E950512B81D1000399893 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
 		041E950612B81D1000399893 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
@@ -296,18 +292,14 @@
 			children = (
 				041E950412B81D1000399893 /* libavcodec.a */,
 				041E950512B81D1000399893 /* libavdevice.a */,
-				041E950612B81D1000399893 /* libavformat.a */,
 				041E950712B81D1000399893 /* libavutil.a */,
+				041E950612B81D1000399893 /* libavformat.a */,
 				041E950812B81D1000399893 /* libexpat.a */,
 				041E950912B81D1000399893 /* libfaad.a */,
 				041E950A12B81D1000399893 /* libmp4ff.a */,
 				041E950B12B81D1000399893 /* libSDL.a */,
 				041E950C12B81D1000399893 /* libswscale.a */,
 				041E950D12B81D1000399893 /* libxml2.a */,
-				041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */,
-				041E94FE12B81CDF00399893 /* libgroupsock.a */,
-				041E950012B81CEC00399893 /* libliveMedia.a */,
-				041E950212B81CF500399893 /* libUsageEnvironment.a */,
 			);
 			name = third_party_packages;
 			sourceTree = "<group>";
@@ -595,13 +587,13 @@
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 				SDKROOT = iphoneos;
 			};
 			name = Distribution;
@@ -633,7 +625,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kees Blom (8E56X343W7)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -678,7 +669,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -688,12 +679,13 @@
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

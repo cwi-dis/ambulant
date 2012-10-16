@@ -2727,6 +2727,7 @@
 			baseConfigurationReference = 04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2746,6 +2747,7 @@
 					x86_64,
 					i386,
 				);
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
