@@ -88,6 +88,7 @@ sh autogen.sh
 #
 # Build CG player
 #
+export MAKEFLAGS=-j`sysctl -a|grep core_count|awk '{print $2}'`
 cd projects/xcode32
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
@@ -110,7 +111,7 @@ cd ../..
 #
 # Create installer IPA file and upload
 #
-sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode43/build/Distribution-iphoneos/iAmbulant.app
+sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode32/build/Distribution-iphoneos/iAmbulant.app
 scp iAmbulant-$AMBULANTVERSION.$TODAY.ipa $DESTINATION_IPHONE
 #
 # Delete old installers, remember current
