@@ -52,7 +52,9 @@ done
 # Starting from Xcode 4.0, all Developer extras are not in '/Developer/...' anymore,
 #  but in '/Applications/Xcode/Contents/Developer/...'. We use XCODE_SDK_BASE to reflect this.
 XCODE_SDK_BASE=""
-if [ `xcodebuild -version|grep Xcode|awk '{print $2; exit}' | cut -c 1` -ge 4 ] ; 
+_XCODE_MAJOR_VERSION=`xcodebuild -version|grep Xcode|awk '{print $2; exit}' | cut -c 1`
+# First test if the output from 'xcodebuild' was numeric, then test its value
+if [ "$_XCODE_MAJOR_VERSION" -eq "$_XCODE_MAJOR_VERSION"  -a $_XCODE_MAJOR_VERSION -ge 4 ] ; 
 then
 	XCODE_SDK_BASE="/Applications/Xcode.app/Contents"
 fi
