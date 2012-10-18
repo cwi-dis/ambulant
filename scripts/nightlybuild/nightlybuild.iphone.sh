@@ -88,7 +88,7 @@ sh autogen.sh
 #
 # Build CG player
 #
-export MAKEFLAGS=-j`sysctl -a|grep core_count|awk '{print $2}'`
+# export MAKEFLAGS=-j`sysctl -a|grep core_count|awk '{print $2}'`
 cd projects/xcode32
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
