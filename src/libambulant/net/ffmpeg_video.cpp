@@ -80,6 +80,7 @@ video_datasource*
 ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 {
 
+	printf("LIBAVCODEC_VERSION_INT=0x%x\n", LIBAVCODEC_VERSION_INT);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
 
 	// First we check that the file format is supported by the file reader.
@@ -877,12 +878,20 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
 		return false;
 	}
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 	m_con = avcodec_alloc_context();
+#else
+	m_con = avcodec_alloc_context3(codec);
+#endif
 	m_con_owned = true;
 
 	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 	ffmpeg_lock->enter();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 	if(avcodec_open(m_con,codec) < 0) {
+#else
+	  if(avcodec_open2(m_con,codec,NULL) < 0) {
+#endif
 		ffmpeg_lock->leave();
 		lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
@@ -923,7 +932,11 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 		if(avcodec_open(m_con,codec) < 0) {
+#else
+		  if(avcodec_open2(m_con,codec,NULL) < 0) {
+#endif
 			ffmpeg_lock->leave();
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
 			return false;
@@ -943,11 +956,19 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): codec found!");
 
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 		m_con = avcodec_alloc_context();
+#else
+		m_con = avcodec_alloc_context3(codec);
+#endif
 		m_con_owned = true;
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 		if((avcodec_open(m_con,codec) < 0) ) {
+#else
+		  if(avcodec_open2(m_con,codec,NULL) < 0) {
+#endif
 			ffmpeg_lock->leave();
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open video codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
