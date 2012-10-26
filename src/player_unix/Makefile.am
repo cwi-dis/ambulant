@@ -149,7 +149,7 @@ check-ambulantplayer_qt:
 		echo Skipping tests, DISPLAY not set; \
 	else \
 		set -e; \
-		set -x; \
+		set +x; \
 		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
 		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
 		lib=/lib; \
