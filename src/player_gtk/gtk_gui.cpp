@@ -89,7 +89,7 @@ const char *ui_description =
 const char *about_text =
 	"Ambulant SMIL 3.0 player.\n"
 	"Version: %s\n"
-	"Copyright Stichting CWI, 2003-2010.\n\n"
+	"Copyright Stichting CWI, 2003-2012.\n\n"
 	"License: LGPL";
 
 
