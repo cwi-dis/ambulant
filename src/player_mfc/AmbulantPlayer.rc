@@ -214,7 +214,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "Ambulant Player version 2.2",IDC_VERSION,40,10,132,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2004-2010, Stichting CWI",IDC_STATIC,40,23,128,8
+    LTEXT           "Copyright (C) 2004-2012, Stichting CWI",IDC_STATIC,40,23,128,8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
     LTEXT           "Ambulant Player is Open Source (LGPL), please check License.txt for details.",IDC_STATIC,7,55,221,16
     LTEXT           "www.ambulantPlayer.org",IDC_STATIC,39,36,128,8

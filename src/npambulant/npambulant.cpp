@@ -1,4 +1,4 @@
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
