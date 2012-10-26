@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 2.2\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2012-10-26 15:57+0200\n"
+"POT-Creation-Date: 2012-10-26 22:27+0200\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -21,8 +21,7 @@ msgid "Cannot play document: no player"
 msgstr "Kan document niet spelen: geen speler"
 
 #: src/libambulant/common/gui_player.cpp:134
-#: src/npambulant/cg_mainloop.cpp:197 src/player_iphone/mainloop.mm:374
-#: src/player_macosx/mainloop.cpp:229
+#: src/npambulant/cg_mainloop.cpp:197 src/player_macosx/mainloop.cpp:229
 #, c-format
 msgid "Failed to parse document %s"
 msgstr "Document kan niet geparseerd worden: %s"
@@ -88,12 +87,6 @@ msgstr "Foutieve waarde voor: %s"
 msgid "Cannot open video: %s"
 msgstr "Video-bestand kan niet geopend worden: %s"
 
-#: src/libambulant/gui/cg/cg_avfoundation_video.mm:373
-#: src/libambulant/gui/cocoa/cocoa_video.mm:213
-#, c-format
-msgid "%s: cannot convert to URL"
-msgstr "Geen correcte internetlocatie (URL): %s"
-
 #: src/libambulant/gui/cg/cg_gui.mm:160
 #: src/libambulant/gui/cocoa/cocoa_gui.mm:150
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
@@ -144,6 +137,11 @@ msgstr "cocoa_ink_renderer: Kan geen DOM-tree bouwen"
 msgid "cocoa_ink_renderer: no <ink> found"
 msgstr ""
 
+#: src/libambulant/gui/cocoa/cocoa_video.mm:213
+#, c-format
+msgid "%s: cannot convert to URL"
+msgstr "Geen correcte internetlocatie (URL): %s"
+
 #: src/libambulant/gui/cocoa/cocoa_video.mm:221
 #, c-format
 msgid "%s: cannot open movie"
@@ -151,7 +149,7 @@ msgstr "Videobestand kan niet geopend worden: %s"
 
 #: src/libambulant/gui/d2/d2_player.cpp:203
 #: src/libambulant/gui/dx/dx_player.cpp:175 src/npambulant/cg_mainloop.cpp:96
-#: src/player_iphone/mainloop.mm:110 src/player_macosx/mainloop.cpp:103
+#: src/player_macosx/mainloop.cpp:103
 #, c-format
 msgid "%s: node ID not found"
 msgstr "%s: Node ID niet gevonden"
@@ -545,8 +543,8 @@ msgid "Error in SMIL transition info in document"
 msgstr "Fout in SMIL transitie in document"
 
 #: src/npambulant/cg_mainloop.cpp:83 src/player_gtk/gtk_mainloop.cpp:282
-#: src/player_iphone/mainloop.mm:96 src/player_macosx/mainloop.cpp:90
-#: src/player_sdl/sdl_gui_player.cpp:328 src/player_unix/qt_mainloop.cpp:249
+#: src/player_macosx/mainloop.cpp:90 src/player_sdl/sdl_gui_player.cpp:328
+#: src/player_unix/qt_mainloop.cpp:249
 #, c-format
 msgid "%s: Cannot build DOM tree"
 msgstr "DOM-tree kan niet gebouwd worden: %s"
@@ -1041,18 +1039,19 @@ msgstr "Opties voor insteekmodules:"
 msgid "Plugin directory:\n"
 msgstr "Map voor insteekmodules:\n"
 
-#: src/plugins/dummy_stateplugin.cpp:163 src/plugins/plugin.cpp:174
-#: src/plugins/plugin_ffmpeg.cpp:121 src/plugins/pythonplugin.cpp:136
-#: src/plugins/rot13plugin.cpp:97 src/plugins/wkdomplugin.cpp:58
-#: src/plugins/xercesplugin.cpp:83 src/plugins/xpath_stateplugin.cpp:787
+#: src/plugins/plugin.cpp:174 src/plugins/plugin_ffmpeg.cpp:121
+#: src/plugins/pythonplugin.cpp:136 src/plugins/rot13plugin.cpp:97
+#: src/plugins/wkdomplugin.cpp:58 src/plugins/xercesplugin.cpp:83
+#: src/plugins/xpath_stateplugin.cpp:787
 #, c-format
 msgid "%s: built for plugin-api version %d, current %d. Skipping."
-msgstr "%s: is gemaakt voor plugin-api versie %d, de huidige is %d. Niet geladen."
+msgstr ""
+"%s: is gemaakt voor plugin-api versie %d, de huidige is %d. Niet geladen."
 
-#: src/plugins/dummy_stateplugin.cpp:167 src/plugins/plugin.cpp:178
-#: src/plugins/plugin_ffmpeg.cpp:125 src/plugins/pythonplugin.cpp:140
-#: src/plugins/rot13plugin.cpp:101 src/plugins/wkdomplugin.cpp:62
-#: src/plugins/xercesplugin.cpp:87 src/plugins/xpath_stateplugin.cpp:791
+#: src/plugins/plugin.cpp:178 src/plugins/plugin_ffmpeg.cpp:125
+#: src/plugins/pythonplugin.cpp:140 src/plugins/rot13plugin.cpp:101
+#: src/plugins/wkdomplugin.cpp:62 src/plugins/xercesplugin.cpp:87
+#: src/plugins/xpath_stateplugin.cpp:791
 #, c-format
 msgid "%s: built for different Ambulant version (%s)"
 msgstr "%s: is gebouwd voor een andere versie van Ambulant (%s)"

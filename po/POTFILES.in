@@ -3,7 +3,6 @@ src/libambulant/common/plugin_engine.cpp
 src/libambulant/common/region.cpp
 src/libambulant/common/renderer_impl.cpp
 src/libambulant/common/video_renderer.cpp
-src/libambulant/gui/cg/cg_avfoundation_video.mm
 src/libambulant/gui/cg/cg_gui.mm
 src/libambulant/gui/cocoa/cocoa_audio.mm
 src/libambulant/gui/cocoa/cocoa_dsvideo.mm
@@ -50,7 +49,6 @@ src/player_gtk/gtk_logger.cpp
 src/player_gtk/gtk_mainloop.cpp
 src/player_gtk/gtk_settings.cpp
 src/player_gtk/unix_preferences.cpp
-src/player_iphone/mainloop.mm
 src/player_macosx/mainloop.cpp
 src/player_macosx/MyAppDelegate.mm
 src/player_macosx/MyDocument.mm
@@ -63,7 +61,6 @@ src/player_unix/qt_logger.cpp
 src/player_unix/qt_mainloop.cpp
 src/player_unix/qt_settings.cpp
 src/player_unix/unix_preferences.cpp
-src/plugins/dummy_stateplugin.cpp
 src/plugins/plugin.cpp
 src/plugins/plugin_ffmpeg.cpp
 src/plugins/pythonplugin.cpp
