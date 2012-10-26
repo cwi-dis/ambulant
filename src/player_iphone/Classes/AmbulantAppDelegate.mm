@@ -267,7 +267,7 @@ applicationDidEnterBackground:(UIApplication *)application {
 applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate.
     // See also applicationDidEnterBackground:.
-	/*AM_DBG*/ NSLog(@"AmbulantAppDelegate applicationWillTerminate: viewController.retainCount()=%d", [viewController retainCount]);
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillTerminate: viewController.retainCount()=%d", [viewController retainCount]);
     [viewController willTerminate];
     [viewController release];
 }

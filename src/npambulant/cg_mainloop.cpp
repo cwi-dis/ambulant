@@ -249,7 +249,7 @@ cg_mainloop::node_focussed(const lib::node *n)
 void
 cg_mainloop::update(CGContextRef ctx)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("update(%p): ctx=%p", this , ctx);
+	AM_DBG lib::logger::get_logger()->debug("update(%p): ctx=%p", this , ctx);
 	// draw red Rect
 	CGContextRef context = ctx;
  	CGColorRef redColor = CGColorCreateGenericRGB(1.0,0.0,0.0,0.5);

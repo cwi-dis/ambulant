@@ -528,7 +528,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)pause:(id)sender
 {
-	/*AM_DBG*/ NSLog(@"pause for %@, myMainloop=0x%x", self, myMainloop);
+	AM_DBG NSLog(@"pause for %@, myMainloop=0x%x", self, myMainloop);
 	if (myMainloop) myMainloop->pause();
 	[self validateButtons: nil];
 }
