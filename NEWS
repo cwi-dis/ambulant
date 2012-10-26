@@ -2,9 +2,9 @@ What's new in Ambulant Player 2.2?
 ----------------------------------
 
 - We now have a working plugin for at least one browser on each major
-  platform. On Linux and Windows we have a Firefox plugin (that may also
+  platform. On MacOS, Linux and Windows we have a Firefox plugin (that may also
   work in Google-Chrome, Opera, Safari and other browsers).
-  On MacOSX we have a Safari plugin. 
+
   There is also an Internet Explorer plugin for Windows, but
   we are slightly less sure about the quality of this one.
   

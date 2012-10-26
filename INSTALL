@@ -3,7 +3,7 @@ Installation Instructions for AmbulantPlayer
 
 =======
 This file contains instructions for building AmbulantPlayer from
-source, for all of Windows, Windows Mobile 5, Unix and Mac OS X.
+source, for all of Windows, Unix, Mac OS X and iOS.
 
 This file is part of the Ambulant Player source distribution,
 which can be downloaded via <http://www.ambulantplayer.org>.
@@ -217,7 +217,7 @@ If you want to build the Firefox or IE plugin you may need to install some
 additional tools such as CabArc. Also, to build the IE plugin you must run
 Visual Studio (sic!) with Administrator permissions.
 
-Building for iPhane iOS4
+Building for iPhone iOS4
 ------------------------
 
 First there are some packages that need to be installed system-wide, i.e.
