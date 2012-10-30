@@ -49,6 +49,7 @@
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
+#include "libavutil/mathematics.h"
 #if LIBAVCODEC_VERSION_MAJOR > 52
 #define CodecType  AVMediaType
 #define CODEC_TYPE_UNKNOWN    AVMEDIA_TYPE_UNKNOWN
