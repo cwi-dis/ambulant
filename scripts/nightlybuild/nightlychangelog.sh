@@ -12,15 +12,21 @@ TEMPFILE=/tmp/ChangeLog
 
 cd $SRCDIR
 hg pull -u
-hg --quiet log --style changelog -d -1 >$TMPFILE
-ed $TMPFILE <EOD
+# produce ChangeLog since yesterday
+hg --quiet log --style changelog -d -1 >$TEMPFILE
+# Remove log entry produced by this action
+if grep "$MSG" $TEMPFILE  >/dev/null;
+then ed $TEMPFILE <<EOD
 /$MSG/
-.,.-3d
+.-2,.+1d
 w
 q
 EOD
-mv $TMPFILE ./ChangeLog
-hg commit -m\"$MSG\" ./ChangeLog
+fi
+mv ChangeLog ChangeLog.orig
+cat $TEMPFILE ./ChangeLog.orig > ChangeLog
+hg commit -m"$MSG" ./ChangeLog
 hg push
+rm $TEMPFILE ./ChangeLog.orig
 
 
