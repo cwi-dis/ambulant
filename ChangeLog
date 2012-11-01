@@ -1,3 +1,13 @@
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* added nightlychangelog.sh
+
+2012-10-31  Kees Blom  <kees@cwi.nl>
+
+	* Updated ChangeLog, using: 'hg --quiet log -M --style=changelog'
+
 2012-10-30  Kees Blom  <kees@cwi.nl>
 
 	* Fixed error on debian-64: 'av_rescale_q' was not declared in this
