@@ -8,7 +8,7 @@ export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
 MSG="Automated ChangeLog Update"
 SRCDIR=$HOME/src/ambulant # for user 'nightlybuilds' on 'moes'
 #SRCDIR=$HOME/Work/Ambulant/ambulant # for user 'kees' on 'wroclaw'
-TEMPFILE=/tmp/ChangeLog
+TEMPFILE=~/tmp/ChangeLog
 
 cd $SRCDIR
 hg pull -u
