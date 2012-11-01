@@ -1,3 +1,35 @@
+2012-11-01  Kees Blom  <kees@cwi.nl>
+
+2012-11-01  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Made the nightlycrontab maintainer ready for real use
+
+	* merge
+
+	* Fixed broken ChangeLog
+
+	* merge
+
+	* merge
+
+	* merge
+
+	* Restored broken ChangeLog
+
+	* Script fo automatic ChangeLog mgmt. debugging
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* added nightlychangelog.sh
+
 2012-11-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made the nightlycrontab maintainer ready for real use
