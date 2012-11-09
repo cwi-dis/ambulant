@@ -61,7 +61,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">del /s $(IntDir)$(TargetName)
-mkd $(IntDir)$(TargetName)
+mkdir $(IntDir)$(TargetName)
 copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
 copy $(firefox_plugin_dir)\npambulant.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\libambulant_shwin32.dll $(IntDir)$(TargetName)
