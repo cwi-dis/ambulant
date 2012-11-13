@@ -8,7 +8,7 @@ Homepage: http://www.ambulantplayer.org
 
 Package: libambulant
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libltdl7, libsdl1.2debian|libsdl1.2debian-all|libsdl1.2debian-alsa|libsdl1.2debian-esd|libsdl1.2debian-nas|libsdl1.2debian-oss, libavformat52, libavcodec52, libswscale0 
+Depends: ${shlibs:Depends}, ${misc:Depends}, libltdl7, libsdl1.2debian|libsdl1.2debian-all|libsdl1.2debian-alsa|libsdl1.2debian-esd|libsdl1.2debian-nas|libsdl1.2debian-oss, libavformat53, libavcodec53, libswscale2
 Recommends: libgtk2.0-0 | libqt3-mt, libxerces-c | libexpat1, libxml2, liblivemedia
 Description: Ambulant SMIL multimedia player - core engine
  SMIL 3.0 multimedia playback engine.
