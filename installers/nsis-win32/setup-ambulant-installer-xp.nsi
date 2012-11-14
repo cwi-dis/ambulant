@@ -39,11 +39,11 @@
 ; !define DISTRIBUTE_VC9_RT
 ; !define VC9_DISTDIR "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86"
 
-; !define DOWNLOAD_VC9_RT
-; !define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
+!define DOWNLOAD_VC9_RT
+!define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
 
-!define DOWNLOAD_VC10_RT
-!define DOWNLOAD_VC10_RT_URL "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe"
+; !define DOWNLOAD_VC10_RT
+; !define DOWNLOAD_VC10_RT_URL "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe"
 
 ; File associations
 !include "FileAssociation.nsh"
