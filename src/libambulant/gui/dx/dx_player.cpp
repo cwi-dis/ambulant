@@ -221,6 +221,7 @@ gui::dx::dx_player::~dx_player() {
 	assert(m_windows.empty());
 	if(dx_gui_region::s_counter != 0)
 		m_logger->warn("Undeleted gui regions: %d", dx_gui_region::s_counter);
+	set_embedder(NULL);
 }
 
 void
