@@ -33,7 +33,6 @@ copy ..\..\bin\win32\libamplugin_state_xpathDX.dll $(intdir)\libamplugin_state_x
 copy ..\..\bin\win32\avcodec-52.dll $(intdir)\avcodec-52.dll
 copy ..\..\bin\win32\avformat-52.dll $(intdir)\avformat-52.dll 
 copy ..\..\bin\win32\avutil-50.dll $(intdir)\avutil-50.dll
-copy ..\..\bin\win32\avcore-0.dll $(intdir)\avcore-0.dll
 copy ..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll
 copy ..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
 copy ..\..\bin\win32\xerces-c_3_1.dll $(intdir)\xerces-c_3_1.dll

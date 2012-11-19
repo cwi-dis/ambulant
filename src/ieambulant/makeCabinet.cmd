@@ -29,7 +29,6 @@ copy ..\..\bin\win32\libambulant_shwin32.dll $(intdir)\libambulant_shwin32.dll
 copy ..\..\bin\win32\libamplugin_ffmpeg.dll $(intdir)\libamplugin_ffmpeg.dll 
 copy ..\..\bin\win32\libamplugin_state_xpath.dll $(intdir)\libamplugin_state_xpath.dll
 copy ..\..\bin\win32\avcodec-52.dll $(intdir)\avcodec-52.dll
-copy ..\..\bin\win32\avcore-0.dll $(intdir)\avcore-0.dll
 copy ..\..\bin\win32\avformat-52.dll $(intdir)\avformat-52.dll 
 copy ..\..\bin\win32\avutil-50.dll $(intdir)\avutil-50.dll
 copy ..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll
