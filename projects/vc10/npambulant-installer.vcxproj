@@ -135,11 +135,10 @@ copy "$(firefox_plugin_dir)npambulantDX.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)libambulantDX_shwin32.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)libamplugin_ffmpegDX.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)libamplugin_state_xpathDX.dll" %intdir%%TargetName%\Plugins
-copy "$(firefox_plugin_dir)avcodec-52.dll" %intdir%%TargetName%\Plugins
-copy "$(firefox_plugin_dir)avformat-52.dll" %intdir%%TargetName%\Plugins
-copy "$(firefox_plugin_dir)avutil-50.dll" %intdir%%TargetName%\Plugins
-copy "$(firefox_plugin_dir)avcore-0.dll" %intdir%%TargetName%\Plugins
-copy "$(firefox_plugin_dir)swscale-0.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avcodec-54.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avformat-54.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)avutil-51.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)swscale-2.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)SDL.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)xerces-c_$(xerces_major)_$(xerces_minor).dll" %intdir%%TargetName%\Plugins
 cd %intdir%%TargetName%
@@ -165,12 +164,12 @@ copy $(firefox_plugin_dir)\npambulant.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\libambulant_shwin32.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\libamplugin_ffmpeg.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\libamplugin_state.dll $(IntDir)$(TargetName)
-copy $(firefox_plugin_dir)\avcodec-52.dll $(IntDir)$(TargetName)
-copy $(firefox_plugin_dir)\avformat-52.dll $(IntDir)$(TargetName)
-copy $(firefox_plugin_dir)\avutil-50.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avcodec-54.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avformat-54.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avutil-51.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\SDL.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll $(IntDir)$(TargetName)
-copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-2.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
 zip $(TargetPath) $(IntDir)$(TargetName)
