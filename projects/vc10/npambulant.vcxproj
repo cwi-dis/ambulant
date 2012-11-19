@@ -270,7 +270,7 @@ del /s /q "$(firefox_plugin_dir)\plugins"
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s_nomozalloc.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -289,11 +289,10 @@ del /s /q "$(firefox_plugin_dir)\plugins"
 copy /y ..\..\bin\win32\libambulantDX_shwin32.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_state_xpathDX.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_ffmpegDX.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avcodec-52.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avformat-52.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avutil-50.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avcore-0.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\swscale-0.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avcodec-54.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avformat-54.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avutil-51.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\swscale-2.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\SDL.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\xerces-c_$(xerces_major)_$(xerces_minor).dll "$(firefox_plugin_dir)\"
 del /s /q "$(firefox_plugin_dir)\plugins"
@@ -362,10 +361,10 @@ copy /y ..\..\bin\win32\libambulant_shwin32.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_xerces.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avcodec-52.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avformat-52.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avutil-50.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\swscale-0.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avcodec-54.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avformat-54.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avutil-51.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\swscale-2.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\SDL.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\xerces-c_$(xerces_major)_$(xerces_minor).dll "$(firefox_plugin_dir)\"
 mkdir "$(firefox_plugin_dir)\plugins\"
