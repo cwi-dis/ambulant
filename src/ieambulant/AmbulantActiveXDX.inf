@@ -13,10 +13,9 @@ AmbulantActiveXDX.dll=AmbulantActiveXDX.dll
 libambulantDX_shwin32.dll=libambulantDX_shwin32.dll
 libamplugin_ffmpegDX.dll=libamplugin_ffmpegDX.dll
 libamplugin_state_xpathDX.dll=libamplugin_state_xpathDX.dll
-avcodec-52.dll=avcodec-52.dll
-avformat-52.dll=avformat-52.dll
-avutil-50.dll=avutil-50.dll
-avcore-0.dll=avcore-0.dll
+avcodec-54.dll=avcodec-54.dll
+avformat-54.dll=avformat-54.dll
+avutil-51.dll=avutil-51.dll
 swscale-2.dll=swscale-2.dll
 SDL.dll=SDL.dll
 xerces-c_3_1.dll=xerces-c_3_1.dll
@@ -50,15 +49,11 @@ FileVersion=1,0,0,1
 
 ; third-party-packages
 ; ffmpeg audio, video
-[avcodec-52.dll]
+[avcodec-54.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
-[avformat-52.dll]
-file-win32-x86=thiscab
-FileVersion=1,0,0,1
-
-[avcore-0.dll]
+[avformat-54.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
@@ -66,7 +61,7 @@ FileVersion=1,0,0,1
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
-[avutil-50.dll]
+[avutil-51.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 

@@ -53,16 +53,16 @@ if exist %sdl_dir%\VisualC\SDL\Win32\Release copy %sdl_dir%\VisualC\SDL\Win32\Re
 if exist %sdl_dir%\VisualC\SDL\Win32\Release copy %sdl_dir%\VisualC\SDL\Win32\Release\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
 if exist %sdl_dir%\VisualC\SDLmain\Win32\Release copy %sdl_dir%\VisualC\SDLmain\Win32\Release\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
 
-REM Live555
-copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib
-copy %TPP_HOME%\live_VC10\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\win32\groupsock.lib
-copy %TPP_HOME%\live_VC10\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
-copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
+REM Live555 disabled
+rem copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\win32\groupsock.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
 
-copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Debug\BasicUsageEnvironmentD.lib %AMB_HOME%\lib\win32\BasicUsageEnvironmentD.lib
-copy %TPP_HOME%\live_VC10\BUILD\groupsock-Debug\groupsockD.lib %AMB_HOME%\lib\win32\groupsockD.lib
-copy %TPP_HOME%\live_VC10\BUILD\liveMedia-Debug\liveMediaD.lib %AMB_HOME%\lib\win32\liveMediaD.lib
-copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Debug\UsageEnvironmentD.lib %AMB_HOME%\lib\win32\UsageEnvironmentD.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\BasicUsageEnvironment-Debug\BasicUsageEnvironmentD.lib %AMB_HOME%\lib\win32\BasicUsageEnvironmentD.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\groupsock-Debug\groupsockD.lib %AMB_HOME%\lib\win32\groupsockD.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\liveMedia-Debug\liveMediaD.lib %AMB_HOME%\lib\win32\liveMediaD.lib
+rem copy %TPP_HOME%\live_VC10\BUILD\UsageEnvironment-Debug\UsageEnvironmentD.lib %AMB_HOME%\lib\win32\UsageEnvironmentD.lib
 
 REM libxml2
 copy %libxml2_dir%\win32\bin.msvc\libxml2_a.lib %AMB_HOME%\lib\win32\libxml2_a.lib
