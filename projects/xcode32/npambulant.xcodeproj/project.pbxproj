@@ -555,7 +555,6 @@
 					"AM_PREFER_FFMPEG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
 					"WITH_EXPAT=1",
 					"WITH_PYTHON_PLUGIN=1",
 					"WITH_FFMPEG_AVFORMAT=1",

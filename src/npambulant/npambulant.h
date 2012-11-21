@@ -223,9 +223,10 @@ class npambulant
 	gtk_mainloop* m_mainloop;
 #elif WITH_CG
 	void* m_view;			// current AmvbulantView
-	CGContext* m_cgcontext;		// current CGContext
-	CGRect m_cgcliprect;		// current clipping rectangle in Browser coordinates
+	CGContext* m_cgcontext;	// current CGContext
+	CGRect m_cgcliprect;	// current clipping rectangle in Browser coordinates
 	NPRect m_nprect;		// current drawing rect in Plugin coordinates (for NPN_InvalidateRect)
+	NPRect m_nprect_window; // the window rect in Plugin coordinates (for NPN_InvalidateRect)
 	cg_mainloop *m_mainloop;	// current player control object
 	// zoom control
 	CGSize m_doc_size;		// top-level window size in document (root-layout) 
