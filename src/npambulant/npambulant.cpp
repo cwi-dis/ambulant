@@ -789,12 +789,15 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		switch (msg) {
 		case WM_PAINT:
 			{
+#ifndef	NDEBUG
+				// Draw rectangle around drawing area
 				PAINTSTRUCT ps;
 				HDC hdc = BeginPaint(hWnd, &ps);
 				RECT rc;
 				GetClientRect(hWnd, &rc);
 				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				EndPaint(hWnd, &ps);
+#endif//NDEBUG
 				if (plugin->m_ambulant_player)
 					plugin->m_ambulant_player->redraw(hWnd, hdc, NULL); // XXX Should pass dirty rect
 				NPRegion invalid_region = CreateRectRgn(rc.left,rc.top,rc.right,rc.bottom);
