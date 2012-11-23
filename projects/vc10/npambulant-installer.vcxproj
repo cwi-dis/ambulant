@@ -130,6 +130,8 @@ if exist %intdir%%TargetName% del /s /q %intdir%%TargetName%
 if exist %TargetPath% del /q %TargetPath%
 mkdir %intdir%npambulantDX-2.3-win32
 mkdir %intdir%npambulantDX-2.3-win32\Plugins
+:: redistributable C-runtime
+copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(intdir)$(TargetName)\vcredist_x86.exe
 copy ..\..\src\npambulant\install-win32.rdf %intdir%%TargetName%\install.rdf
 copy "$(firefox_plugin_dir)npambulantDX.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)libambulantDX_shwin32.dll" %intdir%%TargetName%\Plugins
@@ -159,6 +161,8 @@ del /q $(TargetPath)
     <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">del /s $(IntDir)$(TargetName)
 mkd $(IntDir)$(TargetName)
+:: redistributable C-runtime
+copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(IntDir)$(TargetName)\vcredist_x86.exe
 copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
 copy $(firefox_plugin_dir)\npambulant.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\libambulant_shwin32.dll $(IntDir)$(TargetName)
