@@ -128,7 +128,8 @@ cd ../..
 # Create installer dmg, upload
 #
 cd installers/sh-macos
-sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
+#XX sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
+sh make-dmg-installer.sh -n AmbulantPlayer -t AmbulantPlayer-template.dmg -s /Applications/AmbulantPlayerCG.app/. -d AmbulantPlayer.app/.-s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
 scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
 #
