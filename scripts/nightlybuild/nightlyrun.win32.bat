@@ -21,15 +21,13 @@ rem Remove old build stuff
 if exist AmbulantNightly rmdir /s /q AmbulantNightly
 if exist AmbulantNightly rmdir /s /q AmbulantNightly
 
-rem Build. This will pause if unsuccessful.
+rem Build.
 
 cmd/k nightlybuild.win32.bat >nightlybuild.out.txt 2>&1
-if %errorlevel% neq 0 pause
 
 rem Copy the output file back to the mac
 
 copy nightlybuild.out.txt \\psf\Home\tmp\ambulant-nightly\nightlybuild.win32.out.txt
- %errorlevel% neq 0 pause
 
 rem Shutdown
 shutdown /s
