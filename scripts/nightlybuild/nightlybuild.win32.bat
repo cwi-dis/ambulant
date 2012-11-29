@@ -182,5 +182,5 @@ if %errorlevel% neq 0 goto errorexit
 
 
 :errorexit
-rem 
+exit
 
