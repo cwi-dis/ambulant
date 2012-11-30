@@ -80,7 +80,7 @@ function copy() {
 	_dst=$2
 	_src_dir=`dirname $1`
 	_dst_dir=`dirname $2`
-	cp -r $_src $_dst
+	cp -r "$_src" "$_dst"
 	unset _dst _dst_dir _src _src_dir
 }
 
@@ -108,7 +108,7 @@ function copy_files() {
 	
 	idx=0
 	while [ $idx -ne $source_idx ] ; do
-		copy ${source[$idx]} /Volumes/$name/${dest[$idx]}
+		copy "${source[$idx]}" "/Volumes/$name/${dest[$idx]}"
 		let idx=$idx+1
 	done
 }
@@ -116,7 +116,7 @@ function copy_files() {
 function compress_disk() {
 	_name=$1
 	_log "compress_disk" $@
-	hdiutil detach /Volumes/$_name
+	hdiutil detach "/Volumes/$_name"
 	rm -f $_name.dmg
 	sleep 5
 	hdiutil convert $_name-rw.dmg -format UDZO -o $_name.dmg
@@ -137,7 +137,7 @@ if [ $# -ge 1 ] ;then if [ $1 = "-l" ] ;then log=1; shift; fi; fi
 if [ $log -eq 1 ] ;then echo "script-args: " $# $@; fi
 
 # evaluate all command-line arguments
-eval_args $@
+eval_args "$@"
 
 # create and  mount writable disk named $name-rw.dmg from $template 
 create_writable_disk $template $name
@@ -146,7 +146,7 @@ create_writable_disk $template $name
 copy_files
 
 # compress and finalize the newly created disk
-compress_disk $name
+compress_disk "$name"
 
 if [ $log -gt 0 ] ; then
 	echo "name="$name
