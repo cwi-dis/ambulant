@@ -109,8 +109,8 @@ cd .. # Back to source dir
 #
 cd installers/sh-macos
 mv "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app" "$BUILDHOME/$DESTDIR/Applications/AmbulantPlayerCocoa.app"
-sh mkmacdist.sh -a AmbulantPlayerCocoa.app $DMGNAME $BUILDHOME/$DESTDIR 
-scp $DMGNAME.dmg $DESTINATION_DESKTOP
+sh mkmacdist.sh -a AmbulantPlayerCocoa.app $DMGNAME-Cocoa $BUILDHOME/$DESTDIR 
+scp $DMGNAME-Cocoa.dmg $DESTINATION_DESKTOP
 cd ../..
 #
 # Build CG player
@@ -131,7 +131,7 @@ cd ../..
 cd installers/sh-macos
 #XX sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
 #XX following needs proper parametization
-sh make-dmg-installer.sh -n AmbulantPlayer -t AmbulantPlayer-template.dmg -s /Applications/AmbulantPlayerCG.app/. -d AmbulantPlayer.app/. -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
+sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template.dmg -s /Applications/AmbulantPlayerCG.app/. -d AmbulantPlayer.app/. -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
 mv AmbulantPlayer.dmg $DMGNAME-CG.dmg
 scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
