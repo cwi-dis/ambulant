@@ -78,8 +78,8 @@ function copy() {
 	if [ $# -ne 2 ] ;then usage "internal-copy"; fi
 	_src=$1
 	_dst=$2
-	_src_dir=`dirname $1`
-	_dst_dir=`dirname $2`
+	_src_dir=`dirname "$1"`
+	_dst_dir=`dirname "$2"`
 	cp -r "$_src" "$_dst"
 	unset _dst _dst_dir _src _src_dir
 }
