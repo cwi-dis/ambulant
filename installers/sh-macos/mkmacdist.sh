@@ -2,7 +2,8 @@
 scriptdir=`dirname $0`
 topdir=$scriptdir/../..
 interactive=false
-appname="AmbulantPlayer.app"
+appname="Ambulant Player.app"
+tmplappname="Ambulant Player.app"
 if [ x$1 == x-a ]; then
 	appname=$2
 	shift
@@ -37,11 +38,11 @@ mkdir $dirname
 # Copy all other files
 #
 cp $topdir/README $dirname/README
-rm -rf "$dirname/AmbulantPlayer.app"
-cp -r "$installroot/Applications/$appname" "$dirname/AmbulantPlayer.app"
+rm -rf "$dirname/$tmplappname"
+cp -r "$installroot/Applications/$appname" "$dirname/$tmplappname"
 case $appname in
-"AmbulantPlayer.app") ;;
-*) mv "$dirname/AmbulantPlayer.app" "$dirname/$appname"
+"$tmplappname") ;;
+*) mv "$dirname/tmplappname" "$dirname/$appname"
    ;;
 esac
 ln -s /Applications $dirname/Applications
