@@ -130,8 +130,6 @@ cd ../..
 # Create installer dmg, upload
 #
 cd installers/sh-macos
-#XX sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
-#XX following needs proper parametization
 sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template.dmg -s "$BUILDHOME/$DESTDIR/Applications/AmbulantPlayerCG.app/." -d "AmbulantPlayer.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
 mv "Ambulant Player.dmg" $DMGNAME-CG.dmg
 scp $DMGNAME-CG.dmg $DESTINATION_CG
@@ -155,10 +153,10 @@ cd ../..
 #
 # Build plugin installer, upload
 #
-cd "$BUILDHOME/$BUILDDIR/installers/sh-macos"
-rm -fr $PLUGINNAME $PLUGINNAME-rw.dmg $PLUGINNAME.dmg 
-sh ./mkplugindist.sh $PLUGINNAME $BUILDHOME/$DESTDIR
-scp $PLUGINNAME.dmg $DESTINATION_PLUGIN
+cd installers/sh-macos
+sh make-dmg-installer.sh -n 'Ambulant Web Plugin' -t npambulant-template.dmg -s "$BUILDHOME/$DESTDIR/Library/Internet Plug-ins/npambulant.plugin/." -d "npambulant.plugin/." -s npambulant-installer-README -d ./README -s ../../COPYING  -d ./COPYING
+mv "Ambulant Web Plugin.dmg" $PLUGINDMGNAME
+scp $PLUGINNAME $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current
 #
