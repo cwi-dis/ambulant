@@ -94,8 +94,8 @@ function create_writable_disk() {
 	#
 	# Convert it into a writable image and attach it to the file system (mount)
 	#
-	hdiutil convert $_name.dmg -format UDRW -o $_name-rw.dmg
-	hdiutil attach $_name-rw.dmg
+	hdiutil convert "$_name.dmg" -format UDRW -o "$_name-rw.dmg"
+	hdiutil attach "$_name-rw.dmg"
 	unset _template _name
 }
 
@@ -119,7 +119,7 @@ function compress_disk() {
 	hdiutil detach "/Volumes/$_name"
 	rm -f $_name.dmg
 	sleep 5
-	hdiutil convert $_name-rw.dmg -format UDZO -o $_name.dmg
+	hdiutil convert "$_name-rw.dmg" -format UDZO -o "$_name.dmg"
 	unset _name
 }
 
