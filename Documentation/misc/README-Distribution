@@ -118,7 +118,6 @@ Before creating the distribution
   - README
   - INSTALL
   - Documentation/misc/README-Distribution (this file)
-  - third_party_packages/readme.txt
 - Update the icons in the following files:
   - src/player_mfc/res/AmbulantPlayer.ico
   - src/player_mfc/res/AmbulantPlayerDoc.ico

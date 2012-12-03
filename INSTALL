@@ -39,7 +39,7 @@ After unpacking Ambulant you should first download and build the required
 or
 	
 
-	python ../scripts/build-third-party-packages.py linux
+	sudo python ../scripts/build-third-party-packages.py debian
 	
 The first version will install all needed packages (insofar they are not installed
 on your system yet) in "third_party_packages/installed", and configure
@@ -75,9 +75,6 @@ For more special case configure options consult "configure --help".
 Building for Mac OS X, configure/make style
 -------------------------------------------
 
-Warning: as of this writing, building on 10.7 Lion does not work: there are
-minimal tweaks that need to be made to SDL and gettext. 
-
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
 put these in the next category, but for now you need to download, build and
@@ -93,13 +90,6 @@ and run
 
 	python ../scripts/build-third-party-packages.py mac10.6
 	
-That is, if you are on MacOSX 10.6. This will build the packages 32/64
-bit universal. If you are on 10.4 or 10.5 you specify "mac10.4" as the
-argument, and the packages will be built Intel/PowerPC universal (both
-32bit).
-
-For manual builds, see third_party_packages/readme.txt and readme-osx.txt.
-
 Then the normal "configure"/"make"/"sudo make install" combo can be used
 here in the toplevel directory to create the player. For MacOSX 10.6 you
 can build a universal 32-bit/64-bit Ambulant, by running configure as:
@@ -116,9 +106,6 @@ into /usr/local.
 
 Building for Mac OS X 10.6 using XCode
 --------------------------------------
-
-Warning: as of this writing, building on 10.7 Lion does not work: there are
-minimal tweaks that need to be made to SDL and gettext.
 
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
