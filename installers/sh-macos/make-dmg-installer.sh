@@ -76,8 +76,8 @@ function eval_args() {
 function copy() {
 	_log "copy" $@
 	if [ $# -ne 2 ] ;then usage "internal-copy"; fi
-	_src=$1
-	_dst=$2
+	_src="$1"
+	_dst="$2"
 	_src_dir=`dirname "$1"`
 	_dst_dir=`dirname "$2"`
 	cp -r "$_src" "$_dst"
@@ -87,10 +87,10 @@ function copy() {
 # create_writable_disk template dest - create writable disk with name $dest-rw.dmg from $template
 function create_writable_disk() {
 	_log "create_writable_disk" $@
-	_template=$1
-	_name=$2
-	rm -f $_name.dmg  $_name-rw.dmg 
-	cp $_template $_name.dmg 
+	_template="$1"
+	_name="$2"
+	rm -f "$_name.dmg"  "$_name-rw.dmg "
+	cp "$_template" "$_name.dmg" 
 	#
 	# Convert it into a writable image and attach it to the file system (mount)
 	#
@@ -117,7 +117,7 @@ function compress_disk() {
 	_name="$1"
 	_log "compress_disk" $@
 	hdiutil detach "/Volumes/$_name"
-	rm -f $_name.dmg
+	rm -f "$_name.dmg"
 	sleep 5
 	hdiutil convert "$_name-rw.dmg" -format UDZO -o "$_name.dmg"
 	unset _name
