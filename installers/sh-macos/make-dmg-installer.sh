@@ -125,7 +125,7 @@ function compress_disk() {
 
 function cleanup() {
 	_log "cleanup" $@
-	rm -fr $@
+	rm -fr "$@"
 	unset source_idx dest_idx source dest template name debug log
 }
 
