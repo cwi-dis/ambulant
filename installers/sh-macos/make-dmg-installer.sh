@@ -140,7 +140,7 @@ if [ $log -eq 1 ] ;then echo "script-args: " $# $@; fi
 eval_args "$@"
 
 # create and  mount writable disk named $name-rw.dmg from $template 
-create_writable_disk $template $name
+create_writable_disk "$template" "$name"
 
 # Copy all source files on the writable disk
 copy_files
@@ -156,4 +156,4 @@ if [ $log -gt 0 ] ; then
 fi
 
 # cleanup temp. files
-cleanup $name-rw.dmg
+cleanup "$name-rw.dmg"
