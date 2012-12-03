@@ -114,7 +114,7 @@ function copy_files() {
 }
 
 function compress_disk() {
-	_name=$1
+	_name="$1"
 	_log "compress_disk" $@
 	hdiutil detach "/Volumes/$_name"
 	rm -f $_name.dmg
