@@ -49,7 +49,7 @@ rem
 rem Other settable parameters
 rem
 
-set AMBULANTVERSION=2.3
+set AMBULANTVERSION=2.4
 set BRANCH=default
 
 rem
