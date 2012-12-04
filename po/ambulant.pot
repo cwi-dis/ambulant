@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2012-10-26 22:27+0200\n"
+"POT-Creation-Date: 2012-12-04 09:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -543,7 +543,7 @@ msgstr ""
 msgid "%s: Cannot build DOM tree"
 msgstr ""
 
-#: src/npambulant/npambulant.cpp:273
+#: src/npambulant/npambulant.cpp:274
 msgid "Ambulant plugin loaded"
 msgstr ""
 

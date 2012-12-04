@@ -891,9 +891,9 @@ msgid "Cannot open: %s, error: %s"
 msgstr "Bestand kan niet geopend worden: %s, foutcode: %s"
 
 #: src/player_mfc/MmView.cpp:254
-#, fuzzy, c-format
+#, c-format
 msgid "Ambulant Player: built on %s for Windows/MFC with VS%s%s"
-msgstr "Ambulant Player: gebouwd op %s voor Windows/MFC"
+msgstr "Ambulant Player: gebouwd op %s voor Windows/MFC met VS%s%s"
 
 #: src/player_mfc/MmView.cpp:275
 msgid "Ambulant Player: using AmbulantPlayer in DLL"
