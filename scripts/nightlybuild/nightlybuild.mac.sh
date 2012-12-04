@@ -31,7 +31,7 @@ TODAY=`date +%Y%m%d`
 case x$BRANCH in
 x)	
 	;;
-release*)
+xrelease*)
 	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=
