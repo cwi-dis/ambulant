@@ -1,8 +1,12 @@
 Ambulant Player README
 ======================
 
-This directory contains version 2.4 of the Ambulant Player,
+This directory contains version 2.5 of the Ambulant Player,
 a playback engine for SMIL 3.0 (or earlier) documents.
+
+NOTE: odd-numbered versions, such as this one, are moving targets: they
+are the current state of our development tree. Tomorrow may have a completely
+different player with the same version number.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers and
