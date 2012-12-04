@@ -106,6 +106,7 @@ Before creating the distribution
   - src/npambulant/install-*.rdf
   - src/npambulant/manifest-*.json
   - src/pyambulant/setup.py
+  - scripts/nightlybuilds/*
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - installers/nsis-win32/setup-ambulant-installer-xp.nsi
   - installers/mkdebiandist.sh
