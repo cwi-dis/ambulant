@@ -18,8 +18,8 @@
 ; - DOWNLOAD_VC9_RT_URL: where to get it from.
 ;
 !define PRODUCT_NAME "Ambulant Player"
-!define PRODUCT_VERSION "2.3"
-!define PRODUCT_VERSION_BASE "2.3"
+!define PRODUCT_VERSION "2.4"
+!define PRODUCT_VERSION_BASE "2.4"
 !define DISTRIBUTE_DLL_BUILD
 ; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"

@@ -109,7 +109,7 @@ else:
 ##    INCDIRS += ['/usr/local/include']
     
 setup(name='ambulant',
-      version='2.2',
+      version='2.4',
       ext_modules=[
         Extension('ambulant',
             ['ambulantmodule.cpp', 'ambulantinterface.cpp', 'ambulantutilities.cpp'],

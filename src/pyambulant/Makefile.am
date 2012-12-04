@@ -75,8 +75,8 @@ install-exec-hook: install-pyambulant
 
 uninstall-local:
 #XXXX quick fix to make distcheck work from nightly build
-	-rm -fr  $(DESTDIR)/$(prefix)/lib64/python/ambulant.so $(DESTDIR)/$(prefix)/lib64/python/ambulant-2.2*.egg-info
-	-rm -fr  $(DESTDIR)/$(prefix)/lib/python/ambulant.so $(DESTDIR)/$(prefix)/lib/python/ambulant-2.2*.egg-info
+	-rm -fr  $(DESTDIR)/$(prefix)/lib64/python/ambulant.so $(DESTDIR)/$(prefix)/lib64/python/ambulant-2.4*.egg-info
+	-rm -fr  $(DESTDIR)/$(prefix)/lib/python/ambulant.so $(DESTDIR)/$(prefix)/lib/python/ambulant-2.4*.egg-info
 	echo Cannot uninstall pyambulant module, please remove manually $(DESTDIR)/$(prefix)
 
 # This target re-creates the cpp files. Use only when you know what you
@@ -126,7 +126,7 @@ mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
 	-rm -r $(srcdir)/build
 
-DISTCLEANFILES=ambulant.so ambulant-2.2-py2.7.egg-info
+DISTCLEANFILES=ambulant.so ambulant-2.4-py2.7.egg-info
 
 # Targets to regenerate ambulantmodule.cpp and ambulantinterface.cpp
 

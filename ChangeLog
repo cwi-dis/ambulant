@@ -1,14 +1,189 @@
-2012-11-01  Kees Blom  <Kees.Blom@cwi.nl>
+2012-12-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Made the nightlycrontab maintainer ready for real use
+	* Updated po-files
 
-	* Script fo automatic ChangeLog mgmt. debugging
+2012-12-03  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Removed old installer builders
+
+	* More dmg tweaks
+
+	* More quotes
+
+	* More quotes
+
+	* More quotes
+
+	* More quotes
+
+	* More quotes
+
+	* More quotes
+
+	* Tweaked in praparation of 2.4
+
+	* More installer tweaks
+
+	* More fiddling with dmgs
+
+	* More tweaks of mac installers
+
+2012-12-01  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* More tweask to mac build
+
+2012-11-30  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Added lots of quotes to facilitate spaces in filennames
+
+	* More tweaks to installer building process
+
+	* Fixed dmg installers and backgrounds
+
+2012-11-29  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Slightly modified background
+
+	* Ignore a few more per-user xcode files
+
+	* Another try at automatic exiting
+
+	* Attempting to make win32 nightly builds not pause
+
+2012-11-27  Kees Blom  <kees@cwi.nl>
+
+	* Small temp.fix to get the CG player on the nightlybuild server (not
+	tested).
+
+	* Adapted to use the new make-dmg-installer script to build CG player
+	(now called AmbulantPlayer)
+
+	* Wrote another script to generate .dmg installers. Does not work for
+	plugins because of embedded space in filenames (Internet\ Plugins).
+
+2012-11-23  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Fixed a compile problem for 'Release' config (error on #7887)
+
+2012-11-23  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Added a crontab to split running of mac/ios and vm builds
+
+	* Added a crontab to split running of mac/ios and vm builds
+
+2012-11-22  Kees Blom  <kees@cwi.nl>
+
+	* Disabled debugging code to draw rectangle araound window
+
+2012-11-21  Kees Blom  <kees@cwi.nl>
+
+	* Fixed drawing problem w. Firefox 17 by always redrawing whole window
+
+2012-11-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Preparing to move nightly builds to maunakea
+
+	* vcproj files are no longer needed.
+
+2012-11-20  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Adapted more ffmpeg library names to be packaged to ffmpeg1.0
+	versions.
+
+2012-11-19  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Removed avcore-0.dll from ieambulant installer
+
+	* Disabled live555 from ttp copy script
+
+	* Fixed a problem with state plugin on WindowsXP (would not load)
+
+	* Adapted more ffmpeg library names to be packaged to ffmpeg1.0
+	versions.
+
+	* Fixed a problem building npambulant for Windows XP (unresolved
+	external symbol __imp__moz_xmalloc)
+
+2012-11-19  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Added note about URL
+
+	* Fixed incorrect line endings
+
+2012-11-18  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Fixed a problem with state plugin on WindowsXP (would not load)
+
+	* Fixed a problem building npambulant for Windows XP (unresolved
+	external symbol __imp__moz_xmalloc)
+
+2012-11-16  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Fixed a 'virtual function call' runtime error on WinXP
+
+2012-11-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Changed Ubuntu machine names to reflect upgrade to 1204
+
+	* Changed Ubuntu machine names to reflect upgrade to 1204
+
+	* Changed Ubuntu machine names to reflect upgrade to 1204
+
+2012-11-14  Kees Blom  <kees@cwi.nl>
+
+	* Window XP installer was incorrectly shipped with VC10 redist instead
+	of VC9
+
+2012-11-13  Kees Blom  <kees@cwi.nl>
+
+	* removed live555 from libambulant (debian)
+
+2012-11-13  kees  <kees@parallels-Parallels-Virtual-Platform>
+
+	* Fixed dependencies for libambulant (debian) to match ffmpeg-1.0
+
+2012-11-09  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* More fixes for npambulant-installer vc10
+
+2012-11-07  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Adapted more ffmpeg library names to be packaged to ffmpeg1.0
+	versions.
+
+	* Adapted ffmpeg library names to be packaged to ffmpeg1.0 versions.
+
+	* In IE plugin packaging list, upgrade from swscale-0 to swscale-2
+
+2012-11-02  Kees Blom  <kees@cwi.nl>
+
+	* Automated ChangeLog Update
+
+2012-11-01  Kees Blom  <kees@cwi.nl>
+
+	* Fixed broken ChangeLog
+
+	* Automated ChangeLog Update
 
 2012-11-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made the nightlycrontab maintainer ready for real use
 
 	* Fixed broken ChangeLog
+
+	* Restored broken ChangeLog
+
+	* Script fo automatic ChangeLog mgmt. debugging
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
+
+	* Automated ChangeLog Update
 
 	* added nightlychangelog.sh
 
@@ -135,6 +310,8 @@
 
 	* Removed --enable-libfaad for ffmpeg-1.0
 
+	* Closed branch exp-kees-sdl2, after merging with default.
+
 	* Patch for a bug in SDL, detected by Xcode 4.5 compiler.
 
 	* Project files adpated for Xcdoe4.5 and iOS-SDK 6.0
@@ -154,6 +331,10 @@
 	* Got rid of another reference to live555 libraries
 
 2012-10-05  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Closing old experimental branch
+
+	* Closing old experimental branch.
 
 	* Another reference to live555 libs cleared
 
@@ -178,6 +359,10 @@
 
 	* Backwards compatibility added
 
+2012-10-04  Kees Blom  <kees@cwi.nl>
+
+	* Fixed another problem with nightly build of sdl_renderer
+
 2012-10-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Ported everything to ffmpeg 1.0
@@ -186,10 +371,6 @@
 
 	* Fixed projects to not include live555, and for Python include file
 	blabla
-
-2012-10-04  Kees Blom  <kees@cwi.nl>
-
-	* Fixed another problem with nightly build of sdl_renderer
 
 2012-10-03  Kees Blom  <kees@cwi.nl>
 
@@ -263,6 +444,10 @@
 
 	* Changed name of vm
 
+2012-09-28  Kees Blom  <kees@cwi.nl>
+
+	* Deleted some unneeded TPP's
+
 2012-09-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Oops, forget second hunk of r7739.
@@ -270,10 +455,6 @@
 	* Re-committed recorder.h fix from r7739
 
 	* Backout changeset ef440f76facf96a37073c4a36df7df96abd9b874
-
-2012-09-28  Kees Blom  <kees@cwi.nl>
-
-	* Deleted some unneeded TPP's
 
 2012-09-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -406,9 +587,6 @@
 	* Build ltdl convenience library for mac 10.6 (needed to run binaries
 	on 10.8)
 
-	* Use ltdl convenience library, this should allow running the app on
-	OSX 10.8
-
 2012-08-29  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Get SDL_image from repository for SDL2 compatability
@@ -454,6 +632,11 @@
 2012-08-27  Kees Blom  <kees@cwi.nl>
 
 	* Added the correct clipping rect to the SDL_Surface brefore drwing
+
+2012-08-29  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Use ltdl convenience library, this should allow running the app on
+	OSX 10.8
 
 2012-08-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -867,6 +1050,12 @@
 
 	* Starting on build with new ffmpeg
 
+	* Closed branch exp-jack-animate-regpoint
+
+	* Closed branch vs2008
+
+	* iClosing branch
+
 2012-04-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Again trying to get the PATH right
@@ -1021,6 +1210,12 @@
 
 	* Turned off debug
 
+2012-02-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Closing exp-jack-measurements.
+
+2012-02-21  Kees Blom  <kees@cwi.nl>
+
 	* Changed icon positions and README text a little bit.
 
 2012-02-21  Jack Jansen  <Jack.Jansen@cwi.nl>
@@ -1070,6 +1265,10 @@
 
 	* Fixed a bug in the npambulant installer causing browsers not finding
 	npambulant
+
+2012-02-07  Kees Blom  <kees@cwi.nl>
+
+	* Closing branch 'exp-kees-npambulant', work done.
 
 2012-02-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1149,11 +1348,13 @@
 
 	* Added legend to graph
 
-	* Next steps in resource monitoring
-
 2012-02-12  Kees Blom  <kees@cwi.nl>
 
 	* Adapted 'basic_plugin::pause()' to 'playable' interface, as intended
+
+2012-02-13  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Next steps in resource monitoring
 
 2012-02-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1236,8 +1437,6 @@
 
 	* Visualize fill period
 
-	* Getting started with playables
-
 2012-02-05  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added npambulant build to the nightly test script (but no tests yet)
@@ -1247,6 +1446,10 @@
 	* configure pyambulant WITH_GTK=True and WITH_QT=False
 
 	* Upgraded maxVersion to Firefox 11
+
+2012-02-06  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Getting started with playables
 
 2012-02-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1314,8 +1517,6 @@
 
 	* Use Python 2.7
 
-	* Use Python2.7 for building, not 2.6
-
 2012-01-25  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* For safty reason, Changing the buffer time for prefetch node from
@@ -1331,6 +1532,10 @@
 2012-01-24  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* remmove the flash between two video clips for MyVideos.
+
+2012-01-25  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Use Python2.7 for building, not 2.6
 
 2012-01-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1383,9 +1588,6 @@
 	* devenv can return negative errorlevel when nothing is wrong. Cater
 	for this.
 
-	* devenv can return negative errorlevel when nothing is wrong. Cater
-	for this.
-
 2012-01-20  Kees Blom  <kees@cwi.nl>
 
 	* Prepended std:: in frons of ptrdiff_t declatations .
@@ -1427,6 +1629,11 @@
 
 	* Fixes to the Python interface
 
+2012-01-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* devenv can return negative errorlevel when nothing is wrong. Cater
+	for this.
+
 2012-01-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Starting on Python timer sync implementation
@@ -1441,15 +1648,17 @@
 
 	* Getting timesync plugin to work on Windows.
 
-	* Adding timesync_plugin, moved debug code there
-
-	* Added timer_sync factory and debug implementation
-
 2012-01-17  Kees Blom  <kees@cwi.nl>
 
 	* Reverted build 3pp for SDL to original settings
 
+	* Since latest SDL refuses to compile, force cached version instead.
+
 2012-01-17  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Adding timesync_plugin, moved debug code there
+
+	* Added timer_sync factory and debug implementation
 
 	* Reverted the SDL configure changes for MacOS, they were a stupid
 	idea
@@ -1457,10 +1666,6 @@
 	* Adapted python interface for external sync
 
 	* Got rid of without-x options for SDL build again
-
-2012-01-17  Kees Blom  <kees@cwi.nl>
-
-	* Since latest SDL refuses to compile, force cached version instead.
 
 2012-01-16  Kees Blom  <kees@cwi.nl>
 
@@ -1473,6 +1678,11 @@
 2012-01-09  Kees Blom  <kees@cwi.nl>
 
 	* Added protection for NULL argument values
+
+2012-01-16  Kees Blom  <kees@cwi.nl>
+
+	* Changed --without-x into --with-x=no after reading SDL's ./configure
+	file
 
 2012-01-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1501,11 +1711,6 @@
 2012-01-12  Kees Blom  <kees@cwi.nl>
 
 	* Checked gcc version 4.6.1
-
-2012-01-16  Kees Blom  <kees@cwi.nl>
-
-	* Changed --without-x into --with-x=no after reading SDL's ./configure
-	file
 
 2012-01-10  Kees Blom  <kees@cwi.nl>
 
@@ -1668,6 +1873,10 @@
 
 	* Added list of packages needed
 
+2011-10-27  Kees Blom  <kees@cwi.nl>
+
+	* Removed setting 'INFOPLIST_EXPAND_BUILD_SETTINGS'
+
 2011-10-27  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* More fixes to make npambulant compile on Linux.
@@ -1676,31 +1885,13 @@
 
 	* Fixed a problem with nightly builds
 
-2011-10-26  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* mac distritbuions should use Apple-provided Python
-
-2011-10-24  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Add third_party_packages/installed/bin to the PATH
-
-	* Added missing OSCALL modifier
-
-	* Don't include Carbon.h unless on the mac
-
-2011-10-20  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Getting rid of webkit plugin build
-
-	* Added missing file
-
-2011-10-27  Kees Blom  <kees@cwi.nl>
-
-	* Removed setting 'INFOPLIST_EXPAND_BUILD_SETTINGS'
-
 2011-10-26  Kees Blom  <kees@cwi.nl>
 
 	* npapi (CG): zoom into smaller or larger html region now also works.
+
+2011-10-26  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* mac distritbuions should use Apple-provided Python
 
 2011-10-25  Kees Blom  <kees@cwi.nl>
 
@@ -1715,6 +1906,20 @@
 2011-10-23  Kees Blom  <kees@cwi.nl>
 
 	* Use view.bounds i.o. html rect
+
+2011-10-24  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Add third_party_packages/installed/bin to the PATH
+
+	* Added missing OSCALL modifier
+
+	* Don't include Carbon.h unless on the mac
+
+2011-10-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Getting rid of webkit plugin build
+
+	* Added missing file
 
 2011-10-20  Kees Blom  <kees@cwi.nl>
 
@@ -1746,6 +1951,11 @@
 
 	* Just saw npambulant work in Safari
 
+2011-10-11  Kees Blom  <kees@cwi.nl>
+
+	* Fixed npambulant link problems. Now it crashes on 3 browsers:
+	Saf,FF,Chrome
+
 2011-10-06  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fix for #3384513. vcredist needs to be installed separately for
@@ -1763,11 +1973,6 @@
 2011-10-03  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fix for #3416019: sound now works on Windows-7 Virgin
-
-2011-10-11  Kees Blom  <kees@cwi.nl>
-
-	* Fixed npambulant link problems. Now it crashes on 3 browsers:
-	Saf,FF,Chrome
 
 2011-09-28  Kees Blom  <kees@cwi.nl>
 
@@ -1880,6 +2085,10 @@
 
 	* Enabled GTK
 
+2011-09-01  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Added player_olpc
+
 2011-08-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* props not included in copy_tpp_win32 project
@@ -1898,6 +2107,10 @@
 2011-08-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed a problem in d2 w. <text params=../> (NYC-SMIL2)
+
+2011-08-05  Kees Blom  <kees@cwi.nl>
+
+	* test
 
 2011-08-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1981,10 +2194,6 @@
 	* Fixed filenames in building of IEAmbulant
 
 	* Moving fixes to vc9 projects into vc10 projects too
-
-2011-08-05  Kees Blom  <kees@cwi.nl>
-
-	* test
 
 2011-07-29  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -2074,6 +2283,14 @@
 
 	* Fixed automatic checking for libdispatch
 
+	* Closing branch
+
+	* Closing branch
+
+	* Closing branch
+
+	* Closing branch.
+
 	* Added note on Windows SDK with Samples
 
 	* Getting rid of dead wood.
@@ -2144,6 +2361,8 @@
 
 	* Implemented author and partially-played in history
 
+	* Closing branch
+
 	* Merging of Presentation and PlaylistItem complete
 
 	* More unification of presentation and playlistitem
@@ -2158,15 +2377,6 @@
 
 	* More cleanup, better ordering of resources
 
-2011-07-18  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fix for #3353690: iAmbulant doesn't play automatically.
-
-	* For device builds, iOS version get hard-set to 4.3 (as opposed to
-	latest). Fixed.
-
-2011-07-21  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* Fix to default poster code
 
 	* Tweaks to the input dialog: no correction, URL keyboard auto-shown,
@@ -2177,6 +2387,8 @@
 	* Moved icons and such into Resources
 
 2011-07-20  Kees Blom  <kees@cwi.nl>
+
+	* Found & fixed bug in cgfsullscreen trans.
 
 	* Mercurial: ignore more generated files
 
@@ -2208,15 +2420,16 @@
 
 	* Re-enabled gconftool for ambulant: scheme
 
-2011-07-20  Kees Blom  <kees@cwi.nl>
-
-	* Found & fixed bug in cgfsullscreen trans.
-
 2011-07-18  Kees Blom  <kees@cwi.nl>
 
 	* Icons for kde now work too.
 
 2011-07-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fix for #3353690: iAmbulant doesn't play automatically.
+
+	* For device builds, iOS version get hard-set to 4.3 (as opposed to
+	latest). Fixed.
 
 	* HTTPSink.cpp and MPEG1or2VideoHTTPSink.cpp are no longer part of
 	live555.
@@ -2269,8 +2482,6 @@
 
 	* Some of the on_bom/on_eom mods had goten lost. Redone.
 
-	* Cleaned up debug output, and enabled a lot more
-
 2011-07-14  Bo Gao  <gao@cwi.nl>
 
 	* Got starting with creating custom queue and implementing pause and
@@ -2281,6 +2492,8 @@
 	* Also change document icons for XP
 
 	* Removed turd
+
+	* Cleaned up debug output, and enabled a lot more
 
 	* Got rid of debug
 
@@ -2318,6 +2531,8 @@
 
 	* Fixed two subtle errors in nightly clean procedure
 
+	* Closing exp-jack-http-submit branch
+
 	* sending portion of http submission works
 
 	* Attempt at making install.rdf compatible with Firefox 5
@@ -2341,6 +2556,10 @@
 
 	* Intialization of bgbrush wasn't always done correctly. Fixed.
 
+2011-07-08  Kees Blom  <kees@cwi.nl>
+
+	* Fixed bar/snake outtrans.
+
 2011-07-08  Bo Gao  <gao@cwi.nl>
 
 	* Minor correction
@@ -2348,8 +2567,6 @@
 	* QT version of ambulant with gcd built on linux
 
 2011-07-08  Kees Blom  <kees@cwi.nl>
-
-	* Fixed bar/snake outtrans.
 
 	* Fixed #3357708: CG fourtransition.smil is now OK.
 
@@ -2394,6 +2611,10 @@
 
 	* Leak fix
 
+2011-07-01  Kees Blom  <kees@cwi.nl>
+
+	* Impl.fullscreen inTrans.CGPlayer
+
 2011-07-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Create better parseable output (for event_debug script)
@@ -2418,10 +2639,6 @@
 2011-06-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* urlretrieve() does not return 404 errors. Attempt to fix that.
-
-2011-07-01  Kees Blom  <kees@cwi.nl>
-
-	* Impl.fullscreen inTrans.CGPlayer
 
 2011-06-29  Kees Blom  <kees@cwi.nl>
 
@@ -2448,6 +2665,10 @@
 
 	* Test programs for GCD
 
+2011-06-23  Kees Blom  <kees@cwi.nl>
+
+	* Fixed bug in rect_list (cg: double TopLeft translation)
+
 2011-06-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Implemented "zoom to natural size" for D2D player.
@@ -2455,10 +2676,6 @@
 	* Got VC10 DX build to work again, somewhat.
 
 	* - Also scale up presentation (used to do only scale-down)
-
-2011-06-23  Kees Blom  <kees@cwi.nl>
-
-	* Fixed bug in rect_list (cg: double TopLeft translation)
 
 2011-06-21  Kees Blom  <kees@cwi.nl>
 
@@ -2505,6 +2722,12 @@
 	* Various tweaks to get a clean VC10 build to work. Still not
 	complete, probably.
 
+2011-06-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Closing old branch
+
+	* Closing branch again
+
 2011-06-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Starting on crawl and scroll.
@@ -2525,6 +2748,8 @@
 	* Check for gas-preprocessor.pl being available for iPhone builds
 	(needed by ffmpeg)
 
+	* Closing branch
+
 	* - Resized to max on going to fullscreen
 
 	* Started on scaling in fullscreen, unfinished
@@ -2534,6 +2759,10 @@
 2011-06-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Zoom in and zoom out work too
+
+2011-06-16  Kees Blom  <kees@cwi.nl>
+
+	* Turned of AM_DBG debug flag
 
 2011-06-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -2547,14 +2776,6 @@
 
 2011-06-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Tried various things, all unsuccessful
-
-2011-06-16  Kees Blom  <kees@cwi.nl>
-
-	* Turned of AM_DBG debug flag
-
-2011-06-15  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* Finished nightly clean script
 
 	* Fixes
@@ -2563,24 +2784,11 @@
 
 	* Build for iOS 4.3
 
+	* Tried various things, all unsuccessful
+
 2011-06-14  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* First try with libxdispatch
-
-2011-06-14  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Minor tweak
-
-2011-06-13  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Initial sizing of window works again, resize keeps document in
-	original size, anchored botleft
-
-	* Experimenting with resize, with mixed results so far
-
-2011-06-01  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* First responder was wrong in fullscreen. Fixed.
 
 2011-06-14  Kees Blom  <kees@cwi.nl>
 
@@ -2590,6 +2798,8 @@
 
 	* Small typo
 
+	* Fixed iOS Fat builds in 3rd party packages.
+
 2011-06-11  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed problem w. transition (Euros)
@@ -2597,10 +2807,6 @@
 2011-06-10  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* autotest script on Linux now runs OK w. make check
-
-2011-06-13  Kees Blom  <kees@cwi.nl>
-
-	* Fixed iOS Fat builds in 3rd party packages.
 
 2011-06-08  Kees Blom  <kees@cwi.nl>
 
@@ -2620,11 +2826,26 @@
 
 	* Installed iPhoneOS4.3.sdk
 
+2011-06-14  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Minor tweak
+
+2011-06-13  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Initial sizing of window works again, resize keeps document in
+	original size, anchored botleft
+
+	* Experimenting with resize, with mixed results so far
+
 2011-06-01  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* First responder was wrong in fullscreen. Fixed.
 
 	* Make check tests both 64 and 32 bit
 
 2011-05-31  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Closing branch
 
 	* Make sure copy_tpp_win32 is built last.
 
@@ -2674,12 +2895,6 @@
 
 	* WITH_PYTHON_PLUGIN no longer changes API
 
-2011-05-27  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Put getTransitionTmpSurface back in
-
-	* More cleanup. I seem to have broking iOS transitions, though...
-
 2011-05-26  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added testoutputcomapare and reference outputs s.t. make distcheck
@@ -2690,6 +2905,12 @@
 	* skip comment lines starting with '#'
 
 	* Incorporated testoutputcomre.py
+
+2011-05-27  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Put getTransitionTmpSurface back in
+
+	* More cleanup. I seem to have broking iOS transitions, though...
 
 2011-05-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -2786,23 +3007,13 @@
 
 	* Got rid of sdl-config call
 
-	* iMake distcheck does not like it if there are files in the standard
-
 2011-05-19  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added new script to run test suites
 
-2011-05-19  Jack Jansen  <Jack.Jansen@cwi.nl>
+2011-05-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Fixed stupid po checkin
-
-2011-05-18  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* regenerated
-
-2011-04-29  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Reformatted some text, clarified some things
+	* iMake distcheck does not like it if there are files in the standard
 
 2011-05-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -2825,6 +3036,16 @@
 2011-05-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Hack for make distcheck
+
+2011-05-19  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed stupid po checkin
+
+2011-05-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* regenerated
+
+2011-05-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Applied Aleksandar Zivkovic's patch on ambulant-2.2
 
@@ -2876,6 +3097,10 @@
 
 	* Fixed errors in Makefile.am
 
+2011-05-09  Kees Blom  <kees@cwi.nl>
+
+	* Added a make check entry for player_gtk
+
 2011-05-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Small tweak.
@@ -2884,10 +3109,6 @@
 
 	* Added make check entry for player_gtk
 
-2011-05-09  Kees Blom  <kees@cwi.nl>
-
-	* Added a make check entry for player_gtk
-
 2011-05-03  Kees Blom  <kees@cwi.nl>
 
 	* Label id changed in 'make check' entry for MacOS player
@@ -2895,6 +3116,10 @@
 2011-04-29  Kees Blom  <kees@cwi.nl>
 
 	* Added 'make check' entry for MacOS player
+
+2011-04-29  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Reformatted some text, clarified some things
 
 2011-04-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3134,10 +3359,6 @@
 
 	* Make argc/argv available in applicationwillfinishlaunching
 
-2011-04-10  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fixed cocoa out-transitions being upside down
-
 2011-04-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Turned off AM_DBG in qt_gui.
@@ -3171,11 +3392,13 @@
 
 	* Merged
 
+2011-04-10  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed cocoa out-transitions being upside down
+
 2011-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Started on end-of-line fixing for windows
-
-	* Cleanup for nightly builds
 
 	* Added OnEraseBkgnd methods, this reduces flicker for D2D player.
 
@@ -3213,6 +3436,10 @@
 	* Got rid of static s_fullscreen_rendertarget, now member of d2_player
 
 	* Little bit of cleanup. Transition freq. set at 25x/sec.
+
+2011-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Cleanup for nightly builds
 
 2011-04-04  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -3379,6 +3606,8 @@
 	* Implemented d2 outtransitions poly/polylist: iris, clock, bowTie,
 	etc.
 
+	* closing branh: d2 in transitions finished.
+
 	* Implemented d2_transition_blitclass_fade&r1r2r3r4: push, slide fade.
 
 2011-03-21  Jack Jansen  <Jack.Jansen@cwi.nl>
@@ -3441,13 +3670,15 @@
 
 	* Tweaking key usage
 
-	* Try windows nightly builds again
-
 2011-03-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* 1st d2 transition (bar, box) works.
 
 	* All d2 renderers ID2D1RenderTarget* parameter in redraw_body().
+
+2011-03-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Try windows nightly builds again
 
 2011-03-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3499,6 +3730,238 @@
 
 	* Playing with the nightly builds
 
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
+	* Closing old branch
+
 2011-03-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Cater for installing apps with a different name (such as CG player)
@@ -3546,15 +4009,15 @@
 
 	* Slight reorganization so we can add display-based animation later
 
-	* Adding more animation debug output (disabled)
-
-	* Reverting 5681:35b919a1cd58, it causes fill=freeze to stop working
-
 2011-03-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added some code for dumping bitmaps (experimental).
 
 2011-03-09  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Adding more animation debug output (disabled)
+
+	* Reverting 5681:35b919a1cd58, it causes fill=freeze to stop working
 
 	* Fixed a divide-by-zero if sample rate wasn't available yet
 
@@ -3606,6 +4069,10 @@
 
 	* Typo correction (libambulantGC -> libambulantCG)
 
+2011-03-02  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Fixed hickup at end of fullscreen transition.
+
 2011-03-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixing minor issues with building npambulant installer.
@@ -3623,12 +4090,6 @@
 2011-03-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Detail
-
-2011-03-02  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Fixed hickup at end of fullscreen transition.
-
-2011-03-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed problem with building libambulant for iOS simulator.
 	Unfortunately,
@@ -3653,6 +4114,14 @@
 
 	* Most of the transitions on iOS now work, except push and fullscreen-
 	transout. Also compiles for CG on desktop.
+
+2011-02-25  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Some initial cleanup and preparations for full screen outtrans.
+
+2011-02-24  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Added some frameworks for compiling with CG.
 
 2011-02-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3686,6 +4155,12 @@
 
 	* Removing old webkit plugin project, moving installer script
 
+2011-02-21  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Merged after fixing conflicts
+
+2011-02-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Stopgap for MyVideos plugin: the SDL renderer does not trigger on
 	prefetch, unless it is instructued to do so through the
 
@@ -3695,17 +4170,10 @@
 	* Patches from Bo (dated 10-Dec-2010), finally checked in. These
 	should seriously decrease
 
-2011-02-25  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Some initial cleanup and preparations for full screen outtrans.
-
-2011-02-24  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Added some frameworks for compiling with CG.
-
 2011-02-21  Kees Blom  <Kees.Blom@cwi.nl>
 
-	* Merged after fixing conflicts
+	* Turned the hexagon 45 degree to make it horizontal, which is the
+	default.
 
 2011-02-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3718,13 +4186,14 @@
 
 2011-02-21  Kees Blom  <Kees.Blom@cwi.nl>
 
-	* Turned the hexagon 45 degree to make it horizontal, which is the
-	default.
-
 	* Fixed a bug that made the History view inconsistent with its backing
 	sore after an item was selected.
 
 	* renoved obolete file
+
+	* Changed some (hopefully all) counterclockwise polygon definitions
+	into their clockwise equivalents, for proper use of the non-zero
+	winding ruke in Coregraphics.
 
 2011-02-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3738,16 +4207,12 @@
 
 	* Trying to build browser plugins with VS2010. Unfinished.
 
-2011-02-21  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Changed some (hopefully all) counterclockwise polygon definitions
-	into their clockwise equivalents, for proper use of the non-zero
-	winding ruke in Coregraphics.
-
 2011-02-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Enabled ambulant-checkins mailing list for the new Mercurial
 	repository at ambulantplayer.org
+
+	* Test notification mail
 
 	* Test notification mail
 
@@ -3783,11 +4248,9 @@
 	* Added debian as a platform, this uses apt-get to install the
 	required packages
 
-2011-02-18  Kees Blom  <Kees.Blom@cwi.nl>
+2011-02-17  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Test notification mail
-
-2011-02-17  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Test notification mail
 
@@ -3800,8 +4263,6 @@
 	* Replaced ##ui64 (MS-specific) with ##ULL.
 
 2011-02-17  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Test notification mail
 
 	* Test notification mail
 
@@ -3900,13 +4361,17 @@
 
 	* DL iOS patches are no longer needed: the current SDL 1.3 snapshot
 
-	* Getting build-third-party-packages to work for Windows.
-
 2011-02-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Optimization for fullscreen transition.
 
 	* Removed some debug output.
+
+2011-02-14  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Getting build-third-party-packages to work for Windows.
+
+2011-02-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Removed some debug output.
 
@@ -3962,6 +4427,10 @@
 
 	* Implemented In/Out transistions fade,slide,box,clock.
 
+2011-01-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Detail
@@ -3982,6 +4451,10 @@
 
 	* In 32bit mode NSSize and CGSize are not identical, so add converters
 
+2011-01-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Attempting to get fixMouse/resetMouse to work again, for HUD and
@@ -3998,6 +4471,10 @@
 
 	* Desktop CG player view starts to behave again, somewhat
 
+2011-01-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting rid of more dead wood:
@@ -4010,6 +4487,10 @@
 
 	* Another fix to nightlybuild
 
+2011-01-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweak build script
@@ -4021,6 +4502,10 @@
 	* Adding missing files.
 
 	* Getting rid of various WITH_UIKIT ifdefs
+
+2011-01-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2011-01-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4037,6 +4522,10 @@
 	* Plodding on
 
 	* Playing with the nightly builds again
+
+2011-01-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2011-01-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4059,6 +4548,10 @@
 2011-01-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started with allowing Visual Studio 2010 builds.
+
+2011-01-19  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-kees-cg_transitions'
 
 2011-01-19  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4087,6 +4580,10 @@
 
 	* Rotating works, scale/pan somewhat
 
+2011-01-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Small changes for iPad. Changed logic to refer to 'isHistory' rather
@@ -4096,6 +4593,10 @@
 	* Adapted iPad MainWindow similar to iPhone changed to match the code.
 
 	* Changed a few settings to make the views a bit better in Ipad.
+
+2011-01-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2011-01-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4113,6 +4614,10 @@
 
 	* Repaired code s.t. Welcome can be played from the Settings pane.
 
+2011-01-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-13  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added settings/prefs for HUD autoHide/shortLongTap and implemented
@@ -4126,6 +4631,12 @@
 
 	* Inserted extra view to handle pan/zoom
 
+2011-01-12  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-extra-view'
+
+2011-01-12  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Added a class AmbulantContainerView for the container view
 
 2011-01-12  Kees Blom  <Kees.Blom@cwi.nl>
@@ -4138,6 +4649,10 @@
 	faster.
 
 	* Added interactivly re-arranging Favorites in 'Edit' mode.
+
+2011-01-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2011-01-11  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4156,6 +4671,10 @@
 	* More definitions of preprocessor vars at the wrong place
 
 	* Some definitions went from xcconfig to the dialogs. Fixed.
+
+2011-01-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2011-01-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4191,11 +4710,21 @@
 
 	* Fixed for text and smiltext
 
+2011-01-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Next steps
 
 	* On a branch. Experimenting with using topleft everywhere
+
+2011-01-06  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-cg-topleft'
+
+2011-01-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added the old crop code again, in ifdefs
 
@@ -4204,6 +4733,10 @@
 2011-01-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Managed to make matters different. Not better, different:-)
+
+2011-01-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2011-01-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4222,22 +4755,42 @@
 
 	* Aargh! Removed outdated xib files
 
+2011-01-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed strange glitch with project file (dylibs lost their extension)
 
 	* I have completely broken the resize/rotate code. But: there is some
 
+2011-01-02  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-faulty-transform'
+
+2011-01-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2011-01-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Allow rotation of aux views on iPad, not on iPhone. Unfortunately I
 	seem to have broken player view rotation
+
+2011-01-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-31  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More iPad tweaks
 
 	* Fixed positioning and such so it looks good on both iPhone and iPad
+
+2010-12-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4252,6 +4805,10 @@
 
 	* Next step in grand restructuring: most communication between the
 
+2010-12-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Next step in modifying startup sequence. Lots of initializations
@@ -4260,6 +4817,10 @@
 
 	* Revised stopping/destruction of cg_avfoundation (removal of the
 	player_layer)
+
+2010-12-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4271,9 +4832,17 @@
 
 	* Got rid of debug.
 
+2010-12-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Changed code for remembering the last node played (for restarting on
+
+2010-12-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-23  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4292,6 +4861,10 @@
 
 	* Added missing retain calls, which caused various crashes in open url
 	dialog
+
+2010-12-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4321,6 +4894,10 @@
 	* Removed temporary links to smil demo's now that start from website
 	works.
 
+2010-12-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Version for 2.3.20101221 distribution
@@ -4348,6 +4925,10 @@
 
 	* Double-tap is now "auto-zoom". It will switch between zooming
 
+2010-12-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Attempting to fix zoom behaviour so the anchorpoint is in the middle
@@ -4367,6 +4948,10 @@
 
 	* Slightly tweaked for better viewability
 
+2010-12-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* resized image
@@ -4377,6 +4962,12 @@
 
 	* Hacking away (with baby steps) towards an iPad ambulant.
 
+2010-12-19  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental-jack-ipad'
+
+2010-12-19  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* First iPhone ad-hoc distribution on ambulantplayer.org
 
 	* Adding itunes artwork and an icon that shows up correctly in iTunes
@@ -4384,11 +4975,19 @@
 
 	* Changed default for scale/center
 
+2010-12-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Completely revised native video impl. All video's in Birthday now
 	finanaly do play. Revision is halfway, video's do repeat i.o.
 	terminate on EOF, and lots of leaks.
+
+2010-12-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-17  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4405,6 +5004,10 @@
 
 	* Check that essential commands (make, pkg-config, etc) are available.
 
+2010-12-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Allow two schemes for ambulant: urls, either replacing http: or
@@ -4415,6 +5018,10 @@
 	* Implemented ambulant: uri scheme
 
 	* Adapted for the move of the config files
+
+2010-12-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4441,6 +5048,10 @@
 
 	* Minor tweaks to get things to compile and build again
 
+2010-12-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Build-and-archive also seems to work
@@ -4463,6 +5074,10 @@
 	* Minor fixes for builing libambulant for all platforms
 
 	* - Moving configfiles to a subdirectory
+
+2010-12-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4496,6 +5111,10 @@
 	* Added a 'Play' button replacing the 'Pause' button in the Control
 	Panel whenever the playeris paused or stopped.
 
+2010-12-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added targets for CG builds of ambulant
@@ -4512,17 +5131,29 @@
 	double tap or longpress selects a smil element in the player view. I
 	prefer 'LongPress'.
 
+2010-12-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-10  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made launch by Safarie e.a. work again. Added GLOB_DBG to trace
 	this. Removed some retired code fragments. Native video now also
 	works with <param name=renderer .../>
 
+2010-12-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed some leaks, mainly in the new code for History/Favorites
 
 	* Tweaked layout of HUD
+
+2010-12-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-08  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4532,10 +5163,18 @@
 
 	* Added a line separator between table entries in History/Favorites
 
+2010-12-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-07  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Patched the crash recovery code. Player now plays Welcome (from
 	bundle) after a crash, from there everything works as usual.
+
+2010-12-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-07  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4548,6 +5187,10 @@
 
 	* Functional complete player with InsertButtons in Favorites
 	selectable by 3-fold tap on Edit
+
+2010-12-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-12-03  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4563,9 +5206,17 @@
 	* Added implementations for 'Favorites' and 'Help' tabbar items. GUI
 	is now almost complete, but there are a lot of bugs.
 
+2010-12-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-12-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added an "Edit" tab to enter an URL manually.
+
+2010-12-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-30  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4573,22 +5224,42 @@
 	selected, AmbulantPlayer fades in favor of the last selected
 	TabbarItem. Only History and Setting work, less of more.
 
+2010-11-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-26  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Adapted for 4.2. Added an initial HUD, with images from VLC
 
+2010-11-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added /usr/X11/lib
+
+2010-11-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-22  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed leaks in demux_audio_datasource: all data buffers in packets
 	dropped by seek() were leaked
 
+2010-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-20  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Got rid of some leaks
+
+2010-11-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-19  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4598,9 +5269,17 @@
 
 	* Some small bugs and files moving around
 
+2010-11-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Regenerated
+
+2010-11-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-17  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4609,10 +5288,18 @@
 
 	* Poster image save/restore now works
 
+2010-11-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-16  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added code to display a custom icon (from <meta name="poster") in
 	the history list. Partly works.
+
+2010-11-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-15  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4627,10 +5314,18 @@
 
 	* Fixed minor issues with win7 building and new code by Kees.
 
+2010-11-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added code to player save state when ApplicationWillTerminate is
 	called
+
+2010-11-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-12  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4644,6 +5339,10 @@
 
 	* Fixed compile problem.
 
+2010-11-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-11  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed node interface: get_path_display_desc() renamed to
@@ -4654,6 +5353,10 @@
 
 	* Pass the bitmap back to unlock, for releasing it.
 
+2010-11-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added (superfluous) code to find all nodes still active on player
@@ -4662,6 +5365,10 @@
 	* Rationalized item selection from history to take actual values from
 	the history itself (which has all relevant info) rather than the
 	presentation on screen.
+
+2010-11-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-08  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4678,6 +5385,10 @@
 2010-11-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Optimized redrawing: redraw only the dirty region.
+
+2010-11-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-05  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4696,11 +5407,19 @@
 
 	* VCE RTP video starts to work correctly.
 
+2010-11-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-11-04  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Improved History list font settings (PresentationTableCell.xib)
 
 	* Added the other files used for History
+
+2010-11-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-11-03  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4709,6 +5428,10 @@
 2010-10-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Temporary workaround for Parallels bug on Jack's MacPro.
+
+2010-10-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-10-28  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4738,6 +5461,10 @@
 
 	* Window resize added.
 
+2010-10-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-10-22  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added a new "Distribution" configuration for the Device for beta-
@@ -4753,10 +5480,18 @@
 
 	* - Workaround bug in Visual Studio/SDK instalation
 
+2010-10-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-10-19  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Renamed mainloop.cpp to mainloop.mm but forgot to do this in CVS as
 	well
+
+2010-10-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-10-18  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4780,6 +5515,10 @@
 	* sink compiles, added skeleton code for a renderer that uses it. All
 	incomplete.
 
+2010-10-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-10-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started on a Direct2D bitmap sink for DirectShow graphs.
@@ -4788,6 +5527,10 @@
 2010-10-13  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed obsever management for avplayer details
+
+2010-10-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-10-11  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4802,6 +5545,10 @@
 2010-10-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* ffmpeg video renderer (for Direct2D) starts to work.
+
+2010-10-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-10-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4828,6 +5575,10 @@
 	infrastructure. This
 
 	* Image rendering works, including transparency!
+
+2010-10-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-10-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4858,12 +5609,26 @@
 
 	* bitmap formats.
 
+2010-10-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-10-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started with parameterizing RGB or RGBA mode: Created a
 	singleton object
 
+2010-10-03  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental-jack-win-rgba'
+
+2010-10-03  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Implemented WICimage rendering for non-local URLs.
+
+2010-10-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-10-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4875,6 +5640,10 @@
 	on device. Going back to single static player, prohibiting
 	simultaneous video's
 
+2010-10-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Bits and pieces.
@@ -4883,14 +5652,26 @@
 
 	* Added a note that DirectX SDK Feb 2010 is the last one to work.
 
+2010-09-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-29  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Attempt to make cg_avfoundation_video work with self-managed
 	AVPlayerItem, alas ! did not work
 
+2010-09-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-28  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added the source of a test that is appended to #3077135
+
+2010-09-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-09-23  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4898,24 +5679,48 @@
 	detection, and can handle mulitple video's in par/seq. But alas! it
 	craches/hangs when played a second time, giving up why...
 
+2010-09-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2010-09-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* cg_avfoundation_viedo_renederer now plays video at the correct
 	position.
 
+2010-09-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-10  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* First video fragment seen w. AVFoundation and sound too.
+
+2010-09-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-09-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Started native video renderer (AVFoundation) on iPhone. Now video
 	doesn't work anymore
 
+2010-09-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added a check for animation in CG smiltext and tested for
 	attributeName="top"
+
+2010-09-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-09-06  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4923,6 +5728,10 @@
 
 	* Fixed cg_smiltext layout optimization and made cg_smiltext leak-
 	free.
+
+2010-09-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-09-05  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4934,15 +5743,27 @@
 
 	* Added textFontSize="medium" as defined in SMIL 3.0 par.8.4.1
 
+2010-09-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-09-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* smiltext on iPhone now works properly with crawl and scroll
+
+2010-08-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-08-30  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* test if chechin msgs work
 
 	* Implemented textRate='auto' for scroll (CG-iPhone)
+
+2010-08-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-08-26  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4954,18 +5775,34 @@
 	* Simplified cg_smiltext by eliminating some ugly code. It has no
 	leaks in NYC-Smiltext.smil
 
+2010-08-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-08-24  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added m_font_descr_cache. cg_smiltext_renderer on iPhone is now free
 	of leaks with NYC-Smiltext.smil
 
+2010-08-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-08-23  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* First quickly hacked implementation for scroll and crawl on iPhone
 
+2010-08-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-08-21  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added smilText textStyle and textStyling on iphone
+
+2010-08-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-08-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4973,9 +5810,17 @@
 
 	* Text foreground color attribute added for iPhone smilText
 
+2010-08-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-08-19  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* tev now also works
+
+2010-08-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-08-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4991,6 +5836,10 @@
 
 	* Bug fixes to environment-checking code and libxml2 build
 
+2010-08-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-08-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Check environment, based on what we are building
@@ -5005,14 +5854,26 @@
 
 	* Removed -O4 flag
 
+2010-08-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-08-16  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Rewrote/cleanup pan/zoom for iPhone
+
+2010-08-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-08-10  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* made compiler flags more equal to those used in the porject in an
 	attempt to get rid of crash in static initializers
+
+2010-08-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-08-09  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -5023,9 +5884,33 @@
 
 	* Added player_iphone xcode project
 
+2010-08-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2010-08-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2010-08-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2010-08-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2010-07-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-29  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Finishing touches for auto-centering
+
+2010-07-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-07-28  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -5035,18 +5920,38 @@
 
 	* Added method adaptDisplayAfterRotation for iPhone
 
+2010-07-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-27  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added automatic frame size adaption on rotating. Almost works, maybe
 	only need call to redraw() somewhere
 
+2010-07-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-26  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Improved cleanup with Instruments
 
+2010-07-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-24  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed for iPhone, were tapping also starts to work.
+
+2010-07-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2010-07-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-07-13  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -5054,6 +5959,10 @@
 
 	* Attempt to build 3pp for iPhone Device and iPhone Simulator using
 	the proper SDK's
+
+2010-07-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-07-08  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -5063,14 +5972,26 @@
 	* Added some lines to make AmbulantPlayer start on iPhone, #ifdef'd
 	WITH_IPHONE
 
+2010-07-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-06  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Use UIGraphicsGetCurrentContext() to get the proper context (works
 	on iPhone)
 
+2010-07-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Cater for nightly scripts not being executable
+
+2010-07-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-07-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5083,6 +6004,10 @@
 	* More workarounds for Windows problems
 
 	* Work around bug in Visual Studio with too long pathnames
+
+2010-07-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-07-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5104,6 +6029,10 @@
 
 	* Build in build-3264 subdir
 
+2010-07-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-07-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started on 3pp build for Windows. Untested
@@ -5111,6 +6040,10 @@
 	* Use -P option for checkout
 
 	* Use ssh for cvs
+
+2010-07-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5123,6 +6056,10 @@
 	* More crontab debugging
 
 	* Debugging crontabs
+
+2010-06-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5158,6 +6095,10 @@
 
 	* Added stdint.h include, to work around avformat.h issue
 
+2010-06-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-06-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Last batch of Windows warnings bites the dust.
@@ -5165,6 +6106,10 @@
 	* More warnings squashed, mainly warnings about const strings
 
 	* Getting rid of deprecated ffmpeg constructs
+
+2010-06-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5177,6 +6122,10 @@
 	* More integers converted to size_t
 
 	* Made stuff cleaner for 64bit by using size_t in stead of int in
+
+2010-06-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5194,6 +6143,10 @@
 
 	* Getting rid of old compat stuff
 
+2010-06-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-06-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting rid of WinCE/Windows Mobile
@@ -5201,6 +6154,10 @@
 	* Rationalized some include guards
 
 	* Getting rid of various #if 0 and #if 1
+
+2010-06-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5215,6 +6172,10 @@
 	* Getting rid of WinCE files
 
 	* Getting rid of WinCE-specific files
+
+2010-06-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5231,6 +6192,10 @@
 
 	* More spaces converted to tabs
 
+2010-06-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-06-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tab/space fixing
@@ -5239,9 +6204,17 @@
 
 	* More whitespace
 
+2010-06-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-06-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More space/tab fixes
+
+2010-06-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5254,6 +6227,10 @@
 	* Added command line processing
 
 	* More space-to-tab conversion
+
+2010-06-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5279,6 +6256,10 @@
 
 	* Jack's mods for pixel layout on PowerPC
 
+2010-06-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-06-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Updated for building correct Mac10.4 installers
@@ -5286,6 +6267,10 @@
 2010-06-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started on a script to test/fix C++ indentation
+
+2010-06-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-06-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5315,6 +6300,10 @@
 	* Results for b20, win7
 
 	* Results for b20, mac10.6
+
+2010-05-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-05-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5392,6 +6381,10 @@
 
 	* Put a bit more detail in the "download failed" message for msvcrt.
 	Fixes #3002765.
+
+2010-05-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-05-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5524,6 +6517,10 @@
 	* Added some Dutch translations
 
 	* Corrected some new gettext calls
+
+2010-04-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-04-09  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -5809,6 +6806,10 @@
 	* For negative begin time a sync rule is added and its value is added
 	to clipBegin.
 
+2010-02-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-02-24  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added "audioVisualFade" transition type in the graphic renderers to
@@ -5901,6 +6902,10 @@
 	* Changed the default value for prefer_rtsp_tcp to 'true', since
 	that's what we use.
 
+2010-02-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-02-03  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added forced delete of playables whose refcounts are higher than
@@ -5915,6 +6920,10 @@
 
 	* - AVT fixes were incomplete for windows: there the runtime
 	(rightfully) complains
+
+2010-02-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-02-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5945,6 +6954,10 @@
 
 	* Commented out a call to stop() to make the calling thread waiting
 	before
+
+2010-01-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2010-01-31  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6073,6 +7086,10 @@
 	* Added an empty TestMatrix to check everything we need to support for
 	releases.
 
+2010-01-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2010-01-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* The xerces plugin wasn't included in the installer, fixed.
@@ -6179,6 +7196,10 @@
 
 	* Cganged a previous stop-gap solution into a more logical one:
 
+2009-12-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-12-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Minor fixes for WinCE build. But the main problem, that we have no
@@ -6194,6 +7215,12 @@
 2009-12-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Upped version number to 2.3.
+
+2009-12-14  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-ambulant-22-branch'
+
+2009-12-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Changed pathnames.
 
@@ -6222,6 +7249,10 @@
 
 	* Partial fix for #2908167:
 
+2009-12-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-12-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Removed debug.
@@ -6232,9 +7263,17 @@
 
 	* Removed the DTD specification as this is incompatable with SmilState
 
+2009-12-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-12-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* We need at least Windows XP, and IE 6.
+
+2009-12-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-12-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6243,6 +7282,10 @@
 	* Added missing delete of params.
 
 	* Added get_long() methods to smil2::params.
+
+2009-12-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-12-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6267,6 +7310,10 @@
 
 	* Need to reset the document before playables are deleted
 
+2009-12-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-12-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Do redraws more efficiently when animating region bounds. Let the
@@ -6274,6 +7321,10 @@
 2009-12-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* When opening a new file, the current smil_player is now properly
+
+2009-12-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-12-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6287,6 +7338,10 @@
 
 	* Typo (CPP has not the same langage as bash)
 
+2009-12-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Export the logger interface to Python.
@@ -6296,6 +7351,10 @@
 	* showBackground=whenActive fix was incomplete: if region active
 	status
 
+2009-11-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Project didn't build anymore on 64bit. Fixed.
@@ -6303,6 +7362,10 @@
 2009-11-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* When destroying the webkit plugin, also dealloc the mainloop.
+
+2009-11-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-27  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -6318,6 +7381,10 @@
 	* gtk_video is apparently optional.
 
 	* Removed superfluous "-lbz2" from ffmpeg compile flags.
+
+2009-11-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6336,6 +7403,10 @@
 	yhe configure macro AC_HEADER_ASSERT. The add -DNDEBUG=1 as compiler
 	flag.
 
+2009-11-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Comment fix for ffmpeg cleanup
@@ -6351,23 +7422,43 @@
 
 	* Old checkins still sitting on my disk.
 
+2009-11-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made pyambulant compile and link on 64 bit linux installation
+
+2009-11-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-17  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Free all queue'd data blocks in demux_audio_data_source. Partially
 	fixes #2883203.
 
+2009-11-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-16  Tim Stevens  <stevents@sf.net>
 
 	* Jack here: mods to make VCE work with RTP video viewer. Should
 	(hopefully) not
 
+2009-11-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added an ifdef WITH_LTDL_PLUGINS
+
+2009-11-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-12  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6380,14 +7471,26 @@
 
 	* Fixed a deadlock: bug #2895982.
 
+2009-11-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Ignore import library.
+
+2009-11-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Deleting the event processor while holding the smil_player lock can
 	lead to
+
+2009-11-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6402,11 +7505,19 @@
 	* Things are now more-or-less back at where they were for Kees'
 	efforts.
 
+2009-11-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Sigh. Variables are not exported to sub-scripts, so copy the whole
 
 	* - typo in vsprops
+
+2009-11-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6416,11 +7527,19 @@
 
 	* Attempting to get IEAmbulant installer into the common build
 
+2009-11-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-06  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added the output of "arch" to the .xpi name, to avoid any confusion.
 
 	* Modified mainloops for smil_player mods to fix #2848557.
+
+2009-11-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6451,6 +7570,10 @@
 
 	* Added os.path.relpath when not available.
 
+2009-11-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* If WITH_SPLASH_SCREEN is defined it should be the URL of a splash
@@ -6465,6 +7588,10 @@
 	StateTest.smil
 
 	* Added import decl. for getopt
+
+2009-11-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-11-03  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6489,6 +7616,10 @@
 
 	* WebKit plugin is starting to work.
 
+2009-11-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-11-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Updated instructions for 10.4 and 10.6 installers.
@@ -6501,6 +7632,10 @@
 
 	* Fix for a cryptic bug occurring on exiting AmbulantPlayer:
 
+2009-10-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Enumerated the platforms on which we should test.
@@ -6511,13 +7646,25 @@
 
 	* Implemented mediaOpacity inside <region> tag. Fixes #2822372.
 
+2009-10-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-28  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Make gstreamer for .wav, .mp3 work again. Fixes #2886364.
 
+2009-10-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* These files are long dead.
+
+2009-10-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-26  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6533,9 +7680,17 @@
 	* Changed LD_LIBRARY_PATH s.t. our TPP libraries are preferred to any
 	otherwise installed versions
 
+2009-10-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Mac desktop application now also built with full shared libs.
+
+2009-10-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-23  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6548,11 +7703,19 @@
 	* Turned off some debugging, that caused AmbulantPlayer_gtk to crash,
 	randonly.
 
+2009-10-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-22  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Implemented gtk video scaling. Fixes #2777319.
 
 	* Initialized m_eom_flag after valgrind complaining
+
+2009-10-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-21  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6562,6 +7725,10 @@
 	* initialization m_volcount added
 
 	* Moved static factory* from state.h to state.cpp. Fixes #2846127
+
+2009-10-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6580,15 +7747,27 @@
 	* testing after cvs re-configure. making sure this file goes on the
 	amis branch.
 
+2009-10-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-19  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Little bit of cleanup
 
 	* Implemented rate="auto" for gtk. Fixes #2777292.
 
+2009-10-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Internal library use is now strictly static or shared. Static means
+
+2009-10-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6602,6 +7781,10 @@
 	* 1. Turend off use_lugins in npambulant because firefox crashes on
 	loading them.
 
+2009-10-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed typo, and always print error messsage if we can't find our
@@ -6610,6 +7793,10 @@
 	* Tweaks.
 
 	* Modified location of installer.rdf source.
+
+2009-10-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-14  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6624,6 +7811,10 @@
 
 	* Starting to work.
 
+2009-10-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Unfinished script to copy shared libraries to plugin dir.
@@ -6632,9 +7823,17 @@
 
 	* Firefox plugin installer for Windows works! Two things neeed fixing:
 
+2009-10-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Documented the variables in the vsprops file, and added two for
+
+2009-10-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6650,6 +7849,10 @@
 
 	* Fix for #2869232: smilText node with textMode=crawl and no dureation
 	causes crash.
+
+2009-10-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6682,9 +7885,17 @@
 
 	* Dynmically find AMBULANT_DIR
 
+2009-10-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-07  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added fix provided for Fedora 12 in #2860949
+
+2009-10-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6694,12 +7905,20 @@
 
 	* Building third party packages with VC9 was in a very sorry state.
 
+2009-10-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-10-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Various tweaks to exp-jack-easy-configure merge.
 
 	* Merging branch exp-jack-easy-configure: rationalize the
 	configuration
+
+2009-10-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-10-02  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6764,6 +7983,10 @@
 
 	* Starting to work.
 
+2009-09-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaks.
@@ -6799,6 +8022,10 @@
 
 	* Got the script to work with ffmpeg 0.5.
 
+2009-09-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Try installing the VC++ runtime in a completely different way: by
@@ -6827,6 +8054,10 @@
 	* - Adapted npambulant code to work with newer Firefox 3.5 API as
 	well.
 
+2009-09-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* We now seem to get the correct CoreGraphics context.
@@ -6835,6 +8066,10 @@
 
 	* hacked s.t. expat now compiles and links, also on device (not
 	tested, though)
+
+2009-09-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6873,6 +8108,10 @@
 
 	* Locking of m_playables_cs was incorrect. Fixed.
 
+2009-09-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-21  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made libambulant compile again after introduction of get_sig()
@@ -6880,6 +8119,10 @@
 2009-09-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits and pieces for (a) 64-bit Mac buid and (b) ffmpeg 0.5.
+
+2009-09-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6889,10 +8132,18 @@
 
 	* Added a get_sig() method to all renderers, which gives a (somewhat)
 
+2009-09-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* For the time being, enable the DirectX simple video on the desktop
 	as well
+
+2009-09-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-18  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6909,6 +8160,10 @@
 
 	* Removed unsuccessfull Window-based xcode project
 
+2009-09-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits and pieces for ffmpeg-0.5.
@@ -6916,6 +8171,10 @@
 	* More cleanup: getting rid of lots of debug stuff.
 
 	* More changes for new ffmpeg.
+
+2009-09-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-11  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6929,9 +8188,17 @@
 
 	* Getting ready for 10.6 64-bit builds.
 
+2009-09-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got rid of unix_event_processor.
+
+2009-09-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6940,6 +8207,10 @@
 2009-09-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made cg on Mac-mini work again.
+
+2009-09-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6952,6 +8223,14 @@
 	* Regenerated.
 
 	* Got rid of windows-specific event processor code.
+
+2009-09-08  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-iphone-090909'
+
+2009-09-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-07  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -6985,6 +8264,10 @@
 
 	* added audio slowdown. going to add finer increments soon.
 
+2009-09-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-04  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed a few locking issues reported by valgrind.
@@ -6992,12 +8275,22 @@
 	* Added protection in operator long() of basic_atomic_count with
 	#define USE_REF_COUNT_SEMAPHORE
 
+2009-09-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaks.
 
 	* Getting sick and tired of race conditions, and with new (to me, at
 	least)
+
+2009-09-03  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-fix-race-conditions'
+
+2009-09-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Runs on WM5. Well... Crawls, really:-)
 
@@ -7008,6 +8301,10 @@
 2009-09-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* WinCE builds again.
+
+2009-09-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-09-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -7021,6 +8318,10 @@
 
 	* Great cleanup, step 1 - Getting rid of #if 0/#if 1 and ifdefs
 
+2009-09-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-09-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed plugin destruction code s.t. npambulant does not crash os
@@ -7033,6 +8334,10 @@
 	* Re-applied r1.28 (which apparently got lost during the merge): if we
 	have
 
+2009-09-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-08-31  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Adapted to new autogen.sh
@@ -7041,12 +8346,20 @@
 
 	* Tweaks to get things to build correctly.
 
+2009-08-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-08-29  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added autostart attribute to embed tag, as in ieambulant
 
 	* Corrected the test that the nanosecond part of struct timespec is
 	always
+
+2009-08-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-08-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -7090,6 +8403,10 @@
 
 	* fixup commit for tag 'before-exp-jack-keep-renderers-merge'
 
+2009-08-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-08-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* byte_buffer is gone.
@@ -7110,6 +8427,10 @@
 	* Upgraded to libtool 2.2.6, which is needed for Ubuntu 9.
 
 	* Got the python bridge working again.
+
+2009-08-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-08-24  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -7132,6 +8453,10 @@
 	* Added renderer_impl::is_fill_continue_node(), so that renderer
 	implementations
 
+2009-08-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-08-21  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Final commit, at least for now of ieambulant. Status:
@@ -7149,6 +8474,10 @@
 	* If a node has no id, print the src attribute in get_sig().
 
 	* Added a hook for initial Ta2 Ambulant-Synth integration experiments.
+
+2009-08-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-08-12  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -7168,17 +8497,33 @@
 
 	* Squashing warnings.
 
+2009-08-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-08-06  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Committed on the Free edition of March Hare Software CVSNT Server.
+
+2009-07-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-07-29  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Attempt to make ambulant plugin work on Google-Chrome.
 
+2009-07-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-07-25  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Completely getting rid of byte_buffer.
+
+2009-07-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-07-23  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -7190,9 +8535,17 @@
 	* Added a lock in dx_player::pause() because ieambulant plugin got
 	into a
 
+2009-07-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-07-22  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed mouse click in for smil navigation
+
+2009-07-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-07-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -7225,6 +8578,10 @@
 	* Changed test files to use SMIL State to pick up media file
 
 	* - Apparently .so is again .so (at least on my machine)
+
+2009-07-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-07-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -7277,6 +8634,10 @@
 
 	* The new bool stop() and void post_stop begin to work.
 
+2009-07-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-07-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Updated README-linux for the xulrunner version.
@@ -7328,6 +8689,10 @@
 
 	* Removed extraneous arguments to datasource start_prefetch() and
 
+2009-06-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-06-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed bug with sptest-03 crashing on window close.
@@ -7373,6 +8738,10 @@
 	* Modified code s.t. module that need singletons will reset these to
 	NULL on
 
+2009-06-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-06-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* 1. Some cleanup.
@@ -7387,6 +8756,10 @@
 
 	* Prefetch for video with audio getting start to work, however, it
 	doesn't work always, sometime, it doesn't work.
+
+2009-06-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-06-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -7404,11 +8777,19 @@
 
 	* sptest-02-audio-audio works again.
 
+2009-06-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-06-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started on reviving the CoreGraphics build, and porting the
 
 	* Fixed bug #2805248: Log window cannot be resized.
+
+2009-06-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-06-12  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -7437,6 +8818,10 @@
 	* Scheduler doesn't rely on the stop of prefetch to arrange its
 	following actions---Jack's idea
 
+2009-06-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-06-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaks.
@@ -7456,6 +8841,10 @@
 
 	* Works on reload and multiple tabs.
 
+2009-06-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-06-10  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* writing error message to the status bar now works, but reload is
@@ -7472,6 +8861,10 @@
 2009-06-10  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* Prefetch for video begins to work.
+
+2009-06-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-06-09  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -7500,6 +8893,10 @@
 
 	* Prefetch for audio begins to work.
 
+2009-06-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-06-04  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* changed GUID's to new ones instead those borrowd by some example
@@ -7520,6 +8917,10 @@
 2009-06-04  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* For supporting prefetch, not work yet
+
+2009-06-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-06-03  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -7581,6 +8982,10 @@
 
 	* no progress :(
 
+2009-05-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-05-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started on putting all pathnames for third party packages
@@ -7598,6 +9003,10 @@
 	However, the demo sptest-05(Loop: 4 4-second parts. Play the first
 	two bars twice) is not supported any more :(
 
+2009-05-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-05-18  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* fixed the way of finding the corresponding time_node according to
@@ -7609,6 +9018,10 @@
 2009-05-18  Tim Stevens  <stevents@sf.net>
 
 	* Fix Win32 build: pick up DXSDK via %DXSDK_DIR% env variable.
+
+2009-05-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-05-15  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -7634,6 +9047,10 @@
 	* Remove "assert(m_last_frame_timestamp < 0)" in
 	video_renderer::data_avail()
 
+2009-05-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-05-12  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Removed some junk files
@@ -7657,6 +9074,10 @@
 	* refined the code of seeking backward for audio
 
 	* seeking backward for audio works, but still not work for video :(
+
+2009-04-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-04-27  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -7772,6 +9193,10 @@
 
 	* Changed int the About.. text SMIL 2.1 into SMIL 3.0
 
+2009-04-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-04-15  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* don't understand the mechanism between start_frame and data_avail in
@@ -7843,6 +9268,10 @@
 
 	* Updated readme.txt with more details for non-root installs
 
+2009-04-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-04-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Restored INSTALL to original version, with some enhancements)
@@ -7850,6 +9279,10 @@
 	* Restored INSTALL to original version, with some enhancements)
 
 	* Make the nokia 800/810 installer, updated some related files
+
+2009-04-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-03-31  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -7943,6 +9376,10 @@
 	* appended some information for building faad2 for a MacOSX universal
 	build
 
+2009-03-10  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-keep-renderers'
+
 2009-03-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More vestiges of byte_buffer.h removed.
@@ -8006,6 +9443,10 @@
 	* 1st version of npruntime firefox plugin. Does not comile yet. Need
 	backup though
 
+2009-01-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-01-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Getting rid of some dead wood in the projects.
@@ -8048,6 +9489,10 @@
 	* 1st npruntime version of FF plugin, works with gtk only, plays
 	Welcome.
 
+2009-01-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-01-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Adapted for XCode 3.1 and gcc 4.2.
@@ -8055,6 +9500,10 @@
 2009-01-21  Marisa DeMeglio  <marisademeglio@sf.net>
 
 	* adding some missing commits to the amis branch
+
+2009-01-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-01-19  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -8067,6 +9516,14 @@
 	* Adapted old plugin s.t. the does not crash Firefox anymore by Symbol
 	lookup
 
+2009-01-16  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-kees-npruntime-plugin'
+
+2009-01-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-01-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Backport of 1.64.6.1:
@@ -8076,6 +9533,10 @@
 	* Backport of 1.25:
 
 	* Bug (and fix) spotted by Daniel Weck: change_global_rate() argument
+
+2009-01-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2009-01-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8112,6 +9573,10 @@
 
 	* Everything builds and runs, but we don't see or hear anything yet:-)
 
+2009-01-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2009-01-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits. Still doesn't compile.
@@ -8143,6 +9608,14 @@
 
 	* Small last minute changes in rules (--without-gstreamer) and control
 	(3.0 for 800/810)
+
+2008-12-19  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-unified-factories-2'
+
+2008-12-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-12-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8242,6 +9715,10 @@
 
 	* Upped version number to 2.0.1, etc.
 
+2008-12-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-12-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Post-distribution updating of version numbers.
@@ -8267,6 +9744,10 @@
 	doesn't support XP icons (full 32-bit images). I think I worked
 	around the problem by using a third-party icon editor.
 
+2008-12-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-11-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* smilText on Windows (and probably gtk or qt too) was unhappy with
@@ -8276,6 +9757,10 @@
 
 	* A final <clear> in a smilText was ignored if no data follows it.
 
+2008-11-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-11-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* smiltext_layout_engine tried to keep its own idea of when smilText
@@ -8283,7 +9768,17 @@
 
 	* Fiddling with audio callbacks for ffmpeg, currently without success.
 
+2008-11-28  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-fix-rtsp-video'
+
+2008-11-28  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* More animation fixes:
+
+2008-11-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8309,13 +9804,25 @@
 	* fixed bug found when fractional seconds value is very long on a
 	timestamp. e.g. 00:00:03.23455686
 
+2008-11-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-11-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Added News to installer
 
+2008-11-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-11-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Reflowed to fit in 80 columns.
+
+2008-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -8323,6 +9830,10 @@
 	not
 
 	* Some refinements based on Ishan's comments.
+
+2008-11-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8332,6 +9843,10 @@
 
 	* Changed 'int' constant into 'double' when calling pow() to avoid
 	duplicates in name resolution on Windows VC7.1
+
+2008-11-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8352,6 +9867,10 @@
 
 	* For some reason (autogen.sh?), our package specific instructions
 	were replaced
+
+2008-11-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8400,6 +9919,10 @@
 	* Turned of debugging code. This may make Windows player hang due to
 	deadlocks.
 
+2008-11-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-11-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* The textptr fix was a bit too simple: length() is used after all.
@@ -8409,11 +9932,19 @@
 
 	* Textptr incorrectly assumed that wide strtings and multibyte strings
 
+2008-11-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-11-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* The ffmpeg demux thread releases the lock while calling data_avail()
 
 	* Removed reference to deleted directory xcode23.
+
+2008-11-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8431,6 +9962,10 @@
 	* Qt video was never scaled or pan/zoomed. Fixed, but need to confirm
 
 	* redraw_now() is unsafe for Qt: it can result in a deadlock
+
+2008-11-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-11-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8699,6 +10234,10 @@
 
 	* testing new branch
 
+2008-10-06  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'amis-release-30'
+
 2008-10-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Factored out DOM tree modifications into a separate mixin class.
@@ -8755,6 +10294,10 @@
 
 	* fixup commit for branch 'kees-npambulant-merge'
 
+2008-09-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-09-17  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Sept.17 Version for BT. Turned off AM_DBG.
@@ -8770,10 +10313,18 @@
 	* If condition was incorrect resulting (sometimes) in following a null
 	pointer
 
+2008-09-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-09-11  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Adapted to Gecko-SDK 1.9 (xulrunner-sdk). Version for BT. Last
 	version before merge.
+
+2008-09-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-09-05  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -8783,12 +10334,22 @@
 	* Moved to branch "kees-ffpluginWin32" The old plugin (without IsDone)
 	now works with
 
+2008-09-05  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-ffpluginWin32'
+
+2008-09-05  Kees Blom  <Kees.Blom@cwi.nl>
+
 	* Made the old version (without IsDone) compile, link and run again
 	with WelcomeButtons.html.
 
 2008-09-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed typo that broke smilText.
+
+2008-09-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-09-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8828,6 +10389,10 @@
 	* Made logging threadsafe by doing the actual prints only in the main
 	thread (through a PostMessage).
 
+2008-08-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits and pieces for dynamic renderer selection. Things are
@@ -8835,8 +10400,18 @@
 
 	* Getting started on unifying renderer constructor APIs.
 
+2008-08-27  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-unified-factories'
+
+2008-08-27  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Datasinks can now be cleaned up by demux thread, so removed an
 	invalid
+
+2008-08-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8845,6 +10420,10 @@
 	* Datasinks need to be refcounted (bug encountered on Windows).
 
 	* Put the config data for AAC audio in extra_data, where ffmpeg will
+
+2008-08-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8859,9 +10438,17 @@
 
 	* Fixed a leak when stopping playback of video.
 
+2008-08-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Video_renderer and its subclasses must share a lock, as they share
+
+2008-08-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8869,6 +10456,10 @@
 	needed,
 
 	* More details.
+
+2008-08-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -8888,6 +10479,10 @@
 
 	* Fix for #2051134, ogg/vorbis skips audio at the beginning.
 
+2008-08-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* ffmpeg audio input buffers also need padding, added.
@@ -8896,10 +10491,18 @@
 
 	* Some more details.
 
+2008-08-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Replaced an assert with a log print. This solves a problem with Amis
 	bug #63.
+
+2008-08-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8908,12 +10511,20 @@
 	assertion failure. We now continue playback after that node, with a
 	message in the log file.
 
+2008-08-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Switched to new version of Xerces (2.8.0)
 
 	* Workaround for yet another problem in hyperjumping: if you jump to a
 	child of a <par>, what may happen is that that
+
+2008-08-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8923,6 +10534,10 @@
 
 	* Modified the IsDone() javascript interface function to return a
 	boolean
+
+2008-08-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8934,10 +10549,18 @@
 	* Added ambulant_player's "is_done()" function to the JavaScript
 	interface of the
 
+2008-08-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-12  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added a function print_node(node*) callable from gdb that spits out
 	the
+
+2008-08-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8954,6 +10577,10 @@
 
 	* Create smil for each media item.
 
+2008-08-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaked markup to allow case-preserving tags.
@@ -8961,6 +10588,10 @@
 	* Added generic quicktime and avi.
 
 	* - Added 3gpp/amr.
+
+2008-08-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8980,6 +10611,10 @@
 
 	* Started on generating form.
 
+2008-08-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Extended database with formats for which we already have media
@@ -8988,6 +10623,10 @@
 	* Added smilgen (preliminary) and detabbed markup.py.
 
 	* Split into modules.
+
+2008-08-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-08-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -8999,14 +10638,26 @@
 
 	* Starting to go somewhere.
 
+2008-08-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-08-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started with some ideas on a media support database.
+
+2008-07-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-07-30  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made "Use plugins" default, when they are selected at compile time.
 	Fixes #2873711.
+
+2008-07-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-07-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9014,37 +10665,69 @@
 
 	* The ffmpeg pkg-config files don't work on the Mac (at least: the
 
+2008-07-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-07-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added/changed some AM_DBG lines for usec timing
+
+2008-07-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-07-17  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Ambulant ported to Fedora 9.
 
+2008-07-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-07-16  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Implemented 1st problem of #2015890 for gtk.
+
+2008-07-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-07-15  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Implemented a faster pan/zoom method on qt, solving #2015890 problem
 	1 for qt.
 
+2008-07-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-07-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed 2nd problem of #2015890: gtk now pans correctly. Dunno why so
 	slow.
+
+2008-07-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-07-11  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added some rules to Makefile.am to make the installed libraries work
 	with
 
+2008-07-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-07-08  Marisa DeMeglio  <marisademeglio@sf.net>
 
 	* minor bugfix to logger message in plugin_engine; NULL check for
 	get_info() in region.cpp -- it was making AMIS crash
+
+2008-07-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-07-08  Marisa DeMeglio  <marisademeglio@sf.net>
 
@@ -9063,20 +10746,36 @@
 	* Make sure that bith typelib and include file are generated from
 	nsIAmbulantPlugin.idl
 
+2008-07-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-07-01  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Apperently on some 64 bit systems (Suse) arch spits out X86_64 i.o.
 	x86_64.
 
+2008-07-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-06-30  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added DTD's for SMIL 3.0 written by Sjoerd Mullender.
+
+2008-06-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-06-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added note about ffmpeg pkgconfig problems on osx.
 
 	* Reverted ffmpeg library change: the problem is not with our Makefile
+
+2008-06-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-06-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9098,6 +10797,10 @@
 
 	* Added a comment where the -Xlinker -Bsymbolic added flag was found
 
+2008-06-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-06-19  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Adapted ffmpeg related code to the latest state (as of Jun.18,2008)
@@ -9111,6 +10814,10 @@
 	* Adapted to today's version of ffmpeg. Rewrote ffmpeg part of
 	readme.txt.
 
+2008-06-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-06-16  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Rewrote ffmpeg portion of configure.in and adapted other files to
@@ -9120,30 +10827,54 @@
 
 	* Don't call formfaces rebuild() and friends directly, but raise the
 
+2008-06-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-06-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Adapted for changes in timer code (timer_events no longer exists)
 	and
+
+2008-06-10  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-configure-100608'
 
 2008-06-10  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Revert to previous state, because the changes were not pkg-config
 	based,
 
+2008-06-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-06-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Temp. changes for ffmpeg to work wirh libfaad. configure script
 	needs to be
+
+2008-06-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-06-05  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed packet_avail into push_data. When called from
 	rtsp_datasource.cpp,
 
+2008-06-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-06-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Addapted rtsp_datasource ro new API where data_avail(3 args) and
 	buffer_full
+
+2008-05-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-05-29  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -9156,10 +10887,22 @@
 	* Changed "void data_avail(timestamp_t pts, const uint8_t *data, int
 	size)" into
 
+2008-05-24  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-datasource-260508'
+
+2008-05-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-05-23  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed error handling of the pthread functions: they all return an
 	errorcode > 0,
+
+2008-05-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-05-21  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -9173,10 +10916,18 @@
 	* Changed cleanup order for smil_player items: event processor and
 	timer
 
+2008-05-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-05-20  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Reset 'const' keyword where it was deleted because of the usage of
 	semaphores
+
+2008-05-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-05-19  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -9189,17 +10940,33 @@
 
 	* Added a few comments.
 
+2008-05-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-05-15  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Used valgrind from svn with a working helgrind on gtk and qt.
+
+2008-05-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-05-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed the bug in News demo s.t. click didn't work anymore (#1948935)
 
+2008-05-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-05-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed size_t to std::string::size_type to match the book
+
+2008-05-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-04-26  Marisa DeMeglio  <marisademeglio@sf.net>
 
@@ -9281,6 +11048,10 @@
 
 	* Added a trace line in case of outdated xmlns specifications. Fixes
 	#1759593.
+
+2008-03-31  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-bugfix-010408'
 
 2008-03-31  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -9505,6 +11276,12 @@
 	* Getting started on better clock handling. This should (when it
 	works)
 
+2008-02-15  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-clock-sync'
+
+2008-02-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Fixed a bug where we could inadvertantly still pass a non-terminated
 
 	* Merging windows redraw optimization branch:
@@ -9523,6 +11300,12 @@
 
 	* More experimental code: disable redraws from within the
 	event_processor
+
+2008-02-14  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-delayed-update-win'
+
+2008-02-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Last reference to mms player (I hope) bites the dust.
 
@@ -9649,6 +11432,14 @@
 
 	* Changed various APIs in the video_datasource/video_renderer area to
 
+2008-02-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2008-02-01  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-less-video-copying'
+
 2008-02-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Monday's video change (only drop frames beofre current timestamp,
@@ -9659,17 +11450,29 @@
 
 	* Regenerated for change in signature of user_event().
 
+2008-01-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-30  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added some changes for Maemo 4(CHINOOK), OS2008 on N800 and N810
 
 	* removed void qt_smiltext::user_event()
 
+2008-01-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaks to make video more palatable on the iPhone. Unfinished.
 
 	* Threw away one frame too many. Fixed.
+
+2008-01-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9688,9 +11491,17 @@
 
 	* Handle CR and LF, somewhat.
 
+2008-01-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits and pieces for the changes wrt. event sensitivity.
+
+2008-01-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9700,6 +11511,10 @@
 
 	* Fixed error that text was shown above top-of-region.
 
+2008-01-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* The file COPYING is missed by the automatic license update
@@ -9707,6 +11522,10 @@
 
 	* smilText on Windows always crashed in a VC8 build. This seems to be
 	due to VC8 crashing on the
+
+2008-01-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9719,6 +11538,10 @@
 2008-01-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Merging exp-jack-uikit branch.
+
+2008-01-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9733,6 +11556,10 @@
 
 	* Solved problem with extra black space after a <span
 	textBackgroundColor="black:>
+
+2008-01-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9750,6 +11577,10 @@
 
 	* Fixed the bug in <smiltext> where an additional black space was
 	produced
+
+2008-01-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9773,6 +11604,10 @@
 
 	* Added 2008 to the license text.
 
+2008-01-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Applied scrolling fixes to machine-independet code too.
@@ -9793,6 +11628,10 @@
 
 	* Implemented textDirection overrides for Mac.
 
+2008-01-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started on implementing textDirection. Also make sure that
@@ -9803,6 +11642,10 @@
 
 	* More changes to relaxed seq child begin conditions. Still does not
 	work.
+
+2008-01-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9820,6 +11663,10 @@
 	* Implemented chromaKey.
 
 	* Implemented auto-rate for Mac.
+
+2008-01-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9845,6 +11692,10 @@
 	* Changed "next" to "begin" in <tev/>'s to match the timing with the
 	specs.
 
+2008-01-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Temporarily disabling relaxed seq begin conditions: things broke.
@@ -9858,6 +11709,10 @@
 
 	* This file doesn't belong under cvs, it's generated.
 
+2008-01-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Cocoa image coordinates are in DPI-based units, not pixels, by
@@ -9866,12 +11721,20 @@
 	* Our drawing area missed two pixels at the top, and has probably
 	missed
 
+2008-01-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* I think panZoom now works for pixel values.
 
 	* Built the first installer that has both DirectShow and ffmpeg
 	rendering.
+
+2008-01-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2008-01-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9889,6 +11752,10 @@
 
 	* Got rid of some unnecesary redraws.
 
+2008-01-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-03  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Revised clearing to default background (white) first thing in redraw
@@ -9904,9 +11771,17 @@
 
 	* Added missing files.
 
+2008-01-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2008-01-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Upodated for new textPlace values (start/center/end).
+
+2007-12-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9916,6 +11791,10 @@
 2007-12-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Boilerplate code for video rendering (through ffmpeg).
+
+2007-12-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9962,6 +11841,14 @@
 
 	* Creating a branch for uikit experiments.
 
+2007-12-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2007-12-11  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-uikit'
+
 2007-12-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Cleanup.
@@ -9969,6 +11856,10 @@
 	* H264 over rtsp from quicktime server works!
 
 	* Added a bit of debug around thread cleanup.
+
+2007-12-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9984,9 +11875,17 @@
 
 	* Implemented rtsp-over-tcp preference.
 
+2007-12-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-12-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - added preference setting for RTSP-over-TCP (as opposed to default
+
+2007-12-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -9996,9 +11895,17 @@
 
 	* Mods to make things work on windows again.
 
+2007-12-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-12-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* extra_data pointers from plugins should be static, otherwise
+
+2007-12-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10007,6 +11914,10 @@
 
 	* Change requested by Daniel Weck: let rate adjustment be additive,
 	not
+
+2007-12-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10017,6 +11928,10 @@
 
 	* Finally found the nasty bug that sometimes crashes the player on
 	close:
+
+2007-12-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-12-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10032,6 +11947,10 @@
 
 	* Partial fixes for clipBegin. Incomplete.
 
+2007-12-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Refactored: changed after_reading_{audio,video} into stubs that
@@ -10044,9 +11963,17 @@
 	* fixed ambulant (on windows mobile 5 with ffmpeg and live555) crash
 	when rendering mp4 over rtsp
 
+2007-11-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed clip-begin problems for ffmpeg-only (i.e. without live555):
+
+2007-11-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-11-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10055,6 +11982,10 @@
 2007-11-28  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* In after_reading_video:
+
+2007-11-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-11-23  Rodrigo Laiola  <rlaiola@cwi.nl>
 
@@ -10069,10 +12000,18 @@
 	* This is an example of a GTK application embedding Ambulant Player in
 	a
 
+2007-11-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-21  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* Begin to render mp4(h264) streamed from Feng media server. It works
 	now but need refine.
+
+2007-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-11-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10081,13 +12020,25 @@
 
 	* - Plugins were copied too late. Fixed.
 
+2007-11-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Disable deletion of datasource factories when deleting the global
 
+2007-11-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Quick hacks to try and get gtk bridging to work. Hand-edited the
+
+2007-11-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-11-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10108,6 +12059,10 @@
 
 	* Getting started on wrapping the WebKit DOM API inside the Ambulant
 
+2007-11-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-13  Rodrigo Laiola  <rlaiola@cwi.nl>
 
 	* A few more steps towards a Python interface to gtk-ambulant
@@ -10116,6 +12071,10 @@
 
 	* Implemented textConceal (all values) for gtk.
 
+2007-11-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* m_in_hyperjump_path wasn't initialized. Fixed.
@@ -10123,6 +12082,10 @@
 2007-11-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made smilText w. Opacity and ChromaKey work again for gtk
+
+2007-11-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-11-06  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -10138,6 +12101,10 @@
 
 	* The new(ish) default windowsize code failed when no layout at all
 
+2007-11-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Some things are updating on the webpage (but not all).
@@ -10152,9 +12119,17 @@
 
 	* Always use quicktime, for now.
 
+2007-11-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaks for 10.5 and newer ffmpeg
+
+2007-11-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-11-02  Rodrigo Laiola  <rlaiola@cwi.nl>
 
@@ -10177,6 +12152,10 @@
 
 	* Implemented "noWrap" for gtk. Works also for crawling text.
 
+2007-11-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-11-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting universal builds to work on 10.5.
@@ -10192,6 +12171,10 @@
 
 	* Various fixes s.t. everything now works on WindowsXP with state and
 	Release-shlib build
+
+2007-11-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-31  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10214,6 +12197,10 @@
 2007-10-31  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Turned off smiltext debugging
+
+2007-10-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-30  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -10247,6 +12234,10 @@
 
 	* Added a "run script" build phase that automatically creates the
 
+2007-10-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-10-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a new html and smil document that should start showing state
@@ -10254,6 +12245,10 @@
 	* Infrastructure is complete (but contains a number of serious hacks):
 
 	* Infrastructure is complete (but contains a number of serious hacks):
+
+2007-10-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10267,6 +12262,10 @@
 
 	* Added support for using extra_data to communicate data from
 	embedding
+
+2007-10-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10297,6 +12296,10 @@
 
 	* Minor fix to xml:space handling: if there's only whitespace between
 
+2007-10-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-10-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* xml:space processing only removed leading spaces, it didn't collapse
@@ -10308,6 +12311,10 @@
 	* - wrap moved to per-run data (was on per-smilText)
 
 	* Minor bugfix.
+
+2007-10-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10328,6 +12335,10 @@
 
 	* Implemented relaxed begin conditions for seq children.
 
+2007-10-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-10-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Implemented Identity module support (version and baseProfile
@@ -10336,6 +12347,10 @@
 2007-10-23  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Some code cleanup (de)allocating m_hdc
+
+2007-10-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-22  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -10366,6 +12381,14 @@
 
 	* Made the new smiltext layout engine work with Windows XP.
 
+2007-10-12  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-xml-space-260907'
+
+2007-10-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-10-11  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* xml:space now works for Qt. Tabs are drawn as spaces.
@@ -10377,6 +12400,10 @@
 	* - Added debugging support (through Safari) to webkit plugin
 
 	* Webkit plugin builds again.
+
+2007-10-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10395,6 +12422,10 @@
 	* Repaired smilText for gtk, which was accidentally broken when
 	xml:space was
 
+2007-10-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-10-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Mass checkin: replacing all occurrences of "script" and "scripting"
@@ -10412,6 +12443,10 @@
 	* Corrected an error in "noWrap" handling, s.t <br/> is handled
 	correctly.
 
+2007-10-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-10-04  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made <br/> work again, I accidentally broke it.
@@ -10419,6 +12454,10 @@
 2007-10-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Mods.
+
+2007-10-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-10-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10438,6 +12477,10 @@
 
 	* Revamped handling of default windowsize (i.e. no toplevel size
 	specified in SMIL document)
+
+2007-09-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-09-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10465,6 +12508,10 @@
 	* Some namespace tags were needed.
 
 	* Fixed some dependencies
+
+2007-09-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-09-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -10869,6 +12916,10 @@
 	* Allow negative numbers as coordinate values in animations. Fixes
 	#1761839.
 
+2007-07-25  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees-chroma-250707'
+
 2007-07-25  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* HACK. Some font/size combinations look ugly without slight
@@ -10937,6 +12988,10 @@
 2007-07-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed <smiltext> into <smilText> as in W3C docs
+
+2007-06-28  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-audio-speedup'
 
 2007-06-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11103,6 +13158,12 @@
 2007-06-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* [Moving to a branch because of race conditions]
+
+2007-06-12  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-seek-media'
+
+2007-06-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting started with correct seeking of documents: after a hyperlink
 
@@ -11282,25 +13343,45 @@
 
 	* There were bogus dependencies between the projects, fixed.
 
+2007-05-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-05-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a set_prefix_mapping() method to node. Empty for node_impl
 	nodes,
+
+2007-04-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-27  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* dx_smiltext is now completelty independent of the old
 	dx_text/dx_text_renderer combo. We could now get rid of this.
 
+2007-04-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Slight change to new_data_node signature to make Python interface
 	happy.
 
+2007-04-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-25  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Most of smiltext has been implemented now on Windows and NYC-
 	SmilText.smil looks quite presentable.
+
+2007-04-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -11319,6 +13400,10 @@
 
 	* When looking for the child of a switch to select ignore the (new)
 	data nodes.
+
+2007-04-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-19  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -11340,14 +13425,26 @@
 
 	* Added an xcode project to build WITH_SMIL3 player.
 
+2007-04-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Changed representation of smiltext_runs from vector into list
 	because iterators on
 
+2007-04-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added dummy declarations to make the ambulantmodule also compile
+
+2007-04-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11359,6 +13456,10 @@
 	* Both the normal and the shared/smil3 installer seem to work.
 
 	* Also moving installers to new locations.
+
+2007-04-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11376,6 +13477,10 @@
 
 	* More WITH_SMIL30 ifdefs and suchlike.
 
+2007-04-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a couple of WITH_SMIL30 ifdefs.
@@ -11392,6 +13497,10 @@
 
 	* Fixed a few issues that showed up when building the bridge for
 	Windows.
+
+2007-04-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11413,6 +13522,10 @@
 
 	* Details.
 
+2007-04-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Breakdown of the projects.
@@ -11426,14 +13539,26 @@
 	* Copied wince projects to the project folder. They deposit the
 	results right in lib/wince-arm, so
 
+2007-04-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got as far as running the player on the emulator, at which point it
 	crashes.
 
+2007-04-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-04-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* A few more steps towards getting wince to work again.
+
+2007-04-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11468,6 +13593,14 @@
 
 	* New localname handling failed with Xerces. Fixed.
 
+2007-03-30  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-vs8'
+
+2007-03-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-03-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed partial updates.
@@ -11487,6 +13620,10 @@
 
 	* Got things to compile on windows.
 
+2007-03-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-03-28  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added --with-smil-test configure option.
@@ -11494,6 +13631,10 @@
 2007-03-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Streamlined support for plugins in Python:
+
+2007-03-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-03-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11577,17 +13718,35 @@
 
 	* Getting started with scripting infrastructure.
 
+2007-03-13  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-smil30state'
+
+	* fixup commit for branch 'exp-ishan-arch-19mar'
+
+2007-03-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-03-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* When starting playback through goto_node() also emit the started()
 
 	* Screenshot window level was off-by-one. fixed.
 
+2007-03-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-03-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Missed file in checkin for creating overlay windows in main thread.
 
 	* Creating the overlay window in the main thread: this forestalls some
+
+2007-03-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-03-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11596,6 +13755,10 @@
 	* Fixed screenshots to work with quicktime movies and overlay windows.
 
 	* Ink renderer works.
+
+2007-03-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-03-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11608,6 +13771,10 @@
 
 	* Enabled drawing things on top of movies played with the Quicktime
 	renderer,
+
+2007-03-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-02-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11623,6 +13790,10 @@
 
 	* Reset version numbers back to 1.8 on release branch
 
+2007-02-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-27  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Set version numbers to 1.9
@@ -11632,9 +13803,17 @@
 	* Replaced NSCompositeSourceAtop by NSCompositeSourceOver: the latter
 	also
 
+2007-02-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-26  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Merged release-new-ambulant-18-branch with trunk
+
+2007-02-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-02-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11686,11 +13865,19 @@
 	* Added 'postinst' to the repository. Right now the only thing it does
 	is
 
+2007-02-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-15  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Removed Hindi.proj from src/player_macosx/Makefile.am
 
 	* Added a BIG FAT WARNING about the branch name for the 1.8 release,
+
+2007-02-15  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-new-ambulant-18-branch'
 
 2007-02-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11721,6 +13908,10 @@
 	* Adapted mnemonic shortcuts (<ALT>key) seqences so that they at least
 	work
 
+2007-02-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Renamed "Settings" to "Preferences" for program preferences to avoid
@@ -11728,6 +13919,10 @@
 2007-02-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Updated dutch translation.
+
+2007-02-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-02-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11741,6 +13936,10 @@
 2007-02-13  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Add Dutch translations to AmbulantPlayer_gtk
+
+2007-02-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-02-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11767,10 +13966,18 @@
 
 	* Added new files using localizable strings.
 
+2007-02-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* A few changes in the Nokia 770 inataller and removal from the
 	repository
+
+2007-02-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-02-07  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -11780,13 +13987,29 @@
 	* Removed top-level directory 'debian' which contained a huge tar-file
 	used
 
+2007-02-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Tentative fix for #1626168: remove the while(next==now) loop in
 
+2007-02-03  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-ishan-arch'
+
+2007-02-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-02-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Removed duplicate url_handler_pair entry in in the list s_handlers
+
+2007-02-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-02-01  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -11806,12 +14029,20 @@
 	* Changed get_url() into get_path() in mem_datasource because for the
 	data:,
 
+2007-01-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-30  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Adapted gtk and qt to use the new url::uri2string for rendering text
 
 	* Fixed #1639918 by adding 2 new static functions in net::url for use
 	by
+
+2007-01-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-01-18  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -11820,15 +14051,27 @@
 
 	* Added a README and a tarfile containing necessary files to create
 
+2007-01-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-17  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Directory for DBUS service file was changed in OS2006. Also, the
 	name of this
 
+2007-01-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* On Open/Open URL there was a call to check that the file exists,
 	which
+
+2007-01-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-01-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11842,6 +14085,10 @@
 
 	* Added method get_clipped_screen_rect() to surface. This returns the
 
+2007-01-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-12  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Undid the changes of r.1.5 because #1627953 was re-opened.
@@ -11853,6 +14100,10 @@
 
 	* Added a test for m_new_focussed_nodes not being zero.
 
+2007-01-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* These are long dead, really.
@@ -11863,6 +14114,10 @@
 
 	* Tentative workaround for #1553249.
 
+2007-01-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Limit the size of a pixmap we want to get to tha actual available
@@ -11872,12 +14127,20 @@
 
 	* Fiddled with various calls to started() and stopped(). But it seems
 
+2007-01-09  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'jack-tmp-navback'
+
 2007-01-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Cosmetic change.
 
 	* In gtk_C_callback_do_button_release_event(..), added code to compute
 	the
+
+2007-01-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-01-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11888,9 +14151,17 @@
 	* Another piece of the fix for #1627916. Actually, it is more than a
 	workaround
 
+2007-01-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tentative (partial?) fix for #1627916:
+
+2007-01-05  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-01-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11910,10 +14181,18 @@
 
 	* brush renderer didn't emit stopped() events when started.
 
+2007-01-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2007-01-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a note about installing gettext-devel, if applicable. Fixes
 	#1626191
+
+2007-01-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2007-01-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11927,6 +14206,10 @@
 
 	* - slidewipe had off-by-factor-2 width for destination rectangle.
 	Fixes
+
+2006-12-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-12-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -11951,6 +14234,10 @@
 	* Added code against calling show() more than once: this will cause
 	problems
 
+2006-12-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-12-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fix for #1600536:
@@ -11959,15 +14246,27 @@
 
 	* Mods and debug stuff trying to hunt down the excl bug.
 
+2006-12-07  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'jack-exp-fix-excl-fill'
+
 2006-12-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* QtKit was missing in some links.
+
+2006-11-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-11-27  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Reset accidental checkin of "strict=true" back to "strict=false"
 
 	* Adapted Firefox plugin for Windows to version 1.8
+
+2006-11-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-11-23  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -11977,21 +14276,41 @@
 	* Modified configure.in s.t. Makefiles.am do not need modifications
 	when
 
+2006-11-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-11-21  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added code to cleanup m_frames in demux_video_data_source.
+
+2006-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-11-20  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Implemented an advisory limit on the size of the packet queue:
 
+2006-11-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-11-16  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Implemented demux_audio_datasource::buffer_full() and
 
+2006-11-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-11-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Adapted Python interface to new pkt_dtasource changes
+
+2006-11-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-11-10  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -12000,24 +14319,44 @@
 	* In ~rtsp_context_t(), use proper cleanup functions, as specified in
 	the
 
+2006-11-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-11-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added instance id's to debug messages
+
+2006-11-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-11-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Improved video over rtsp. Added ciritcal section locking for public
 	methods.
 
+2006-11-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-11-03  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* RTSP video now works somewhat better, the player doesn't hang
 	anymore.
 
+2006-11-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-11-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made rtsp mp4 with H263 video and AAC audio work. Apperently, the
 	ffmpeg
+
+2006-11-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-11-01  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -12028,6 +14367,10 @@
 2006-10-27  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Initial changes for mp3 and mp4 with aac audio aac over rtsp
+
+2006-10-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-10-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12042,6 +14385,10 @@
 
 	* Disabled automatic conversion of url to strings, it masks too many
 	errors.
+
+2006-10-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-10-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12074,9 +14421,17 @@
 
 	* Attemt to detect EOF (works for mp3 audio, not for video)
 
+2006-10-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-10-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Somehow the scheduler appears to reuse html widgets on seeking.
+
+2006-10-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-10-02  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -12091,10 +14446,18 @@
 
 	* Created packet_datasource for audio packets going into the demuxer.
 
+2006-09-30  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-09-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Allow passing "-fullScreen YES" on the command line to open all
 	documents
+
+2006-09-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-09-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12108,11 +14471,23 @@
 
 	* Initial branch hacks to make sound work again with latest ffmpeg.
 
+2006-09-26  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees_ffmpeg_packet_270906'
+
+2006-09-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-09-25  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed a core dump on rtsp to a server that is down
 
 	* Added AM_DBG to a log message
+
+2006-09-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-09-22  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -12122,6 +14497,10 @@
 2006-09-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - ppc builds on intel now work too.
+
+2006-09-22  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Automated Changelog Update
 
 2006-09-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12202,6 +14581,12 @@
 
 	* Updated version number to 1.8
 
+2006-09-08  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-ambulant-18-branch'
+
+2006-09-08  Kees Blom  <Kees.Blom@cwi.nl>
+
 	* Updated version number to 1.8 in the XP installer
 
 	* Made qt_html_renderer compile agian
@@ -12226,6 +14611,10 @@
 
 	* Getting started on universal build (ppc/i386) for MacOSX (on a
 	branch).
+
+2006-09-06  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-osx-universal'
 
 2006-09-06  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -12607,6 +14996,10 @@
 	* Bug#1505278 revisited: media do not play when local path on
 	commandline now
 
+2006-06-22  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'kees_220606'
+
 2006-06-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* context->nstreams was used for two distinct things: counting the
@@ -12775,6 +15168,10 @@
 	* Got rid of the bug-workaround for amis-ambulant hanging on close,
 	the
 
+2006-05-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-05-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Pass the datasource factory to html_bridge::goto_url, so the
@@ -12783,6 +15180,10 @@
 	* If _DEBUG is defined, set the default default loglevel to debug.
 
 	* Get puglins to link on Windows. Untested.
+
+2006-04-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12801,6 +15202,10 @@
 
 	* Two files were missing from source distributions, added.
 
+2006-04-27  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got plugins to work also for ReleaseShLib build.
@@ -12816,6 +15221,10 @@
 
 	* sigh, more locking had to be commented out because of deadlocks.
 
+2006-04-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got plugins to actually work on Windows again (in a Shlib build).
@@ -12826,6 +15235,10 @@
 
 	* More leaks. AmbulantPlayer now playes NewYork on Nokia770 fluently
 	without oops.
+
+2006-04-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12839,6 +15252,10 @@
 
 	* More cleanup, no more Megabytes definitely lost by
 	gtk_image_renderer
+
+2006-04-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12857,6 +15274,10 @@
 
 	* AMBULANTAPI is now also used after class sometimes.
 
+2006-04-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Const in argument dictionaries seems to have disappeared for Python
@@ -12867,10 +15288,18 @@
 	* Changed image drawing code to get rid of vague images and memory
 	leakes
 
+2006-04-19  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* std::string could be deleted while the c_str() was still in use.
 	Fixed.
+
+2006-04-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-13  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -12884,20 +15313,36 @@
 
 	* Preparing merge with trunk: re-organized classes
 
+2006-04-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Revamped html_browser interface organisation so it can be used in
 	a
+
+2006-04-12  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* If ffmpeg could open the file but not parse the input format it
 	would
 
+2006-04-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* prepare_playables() did some pretty aggressive preloading of
 	playables. This
+
+2006-04-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-07  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
@@ -12910,6 +15355,10 @@
 	* Moved file extenstion guessing to net::url::guesstype(), and
 	modified
 
+2006-04-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-04-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Enabled node::get_children() for Python nodes with a trick: use the
@@ -12919,6 +15368,10 @@
 	* Added support for pause_display.
 
 	* More changes because of implementation of pause_display.
+
+2006-04-06  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12942,6 +15395,10 @@
 
 	* Added a pthread_mutex (instead of abusing a critical region) to make
 
+2006-03-29  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-28  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* First "working" audio with gstreamer on Nokia770 using native
@@ -12952,6 +15409,10 @@
 	* The unicode-based release build had gotten rather broken after a
 	long
 
+2006-03-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Implemented navigation with TAB and RETURN.
@@ -12960,11 +15421,19 @@
 
 	* Machine-independent impleentation of memfile using datasources,
 
+2006-03-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Minor fix to make things compile for WinCE.
 
 	* Show link destination and some other interesting information in the
+
+2006-03-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -12990,14 +15459,26 @@
 
 	* Added gstreamer audio support for Nokia 770
 
+2006-03-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got rid of a few leaks.
+
+2006-03-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a method get_default_size() to window_factory. This allows
 	auxiliary
+
+2006-03-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13006,12 +15487,20 @@
 	* Attempting to delete a thread before it had actually started caused
 	a crash.
 
+2006-03-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Aux_open() wasn't virtual (sigh), fixed.
 
 	* Started on experimental support for playing a second (control)
 	presentation
+
+2006-03-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13026,6 +15515,10 @@
 	* Got fullscreen input to work. Changing the mouse cursor over links
 
 	* Fullscreen mode works, but no input yet.
+
+2006-03-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13050,10 +15543,18 @@
 
 	* Qt didn't include ffmpeg video. Fixed.
 
+2006-03-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed ffmpeg video timing. Main problem was the use of two distinct
 	timers
+
+2006-03-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13061,10 +15562,18 @@
 
 	* Also allow goto_node() while the document is playing.
 
+2006-03-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-03-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Got rid of xerces and live for the annotator project (they were
 	causing
+
+2006-03-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-03-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13079,6 +15588,10 @@
 
 	* fixup commit for branch 'exp_kees_gstreamer_140306'
 
+2006-02-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* - Added node_focussed call to player_feedback. This is called by the
@@ -13087,6 +15600,10 @@
 2006-02-27  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* *** empty log message ***
+
+2006-02-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13102,9 +15619,17 @@
 	* Started on implementing accesskey. Works on the mac, and only for
 	events.
 
+2006-02-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-23  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* add image from URL
+
+2006-02-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13119,6 +15644,10 @@
 
 	* GTK Ambulant Annotator Server side:
 
+2006-02-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-21  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* First trial to get screenshot from GTK player
@@ -13132,15 +15661,31 @@
 
 	* GTK player works again.
 
+2006-02-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+2006-02-18  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits and pieces of getting gtk_player and qt_player back in
+
+2006-02-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Merging exp-jack-playerobj branch:
 
 	* Modifications to make the annotator plugin run on Linux.
+
+2006-02-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13165,6 +15710,10 @@
 
 	* gtk_player does not need of the ui xml file
 
+2006-02-15  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-14  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* Modified delete/free error in gtk_logger (m_logger_window)
@@ -13184,6 +15733,10 @@
 
 	* Enable Python plugin only if environment variable
 	AMBULANT_ENABLE_PYTHON
+
+2006-02-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13206,6 +15759,10 @@
 
 	* Adapted to new gui_player interface
 
+2006-02-09  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added interfaces to enable the plugin to determine when the document
@@ -13227,6 +15784,10 @@
 
 	* Video works (but, it skips many frames.... ??)
 
+2006-02-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-02-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Attempting to maintain object identity across the bridge. Not
@@ -13243,6 +15804,10 @@
 2006-02-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* various assertions added to test that assumptions the code makes are
+
+2006-02-04  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13271,6 +15836,10 @@
 	threads.
 
 	* Skeleton Python plugin, untested.
+
+2006-02-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-02-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13305,6 +15874,10 @@
 	* Added a node_factory class, and create all nodes through this
 	factory.
 
+2006-01-31  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-01-30  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* Brush and Background color in the regions are starting to work
@@ -13316,6 +15889,10 @@
 	* Qt player works again, but paints over the menu bar.
 
 	* Details.
+
+2006-01-28  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-01-27  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
@@ -13383,6 +15960,14 @@
 
 	* minimal changes in order to compile
 
+2006-01-24  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-playerobj'
+
+2006-01-24  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-01-23  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* Communication between mainloop and factory works OK. I get the
@@ -13414,6 +15999,10 @@
 
 	* Tweaks for:
 
+2006-01-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-01-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Step 1 towards a self-contained player: add accessor methods to the
@@ -13425,6 +16014,10 @@
 	* Gtk_settings is under way
 
 	* The GUI is implemented by GtkAction and GtkActionGroup
+
+2006-01-20  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-01-19  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
@@ -13482,6 +16075,10 @@
 
 	* gtk_main creates another thread (that's the current problem)
 
+2006-01-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-01-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* This file was never added to the repository.
@@ -13520,6 +16117,10 @@
 
 	* Computation of url<->pathname sizes was incorrect. fixed.
 
+2006-01-11  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2006-01-10  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* Open Dialog gets the selected file
@@ -13532,6 +16133,10 @@
 2006-01-10  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
 	* GUI completed and some functionality working
+
+2006-01-10  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-win-datasource'
 
 2006-01-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13557,6 +16162,10 @@
 
 	* - Added code to do strict URL checking (making sure all characters
 	are
+
+2006-01-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2006-01-06  Pablo Cesar  <Pablo.Cesar@cwi.nl>
 
@@ -13694,6 +16303,14 @@
 
 	* Got DebugNoXercesNoHtml and ReleaseNoXercesNoHtml targets
 
+2005-12-17  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-pablo-gtk'
+
+2005-12-17  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-12-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Removing duplicate dialog.
@@ -13725,6 +16342,10 @@
 
 	* Backport of 1.41 and 1.42: test for third-party dependencies during
 
+2005-12-16  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-12-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Backport of 1.43 and 1.44: fix handling of urls of the form
@@ -13734,6 +16355,10 @@
 
 	* During the build process, test for dependencies on non-Apple
 	libraries.
+
+2005-12-14  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-12-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13752,6 +16377,10 @@
 	* Post-release updating of version number to 1.7.
 
 	* Merging changes from release-ambulant-16-branch back to the trunk.
+
+2005-12-13  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-12-12  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -13816,6 +16445,10 @@
 
 	* Added a note about OSX configure options.
 
+2005-12-10  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-12-09  Dick Bulterman  <Dick.Bulterman@cwi.nl>
 
 	* Updated icon for 1.6 (win-mfc)
@@ -13833,15 +16466,25 @@
 	* Flashlight video plays again. I had to anable a hack to get it
 	working.
 
+	* Automated Changelog Update
+
 2005-12-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added notes on live and Python support.
 
 	* Upped version number to 1.6
 
+2005-12-08  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-ambulant-16-branch'
+
 2005-12-08  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Updated readme
+
+2005-12-08  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-12-07  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -13851,9 +16494,15 @@
 	* Removed initial version of the plugin, to replace it with a
 	scriptable one.
 
+2005-12-07  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-12-06  Daniel Benden  <koelimoe@sf.net>
 
 	* removed a unnecessary delete. this caused a crash.
+
+	* Automated Changelog Update
 
 2005-12-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13869,16 +16518,28 @@
 
 	* Added some cleanup code, and test some error conditions.
 
+2005-12-03  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-12-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Plugin now also loads into Firefox in reasonable time, thanks to
 	Jacks' black magic.
+
+2005-12-02  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-12-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Some code needed to be in ifdefs.
 
 	* With xerces builtin, it was initialized too late leading to an error
+
+2005-12-01  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-11-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13896,11 +16557,17 @@
 
 	* removed some unnessary files in live_VC7
 
+	* Automated Changelog Update
+
 2005-11-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Squashed a few more gcc4 warnings.
 
 	* Minor updates.
+
+2005-11-26  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-11-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13910,6 +16577,10 @@
 	* Third party packages for Windows updated.
 
 	* Third party packages for Windows updated.
+
+2005-11-25  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-11-25  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -13924,9 +16595,17 @@
 
 	* Added firefox_plugin_win32 to the repository.
 
+2005-11-23  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-11-22  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added targets DebugNoHtmlNoXerces and ReleaseNoHtmlNoXerces for
+
+2005-11-22  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-11-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -13934,14 +16613,28 @@
 
 	* Updated to Xerces 2.7.0
 
+2005-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
 2005-11-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Merged noxerces projects and solution into the standard one.
+
+2005-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
+
+	* Automated Changelog Update
 
 2005-11-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Xerces and non-xerces versions of the Visual Studio files were
 	confused.
+
+2005-11-21  Daniel Benden  <koelimoe@sf.net>
+
+	* Automated Changelog Update
 
 2005-11-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -14090,6 +16783,12 @@
 
 	* Changed the license from GPL with exceptions to LGPL. Checking in on
 	a
+
+2005-10-07  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'fix-license'
+
+2005-10-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Details.
 
@@ -14465,6 +17164,10 @@
 
 	* - Got rid of the default implementation of get_aux_audio_playable,
 
+2005-09-02  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'ie_html_widget2'
+
 2005-09-02  Daniel Benden  <koelimoe@sf.net>
 
 	* smtpe parselet
@@ -14505,6 +17208,12 @@
 2005-08-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Adding Christian Schaller's patches, with various mods by Jack to
+
+2005-08-05  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-newconfigure'
+
+2005-08-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Finally found (and fixed) the Linux/Mac audio problems (hiccups
 	during
@@ -14566,6 +17275,10 @@
 	* Bah. Merged micro-fix from trunk.
 
 	* More cleanup
+
+2005-07-28  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-ffmpeg-reorg'
 
 2005-07-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -14642,6 +17355,12 @@
 2005-07-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Squashed another warning.
+
+2005-07-19  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'ie_html_widget'
+
+2005-07-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Details.
 
@@ -14751,6 +17470,12 @@
 
 	* Got rid of "active_" as a prefix to datasource and renderer class
 	names.
+
+2005-07-11  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-classnames'
+
+2005-07-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Dead wood removal.
 
@@ -14891,6 +17616,12 @@
 	* Another milestone: some of the calls actually work (get_version(),
 	creating
 
+2005-06-29  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-kees-html'
+
+2005-06-29  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* More changes wrt. changing interfaces to be more abstract.
 
 	* - Use rect in preference to basic_rect<int>.
@@ -14992,6 +17723,12 @@
 	The
 
 	* Switched to unicode (from MBCS).
+
+2005-06-16  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-unicode-windows'
+
+2005-06-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Merging exp-jack-virtual-nodes branch:
 
@@ -15128,6 +17865,10 @@
 	* Todays mods caused all images to be drawn tiled (and transitions
 
 	* Added a note about installing gettext on MacOSX.
+
+2005-06-02  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-virtual-nodes'
 
 2005-06-02  Daniel Benden  <koelimoe@sf.net>
 
@@ -15275,6 +18016,10 @@
 	* Modification for Fedora Core 3 (gcc 3.4.3)
 
 	* Modification for Fedora Core 3 (gcc 3.4.3)
+
+2005-04-29  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-ambulant-140'
 
 2005-04-29  Daniel Benden  <koelimoe@sf.net>
 
@@ -15551,6 +18296,10 @@
 
 	* preparing to merge branch
 
+2005-04-04  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp-jack-bgimage'
+
 2005-04-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* More bits and pieces for background images.
@@ -15566,6 +18315,10 @@
 2005-04-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* few more bits of code for backgroundImage.
+
+2005-03-31  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_xerces_010405'
 
 2005-03-31  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -15617,6 +18370,10 @@
 
 	* Reorganized as per Jack's request to make the code for "audioFade"
 	look like
+
+2005-03-21  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_jack_erasenever'
 
 2005-03-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -15679,6 +18436,10 @@
 2005-03-11  Daniel Benden  <koelimoe@sf.net>
 
 	* data was fed to the decoder in the wrong order
+
+2005-03-08  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_100305'
 
 2005-03-08  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -15918,6 +18679,10 @@
 
 	* Changed <param> names to css-compatible.
 
+2005-02-03  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'transition_exp_kees_030204'
+
 2005-02-03  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Merged with branch: dur,startProgress and endProgress now work for
@@ -15957,6 +18722,10 @@
 2005-01-27  Daniel Benden  <koelimoe@sf.net>
 
 	* more rtsp work
+
+2005-01-27  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'transition_exp_kees_010204'
 
 2005-01-27  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -16016,6 +18785,10 @@
 
 	* started work on a rtsp datasource
 
+2005-01-13  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'daniel_experimental_rtsp_datasource'
+
 2005-01-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Priorities to add_event are no longer optional.
@@ -16023,6 +18796,10 @@
 	* Not sure... May be last-minute fixes for the 1.2 distribution...
 
 	* The priority argument to add_event is no longer optional.
+
+2005-01-13  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'event_exp_kees_130104'
 
 2005-01-13  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -16281,6 +19058,12 @@
 2004-12-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Started on adding get_dur() implementations.
+
+2004-12-02  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_get_dur'
+
+2004-12-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Cleaned up some debug and error output.
 
@@ -16664,6 +19447,12 @@
 
 	* Got rid of the -shared flag: it breaks things on OSX and I don't
 
+2004-10-25  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_jack_ltdl'
+
+2004-10-25  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* iGot rid of POMAKEFILEDEPS.
 
 2004-10-25  Daniel Benden  <koelimoe@sf.net>
@@ -16717,6 +19506,10 @@
 	* added xerces support, but put it in the fridge until parser_factory
 	supports the parser preferences.
 
+2004-10-15  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'daniel_experimental_windows_xerces'
+
 2004-10-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Merge branch experimental-jack-win-logger:
@@ -16746,6 +19539,12 @@
 
 	* Started on using new interface for show_message. Unforuntately it
 	crashes:-)
+
+2004-10-14  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental-jack-win-logger'
+
+2004-10-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Add win_trace_error(), and use that to show error messages that seem
 	to
@@ -16943,6 +19742,10 @@
 
 	* Started on the windows code
 
+2004-09-17  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'sane2004'
+
 2004-09-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Merging experimental_internationalized branch:
@@ -16984,6 +19787,10 @@
 
 	* started to replace al the net::datasource_factory in
 	common::factories, a structure that holds all the factories.
+
+2004-09-14  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'daniel_experimental_factory_struct'
 
 2004-09-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -17079,6 +19886,10 @@
 2004-09-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Checking out on a branch
+
+2004-09-02  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_020904'
 
 2004-09-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -17264,6 +20075,10 @@
 
 	* added plugin support but still untested
 
+2004-08-18  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_180804'
+
 2004-08-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Merging yesterday's branch into the trunk
@@ -17281,6 +20096,14 @@
 2004-08-13  Daniel Benden  <koelimoe@sf.net>
 
 	* starting an experimental plugin structure
+
+2004-08-13  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_170804'
+
+	* fixup commit for branch 'experimental_plugin_daniel'
+
+2004-08-13  Daniel Benden  <koelimoe@sf.net>
 
 	* tweaks, sound works fine with ffmpeg 0.4.8 and 0.4.9pre1 but video
 	is still a problem with 0.4.9pre1
@@ -17324,6 +20147,10 @@
 
 	* - Give an error message if no gui toolkit is found, unless an
 	explicit
+
+2004-07-21  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_220704'
 
 2004-07-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -17636,6 +20463,14 @@
 
 	* Committed on a branch beofre turning everything upside down to
 
+2004-06-24  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental-jack-multidoc'
+
+	* fixup commit for branch 'exp_kees_240604'
+
+2004-06-24  Kees Blom  <Kees.Blom@cwi.nl>
+
 	* Added "const" to make ot compile
 
 2004-06-23  Jack Jansen  <Jack.Jansen@cwi.nl>
@@ -17710,6 +20545,10 @@
 	* added a empty _playable_notification class, to fix a crash in
 	qt_video_player.
 
+2004-06-18  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental-jack-hyperjump'
+
 2004-06-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* A few more bits and pieces for hyperlinking.
@@ -17774,6 +20613,10 @@
 	* Added gpaths.cpp and .h
 
 	* Commiting on a branch so I can move it home.
+
+2004-06-15  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental-jack-url'
 
 2004-06-15  Kleanthis Kleanthous  <kleanthis@sf.net>
 
@@ -17870,6 +20713,10 @@
 	* Added information how to create .ipk packages for the Zaurus
 
 	* Moved README-ZAURUS from top directory to Documentation/misc
+
+2004-06-07  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_playableredesign'
 
 2004-06-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -18309,6 +21156,12 @@
 
 	* Fixed stupid error: need_redraw() wasn't called on show().
 
+2004-05-11  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_transitions_110504'
+
+2004-05-11  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* iGot rid of gui_region reerences.
 
 2004-05-10  Jack Jansen  <Jack.Jansen@cwi.nl>
@@ -18326,6 +21179,12 @@
 2004-05-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Checking in on a branch, because my fixes (or something else?) seems
+
+2004-05-10  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'jack-win32-merge'
+
+2004-05-10  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* When redrawing anything in a region redraw everything. This is not
 	optimal,
@@ -18461,6 +21320,10 @@
 	* Added debugging code that dumps the view contents to a TIFF file
 	every
 
+2004-04-28  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_transitions'
+
 2004-04-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* After a serious battle managed to get the Cocoa idea of controlling
@@ -18486,6 +21349,10 @@
 
 	* Add some animation function templates that should cover 90% of the
 	cases. The rest will be added as needed..
+
+2004-04-28  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'exp_kees_doublebuf_280404'
 
 2004-04-28  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -18533,6 +21400,12 @@
 
 	* Unifinished framework for animation. Checking it in so I can
 	continue work at home.
+
+2004-04-26  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_animation_infrastructure'
+
+2004-04-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Always do the configuration checks for ObjC++, not only with cocoa
 
@@ -18712,6 +21585,12 @@
 	* This should now be correct for Win32, Linux and Mac.
 
 	* Use full pathnames to get at the static ffmpeg libraries. This is
+
+2004-04-15  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_kees_zaurus_relx'
+
+2004-04-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* There were various bugs in the order of cleanup of all our objects
 
@@ -19598,6 +22477,12 @@
 	* Started adding play/stop/pause buttons to the Mac gui, but it turns
 	out to
 
+2004-03-18  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_macbuttons'
+
+2004-03-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Fixed a few nits, and added a link to the webpage (which doesn't
 	work yet).
 
@@ -19789,6 +22674,10 @@
 	* - Call need_redraw() when new regions are created. This makes
 	initial
 
+2004-02-19  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'daniel_experimental_datasource_factory'
+
 2004-02-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got started on subregion positioning.
@@ -19840,6 +22729,10 @@
 
 	* Started on reorganisation of layout handling. region_node moved to
 
+2004-02-16  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_newlayout'
+
 2004-02-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a region_info implementation for the MMS player. This allowed
@@ -19871,6 +22764,12 @@
 
 	* First big pass to make playables and renderers adhere to the new
 	protocol.
+
+2004-02-13  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_newplayable'
+
+2004-02-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed playable names for qt, sdl and arts.
 
@@ -19954,6 +22853,10 @@
 2004-02-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a size pointer to databuffer::prepare, and make a guess
+
+2004-02-04  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-ambulant-S'
 
 2004-02-04  Daniel Benden  <koelimoe@sf.net>
 
@@ -20085,6 +22988,10 @@
 2004-01-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a raw_audio_datasource minimal wrapper class (around
+
+2004-01-30  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_rawaudio'
 
 2004-01-30  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -20368,6 +23275,10 @@
 
 	* tweaks
 
+2004-01-14  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_basicrenderer'
+
 2004-01-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Started on a new renderer that handles filling, and will probably
@@ -20376,6 +23287,10 @@
 2004-01-14  Daniel Benden  <koelimoe@sf.net>
 
 	* Starting to add audio mixing to the SDL renderer
+
+2004-01-14  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_daniel_SDL_mixer'
 
 2004-01-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -20461,6 +23376,12 @@
 2004-01-05  Daniel Benden  <koelimoe@sf.net>
 
 	* tweaks
+
+2004-01-05  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_smillayout'
+
+2004-01-05  Daniel Benden  <koelimoe@sf.net>
 
 	* Last minut checkin of some files a forgot to checkin.
 
@@ -20566,6 +23487,10 @@
 
 	* Addapded for the Zaurus sound code
 
+2003-12-16  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_mouseregion'
+
 2003-12-16  Kleanthis Kleanthous  <kleanthis@sf.net>
 
 	* Parse almost all timing attributes.
@@ -20645,6 +23570,10 @@
 2003-12-08  Kleanthis Kleanthous  <kleanthis@sf.net>
 
 	* An experimental player for testing the new smil scheduler.
+
+2003-12-08  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_daniel_datasource'
 
 2003-12-08  Daniel Benden  <koelimoe@sf.net>
 
@@ -20914,6 +23843,10 @@
 	* Started on isolating the layout manager. Mostly finished, but
 	unfortunately
 
+2003-11-10  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_layoutmgr'
+
 2003-11-10  Kleanthis Kleanthous  <kleanthis@sf.net>
 
 	* Requirements specification for an event scheduler. These should be
@@ -20991,6 +23924,10 @@
 
 	* removed the vnode.h entry, since vnode.h is not used anymore.
 
+2003-11-03  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_playable'
+
 2003-11-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a note that autoreconf may do most of the work needed.
@@ -21020,6 +23957,10 @@
 2003-10-30  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Updated the distribution tar ball to contain missing qt*.h files
+
+2003-10-29  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'release-ambulant-M'
 
 2003-10-29  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -21278,6 +24219,10 @@
 
 	* Started on new timer design: the client interface is abstract_timer,
 
+2003-10-06  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_timers'
+
 2003-10-06  jack  <jack>
 
 	* Added critical sections to all renderers: this is needed because
@@ -21409,6 +24354,10 @@
 	* Started on using local coordinates within regions. This makes
 	conversion
 
+2003-09-26  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_localcoords'
+
 2003-09-26  dbenden  <dbenden>
 
 	* removed the FATAL no file open error
@@ -21441,6 +24390,10 @@
 	* Added width() and height() methods, and inset().
 
 	* Started on the new rectangle design, but I'm not happy with it,
+
+2003-09-23  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_rect'
 
 2003-09-23  dbenden  <dbenden>
 
@@ -21631,6 +24584,12 @@
 2003-09-08  jack  <jack>
 
 	* Checking in on a branch.
+
+2003-09-08  cvs2hg  <cvs2hg>
+
+	* fixup commit for branch 'experimental_jack_datasource'
+
+2003-09-08  jack  <jack>
 
 	* Datasource used single-byte read()/realloc() loop, which didn't
 	perform
@@ -22144,6 +25103,5 @@
 
 	* Oops, changed to unix linefeeds.
 
-	* initial
-
+	* 
 
