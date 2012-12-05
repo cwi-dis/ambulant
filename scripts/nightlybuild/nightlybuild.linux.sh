@@ -154,7 +154,13 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 #
 cd src/npambulant
 make installer
-mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
+case x$VERSIONSUFFIX in
+x)	
+	;;
+*)
+	mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
+	;;
+esac
 scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION_NPAMBULANT
 cd ../..
 #
