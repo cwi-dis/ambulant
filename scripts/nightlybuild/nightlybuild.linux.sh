@@ -128,7 +128,13 @@ cd ..
 ./configure $CONFIGOPTS
 make $MAKEOPTS distcheck
 make $MAKEOPTS dist
-mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
+case x$VERSIONSUFFIX in
+x)	
+	;;
+*)
+	mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
+	;;
+esac
 scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 
 #
