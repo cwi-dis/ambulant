@@ -7,5 +7,6 @@ library_include_HEADERS= \
 	cg_gui.h \
 	cg_image.h \
 	cg_renderer.h \
+	cg_smiltext.h \
 	cg_text.h \
 	cg_transition.h
