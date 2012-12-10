@@ -142,13 +142,17 @@ toolkit_cg_libraries =
 platlibs =
 endif
 extradist_cg = \
+    gui/cg/atsui_text.m \
 	gui/cg/cg_fill.m \
 	gui/cg/cg_gui.m \
 	gui/cg/cg_image.m \
 	gui/cg/cg_renderer.m \
+	gui/cg/cg_smiltext.m \
 	gui/cg/cg_text.m \
 	gui/cg/cg_transition.m \
 	gui/cg/cg_dsvideo.m \
+	gui/cg/cg_atsui_text.mm \
+	gui/cg/cg_avfoundation_video.mm \
 	gui/cg/cg_fill.mm \
 	gui/cg/cg_gui.mm \
 	gui/cg/cg_image.mm \
