@@ -151,7 +151,7 @@ extradist_cg = \
 	gui/cg/cg_text.m \
 	gui/cg/cg_transition.m \
 	gui/cg/cg_dsvideo.m \
-	gui/cg/cg_atsui_text.mm \
+	gui/cg/atsui_text.mm \
 	gui/cg/cg_avfoundation_video.mm \
 	gui/cg/cg_fill.mm \
 	gui/cg/cg_gui.mm \
