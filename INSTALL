@@ -44,7 +44,10 @@ or
 The first version will install all needed packages (insofar they are not installed
 on your system yet) in "third_party_packages/installed", and configure
 and make will pick them up from there. This method will not pollute your
-system with lots of packages you may nnot be interested in.
+system with lots of packages you may not be interested in.
+
+NOTE: SDL_Pango will not build cleanly on all Linux systems. You can probably
+ignore this error for normal Ambulant builds.
 
 You could also use "debian" in stead of "linux", then the third party
 packages will be installed system-wide through the package manager.

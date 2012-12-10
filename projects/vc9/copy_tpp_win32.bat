@@ -34,8 +34,8 @@ if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%D.lib %AMB_HOME%\
 if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%_%xerces_minor%D.dll %AMB_HOME%\bin\win32\xerces-c_%xerces_major%_%xerces_minor%D.dll
 
 REM ffmpeg
-copy %ffmpeg_bin_dir%\bin\avcodec-53.dll %AMB_HOME%\bin\win32\
-copy %ffmpeg_bin_dir%\bin\avformat-53.dll %AMB_HOME%\bin\win32\
+copy %ffmpeg_bin_dir%\bin\avcodec-54.dll %AMB_HOME%\bin\win32\
+copy %ffmpeg_bin_dir%\bin\avformat-54.dll %AMB_HOME%\bin\win32\
 copy %ffmpeg_bin_dir%\bin\avutil-51.dll %AMB_HOME%\bin\win32\
 copy %ffmpeg_bin_dir%\bin\swscale-2.dll %AMB_HOME%\bin\win32\swscale-2.dll
 copy %ffmpeg_dev_dir%\lib\avcodec.lib %AMB_HOME%\lib\win32\avcodec.lib
@@ -51,10 +51,10 @@ if exist %sdl_dir%\VisualC\SDL\Release copy %sdl_dir%\VisualC\SDL\Release\SDL.li
 if exist %sdl_dir%\VisualC\SDLmain\Release copy %sdl_dir%\VisualC\SDLmain\Release\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
 
 REM Live555
-copy %TPP_HOME%\live_VC9\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib
-copy %TPP_HOME%\live_VC9\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\win32\groupsock.lib
-copy %TPP_HOME%\live_VC9\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
-copy %TPP_HOME%\live_VC9\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
+REM copy %TPP_HOME%\live_VC9\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib
+REM copy %TPP_HOME%\live_VC9\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\win32\groupsock.lib
+REM copy %TPP_HOME%\live_VC9\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
+REM copy %TPP_HOME%\live_VC9\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
 
 REM libxml2
 copy %libxml2_dir%\win32\bin.msvc\libxml2_a.lib %AMB_HOME%\lib\win32\libxml2_a.lib

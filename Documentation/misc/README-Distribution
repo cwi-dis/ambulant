@@ -101,7 +101,7 @@ Before creating the distribution
   - configure.in (2 places!)
   - include/ambulant/version.h
   - src/player_macosx/*.lproj/InfoPlist.strings
-  - src/player_macos/Resources/Info.plist
+  - src/player_macosx/Resources/Info.plist
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/npambulant/install-*.rdf
   - src/npambulant/manifest-*.json
@@ -111,9 +111,9 @@ Before creating the distribution
   - installers/nsis-win32/setup-ambulant-installer-xp.nsi
   - installers/mkdebiandist.sh
   - projects/vc9/npambulant-installer.vcproj
-  - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
-  - projects/vc10/npambulant-installer.vcproj (many places)
-  - projects/vc10/AmbulantActiveX-installer.vcproj (many places)
+  - projects/vc9/AmbulantActiveX-installer.vcxproj (2 times?)
+  - projects/vc10/npambulant-installer.vcxproj (many places)
+  - projects/vc10/AmbulantActiveX-installer.vcxproj (many places)
   - projects/xcode32/iAmbulant-Info.plist
 - check the following files for being up-to-date:
   - README
