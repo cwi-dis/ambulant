@@ -104,6 +104,9 @@ x)	;;
 *)
 	hg up -r $BRANCH
 esac
+# Get rid of mercurial administration
+rm -r .hg
+
 sh autogen.sh
 cat > debian/changelog << xyzzy
 ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low
