@@ -330,5 +330,7 @@ EXTRA_DIST = \
 	npambulant.rc \
 	npambulant.def \
 	resource.h \
+	cg_mainloop.h \
+	Info.plist \
 	README-linux \
 	README-win32.txt
