@@ -115,6 +115,7 @@ Before creating the distribution
   - projects/vc10/npambulant-installer.vcxproj (many places)
   - projects/vc10/AmbulantActiveX-installer.vcxproj (many places)
   - projects/xcode32/iAmbulant-Info.plist
+  - Documentation/API/Doxyfile
 - check the following files for being up-to-date:
   - README
   - INSTALL
