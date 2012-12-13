@@ -44,7 +44,7 @@
 #include "ambulant/gui/d2/html_bridge.h"
 #include "ambulant/smil2/transition.h"
 
-#if 0 // Kees: this causes multiple definitions on my Windows 7
+#if 1 // Kees: this causes multiple definitions on my Windows 7
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
 // order can mess up standard include files.

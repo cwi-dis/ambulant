@@ -38,48 +38,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			ConfigurationType="0"
-			InheritedPropertySheets=".\Ambulant-win32.vsprops"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;set LIBAMBULANT=libambulantDX_shwin32&#x0D;&#x0A;$(python_dir)\python.exe setup.py build &#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
-				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py build --dx&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
-				CleanCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;"
-				Output="..\..\bin\win32\pyambulant.pyd"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-		</Configuration>
-		<Configuration
-			Name="DebugShlibDX|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			ConfigurationType="0"
-			InheritedPropertySheets=".\Ambulant-win32.vsprops"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;set LIBAMBULANT=libambulantDX_shwin32_D&#x0D;&#x0A;$(python_dir)\python.exe setup.py build&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
-				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;set LDFLAGS=-L..\..\lib\win32&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py build --debugdx&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
-				CleanCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;"
-				Output="..\..\bin\win32\pyambulant.pyd"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
