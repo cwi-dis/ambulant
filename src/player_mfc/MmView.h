@@ -104,10 +104,8 @@ public:
 	afx_msg void OnHelpWelcome();
 	afx_msg void OnUpdateHelpWelcome(CCmdUI *pCmdUI);
 	afx_msg LRESULT OnReplaceDoc(WPARAM wParam, LPARAM lParam);
-#ifdef WITH_D2D
 	afx_msg LRESULT OnMyEraseBkgnd(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnViewNormalSize();
-#endif
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

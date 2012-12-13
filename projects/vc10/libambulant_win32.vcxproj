@@ -277,6 +277,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\html_bridge.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\wmuser.h" />
     <ClInclude Include="..\..\include\ambulant\version.h" />
     <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_basicvideo.h" />

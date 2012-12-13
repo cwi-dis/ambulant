@@ -20,8 +20,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/gui/d2/d2_window.h"
-//#include "ambulant/gui/dx/dx_wmuser.h"
-//#include "ambulant/gui/dx/dx_rgn.h"
+#include "ambulant/gui/d2/wmuser.h"
 #include "ambulant/gui/d2/d2_transition.h"
 
 #include "ambulant/lib/event.h"
@@ -116,8 +115,6 @@ using namespace ambulant;
 inline D2D1_RECT_F d2_rectf(ambulant::lib::rect r) {
 	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
-
-int gui::dx::dx_gui_region::s_counter = 0;
 
 gui::d2::d2_player::d2_player(
 	d2_player_callbacks &hoster,
@@ -249,8 +246,6 @@ gui::d2::d2_player::~d2_player() {
 		}
 		delete m_doc;
 	}
-	if(gui::dx::dx_gui_region::s_counter != 0)
-		m_logger->warn("Undeleted gui regions: %d", dx::dx_gui_region::s_counter);
 	assert(m_d2d);
 	m_d2d->Release();
 	m_d2d = NULL;

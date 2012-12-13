@@ -81,30 +81,16 @@ log_os(get_log_filename().c_str());
 #endif
 
 using namespace ambulant;
-#ifdef WITH_D2D
 #include "ambulant/gui/d2/d2_player.h"
-#include "ambulant/gui/dx/dx_wmuser.h"
-#else
-// DX Player
-#include "ambulant/gui/dx/dx_player.h"
-#include "ambulant/gui/dx/dx_wmuser.h"
-#endif
+#include "ambulant/gui/d2/wmuser.h"
 
-#ifdef WITH_D2D
-typedef ambulant::gui::d2::d2_player dg_or_dx_player;
-typedef ambulant::gui::d2::d2_player_callbacks gui_callbacks;
-
-#else
-typedef gui::dx::dx_player dg_or_dx_player;
-typedef gui::dx::dx_player_callbacks gui_callbacks;
-#endif
 // The handle of the single window instance
 static HWND s_hwnd;
 
 class html_browser;
 
 // A class with callbacks, also instantiated once
-class my_player_callbacks : public gui_callbacks {
+class my_player_callbacks : public ambulant::gui::d2::d2_player_callbacks {
   public:
 	HWND new_os_window();
 	void destroy_os_window(HWND hwnd);
@@ -173,16 +159,16 @@ my_player_feedback s_player_feedback;
 void create_player_hook(void *player);
 #endif
 
-static dg_or_dx_player*
+static ambulant::gui::d2::d2_player*
 create_player_instance(const net::url& u, common::focus_feedback *feedback) {
-	dg_or_dx_player *rv = new dg_or_dx_player(s_player_callbacks, feedback, u);
+	ambulant::gui::d2::d2_player *rv = new ambulant::gui::d2::d2_player(s_player_callbacks, feedback, u);
 #ifdef WITH_CREATE_PLAYER_HOOK
 	create_player_hook((void*)rv);
 #endif
 	return rv;
 }
 
-static dg_or_dx_player *player = 0;
+static ambulant::gui::d2::d2_player *player = 0;
 static bool needs_done_redraw = false;
 
 CWnd* topView = NULL;
@@ -222,10 +208,8 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
 	ON_UPDATE_COMMAND_UI(ID_HELP_WELCOME, OnUpdateHelpWelcome)
 	ON_MESSAGE(WM_REPLACE_DOC, OnReplaceDoc)
-#ifdef WITH_D2D
 	ON_MESSAGE(WM_ERASEBKGND, OnMyEraseBkgnd)
 	ON_COMMAND(ID_VIEW_NORMALSIZE, OnViewNormalSize)
-#endif
 END_MESSAGE_MAP()
 
 
@@ -274,18 +258,14 @@ MmView::MmView()
 #ifdef AMBULANT_USE_DLL
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: using AmbulantPlayer in DLL"));
 #endif
-#ifdef WITH_D2D
 	lib::logger::get_logger()->debug("Ambulant Player: using D2D Player");
-#else
-	lib::logger::get_logger()->debug("Ambulant Player: using DX Player");
-#endif
 	topView = this;
 }
 
 MmView::~MmView()
 {
 	topView = NULL;
-	dg_or_dx_player::cleanup();
+	ambulant::gui::d2::d2_player::cleanup();
 }
 
 BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
@@ -310,7 +290,6 @@ void MmView::OnDraw(CDC* pDC)
 		player->redraw(m_hWnd, pDC->m_hDC, pRect);
 
 }
-#ifdef WITH_D2D
 // MmView resizing
 void MmView::OnViewNormalSize()
 {
@@ -318,7 +297,6 @@ void MmView::OnViewNormalSize()
 		player->on_zoom(1.0, m_hWnd);
 
 }
-#endif
 
 // MmView diagnostics
 
@@ -393,7 +371,7 @@ void MmView::OnDestroy()
 
 void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	USES_CONVERSION;
-	dg_or_dx_player *dummy = player;
+	ambulant::gui::d2::d2_player *dummy = player;
 	player = 0;
 	if(dummy) {
 		dummy->stop();
@@ -467,7 +445,7 @@ void MmView::OnFileStop()
 #else
 	if(player) {
 		net::url u = player->get_url();
-		dg_or_dx_player *dummy = player;
+		ambulant::gui::d2::d2_player *dummy = player;
 		player = 0;
 		if(dummy) {
 			dummy->stop();
@@ -743,11 +721,9 @@ void MmView::OnUpdateHelpWelcome(CCmdUI *pCmdUI)
 	pCmdUI->Enable(!m_welcomeDocFilename.IsEmpty());
 }
 
-#ifdef WITH_D2D
 // We don't want MFC to clear the background for Direct2D rendering
 afx_msg LRESULT 
 MmView::OnMyEraseBkgnd(WPARAM wParam, LPARAM lParam)
 {
 	return S_OK;
 }
-#endif

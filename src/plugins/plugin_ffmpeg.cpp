@@ -33,11 +33,7 @@
 #include "ambulant/gui/SDL/sdl_factory.h"
 #endif
 #ifdef WITH_DSVIDEO
-#ifdef WITH_D2D
 #include "ambulant/gui/d2/d2_dsvideo.h"
-#else
-#include "ambulant/gui/dx/dx_dsvideo.h"
-#endif
 #endif
 
 #include "ambulant/smil2/test_attrs.h"
@@ -77,11 +73,7 @@ class dsvideo_renderer_factory : public common::playable_factory {
 		lib::event_processor *evp)
 	{
 		lib::xml_string tag = node->get_local_name();
-#ifdef WITH_D2D
 		return new gui::d2::d2_dsvideo_renderer(context, cookie, node, evp, m_factory, m_mdp);
-#else
-		return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory, m_mdp);
-#endif
 		return NULL;
 	}
 

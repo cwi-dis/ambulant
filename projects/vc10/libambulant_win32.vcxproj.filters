@@ -728,5 +728,11 @@
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h">
       <Filter>Header Files\ambulant\gui\d2</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ambulant\gui\d2\html_bridge.h">
+      <Filter>Header Files\ambulant\gui\d2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ambulant\gui\d2\wmuser.h">
+      <Filter>Header Files\ambulant\gui\d2</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

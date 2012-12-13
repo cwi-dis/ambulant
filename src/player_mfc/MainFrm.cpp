@@ -41,9 +41,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(WM_SETMESSAGESTRING, OnSetMessageString)
 	ON_MESSAGE(WM_APP, OnSetStatusLine)
 	ON_COMMAND(ID_VIEW_FULLSCREEN, OnViewFullScreen)
-#ifdef WITH_D2D
 	ON_MESSAGE(WM_ERASEBKGND, OnMyEraseBkgnd)
-#endif
 
 END_MESSAGE_MAP()
 
@@ -215,14 +213,12 @@ CMainFrame::OnViewFullScreen()
 	InvalidateRect(NULL);
 }
 
-#ifdef WITH_D2D
 // We don't want MFC to clear our background if we use Direct2D rendering.
 afx_msg LRESULT 
 CMainFrame::OnMyEraseBkgnd(WPARAM wParam, LPARAM lParam)
 {
 	return S_OK;
 }
-#endif
 
 void
 set_status_line(const char *message)

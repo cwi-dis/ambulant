@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef AMBULANT_GUI_DX_HTML_BRIDGE_H
-#define AMBULANT_GUI_DX_HTML_BRIDGE_H
+#ifndef AMBULANT_GUI_D2_HTML_BRIDGE_H
+#define AMBULANT_GUI_D2_HTML_BRIDGE_H
 
 #include <string>
 #include "ambulant/net/datasource.h"
