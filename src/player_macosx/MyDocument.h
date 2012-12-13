@@ -23,7 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include "mainloop.h"
-#include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/cg/cg_gui.h"
 
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"

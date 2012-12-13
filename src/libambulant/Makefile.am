@@ -74,54 +74,6 @@ else
 gcd_event_processor_core_libs = 
 endif
 
-if WITH_COCOA
-toolkit_cocoa_libraries = libambulant_cocoa.la
-# XXX Should LIBINTL depend on USE_NLS?
-platlibs = $(LIBINTL) -framework WebKit -framework QTKit -framework CoreFoundation
-libambulant_cocoa_la_SOURCES = \
-	gui/cocoa/cocoa_fill.m \
-	gui/cocoa/cocoa_gui.m \
-	gui/cocoa/cocoa_html.m \
-	gui/cocoa/cocoa_image.m \
-	gui/cocoa/cocoa_ink.m \
-	gui/cocoa/cocoa_text.m \
-	gui/cocoa/cocoa_renderer.m \
-	gui/cocoa/cocoa_smiltext.m \
-	gui/cocoa/cocoa_transition.m \
-	gui/cocoa/cocoa_audio.m \
-	gui/cocoa/cocoa_video.m \
-	gui/cocoa/cocoa_dsvideo.m
-libambulant_cocoa_la_DEPENDENCIES=libambulant.la
-else
-toolkit_cocoa_libraries =
-platlibs =
-endif
-extradist_cocoa = \
-	gui/cocoa/cocoa_fill.m \
-	gui/cocoa/cocoa_gui.m \
-	gui/cocoa/cocoa_html.m \
-	gui/cocoa/cocoa_image.m \
-	gui/cocoa/cocoa_ink.m \
-	gui/cocoa/cocoa_text.m \
-	gui/cocoa/cocoa_renderer.m \
-	gui/cocoa/cocoa_smiltext.m \
-	gui/cocoa/cocoa_transition.m \
-	gui/cocoa/cocoa_audio.m \
-	gui/cocoa/cocoa_video.m \
-	gui/cocoa/cocoa_dsvideo.m \
-	gui/cocoa/cocoa_fill.mm \
-	gui/cocoa/cocoa_gui.mm \
-	gui/cocoa/cocoa_html.mm \
-	gui/cocoa/cocoa_image.mm \
-	gui/cocoa/cocoa_ink.mm \
-	gui/cocoa/cocoa_text.mm \
-	gui/cocoa/cocoa_renderer.mm \
-	gui/cocoa/cocoa_smiltext.mm \
-	gui/cocoa/cocoa_transition.mm \
-	gui/cocoa/cocoa_audio.mm \
-	gui/cocoa/cocoa_video.mm \
-	gui/cocoa/cocoa_dsvideo.mm
-
 if WITH_CG
 toolkit_cg_libraries = libambulant_cg.la
 # XXX Should LIBINTL depend on USE_NLS?
@@ -309,7 +261,6 @@ lib_LTLIBRARIES = \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_ffmpeg_libraries) \
 	$(toolkit_live_libraries) \
-	$(toolkit_cocoa_libraries) \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
@@ -396,8 +347,6 @@ EXTRA_DIST= \
     lib/expat_parser.cpp \
     lib/xerces_parser.cpp \
 	$(libambulant_sdl_la_SOURCES) \
-	$(libambulant_cocoa_la_SOURCES) \
-	$(extradist_cocoa) \
 	$(libambulant_cg_la_SOURCES) \
 	$(extradist_cg) \
 	$(libambulant_qt_la_SOURCES) \

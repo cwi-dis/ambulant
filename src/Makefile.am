@@ -16,7 +16,7 @@ build_player_sdl=player_sdl
 else
 build_player_sdl=
 endif
-if WITH_COCOA
+if WITH_CG
 build_player_macosx=player_macosx
 else
 build_player_macosx=

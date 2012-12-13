@@ -63,7 +63,6 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/dx/Makefile
 	include/ambulant/gui/d2/Makefile
 	include/ambulant/gui/none/Makefile
-	include/ambulant/gui/cocoa/Makefile
 	include/ambulant/gui/cg/Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/gtk/Makefile
@@ -432,33 +431,6 @@ if test "x$test_expat" = "xfalse" -a "x$test_xerces" = "xfalse"; then
 fi
 
 #
-AC_MSG_CHECKING(for --with-cocoa)
-AC_ARG_WITH(cocoa,
-     AS_HELP_STRING([--with-cocoa], [Turn on Cocoa support]),
-     [
-		case "${withval}" in
-		yes)
-			cocoa=true
-			;;
-		no)
-			cocoa=false
-			;;
-		*)
-			AC_MSG_ERROR(bad value ${withval} for --with-cocoa)
-			;;
-		esac
-		with_frontend=true],
-     [
-		if test -d /System/Library/Frameworks/AppKit.framework; then
-			cocoa=true
-			with_frontend=true
-		else
-			cocoa=false
-		fi
-     ])
-AM_CONDITIONAL(WITH_COCOA, test x$cocoa = xtrue)
-AC_MSG_RESULT($cocoa)
-
 #
 AC_MSG_CHECKING(for --with-cg)
 AC_ARG_WITH(cg,
@@ -474,8 +446,16 @@ AC_ARG_WITH(cg,
 		*)
 			AC_MSG_ERROR(bad value ${withval} for --with-cg)
 			;;
-		esac],
-     [cg=false])
+		esac
+		with_frontend=true],
+     [
+		if test -d /System/Library/Frameworks/AppKit.framework; then
+			cg=true
+			with_frontend=true
+		else
+			cg=false
+		fi
+     ])
 if test x$cg = xtrue; then
     AC_DEFINE(WITH_CG, 1, [Define to enable CoreGraphics rendering])
 fi
@@ -1234,7 +1214,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with GTK:                 ${test_gtk}
 
     Build with WebKit DOM plugin:   ${with_webkit_dom}
-    Build Cocoa frontend:           ${cocoa}
+    Build CG frontend:           	${cg}
     Build UIKit frontend:           ${uikit}
     Build OSX 10.4 universal:       ${with_universalsdk}
     Build OSX 10.6 universal:       ${with_macfat}

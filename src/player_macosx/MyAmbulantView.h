@@ -25,7 +25,7 @@ void set_statusline(void *view, const char *msg);
 
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
-#include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/cg/cg_gui.h"
 
 @interface MyAmbulantView : AmbulantView
 {
