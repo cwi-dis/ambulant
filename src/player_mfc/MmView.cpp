@@ -22,7 +22,7 @@
 
 #include "stdafx.h"
 #include "ambulant/config/config.h"
-#include "ambulant/gui/dx/html_bridge.h"
+#include "ambulant/gui/d2/html_bridge.h"
 #include "ambulant/common/player.h"
 #include "AmbulantPlayer.h"
 #include "MainFrm.h"

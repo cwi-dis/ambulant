@@ -41,7 +41,7 @@
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
-#include "ambulant/gui/dx/html_bridge.h"
+#include "ambulant/gui/d2/html_bridge.h"
 #include "ambulant/smil2/transition.h"
 
 #if 0 // Kees: this causes multiple definitions on my Windows 7

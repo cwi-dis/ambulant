@@ -11,9 +11,6 @@
     <Filter Include="Source Files\gui\none">
       <UniqueIdentifier>{3e385575-f168-45f2-9426-d4aa8bd52d0b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\gui\dx">
-      <UniqueIdentifier>{3aa198a7-1e13-4577-a2f7-0a7934ef2050}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\gui\d2">
       <UniqueIdentifier>{b4b2ce33-4bd5-4272-ba15-6c2001308ef5}</UniqueIdentifier>
     </Filter>
@@ -44,9 +41,6 @@
     </Filter>
     <Filter Include="Header Files\ambulant\gui\none">
       <UniqueIdentifier>{b81ed692-3f73-424a-9c66-014e461ad8d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ambulant\gui\dx">
-      <UniqueIdentifier>{ad1a2470-eea3-4e71-b82d-36b510748faf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ambulant\gui\d2">
       <UniqueIdentifier>{e3ebb86e-1e8c-427a-a997-9cf34214ca87}</UniqueIdentifier>
@@ -98,63 +92,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\none\none_video_renderer.cpp">
       <Filter>Source Files\gui\none</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_area.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_audio.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_audio_player.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_basicvideo.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_basicvideo_player.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_bgrenderer.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_brush.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_html_renderer.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_image_renderer.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_img.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_player.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_smiltext.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_text.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_text_renderer.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_transition.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_video.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_video_player.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_viewport.cpp">
-      <Filter>Source Files\gui\dx</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_window.cpp">
-      <Filter>Source Files\gui\dx</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_basicvideo.cpp">
       <Filter>Source Files\gui\d2</Filter>
@@ -367,90 +304,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h">
       <Filter>Header Files\ambulant\gui\none</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\bmp_decoder.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_area.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_audio.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_audio_player.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_basicvideo.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_basicvideo_player.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_bgrenderer.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_brush.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_html_renderer.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_image_renderer.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_playable.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_player.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_rgn.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_smiltext.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_surface.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_text.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_text_renderer.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_transition.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_video.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_video_player.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_viewport.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_window.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\gif_decoder.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\html_bridge.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\img_decoder.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\jpg_decoder.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\gui\dx\png_decoder.h">
-      <Filter>Header Files\ambulant\gui\dx</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_basicvideo.h">
       <Filter>Header Files\ambulant\gui\d2</Filter>

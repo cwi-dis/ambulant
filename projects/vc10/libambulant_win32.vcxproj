@@ -204,82 +204,6 @@
     <ClCompile Include="..\..\src\libambulant\gui\none\none_factory.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\none\none_gui.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\none\none_video_renderer.cpp" />
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_area.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_audio.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_audio_player.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_basicvideo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_basicvideo_player.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_bgrenderer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_brush.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_html_renderer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_image_renderer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_img.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_player.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_smiltext.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_text.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_text_renderer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_transition.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_video.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_video_player.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_viewport.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_window.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_basicvideo.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_d2video.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_dshowsink.cpp">
@@ -355,34 +279,6 @@
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h" />
     <ClInclude Include="..\..\include\ambulant\version.h" />
     <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\bmp_decoder.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_area.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_audio.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_audio_player.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_basicvideo.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_basicvideo_player.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_bgrenderer.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_brush.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_html_renderer.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_image_renderer.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_playable.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_player.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_rgn.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_smiltext.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_surface.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_text.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_text_renderer.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_transition.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_video.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_video_player.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_viewport.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_window.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\gif_decoder.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\html_bridge.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\img_decoder.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\jpg_decoder.h" />
-    <ClInclude Include="..\..\include\ambulant\gui\dx\png_decoder.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_basicvideo.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_d2video.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_dshowsink.h" />

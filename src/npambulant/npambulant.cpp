@@ -26,7 +26,7 @@
 #include "npambulant.h"
 
 //#ifdef	WITH_HTML_WIDGET
-#include "ambulant/gui/dx/html_bridge.h"
+#include "ambulant/gui/d2/html_bridge.h"
 //#endif
 /* ambulant player includes */
 

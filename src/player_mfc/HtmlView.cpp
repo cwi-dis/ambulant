@@ -22,7 +22,7 @@
 
 #include "ambulant/config/config.h"
 #include "stdafx.h"
-#include "ambulant/gui/dx/html_bridge.h"
+#include "ambulant/gui/d2/html_bridge.h"
 
 #include "MmDoc.h"
 #include "HtmlView.h"

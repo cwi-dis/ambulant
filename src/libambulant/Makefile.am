@@ -403,7 +403,6 @@ EXTRA_DIST= \
 	$(libambulant_qt_la_SOURCES) \
 	$(libambulant_gtk_la_SOURCES) \
 	$(libambulant_gstreamer_la_SOURCES) \
-	gui/dx \
 	gui/d2 \
 	net/win32_datasource.cpp \
 	lib/memfile.cpp \
