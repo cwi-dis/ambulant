@@ -17,6 +17,9 @@ Version numbers, release branches and tags
 !!=============================================================================!!
 !!=============================================================================!!
 
+NOTE: this information is outdated, it is for CVS. Things are much simpler with Mercurial.
+
+
 We use a strict numbering scheme for versions. Development versions have
 an odd minor number, releases an even one. For example, "1.5" is a development
 version, and is a moving target. Once development is finished and we're
