@@ -4,13 +4,7 @@ src/libambulant/common/region.cpp
 src/libambulant/common/renderer_impl.cpp
 src/libambulant/common/video_renderer.cpp
 src/libambulant/gui/cg/cg_gui.mm
-src/libambulant/gui/cocoa/cocoa_audio.mm
-src/libambulant/gui/cocoa/cocoa_dsvideo.mm
-src/libambulant/gui/cocoa/cocoa_gui.mm
-src/libambulant/gui/cocoa/cocoa_ink.mm
-src/libambulant/gui/cocoa/cocoa_video.mm
 src/libambulant/gui/d2/d2_player.cpp
-src/libambulant/gui/dx/dx_player.cpp
 src/libambulant/gui/gtk/gtk_smiltext.cpp
 src/libambulant/gui/gtk/gtk_transition.cpp
 src/libambulant/gui/qt/qt_factory.cpp

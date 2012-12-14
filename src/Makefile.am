@@ -41,5 +41,4 @@ DIST_SUBDIRS = libambulant plugins player_unix player_gtk player_sdl player_maco
 EXTRA_DIST= \
 	player_mfc \
 	player_iphone \
-	ieambulant \
-	webkit_plugin 
+	ieambulant
