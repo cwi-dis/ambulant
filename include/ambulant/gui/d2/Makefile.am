@@ -11,4 +11,5 @@ library_include_HEADERS= \
 	d2_smiltext.h \
 	d2_text.h \
 	d2_transition.h \
-	d2_window.h
+	d2_window.h \
+	html_bridge.h
