@@ -5,8 +5,5 @@ EXTRA_DIST = \
 	expat.patch \
 	ffmpeg-windows-compat \
 	gettext-0.18.1.1.patch \
-	libdispatch-patches \
-	live_VC9 \
-	live_VC10 \
-	live-patches.tar 
+	libdispatch-patches
 	
