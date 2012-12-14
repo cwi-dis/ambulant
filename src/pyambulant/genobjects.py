@@ -132,7 +132,6 @@ OBJECTS=[
 #	"gui/gtk/gtk_factory.h",
 	"gui/SDL/sdl_factory.h",
 	"net/ffmpeg_factory.h",
-	"net/rtsp_factory.h",
 ]
 
 out = open('ambulantobjgen.py', 'w')

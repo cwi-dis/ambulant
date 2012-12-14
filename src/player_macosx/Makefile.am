@@ -48,7 +48,7 @@ extra_cg_LDADD=$(libambulant_cg)
 toolkit_resources=Resources-cg
 else
 extra_cg_LDADD=
-toolkit_resources=Resources-cocoa
+toolkit_resources=
 endif
 
 if WITH_EXPAT

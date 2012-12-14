@@ -14,5 +14,4 @@ library_include_HEADERS= \
 	ffmpeg_factory.h \
 	ffmpeg_raw.h \
 	win32_datasource.h \
-	rtsp_datasource.h \
-	rtsp_factory.h
+	rtsp_datasource.h

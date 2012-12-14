@@ -23,9 +23,6 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
-#ifdef WITH_LIVE
-#include "ambulant/net/rtsp_factory.h"
-#endif
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_factory.h"
 #endif
@@ -135,12 +132,6 @@ void initialize(
 	// Same for datasource foactories
 	net::datasource_factory *df = factory->get_datasource_factory();
 	if (df) {
-#ifdef WITH_LIVE
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add live_audio_datasource_factory");
-		df->add_video_factory(net::create_live_video_datasource_factory());
-		df->add_audio_factory(net::create_live_audio_datasource_factory());
-		lib::logger::get_logger()->trace("ffmpeg_plugin: live555 datasource factories registered");
-#endif
 #ifdef WITH_FFMPEG
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_video_datasource_factory");
 		df->add_video_factory(net::get_ffmpeg_video_datasource_factory());

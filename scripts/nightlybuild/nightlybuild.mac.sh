@@ -48,9 +48,8 @@ CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --w
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=$PLUGINNAME.dmg
-DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
+DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cg/
 DESTINATION_PLUGIN=$DESTINATION/mac-intel-firefoxplugin/
-DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
 
 echo
 echo ==========================================================
@@ -108,31 +107,9 @@ cd .. # Back to source dir
 # Create installer dmg, upload
 #
 cd installers/sh-macos
-mv "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app" "$BUILDHOME/$DESTDIR/Applications/AmbulantPlayerCocoa.app"
-sh make-dmg-installer.sh -n 'Ambulant Player (Cocoa)' -t AmbulantPlayer-template-Cocoa.dmg -s "$BUILDHOME/$DESTDIR/Applications/AmbulantPlayerCocoa.app/." -d "AmbulantPlayer (Cocoa).app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
-mv "Ambulant Player (Cocoa).dmg" $DMGNAME-Cocoa.dmg
-scp $DMGNAME-Cocoa.dmg $DESTINATION_DESKTOP
-cd ../..
-#
-# Build CG player
-#
-cd projects/xcode32
-xcodebuild -project AmbulantPlayer.xcodeproj \
-	-target AmbulantPlayerCG \
-	-configuration Release \
-	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
-	DSTROOT=$BUILDHOME/$DESTDIR \
-	INSTALL_PATH=/Applications \
-	install
-cd ../..
-#
-# Create installer dmg, upload
-#
-cd installers/sh-macos
-sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template.dmg -s "$BUILDHOME/$DESTDIR/Applications/AmbulantPlayerCG.app/." -d "AmbulantPlayer.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
-mv "Ambulant Player.dmg" $DMGNAME-CG.dmg
-scp $DMGNAME-CG.dmg $DESTINATION_CG
+sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template-Cocoa.dmg -s "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app/." -d "Ambulant Player.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
+mv "Ambulant Player.dmg" $DMGNAME.dmg
+scp $DMGNAME.dmg $DESTINATION_DESKTOP
 cd ../..
 #
 # Build npambulant (Internet Plugin).

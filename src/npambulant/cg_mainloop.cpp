@@ -46,9 +46,6 @@
 #endif
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/common/plugin_engine.h"
-#ifdef WITH_LIVE
-#include "ambulant/net/rtsp_factory.h"
-#endif
 #include "ambulant/common/preferences.h"
 
 //#define AM_DBG
@@ -134,11 +131,6 @@ cg_mainloop::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-#ifdef WITH_LIVE
-	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add live_audio_datasource_factory");
-	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory());
-#endif
 #ifdef WITH_FFMPEG
 	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
