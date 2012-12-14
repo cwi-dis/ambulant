@@ -17855,40 +17855,6 @@ static PyObject *PyAm_get_ffmpeg_audio_filter_finder(PyObject *_self, PyObject *
 }
 #endif
 
-#ifdef WITH_LIVE
-
-static PyObject *PyAm_create_live_video_datasource_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::net::video_datasource_factory* _rv;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::net::create_live_video_datasource_factory();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     video_datasource_factoryObj_New, _rv);
-	return _res;
-}
-#endif
-
-#ifdef WITH_LIVE
-
-static PyObject *PyAm_create_live_audio_datasource_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::net::audio_datasource_factory* _rv;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::net::create_live_audio_datasource_factory();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     audio_datasource_factoryObj_New, _rv);
-	return _res;
-}
-#endif
-
 static PyMethodDef PyAm_methods[] = {
 	{"get_version", (PyCFunction)PyAm_get_version, 1,
 	 PyDoc_STR("() -> (const char * _rv)")},
@@ -18058,16 +18024,6 @@ static PyMethodDef PyAm_methods[] = {
 #ifdef WITH_FFMPEG
 	{"get_ffmpeg_audio_filter_finder", (PyCFunction)PyAm_get_ffmpeg_audio_filter_finder, 1,
 	 PyDoc_STR("() -> (ambulant::net::audio_filter_finder* _rv)")},
-#endif
-
-#ifdef WITH_LIVE
-	{"create_live_video_datasource_factory", (PyCFunction)PyAm_create_live_video_datasource_factory, 1,
-	 PyDoc_STR("() -> (ambulant::net::video_datasource_factory* _rv)")},
-#endif
-
-#ifdef WITH_LIVE
-	{"create_live_audio_datasource_factory", (PyCFunction)PyAm_create_live_audio_datasource_factory, 1,
-	 PyDoc_STR("() -> (ambulant::net::audio_datasource_factory* _rv)")},
 #endif
 	{NULL, NULL, 0}
 };

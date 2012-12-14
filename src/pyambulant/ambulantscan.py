@@ -40,7 +40,6 @@ def main():
         AMBULANT+ "net/posix_datasource.h",
         AMBULANT+ "net/stdio_datasource.h",
         AMBULANT+ "net/ffmpeg_factory.h",
-        AMBULANT+ "net/rtsp_factory.h",
             ]
     if DO_SCAN:
         output = "ambulantgen.py"
