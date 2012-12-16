@@ -34,7 +34,6 @@
 <UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.3.0-6050" PerformEnvironmentSet="true"/>
 <UserMacro Name="ffmpeg_bin_dir" Value="..\..\third_party_packages\ffmpeg-20120927-git-13f0cd6-win32-shared" PerformEnvironmentSet="true"/>
 <UserMacro Name="ffmpeg_dev_dir" Value="..\..\third_party_packages\ffmpeg-20120927-git-13f0cd6-win32-dev" PerformEnvironmentSet="true"/>
-<UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
 <!--
 	Third party library for plugin_xerces. You can disable this, but
 	Ambulant can no longer do XML validation.

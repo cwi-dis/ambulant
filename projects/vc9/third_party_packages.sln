@@ -23,14 +23,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "copy_tpp_win32", "copy_tpp_
 		{F718B6FC-0251-4D45-9879-B40E6B55A0C4} = {F718B6FC-0251-4D45-9879-B40E6B55A0C4}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicUsageEnvironment", "..\..\third_party_packages\live_VC9\BasicUsageEnvironment.vcproj", "{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "groupsock", "..\..\third_party_packages\live_VC9\groupsock.vcproj", "{1C6B38DA-15AC-4567-973E-328BA8929EF6}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia", "..\..\third_party_packages\live_VC9\liveMedia.vcproj", "{46E9776A-96F3-4CB7-8CE2-911B30275725}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsageEnvironment", "..\..\third_party_packages\live_VC9\UsageEnvironment.vcproj", "{D8AC6EF9-27B6-4AB9-BE18-69F613791390}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

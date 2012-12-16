@@ -347,10 +347,6 @@
 		0407030C115263540094FB0B /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "../../build-3264/third_party_packages/installed/lib/libSDL.dylib"; sourceTree = SOURCE_ROOT; };
 		0407030D115263540094FB0B /* libswscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.dylib; path = "../../build-3264/third_party_packages/installed/lib/libswscale.dylib"; sourceTree = SOURCE_ROOT; };
 		0407030E115263540094FB0B /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../build-3264/third_party_packages/installed/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
-		0407031A115263D40094FB0B /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		04070331115264160094FB0B /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-3264/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
-		04070333115264220094FB0B /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-3264/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
-		040703351152642C0094FB0B /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		04070346115264C00094FB0B /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		0407034E115264F30094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		040703501152650C0094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
@@ -808,10 +804,6 @@
 				0407030C115263540094FB0B /* libSDL.dylib */,
 				0407030D115263540094FB0B /* libswscale.dylib */,
 				0407030E115263540094FB0B /* libxerces-c.dylib */,
-				0407031A115263D40094FB0B /* libBasicUsageEnvironment.a */,
-				04070331115264160094FB0B /* libgroupsock.a */,
-				04070333115264220094FB0B /* libliveMedia.a */,
-				040703351152642C0094FB0B /* libUsageEnvironment.a */,
 			);
 			name = "Third Party Libraries";
 			sourceTree = "<group>";
@@ -2093,10 +2085,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 					"\"$(SRCROOT)/../../build-3264/libltdl/.libs\"",
 				);
 				PRODUCT_NAME = libambulantCG;
@@ -2122,10 +2110,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
-					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 					"\"$(SRCROOT)/../../build-3264/libltdl/.libs\"",
 				);
 				PRODUCT_NAME = libambulantCG;
@@ -2155,7 +2139,6 @@
 					"AM_PREFER_FFMPEG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
 					"WITH_EXPAT=1",
 					"WITH_PYTHON_PLUGIN=1",
 					"WITH_OVERLAY_WINDOW=1",

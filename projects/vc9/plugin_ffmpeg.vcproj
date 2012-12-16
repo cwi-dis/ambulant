@@ -233,50 +233,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="live555"
-				>
-				<File
-					RelativePath="..\..\src\libambulant\net\rtsp_datasource.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\libambulant\net\rtsp_factory.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-			</Filter>
-			<Filter
 				Name="dsvideo"
 				>
 				<File
@@ -355,18 +311,6 @@
 				</File>
 				<File
 					RelativePath="..\..\include\ambulant\net\ffmpeg_video.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="live555"
-				>
-				<File
-					RelativePath="..\..\include\ambulant\net\rtsp_datasource.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\include\ambulant\net\rtsp_factory.h"
 					>
 				</File>
 			</Filter>
