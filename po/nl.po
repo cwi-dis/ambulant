@@ -390,28 +390,6 @@ msgstr "Geen ondersteuning voor \"%s\" video"
 msgid "Error encountered while reading file %s"
 msgstr "Er is een fout opgetreden tijdens het lezen van %s"
 
-#: src/libambulant/net/rtsp_datasource.cpp:168
-#: src/libambulant/net/rtsp_datasource.cpp:176
-#: src/libambulant/net/rtsp_datasource.cpp:185
-#: src/libambulant/net/rtsp_datasource.cpp:196
-#: src/libambulant/net/rtsp_datasource.cpp:205
-#: src/libambulant/net/rtsp_datasource.cpp:327
-msgid "RTSP Connection Failed"
-msgstr "Kan geen RTSP netwerk verbinding maken"
-
-#: src/libambulant/net/rtsp_datasource.cpp:445
-#: src/libambulant/net/rtsp_datasource.cpp:453
-msgid "playing RTSP connection failed"
-msgstr "Kan niet via de RTSP verbinding afspelen"
-
-#: src/libambulant/net/rtsp_datasource.cpp:493
-msgid "pausing RTSP media session failed"
-msgstr "Kan niet via de RTSP verbinding pauzeren"
-
-#: src/libambulant/net/rtsp_datasource.cpp:498
-msgid "resuming RTSP media session failed"
-msgstr "Kan niet via de RTSP verbinding starten"
-
 #: src/libambulant/net/url.cpp:506
 #, c-format
 msgid "%s: Cannot parse URL"

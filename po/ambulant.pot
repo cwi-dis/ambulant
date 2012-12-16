@@ -386,28 +386,6 @@ msgstr ""
 msgid "Error encountered while reading file %s"
 msgstr ""
 
-#: src/libambulant/net/rtsp_datasource.cpp:168
-#: src/libambulant/net/rtsp_datasource.cpp:176
-#: src/libambulant/net/rtsp_datasource.cpp:185
-#: src/libambulant/net/rtsp_datasource.cpp:196
-#: src/libambulant/net/rtsp_datasource.cpp:205
-#: src/libambulant/net/rtsp_datasource.cpp:327
-msgid "RTSP Connection Failed"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:445
-#: src/libambulant/net/rtsp_datasource.cpp:453
-msgid "playing RTSP connection failed"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:493
-msgid "pausing RTSP media session failed"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:498
-msgid "resuming RTSP media session failed"
-msgstr ""
-
 #: src/libambulant/net/url.cpp:506
 #, c-format
 msgid "%s: Cannot parse URL"

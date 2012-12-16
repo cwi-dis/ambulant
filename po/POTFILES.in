@@ -24,8 +24,6 @@ src/libambulant/net/ffmpeg_audio.cpp
 src/libambulant/net/ffmpeg_raw.cpp
 src/libambulant/net/ffmpeg_video.cpp
 src/libambulant/net/posix_datasource.cpp
-src/libambulant/net/rtsp_datasource.cpp
-src/libambulant/net/rtsp_factory.cpp
 src/libambulant/net/stdio_datasource.cpp
 src/libambulant/net/url.cpp
 src/libambulant/smil2/animate_a.cpp
