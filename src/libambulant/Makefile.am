@@ -9,11 +9,6 @@ libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
 else
 libambulant_ffmpeg=
 endif
-if WITH_LIVE
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
-else
-libambulant_live=
-endif
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
@@ -26,7 +21,6 @@ else
 #
 libambulant_core=
 libambulant_ffmpeg=
-libambulant_live=
 libambulant_sdl=
 libambulant_gstreamer=
 libambulant_gtk=
@@ -34,20 +28,6 @@ libambulant_qt=
 endif
 
 # See which toolkit-dependent libraries we want to make
-
-
-if WITH_LIVE 
-toolkit_live_libraries = libambulant_live.la
-libambulant_live_la_SOURCES = \
-	net/rtsp_datasource.cpp \
-	net/rtsp_factory.cpp
-live_includes = $(LIVE_CFLAGS)
-libambulant_live_la_LDFLAGS=$(LIVE_LIBS) $(libambulant_ffmpeg) $(libambulant_core) 
-libambulant_live_la_DEPENDENCIES=libambulant_ffmpeg.la libambulant.la
-else
-toolkit_live_libraries =
-live_includes =
-endif
 
 
 if WITH_EXPAT
@@ -128,8 +108,8 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_util.cpp \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
-libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(gcd_event_processor_core_libs)
-libambulant_gtk_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
+libambulant_gtk_la_LDFLAGS=$(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(gcd_event_processor_core_libs)
+libambulant_gtk_la_DEPENDENCIES=$(toolkit_ffmpeg_libraries) libambulant.la
 else
 gtkincludes=
 toolkit_gtk_libraries =
@@ -152,8 +132,8 @@ libambulant_qt_la_SOURCES = \
 	gui/qt/qt_util.cpp \
 	gui/qt/qt_video_renderer.cpp \
 	gui/qt/qt_factory.cpp
-libambulant_qt_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
-libambulant_qt_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
+libambulant_qt_la_LDFLAGS=$(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
+libambulant_qt_la_DEPENDENCIES=$(toolkit_ffmpeg_libraries) libambulant.la
 else
 qtincludes=
 toolkit_qt_libraries =
@@ -252,7 +232,6 @@ AM_CPPFLAGS = \
 	$(gtkincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
-	$(live_includes) \
 	$(INCLTDL)
 
 lib_LTLIBRARIES = \
@@ -260,7 +239,6 @@ lib_LTLIBRARIES = \
 	$(toolkit_gstreamer_libraries) \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_ffmpeg_libraries) \
-	$(toolkit_live_libraries) \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)

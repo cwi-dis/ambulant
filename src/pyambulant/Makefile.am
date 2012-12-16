@@ -52,18 +52,11 @@ else
 extra_sdl_cflags=
 extra_sdl_ldflags=
 endif
-if WITH_LIVE
-extra_live_cflags=-DWITH_LIVE=1 $(LIVE_CFLAGS)
-extra_live_ldflags=-lambulant_live $(LIVE_LIBS)
-else
-extra_live_cflags=
-extra_live_ldflags=
-endif
 
 # Get all the extra bits together
 # XXXX Why does this not work??? EXTRA_LDFLAGS=$(extra_qt_ldflags)
-extra_cflags=$(extra_qt_cflags) $(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags) $(extra_live_cflags)
-extra_ldflags=$(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(extra_live_ldflags)
+extra_cflags=$(extra_qt_cflags) $(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags)
+extra_ldflags=$(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags)
 
 # These targets are magic for automake
 

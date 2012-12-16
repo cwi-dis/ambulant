@@ -27,7 +27,6 @@ if WITH_AMBULANT_SHARED_LIB
 #
 libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 libambulant_cg=-L$(ambulantlibdir) -lambulant_cg
 else
@@ -38,7 +37,6 @@ else
 #
 libambulant_core=$(ambulantlibdir)/libambulant.a
 libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
-libambulant_live=$(ambulantlibdir)/libambulant_live.a
 libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
 libambulant_cg=$(ambulantlibdir)/libambulant_cg.a
 endif
@@ -65,14 +63,6 @@ extra_ffmpeg_LDADD=$(libambulant_ffmpeg) $(FFMPEG_LIBS)
 else
 extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
-endif
-
-if WITH_LIVE
-extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
-extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
-else
-extra_live_DEFINES=
-extra_live_LDADD =
 endif
 
 if WITH_SDL
@@ -200,7 +190,6 @@ LDADD = \
 	$(extra_cg_LDADD) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
-	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(LIBINTL) \
@@ -220,7 +209,6 @@ AM_CPPFLAGS = \
 	$(extra_expat_DEFINES) \
 	$(extra_ffmpeg_DEFINES) \
 	$(extra_nls_DEFINES) \
-	$(extra_live_DEFINES) \
 	$(extra_sdl_DEFINES) \
 	$(extra_xerces_DEFINES)
 

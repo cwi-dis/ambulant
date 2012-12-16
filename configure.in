@@ -677,73 +677,6 @@ if test "x$test_gstreamer" = "xtrue"; then
 AM_CONDITIONAL(WITH_GSTREAMER, test x$test_gstreamer = xtrue)
 AC_MSG_RESULT($test_gstreamer)
 
-#
-# Test for live555.com library
-#
-test_live=false
-live_root=
-AC_MSG_CHECKING(for live555.com RTSP support)
-AC_ARG_WITH(live,
-	AS_HELP_STRING([--with-live], [Turn on live555.com rtsp support]),
-	[
-		case "${withval}" in
-		yes)
-			# Assume it is in third_party_packages/live
-			live_root=$third_party_packages/live
-			test_live=true
-			;;
-		no)
-			test_live=false
-			;;
-		*)
-			test_live=true
-			live_root=${witharg}
-			;;
-		esac
-	],[
-		# Default is now to build without live555
-		test_live=false
-		#if test -f $third_party_packages/live/liveMedia/libliveMedia.a; then
-		#	live_root=$third_party_packages/live
-		#	test_live=true
-		#fi
-	])
-if $test_live; then
-	if test -f $live_root/liveMedia/libliveMedia.a; then
-		LIVE_CFLAGS="-I$live_root/liveMedia/include -I$live_root/groupsock/include -I$live_root/BasicUsageEnvironment/include -I$live_root/UsageEnvironment/include"
-		LIVE_LIBS="-L$live_root/liveMedia -lliveMedia -L$live_root/groupsock -lgroupsock -L$live_root/BasicUsageEnvironment -lBasicUsageEnvironment -L$live_root/UsageEnvironment -lUsageEnvironment"
-	else
-		# No slurped version. Is it installed system-wide?
-		AC_LANG_PUSH([C++])
-		oldLIBS=$LIBS
-		LIBS="$LIBS -lUsageEnvironment"
-		AC_TRY_LINK([#include <UsageEnvironment/strDup.hh>], [(void)strDupSize("");],,test_live=false)
-		LIBS=$oldLIBS
-		AC_LANG_POP()
-		if $test_live; then
-			LIVE_CFLAGS="-I/usr/include/liveMedia -I/usr/include/groupsock -I/usr/include/BasicUsageEnvironment -I/usr/include/UsageEnvironment"
-			live_pic=false
-			AC_CHECK_LIB(UsageEnvironment_pic, _Z10strDupSizePKc, live_pic=true, live_pic=false, -lstdc++)
-			if $live_pic; then
-				LIVE_LIBS="-lliveMedia_pic -lgroupsock_pic -lBasicUsageEnvironment_pic -lUsageEnvironment_pic"
-			else
-				LIVE_LIBS="-lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment"
-			fi
-		fi
-	fi
-	if $test_live; then
-		:
-	else
-		AC_MSG_ERROR([Live555 not found in $live_root])
-		test_live=false
-	fi
-fi
-
-AM_CONDITIONAL(WITH_LIVE, test x$test_live = xtrue)
-AC_SUBST(LIVE_CFLAGS)
-AC_SUBST(LIVE_LIBS)
-AC_MSG_RESULT($test_live)
-
 dnl Testing for ffmpeg
 dnl ======================================================================
 ##
@@ -1206,7 +1139,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL_image:           ${test_sdl2_image}
     Build with SDL_ttf:             ${test_sdl2_ttf}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with live555.com RTSP:    ${test_live}
     Build with gstreamer:           ${test_gstreamer}
 
     Build Qt3 frontend:             ${test_qt}
@@ -1228,7 +1160,6 @@ if test "x$with_frontend" = "xfalse"; then
 fi
 AC_MSG_RESULT([$qt_warning]);
 AC_MSG_RESULT([$ffmpeg_warning]);
-AC_MSG_RESULT([$live_warning]);
 AC_MSG_RESULT([$expat_warning]);
 AC_MSG_RESULT([$python_warning]);
 AC_MSG_RESULT([$xml_parser_warning]);
