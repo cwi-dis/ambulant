@@ -200,6 +200,10 @@ project (right-click on it for the context menu that allows you to do this).
 Select the build type, for example "Release" for Direct2D (Windows 7 only) or
 "ReleaseDX" for DirectDraw (XP or later).
 
+NOTE: if you are building with VS2008 you may get errors on _Swap_adl. If you do:
+search the solution for _Swap_adl, you will need to make a small change in two
+locations. The gory details of this problem are explained in a comment there.
+
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
 
