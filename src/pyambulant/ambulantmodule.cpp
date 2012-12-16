@@ -36,7 +36,6 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/net/ffmpeg_factory.h"
-#include "ambulant/net/rtsp_factory.h"
 
 // Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK

@@ -219,12 +219,6 @@ ffmpeg_demux::supported(const net::url& url)
 		ffmpeg_name = url.get_file();
 	}
 
-#if 1
-	// There appears to be some support for RTSP in ffmpeg, but it doesn'
-	// seem to work yet. Disable it so we don't get confused by error messages.
-	// XXXJACK need to test this with future ffmpeg versions.
-	//if (url_str.substr(0, 5) == "rtsp:") return NULL;
-#endif
 	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
