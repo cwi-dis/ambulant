@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@ void set_statusline(void *view, const char *msg);
 
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
-#include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/cg/cg_gui.h"
 
 @interface MyAmbulantView : AmbulantView
 {

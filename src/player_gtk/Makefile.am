@@ -7,7 +7,6 @@ if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
 libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
@@ -15,7 +14,6 @@ else
 # Otherwise we link the ambulant libraries statically.
 libambulant_core=$(ambulantlibdir)/libambulant.a
 libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
-libambulant_live=$(ambulantlibdir)/libambulant_live.a
 libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
 libambulant_gstreamer=$(ambulantlibdir)/libambulant_gstreamer.a
 libambulant_gtk=$(ambulantlibdir)/libambulant_gtk.a
@@ -46,14 +44,6 @@ extra_gstreamer_DEFINES=-DWITH_GSTREAMER $(GSTREAMER_CFLAGS)
 else
 extra_gstreamer_LDADD=
 extra_gstreamer_DEFINES=
-endif
-
-if WITH_LIVE
-extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
-extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
-else
-extra_live_DEFINES=
-extra_live_LDADD =
 endif
 
 if WITH_SDL
@@ -110,7 +100,6 @@ LDADD = $(libambulant_gtk) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_gstreamer_LDADD) \
-	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(libambulant_core) \
@@ -127,7 +116,6 @@ AM_CPPFLAGS = \
 		$(extra_expat_DEFINES) \
 		$(extra_ffmpeg_DEFINES) \
 		$(extra_gstreamer_DEFINES) \
-		$(extra_live_DEFINES) \
 		$(extra_nls_DEFINES) \
 		$(extra_sdl_DEFINES) \
 		$(extra_xerces_DEFINES) \
@@ -151,7 +139,7 @@ check-ambulantplayer_gtk:
 		echo Skipping tests, DISPLAY not set; \
 	else \
 		set -e; \
-		set -x; \
+		set +x; \
 		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
 		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
 		lib=/lib; \

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -79,10 +79,10 @@ class rawdatasink {
 
 class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
   public:
-	ffmpeg_rawreader(URLContext *con, const net::url& url);
+	ffmpeg_rawreader(AVIOContext *con, const net::url& url);
 	~ffmpeg_rawreader();
 
-	static URLContext *supported(const net::url& url);
+	static AVIOContext *supported(const net::url& url);
 
 	void set_datasink(rawdatasink *parent);
 	void cancel();
@@ -90,7 +90,7 @@ class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
   protected:
 	unsigned long run();
   private:
-	URLContext *m_con;
+	AVIOContext *m_con;
 	rawdatasink *m_sink;
     long m_bytes_read;
     std::string m_resource_type;
@@ -105,7 +105,7 @@ class ffmpeg_raw_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
-	ffmpeg_raw_datasource(const net::url& url, URLContext *context, detail::ffmpeg_rawreader *thread);
+	ffmpeg_raw_datasource(const net::url& url, AVIOContext *context, detail::ffmpeg_rawreader *thread);
 	~ffmpeg_raw_datasource();
 
 	void start(lib::event_processor *evp, lib::event *callback);
@@ -124,7 +124,7 @@ class ffmpeg_raw_datasource:
   private:
 	bool _end_of_file();
 	const net::url m_url;
-	URLContext *m_con;
+	AVIOContext *m_con;
 	bool m_src_end_of_file;
 	lib::event_processor *m_event_processor;
 

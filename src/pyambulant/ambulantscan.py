@@ -41,7 +41,6 @@ def main():
         AMBULANT+ "net/posix_datasource.h",
         AMBULANT+ "net/stdio_datasource.h",
         AMBULANT+ "net/ffmpeg_factory.h",
-        AMBULANT+ "net/rtsp_factory.h",
             ]
     if DO_SCAN:
         output = "ambulantgen.py"
@@ -80,6 +79,7 @@ class MyScanner(CxxScanner):
             "gdk_pixmap_bitblt",
             "create_gtk_window_factory",
             "single_playable_factory",
+            "create_sdl_window_factory", # XXXX for now
            
         ]
 
@@ -104,8 +104,6 @@ class MyScanner(CxxScanner):
             "stdio_datasource_factory", # Ditto
             "filter_datasource_impl", # XXXX
             "filter_datasource_impl_ptr", # XXXX
-            "live_audio_datasource_factory",
-            "live_video_datasource_factory",
             "raw_filter_finder", # XXXX
             "raw_filter_finder_ptr", # XXXX
             "ts_packet_t", # XXXX Lazy: should do this one.
@@ -151,7 +149,10 @@ class MyScanner(CxxScanner):
             "event_processor_observer", # XXX Lazy right now, do later
             "event_processor_observer_ptr",
             "single_playable_factory",
-            "single_playable_factory_ptr"
+            "single_playable_factory_ptr",
+            "recorder_factory_ptr", # XXX for now
+            "sdl_window_factory_ptr", # XXX For now
+            "sdl_window_factory",
             
         ]
 
@@ -194,11 +195,6 @@ class MyScanner(CxxScanner):
                 'get_ffmpeg_audio_decoder_finder',
                 ]
             ),
-            ('#ifdef WITH_LIVE', [
-                'create_live_video_datasource_factory',
-                'create_live_audio_datasource_factory',
-                ]
-            ),
             ('#ifndef AMBULANT_PLATFORM_WIN32', [
                 'create_posix_datasource_factory',
                 
@@ -206,6 +202,14 @@ class MyScanner(CxxScanner):
             ),
             ('#ifndef CPP_TO_PYTHON_BRIDGE', [
                 'get_screenshot'
+                ]
+            ),
+            ('#ifdef WITH_SDL2', [
+                'create_sdl_video_playable_factory',
+                'create_sdl_text_playable_factory',
+                'create_sdl_smiltext_playable_factory',
+                'create_sdl_image_playable_factory',
+                'create_sdl_fill_playable_factory',
                 ]
             ),
         ]

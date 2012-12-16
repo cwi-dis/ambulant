@@ -15,8 +15,7 @@ TRYMIRROR=True
 # Before cutting a release, update this directory name, and run
 #   python build-third-party-packages.py -m
 # in the directory on the server.
-MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.3/"
-LIVE_MIRRORDATE="2012.02.29"
+MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.5/"
 SDL_MIRRORDATE="20120306"
 
 #
@@ -37,6 +36,12 @@ WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
 XULRUNNER_URL="http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/8.0/sdk/"
 XULRUNNER_VERSION="xulrunner-8.0"
+
+#
+# FFMPEG GIT version-id for Windows, from ffmpeg.zeranoe.com
+FFMPEG_WIN_GIT_ID="13f0cd6"
+FFMPEG_WIN_GIT_DATE="20120927"
+
 #
 # urlretrieve silently ignores 404 errors. We want them, so we can download
 # our shadow copies.
@@ -394,14 +399,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
-            url2="ffmpeg-0.6.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	"rm -rf ffmpeg-0.6.5-universal && "
-                "mkdir ffmpeg-0.6.5-universal && "
-                "cd ffmpeg-0.6.5-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.5 all" % 
+            	"rm -rf ffmpeg-1.0-universal && "
+                "mkdir ffmpeg-1.0-universal && "
+                "cd ffmpeg-1.0-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-1.0 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",
@@ -416,16 +421,6 @@ third_party_packages={
                     "LDFLAGS='%s -framework ForceFeedback' &&"
                 "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
-            ),
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles macosx3264 && "
-                "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
@@ -453,7 +448,16 @@ third_party_packages={
             url2="%s.en-US.mac-i386.sdk.tar.bz2" % XULRUNNER_VERSION,
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
-            )
+            ),
+        TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
+            checkcmd="test -f ../libltdl/.libs/libltdlc.a",
+            buildcmd=
+                "rm -rf ../libltdl &&"
+                "mkdir ../libltdl &&"
+                "cd ../libltdl &&"
+                "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
+                "make" % MAC106_COMMON_CFLAGS
+            ),
         ],
 
     'mac10.4' : [
@@ -510,16 +514,6 @@ third_party_packages={
                 "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
             ),
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles macosxfat && "
-                "make ${MAKEFLAGS} " % AMBULANT_DIR
-            ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
@@ -567,11 +561,11 @@ third_party_packages={
             ),
 # create fat libraries for armv6/7: foreach arch do configure ...;make; rename lib...a to lib..$arch, then use lipo to combine them 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
-            url2="ffmpeg-0.6.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-                "cd ffmpeg-0.6.5 && "
+                "cd ffmpeg-1.0 && "
 				"export DEPLOYMENT_TARGET=%s;"
                 "./configure --enable-cross-compile --arch=arm --target-os=darwin "
 			    " --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
@@ -580,7 +574,7 @@ third_party_packages={
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv6 -I../installed/include' "
 				"--extra-ldflags='-arch armv6 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
-                "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
+                " --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
 				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
 				"for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&"
@@ -591,7 +585,7 @@ third_party_packages={
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
                 "--extra-cflags='-arch armv7 -I../installed/include' "
 				"--extra-ldflags='-arch armv7 -L../installed/lib -L/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/usr/lib/system' "
-                "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
+                " --prefix=../installed/ --enable-gpl  --disable-ffmpeg "
 				"--disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
                 "make clean;make ${MAKEFLAGS}; "
 				"for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done;echo armv7 done  &&" 
@@ -613,19 +607,6 @@ third_party_packages={
                 "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
             ),
 
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "set -x;cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles iOS-Device-armv6 && "
-                "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do mv $i `dirname $i`/`basename $i .a`-armv6; done &&" 
-                 "./genMakefiles iOS-Device-armv7 && "
-                "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-armv7; done &&"
-                "for i in `ls */*.a`; do rm $i; lipo -create -output $i `dirname $i`/`basename $i .a`-armv6 `dirname $i`/`basename $i .a`-armv7; done" % AMBULANT_DIR
-            ),
 
 ##      TPP("gettext",
 ##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
@@ -675,16 +656,16 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
-            url2="ffmpeg-0.6.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-                "cd ffmpeg-0.6.5 && "
+                "cd ffmpeg-1.0 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
                 "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
                 "--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
-                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
+                " --prefix=../installed --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
                 "make clean;make ${MAKEFLAGS}; make install" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
@@ -701,17 +682,6 @@ third_party_packages={
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
                 "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
  ),
-
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-            buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles iOS-Simulator && "
-                "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
-            ),
 
 ##      TPP("gettext",
 ##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
@@ -736,17 +706,6 @@ third_party_packages={
         ],
 
     'linux' : [
-        TPP("libtool", 
-            url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
-            url2="libtool-2.2.6a.tar.gz",
-            checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
-            buildcmd=
-                "cd libtool-2.2.6 && "
-                        "%s --enable-ltdl-install &&"
-                "make ${MAKEFLAGS} && "
-                "make install" % LINUX_COMMON_CONFIGURE
-            ),
-
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
@@ -757,7 +716,8 @@ third_party_packages={
                 "autoconf && "
                 "%s && "
                 "make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+                "make install && "
+                "install -D -m 755 expat.pc %s/lib/pkgconfig/expat.pc" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR)
             ),
 
         TPP("xerces-c",
@@ -790,36 +750,61 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-0.6.5.tar.gz",
-            url2="ffmpeg-0.6.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
+            url2="ffmpeg-1.0.tar.gz",
+            checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
             buildcmd=
-                "cd ffmpeg-0.6.5&& "
-                "%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
+                "cd ffmpeg-1.0&& "
+                "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
 
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
-            checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+#           url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-                "cd SDL-1.3.0-* && "
-                "%s &&"
+               "if [ ! -e SDL ] ; then hg clone http://hg.libsdl.org/SDL; "
+               "cd SDL && "
+               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch; " 
+               "else cd SDL; fi; mkdir -p build; cd build &&"
+# Note: SDL 2.0 wants a different build directory, therefore one '.' is preprended
+                ".%s --disable-video-x11-xinput&&"
                 "make ${MAKEFLAGS} && "
-                "make install" % (LINUX_COMMON_CONFIGURE)
+                "make install &&"
+                "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
-        TPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+        TPP("SDL_image",
+# mercurial version needed for compatibilty with SDL2
+#           url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.13.tar.gz",
+#           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
             buildcmd=
-                "cd live && "
-                "tar xf %s/third_party_packages/live-patches.tar && "
-                "./genMakefiles linux && "
-                "make ${MAKEFLAGS} " % (AMBULANT_DIR)
+                "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
+                "cd SDL_image && mkdir -p build && cd build && "
+                ".%s &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
+        TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
+            url="http://sourceforge.net/projects/sdlpango/files/latest/download",
+            url2="SDL_Pango-0.1.2.tar.gz",
+# patches needed for compatibilty with distributed versions and one for SDL2
+            checkcmd="pkg-config --atleast-version=0.1.3 SDL_Pango",
+            buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
+                "cd SDL_Pango-0.1.2 && "
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-API-Changes.patch && " 
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && echo 'AC_DEFUN([AM_PATH_SDL])' > acinclude.m4 && autoreconf && libtoolize && " 
+                "which sdl2-config >/dev/null && %s --with-sdl2 && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
         TPP("gettext",
@@ -879,9 +864,15 @@ third_party_packages={
             # No build needed
             ),
 
-        WinTPP("ffmpeg",
-            url="https://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant%2C%20win32/20110119-win32-prebuilt/ffmpeg-20110119-win32-prebuilt.zip/download",
-            checkcmd="if not exist ffmpeg-20110119-win32-prebuilt\\libavformat\\avformat-52.dll exit 1",
+        WinTPP("ffmpeg-bin",
+            url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-%s-git-%s-win32-shared.7z" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
+            checkcmd="if not exist ffmpeg-%s-git-%s-win32-shared\\bin\\avformat-53.dll exit 1" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
+            # No build needed
+            ),
+
+        WinTPP("ffmpeg-dev",
+            url="http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-%s-git-%s-win32-dev.7z" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
+            checkcmd="if not exist ffmpeg-%s-git-%s-win32-dev\\lib\\avformat.lib exit 1" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
             # No build needed
             ),
 
@@ -899,14 +890,6 @@ third_party_packages={
                 "set INCLUDE=%s\\Include;%%INCLUDE%% && "
                 "set LIB=%s\\Lib\\x86;%%LIB%% && "
                 "devenv SDL_%s.sln /UseEnv /build %s" % (WINDOWS_DXSDK_PATH, WINDOWS_DXSDK_PATH, WIN32_VSVERSION, WIN32_COMMON_CONFIG)
-            ),
-        # NOTE: the double quotes are needed because of weird cmd.exe unquoting
-        WinTPP("live",
-            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-            extractcmd='cmd /c "%s live555-latest.tar.gz && %s live555-latest.tar"' % (WINDOWS_UNTAR, WINDOWS_UNTAR),
-            checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
-            # Build is done by FINAL
             ),
             
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting

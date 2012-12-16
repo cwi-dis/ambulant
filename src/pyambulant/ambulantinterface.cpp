@@ -43,13 +43,8 @@ ostream::ostream(PyObject *itself)
 ostream::~ostream()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_ostream;
+	Py_XDECREF(py_ostream);
 	py_ostream = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -188,13 +183,8 @@ node_context::node_context(PyObject *itself)
 node_context::~node_context()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_node_context;
+	Py_XDECREF(py_node_context);
 	py_node_context = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -469,13 +459,8 @@ node::node(PyObject *itself)
 node::~node()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_node;
+	Py_XDECREF(py_node);
 	py_node = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1516,13 +1501,8 @@ node_factory::node_factory(PyObject *itself)
 node_factory::~node_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_node_factory;
+	Py_XDECREF(py_node_factory);
 	py_node_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1630,13 +1610,8 @@ event::event(PyObject *itself)
 event::~event()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_event;
+	Py_XDECREF(py_event);
 	py_event = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1678,13 +1653,8 @@ event_processor::event_processor(PyObject *itself)
 event_processor::~event_processor()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_event_processor;
+	Py_XDECREF(py_event_processor);
 	py_event_processor = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1797,13 +1767,8 @@ parser_factory::parser_factory(PyObject *itself)
 parser_factory::~parser_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_parser_factory;
+	Py_XDECREF(py_parser_factory);
 	py_parser_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1853,13 +1818,8 @@ xml_parser::xml_parser(PyObject *itself)
 xml_parser::~xml_parser()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_xml_parser;
+	Py_XDECREF(py_xml_parser);
 	py_xml_parser = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1911,13 +1871,8 @@ system_embedder::system_embedder(PyObject *itself)
 system_embedder::~system_embedder()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_system_embedder;
+	Py_XDECREF(py_system_embedder);
 	py_system_embedder = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -1952,8 +1907,6 @@ timer::timer(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_drift")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: set_drift");
 		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: get_drift");
 		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: skew");
-		if (!PyObject_HasAttrString(itself, "running")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: running");
-		if (!PyObject_HasAttrString(itself, "is_slaved")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: is_slaved");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -1965,13 +1918,8 @@ timer::timer(PyObject *itself)
 timer::~timer()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_timer;
+	Py_XDECREF(py_timer);
 	py_timer = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -2092,54 +2040,6 @@ void timer::skew(ambulant::lib::timer::signed_time_type skew)
 	PyGILState_Release(_GILState);
 }
 
-bool timer::running() const
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer, "running", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer::running() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during timer::running() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-bool timer::is_slaved() const
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer, "is_slaved", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer::is_slaved() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during timer::is_slaved() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
 /* ---------------------- Class timer_control ----------------------- */
 
 timer_control::timer_control(PyObject *itself)
@@ -2162,9 +2062,6 @@ timer_control::timer_control(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_drift");
 		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_drift");
 		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: skew");
-		if (!PyObject_HasAttrString(itself, "set_observer")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_observer");
-		if (!PyObject_HasAttrString(itself, "set_slaved")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_slaved");
-		if (!PyObject_HasAttrString(itself, "is_slaved")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: is_slaved");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2176,13 +2073,8 @@ timer_control::timer_control(PyObject *itself)
 timer_control::~timer_control()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_timer_control;
+	Py_XDECREF(py_timer_control);
 	py_timer_control = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -2476,349 +2368,6 @@ void timer_control::skew(ambulant::lib::timer::signed_time_type skew)
 	PyGILState_Release(_GILState);
 }
 
-void timer_control::set_observer(ambulant::lib::timer_observer* obs)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_obs = Py_BuildValue("O&", timer_observerObj_New, obs);
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_observer", "(O)", py_obs);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_control::set_observer() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_obs);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_control::set_slaved(bool slaved)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_slaved = Py_BuildValue("O&", bool_New, slaved);
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_slaved", "(O)", py_slaved);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_control::set_slaved() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_slaved);
-
-	PyGILState_Release(_GILState);
-}
-
-bool timer_control::is_slaved() const
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "is_slaved", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_control::is_slaved() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during timer_control::is_slaved() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-/* ---------------------- Class timer_observer ---------------------- */
-
-timer_observer::timer_observer(PyObject *itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "started")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: started");
-		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: stopped");
-		if (!PyObject_HasAttrString(itself, "paused")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: paused");
-		if (!PyObject_HasAttrString(itself, "resumed")) PyErr_Warn(PyExc_Warning, "timer_observer: missing attribute: resumed");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_timer_observer = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-timer_observer::~timer_observer()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_timer_observer;
-	py_timer_observer = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-
-void timer_observer::started()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "started", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_observer::started() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_observer::stopped()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "stopped", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_observer::stopped() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_observer::paused()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "paused", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_observer::paused() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_observer::resumed()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_observer, "resumed", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_observer::resumed() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-/* ------------------------ Class timer_sync ------------------------ */
-
-timer_sync::timer_sync(PyObject *itself)
-:	::timer_observer(itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "initialize")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: initialize");
-		if (!PyObject_HasAttrString(itself, "started")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: started");
-		if (!PyObject_HasAttrString(itself, "stopped")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: stopped");
-		if (!PyObject_HasAttrString(itself, "paused")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: paused");
-		if (!PyObject_HasAttrString(itself, "resumed")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: resumed");
-		if (!PyObject_HasAttrString(itself, "clicked")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: clicked");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_timer_sync = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-timer_sync::~timer_sync()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_timer_sync;
-	py_timer_sync = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-
-void timer_sync::initialize(ambulant::lib::timer_control* timer)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_timer = Py_BuildValue("O&", timer_controlObj_New, timer);
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "initialize", "(O)", py_timer);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync::initialize() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_timer);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_sync::started()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "started", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync::started() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_sync::stopped()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "stopped", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync::stopped() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_sync::paused()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "paused", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync::paused() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_sync::resumed()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "resumed", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync::resumed() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-void timer_sync::clicked(const ambulant::lib::node* n, ambulant::lib::timer::time_type t)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
-	PyObject *py_t = Py_BuildValue("l", t);
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "clicked", "(OO)", py_n, py_t);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync::clicked() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_n);
-	Py_XDECREF(py_t);
-
-	PyGILState_Release(_GILState);
-}
-
-/* -------------------- Class timer_sync_factory -------------------- */
-
-timer_sync_factory::timer_sync_factory(PyObject *itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "new_timer_sync")) PyErr_Warn(PyExc_Warning, "timer_sync_factory: missing attribute: new_timer_sync");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_timer_sync_factory = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-timer_sync_factory::~timer_sync_factory()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_timer_sync_factory;
-	py_timer_sync_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-
-ambulant::lib::timer_sync* timer_sync_factory::new_timer_sync(ambulant::lib::document* doc)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::lib::timer_sync* _rv;
-	PyObject *py_doc = Py_BuildValue("O&", documentObj_New, doc);
-
-	PyObject *py_rv = PyObject_CallMethod(py_timer_sync_factory, "new_timer_sync", "(O)", py_doc);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_sync_factory::new_timer_sync() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", timer_syncObj_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during timer_sync_factory::new_timer_sync() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_doc);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
 /* ------------------------- Class embedder ------------------------- */
 
 embedder::embedder(PyObject *itself)
@@ -2844,13 +2393,8 @@ embedder::embedder(PyObject *itself)
 embedder::~embedder()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_embedder;
+	Py_XDECREF(py_embedder);
 	py_embedder = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -2986,7 +2530,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "init_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_parser_factory");
 		if (!PyObject_HasAttrString(itself, "init_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_node_factory");
 		if (!PyObject_HasAttrString(itself, "init_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_state_component_factory");
-		if (!PyObject_HasAttrString(itself, "init_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_timer_sync_factory");
+		if (!PyObject_HasAttrString(itself, "init_recorder_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: init_recorder_factory");
 		if (!PyObject_HasAttrString(itself, "get_playable_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_playable_factory");
 		if (!PyObject_HasAttrString(itself, "get_window_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_window_factory");
 		if (!PyObject_HasAttrString(itself, "get_datasource_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_datasource_factory");
@@ -2999,8 +2543,6 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_parser_factory");
 		if (!PyObject_HasAttrString(itself, "set_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_node_factory");
 		if (!PyObject_HasAttrString(itself, "set_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_state_component_factory");
-		if (!PyObject_HasAttrString(itself, "get_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_timer_sync_factory");
-		if (!PyObject_HasAttrString(itself, "set_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_timer_sync_factory");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -3012,13 +2554,8 @@ factories::factories(PyObject *itself)
 factories::~factories()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_factories;
+	Py_XDECREF(py_factories);
 	py_factories = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -3128,13 +2665,13 @@ void factories::init_state_component_factory()
 	PyGILState_Release(_GILState);
 }
 
-void factories::init_timer_sync_factory()
+void factories::init_recorder_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_factories, "init_timer_sync_factory", "()");
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "init_recorder_factory", "()");
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during factories::init_timer_sync_factory() callback:\n");
+		PySys_WriteStderr("Python exception during factories::init_recorder_factory() callback:\n");
 		PyErr_Print();
 	}
 
@@ -3395,48 +2932,6 @@ void factories::set_state_component_factory(ambulant::common::global_state_compo
 	PyGILState_Release(_GILState);
 }
 
-ambulant::lib::timer_sync_factory* factories::get_timer_sync_factory() const
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::lib::timer_sync_factory* _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_factories, "get_timer_sync_factory", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during factories::get_timer_sync_factory() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", timer_sync_factoryObj_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during factories::get_timer_sync_factory() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-void factories::set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_tsf = Py_BuildValue("O&", timer_sync_factoryObj_New, tsf);
-
-	PyObject *py_rv = PyObject_CallMethod(py_factories, "set_timer_sync_factory", "(O)", py_tsf);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during factories::set_timer_sync_factory() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_tsf);
-
-	PyGILState_Release(_GILState);
-}
-
 /* ------------------------ Class gui_screen ------------------------ */
 
 gui_screen::gui_screen(PyObject *itself)
@@ -3457,13 +2952,8 @@ gui_screen::gui_screen(PyObject *itself)
 gui_screen::~gui_screen()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_gui_screen;
+	Py_XDECREF(py_gui_screen);
 	py_gui_screen = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -3568,13 +3058,8 @@ gui_player::gui_player(PyObject *itself)
 gui_player::~gui_player()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_gui_player;
+	Py_XDECREF(py_gui_player);
 	py_gui_player = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4163,13 +3648,8 @@ alignment::alignment(PyObject *itself)
 alignment::~alignment()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_alignment;
+	Py_XDECREF(py_alignment);
 	py_alignment = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4245,13 +3725,8 @@ animation_notification::animation_notification(PyObject *itself)
 animation_notification::~animation_notification()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_animation_notification;
+	Py_XDECREF(py_animation_notification);
 	py_animation_notification = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4293,13 +3768,8 @@ gui_window::gui_window(PyObject *itself)
 gui_window::~gui_window()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_gui_window;
+	Py_XDECREF(py_gui_window);
 	py_gui_window = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4376,13 +3846,8 @@ gui_events::gui_events(PyObject *itself)
 gui_events::~gui_events()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_gui_events;
+	Py_XDECREF(py_gui_events);
 	py_gui_events = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4477,13 +3942,8 @@ renderer::renderer(PyObject *itself)
 renderer::~renderer()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_renderer;
+	Py_XDECREF(py_renderer);
 	py_renderer = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4606,13 +4066,8 @@ bgrenderer::bgrenderer(PyObject *itself)
 bgrenderer::~bgrenderer()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_bgrenderer;
+	Py_XDECREF(py_bgrenderer);
 	py_bgrenderer = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -4706,13 +4161,8 @@ surface::surface(PyObject *itself)
 surface::~surface()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_surface;
+	Py_XDECREF(py_surface);
 	py_surface = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -5175,13 +4625,8 @@ window_factory::window_factory(PyObject *itself)
 window_factory::~window_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_window_factory;
+	Py_XDECREF(py_window_factory);
 	py_window_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -5305,13 +4750,8 @@ surface_template::surface_template(PyObject *itself)
 surface_template::~surface_template()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_surface_template;
+	Py_XDECREF(py_surface_template);
 	py_surface_template = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -5387,13 +4827,8 @@ surface_factory::surface_factory(PyObject *itself)
 surface_factory::~surface_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_surface_factory;
+	Py_XDECREF(py_surface_factory);
 	py_surface_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -5450,13 +4885,8 @@ layout_manager::layout_manager(PyObject *itself)
 layout_manager::~layout_manager()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_layout_manager;
+	Py_XDECREF(py_layout_manager);
 	py_layout_manager = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -5596,13 +5026,8 @@ playable::playable(PyObject *itself)
 playable::~playable()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_playable;
+	Py_XDECREF(py_playable);
 	py_playable = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -5902,13 +5327,8 @@ playable_notification::playable_notification(PyObject *itself)
 playable_notification::~playable_notification()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_playable_notification;
+	Py_XDECREF(py_playable_notification);
 	py_playable_notification = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -6138,13 +5558,8 @@ playable_factory::playable_factory(PyObject *itself)
 playable_factory::~playable_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_playable_factory;
+	Py_XDECREF(py_playable_factory);
 	py_playable_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -6262,13 +5677,8 @@ global_playable_factory::global_playable_factory(PyObject *itself)
 global_playable_factory::~global_playable_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_global_playable_factory;
+	Py_XDECREF(py_global_playable_factory);
 	py_global_playable_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -6328,13 +5738,8 @@ focus_feedback::focus_feedback(PyObject *itself)
 focus_feedback::~focus_feedback()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_focus_feedback;
+	Py_XDECREF(py_focus_feedback);
 	py_focus_feedback = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -6387,13 +5792,8 @@ player_feedback::player_feedback(PyObject *itself)
 player_feedback::~player_feedback()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_player_feedback;
+	Py_XDECREF(py_player_feedback);
 	py_player_feedback = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -6659,13 +6059,8 @@ player::player(PyObject *itself)
 player::~player()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_player;
+	Py_XDECREF(py_player);
 	py_player = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -7164,13 +6559,8 @@ region_info::region_info(PyObject *itself)
 region_info::~region_info()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_region_info;
+	Py_XDECREF(py_region_info);
 	py_region_info = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -7692,13 +7082,8 @@ animation_destination::animation_destination(PyObject *itself)
 animation_destination::~animation_destination()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_animation_destination;
+	Py_XDECREF(py_animation_destination);
 	py_animation_destination = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8010,13 +7395,8 @@ state_test_methods::state_test_methods(PyObject *itself)
 state_test_methods::~state_test_methods()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_state_test_methods;
+	Py_XDECREF(py_state_test_methods);
 	py_state_test_methods = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8366,13 +7746,8 @@ state_change_callback::state_change_callback(PyObject *itself)
 state_change_callback::~state_change_callback()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_state_change_callback;
+	Py_XDECREF(py_state_change_callback);
 	py_state_change_callback = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8422,13 +7797,8 @@ state_component::state_component(PyObject *itself)
 state_component::~state_component()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_state_component;
+	Py_XDECREF(py_state_component);
 	py_state_component = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8642,13 +8012,8 @@ state_component_factory::state_component_factory(PyObject *itself)
 state_component_factory::~state_component_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_state_component_factory;
+	Py_XDECREF(py_state_component_factory);
 	py_state_component_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8699,13 +8064,8 @@ global_state_component_factory::global_state_component_factory(PyObject *itself)
 global_state_component_factory::~global_state_component_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_global_state_component_factory;
+	Py_XDECREF(py_global_state_component_factory);
 	py_global_state_component_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8752,13 +8112,8 @@ datasource::datasource(PyObject *itself)
 datasource::~datasource()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_datasource;
+	Py_XDECREF(py_datasource);
 	py_datasource = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8903,13 +8258,8 @@ pkt_datasource::pkt_datasource(PyObject *itself)
 pkt_datasource::~pkt_datasource()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_pkt_datasource;
+	Py_XDECREF(py_pkt_datasource);
 	py_pkt_datasource = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -8992,13 +8342,8 @@ raw_datasource_factory::raw_datasource_factory(PyObject *itself)
 raw_datasource_factory::~raw_datasource_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_raw_datasource_factory;
+	Py_XDECREF(py_raw_datasource_factory);
 	py_raw_datasource_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -9048,13 +8393,8 @@ audio_datasource_factory::audio_datasource_factory(PyObject *itself)
 audio_datasource_factory::~audio_datasource_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_audio_datasource_factory;
+	Py_XDECREF(py_audio_datasource_factory);
 	py_audio_datasource_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -9110,13 +8450,8 @@ pkt_audio_datasource_factory::pkt_audio_datasource_factory(PyObject *itself)
 pkt_audio_datasource_factory::~pkt_audio_datasource_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_pkt_audio_datasource_factory;
+	Py_XDECREF(py_pkt_audio_datasource_factory);
 	py_pkt_audio_datasource_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -9172,13 +8507,8 @@ video_datasource_factory::video_datasource_factory(PyObject *itself)
 video_datasource_factory::~video_datasource_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_video_datasource_factory;
+	Py_XDECREF(py_video_datasource_factory);
 	py_video_datasource_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -9232,13 +8562,8 @@ audio_parser_finder::audio_parser_finder(PyObject *itself)
 audio_parser_finder::~audio_parser_finder()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_audio_parser_finder;
+	Py_XDECREF(py_audio_parser_finder);
 	py_audio_parser_finder = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -9292,13 +8617,8 @@ audio_filter_finder::audio_filter_finder(PyObject *itself)
 audio_filter_finder::~audio_filter_finder()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_audio_filter_finder;
+	Py_XDECREF(py_audio_filter_finder);
 	py_audio_filter_finder = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 
@@ -9350,13 +8670,8 @@ audio_decoder_finder::audio_decoder_finder(PyObject *itself)
 audio_decoder_finder::~audio_decoder_finder()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_audio_decoder_finder;
+	Py_XDECREF(py_audio_decoder_finder);
 	py_audio_decoder_finder = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
 	PyGILState_Release(_GILState);
 }
 

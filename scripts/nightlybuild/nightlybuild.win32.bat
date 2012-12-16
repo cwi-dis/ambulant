@@ -49,7 +49,7 @@ rem
 rem Other settable parameters
 rem
 
-set AMBULANTVERSION=2.3
+set AMBULANTVERSION=2.5
 set BRANCH=default
 
 rem
@@ -72,10 +72,6 @@ set DESTINATIONDESKTOP="%DESTINATION%/win32-intel-desktop/"
 set DESTINATIONNP="%DESTINATION%/win32-intel-firefoxplugin/"
 set DESTINATIONIE="%DESTINATION%/win32-intel-ieplugin/"
 set DESTINATIONIEURL="http://www.ambulantplayer.org/nightlybuilds/%BRANCH%/win32-intel-ieplugin"
-set DESTINATIONDESKTOPXP="%DESTINATION%/win32-intel-desktop-xp/"
-set DESTINATIONNPXP="%DESTINATION%/win32-intel-firefoxplugin-xp/"
-set DESTINATIONIEXP="%DESTINATION%/win32-intel-ieplugin-xp/"
-set DESTINATIONIEXPURL="http://www.ambulantplayer.org/nightlybuilds/%BRANCH%/win32-intel-ieplugin-xp"
 
 rem
 rem Setup variables
@@ -97,7 +93,7 @@ if exist ambulant-private rmdir /s /q ambulant-private
 %hg% clone %HGCLONEPRIVARGS%
 rem XXXX %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
-if %errorlevel% neq 0 pause
+if %errorlevel% neq 0 goto errorexit
 
 rem 
 rem  Prepare the tree
@@ -107,7 +103,7 @@ cd %builddir%
 hg up -r %BRANCH%
 cd third_party_packages
 %python% ..\scripts\build-third-party-packages.py %BUILD3PPARGS%
-if %errorlevel% neq 0 pause
+if %errorlevel% neq 0 goto errorexit
 cd ..
 
 rem 
@@ -116,9 +112,9 @@ rem
 
 cd projects\%vcdir%
 devenv third_party_packages.sln /build Release
-if %errorlevel% gtr 0 pause
+if %errorlevel% gtr 0 goto errorexit
 devenv Ambulant-win32.sln /build Release
-if %errorlevel% gtr 0 pause
+if %errorlevel% gtr 0 goto errorexit
 
 rem
 rem Upload IE, Netscape plugins
@@ -128,7 +124,7 @@ cd ..\..\bin\win32
 if not exist npambulant-%AMBULANTVERSION%-win32.xpi goto skipnpambulant
 rename npambulant-%AMBULANTVERSION%-win32.xpi npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
 %pscp% -i %KEYFILE% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATIONNP%
-if %errorlevel% neq 0 pause
+if %errorlevel% neq 0 goto errorexit
 :skipnpambulant
 if not exist ieambulant-%AMBULANTVERSION%-win32.cab goto skipieambulant
 rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
@@ -136,7 +132,7 @@ rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSI
 %python% ..\..\scripts\geniepluginwebpage.py ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32 %DESTINATIONIEURL%/ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab > ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html
 %pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html %DESTINATIONIE%
 
-if %errorlevel% neq 0 pause
+if %errorlevel% neq 0 goto errorexit
 :skipieambulant
 
 rem 
@@ -145,50 +141,11 @@ rem
 
 cd ..\..\installers\nsis-win32
 %nsis% setup-ambulant-installer.nsi
-if %errorlevel% neq 0 pause
+if %errorlevel% neq 0 goto errorexit
 rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe
 %pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATIONDESKTOP%
-if %errorlevel% neq 0 pause
+if %errorlevel% neq 0 goto errorexit
 
-rem
-rem Build XP desktop player, installer, upload
-rem
-cd ..\..\projects\%vcdir%
-devenv Ambulant-win32.sln /build ReleaseShlibDX
-cd ..\..\installers\nsis-win32
-%nsis% setup-ambulant-installer-xp.nsi
-if %errorlevel% neq 0 pause
-rename  Ambulant-%AMBULANTVERSION%-win32xp.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe
-%pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe %DESTINATIONDESKTOPXP%
-if %errorlevel% neq 0 pause
-
-rem
-rem Upload IE, Netscape plugins for XP
-rem
-
-cd ..\..\bin\win32
-if not exist npambulantDX-%AMBULANTVERSION%-win32.xpi goto skipnpambulantxp
-rename npambulantDX-%AMBULANTVERSION%-win32.xpi npambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
-%pscp% -i %KEYFILE% npambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATIONNPXP%
-if %errorlevel% neq 0 pause
-:skipnpambulantxp
-if not exist ieambulantDX-%AMBULANTVERSION%-win32.cab goto skipieambulantxp
-rename ieambulantDX-%AMBULANTVERSION%-win32.cab ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
-%pscp% -i %KEYFILE% ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATIONIEXP%
-%python% ..\..\scripts\geniepluginwebpage.py ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32 %DESTINATIONIEXPURL%/ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab > ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html
-%pscp% -i %KEYFILE% ieambulantDX-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.html %DESTINATIONIEXP%
-if %errorlevel% neq 0 pause
-:skipieambulantxp
-
-
-
-rem 
-rem  Delete old installers, remember current
-rem 
-rem  XXX TODO
-
-rem
-rem attempt to shutdown the computer
-rem
-shutdown /s
+:errorexit
+exit
 

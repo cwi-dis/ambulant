@@ -3,8 +3,5 @@ MAILTO=jack@cwi.nl
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 20 23 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.clean.sh
 20 0 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.mac.sh
-20 1 * * * prlctl start Win7-VS2010-Nightly
 20 2 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.iphone.sh
-20 3 * * * prlctl start Ubuntu-1110-32bit
-20 5 * * * prlctl start Ubuntu-1110-64bit
 20 6 * * * security default-keychain -s $HOME/Library/Keychains/login.keychain

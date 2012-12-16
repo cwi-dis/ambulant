@@ -1,9 +1,10 @@
-AC_INIT([ambulant],[2.3])
+AC_INIT([ambulant],[2.5])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
 AC_CONFIG_AUX_DIR([libltdl/config])
 AC_CONFIG_MACRO_DIR([libltdl/m4])
 AM_INIT_AUTOMAKE
-AMBULANT_VERSION=2.3
+AM_PATH_PYTHON
+AMBULANT_VERSION=2.5
 
 dnl =================================================================
 QT_REQUIRED=3.3.4
@@ -42,6 +43,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
 	src/player_gtk/Makefile
+	src/player_sdl/Makefile
 	src/player_macosx/Makefile
 	src/plugins/Makefile
 	src/pyambulant/Makefile
@@ -58,9 +60,8 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/smil2/Makefile
 	include/ambulant/net/Makefile
 	include/ambulant/gui/Makefile
-	include/ambulant/gui/dx/Makefile
+	include/ambulant/gui/d2/Makefile
 	include/ambulant/gui/none/Makefile
-	include/ambulant/gui/cocoa/Makefile
 	include/ambulant/gui/cg/Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/gtk/Makefile
@@ -447,33 +448,6 @@ if test "x$test_expat" = "xfalse" -a "x$test_xerces" = "xfalse"; then
 fi
 
 #
-AC_MSG_CHECKING(for --with-cocoa)
-AC_ARG_WITH(cocoa,
-     AS_HELP_STRING([--with-cocoa], [Turn on Cocoa support]),
-     [
-		case "${withval}" in
-		yes)
-			cocoa=true
-			;;
-		no)
-			cocoa=false
-			;;
-		*)
-			AC_MSG_ERROR(bad value ${withval} for --with-cocoa)
-			;;
-		esac
-		with_frontend=true],
-     [
-		if test -d /System/Library/Frameworks/AppKit.framework; then
-			cocoa=true
-			with_frontend=true
-		else
-			cocoa=false
-		fi
-     ])
-AM_CONDITIONAL(WITH_COCOA, test x$cocoa = xtrue)
-AC_MSG_RESULT($cocoa)
-
 #
 AC_MSG_CHECKING(for --with-cg)
 AC_ARG_WITH(cg,
@@ -489,8 +463,16 @@ AC_ARG_WITH(cg,
 		*)
 			AC_MSG_ERROR(bad value ${withval} for --with-cg)
 			;;
-		esac],
-     [cg=false])
+		esac
+		with_frontend=true],
+     [
+		if test -d /System/Library/Frameworks/AppKit.framework; then
+			cg=true
+			with_frontend=true
+		else
+			cg=false
+		fi
+     ])
 if test x$cg = xtrue; then
     AC_DEFINE(WITH_CG, 1, [Define to enable CoreGraphics rendering])
 fi
@@ -604,31 +586,63 @@ AC_MSG_RESULT($qthtmlwidget)
 
 dnl Test for SDL
 dnl ======================================================================
-
+# set -x
 test_sdl=true
+test_sdl2=false
+test_sdl2_image=false
+test_sdl2_ttf=false
+test_sdl_pango=false
+
 AC_MSG_CHECKING(for sdl - Simple Direct Media layer)
 AC_ARG_WITH(sdl,
-	AS_HELP_STRING([--with-sdl], [Turn on/off SDL support]),
+	AS_HELP_STRING([--with-sdl], [Turn on/off SDL support (=sdl2 for SDL2)]),
 	[
 		if test "x$withval" = "xno"; then
 			test_sdl=false
+		elif test "x$withval" = "xsdl2" ; then
+		     	test_sdl2=true
 		fi
 	])
 if $test_sdl; then
-	# sdl-config will work for sdl 1.2.X
-	if sdl-config --version > /dev/null; then
-		SDL_CFLAGS=`sdl-config --cflags`
-		SDL_LIBS=`sdl-config --libs`
-	else
-		# for 1.3 we need to use pkg-config
-		PKG_CHECK_MODULES(SDL, [sdl >= 1.3.0], test_sdl=true, test_sdl=false)
+    # set -x
+    echo $PATH
+	# sdl2-config will work for sdl 2.0.X
+    if  test "x$test_sdl" = "xtrue"; then
+		if test "x$test_sdl2" = "xtrue" -a "sdl2-config --version > /dev/null"; then 
+    	    SDL_CFLAGS=`sdl2-config --cflags`
+    		SDL_LIBS=`sdl2-config --libs`
+			with_frontend=true
+			PKG_CHECK_MODULES(SDL, [SDL2_image >= 1.2.13], test_sdl2_image=true, test_sdl2_image=false)
+			if test "x$test_sdl2_image" = "xtrue" ; then
+			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_image`"
+			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` -lpng12"
+			fi
+			PKG_CHECK_MODULES(SDL, [SDL2_ttf >= 2.0.12], test_sdl2_ttf=true, test_sdl2_ttf=false)
+			if test "x$test_sdl2_ttf" = "xtrue" ; then
+			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_ttf`"
+			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_ttf`"
+			fi
+			PKG_CHECK_MODULES(SDL, [SDL_Pango >= 0.1.3], test_sdl_pango=true, test_sdl_pango=false)
+			if test "x$test_sdl_pango" = "xtrue" ; then
+			   SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL_Pango`"
+			   SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
+			fi
+		elif sdl-config --version > /dev/null; then
+	   	# sdl-config will work for sdl 1.2.X (audio only)
+     	   	SDL_CFLAGS=`sdl-config --cflags`
+			SDL_LIBS=`sdl-config --libs`
+			else	# for 1.3 we need to use pkg-config
+			PKG_CHECK_MODULES(SDL, [sdl >= 1.3.0], test_sdl=true, test_sdl=false)
+		fi
 	fi
 fi
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
+AM_CONDITIONAL(WITH_SDL2, test x$test_sdl2 = xtrue)
 AC_MSG_RESULT($test_sdl)
-
+AC_MSG_RESULT($test_sdl2)
+set +x
 dnl Testing for GTK
 dnl ====================================================================
 
@@ -680,71 +694,6 @@ if test "x$test_gstreamer" = "xtrue"; then
 
 AM_CONDITIONAL(WITH_GSTREAMER, test x$test_gstreamer = xtrue)
 AC_MSG_RESULT($test_gstreamer)
-
-#
-# Test for live555.com library
-#
-test_live=false
-live_root=
-AC_MSG_CHECKING(for live555.com RTSP support)
-AC_ARG_WITH(live,
-	AS_HELP_STRING([--with-live], [Turn on live555.com rtsp support]),
-	[
-		case "${withval}" in
-		yes)
-			# Assume it is in third_party_packages/live
-			live_root=$third_party_packages/live
-			test_live=true
-			;;
-		no)
-			test_live=false
-			;;
-		*)
-			test_live=true
-			live_root=${witharg}
-			;;
-		esac
-	],[
-		if test -f $third_party_packages/live/liveMedia/libliveMedia.a; then
-			live_root=$third_party_packages/live
-			test_live=true
-		fi
-	])
-if $test_live; then
-	if test -f $live_root/liveMedia/libliveMedia.a; then
-		LIVE_CFLAGS="-I$live_root/liveMedia/include -I$live_root/groupsock/include -I$live_root/BasicUsageEnvironment/include -I$live_root/UsageEnvironment/include"
-		LIVE_LIBS="-L$live_root/liveMedia -lliveMedia -L$live_root/groupsock -lgroupsock -L$live_root/BasicUsageEnvironment -lBasicUsageEnvironment -L$live_root/UsageEnvironment -lUsageEnvironment"
-	else
-		# No slurped version. Is it installed system-wide?
-		AC_LANG_PUSH([C++])
-		oldLIBS=$LIBS
-		LIBS="$LIBS -lUsageEnvironment"
-		AC_TRY_LINK([#include <UsageEnvironment/strDup.hh>], [(void)strDupSize("");],,test_live=false)
-		LIBS=$oldLIBS
-		AC_LANG_POP()
-		if $test_live; then
-			LIVE_CFLAGS="-I/usr/include/liveMedia -I/usr/include/groupsock -I/usr/include/BasicUsageEnvironment -I/usr/include/UsageEnvironment"
-			live_pic=false
-			AC_CHECK_LIB(UsageEnvironment_pic, _Z10strDupSizePKc, live_pic=true, live_pic=false, -lstdc++)
-			if $live_pic; then
-				LIVE_LIBS="-lliveMedia_pic -lgroupsock_pic -lBasicUsageEnvironment_pic -lUsageEnvironment_pic"
-			else
-				LIVE_LIBS="-lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment"
-			fi
-		fi
-	fi
-	if $test_live; then
-		:
-	else
-		AC_MSG_ERROR([Live555 not found in $live_root])
-		test_live=false
-	fi
-fi
-
-AM_CONDITIONAL(WITH_LIVE, test x$test_live = xtrue)
-AC_SUBST(LIVE_CFLAGS)
-AC_SUBST(LIVE_LIBS)
-AC_MSG_RESULT($test_live)
 
 dnl Testing for ffmpeg
 dnl ======================================================================
@@ -1204,14 +1153,17 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Enable Xerces as plugin:        ${xerces_plugin}
     Build with ffmpeg:              ${test_ffmpeg}
     Build with SDL:                 ${test_sdl}
-    Build with live555.com RTSP:    ${test_live}
+    Build with SDL2:                ${test_sdl2}
+    Build with SDL_image:           ${test_sdl2_image}
+    Build with SDL_ttf:             ${test_sdl2_ttf}
+    Build with SDL_Pango:           ${test_sdl_pango}
     Build with gstreamer:           ${test_gstreamer}
 
     Build Qt3 frontend:             ${test_qt}
     Build with GTK:                 ${test_gtk}
 
     Build with WebKit DOM plugin:   ${with_webkit_dom}
-    Build Cocoa frontend:           ${cocoa}
+    Build CG frontend:           	${cg}
     Build UIKit frontend:           ${uikit}
     Build OSX 10.4 universal:       ${with_universalsdk}
     Build OSX 10.6 universal:       ${with_macfat}
@@ -1227,7 +1179,6 @@ if test "x$with_frontend" = "xfalse"; then
 fi
 AC_MSG_RESULT([$qt_warning]);
 AC_MSG_RESULT([$ffmpeg_warning]);
-AC_MSG_RESULT([$live_warning]);
 AC_MSG_RESULT([$expat_warning]);
 AC_MSG_RESULT([$python_warning]);
 AC_MSG_RESULT([$xml_parser_warning]);

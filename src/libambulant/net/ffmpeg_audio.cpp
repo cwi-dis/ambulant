@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -433,6 +433,8 @@ ffmpeg_decoder_datasource::data_avail()
 					av_init_packet(&avpkt);
 					avpkt.data = inbuf;
 					avpkt.size = (int)cursz;
+					AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: calling avcodec_decode_audio3(..., 0x%x, %d, ...)", (void*)ffmpeg_outbuf, (int)outsize);
+					assert(ffmpeg_outbuf);
 					int decoded = avcodec_decode_audio3(m_con, ffmpeg_outbuf, &outsize, &avpkt);
 					if (decoded < 0) outsize = 0;
 #if FFMPEG_OUTPUT_ALIGNMENT-1
@@ -451,7 +453,20 @@ ffmpeg_decoder_datasource::data_avail()
 						m_buffer.pushdata(outsize);
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+						if (outbuf == NULL) {
+							// At this point we are committed to push the data downstream. So if the output buffer is full our
+							// only option is to enlarge the buffer.
+							size_t newbufsize = m_buffer.size()*2;
+							lib::logger::get_logger()->trace("avcodec_decode_audio: enlarging audio output buffer to %d", newbufsize);
+							m_buffer.set_max_size(newbufsize);
+							outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+						}
+						assert(outbuf);
 						ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
+						//xxxbo Over rtsp, one packet may contain multiple frames, so updating the beginning address of avpkt.data is needed  
+						avpkt.data = inbuf;
+						AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio: again calling avcodec_decode_audio3(..., 0x%x, %d, ...)", (void*)ffmpeg_outbuf, (int)outsize);
+						assert(ffmpeg_outbuf);
 						decoded = avcodec_decode_audio3(m_con, (short*) ffmpeg_outbuf, &outsize, &avpkt);
 						if (decoded < 0) outsize = 0;
 						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", decoded, cursz, outsize);
@@ -733,12 +748,20 @@ ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
 		return false;
 	}
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 	m_con = avcodec_alloc_context();
+#else
+	m_con = avcodec_alloc_context3(codec);
+#endif
 	m_con_owned = true;
 
 	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 	ffmpeg_lock->enter();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 	if(avcodec_open(m_con,codec) < 0) {
+#else
+	if(avcodec_open2(m_con,codec,NULL) < 0) {
+#endif
 		ffmpeg_lock->leave();
 		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
@@ -774,7 +797,11 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 		if(avcodec_open(m_con,codec) < 0) {
+#else
+		if(avcodec_open2(m_con,codec,NULL) < 0) {
+#endif
 			ffmpeg_lock->leave();
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
 			av_free(m_con);
@@ -799,12 +826,20 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::selectdecoder(): codec found!");
 		}
 
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 		m_con = avcodec_alloc_context();
+#else
+		m_con = avcodec_alloc_context3(codec);
+#endif
 		m_con_owned = true;
 		m_con->channels = 0;
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 		if((avcodec_open(m_con,codec) < 0) ) {
+#else
+	    if((avcodec_open2(m_con,codec, NULL) < 0) ) {
+#endif
 			ffmpeg_lock->leave();
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			av_free(m_con);
@@ -916,8 +951,8 @@ ffmpeg_resample_datasource::data_avail()
 		assert(m_in_fmt.bits == 16);
 		assert(m_out_fmt.bits == 16);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,	 m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
-		SampleFormat samplefmt_out = SAMPLE_FMT_S16;
-		SampleFormat samplefmt_in = SAMPLE_FMT_S16;
+		AVSampleFormat samplefmt_out = AV_SAMPLE_FMT_S16;
+		AVSampleFormat samplefmt_in = AV_SAMPLE_FMT_S16;
 		// Note: the four filter parameters are taken from ffmpeg.c
 		// It is unclear how one could make a better determination of these parameters.
 		m_resample_context = av_audio_resample_init(

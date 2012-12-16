@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -23,9 +23,6 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
-#ifdef WITH_LIVE
-#include "ambulant/net/rtsp_factory.h"
-#endif
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_factory.h"
 #endif
@@ -33,11 +30,7 @@
 #include "ambulant/gui/SDL/sdl_factory.h"
 #endif
 #ifdef WITH_DSVIDEO
-#ifdef WITH_D2D
 #include "ambulant/gui/d2/d2_dsvideo.h"
-#else
-#include "ambulant/gui/dx/dx_dsvideo.h"
-#endif
 #endif
 
 #include "ambulant/smil2/test_attrs.h"
@@ -77,11 +70,7 @@ class dsvideo_renderer_factory : public common::playable_factory {
 		lib::event_processor *evp)
 	{
 		lib::xml_string tag = node->get_local_name();
-#ifdef WITH_D2D
 		return new gui::d2::d2_dsvideo_renderer(context, cookie, node, evp, m_factory, m_mdp);
-#else
-		return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory, m_mdp);
-#endif
 		return NULL;
 	}
 
@@ -143,12 +132,6 @@ void initialize(
 	// Same for datasource foactories
 	net::datasource_factory *df = factory->get_datasource_factory();
 	if (df) {
-#ifdef WITH_LIVE
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add live_audio_datasource_factory");
-		df->add_video_factory(net::create_live_video_datasource_factory());
-		df->add_audio_factory(net::create_live_audio_datasource_factory());
-		lib::logger::get_logger()->trace("ffmpeg_plugin: live555 datasource factories registered");
-#endif
 #ifdef WITH_FFMPEG
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_video_datasource_factory");
 		df->add_video_factory(net::get_ffmpeg_video_datasource_factory());

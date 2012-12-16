@@ -11,7 +11,12 @@ build_player_gtk=player_gtk
 else
 build_player_gtk=
 endif
-if WITH_COCOA
+if WITH_SDL2
+build_player_sdl=player_sdl
+else
+build_player_sdl=
+endif
+if WITH_CG
 build_player_macosx=player_macosx
 else
 build_player_macosx=
@@ -31,9 +36,9 @@ endif
 # 2. python module (optional)
 # 3. plugins
 # 4. applications
-SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx) $(build_npambulant)
-DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant npambulant
+SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk)  $(build_player_sdl) $(build_player_macosx) $(build_npambulant)
+DIST_SUBDIRS = libambulant plugins player_unix player_gtk player_sdl player_macosx pyambulant npambulant
 EXTRA_DIST= \
 	player_mfc \
-	ieambulant \
-	webkit_plugin 
+	player_iphone \
+	ieambulant

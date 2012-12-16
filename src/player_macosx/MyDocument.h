@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include "mainloop.h"
-#include "ambulant/gui/cocoa/cocoa_gui.h"
+#include "ambulant/gui/cg/cg_gui.h"
 
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"

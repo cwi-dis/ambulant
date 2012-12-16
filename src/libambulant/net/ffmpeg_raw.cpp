@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -56,7 +56,7 @@ ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource(%s)", repr(url).c_str());
-	URLContext *context = detail::ffmpeg_rawreader::supported(url);
+	AVIOContext *context = detail::ffmpeg_rawreader::supported(url);
 	if (!context) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource: no support for %s", repr(url).c_str());
 		return NULL;
@@ -75,7 +75,7 @@ ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 // **************************** ffmpeg_rawreader *****************************
 
 
-detail::ffmpeg_rawreader::ffmpeg_rawreader(URLContext *con, const net::url &url)
+detail::ffmpeg_rawreader::ffmpeg_rawreader(AVIOContext *con, const net::url &url)
 :   m_con(con),
 	m_sink(NULL),
     m_resource_type("unknown"),
@@ -89,22 +89,22 @@ detail::ffmpeg_rawreader::~ffmpeg_rawreader()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::~ffmpeg_rawreader() m_con=0x%x", m_con);
-	if (m_con) url_close(m_con);
+	if (m_con) avio_close(m_con);
 	m_con = NULL;
 	m_lock.leave();
 }
 
-URLContext *
+AVIOContext *
 detail::ffmpeg_rawreader::supported(const net::url& url)
 {
 	ffmpeg_init();
 	// Setup struct to allow ffmpeg to determine whether it supports this
-	URLContext *ic = NULL;
-	int err = url_open(&ic, url.get_url().c_str(), URL_RDONLY);
+	AVIOContext *ic = NULL;
+	int err = avio_open(&ic, url.get_url().c_str(), AVIO_FLAG_READ);
 	if (err) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::supported(%s): url_open returned error %d, ic=0x%x", repr(url).c_str(), err, (void*)ic);
 		if (ic) {
-			url_close(ic);
+			avio_close(ic);
 			ic = NULL;
 		}
 	}
@@ -159,7 +159,7 @@ detail::ffmpeg_rawreader::run()
 		} else {
 			int bytecount;
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run: calling url_read(size=%d)", (int)sinkbuffersize);
-			bytecount = url_read(m_con, sinkbuffer, (int)sinkbuffersize);
+			bytecount = avio_read(m_con, sinkbuffer, (int)sinkbuffersize);
 			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run:url_read() returned %d", bytecount);
 			if (bytecount >= 0) {
                 m_bytes_read += bytecount;
@@ -180,7 +180,7 @@ detail::ffmpeg_rawreader::run()
 
 // **************************** ffmpeg_raw_datasource *****************************
 
-ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *context,
+ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, AVIOContext *context,
 	detail::ffmpeg_rawreader *thread)
 :	m_url(url),
 	m_con(context),

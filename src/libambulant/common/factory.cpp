@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -29,10 +29,11 @@ factories::factories()
 	m_datasource_factory(NULL),
 	m_parser_factory(NULL),
 	m_node_factory(NULL),
-	m_state_component_factory(NULL)
+	m_state_component_factory(NULL),
 #ifdef WITH_REMOTE_SYNC
-    , m_timer_sync_factory(NULL)
+    m_timer_sync_factory(NULL),
 #endif
+	m_recorder_factory(NULL)
 {
 }
 
@@ -44,6 +45,7 @@ factories::~factories()
 	// delete m_parser_factory; // singleton
 	// delete m_node_factory; // singleton
 	// delete m_state_component_factory; // singleton
+	// delete m_recorder_factory; // for now, owned by plugin
 }
 
 void
@@ -58,6 +60,7 @@ factories::init_factories()
 #ifdef WITH_REMOTE_SYNC
     init_timer_sync_factory();
 #endif
+	init_recorder_factory();
 }
 
 void
@@ -100,3 +103,7 @@ factories::init_timer_sync_factory()
 
 #endif
 
+void
+factories::init_recorder_factory()
+{
+}

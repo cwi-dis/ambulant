@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -60,9 +60,7 @@ public:
 
 	afx_msg void OnViewFullScreen();
 
-#ifdef WITH_D2D
 	afx_msg LRESULT OnMyEraseBkgnd(WPARAM wParam, LPARAM lParam);
-#endif
 
 protected:  // control bar embedded members
 	CStatusBar  m_wndStatusBar;

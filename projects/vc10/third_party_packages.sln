@@ -1,13 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicUsageEnvironment", "..\..\third_party_packages\live_VC10\BasicUsageEnvironment.vcxproj", "{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "groupsock", "..\..\third_party_packages\live_VC10\groupsock.vcxproj", "{1C6B38DA-15AC-4567-973E-328BA8929EF6}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia", "..\..\third_party_packages\live_VC10\liveMedia.vcxproj", "{46E9776A-96F3-4CB7-8CE2-911B30275725}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsageEnvironment", "..\..\third_party_packages\live_VC10\UsageEnvironment.vcxproj", "{D8AC6EF9-27B6-4AB9-BE18-69F613791390}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "copy_tpp_win32", "copy_tpp_win32.vcxproj", "{48DB09AD-9285-49EA-8000-C5254871F91C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295} = {88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}
@@ -48,7 +40,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.Debug|Win32.ActiveCfg = Debug|Win32
-		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.Debug|Win32.Build.0 = Debug|Win32
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.DLL ASM Debug|Win32.ActiveCfg = Debug|Win32
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.DLL ASM Debug|Win32.Build.0 = Debug|Win32
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.DLL ASM Release|Win32.ActiveCfg = Release|Win32
@@ -70,9 +61,7 @@ Global
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.LIB Release|Win32.ActiveCfg = Release|Win32
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.LIB Release|Win32.Build.0 = Release|Win32
 		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.Release|Win32.ActiveCfg = Release|Win32
-		{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}.Release|Win32.Build.0 = Release|Win32
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.Debug|Win32.Build.0 = Debug|Win32
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.DLL ASM Debug|Win32.ActiveCfg = Debug|Win32
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.DLL ASM Debug|Win32.Build.0 = Debug|Win32
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.DLL ASM Release|Win32.ActiveCfg = Release|Win32
@@ -94,9 +83,7 @@ Global
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.LIB Release|Win32.ActiveCfg = Release|Win32
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.LIB Release|Win32.Build.0 = Release|Win32
 		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.Release|Win32.ActiveCfg = Release|Win32
-		{1C6B38DA-15AC-4567-973E-328BA8929EF6}.Release|Win32.Build.0 = Release|Win32
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.Debug|Win32.ActiveCfg = Debug|Win32
-		{46E9776A-96F3-4CB7-8CE2-911B30275725}.Debug|Win32.Build.0 = Debug|Win32
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.DLL ASM Debug|Win32.ActiveCfg = Debug|Win32
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.DLL ASM Debug|Win32.Build.0 = Debug|Win32
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.DLL ASM Release|Win32.ActiveCfg = Release|Win32
@@ -118,9 +105,7 @@ Global
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.LIB Release|Win32.ActiveCfg = Release|Win32
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.LIB Release|Win32.Build.0 = Release|Win32
 		{46E9776A-96F3-4CB7-8CE2-911B30275725}.Release|Win32.ActiveCfg = Release|Win32
-		{46E9776A-96F3-4CB7-8CE2-911B30275725}.Release|Win32.Build.0 = Release|Win32
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.Debug|Win32.Build.0 = Debug|Win32
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.DLL ASM Debug|Win32.ActiveCfg = Debug|Win32
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.DLL ASM Debug|Win32.Build.0 = Debug|Win32
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.DLL ASM Release|Win32.ActiveCfg = Release|Win32
@@ -142,7 +127,6 @@ Global
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.LIB Release|Win32.ActiveCfg = Release|Win32
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.LIB Release|Win32.Build.0 = Release|Win32
 		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.Release|Win32.ActiveCfg = Release|Win32
-		{D8AC6EF9-27B6-4AB9-BE18-69F613791390}.Release|Win32.Build.0 = Release|Win32
 		{48DB09AD-9285-49EA-8000-C5254871F91C}.Debug|Win32.ActiveCfg = Debug|Win32
 		{48DB09AD-9285-49EA-8000-C5254871F91C}.Debug|Win32.Build.0 = Debug|Win32
 		{48DB09AD-9285-49EA-8000-C5254871F91C}.DLL ASM Debug|Win32.ActiveCfg = Debug|Win32

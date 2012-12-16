@@ -1,7 +1,7 @@
 Ambulant Player README
 ======================
 
-This directory contains version 2.3 of the Ambulant Player,
+This directory contains version 2.5 of the Ambulant Player,
 a playback engine for SMIL 3.0 (or earlier) documents.
 
 NOTE: odd-numbered versions, such as this one, are moving targets: they
@@ -47,18 +47,18 @@ Supported platforms
 -------------------
 
 Currently we have support for:
-- Windows
-- MacOSX 10.6
-- MacOSX 10.4/10.5 (deprecated, may disappear)
+- Windows 7
+- Windows XP (deprecated, this is the last release supporting XP)
+- MacOSX 10.6 and later
+- MacOSX 10.4/10.5 (deprecated)
 - Linux
 
 The specific platforms that have been used for testing are:
 - Windows: Windows XP, Windows Vista and Windows 7 on fairly recent Intel hardware
-- MacOSX 10.6: Recent Core 2 Duo or Xeon machines
-- Linux: Fedora Core 9-12, Ubuntu 10.04 on fairly recent Intel hardware
+- MacOSX 10.6: Recent Core 2 Duo or newer
+- Linux: Ubuntu 12.04 on fairly recent Intel hardware
 
-We have preliminary code for the Apple iPhone and iPod Touch, but currently
-lack the time to pursue this platform. Again, contact us if you want to help.
+We have preliminary code for the Apple iPhone and iPod Touch.
 
 Maemo (Nokia) and Windows Mobile are no longer supported.
 
@@ -72,13 +72,12 @@ Supported media types
   - All platforms support audio through ffmpeg and SDL. This allows use
     of all common audio formats (mp3, aac, ogg, wav, wma, etc). Access can
     be from local file or over http or rtsp.
-  - Windows also supports audio through DirectX, which allows protected
+  - Windows also supports audio through DirectShow, which allows protected
     WMA file playback and a few less common formats.
 - Video:
   - All platforms support video through ffmpeg. This allows use of all
     common formats (mpeg-1/2/4, ogg, some quicktime and wm9).
-  - Windows also supports video through DirectX.
-  - MacOSX also supports video through QuickTime.
+  - Windows also supports video through DirectShow.
 
 With audio and video there are some issues with specific combinations of
 containers, codecs, platforms and access protocols. See the website
@@ -98,10 +97,9 @@ static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support is available, but there are issues with which server
 can actually serve which media types. This seems to be a marketing issue
 on the side of server manufacturers, and is outside our control.
-TCP fallback (if UDP is firewalled) is available on Mac and Windows, but
-must be done manually in the preferences dialog. It is not currently
-available in the Linux players. On some Linux systems (FC11, notably) you
-must disable iptables to allow RTSP playback.
+TCP fallback for RTSP (if UDP is firewalled) is available.
+RTSP is supported through ffmpeg, if you build from source you can also
+opt for supporting rtsp through the live555 libraries.
 
 SMIL support
 ------------

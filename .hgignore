@@ -68,12 +68,12 @@ po/stamp-po
 .*\.pyd
 .*\.psess
 .*\.bsc
-Makefile
+Makefile$
 Makefile.in
 .*\.xcodeproj/.*\.pbxuser
 .*\.xcodeproj/.*\.mode1v3
 .*\.xcodeproj/xcuserdata
-.*\.xcodeproj/project.xcworkspace/xcuserdata
+.*\.xcodeproj/project.xcworkspace
 .*\.pyc
 .*\.pyo
 .*\.Po

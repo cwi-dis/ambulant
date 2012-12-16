@@ -1,6 +1,6 @@
 {
 	"name": "AmbulantPlayer",
-	"version": "2.3",
+	"version": "2.5",
 	"description": "An open source multimedia player for SMIL3.0 presentations",
 	"plugins": [
 	    {   "path":	"plugins/npambulant.dylibc", "public": true },

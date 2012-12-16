@@ -11,17 +11,11 @@
 #include "ambulant/lib/logger.h"
 #include <windowsx.h>
 
-#ifdef WITH_D2D
 #include "ambulant/gui/d2/d2_player.h"
 typedef ambulant::gui::d2::d2_player ambulant_gui_player;
 typedef ambulant::gui::d2::d2_player_callbacks gui_callbacks; //XX from MmView.cpp
 typedef ambulant::gui::d2::d2_player_callbacks ambulant_baseclass_player_callbacks;
-#else
-#include "ambulant/gui/dx/dx_player.h"
-typedef ambulant::gui::dx::dx_player ambulant_gui_player;
-typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks;
-typedef ambulant::gui::dx::dx_player_callbacks ambulant_baseclass_player_callbacks;
-#endif // WITH_D2D
+
 #include <ambulant/net/url.h>
 #include "AmbulantActiveX.h"
 #include "_IieambulantEvents_CP.H"

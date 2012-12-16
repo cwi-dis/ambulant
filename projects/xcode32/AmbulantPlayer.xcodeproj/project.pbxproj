@@ -28,23 +28,6 @@
 		0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		0405C05B12B624C0007AD3B2 /* libambulantCGstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */; };
 		0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantCG.dylib */; };
-		04070424115266770094FB0B /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
-		04070425115266770094FB0B /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
-		04070426115266770094FB0B /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
-		04070427115266770094FB0B /* MyDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070421115266770094FB0B /* MyDocument.mm */; };
-		04070428115266770094FB0B /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070423115266770094FB0B /* mypreferences.mm */; };
-		0407042C115266870094FB0B /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
-		0407042D115266870094FB0B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
-		040704D4115266B40094FB0B /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
-		040704D5115266B40094FB0B /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
-		040704D6115266B40094FB0B /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047D115266B40094FB0B /* playactive.png */; };
-		040704D7115266B40094FB0B /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047E115266B40094FB0B /* stop.png */; };
-		040704E1115266B40094FB0B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048A115266B40094FB0B /* Ambulant.icns */; };
-		040704E2115266B40094FB0B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */; };
-		040704E3115266B40094FB0B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048C115266B40094FB0B /* AmbulantDocGrins.icns */; };
-		040704E4115266B40094FB0B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048D115266B40094FB0B /* AmbulantDocSmil.icns */; };
-		04070587115266F60094FB0B /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
-		0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 040705A1115268480094FB0B /* libambulant.dylib */; };
 		0418D24512DA5E4C00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D23F12DA5E4C00C56DCE /* Log.nib */; };
 		0418D24712DA5E4C00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24112DA5E4C00C56DCE /* MyDocument.nib */; };
 		0418D24B12DA5E4C00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D23F12DA5E4C00C56DCE /* Log.nib */; };
@@ -56,15 +39,9 @@
 		0418D25412DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
 		0418D25512DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
 		0418D25612DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
-		0418D25712DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
-		0418D25812DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
-		0418D25912DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
 		0418D27812DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
 		0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
 		0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
-		0418D27B12DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
-		0418D27C12DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
-		0418D27D12DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
 		041DCB2A12B64CF7003407C8 /* libavcodec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1D12B64CF6003407C8 /* libavcodec.dylib */; };
 		041DCB2B12B64CF7003407C8 /* libavformat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1E12B64CF6003407C8 /* libavformat.dylib */; };
 		041DCB2C12B64CF7003407C8 /* libavutil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1F12B64CF6003407C8 /* libavutil.dylib */; };
@@ -74,18 +51,8 @@
 		041DCB3012B64CF7003407C8 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2312B64CF7003407C8 /* libSDL.dylib */; };
 		041DCB3112B64CF7003407C8 /* libswscale.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2412B64CF7003407C8 /* libswscale.dylib */; };
 		041DCB3212B64CF7003407C8 /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2512B64CF7003407C8 /* libxerces-c.dylib */; };
-		041DCB3312B64CF7003407C8 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2612B64CF7003407C8 /* libBasicUsageEnvironment.a */; };
-		041DCB3412B64CF7003407C8 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2712B64CF7003407C8 /* libgroupsock.a */; };
-		041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2812B64CF7003407C8 /* libliveMedia.a */; };
-		041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */; };
-		041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB3912B64D1D003407C8 /* libltdl.a */; };
 		04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */; };
 		04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */; };
-		042ADA421152D83E009CA791 /* libamplugin_xpath_state(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */; };
-		042ADAA91152DA4F009CA791 /* libamplugin_xerces(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces(Cocoa).so */; };
-		042ADB0C1152DE69009CA791 /* libamplugin_python(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python(Cocoa).so */; };
-		04428EBE11577E960067C868 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
-		04428EC011577EC30067C868 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
 		0471A09613AAADE2000E2F17 /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 0471A09513AAADE2000E2F17 /* Background_iPhone.png */; };
 		04A1E97B12B585D80060F97E /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
 		04A1E97C12B585D80060F97E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
@@ -107,7 +74,6 @@
 		04A1E99712B585D80060F97E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		04C655E713CB30E40008DF3B /* libamplugin_xpath_state(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */; };
-		04CE00CC132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04CE00CD132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04CE00CE132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
@@ -117,7 +83,6 @@
 		04FA283912B8D1BD0080216B /* ambulant-mac.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA283012B8D1BD0080216B /* ambulant-mac.xcconfig */; };
 		04FA283A12B8D1BD0080216B /* ambulant-release-cg.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */; };
 		04FA283C12B8D1BD0080216B /* ambulant-release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */; };
-		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		93C8CCFC1316666D0085212A /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CCFB1316666D0085212A /* ApplicationServices.framework */; };
 /* End PBXBuildFile section */
 
@@ -142,13 +107,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 04D71F8212B628210064FBCB;
 			remoteInfo = libambulantCGstatic;
-		};
-		040705A0115268480094FB0B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
-			remoteInfo = libambulant;
 		};
 		04290B45132EB5F60015D7B7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -185,75 +143,12 @@
 			remoteGlobalIDString = 04290B35132EB5D80015D7B7;
 			remoteInfo = "plugin_xerces (CG)";
 		};
-		042AD9551152CC13009CA791 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		042ADA401152D831009CA791 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		042ADAA71152DA4A009CA791 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
-			remoteInfo = plugin;
-		};
 		0441E8CB134324880025FCF9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 0441E7C51343132C0025FCF9;
 			remoteInfo = "plugin_xpath_state(CG)";
-		};
-		04428D7C1157787A0067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		04428D7E1157787A0067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		04428D801157787A0067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		04428D821157787A0067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		04428D841157787A0067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
-			remoteInfo = libambulant;
 		};
 		044C39D813CB33FE002DF651 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -300,19 +195,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		042AD96C1152CC7A009CA791 /* Copy Plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				042ADAA91152DA4F009CA791 /* libamplugin_xerces(Cocoa).so in Copy Plugins */,
-				042ADB0C1152DE69009CA791 /* libamplugin_python(Cocoa).so in Copy Plugins */,
-				042ADA421152D83E009CA791 /* libamplugin_xpath_state(Cocoa).so in Copy Plugins */,
-			);
-			name = "Copy Plugins";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		04A1E99B12B585D80060F97E /* Copy Plugins */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -371,11 +253,6 @@
 		041DCB2312B64CF7003407C8 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "../../build-3264/third_party_packages/installed/lib/libSDL.dylib"; sourceTree = SOURCE_ROOT; };
 		041DCB2412B64CF7003407C8 /* libswscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.dylib; path = "../../build-3264/third_party_packages/installed/lib/libswscale.dylib"; sourceTree = SOURCE_ROOT; };
 		041DCB2512B64CF7003407C8 /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../build-3264/third_party_packages/installed/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
-		041DCB2612B64CF7003407C8 /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		041DCB2712B64CF7003407C8 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-3264/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
-		041DCB2812B64CF7003407C8 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-3264/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
-		041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		041DCB3912B64D1D003407C8 /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		042AD9511152CC13009CA791 /* plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin.xcodeproj; sourceTree = "<group>"; };
 		042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xpath_state.xcodeproj; sourceTree = "<group>"; };
 		042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xerces.xcodeproj; sourceTree = "<group>"; };
@@ -398,7 +275,6 @@
 		256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantPlayer_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93C8CCFB1316666D0085212A /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -418,11 +294,6 @@
 				041DCB3012B64CF7003407C8 /* libSDL.dylib in Frameworks */,
 				041DCB3112B64CF7003407C8 /* libswscale.dylib in Frameworks */,
 				041DCB3212B64CF7003407C8 /* libxerces-c.dylib in Frameworks */,
-				041DCB3312B64CF7003407C8 /* libBasicUsageEnvironment.a in Frameworks */,
-				041DCB3412B64CF7003407C8 /* libgroupsock.a in Frameworks */,
-				041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */,
-				041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */,
-				041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,15 +304,6 @@
 				04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */,
 				0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */,
 				93C8CCFC1316666D0085212A /* ApplicationServices.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8D11072E0486CEB800E47090 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,7 +349,6 @@
 		0407059A115268480094FB0B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				040705A1115268480094FB0B /* libambulant.dylib */,
 				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
 				0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */,
 				04FA282912B8D16C0080216B /* libambulantIPhone.a */,
@@ -522,17 +383,12 @@
 				041DCB1D12B64CF6003407C8 /* libavcodec.dylib */,
 				041DCB1E12B64CF6003407C8 /* libavformat.dylib */,
 				041DCB1F12B64CF6003407C8 /* libavutil.dylib */,
-				041DCB3912B64D1D003407C8 /* libltdl.a */,
 				041DCB2012B64CF6003407C8 /* libexpat.dylib */,
 				041DCB2112B64CF7003407C8 /* libfaad.dylib */,
 				041DCB2212B64CF7003407C8 /* libintl.dylib */,
 				041DCB2312B64CF7003407C8 /* libSDL.dylib */,
 				041DCB2412B64CF7003407C8 /* libswscale.dylib */,
 				041DCB2512B64CF7003407C8 /* libxerces-c.dylib */,
-				041DCB2612B64CF7003407C8 /* libBasicUsageEnvironment.a */,
-				041DCB2712B64CF7003407C8 /* libgroupsock.a */,
-				041DCB2812B64CF7003407C8 /* libliveMedia.a */,
-				041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */,
 			);
 			name = "Third Party Libraries";
 			sourceTree = "<group>";
@@ -540,7 +396,6 @@
 		042AD9521152CC13009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042AD9561152CC13009CA791 /* libamplugin_plugin(Cocoa).so */,
 				04290B8A132EB6DC0015D7B7 /* libamplugin_plugin(CG).so */,
 			);
 			name = Products;
@@ -549,7 +404,6 @@
 		042ADA3D1152D831009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */,
 				0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */,
 			);
 			name = Products;
@@ -558,7 +412,6 @@
 		042ADAA41152DA4A009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042ADAA81152DA4A009CA791 /* libamplugin_xerces(Cocoa).so */,
 				04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */,
 			);
 			name = Products;
@@ -567,7 +420,6 @@
 		042ADB071152DE65009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042ADB0B1152DE65009CA791 /* libamplugin_python(Cocoa).so */,
 				04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */,
 			);
 			name = Products;
@@ -628,7 +480,6 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* AmbulantPlayer.app */,
 				04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */,
 				0405C05112B6244C007AD3B2 /* AmbulantPlayerCG.app */,
 			);
@@ -742,32 +593,6 @@
 			productReference = 04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8D1107260486CEB800E47090 /* AmbulantPlayer */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "AmbulantPlayer" */;
-			buildPhases = (
-				8D1107290486CEB800E47090 /* Resources */,
-				8D11072C0486CEB800E47090 /* Sources */,
-				8D11072E0486CEB800E47090 /* Frameworks */,
-				042AD96C1152CC7A009CA791 /* Copy Plugins */,
-				042AD9871152CEDF009CA791 /* Create plugin .la files */,
-				042AD9701152CD44009CA791 /* Internalize dylibs */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				04428D7D1157787A0067C868 /* PBXTargetDependency */,
-				04428D7F1157787A0067C868 /* PBXTargetDependency */,
-				04428D811157787A0067C868 /* PBXTargetDependency */,
-				04428D831157787A0067C868 /* PBXTargetDependency */,
-				04428D851157787A0067C868 /* PBXTargetDependency */,
-			);
-			name = AmbulantPlayer;
-			productInstallPath = "$(HOME)/Applications";
-			productName = AmbulantPlayer;
-			productReference = 8D1107320486CEB800E47090 /* AmbulantPlayer.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -818,7 +643,6 @@
 			);
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* AmbulantPlayer */,
 				04A1E96F12B585D80060F97E /* AmbulantPlayerCG */,
 				0405C01C12B6244C007AD3B2 /* AmbulantPlayerCGstatic */,
 			);
@@ -831,13 +655,6 @@
 			fileType = archive.ar;
 			path = libambulantCGstatic.a;
 			remoteRef = 0405C00C12B62364007AD3B2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		040705A1115268480094FB0B /* libambulant.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libambulant.dylib;
-			remoteRef = 040705A0115268480094FB0B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */ = {
@@ -859,34 +676,6 @@
 			fileType = "compiled.mach-o.dylib";
 			path = "libamplugin_python(CG).so";
 			remoteRef = 04290BB1132EB71D0015D7B7 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		042AD9561152CC13009CA791 /* libamplugin_plugin(Cocoa).so */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = "libamplugin_plugin(Cocoa).so";
-			remoteRef = 042AD9551152CC13009CA791 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = "libamplugin_xpath_state(Cocoa).so";
-			remoteRef = 042ADA401152D831009CA791 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		042ADAA81152DA4A009CA791 /* libamplugin_xerces(Cocoa).so */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = "libamplugin_xerces(Cocoa).so";
-			remoteRef = 042ADAA71152DA4A009CA791 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		042ADB0B1152DE65009CA791 /* libamplugin_python(Cocoa).so */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = "libamplugin_python(Cocoa).so";
-			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */ = {
@@ -987,31 +776,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8D1107290486CEB800E47090 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				040704D4115266B40094FB0B /* pause.png in Resources */,
-				040704D5115266B40094FB0B /* play.png in Resources */,
-				040704D6115266B40094FB0B /* playactive.png in Resources */,
-				040704D7115266B40094FB0B /* stop.png in Resources */,
-				040704E1115266B40094FB0B /* Ambulant.icns in Resources */,
-				040704E2115266B40094FB0B /* AmbulantDocDaisy.icns in Resources */,
-				040704E3115266B40094FB0B /* AmbulantDocGrins.icns in Resources */,
-				040704E4115266B40094FB0B /* AmbulantDocSmil.icns in Resources */,
-				04070587115266F60094FB0B /* Welcome.smil in Resources */,
-				04428EBE11577E960067C868 /* DTDCache in Resources */,
-				04428EC011577EC30067C868 /* data in Resources */,
-				0418D25712DA5EAA00C56DCE /* Credits.rtf in Resources */,
-				0418D25812DA5EAA00C56DCE /* Info.plist in Resources */,
-				0418D25912DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
-				0418D27B12DA602B00C56DCE /* Log.nib in Resources */,
-				0418D27C12DA602B00C56DCE /* MainMenu.nib in Resources */,
-				0418D27D12DA602B00C56DCE /* MyDocument.nib in Resources */,
-				04CE00CC132EC5130079553C /* systemTestSettings.xml in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1028,34 +792,6 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
-		};
-		042AD9701152CD44009CA791 /* Internalize dylibs */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Internalize dylibs";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
-		};
-		042AD9871152CEDF009CA791 /* Create plugin .la files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Create plugin .la files";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ${TARGET_BUILD_DIR}/${PLUGINS_FOLDER_PATH}\nfor plugin in libamplugin_*.so; do\n    pluginbase=`basename $plugin .so`\n    echo dlname=\\'$pluginbase.so\\' > $pluginbase.la\n    echo Created $pluginbase.la\ndone\n";
 		};
 		04A1E99F12B585D80060F97E /* Create plugin .la files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1116,20 +852,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8D11072C0486CEB800E47090 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				04070424115266770094FB0B /* LogController.mm in Sources */,
-				04070425115266770094FB0B /* MyAmbulantView.mm in Sources */,
-				04070426115266770094FB0B /* MyAppDelegate.mm in Sources */,
-				04070427115266770094FB0B /* MyDocument.mm in Sources */,
-				04070428115266770094FB0B /* mypreferences.mm in Sources */,
-				0407042C115266870094FB0B /* mainloop.cpp in Sources */,
-				0407042D115266870094FB0B /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1152,31 +874,6 @@
 			isa = PBXTargetDependency;
 			name = "plugin_xerces (CG)";
 			targetProxy = 04290D23132EBB7E0015D7B7 /* PBXContainerItemProxy */;
-		};
-		04428D7D1157787A0067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 04428D7C1157787A0067C868 /* PBXContainerItemProxy */;
-		};
-		04428D7F1157787A0067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 04428D7E1157787A0067C868 /* PBXContainerItemProxy */;
-		};
-		04428D811157787A0067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 04428D801157787A0067C868 /* PBXContainerItemProxy */;
-		};
-		04428D831157787A0067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 04428D821157787A0067C868 /* PBXContainerItemProxy */;
-		};
-		04428D851157787A0067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libambulant;
-			targetProxy = 04428D841157787A0067C868 /* PBXContainerItemProxy */;
 		};
 		044C39D913CB33FE002DF651 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1210,10 +907,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = AmbulantPlayerCG;
@@ -1235,10 +928,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
@@ -1273,38 +962,6 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayerCG;
-			};
-			name = Release;
-		};
-		C01FCF4B08A954540054247B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = AmbulantPlayer;
-			};
-			name = Debug;
-		};
-		C01FCF4C08A954540054247B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = AmbulantPlayer;
 			};
 			name = Release;
 		};
@@ -1359,15 +1016,6 @@
 			buildConfigurations = (
 				04A1E9A212B585D80060F97E /* Debug */,
 				04A1E9A312B585D80060F97E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "AmbulantPlayer" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C01FCF4B08A954540054247B /* Debug */,
-				C01FCF4C08A954540054247B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

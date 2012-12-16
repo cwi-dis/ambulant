@@ -1,33 +1,19 @@
 What's new in Ambulant Player 2.2?
 ----------------------------------
 
-- We now have a working plugin for at least one browser on each major
-  platform. On Linux and Windows we have a Firefox plugin (that may also
-  work in Google-Chrome, Opera, Safari and other browsers).
-  On MacOSX we have a Safari plugin. 
-  There is also an Internet Explorer plugin for Windows, but
-  we are slightly less sure about the quality of this one.
+- This is mainly a cleanup release, incorporating all fixes we have made in the
+  last 2 years. It will also be the last release for Windows XP and older MacOSX
+  releases (10.6 or earlier).
   
-- Timing has improved a lot. This is most clear with video, where
-  audio and video should now remain synchronized a lot better, but also
-  between continuous media and the rest of the presentation.
+- Windows drawing code is now based on Direct2D, giving alpha blending,
+  transparency scalable windows and fullscreen support.
   
-- For SMIL authors: there is a <param> mechanism to select specific
-  renderers for a media item. systemComponent allows you to test for
-  availability of this renderer.
-  For developers, this change also means all renderers are now created
-  with a factory function, and these all have the same signature.
-  Further, the <prefetch> element is now implemented for audio and video.
-  Currently,for audio media items additionally the element:
-  <param name="renderer" value="http://www.ambulantplayer.org/component/RendererAudio"/> 
-  must be added as a child of the audio media <prefetch> element.
-
- 
-- For developers: the build process has been enhanced. We still rely
-  on lots of third party libraries, but there is a script now that
-  should download and build everything (for Linux and MacOSX developers).
-  The configure process has also been rationalized.
-  For Windows developers there is a single .vsprops file where all external
-  pathhnames are stored.
+- Mac drawing code is now based on CoreGraphics, giving scalable windows and
+  fullscreen support.
+  
+- Media playback is a lot smoother, especially in the case of back-to-back
+  videos, and when trying to get data from a slow webserver.
+  
+- RTSP playback will automatically fallback to TCP if UDP does not work.
 
 As usual, many bugs have been fixed too. The details can be found in ChangeLog.

@@ -17,8 +17,8 @@
 ; - DOWNLOAD_VC9_RT_URL: where to get it from.
 ;
 !define PRODUCT_NAME "Ambulant Player"
-!define PRODUCT_VERSION "2.3"
-!define PRODUCT_VERSION_BASE "2.3"
+!define PRODUCT_VERSION "2.5"
+!define PRODUCT_VERSION_BASE "2.5"
 !define DISTRIBUTE_DLL_BUILD
 ; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
@@ -99,11 +99,10 @@ Section "Core Components" CoreSection
   File "..\..\bin\win32\libamplugin_state_xpath.dll"
   File "..\..\bin\win32\libamplugin_ffmpeg.dll"
   File "..\..\bin\win32\libamplugin_xerces.dll"
-  File "..\..\bin\win32\avcodec-52.dll"
-  File "..\..\bin\win32\avformat-52.dll"
-  File "..\..\bin\win32\avcore-0.dll"
-  File "..\..\bin\win32\avutil-50.dll"
-  File "..\..\bin\win32\swscale-0.dll"
+  File "..\..\bin\win32\avcodec-54.dll"
+  File "..\..\bin\win32\avformat-54.dll"
+  File "..\..\bin\win32\avutil-51.dll"
+  File "..\..\bin\win32\swscale-2.dll"
   File "..\..\bin\win32\SDL.dll"
 !else
   File "..\..\bin\win32\AmbulantPlayer.exe"
@@ -314,11 +313,10 @@ Section Uninstall
   Delete "$INSTDIR\libamplugin_state_xpath.dll"
   Delete "$INSTDIR\libamplugin_ffmpeg.dll"
   Delete "$INSTDIR\libamplugin_xerces.dll"
-  Delete "$INSTDIR\avcodec-52.dll"
-  Delete "$INSTDIR\avformat-52.dll"
-  Delete "$INSTDIR\avcore-0.dll"
-  Delete "$INSTDIR\avutil-50.dll"
-  Delete "$INSTDIR\swscale-0.dll"
+  Delete "$INSTDIR\avcodec-54.dll"
+  Delete "$INSTDIR\avformat-54.dll"
+  Delete "$INSTDIR\avutil-51.dll"
+  Delete "$INSTDIR\swscale-2.dll"
   Delete "$INSTDIR\SDL.dll"
 
   RMDir /r "$INSTDIR\Extras"

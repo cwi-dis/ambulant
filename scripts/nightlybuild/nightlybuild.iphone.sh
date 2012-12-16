@@ -5,7 +5,7 @@
 #
 set -e
 set -x
-PATH=$PATH:/Developer/usr/bin
+export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
@@ -21,7 +21,7 @@ x)
 esac
 
 # Tunable parameters, to some extent
-AMBULANTVERSION=2.3
+AMBULANTVERSION=2.5
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
@@ -36,7 +36,7 @@ fi
 case x$BRANCH in
 x)	
 	;;
-release*)
+xrelease*)
 	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=

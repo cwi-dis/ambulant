@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -59,6 +59,9 @@ extern const char cg_dsvideo_playable_tag[] = "video";
 extern const char cg_dsvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererOpen");
 extern const char cg_dsvideo_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
 // XXXJACK missing RendererVideo...
+//xxxbo appending RendererVideo
+extern const char cg_dsvideo_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererVideo");
+
 common::playable_factory *
 create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
@@ -70,7 +73,8 @@ create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_
 		cg_dsvideo_playable_tag,
 		cg_dsvideo_playable_renderer_uri,
 		cg_dsvideo_playable_renderer_uri2,
-		cg_dsvideo_playable_renderer_uri2>(factory, mdp);
+		//cg_dsvideo_playable_renderer_uri2>(factory, mdp);
+		cg_dsvideo_playable_renderer_uri3>(factory, mdp);
 }
 
 cg_dsvideo_renderer::cg_dsvideo_renderer(

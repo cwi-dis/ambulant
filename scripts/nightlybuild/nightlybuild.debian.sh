@@ -44,7 +44,7 @@ x)
 esac
 
 # Tunable parameters, to some extent
-AMBULANTVERSION=2.3
+AMBULANTVERSION=2.5
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -56,7 +56,7 @@ TODAY=`date +%Y%m%d`
 case x$BRANCH in
 x)	
 	;;
-release*)
+xrelease*)
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=
 	;;
@@ -104,6 +104,9 @@ x)	;;
 *)
 	hg up -r $BRANCH
 esac
+# Get rid of mercurial administration
+rm -r .hg
+
 sh autogen.sh
 cat > debian/changelog << xyzzy
 ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low

@@ -6,23 +6,17 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
-		DebugShlibDX|Win32 = DebugShlibDX|Win32
 		DebugStatic|Win32 = DebugStatic|Win32
 		Release|Win32 = Release|Win32
-		ReleaseShlibDX|Win32 = ReleaseShlibDX|Win32
 		ReleaseStatic|Win32 = ReleaseStatic|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug|Win32.ActiveCfg = Debug|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug|Win32.Build.0 = Debug|Win32
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlibDX|Win32.ActiveCfg = DebugShlibDX|Win32
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlibDX|Win32.Build.0 = DebugShlibDX|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugStatic|Win32.ActiveCfg = DebugStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugStatic|Win32.Build.0 = DebugStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release|Win32.ActiveCfg = Release|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release|Win32.Build.0 = Release|Win32
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlibDX|Win32.ActiveCfg = ReleaseShlibDX|Win32
-		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlibDX|Win32.Build.0 = ReleaseShlibDX|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseStatic|Win32.ActiveCfg = ReleaseStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseStatic|Win32.Build.0 = ReleaseStatic|Win32
 	EndGlobalSection

@@ -9,11 +9,6 @@ libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
 else
 libambulant_ffmpeg=
 endif
-if WITH_LIVE
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
-else
-libambulant_live=
-endif
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
@@ -26,7 +21,6 @@ else
 #
 libambulant_core=
 libambulant_ffmpeg=
-libambulant_live=
 libambulant_sdl=
 libambulant_gstreamer=
 libambulant_gtk=
@@ -34,20 +28,6 @@ libambulant_qt=
 endif
 
 # See which toolkit-dependent libraries we want to make
-
-
-if WITH_LIVE 
-toolkit_live_libraries = libambulant_live.la
-libambulant_live_la_SOURCES = \
-	net/rtsp_datasource.cpp \
-	net/rtsp_factory.cpp
-live_includes = $(LIVE_CFLAGS)
-libambulant_live_la_LDFLAGS=$(LIVE_LIBS) $(libambulant_ffmpeg) $(libambulant_core) 
-libambulant_live_la_DEPENDENCIES=libambulant_ffmpeg.la libambulant.la
-else
-toolkit_live_libraries =
-live_includes =
-endif
 
 
 if WITH_EXPAT
@@ -74,58 +54,10 @@ else
 gcd_event_processor_core_libs = 
 endif
 
-if WITH_COCOA
-toolkit_cocoa_libraries = libambulant_cocoa.la
-# XXX Should LIBINTL depend on USE_NLS?
-platlibs = $(LIBINTL) -framework WebKit -framework QTKit -framework CoreFoundation
-libambulant_cocoa_la_SOURCES = \
-	gui/cocoa/cocoa_fill.m \
-	gui/cocoa/cocoa_gui.m \
-	gui/cocoa/cocoa_html.m \
-	gui/cocoa/cocoa_image.m \
-	gui/cocoa/cocoa_ink.m \
-	gui/cocoa/cocoa_text.m \
-	gui/cocoa/cocoa_renderer.m \
-	gui/cocoa/cocoa_smiltext.m \
-	gui/cocoa/cocoa_transition.m \
-	gui/cocoa/cocoa_audio.m \
-	gui/cocoa/cocoa_video.m \
-	gui/cocoa/cocoa_dsvideo.m
-libambulant_cocoa_la_DEPENDENCIES=libambulant.la
-else
-toolkit_cocoa_libraries =
-platlibs =
-endif
-extradist_cocoa = \
-	gui/cocoa/cocoa_fill.m \
-	gui/cocoa/cocoa_gui.m \
-	gui/cocoa/cocoa_html.m \
-	gui/cocoa/cocoa_image.m \
-	gui/cocoa/cocoa_ink.m \
-	gui/cocoa/cocoa_text.m \
-	gui/cocoa/cocoa_renderer.m \
-	gui/cocoa/cocoa_smiltext.m \
-	gui/cocoa/cocoa_transition.m \
-	gui/cocoa/cocoa_audio.m \
-	gui/cocoa/cocoa_video.m \
-	gui/cocoa/cocoa_dsvideo.m \
-	gui/cocoa/cocoa_fill.mm \
-	gui/cocoa/cocoa_gui.mm \
-	gui/cocoa/cocoa_html.mm \
-	gui/cocoa/cocoa_image.mm \
-	gui/cocoa/cocoa_ink.mm \
-	gui/cocoa/cocoa_text.mm \
-	gui/cocoa/cocoa_renderer.mm \
-	gui/cocoa/cocoa_smiltext.mm \
-	gui/cocoa/cocoa_transition.mm \
-	gui/cocoa/cocoa_audio.mm \
-	gui/cocoa/cocoa_video.mm \
-	gui/cocoa/cocoa_dsvideo.mm
-
 if WITH_CG
 toolkit_cg_libraries = libambulant_cg.la
 # XXX Should LIBINTL depend on USE_NLS?
-platlibs = $(LIBINTL) -framework CoreGraphics -framework CoreFoundation
+platlibs = $(LIBINTL) -framework CoreFoundation
 libambulant_cg_la_SOURCES = \
 	gui/cg/cg_fill.m \
 	gui/cg/cg_gui.m \
@@ -142,13 +74,17 @@ toolkit_cg_libraries =
 platlibs =
 endif
 extradist_cg = \
+    gui/cg/atsui_text.m \
 	gui/cg/cg_fill.m \
 	gui/cg/cg_gui.m \
 	gui/cg/cg_image.m \
 	gui/cg/cg_renderer.m \
+	gui/cg/cg_smiltext.m \
 	gui/cg/cg_text.m \
 	gui/cg/cg_transition.m \
 	gui/cg/cg_dsvideo.m \
+	gui/cg/atsui_text.mm \
+	gui/cg/cg_avfoundation_video.mm \
 	gui/cg/cg_fill.mm \
 	gui/cg/cg_gui.mm \
 	gui/cg/cg_image.mm \
@@ -172,8 +108,8 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_util.cpp \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
-libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(gcd_event_processor_core_libs)
-libambulant_gtk_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
+libambulant_gtk_la_LDFLAGS=$(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS) $(gcd_event_processor_core_libs)
+libambulant_gtk_la_DEPENDENCIES=$(toolkit_ffmpeg_libraries) libambulant.la
 else
 gtkincludes=
 toolkit_gtk_libraries =
@@ -196,8 +132,8 @@ libambulant_qt_la_SOURCES = \
 	gui/qt/qt_util.cpp \
 	gui/qt/qt_video_renderer.cpp \
 	gui/qt/qt_factory.cpp
-libambulant_qt_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
-libambulant_qt_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
+libambulant_qt_la_LDFLAGS=$(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
+libambulant_qt_la_DEPENDENCIES=$(toolkit_ffmpeg_libraries) libambulant.la
 else
 qtincludes=
 toolkit_qt_libraries =
@@ -209,9 +145,29 @@ libambulant_qt_la_SOURCES += \
 	gui/qt/qt_html_renderer.cpp
 endif
 
+if WITH_SDL2
+toolkit_sdl_libraries = libambulant_sdl.la
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core) 
+libambulant_sdl_la_DEPENDENCIES=libambulant.la
+sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
+libambulant_sdl_la_SOURCES = \
+    gui/SDL/sdl.cpp \
+    gui/SDL/sdl_audio.cpp \
+    gui/SDL/sdl_factory.cpp \
+    gui/SDL/sdl_fill.cpp  \
+    gui/SDL/sdl_image_renderer.cpp  \
+    gui/SDL/sdl_renderer.cpp  \
+    gui/SDL/sdl_smiltext.cpp  \
+    gui/SDL/sdl_text_renderer.cpp  \
+    gui/SDL/sdl_transition.cpp \
+    gui/SDL/sdl_window.cpp  \
+    gui/SDL/sdl_video.cpp
+
+#   gui/SDL/sdl_renderer.cpp 
+else
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core)
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core) 
 libambulant_sdl_la_DEPENDENCIES=libambulant.la
 sdlincludes = -DWITH_SDL $(SDL_CFLAGS)
 libambulant_sdl_la_SOURCES = \
@@ -220,6 +176,7 @@ libambulant_sdl_la_SOURCES = \
 else
 sdlincludes=
 toolkit_sdl_libraries =
+endif
 endif
 
 if WITH_FFMPEG
@@ -275,7 +232,6 @@ AM_CPPFLAGS = \
 	$(gtkincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
-	$(live_includes) \
 	$(INCLTDL)
 
 lib_LTLIBRARIES = \
@@ -283,8 +239,6 @@ lib_LTLIBRARIES = \
 	$(toolkit_gstreamer_libraries) \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_ffmpeg_libraries) \
-	$(toolkit_live_libraries) \
-	$(toolkit_cocoa_libraries) \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
@@ -371,14 +325,11 @@ EXTRA_DIST= \
     lib/expat_parser.cpp \
     lib/xerces_parser.cpp \
 	$(libambulant_sdl_la_SOURCES) \
-	$(libambulant_cocoa_la_SOURCES) \
-	$(extradist_cocoa) \
 	$(libambulant_cg_la_SOURCES) \
 	$(extradist_cg) \
 	$(libambulant_qt_la_SOURCES) \
 	$(libambulant_gtk_la_SOURCES) \
 	$(libambulant_gstreamer_la_SOURCES) \
-	gui/dx \
 	gui/d2 \
 	net/win32_datasource.cpp \
 	lib/memfile.cpp \

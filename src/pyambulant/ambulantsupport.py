@@ -178,6 +178,7 @@ renderer_private_id = Type("ambulant::common::renderer_private_id", "l")
 ambulant_gtk_window_ptr=None
 gtk_renderer_factory_ptr=None
 gtk_video_factory_ptr=None
+sdl_window_factory_ptr=None
 
 common_playable_factory_machdep_ptr = FakeType("NULL")
 

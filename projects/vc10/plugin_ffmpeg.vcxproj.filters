@@ -11,9 +11,6 @@
     <Filter Include="Source Files\sdl">
       <UniqueIdentifier>{8c3b7c3b-f830-474a-941b-afcbb681554f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\live555">
-      <UniqueIdentifier>{7d5c4bdf-8e45-4e87-90b9-74af07a3a6cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\dsvideo">
       <UniqueIdentifier>{62e1388a-4d7c-42df-a350-111cb004408d}</UniqueIdentifier>
     </Filter>
@@ -26,9 +23,6 @@
     </Filter>
     <Filter Include="Header Files\ffmpeg">
       <UniqueIdentifier>{5dd0e083-c137-48fc-96a6-1644cead90bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\live555">
-      <UniqueIdentifier>{adf38d19-de78-46d6-84d6-6f13597ff0e0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\sdl">
       <UniqueIdentifier>{c537558b-6092-4de8-bfd0-961f909becad}</UniqueIdentifier>
@@ -58,12 +52,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\SDL\sdl_audio.cpp">
       <Filter>Source Files\sdl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\net\rtsp_datasource.cpp">
-      <Filter>Source Files\live555</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\net\rtsp_factory.cpp">
-      <Filter>Source Files\live555</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_dsvideo.cpp">
       <Filter>Source Files\dsvideo</Filter>
@@ -102,12 +90,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\net\ffmpeg_video.h">
       <Filter>Header Files\ffmpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\net\rtsp_datasource.h">
-      <Filter>Header Files\live555</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ambulant\net\rtsp_factory.h">
-      <Filter>Header Files\live555</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_audio.h">
       <Filter>Header Files\sdl</Filter>
