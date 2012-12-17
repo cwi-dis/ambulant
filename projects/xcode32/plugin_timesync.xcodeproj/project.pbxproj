@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		04290B8E132EB6E20015D7B7 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E969612BA4DA000399893 /* libambulantCG.dylib */; };
-		042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
 		0479166C14C5C831003952AC /* plugin_timesync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0479166B14C5C831003952AC /* plugin_timesync.cpp */; };
 		0479171114C5CE1C003952AC /* plugin_timesync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0479166B14C5C831003952AC /* plugin_timesync.cpp */; };
 /* End PBXBuildFile section */
@@ -42,20 +41,6 @@
 			remoteGlobalIDString = 04A1E80812B57DF20060F97E;
 			remoteInfo = libambulantCG;
 		};
-		042AD9301152C916009CA791 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
-			remoteInfo = libambulant;
-		};
-		04428DC6115779330067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
-			remoteInfo = libambulant;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -82,7 +67,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,7 +93,6 @@
 		042AD92D1152C916009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042AD9311152C916009CA791 /* libambulant.dylib */,
 				041E969612BA4DA000399893 /* libambulantCG.dylib */,
 				041E969812BA4DA000399893 /* libambulantCGstatic.a */,
 				041E969A12BA4DA000399893 /* libambulantIPhone.a */,
@@ -204,7 +187,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				04428DC7115779330067C868 /* PBXTargetDependency */,
 			);
 			name = "plugin_timesync (Cocoa)";
 			productName = libplugin;
@@ -265,13 +247,6 @@
 			remoteRef = 041E969912BA4DA000399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		042AD9311152C916009CA791 /* libambulant.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libambulant.dylib;
-			remoteRef = 042AD9301152C916009CA791 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -298,11 +273,6 @@
 			isa = PBXTargetDependency;
 			name = libambulantCG;
 			targetProxy = 04290B86132EB6D10015D7B7 /* PBXContainerItemProxy */;
-		};
-		04428DC7115779330067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libambulant;
-			targetProxy = 04428DC6115779330067C868 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

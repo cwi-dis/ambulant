@@ -42,7 +42,9 @@ class MyTimerSync(ambulant.timer_sync):
 		
 	def resumed(self):
 		if DEBUG: print 'pyamplugin_timeync(%s): resumed()' % (self)
-		
+	
+	def clicked(self, node, t):
+	    if DEBUG: print 'pyamplugin_clicked(%s): clicked(%s, %s)' % (self, node.get_sig(), t)	
 	
 def initialize(apiversion, factories, gui_player):
     print 'pyamplugin_timesync: initialize() called'
