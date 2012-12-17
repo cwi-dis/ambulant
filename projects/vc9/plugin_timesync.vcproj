@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="plugin_timesync"
-	ProjectGUID="{fd0fadf1-b9fb-4c68-98c5-00cd1aa043d63}"
+	ProjectGUID="{FD0FADF1-B9FB-4C68-98C5-00CD1AA043D6}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -177,8 +177,8 @@
 		</Configuration>
 		<Configuration
 			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			CharacterSet="1"
@@ -255,8 +255,8 @@
 		</Configuration>
 		<Configuration
 			Name="DebugShlibDX|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			CharacterSet="1"
@@ -345,7 +345,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\plugins\plugin.cpp"
+				RelativePath="..\..\src\plugins\plugin_timesync.cpp"
 				>
 			</File>
 		</Filter>
