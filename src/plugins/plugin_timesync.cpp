@@ -90,7 +90,7 @@ class timer_sync_impl : public lib::timer_sync {
 	}
 	
 	void clicked(const lib::node *n, lib::timer::time_type t) {
-		AM_DBG lib::logger::get_logger()->debug("timer_sync(0x%x): timer 0x%x: clicked(%s, %ld)", (void*)this, (void*)m_timer, n->get_sig(), (long)t);
+		AM_DBG lib::logger::get_logger()->debug("timer_sync(0x%x): timer 0x%x: clicked(%s, %ld)", (void*)this, (void*)m_timer, n->get_sig().c_str(), (long)t);
 	}
 	
   private:
