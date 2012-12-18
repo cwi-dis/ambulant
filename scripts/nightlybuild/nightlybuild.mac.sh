@@ -107,7 +107,7 @@ cd .. # Back to source dir
 # Create installer dmg, upload
 #
 cd installers/sh-macos
-sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template-Cocoa.dmg -s "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app/." -d "Ambulant Player.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
+sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template.dmg -s "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app/." -d "Ambulant Player.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
 mv "Ambulant Player.dmg" $DMGNAME.dmg
 scp $DMGNAME.dmg $DESTINATION_DESKTOP
 cd ../..
