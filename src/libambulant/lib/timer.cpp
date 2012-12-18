@@ -164,7 +164,13 @@ lib::timer_control_impl::_resume(bool tell_observer) {
 		m_parent_epoch = m_parent->elapsed();
 		m_running = true;
 #ifdef WITH_REMOTE_SYNC
-		if (tell_observer && m_observer) m_observer->resumed();
+		if (tell_observer && m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->resumed();
+			m_lock.enter();
+		}
 #endif
 	}
 }
