@@ -112,7 +112,13 @@ lib::timer_control_impl::_start(time_type t) {
 	m_local_epoch = t;
 	m_running = true;
 #ifdef WITH_REMOTE_SYNC
-	if (m_observer) m_observer->started();
+		if (m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->started();
+			m_lock.enter();
+		}
 #endif
 
 }
@@ -129,7 +135,13 @@ lib::timer_control_impl::_stop() {
 	m_local_epoch = 0;
 	m_running = false;
 #ifdef WITH_REMOTE_SYNC
-	if (m_observer) m_observer->stopped();
+		if (m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->stopped();
+			m_lock.enter();
+		}
 #endif
 }
 
@@ -146,7 +158,13 @@ lib::timer_control_impl::_pause(bool tell_observer) {
 		m_local_epoch += _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 		m_running = false;
 #ifdef WITH_REMOTE_SYNC
-		if (tell_observer && m_observer) m_observer->paused();
+		if (tell_observer && m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->paused();
+			m_lock.enter();
+		}
 #endif
 	}
 }
