@@ -180,6 +180,7 @@ gui::sdl::sdl_audio_renderer::unregister_renderer(sdl_audio_renderer *rnd)
 	if (s_renderers.size() == 0) {
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer: pause SDL");
 		SDL_PauseAudio(1);
+		quit(); //XXXX fixes #3597768, but is this correct when SDL is used for rendering as well ?
 	}
 	s_static_lock.leave();
 }
