@@ -41,7 +41,7 @@ class timer_observer {
 	virtual void paused() = 0;
 	virtual void resumed() = 0;
 };
-#endif WITH_REMOTE_SYNC
+#endif // WITH_REMOTE_SYNC
 
 /// Client interface to timer objects: allows you to get the
 /// current time and the rate at which time passes.
