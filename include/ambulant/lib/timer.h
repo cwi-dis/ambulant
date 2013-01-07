@@ -30,6 +30,19 @@ namespace ambulant {
 
 namespace lib {
 
+#ifdef WITH_REMOTE_SYNC
+
+/// An interface that can be used to receive notification when
+/// interesting things happen to a timer.
+class timer_observer {
+  public:
+	virtual void started() = 0;
+	virtual void stopped() = 0;
+	virtual void paused() = 0;
+	virtual void resumed() = 0;
+};
+#endif WITH_REMOTE_SYNC
+
 /// Client interface to timer objects: allows you to get the
 /// current time and the rate at which time passes.
 class timer {
@@ -61,6 +74,12 @@ class timer {
 
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
+	
+	/// Return true if the clock is running.
+	virtual bool running() const { return true; }
+	
+	/// Return true if the clock is slaved to another one.
+	virtual bool is_slaved() const { return false; }
 };
 
 /// Controller interface to timer objects.
@@ -124,6 +143,18 @@ class timer_control : public timer {
 
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
+	
+#ifdef WITH_REMOTE_SYNC
+	/// Set the observer.
+	virtual void set_observer(timer_observer *obs) = 0;
+	
+	/// Indicate that this clock is slaved to another one, i.e. it may be adjusted by an
+	/// externap agent. This affects clock resyncing by continuous mediia items.
+	virtual void set_slaved(bool slaved) = 0;
+	
+	/// Returns true if this clock is slaved to another one.
+	virtual bool is_slaved() const = 0;
+#endif
 
 };
 
@@ -177,7 +208,7 @@ class timer_control_impl : public timer_control {
 	double get_speed() const { return m_speed;}
 
 	/// Returns true when this timer is running.
-	bool running() const { return m_running;}
+	bool running() const { return m_running && m_parent->running();}
 
 	/// Returns the realtime speed of this timer
 	/// as modulated by its parent.
@@ -203,11 +234,23 @@ class timer_control_impl : public timer_control {
 	/// Skew the clock.
 	void skew(signed_time_type skew_);
 
+#ifdef WITH_REMOTE_SYNC
+	/// Set the observer.
+	void set_observer(timer_observer *obs);
+	
+	/// Indicate that this clock is slaved to another one, i.e. it may be adjusted by an
+	/// externap agent. This affects clock resyncing by continuous mediia items.
+	void set_slaved(bool slaved) { m_slaved = true; }
+	
+	/// Returns true if this clock is slaved to another one.
+	bool is_slaved() const { return m_slaved || m_parent->is_slaved(); }
+#endif
+
   private:
 	void _start(time_type t = 0);
 	void _stop();
-	void _pause();
-	void _resume();
+	void _pause(bool tell_observer);
+	void _resume(bool tell_observer);
 	time_type _elapsed() const;
 	time_type _elapsed(time_type pt) const;
 	time_type _apply_speed_manip(time_type dt) const;
@@ -219,6 +262,10 @@ class timer_control_impl : public timer_control {
 	double m_speed;
 	bool m_running;
 	signed_time_type m_drift;
+#ifdef WITH_REMOTE_SYNC
+	timer_observer *m_observer;
+	bool m_slaved;
+#endif
 	critical_section m_lock;
 };
 

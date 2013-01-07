@@ -3,224 +3,419 @@ diff -Naurw a/INSTALL b/INSTALL
 +++ b/INSTALL	2012-09-10 16:17:14.000577000 +0200
 @@ -1,3 +1,8 @@
 +How to apply SDL_Pango-0.1.2-API-Changes.patch:
+
 +-----------------------------------------------
+
 +Download original source from: http://sourceforge.net/projects/sdlpango/files/latest/download
+
 +cd SDL_Pange-0.1.2/; patch -p1 < SDL_Pango-0.1.2-API-Changes.patch
+
 +
+
  To compile and install SDL_Pango:
+
  
+
  	In Un*x, run 'configure; make; make install'.
+
 @@ -8,3 +13,4 @@
  	Look at the example programs in ./test.
+
  
+
  NAKAMURA Ken'ichi <nakamura@sbp.fp.a.u-tokyo.ac.jp>
+
 +
+
 diff -Naurw a/README b/README
 --- a/README	2012-09-10 15:37:51.000916000 +0200
 +++ b/README	2012-09-10 15:38:13.000484000 +0200
 @@ -12,3 +12,9 @@
  
+
  Please send all bug reports by e-mail to:
+
      nakamura@sbp.fp.a.u-tokyo.ac.jp
+
 +
+
 +Patched for compatibilty with the version found in Fedora/Ubuntu distributions, based on:
+
 +http://cpansearch.perl.org/src/FROGGS/Alien-SDL-1.401/patches/SDL_Pango-0.1.2-API-adds.patch
+
 +- bug fix (no global initialization in SDL_Patch.h)
+
 +- typedef SDLPango_Alignment;
+
 +- add 2 functions: SDLPango_CreateContext_GivenFontDesc() and SDLPango_SetText_GivenAlignment()
+
 diff -Naurw a/src/SDL_Pango.c b/src/SDL_Pango.c
 --- a/src/SDL_Pango.c	2012-09-10 15:38:37.001371000 +0200
 +++ b/src/SDL_Pango.c	2012-09-10 16:26:24.002014000 +0200
 @@ -723,13 +723,8 @@
      SDL_UnlockSurface(surface);
+
  }
+
  
+
 -/*!
+
 -    Create a context which contains Pango objects.
+
 -
+
 -    @return A pointer to the context as a SDLPango_Context*.
+
 -*/
+
  SDLPango_Context*
+
 -SDLPango_CreateContext()
+
 +SDLPango_CreateContext_GivenFontDesc(const char* font_desc)
+
  {
+
      SDLPango_Context *context = g_malloc(sizeof(SDLPango_Context));
+
      G_CONST_RETURN char *charset;
+
 @@ -743,11 +738,9 @@
      pango_context_set_language (context->context, pango_language_from_string (charset));
+
      pango_context_set_base_dir (context->context, PANGO_DIRECTION_LTR);
+
  
+
 -    context->font_desc = pango_font_description_from_string(
+
 -	MAKE_FONT_NAME (DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE));
+
 +    context->font_desc = pango_font_description_from_string(font_desc);
+
  
+
      context->layout = pango_layout_new (context->context);
+
 -
+
      SDLPango_SetSurfaceCreateArgs(context, SDL_SWSURFACE | SDL_SRCALPHA, DEFAULT_DEPTH,
+
  	DEFAULT_RMASK, DEFAULT_GMASK, DEFAULT_BMASK, DEFAULT_AMASK);
+
  
+
 @@ -762,6 +755,17 @@
  }
+
  
+
  /*!
+
 +    Create a context which contains Pango objects.
+
 +
+
 +    @return A pointer to the context as a SDLPango_Context*.
+
 +*/
+
 +SDLPango_Context*
+
 +SDLPango_CreateContext()
+
 +{
+
 +    SDLPango_CreateContext_GivenFontDesc(MAKE_FONT_NAME(DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE));
+
 +}
+
 +
+
 +/*!
+
      Free a context.
+
  
+
      @param *context [i/o] Context to be free
+
 @@ -1053,6 +1057,20 @@
      pango_layout_set_font_description (context->layout, context->font_desc);
+
  }
+
  
+
 +void
+
 +SDLPango_SetText_GivenAlignment(
+
 +    SDLPango_Context *context,
+
 +    const char *text,
+
 +    int length,
+
 +    SDLPango_Alignment alignment)
+
 +{
+
 +    pango_layout_set_attributes(context->layout, NULL);
+
 +    pango_layout_set_text (context->layout, text, length);
+
 +    pango_layout_set_auto_dir (context->layout, TRUE);
+
 +    pango_layout_set_alignment (context->layout, alignment);
+
 +    pango_layout_set_font_description (context->layout, context->font_desc);
+
 +}
+
 +
+
  /*!
+
      Set plain text to context.
+
      Text must be utf-8.
+
 @@ -1067,11 +1085,7 @@
      const char *text,
+
      int length)
+
  {
+
 -    pango_layout_set_attributes(context->layout, NULL);
+
 -    pango_layout_set_text (context->layout, text, length);
+
 -    pango_layout_set_auto_dir (context->layout, TRUE);
+
 -    pango_layout_set_alignment (context->layout, PANGO_ALIGN_LEFT);
+
 -    pango_layout_set_font_description (context->layout, context->font_desc);
+
 +	SDLPango_SetText_GivenAlignment(context, text, length, SDLPANGO_ALIGN_LEFT);
+
  }
+
  
+
  /*!
+
 @@ -1173,3 +1187,38 @@
  {
+
      return context->layout;
+
  }
+
 +
+
 +const SDLPango_Matrix _MATRIX_WHITE_BACK
+
 +    = {255, 0, 0, 0,
+
 +       255, 0, 0, 0,
+
 +       255, 0, 0, 0,
+
 +       255, 255, 0, 0,};
+
 +const SDLPango_Matrix *MATRIX_WHITE_BACK = &_MATRIX_WHITE_BACK;
+
 +
+
 +const SDLPango_Matrix _MATRIX_BLACK_BACK
+
 +    = {0, 255, 0, 0,
+
 +       0, 255, 0, 0,
+
 +       0, 255, 0, 0,
+
 +       255, 255, 0, 0,};
+
 +const SDLPango_Matrix *MATRIX_BLACK_BACK = &_MATRIX_BLACK_BACK;
+
 +
+
 +const SDLPango_Matrix _MATRIX_TRANSPARENT_BACK_BLACK_LETTER
+
 +    = {0, 0, 0, 0,
+
 +       0, 0, 0, 0,
+
 +       0, 0, 0, 0,
+
 +       0, 255, 0, 0,};
+
 +const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_BLACK_LETTER = &_MATRIX_TRANSPARENT_BACK_BLACK_LETTER;
+
 +
+
 +const SDLPango_Matrix _MATRIX_TRANSPARENT_BACK_WHITE_LETTER
+
 +    = {255, 255, 0, 0,
+
 +       255, 255, 0, 0,
+
 +       255, 255, 0, 0,
+
 +       0, 255, 0, 0,};
+
 +const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_WHITE_LETTER = &_MATRIX_TRANSPARENT_BACK_WHITE_LETTER;
+
 +
+
 +const SDLPango_Matrix _MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER
+
 +    = {255, 255, 0, 0,
+
 +       255, 255, 0, 0,
+
 +       255, 255, 0, 0,
+
 +       0, 0, 0, 0,};
+
 +const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER = &_MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER;
+
 diff -Naurw a/src/SDL_Pango.h b/src/SDL_Pango.h
 --- a/src/SDL_Pango.h	2012-09-10 15:38:37.001382000 +0200
 +++ b/src/SDL_Pango.h	2012-09-10 16:44:10.001745000 +0200
 @@ -46,57 +46,27 @@
      Uint8 m[4][4];  /*! Matrix variables */
+
  } SDLPango_Matrix;
+
  
+
 -const SDLPango_Matrix _MATRIX_WHITE_BACK
+
 -    = {255, 0, 0, 0,
+
 -       255, 0, 0, 0,
+
 -       255, 0, 0, 0,
+
 -       255, 255, 0, 0,};
+
 -
+
  /*!
+
      Specifies white back and black letter.
+
  */
+
 -const SDLPango_Matrix *MATRIX_WHITE_BACK = &_MATRIX_WHITE_BACK;
+
 -
+
 -const SDLPango_Matrix _MATRIX_BLACK_BACK
+
 -    = {0, 255, 0, 0,
+
 -       0, 255, 0, 0,
+
 -       0, 255, 0, 0,
+
 -       255, 255, 0, 0,};
+
 +extern const SDLPango_Matrix *MATRIX_WHITE_BACK;
  /*!
+
      Specifies black back and white letter.
+
  */
+
 -const SDLPango_Matrix *MATRIX_BLACK_BACK = &_MATRIX_BLACK_BACK;
+
 -
+
 -const SDLPango_Matrix _MATRIX_TRANSPARENT_BACK_BLACK_LETTER
+
 -    = {0, 0, 0, 0,
+
 -       0, 0, 0, 0,
+
 -       0, 0, 0, 0,
+
 -       0, 255, 0, 0,};
+
 +extern const SDLPango_Matrix *MATRIX_BLACK_BACK;
  /*!
+
      Specifies transparent back and black letter.
+
  */
+
 -const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_BLACK_LETTER = &_MATRIX_TRANSPARENT_BACK_BLACK_LETTER;
+
 -
+
 -const SDLPango_Matrix _MATRIX_TRANSPARENT_BACK_WHITE_LETTER
+
 -    = {255, 255, 0, 0,
+
 -       255, 255, 0, 0,
+
 -       255, 255, 0, 0,
+
 -       0, 255, 0, 0,};
+
 +extern const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_BLACK_LETTER;
  /*!
+
      Specifies transparent back and white letter.
+
  */
+
 -const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_WHITE_LETTER = &_MATRIX_TRANSPARENT_BACK_WHITE_LETTER;
+
 -
+
 -const SDLPango_Matrix _MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER
+
 -    = {255, 255, 0, 0,
+
 -       255, 255, 0, 0,
+
 -       255, 255, 0, 0,
+
 -       0, 0, 0, 0,};
+
 +extern const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_WHITE_LETTER;
  /*!
+
      Specifies transparent back and transparent letter.
+
      This is useful for KARAOKE like rendering.
+
  */
+
 -const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER = &_MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER;
+
 +extern const SDLPango_Matrix *MATRIX_TRANSPARENT_BACK_TRANSPARENT_LETTER;
  
+
  /*!
+
      Specifies direction of text. See Pango reference for detail
+
 @@ -109,12 +79,20 @@
      SDLPANGO_DIRECTION_NEUTRAL	/*! Neutral */
+
  } SDLPango_Direction;
+
  
+
 -
+
 +/*!
 +    Specifies alignment of text. See Pango reference for detail
 +*/
@@ -230,18 +425,29 @@ diff -Naurw a/src/SDL_Pango.h b/src/SDL_Pango.h
 +    SDLPANGO_ALIGN_RIGHT
 +} SDLPango_Alignment;
  
+
  extern DECLSPEC int SDLCALL SDLPango_Init();
+
  
+
  extern DECLSPEC int SDLCALL SDLPango_WasInit();
+
  
+
 +extern DECLSPEC SDLPango_Context* SDLCALL SDLPango_CreateContext_GivenFontDesc(const char* font_desc);
  extern DECLSPEC SDLPango_Context* SDLCALL SDLPango_CreateContext();
+
  
+
  extern DECLSPEC void SDLCALL SDLPango_FreeContext(
+
 @@ -157,6 +135,12 @@
      const char *markup,
+
      int length);
+
  
+
 +extern DECLSPEC void SDLCALL SDLPango_SetText_GivenAlignment(
 +    SDLPango_Context *context,
 +    const char *text,
@@ -249,5 +455,8 @@ diff -Naurw a/src/SDL_Pango.h b/src/SDL_Pango.h
 +    SDLPango_Alignment alignment);
 +
  extern DECLSPEC void SDLCALL SDLPango_SetText(
+
      SDLPango_Context *context,
+
      const char *markup,
+

@@ -64,15 +64,6 @@ class video_renderer : public common::renderer_playable {
 	/// byte reordering).
 	virtual net::pixel_order pixel_layout() { return net::pixel_argb; }
 
-	/// Return true if video is paused.
-	bool is_paused() { return m_is_paused; };
-
-	/// Return true if video is not playing.
-	bool is_stopped() { return !m_activated;};
-
-	/// Return true if video is playing.
-	bool is_playing() { return m_activated; };
-
 	/// Callback routine passed to the datasource, to be called when new data is available.
 	void data_avail();
 

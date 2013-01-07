@@ -100,5 +100,11 @@
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_gui.h">
       <Filter>Header Files\sdl</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\ambulant\net\rtsp_datasource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ambulant\net\rtsp_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

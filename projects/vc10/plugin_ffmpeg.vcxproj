@@ -121,14 +121,6 @@
     <ClCompile Include="..\..\src\libambulant\net\ffmpeg_video.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\SDL\sdl.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\SDL\sdl_audio.cpp" />
-    <ClCompile Include="..\..\src\libambulant\net\rtsp_datasource.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\libambulant\net\rtsp_factory.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\src\libambulant\gui\d2\d2_dsvideo.cpp" />
     <ClCompile Include="..\..\src\libambulant\gui\dx\dx_dsvideo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

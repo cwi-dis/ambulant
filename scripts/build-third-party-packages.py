@@ -507,7 +507,7 @@ third_party_packages={
             buildcmd=
                 "cd SDL-1.3.0-* && "
                 "./configure --prefix='%s' "
-                    "--disable-dependency-tracking  --enable-video-x11=no"
+                    "--disable-dependency-tracking  --without-video"
                     "CC=gcc-4.0 CXX=g++-4.0 "
                     "CFLAGS='%s' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"

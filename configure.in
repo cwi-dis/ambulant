@@ -283,6 +283,24 @@ AM_CONDITIONAL(WITH_GCD_EVENT_PROCESSOR, test x$with_gcd_event_processor = xyes)
 AC_MSG_RESULT($with_gcd_event_processor)
 
 #
+# Do we want external clock sync support?
+#
+AC_MSG_CHECKING(for --with-external-clock-sync)
+AC_ARG_WITH([external-clock-sync],
+    AS_HELP_STRING([--with-external-clock-sync],[Enable external clock synchronization]),
+    [
+    	with_external_clock_sync=yes
+    ],[
+    	with_external_clock_sync=no
+    ])
+    
+if test "x$with_external_clock_sync" = xyes;
+then
+    AC_DEFINE(WITH_REMOTE_SYNC, 1, [Define to enable external clock syncing])
+fi
+AC_MSG_RESULT($with_external_clock_sync)
+
+#
 # Do we want overlay window support support?
 #
 test_overlay=false
@@ -1153,6 +1171,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with npambulant plugin:   ${with_npambulant}
     Use shared libs internally:     ${with_ambulant_shared_lib}
     Build with GCD:                 ${with_gcd_event_processor}
+    Build with external clock sync: ${with_external_clock_sync}
      "
 
 if test "x$with_frontend" = "xfalse"; then

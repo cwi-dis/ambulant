@@ -438,7 +438,7 @@ void gui::d2::d2_player::stop() {
 }
 
 void gui::d2::d2_player::pause() {
-	if(m_player) {
+ 	if(m_player) {
 		lock_redraw();
 		common::gui_player::pause();
 		unlock_redraw();

@@ -83,10 +83,6 @@ class sdl_audio_renderer : public common::renderer_playable {
 	long release();
 #endif//SDL_REFCOUNT_TRACKING
 
-	bool is_paused();
-	bool is_stopped();
-	bool is_playing();
-
 	common::duration get_dur();
 	void start(double where);
 //	void stop();
@@ -110,10 +106,12 @@ class sdl_audio_renderer : public common::renderer_playable {
 	void start_outtransition(const lib::transition_info* info);
 	static void quit();
   private:
-	void data_avail();
-	bool restart_audio_input();
-	size_t get_data(size_t bytes_wanted, Uint8 **ptr);
-	void get_data_done(size_t size);
+	bool _can_be_clock_master();
+	bool _can_slip();
+	void _data_avail();
+	bool _restart_audio_input();
+	size_t _get_data(size_t bytes_wanted, Uint8 **ptr, size_t *insert_count);
+	void _get_data_done(size_t size);
 	net::audio_datasource *m_audio_src;
 	lib::critical_section m_lock;
 

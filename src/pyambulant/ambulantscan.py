@@ -23,6 +23,7 @@ def main():
         AMBULANT+ "lib/sax_handler.h",
         AMBULANT+ "lib/system.h",
         AMBULANT+ "lib/timer.h",
+        AMBULANT+ "lib/timer_sync.h",
         AMBULANT+ "lib/transition_info.h",
         AMBULANT+ "common/embedder.h",
         AMBULANT+ "common/factory.h",
