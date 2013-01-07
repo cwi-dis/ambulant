@@ -23,6 +23,7 @@ def main():
         AMBULANT+ "lib/sax_handler.h",
         AMBULANT+ "lib/system.h",
         AMBULANT+ "lib/timer.h",
+        AMBULANT+ "lib/timer_sync.h",
         AMBULANT+ "lib/transition_info.h",
         AMBULANT+ "common/embedder.h",
         AMBULANT+ "common/factory.h",
@@ -40,7 +41,6 @@ def main():
         AMBULANT+ "net/posix_datasource.h",
         AMBULANT+ "net/stdio_datasource.h",
         AMBULANT+ "net/ffmpeg_factory.h",
-        AMBULANT+ "net/rtsp_factory.h",
             ]
     if DO_SCAN:
         output = "ambulantgen.py"
@@ -104,8 +104,6 @@ class MyScanner(CxxScanner):
             "stdio_datasource_factory", # Ditto
             "filter_datasource_impl", # XXXX
             "filter_datasource_impl_ptr", # XXXX
-            "live_audio_datasource_factory",
-            "live_video_datasource_factory",
             "raw_filter_finder", # XXXX
             "raw_filter_finder_ptr", # XXXX
             "ts_packet_t", # XXXX Lazy: should do this one.
@@ -195,11 +193,6 @@ class MyScanner(CxxScanner):
                 'get_ffmpeg_audio_parser_finder',
                 'get_ffmpeg_audio_filter_finder',
                 'get_ffmpeg_audio_decoder_finder',
-                ]
-            ),
-            ('#ifdef WITH_LIVE', [
-                'create_live_video_datasource_factory',
-                'create_live_audio_datasource_factory',
                 ]
             ),
             ('#ifndef AMBULANT_PLATFORM_WIN32', [

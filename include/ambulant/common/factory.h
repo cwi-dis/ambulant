@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -29,6 +29,9 @@
 #include "ambulant/common/recorder.h"
 #include "ambulant/common/state.h"
 #include "ambulant/lib/node.h"
+#ifdef WITH_REMOTE_SYNC
+#include "ambulant/lib/timer_sync.h"
+#endif
 
 namespace ambulant {
 
@@ -56,9 +59,12 @@ public:
 	virtual void init_node_factory();
 	/// Create the state factory.
 	virtual void init_state_component_factory();
+#ifdef WITH_REMOTE_SYNC
+    /// Create the timer-synchronizer factory.
+    virtual void init_timer_sync_factory();
+#endif
 	/// Create the recorder factory.
 	virtual void init_recorder_factory();
-
 	/// Return the playable factory.
 	virtual global_playable_factory *get_playable_factory() const { return m_playable_factory; }
 	/// Return the window factory.
@@ -85,6 +91,12 @@ public:
 	virtual void set_node_factory(lib::node_factory *nf) { m_node_factory = nf; }
 	/// Override the state factory.
 	virtual void set_state_component_factory(global_state_component_factory *sf) { delete m_state_component_factory; m_state_component_factory = sf; }
+#ifdef WITH_REMOTE_SYNC
+    /// Return the timer-synchronizer factory.
+    virtual lib::timer_sync_factory *get_timer_sync_factory() const { return m_timer_sync_factory; }
+    /// Override the timer-synchronizer factory.
+    virtual void set_timer_sync_factory(lib::timer_sync_factory *tsf) { /*delete m_timer_sync_factory;*/ m_timer_sync_factory = tsf; }
+#endif
 	/// Override the recorder factory. Deletes the old one, if needed.
 	virtual void set_recorder_factory(recorder_factory *rf) { if(m_recorder_factory) delete m_recorder_factory; m_recorder_factory = rf; }
 private:
@@ -94,6 +106,9 @@ private:
 	lib::global_parser_factory *m_parser_factory;
 	lib::node_factory *m_node_factory;
 	common::global_state_component_factory *m_state_component_factory;
+#ifdef WITH_REMOTE_SYNC
+    lib::timer_sync_factory *m_timer_sync_factory;
+#endif
 	recorder_factory *m_recorder_factory;
 };
 

@@ -13,6 +13,7 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/timer_sync.h"
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/common/factory.h"
@@ -31,7 +32,6 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/net/ffmpeg_factory.h"
-#include "ambulant/net/rtsp_factory.h"
 
 #include "ambulant/lib/node_navigator.h"
 
@@ -332,6 +332,8 @@ public:
 	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
+	bool running() const;
+	bool is_slaved() const;
   private:
 	PyObject *py_timer;
 
@@ -366,6 +368,9 @@ public:
 	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
+	void set_observer(ambulant::lib::timer_observer* obs);
+	void set_slaved(bool slaved);
+	bool is_slaved() const;
   private:
 	PyObject *py_timer_control;
 
@@ -381,7 +386,78 @@ inline timer_control *Py_WrapAs_timer_control(PyObject *o)
 	return rv;
 }
 
-class embedder : public ::system_embedder, ambulant::common::embedder {
+class timer_observer : public cpppybridge, public ambulant::lib::timer_observer {
+public:
+	timer_observer(PyObject *itself);
+	virtual ~timer_observer();
+
+	void started();
+	void stopped();
+	void paused();
+	void resumed();
+  private:
+	PyObject *py_timer_observer;
+
+	friend PyObject *timer_observerObj_New(ambulant::lib::timer_observer *itself);
+};
+#define BGEN_BACK_SUPPORT_timer_observer
+inline timer_observer *Py_WrapAs_timer_observer(PyObject *o)
+{
+	timer_observer *rv = dynamic_cast<timer_observer*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new timer_observer(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class timer_sync : public timer_observer, public ambulant::lib::timer_sync {
+public:
+	timer_sync(PyObject *itself);
+	virtual ~timer_sync();
+
+	void initialize(ambulant::lib::timer_control* timer);
+	void started();
+	void stopped();
+	void paused();
+	void resumed();
+	void clicked(const ambulant::lib::node* n, ambulant::lib::timer::time_type t);
+  private:
+	PyObject *py_timer_sync;
+
+	friend PyObject *timer_syncObj_New(ambulant::lib::timer_sync *itself);
+};
+#define BGEN_BACK_SUPPORT_timer_sync
+inline timer_sync *Py_WrapAs_timer_sync(PyObject *o)
+{
+	timer_sync *rv = dynamic_cast<timer_sync*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new timer_sync(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class timer_sync_factory : public cpppybridge, public ambulant::lib::timer_sync_factory {
+public:
+	timer_sync_factory(PyObject *itself);
+	virtual ~timer_sync_factory();
+
+	ambulant::lib::timer_sync* new_timer_sync(ambulant::lib::document* doc);
+  private:
+	PyObject *py_timer_sync_factory;
+
+	friend PyObject *timer_sync_factoryObj_New(ambulant::lib::timer_sync_factory *itself);
+};
+#define BGEN_BACK_SUPPORT_timer_sync_factory
+inline timer_sync_factory *Py_WrapAs_timer_sync_factory(PyObject *o)
+{
+	timer_sync_factory *rv = dynamic_cast<timer_sync_factory*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new timer_sync_factory(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class embedder : public system_embedder, public ambulant::common::embedder {
 public:
 	embedder(PyObject *itself);
 	virtual ~embedder();
@@ -392,7 +468,7 @@ public:
 	void starting(ambulant::common::player* p);
 	bool aux_open(const ambulant::net::url& href);
 	void terminate();
-	void show_file(const ambulant::net::url& url) { ::system_embedder::show_file(url); }
+	void show_file(const ambulant::net::url& url) { system_embedder::show_file(url); }
   private:
 	PyObject *py_embedder;
 
@@ -420,6 +496,7 @@ public:
 	void init_parser_factory();
 	void init_node_factory();
 	void init_state_component_factory();
+	void init_timer_sync_factory();
 	void init_recorder_factory();
 	ambulant::common::global_playable_factory* get_playable_factory() const;
 	ambulant::common::window_factory* get_window_factory() const;
@@ -433,6 +510,8 @@ public:
 	void set_parser_factory(ambulant::lib::global_parser_factory* pf);
 	void set_node_factory(ambulant::lib::node_factory* nf);
 	void set_state_component_factory(ambulant::common::global_state_component_factory* sf);
+	ambulant::lib::timer_sync_factory* get_timer_sync_factory() const;
+	void set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf);
   private:
 	PyObject *py_factories;
 
@@ -509,6 +588,7 @@ public:
 	void set_player(ambulant::common::player* pl);
 	ambulant::net::url get_url() const;
 	ambulant::common::gui_screen* get_gui_screen();
+	void clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t);
   private:
 	PyObject *py_gui_player;
 
@@ -995,6 +1075,7 @@ public:
 	ambulant::common::player_feedback* get_feedback();
 	bool goto_node(const ambulant::lib::node* n);
 	bool highlight(const ambulant::lib::node* n, bool on);
+	void clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t);
 	long add_ref() { return 1; }
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }
@@ -1054,7 +1135,7 @@ inline region_info *Py_WrapAs_region_info(PyObject *o)
 	return rv;
 }
 
-class animation_destination : public ::region_info, public ambulant::common::animation_destination {
+class animation_destination : public region_info, public ambulant::common::animation_destination {
 public:
 	animation_destination(PyObject *itself);
 	virtual ~animation_destination();
@@ -1071,28 +1152,28 @@ public:
 	void set_region_soundlevel(double level);
 	void set_region_soundalign(ambulant::common::sound_alignment sa);
 	void set_region_opacity(const std::string& which, double level);
-	std::string get_name() const { return ::region_info::get_name(); }
-	ambulant::lib::rect get_rect(const ambulant::lib::rect* dft=NULL) const { return ::region_info::get_rect(dft); }
-	ambulant::common::fit_t get_fit() const { return ::region_info::get_fit(); }
-	ambulant::lib::color_t get_bgcolor() const { return ::region_info::get_bgcolor(); }
-	ambulant::common::zindex_t get_zindex() const { return ::region_info::get_zindex(); }
-	bool get_showbackground() const { return ::region_info::get_showbackground(); }
-	bool is_subregion() const { return ::region_info::is_subregion(); }
-	double get_soundlevel() const { return ::region_info::get_soundlevel(); }
-	ambulant::common::sound_alignment get_soundalign() const { return ::region_info::get_soundalign(); }
-	ambulant::common::tiling get_tiling() const { return ::region_info::get_tiling(); }
-	const char* get_bgimage() const { return ::region_info::get_bgimage(); }
-	double get_bgopacity() const { return ::region_info::get_bgopacity(); }
-	bool get_transparent() const { return ::region_info::get_transparent(); }
-	double get_mediaopacity() const { return ::region_info::get_mediaopacity(); }
-	double get_mediabgopacity() const { return ::region_info::get_mediabgopacity(); }
-	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return ::region_info::get_crop_rect(srcsize); }
+	std::string get_name() const { return region_info::get_name(); }
+	ambulant::lib::rect get_rect(const ambulant::lib::rect* dft=NULL) const { return region_info::get_rect(dft); }
+	ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }
+	ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }
+	ambulant::common::zindex_t get_zindex() const { return region_info::get_zindex(); }
+	bool get_showbackground() const { return region_info::get_showbackground(); }
+	bool is_subregion() const { return region_info::is_subregion(); }
+	double get_soundlevel() const { return region_info::get_soundlevel(); }
+	ambulant::common::sound_alignment get_soundalign() const { return region_info::get_soundalign(); }
+	ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }
+	const char* get_bgimage() const { return region_info::get_bgimage(); }
+	double get_bgopacity() const { return region_info::get_bgopacity(); }
+	bool get_transparent() const { return region_info::get_transparent(); }
+	double get_mediaopacity() const { return region_info::get_mediaopacity(); }
+	double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }
+	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }
 	const ambulant::common::region_dim_spec& get_region_panzoom(bool fromdom) const { abort(); static ambulant::common::region_dim_spec dummy; return dummy; }
 	void set_region_panzoom(const ambulant::common::region_dim_spec& rds) { abort(); }
-	bool is_chromakey_specified() const { return ::region_info::is_chromakey_specified(); }
-	ambulant::lib::color_t get_chromakey() const { return ::region_info::get_chromakey(); }
-	ambulant::lib::color_t get_chromakeytolerance() const { return ::region_info::get_chromakeytolerance(); }
-	double get_chromakeyopacity() const { return ::region_info::get_chromakeyopacity(); }
+	bool is_chromakey_specified() const { return region_info::is_chromakey_specified(); }
+	ambulant::lib::color_t get_chromakey() const { return region_info::get_chromakey(); }
+	ambulant::lib::color_t get_chromakeytolerance() const { return region_info::get_chromakeytolerance(); }
+	double get_chromakeyopacity() const { return region_info::get_chromakeyopacity(); }
   private:
 	PyObject *py_animation_destination;
 
@@ -1104,7 +1185,7 @@ inline animation_destination *Py_WrapAs_animation_destination(PyObject *o)
 	animation_destination *rv = dynamic_cast<animation_destination*>(pycppbridge_getwrapper(o));
 	if (rv) return rv;
 	rv = new animation_destination(o);
-	pycppbridge_setwrapper(o, (cpppybridge *) rv);
+	pycppbridge_setwrapper(o, rv);
 	return rv;
 }
 

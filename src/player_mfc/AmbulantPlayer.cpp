@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -147,10 +147,11 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	m_pMainWnd->DragAcceptFiles(TRUE);
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
-
+#ifndef WITH_REMOTE_SYNC
 	if(mmdoc /*&& cmdInfo.m_autostart*/) {
 		mmdoc->StartPlayback();
 	}
+#endif
 
 	return TRUE;
 }

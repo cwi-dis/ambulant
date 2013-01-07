@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -432,9 +432,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	url = [[self fileURL] absoluteString];
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
-	
+#ifndef WITH_REMOTE_SYNC
 	// and play self
 	[self play: self];
+#endif
 }
 
 - (void)showWindows
@@ -528,7 +529,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)pause:(id)sender
 {
-	/*AM_DBG*/ NSLog(@"pause for %@, myMainloop=0x%x", self, myMainloop);
+	AM_DBG NSLog(@"pause for %@, myMainloop=0x%x", self, myMainloop);
 	if (myMainloop) myMainloop->pause();
 	[self validateButtons: nil];
 }

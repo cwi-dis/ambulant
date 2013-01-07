@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -275,7 +275,9 @@ initialize_logger()
 	NSError *error;
 	MyDocument *doc = [controller openDocumentWithContentsOfURL:url display:YES error:&error];
 	if (doc) {
+#ifndef WITH_REMOTE_SYNC
         [doc play: self];
+#endif
     } else {
 		NSLog(@"handleGetURLEvent: error: %@\n", error);
     }

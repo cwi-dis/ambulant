@@ -5,13 +5,11 @@ if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
 libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 else
 # Otherwise we link the ambulant libraries statically.
 libambulant_core=$(ambulantlibdir)/libambulant.a
 libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
-libambulant_live=$(ambulantlibdir)/libambulant_live.a
 libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
 endif
 
@@ -61,14 +59,6 @@ extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
 endif
 #------------------------------------------------------
-if WITH_LIVE
-extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
-extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
-else
-extra_live_DEFINES=
-extra_live_LDADD =
-endif
-#------------------------------------------------------
 if WITH_SDL
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
 extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
@@ -94,7 +84,6 @@ AM_CPPFLAGS = \
 	$(extra_ffmpeg_DEFINES)	\
 	$(extra_sdl_DEFINES)	\
 	$(extra_xerces_DEFINES)	\
-	$(extra_live_DEFINES)	\
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/include/ambulant/gui \
@@ -125,7 +114,6 @@ libnpambulant_la_LDFLAGS=	\
 	$(extra_ffmpeg_LDADD)	\
 	$(extra_sdl_LDADD)	\
 	$(extra_xerces_LDADD)	\
-	$(extra_live_LDADD)	\
 	$(ambulant_LDADD)	\
 	-o $(NPAMBULANT)
 
@@ -330,5 +318,7 @@ EXTRA_DIST = \
 	npambulant.rc \
 	npambulant.def \
 	resource.h \
+	cg_mainloop.h \
+	Info.plist \
 	README-linux \
 	README-win32.txt

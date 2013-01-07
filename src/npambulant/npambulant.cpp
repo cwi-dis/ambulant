@@ -1,4 +1,4 @@
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #include "npambulant.h"
 
 //#ifdef	WITH_HTML_WIDGET
-#include "ambulant/gui/dx/html_bridge.h"
+#include "ambulant/gui/d2/html_bridge.h"
 //#endif
 /* ambulant player includes */
 
@@ -128,6 +128,7 @@ m_url = net::url();
 	m_ctm = CGAffineTransformIdentity;
 	NPRect r = {0,0,0,0};
 	m_nprect = r;
+	m_nprect_window = r;
 	m_mainloop = NULL;
 #endif
 	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &m_window_obj);
@@ -226,7 +227,7 @@ npambulant::init_ambulant(NPP npp)
 #ifdef MOZ_X11
 		const char* npambulant_plugins = "/npambulant/plugins";
 #elif WITH_CG
-		const char* npambulant_plugins = "../PlugIns"; // expected in app. bundle
+		const char* npambulant_plugins = "/../PlugIns"; // expected in app. bundle
 #endif
 		char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
 		sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
@@ -332,8 +333,9 @@ npambulant::init_ambulant(NPP npp)
 #ifdef WITH_CG
 	if (url_str != NULL)
  		free(url_str);
-        if (m_view == NULL && m_cgcontext != NULL) {
-		NPN_InvalidateRect (npp, &m_nprect);	// Ask for draw event
+	if (m_view == NULL && m_cgcontext != NULL) {
+		m_nprect_window = m_nprect; // Save the window rectangle for NPN_InvalidateRect 
+		NPN_InvalidateRect (npp, &m_nprect);	// Ask for draw event 
 		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",npp,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
 	}
 #endif // WITH_CG
@@ -634,8 +636,9 @@ npambulant::handleEvent(void* event) {
 			}
 		}
 	} else if (m_nprect.top < m_nprect.bottom && m_nprect.left < m_nprect.right) {
-		NPN_InvalidateRect (m_pNPInstance, &m_nprect);	// Ask for draw event
-		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",m_pNPInstance,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
+		NPRect npr = m_nprect_window;
+		NPN_InvalidateRect (m_pNPInstance, &npr);	// Ask for draw event
+		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",m_pNPInstance,npr.top,npr.left,npr.bottom,npr.right);
 	}
 #endif//WITH_CG
 	return 0;
@@ -790,8 +793,11 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				HDC hdc = BeginPaint(hWnd, &ps);
 				RECT rc;
 				GetClientRect(hWnd, &rc);
+#ifndef	NDEBUG
+				// Draw rectangle around drawing area
 				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				EndPaint(hWnd, &ps);
+#endif//NDEBUG
 				if (plugin->m_ambulant_player)
 					plugin->m_ambulant_player->redraw(hWnd, hdc, NULL); // XXX Should pass dirty rect
 				NPRegion invalid_region = CreateRectRgn(rc.left,rc.top,rc.right,rc.bottom);
@@ -912,9 +918,10 @@ plugin_callback(void* ptr, void* arg)
 	// Note: NPRect is top-left-bottom-right (https://developer.mozilla.org/en/NPRect)
 	// typedef struct _NPRect{ uint16 top; uint16 left; uint16 bottom; uint16 right; } NPRect;
 	r = CGRectApplyAffineTransform(r, CGAffineTransformScale(CGAffineTransformIdentity, npa->m_zoom, npa->m_zoom));
-	NPRect nsr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width}; 
-	AM_DBG ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, nsr.top, nsr.left, nsr.bottom, nsr.right);
-	NPN_InvalidateRect (npa->get_NPP(), &nsr);
+	NPRect npr = {r.origin.y, r.origin.x, r.origin.y+r.size.height, r.origin.x+r.size.width};
+	npr = npa->m_nprect_window; // always redraw whole window
+	AM_DBG ambulant::lib::logger::get_logger()->debug("plugin_callback(%p,%p): calling NPN_InvalidateRect r=(tlbr)(%d,%d,%d,%d)\n", ptr, arg, npr.top, npr.left, npr.bottom, npr.right);
+	NPN_InvalidateRect (npa->get_NPP(), &npr);
 }
 
 void

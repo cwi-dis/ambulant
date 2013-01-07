@@ -17,6 +17,9 @@ Version numbers, release branches and tags
 !!=============================================================================!!
 !!=============================================================================!!
 
+NOTE: this information is outdated, it is for CVS. Things are much simpler with Mercurial.
+
+
 We use a strict numbering scheme for versions. Development versions have
 an odd minor number, releases an even one. For example, "1.5" is a development
 version, and is a moving target. Once development is finished and we're
@@ -100,25 +103,27 @@ Before creating the distribution
 - change the version number (and possibly year) in:
   - configure.in (2 places!)
   - include/ambulant/version.h
-  - src/player_macosx/Info.plist
   - src/player_macosx/*.lproj/InfoPlist.strings
+  - src/player_macosx/Resources/Info.plist
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
-  - src/player_gtk/AmbulantPlayer.desktop
-  - src/webkit_plugin/README
   - src/npambulant/install-*.rdf
-  - sc/pyambulant/setup.py
+  - src/npambulant/manifest-*.json
+  - src/pyambulant/setup.py
+  - scripts/nightlybuilds/*
+  - scripts/build-third-party-packages.py (MIRRORBASE variable)
   - installers/nsis-win32/setup-ambulant-installer.nsi
+  - installers/nsis-win32/setup-ambulant-installer-xp.nsi
+  - installers/mkdebiandist.sh
   - projects/vc9/npambulant-installer.vcproj
-  - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
-  - projects/vc10/npambulant-installer.vcproj (many places)
-  - projects/vc10/AmbulantActiveX-installer.vcproj (many places)
-  - Documentation/user/developer.html (2 times)
-  - Documentation/user-htmlhelp/developer.html (2 times, regenerate winHelp)
+  - projects/vc9/AmbulantActiveX-installer.vcxproj (2 times?)
+  - projects/vc10/npambulant-installer.vcxproj (many places)
+  - projects/vc10/AmbulantActiveX-installer.vcxproj (many places)
+  - projects/xcode32/iAmbulant-Info.plist
+  - Documentation/API/Doxyfile
 - check the following files for being up-to-date:
   - README
   - INSTALL
   - Documentation/misc/README-Distribution (this file)
-  - third_party_packages/readme.txt
 - Update the icons in the following files:
   - src/player_mfc/res/AmbulantPlayer.ico
   - src/player_mfc/res/AmbulantPlayerDoc.ico

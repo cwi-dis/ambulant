@@ -29,7 +29,10 @@ import os
 # and some per-platform magic.
 #
 INCDIRS=['../../include']
-DEFS=[ ('WITH_PYTHON_PLUGIN', '1') ]
+DEFS=[ 
+	('WITH_PYTHON_PLUGIN', '1'),
+	('WITH_REMOTE_SYNC', '1'),
+	]
 EXTRA_LINK_ARGS=[]
 LIBRARIES=[]
 LIBDIRS=[]
@@ -109,7 +112,7 @@ else:
 ##    INCDIRS += ['/usr/local/include']
     
 setup(name='ambulant',
-      version='2.2',
+      version='2.5',
       ext_modules=[
         Extension('ambulant',
             ['ambulantmodule.cpp', 'ambulantinterface.cpp', 'ambulantutilities.cpp'],

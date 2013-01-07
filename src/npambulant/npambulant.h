@@ -108,17 +108,11 @@ class gtk_mainloop;
 #elif WITH_CG
 class cg_mainloop;
 #elif XP_WIN32
-#ifdef WITH_D2D
+
 #include "ambulant/gui/d2/d2_player.h"
 typedef ambulant::gui::d2::d2_player ambulant_gui_player;
 typedef ambulant::gui::d2::d2_player_callbacks gui_callbacks; //XX from MmView.cpp
 typedef ambulant::gui::d2::d2_player_callbacks ambulant_baseclass_player_callbacks;
-#else
-#include "ambulant/gui/dx/dx_player.h"
-typedef ambulant::gui::dx::dx_player ambulant_gui_player;
-typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks;
-typedef ambulant::gui::dx::dx_player_callbacks ambulant_baseclass_player_callbacks;
-#endif // WITH_D2D
 
 #include <ambulant/net/url.h>
 class ambulant_player_callbacks : public ambulant_baseclass_player_callbacks {
@@ -223,9 +217,10 @@ class npambulant
 	gtk_mainloop* m_mainloop;
 #elif WITH_CG
 	void* m_view;			// current AmvbulantView
-	CGContext* m_cgcontext;		// current CGContext
-	CGRect m_cgcliprect;		// current clipping rectangle in Browser coordinates
+	CGContext* m_cgcontext;	// current CGContext
+	CGRect m_cgcliprect;	// current clipping rectangle in Browser coordinates
 	NPRect m_nprect;		// current drawing rect in Plugin coordinates (for NPN_InvalidateRect)
+	NPRect m_nprect_window; // the window rect in Plugin coordinates (for NPN_InvalidateRect)
 	cg_mainloop *m_mainloop;	// current player control object
 	// zoom control
 	CGSize m_doc_size;		// top-level window size in document (root-layout) 

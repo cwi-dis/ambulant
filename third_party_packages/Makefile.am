@@ -1,7 +1,9 @@
 EXTRA_DIST = \
+	SDL-bug-1513.patch \
+	SDL_Pango-0.1.2-API-Changes.patch \
+	SDL_Pango-0.1.2-SDL2-Changes.patch \
 	expat.patch \
 	ffmpeg-windows-compat \
-	live_VC9 \
-	live_VC10 \
-	live-patches.tar
+	gettext-0.18.1.1.patch \
+	libdispatch-patches
 	

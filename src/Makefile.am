@@ -16,7 +16,7 @@ build_player_sdl=player_sdl
 else
 build_player_sdl=
 endif
-if WITH_COCOA
+if WITH_CG
 build_player_macosx=player_macosx
 else
 build_player_macosx=
@@ -40,5 +40,5 @@ SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_
 DIST_SUBDIRS = libambulant plugins player_unix player_gtk player_sdl player_macosx pyambulant npambulant
 EXTRA_DIST= \
 	player_mfc \
-	ieambulant \
-	webkit_plugin 
+	player_iphone \
+	ieambulant

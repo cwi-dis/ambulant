@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -48,9 +48,6 @@
 #include "ambulant/lib/parser_factory.h"
 #ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
-#endif
-#ifdef WITH_LIVE
-#include "ambulant/net/rtsp_factory.h"
 #endif
 
 #include "sdl_gui.h"
@@ -144,11 +141,6 @@ sdl_gui_player::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-#ifdef WITH_LIVE
-	AM_DBG m_logger->debug("player::player: add live_audio_datasource_factory");
-	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory());
-#endif
 #ifdef WITH_FFMPEG
 	AM_DBG m_logger->debug("player::player: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());

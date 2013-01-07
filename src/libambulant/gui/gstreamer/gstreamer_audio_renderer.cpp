@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -133,36 +133,6 @@ gstreamer_audio_renderer::is_supported(const lib::node *node)
 	if (mimetype == "audio/mpeg" || mimetype == "audio/wav")
 		return true;
 	return false;
-}
-
-bool
-gstreamer_audio_renderer::is_paused()
-{
-	m_lock.enter();
-	bool rv;
-	rv = m_is_paused;
-	m_lock.leave();
-	return rv;
-}
-
-bool
-gstreamer_audio_renderer::is_stopped()
-{
-	m_lock.enter();
-	bool rv;
-	rv = !m_is_playing;
-	m_lock.leave();
-	return rv;
-}
-
-bool
-gstreamer_audio_renderer::is_playing()
-{
-	m_lock.enter();
-	bool rv;
-	rv = m_is_playing;
-	m_lock.leave();
-	return rv;
 }
 
 bool

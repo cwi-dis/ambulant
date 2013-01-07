@@ -53,7 +53,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;$(IntDir)"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;AMBULANT_USE_DLL;WITH_D2D;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;AMBULANT_USE_DLL;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -159,7 +159,7 @@
 				Optimization="1"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\include;$(IntDir)"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;WITH_D2D"
+				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -226,216 +226,6 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
-		<Configuration
-			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="..\..\bin\win32\"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets=".\Ambulant-win32.vsprops"
-			UseOfMFC="0"
-			UseOfATL="1"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Performing registration"
-				CommandLine="regsvr32 /s /c &quot;$(TargetPath)&quot;&#x0D;&#x0A;echo regsvr32 exec. time &gt; &quot;$(IntDir)\regsvr32.trg&quot;&#x0D;&#x0A;"
-				Outputs="$(IntDir)\regsvr32.trg"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName="$(IntDir)\$(ProjectName).tlb"
-				OutputDirectory="$(IntDir)"
-				HeaderFileName="$(IntDir)\$(InputName)_h.h"
-				DLLDataFileName="$(IntDir)\dlldata.c"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="1"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\include;$(IntDir)"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
-				StringPooling="true"
-				ExceptionHandling="1"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile="$(IntDir)\AmbulantActiveX.pch"
-				AssemblerListingLocation="$(IntDir)\"
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\include;$(IntDir)"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalDependencies=""
-				OutputFile="$(OutDir)\AmbulantActiveXDX.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames=""
-				ModuleDefinitionFile="..\..\src\ieambulant\AmbulantActiveX.def"
-				ProgramDatabaseFile="$(OutDir)\AmbulantActiveX.pdb"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(IntDir)\AmbulantActiveX.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(IntDir)\AmbulantActiveX.bsc"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="DebugShlibDX|Win32"
-			OutputDirectory="..\..\bin\win32\"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets=".\Ambulant-win32.vsprops"
-			UseOfMFC="0"
-			UseOfATL="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Performing registration"
-				CommandLine="regsvr32 /s /c &quot;$(TargetPath)&quot;&#x0D;&#x0A;echo regsvr32 exec. time &gt; &quot;$(IntDir)\regsvr32.trg&quot;&#x0D;&#x0A;"
-				Outputs="$(IntDir)\regsvr32.trg"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".$(IntDir)\AmbulantActiveX.tlb"
-				OutputDirectory="$(IntDir)"
-				HeaderFileName=""
-				DLLDataFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;$(IntDir)"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;AMBULANT_USE_DLL;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="false"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile="$(IntDir)\AmbulantActiveX.pch"
-				AssemblerListingLocation="$(IntDir)\"
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc90.pdb"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4996"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\include;$(IntDir)"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalDependencies="comsuppwd.lib"
-				OutputFile="$(OutDir)\AmbulantActiveXDX_D.dll"
-				LinkIncremental="0"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories=""
-				ModuleDefinitionFile="..\..\src\ieambulant\AmbulantActiveX.def"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\AmbulantActiveX_D.pdb"
-				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(IntDir)/AmbulantActiveX_D.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine=""
-			/>
-		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -457,22 +247,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseShlibDX|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugShlibDX|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -510,29 +284,6 @@
 						InterfaceIdentifierFileName="AmbulantActiveX_i.c"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseShlibDX|Win32"
-					>
-					<Tool
-						Name="VCMIDLTool"
-						GenerateStublessProxies="true"
-						TypeLibraryName="AmbulantActiveX.tlb"
-						HeaderFileName="AmbulantActiveX.h"
-						DLLDataFileName=""
-						InterfaceIdentifierFileName="AmbulantActiveX_i.c"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugShlibDX|Win32"
-					>
-					<Tool
-						Name="VCMIDLTool"
-						GenerateStublessProxies="true"
-						TypeLibraryName="AmbulantActiveX.tlb"
-						HeaderFileName="AmbulantActiveX.h"
-						InterfaceIdentifierFileName="AmbulantActiveX_i.c"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\ieambulant\AmbulantActiveX.rc"
@@ -556,24 +307,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseShlibDX|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugShlibDX|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

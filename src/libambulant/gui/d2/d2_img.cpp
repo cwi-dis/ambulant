@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -52,12 +52,30 @@ gui::d2::create_d2_image_playable_factory(common::factories *factory, common::pl
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirect2D"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererWicImg"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	// Initialize the WIC factory now, while we know we are in the main thread
+	gui::d2::d2_img_renderer::initwic();
+
 	return new common::single_playable_factory<
 		gui::d2::d2_img_renderer,
 		d2_img_playable_tag,
 		d2_img_playable_renderer_uri,
 		d2_img_playable_renderer_uri2,
 		d2_img_playable_renderer_uri3 >(factory, mdp);
+}
+
+void
+gui::d2::d2_img_renderer::initwic()
+{
+	if (s_wic_factory == NULL) {
+		// init wic factory
+		HRESULT hr = CoCreateInstance(
+			CLSID_WICImagingFactory,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			IID_PPV_ARGS(&s_wic_factory)
+			);
+		assert(SUCCEEDED(hr));
+	}
 }
 
 gui::d2::d2_img_renderer::d2_img_renderer(
@@ -73,17 +91,7 @@ gui::d2::d2_img_renderer::d2_img_renderer(
 	m_databuf(NULL),
 	m_factory(fp)
 {
-	if (s_wic_factory == NULL) {
-		// init wic factory
-		HRESULT hr = CoCreateInstance(
-			CLSID_WICImagingFactory,
-			NULL,
-			CLSCTX_INPROC_SERVER,
-			IID_PPV_ARGS(&s_wic_factory)
-			);
-		assert(SUCCEEDED(hr));
-	}
-
+	initwic();
 	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::ctr(0x%x)", this);
 }
 

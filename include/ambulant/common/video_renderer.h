@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -63,15 +63,6 @@ class video_renderer : public common::renderer_playable {
 	/// what the hardware wants (so we don't need to do an extra pass of
 	/// byte reordering).
 	virtual net::pixel_order pixel_layout() { return net::pixel_argb; }
-
-	/// Return true if video is paused.
-	bool is_paused() { return m_is_paused; };
-
-	/// Return true if video is not playing.
-	bool is_stopped() { return !m_activated;};
-
-	/// Return true if video is playing.
-	bool is_playing() { return m_activated; };
 
 	/// Callback routine passed to the datasource, to be called when new data is available.
 	void data_avail();

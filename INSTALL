@@ -3,7 +3,7 @@ Installation Instructions for AmbulantPlayer
 
 =======
 This file contains instructions for building AmbulantPlayer from
-source, for all of Windows, Windows Mobile 5, Unix and Mac OS X.
+source, for all of Windows, Unix, Mac OS X and iOS.
 
 This file is part of the Ambulant Player source distribution,
 which can be downloaded via <http://www.ambulantplayer.org>.
@@ -39,12 +39,15 @@ After unpacking Ambulant you should first download and build the required
 or
 	
 
-	python ../scripts/build-third-party-packages.py linux
+	sudo python ../scripts/build-third-party-packages.py debian
 	
 The first version will install all needed packages (insofar they are not installed
 on your system yet) in "third_party_packages/installed", and configure
 and make will pick them up from there. This method will not pollute your
-system with lots of packages you may nnot be interested in.
+system with lots of packages you may not be interested in.
+
+NOTE: SDL_Pango will not build cleanly on all Linux systems. You can probably
+ignore this error for normal Ambulant builds.
 
 You could also use "debian" in stead of "linux", then the third party
 packages will be installed system-wide through the package manager.
@@ -75,9 +78,6 @@ For more special case configure options consult "configure --help".
 Building for Mac OS X, configure/make style
 -------------------------------------------
 
-Warning: as of this writing, building on 10.7 Lion does not work: there are
-minimal tweaks that need to be made to SDL and gettext. 
-
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
 put these in the next category, but for now you need to download, build and
@@ -93,13 +93,6 @@ and run
 
 	python ../scripts/build-third-party-packages.py mac10.6
 	
-That is, if you are on MacOSX 10.6. This will build the packages 32/64
-bit universal. If you are on 10.4 or 10.5 you specify "mac10.4" as the
-argument, and the packages will be built Intel/PowerPC universal (both
-32bit).
-
-For manual builds, see third_party_packages/readme.txt and readme-osx.txt.
-
 Then the normal "configure"/"make"/"sudo make install" combo can be used
 here in the toplevel directory to create the player. For MacOSX 10.6 you
 can build a universal 32-bit/64-bit Ambulant, by running configure as:
@@ -116,9 +109,6 @@ into /usr/local.
 
 Building for Mac OS X 10.6 using XCode
 --------------------------------------
-
-Warning: as of this writing, building on 10.7 Lion does not work: there are
-minimal tweaks that need to be made to SDL and gettext.
 
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
@@ -210,6 +200,10 @@ project (right-click on it for the context menu that allows you to do this).
 Select the build type, for example "Release" for Direct2D (Windows 7 only) or
 "ReleaseDX" for DirectDraw (XP or later).
 
+NOTE: if you are building with VS2008 you may get errors on _Swap_adl. If you do:
+search the solution for _Swap_adl, you will need to make a small change in two
+locations. The gory details of this problem are explained in a comment there.
+
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
 
@@ -217,7 +211,7 @@ If you want to build the Firefox or IE plugin you may need to install some
 additional tools such as CabArc. Also, to build the IE plugin you must run
 Visual Studio (sic!) with Administrator permissions.
 
-Building for iPhane iOS4
+Building for iPhone iOS4
 ------------------------
 
 First there are some packages that need to be installed system-wide, i.e.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2012-10-05 11:55+0200\n"
+"POT-Creation-Date: 2012-12-04 09:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -143,15 +143,34 @@ msgstr ""
 msgid "%s: cannot open movie"
 msgstr ""
 
+#: src/libambulant/gui/d2/d2_player.cpp:203
 #: src/libambulant/gui/dx/dx_player.cpp:175 src/npambulant/cg_mainloop.cpp:96
 #: src/player_macosx/mainloop.cpp:103
 #, c-format
 msgid "%s: node ID not found"
 msgstr ""
 
-#: src/libambulant/gui/gtk/gtk_smiltext.cpp:645
+#: src/libambulant/gui/d2/d2_player.cpp:1393
+#, c-format
+msgid "%s:multiple screen transitions in progress (m_fullscreen_count=%d)"
+msgstr ""
+
+#: src/libambulant/gui/gtk/gtk_smiltext.cpp:646
+#: src/libambulant/gui/SDL/sdl_smiltext.cpp:717
 #, c-format
 msgid "Geometry error in smil document at %s"
+msgstr ""
+
+#: src/libambulant/gui/gtk/gtk_transition.cpp:418
+#: src/libambulant/gui/qt/qt_transition.cpp:428
+#: src/libambulant/gui/SDL/sdl_transition.cpp:425
+#, c-format
+msgid "%s: transition type %s not yet implemented"
+msgstr ""
+
+#: src/libambulant/gui/qt/qt_factory.cpp:339
+#, c-format
+msgid "%s:multiple Screen transitions in progress (m_fullscreen_count=%d)"
 msgstr ""
 
 #: src/libambulant/gui/SDL/sdl_audio.cpp:94
@@ -280,18 +299,18 @@ msgstr ""
 #: src/libambulant/net/demux_datasource.cpp:150
 #: src/libambulant/net/ffmpeg_audio.cpp:342
 #: src/libambulant/net/ffmpeg_audio.cpp:404
-#: src/libambulant/net/ffmpeg_audio.cpp:527
-#: src/libambulant/net/ffmpeg_audio.cpp:946
-#: src/libambulant/net/ffmpeg_audio.cpp:984
-#: src/libambulant/net/ffmpeg_audio.cpp:1194
+#: src/libambulant/net/ffmpeg_audio.cpp:542
+#: src/libambulant/net/ffmpeg_audio.cpp:981
+#: src/libambulant/net/ffmpeg_audio.cpp:1019
+#: src/libambulant/net/ffmpeg_audio.cpp:1229
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:520
-#: src/libambulant/net/ffmpeg_video.cpp:296
-#: src/libambulant/net/ffmpeg_video.cpp:906
-#: src/libambulant/net/ffmpeg_video.cpp:911
-#: src/libambulant/net/ffmpeg_video.cpp:919
+#: src/libambulant/net/ffmpeg_video.cpp:297
+#: src/libambulant/net/ffmpeg_video.cpp:915
+#: src/libambulant/net/ffmpeg_video.cpp:920
+#: src/libambulant/net/ffmpeg_video.cpp:928
 msgid "Programmer error encountered during video playback"
 msgstr ""
 
@@ -321,13 +340,13 @@ msgstr ""
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:733
-#: src/libambulant/net/ffmpeg_audio.cpp:744
+#: src/libambulant/net/ffmpeg_audio.cpp:748
+#: src/libambulant/net/ffmpeg_audio.cpp:767
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:933
+#: src/libambulant/net/ffmpeg_audio.cpp:968
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 
@@ -340,23 +359,23 @@ msgstr ""
 msgid "Programmer error encountered"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:190
+#: src/libambulant/net/ffmpeg_video.cpp:191
 #, c-format
 msgid "ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:541
-#: src/libambulant/net/ffmpeg_video.cpp:717
+#: src/libambulant/net/ffmpeg_video.cpp:542
+#: src/libambulant/net/ffmpeg_video.cpp:718
 msgid "Out of memory playing video"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:611
+#: src/libambulant/net/ffmpeg_video.cpp:612
 #, c-format
 msgid "error decoding video frame (timestamp=%lld)"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:877
-#: src/libambulant/net/ffmpeg_video.cpp:888
+#: src/libambulant/net/ffmpeg_video.cpp:878
+#: src/libambulant/net/ffmpeg_video.cpp:897
 #, c-format
 msgid "No support for \"%s\" video"
 msgstr ""
@@ -365,28 +384,6 @@ msgstr ""
 #: src/libambulant/net/stdio_datasource.cpp:165
 #, c-format
 msgid "Error encountered while reading file %s"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:168
-#: src/libambulant/net/rtsp_datasource.cpp:176
-#: src/libambulant/net/rtsp_datasource.cpp:185
-#: src/libambulant/net/rtsp_datasource.cpp:196
-#: src/libambulant/net/rtsp_datasource.cpp:205
-#: src/libambulant/net/rtsp_datasource.cpp:327
-msgid "RTSP Connection Failed"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:445
-#: src/libambulant/net/rtsp_datasource.cpp:453
-msgid "playing RTSP connection failed"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:493
-msgid "pausing RTSP media session failed"
-msgstr ""
-
-#: src/libambulant/net/rtsp_datasource.cpp:498
-msgid "resuming RTSP media session failed"
 msgstr ""
 
 #: src/libambulant/net/url.cpp:506
@@ -518,9 +515,14 @@ msgid "Error in SMIL transition info in document"
 msgstr ""
 
 #: src/npambulant/cg_mainloop.cpp:83 src/player_gtk/gtk_mainloop.cpp:282
-#: src/player_macosx/mainloop.cpp:90 src/player_unix/qt_mainloop.cpp:249
+#: src/player_macosx/mainloop.cpp:90 src/player_sdl/sdl_gui_player.cpp:328
+#: src/player_unix/qt_mainloop.cpp:249
 #, c-format
 msgid "%s: Cannot build DOM tree"
+msgstr ""
+
+#: src/npambulant/npambulant.cpp:274
+msgid "Ambulant plugin loaded"
 msgstr ""
 
 #: src/player_gtk/gtk_gui.cpp:255
@@ -663,48 +665,53 @@ msgstr ""
 msgid "Plays a simple SMIL file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:473 src/player_unix/qt_gui.cpp:196
+#: src/player_gtk/gtk_gui.cpp:473 src/player_sdl/sdl_gui.cpp:250
+#: src/player_unix/qt_gui.cpp:196
 msgid "About AmbulantPlayer"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:497 src/player_unix/qt_gui.cpp:215
+#: src/player_gtk/gtk_gui.cpp:497 src/player_sdl/sdl_gui.cpp:274
+#: src/player_unix/qt_gui.cpp:215
 msgid "Cannot find Welcome.smil document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:514 src/player_unix/qt_gui.cpp:226
+#: src/player_gtk/gtk_gui.cpp:514 src/player_sdl/sdl_gui.cpp:291
+#: src/player_unix/qt_gui.cpp:226
 msgid "Cannot find Ambulant Player Help"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:533 src/player_unix/qt_gui.cpp:248
+#: src/player_gtk/gtk_gui.cpp:533 src/player_sdl/sdl_gui.cpp:310
+#: src/player_unix/qt_gui.cpp:248
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:566
+#: src/player_gtk/gtk_gui.cpp:566 src/player_sdl/sdl_gui.cpp:324
 msgid "Please, select a file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:569
+#: src/player_gtk/gtk_gui.cpp:569 src/player_sdl/sdl_gui.cpp:327
 msgid "SMIL files"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:574
+#: src/player_gtk/gtk_gui.cpp:574 src/player_sdl/sdl_gui.cpp:332
 msgid "All files"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:580
+#: src/player_gtk/gtk_gui.cpp:580 src/player_sdl/sdl_gui.cpp:338
 msgid "Any file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:618
+#: src/player_gtk/gtk_gui.cpp:618 src/player_sdl/sdl_gui.cpp:376
 msgid "Please, select a settings file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:621
+#: src/player_gtk/gtk_gui.cpp:621 src/player_sdl/sdl_gui.cpp:379
 msgid "XML files"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:659 src/player_unix/qt_gui.cpp:333
+#: src/player_gtk/gtk_gui.cpp:659 src/player_sdl/sdl_gui.cpp:417
+#: src/player_unix/qt_gui.cpp:333
 msgid "URL to open:"
 msgstr ""
 
@@ -729,12 +736,14 @@ msgstr ""
 msgid "Cannot open logfile: %s"
 msgstr ""
 
-#: src/player_gtk/gtk_mainloop.cpp:81 src/player_unix/qt_mainloop.cpp:75
+#: src/player_gtk/gtk_mainloop.cpp:81 src/player_sdl/sdl_gui_player.cpp:77
+#: src/player_unix/qt_mainloop.cpp:75
 #, c-format
 msgid "$BROWSER not set: cannot open webpage <%s>"
 msgstr ""
 
-#: src/player_gtk/gtk_mainloop.cpp:90 src/player_unix/qt_mainloop.cpp:85
+#: src/player_gtk/gtk_mainloop.cpp:90 src/player_sdl/sdl_gui_player.cpp:86
+#: src/player_unix/qt_mainloop.cpp:85
 #, c-format
 msgid "Attempt to start browser returned status %d. Command: %s"
 msgstr ""
@@ -788,28 +797,33 @@ msgid "Plugin Directory:"
 msgstr ""
 
 #: src/player_gtk/unix_preferences.cpp:135
+#: src/player_sdl/unix_preferences.cpp:135
 #: src/player_unix/unix_preferences.cpp:137
 #, c-format
 msgid "Invalid value from preference file: %s=%s"
 msgstr ""
 
 #: src/player_gtk/unix_preferences.cpp:164
+#: src/player_sdl/unix_preferences.cpp:164
 #: src/player_unix/unix_preferences.cpp:168
 #, c-format
 msgid "Invalid preference name: %s"
 msgstr ""
 
 #: src/player_gtk/unix_preferences.cpp:211
+#: src/player_sdl/unix_preferences.cpp:211
 #: src/player_unix/unix_preferences.cpp:215
 msgid "Invalid preference file format"
 msgstr ""
 
 #: src/player_gtk/unix_preferences.cpp:269
+#: src/player_sdl/unix_preferences.cpp:269
 #: src/player_unix/unix_preferences.cpp:273
 msgid "HOME environment variable not set"
 msgstr ""
 
 #: src/player_gtk/unix_preferences.cpp:281
+#: src/player_sdl/unix_preferences.cpp:281
 #: src/player_unix/unix_preferences.cpp:286
 #, c-format
 msgid "mkdir(\"%s\") failed: %s"
@@ -992,4 +1006,20 @@ msgstr ""
 
 #: src/player_unix/qt_settings.cpp:118
 msgid "Plugin directory:\n"
+msgstr ""
+
+#: src/plugins/plugin.cpp:174 src/plugins/plugin_ffmpeg.cpp:121
+#: src/plugins/pythonplugin.cpp:136 src/plugins/rot13plugin.cpp:97
+#: src/plugins/wkdomplugin.cpp:58 src/plugins/xercesplugin.cpp:83
+#: src/plugins/xpath_stateplugin.cpp:787
+#, c-format
+msgid "%s: built for plugin-api version %d, current %d. Skipping."
+msgstr ""
+
+#: src/plugins/plugin.cpp:178 src/plugins/plugin_ffmpeg.cpp:125
+#: src/plugins/pythonplugin.cpp:140 src/plugins/rot13plugin.cpp:101
+#: src/plugins/wkdomplugin.cpp:62 src/plugins/xercesplugin.cpp:87
+#: src/plugins/xpath_stateplugin.cpp:791
+#, c-format
+msgid "%s: built for different Ambulant version (%s)"
 msgstr ""

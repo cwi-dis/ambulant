@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2011 Stichting CWI, 
+ * Copyright (C) 2003-2012 Stichting CWI, 
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -56,6 +56,8 @@ class d2_img_renderer : public d2_renderer<renderer_playable> {
 
 	void recreate_d2d();
 	void discard_d2d();
+
+	static void initwic();
   private:
 
 	static IWICImagingFactory *s_wic_factory;

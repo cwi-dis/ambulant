@@ -7,6 +7,8 @@ Retrieved from: http://gstreamer.freedesktop.org/src/gst-rtsp/gst-rtsp-0.10.8.ta
 
 This version has been a little modified to include in 'examples':
 * test-webcam: stream a webcam over rtsp
+	Connect your viewer (for example Quicktime Player) to
+	rtsp://hostname:8554/test
 * test-appsrc: stream input data from 'stdin' over rtsp
   (supposed to contain rgb video data, preceded by an ASCII header like:
   Time: 00000122

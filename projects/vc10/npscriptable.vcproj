@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
+				AdditionalIncludeDirectories="&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
 				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -92,7 +92,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
+				AdditionalIncludeDirectories="&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
 				PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -271,8 +271,8 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+						CommandLine="$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
 "
 						Outputs="nsIAmbulantPlugin.h;nsIAmbulantPlugin.xpt"/>
 				</FileConfiguration>
@@ -281,9 +281,9 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link npscriptable.xpt nsIAmbulantPlugin.xpt
+						CommandLine="$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+$(third_party_dir)\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link npscriptable.xpt nsIAmbulantPlugin.xpt
 "
 						Outputs="nsIAmbulantPlugin.h"/>
 				</FileConfiguration>

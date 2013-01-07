@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -20,8 +20,7 @@
 #include "ambulant/config/config.h"
 #include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/gui/d2/d2_window.h"
-#include "ambulant/gui/dx/dx_wmuser.h"
-#include "ambulant/gui/dx/dx_rgn.h"
+#include "ambulant/gui/d2/wmuser.h"
 #include "ambulant/gui/d2/d2_transition.h"
 
 #include "ambulant/lib/event.h"
@@ -42,7 +41,7 @@
 #include "ambulant/gui/d2/d2_text.h"
 #include "ambulant/gui/d2/d2_smiltext.h"
 #include "ambulant/gui/d2/d2_img.h"
-//#include "ambulant/gui/d2/html_bridge.h"
+#include "ambulant/gui/d2/html_bridge.h"
 //#include "ambulant/gui/d2/d2_html_renderer.h"
 
 // Select audio renderer to use.
@@ -100,7 +99,6 @@
 #include "ambulant/net/win32_datasource.h"
 #ifdef WITH_FFMPEG
 #include "ambulant/net/ffmpeg_factory.h"
-#include "ambulant/net/rtsp_factory.h"
 #endif
 
 #include <d2d1.h>
@@ -116,8 +114,6 @@ using namespace ambulant;
 inline D2D1_RECT_F d2_rectf(ambulant::lib::rect r) {
 	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
-
-int gui::dx::dx_gui_region::s_counter = 0;
 
 gui::d2::d2_player::d2_player(
 	d2_player_callbacks &hoster,
@@ -249,8 +245,6 @@ gui::d2::d2_player::~d2_player() {
 		}
 		delete m_doc;
 	}
-	if(gui::dx::dx_gui_region::s_counter != 0)
-		m_logger->warn("Undeleted gui regions: %d", dx::dx_gui_region::s_counter);
 	assert(m_d2d);
 	m_d2d->Release();
 	m_d2d = NULL;
@@ -314,11 +308,6 @@ gui::d2::d2_player::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-#ifdef WITH_LIVE
-	AM_DBG m_logger->debug("d2_player: add live_audio_datasource_factory");
-	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory());
-#endif
 #ifdef WITH_FFMPEG
 	AM_DBG m_logger->debug("d2_player: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
@@ -449,7 +438,7 @@ void gui::d2::d2_player::stop() {
 }
 
 void gui::d2::d2_player::pause() {
-	if(m_player) {
+ 	if(m_player) {
 		lock_redraw();
 		common::gui_player::pause();
 		unlock_redraw();

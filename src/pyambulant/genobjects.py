@@ -50,6 +50,11 @@ OBJECTS=[
 	("timer", "ambulant::lib::timer", None),
 	("timer_control", "ambulant::lib::timer_control", "timer"),
 	("timer_control_impl", "ambulant::lib::timer_control_impl", "timer_control"),
+	("timer_observer", "ambulant::lib::timer_observer", None),
+	
+	"lib/timer_sync.h",
+	("timer_sync", "ambulant::lib::timer_sync", "timer_observer"),
+	("timer_sync_factory", "ambulant::lib::timer_sync_factory", None),
 	
 	"lib/transition_info.h",
 	("transition_info", "ambulant::lib::transition_info", None),
@@ -132,7 +137,6 @@ OBJECTS=[
 #	"gui/gtk/gtk_factory.h",
 	"gui/SDL/sdl_factory.h",
 	"net/ffmpeg_factory.h",
-	"net/rtsp_factory.h",
 ]
 
 out = open('ambulantobjgen.py', 'w')

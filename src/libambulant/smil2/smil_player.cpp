@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -76,6 +76,9 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_focus(0),
 	m_focussed_nodes(new std::set<int>()),
 	m_new_focussed_nodes(0)
+#ifdef WITH_REMOTE_SYNC
+    , m_timer_sync(NULL)
+#endif
 {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player(0x%x)", this);
@@ -88,6 +91,15 @@ smil_player::initialize()
 	document_loaded(m_doc);
 
 	m_event_processor = event_processor_factory(m_timer);
+#ifdef WITH_REMOTE_SYNC
+    timer_sync_factory *tsf = m_factory->get_timer_sync_factory();
+    if (tsf) {
+        m_timer_sync = tsf->new_timer_sync(m_doc);
+    }
+    if (m_timer_sync) {
+        m_timer_sync->initialize(m_timer);
+    }
+#endif // WITH_REMOTE_SYNC
 	create_state_engine();
 	// build the layout (we need the top-level layout)
 	build_layout();
@@ -101,6 +113,9 @@ smil_player::terminate()
 {
 	m_lock.enter();
 	m_doc = NULL;
+#ifdef WITH_REMOTE_SYNC
+    delete m_timer_sync;
+#endif
 	m_timer->pause();
 	std::map<const lib::node*, common::playable *>::iterator it;
 	m_scheduler->reset_document();
@@ -278,11 +293,13 @@ void smil_player::pause() {
 #ifdef XXNOTWITH_GCD_EVENT_PROCESSOR
 		//m_event_processor->pause();
 #endif
+#ifndef WITH_REMOTE_SYNC
 		std::map<const lib::node*, common::playable *>::iterator it;
 		m_playables_cs.enter();
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->pause();
 		m_playables_cs.leave();
+#endif WITH_REMOTE_SYNC
 	}
 
 	m_lock.leave();
@@ -301,12 +318,14 @@ void smil_player::resume() {
 void smil_player::_resume() {
 	if(m_state == common::ps_pausing) {
 		m_state = common::ps_playing;
+#ifndef WITH_REMOTE_SYNC
 		std::map<const lib::node*, common::playable *>::iterator it;
 
 		m_playables_cs.enter();
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->resume();
 		m_playables_cs.leave();
+#endif WITH_REMOTE_SYNC
 		m_timer->resume();
 	}
 }
@@ -623,9 +642,24 @@ smil_player::clicked(int n, double t) {
 void
 smil_player::clicked_async(async_arg aa) {
 //XXXJACK thinks this isn't needed	m_scheduler->lock();
+#ifdef WITH_REMOTE_SYNC
+	if (m_timer_sync) {
+		const lib::node *n = aa.first->dom_node();
+		lib::timer::time_type t = 0; // aa.second.blabla
+		m_timer_sync->clicked(n, t);
+    }
+#endif
 	aa.first->raise_activate_event(aa.second);
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
+
+#ifdef WITH_REMOTE_SYNC
+void
+smil_player::clicked_external(lib::node *n, lib::timer::time_type t)
+{
+	clicked(n->get_numid(), (double)t/1000000.0);
+}
+#endif // WITH_REMOTE_SYNC
 
 void
 smil_player::before_mousemove(int cursorid)

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "AmbulantPlayer.h"
 #include "LogWindow.h"
-#include "ambulant/gui/dx/dx_wmuser.h"
+#include "ambulant/gui/d2/wmuser.h"
 
 // logwindow_ostream implementation
 

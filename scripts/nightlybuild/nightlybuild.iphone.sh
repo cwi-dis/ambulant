@@ -21,7 +21,7 @@ x)
 esac
 
 # Tunable parameters, to some extent
-AMBULANTVERSION=2.3
+AMBULANTVERSION=2.5
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
@@ -36,7 +36,7 @@ fi
 case x$BRANCH in
 x)	
 	;;
-release*)
+xrelease*)
 	TODAY=$TODAY-$BRANCH
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=

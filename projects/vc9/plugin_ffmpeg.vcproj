@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;&quot;$(sdl_dir)\include&quot;;&quot;$(ffmpeg_dev_dir)\include&quot;;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;;&quot;$(live555_dir)\UsageEnvironment\include&quot;;&quot;$(live555_dir)\liveMedia\include&quot;;&quot;$(live555_dir)\groupsock\include&quot;;&quot;$(live555_dir)\BasicUsageEnvironment\include&quot;"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_LIB;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO;WITH_D2D"
+				AdditionalIncludeDirectories="..\..\include;&quot;$(sdl_dir)\include&quot;;&quot;$(ffmpeg_dev_dir)\include&quot;;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;"
+				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_LIB;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -66,7 +66,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib"
 				OutputFile="../../bin/win32/libampluginD_ffmpeg.dll"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
@@ -127,8 +127,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;&quot;$(sdl_dir)\include&quot;;&quot;$(ffmpeg_dev_dir)\include&quot;;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;;&quot;$(live555_dir)\UsageEnvironment\include&quot;;&quot;$(live555_dir)\liveMedia\include&quot;;&quot;$(live555_dir)\groupsock\include&quot;;&quot;$(live555_dir)\BasicUsageEnvironment\include&quot;"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO;WITH_D2D"
+				AdditionalIncludeDirectories="..\..\include;&quot;$(sdl_dir)\include&quot;;&quot;$(ffmpeg_dev_dir)\include&quot;;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;"
+				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
@@ -147,7 +147,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib"
 				OutputFile="../../bin/win32/libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
@@ -156,172 +156,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/plugin.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="ReleaseShlibDX|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets=".\Ambulant-win32.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\include;&quot;$(sdl_dir)\include&quot;;&quot;$(ffmpeg_dev_dir)\include&quot;;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;;&quot;$(live555_dir)\UsageEnvironment\include&quot;;&quot;$(live555_dir)\liveMedia\include&quot;;&quot;$(live555_dir)\groupsock\include&quot;;&quot;$(live555_dir)\BasicUsageEnvironment\include&quot;"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO"
-				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="false"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
-				OutputFile="../../bin/win32/libamplugin_ffmpegDX.dll"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
-				IgnoreDefaultLibraryNames="libcmtd.lib;libcpmtd.lib"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/plugin.lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="DebugShlibDX|Win32"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets=".\Ambulant-win32.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;&quot;$(sdl_dir)\include&quot;;&quot;$(ffmpeg_dev_dir)\include&quot;;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;;&quot;$(live555_dir)\UsageEnvironment\include&quot;;&quot;$(live555_dir)\liveMedia\include&quot;;&quot;$(live555_dir)\groupsock\include&quot;;&quot;$(live555_dir)\BasicUsageEnvironment\include&quot;"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="false"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
-				OutputFile="../../bin/win32/libampluginD_ffmpegDX.dll"
-				LinkIncremental="0"
-				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
-				IgnoreDefaultLibraryNames="LIBC.lib;libcmt.lib;libcpmt.lib"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/plugin.pdb"
-				GenerateMapFile="true"
-				SubSystem="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/plugin.lib"
@@ -399,39 +233,11 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="live555"
-				>
-				<File
-					RelativePath="..\..\src\libambulant\net\rtsp_datasource.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\libambulant\net\rtsp_factory.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="dsvideo"
 				>
 				<File
 					RelativePath="..\..\src\libambulant\gui\d2\d2_dsvideo.cpp"
 					>
-					<FileConfiguration
-						Name="ReleaseShlibDX|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="DebugShlibDX|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\gui\dx\dx_dsvideo.cpp"
@@ -505,18 +311,6 @@
 				</File>
 				<File
 					RelativePath="..\..\include\ambulant\net\ffmpeg_video.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="live555"
-				>
-				<File
-					RelativePath="..\..\include\ambulant\net\rtsp_datasource.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\include\ambulant\net\rtsp_factory.h"
 					>
 				</File>
 			</Filter>

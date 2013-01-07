@@ -8,13 +8,14 @@
 	products (shared lib, plugins, browser plugins, etc) built.
 	Picked up by many projects inside Ambulant_win32.sln.
 -->
-<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR" PerformEnvironmentSet="false"/>
+<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR;WITH_REMOTE_SYNC" PerformEnvironmentSet="false"/>
 
 <!--
 	Set the following variables to the locations where you downloaded the various
 	third party libraries. Building Ambulant without these will be disappointing.
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
+<UserMacro Name="ambulant_dir" Value="..\.." PerformEnvironmentSet="true"/>
 <UserMacro Name="expat_dir" Value="..\..\third_party_packages\expat" PerformEnvironmentSet="true"/>
 <UserMacro Name="jpeg_dir" Value="..\..\third_party_packages\jpeg" PerformEnvironmentSet="true"/>
 <UserMacro Name="lpng_dir" Value="..\..\third_party_packages\lpng128" PerformEnvironmentSet="true"/>
@@ -32,9 +33,8 @@
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
 <UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.3.0-6050" PerformEnvironmentSet="true"/>
-<UserMacro Name="ffmpeg_bin_dir" Value="..\..\third_party_packages\ffmpeg-git-7f83db3-win32-shared" PerformEnvironmentSet="true"/>
-<UserMacro Name="ffmpeg_dev_dir" Value="..\..\third_party_packages\ffmpeg-git-7f83db3-win32-dev" PerformEnvironmentSet="true"/>
-<UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
+<UserMacro Name="ffmpeg_bin_dir" Value="..\..\third_party_packages\ffmpeg-20120927-git-13f0cd6-win32-shared" PerformEnvironmentSet="true"/>
+<UserMacro Name="ffmpeg_dev_dir" Value="..\..\third_party_packages\ffmpeg-20120927-git-13f0cd6-win32-dev" PerformEnvironmentSet="true"/>
 <!--
 	Third party library for plugin_xerces. You can disable this, but
 	Ambulant can no longer do XML validation.

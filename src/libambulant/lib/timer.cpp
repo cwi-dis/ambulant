@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 
 #include "ambulant/lib/logger.h"
 #include <cmath>
+#include <cassert>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -45,6 +46,10 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_speed(speed),
 	m_running(run),
 	m_drift(0)
+#ifdef WITH_REMOTE_SYNC
+    , m_observer(NULL)
+	, m_slaved(false)
+#endif
 {
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }
@@ -106,6 +111,16 @@ lib::timer_control_impl::_start(time_type t) {
 	m_parent_epoch = m_parent->elapsed();
 	m_local_epoch = t;
 	m_running = true;
+#ifdef WITH_REMOTE_SYNC
+		if (m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->started();
+			m_lock.enter();
+		}
+#endif
+
 }
 
 void
@@ -119,34 +134,62 @@ void
 lib::timer_control_impl::_stop() {
 	m_local_epoch = 0;
 	m_running = false;
+#ifdef WITH_REMOTE_SYNC
+		if (m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->stopped();
+			m_lock.enter();
+		}
+#endif
 }
 
 void
 lib::timer_control_impl::pause() {
 	m_lock.enter();
-	_pause();
+	_pause(true);
 	m_lock.leave();
 }
+
 void
-lib::timer_control_impl::_pause() {
+lib::timer_control_impl::_pause(bool tell_observer) {
 	if(m_running) {
 		m_local_epoch += _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 		m_running = false;
+#ifdef WITH_REMOTE_SYNC
+		if (tell_observer && m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->paused();
+			m_lock.enter();
+		}
+#endif
 	}
 }
 
 void
 lib::timer_control_impl::resume() {
 	m_lock.enter();
-	_resume();
+	_resume(true);
 	m_lock.leave();
 }
 
 void
-lib::timer_control_impl::_resume() {
+lib::timer_control_impl::_resume(bool tell_observer) {
 	if(!m_running) {
 		m_parent_epoch = m_parent->elapsed();
 		m_running = true;
+#ifdef WITH_REMOTE_SYNC
+		if (tell_observer && m_observer) {
+			// Bah. Observer may want to access the timer. Need to unlock.
+			// Should refactor this code some time...
+			m_lock.leave();
+			m_observer->resumed();
+			m_lock.enter();
+		}
+#endif
 	}
 }
 
@@ -160,14 +203,14 @@ lib::timer_control_impl::set_time(time_type t) {
 		}
 		m_local_epoch = t;
 	} else {
-		_pause();
+		_pause(false);
 		// XXXJACK: Hard-setting a running clock is a bad idea: it makes things like animations and
 		// transitions "stutter". One possible solution would be to skew the clock if
 		if (t < m_local_epoch) {
 			AM_DBG lib::logger::get_logger()->debug("timer: setting running timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
 		m_local_epoch = t;
-		_resume();
+		_resume(false);
 	}
 	m_lock.leave();
 }
@@ -179,9 +222,9 @@ lib::timer_control_impl::set_speed(double speed)
 	if(!m_running) {
 		m_speed = speed;
 	} else {
-		_pause();
+		_pause(false);
 		m_speed = speed;
-		_resume();
+		_resume(false);
 	}
 	m_lock.leave();
 }
@@ -228,3 +271,14 @@ lib::timer_control_impl::skew(signed_time_type skew_) {
 	}
 	m_lock.leave();
 }
+
+#ifdef WITH_REMOTE_SYNC
+void
+lib::timer_control_impl::set_observer(timer_observer *obs) {
+	if (obs) {
+		assert(m_observer == NULL);
+	}
+	m_observer = obs;
+}
+
+#endif

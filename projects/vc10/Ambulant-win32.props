@@ -5,14 +5,14 @@
 	Set global_ambulant_defines to the build-time options that influence all products (shared lib, plugins, browser plugins, etc) built. Picked up by many projects inside Ambulant_win32.sln.
 -->
 
-    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR
+    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_GCD_EVENT_PROCESSOR;WITH_REMOTE_SYNC
 </global_ambulant_defines>
 <!--
 	Set the following variables to the locations where you downloaded the various
 	third party libraries. Building Ambulant without these will be disappointing.
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
-
+    <ambulant_dir>..\..</ambulant_dir>
     <expat_dir>..\..\third_party_packages\expat</expat_dir>
     <jpeg_dir>..\..\third_party_packages\jpeg</jpeg_dir>
     <lpng_dir>..\..\third_party_packages\lpng128</lpng_dir>
@@ -21,7 +21,6 @@
     <sdl_dir>..\..\third_party_packages\SDL-1.3.0-6050</sdl_dir>
     <ffmpeg_bin_dir>..\..\third_party_packages\ffmpeg-20120927-git-13f0cd6-win32-shared</ffmpeg_bin_dir>
     <ffmpeg_dev_dir>..\..\third_party_packages\ffmpeg-20120927-git-13f0cd6-win32-dev</ffmpeg_dev_dir>
-    <live555_dir>..\..\third_party_packages\live</live555_dir>
     <xerces_dir>..\..\third_party_packages\xerces-c-3.1.1</xerces_dir>
     <xerces_major>3</xerces_major>
     <xerces_minor>1</xerces_minor>
@@ -41,6 +40,10 @@
   <ItemGroup>
     <BuildMacro Include="global_ambulant_defines">
       <Value>$(global_ambulant_defines)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ambulant_dir">
+      <Value>$(ambulant_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
     <BuildMacro Include="expat_dir">
       <Value>$(expat_dir)</Value>
@@ -72,10 +75,6 @@
     </BuildMacro>
     <BuildMacro Include="ffmpeg_dev_dir">
       <Value>$(ffmpeg_dev_dir)</Value>
-      <EnvironmentVariable>true</EnvironmentVariable>
-    </BuildMacro>
-    <BuildMacro Include="live555_dir">
-      <Value>$(live555_dir)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
     <BuildMacro Include="xerces_dir">

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2011 Stichting CWI, 
+// Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -60,13 +60,11 @@ ambulant::net::ffmpeg_init()
 	// Enable this line to get lots of ffmpeg debug output:
 	av_log_set_level(99);
 #endif
-#if FF_API_AVCODEC_INIT
-	avcodec_init();
-#endif
+// avcodec_init() was useless since years, replaced by av_register_all().
+// After being marked deprecated for some time, it is now completely been from API.
 	av_register_all();
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53, 4, 0)
-	// Version number is guessed: I'm not sure when this call was introduced.
-	// It is not available in 53.3.X
+// Version number from https://lists.ffmpeg.org/pipermail/ffmpeg-cvslog/2011-November/043068.html
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53, 13, 0)
 	avformat_network_init();
 #endif
 	is_inited = true;
@@ -174,8 +172,21 @@ ffmpeg_demux::~ffmpeg_demux()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) {
+		if (m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS) {
+			unsigned int stream_index;
+			for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
+				if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_AUDIO
+					|| m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
+					avcodec_close(m_con->streams[stream_index]->codec);
+				}
+			}
+		}
+#if LIBAVFORMAT_VERSION_INT < 0x350400
 		av_close_input_file(m_con);
 		// Implies av_free(m_con);
+#else
+		avformat_close_input(&m_con);
+#endif
 	}
 	m_con = NULL;
 	m_lock.leave();
@@ -208,12 +219,6 @@ ffmpeg_demux::supported(const net::url& url)
 		ffmpeg_name = url.get_file();
 	}
 
-#if 1
-	// There appears to be some support for RTSP in ffmpeg, but it doesn'
-	// seem to work yet. Disable it so we don't get confused by error messages.
-	// XXXJACK need to test this with future ffmpeg versions.
-	//if (url_str.substr(0, 5) == "rtsp:") return NULL;
-#endif
 	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
@@ -231,7 +236,7 @@ ffmpeg_demux::supported(const net::url& url)
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), ffmpeg_name.c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
 	int err;
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 0, 0)
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 2, 0)
     err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
 #else
 	// Force rtsp-over-tcp, if that preference has been set.
@@ -244,13 +249,29 @@ ffmpeg_demux::supported(const net::url& url)
 #endif
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
-		if (ic) av_close_input_file(ic);
+		if (ic) {
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
+			av_close_input_file(ic);
+#else
+			avformat_close_input(&ic);
+#endif
+		}
 		return NULL;
 	}
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
 	err = av_find_stream_info(ic);
+#else
+	err = avformat_find_stream_info(ic, NULL);
+#endif
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
-		if (ic) av_close_input_file(ic);
+		if (ic) {
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
+			av_close_input_file(ic);
+#else
+			avformat_close_input(&ic);
+#endif
+		}
 		return NULL;
 	}
 
@@ -617,7 +638,11 @@ AVCodecContext *
 ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
 {
 	ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 8, 0)
 	AVCodecContext *ffcontext = avcodec_alloc_context();
+#else
+	AVCodecContext *ffcontext = avcodec_alloc_context3(NULL);
+#endif
 	if (video) {
 		ffcontext->codec_type = CODEC_TYPE_VIDEO;
 	} else {

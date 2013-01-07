@@ -3,7 +3,6 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
 	Resources \
-	Resources-cocoa \
 	Resources-cg \
 	version.plist \
 	Ambulant.icns \
@@ -28,9 +27,7 @@ if WITH_AMBULANT_SHARED_LIB
 #
 libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
-libambulant_cocoa=-L$(ambulantlibdir) -lambulant_cocoa
 libambulant_cg=-L$(ambulantlibdir) -lambulant_cg
 else
 #
@@ -40,9 +37,7 @@ else
 #
 libambulant_core=$(ambulantlibdir)/libambulant.a
 libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
-libambulant_live=$(ambulantlibdir)/libambulant_live.a
 libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
-libambulant_cocoa=$(ambulantlibdir)/libambulant_cocoa.a
 libambulant_cg=$(ambulantlibdir)/libambulant_cg.a
 endif
 
@@ -51,7 +46,7 @@ extra_cg_LDADD=$(libambulant_cg)
 toolkit_resources=Resources-cg
 else
 extra_cg_LDADD=
-toolkit_resources=Resources-cocoa
+toolkit_resources=
 endif
 
 if WITH_EXPAT
@@ -68,14 +63,6 @@ extra_ffmpeg_LDADD=$(libambulant_ffmpeg) $(FFMPEG_LIBS)
 else
 extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
-endif
-
-if WITH_LIVE
-extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
-extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
-else
-extra_live_DEFINES=
-extra_live_LDADD =
 endif
 
 if WITH_SDL
@@ -104,8 +91,8 @@ extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 SO=.so
 #SO=
 # Building a MacOSX .app bundle is a bit tricky.
-noinst_PROGRAMS = cocoambulant_executable
-cocoambulant_executable_SOURCES= \
+noinst_PROGRAMS = ambulant_executable
+ambulant_executable_SOURCES= \
 	main.m \
 	mainloop.cpp \
 	mypreferences.m \
@@ -123,7 +110,7 @@ TESTDEP=$(srcdir)/testdependencies
 # The target all-am is magic for automake
 
 all-am: $(BUILDAPPNAME).app
-$(BUILDAPPNAME).app: cocoambulant_executable
+$(BUILDAPPNAME).app: ambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
 	echo -n "APPLAmbl" > $(BUILDAPPNAME).app/Contents/PkgInfo
@@ -187,7 +174,7 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL30/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL30
 
 #	Install executable
-	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) .libs/cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) .libs/ambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 
 #	Internalize any non-system shared libraries we use
@@ -200,11 +187,9 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(BUILDAPPNAME).app
 
 LDADD = \
-	$(libambulant_cocoa) \
 	$(extra_cg_LDADD) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
-	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(LIBINTL) \
@@ -224,7 +209,6 @@ AM_CPPFLAGS = \
 	$(extra_expat_DEFINES) \
 	$(extra_ffmpeg_DEFINES) \
 	$(extra_nls_DEFINES) \
-	$(extra_live_DEFINES) \
 	$(extra_sdl_DEFINES) \
 	$(extra_xerces_DEFINES)
 
