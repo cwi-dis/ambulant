@@ -34,7 +34,6 @@ def main():
         AMBULANT+ "common/region_info.h",
         AMBULANT+ "common/state.h",
         AMBULANT+ "gui/none/none_gui.h",
-        AMBULANT+ "gui/qt/qt_factory.h",
         AMBULANT+ "gui/gtk/gtk_factory.h",
         AMBULANT+ "gui/SDL/sdl_factory.h",
         AMBULANT+ "net/datasource.h",
@@ -158,20 +157,6 @@ class MyScanner(CxxScanner):
 
     def makegreylist(self):
         return [
-            ('#ifdef WITH_QT', [
-                'create_qt_window_factory_unsafe',
-                'create_qt_video_factory',
-                'create_qt_fill_playable_factory',
-                'create_qt_image_playable_factory',
-                'create_qt_smiltext_playable_factory',
-                'create_qt_text_playable_factory',
-                'create_qt_video_playable_factory',
-                ]
-            ),
-            ('#if defined(WITH_QT) && defined(WITH_QT_HTML_WIDGET)', [
-                'create_qt_html_playable_factory',
-                ]
-            ),
             ('#ifdef WITH_GTK', [
                 'create_gtk_window_factory_unsafe',
                 'create_gtk_video_factory',
@@ -279,13 +264,6 @@ class MyScanner(CxxScanner):
                 ('lib_rect_ptr', 'out_src_rect', 'InMode'),
               ], [
                 ('lib_rect', 'out_src_rect', 'OutMode'),
-              ]
-            ),
-            ('create_qt_window_factory_unsafe',
-              [
-                ('void_ptr', '*', 'InMode'),
-              ], [
-                ('pycobject', '*', 'InMode'),
               ]
             ),
             ('create_gtk_window_factory_unsafe',

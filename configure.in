@@ -7,10 +7,7 @@ AM_PATH_PYTHON
 AMBULANT_VERSION=2.5
 
 dnl =================================================================
-QT_REQUIRED=3.3.4
 GTK_REQUIRED=1.2.8
-
-AC_SUBST(QT_REQUIRED)
 
 dnl ================================================================
 
@@ -41,7 +38,6 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/Makefile 
 	src/npambulant/Makefile
 	src/libambulant/Makefile 
-	src/player_unix/Makefile
 	src/player_gtk/Makefile
 	src/player_sdl/Makefile
 	src/player_macosx/Makefile
@@ -63,7 +59,6 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/d2/Makefile
 	include/ambulant/gui/none/Makefile
 	include/ambulant/gui/cg/Makefile
-	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/gtk/Makefile
 	include/ambulant/gui/SDL/Makefile
 	include/ambulant/gui/gstreamer/Makefile
@@ -518,71 +513,6 @@ AC_SUBST(OBJCFLAGS)
 OBJC=$CC
 AC_SUBST(OBJC)
 
-dnl Testing for Qt
-dnl ====================================================================
-
-AC_MSG_CHECKING(for --with-qt)
-test_qt=true
-AC_ARG_WITH(qt,
-	AS_HELP_STRING([--with-qt], [Enable/disable Qt frontend]),
-     [
-		if test "x$withval" = "xno"; then
-			unset QTDIR
-			test_qt=false
-		fi
-     ])
-# qt4 is not supported yet
-test_qt4=false
-if $test_qt4; then
-	PKG_CHECK_MODULES(QT,[Qt >= 4.0.0], test_qt4=true, test_qt4=false)
-fi
-if $test_qt; then
-	PKG_CHECK_MODULES(QT,[qt-mt >= 3.3.0], test_qt=true, test_qt=false)
-fi
-if $test_qt; then
-	QT_PREFIX="`pkg-config --variable=exec_prefix qt-mt`"
-fi
-
-if $test_qt; then
-    with_frontend=true
-fi
-#if test "x$test_qt4" = "xtrue"; then
-#   test_qt=$test_qt" Qt4 found which is not yet supported"
-#fi
-set +x
-AC_MSG_RESULT($test_qt)
-AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")
-AC_SUBST(QT_CFLAGS)
-AC_SUBST(QT_LIBS)
-AC_SUBST(QT_PREFIX)
-
-
-dnl Test for QT_HTML_WIDGET
-dnl ====================================================================
-
-AC_MSG_CHECKING(for --with-qt-html-widget)
-qthtmlwidget=false     
-AC_ARG_WITH(qt-html-widget,
-     AS_HELP_STRING([--with-qt-html-widget], [Turn on Qt Html widget]),
-     [ 
-		case "${withval}" in
-		yes) 
-			qtthmlwidget=true
-			;;
-		*)  
-			qtthmlwidget=false
-			;;
-		esac],
-     [qthtmlwidget=false])
-AM_CONDITIONAL(WITH_QT_HTML_WIDGET, test x$qthtmlwidget = xtrue)
-if $qthtmlwidget; then
-	if test ! -f /usr/include/kde/khtml_part.h; then
-		AC_MSG_ERROR(--with-qt-html-widget without KDE include directory)
-	fi
-	CXXFLAGS="$CXXFLAGS -DWITH_HTML_WIDGET -DWITH_QT_HTML_WIDGET -I/usr/include/kde"
- 	LIBS="$LIBS -lkdecore -lkhtml"
-fi
-AC_MSG_RESULT($qthtmlwidget)
 
 dnl Test for SDL
 dnl ======================================================================
@@ -1159,7 +1089,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL_Pango:           ${test_sdl_pango}
     Build with gstreamer:           ${test_gstreamer}
 
-    Build Qt3 frontend:             ${test_qt}
     Build with GTK:                 ${test_gtk}
 
     Build with WebKit DOM plugin:   ${with_webkit_dom}
@@ -1177,7 +1106,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 if test "x$with_frontend" = "xfalse"; then
     AC_MSG_WARN([No GUI support, so no player will be built])
 fi
-AC_MSG_RESULT([$qt_warning]);
 AC_MSG_RESULT([$ffmpeg_warning]);
 AC_MSG_RESULT([$expat_warning]);
 AC_MSG_RESULT([$python_warning]);
