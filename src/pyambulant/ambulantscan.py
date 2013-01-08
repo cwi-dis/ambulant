@@ -197,6 +197,12 @@ class MyScanner(CxxScanner):
                 'create_sdl_fill_playable_factory',
                 ]
             ),
+            ('#ifdef WITH_REMOTE_SYNC', [
+                'timer_observer',
+                'timer_sync',
+                'timer_sync_factory',
+                ]
+            ),
         ]
 
     def makerepairinstructions(self):
