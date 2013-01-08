@@ -26,8 +26,6 @@
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/timer.h"
 
-#ifdef WITH_REMOTE_SYNC
-
 namespace ambulant {
 
 namespace lib {
@@ -51,7 +49,6 @@ class timer_sync_factory {
 } // namespace lib
 
 } // namespace ambulant
-#endif // WITH_REMOTE_SYNC
 #endif // AMBULANT_LIB_TIMER_SYNC_H
 
 
