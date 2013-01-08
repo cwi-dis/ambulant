@@ -1,11 +1,6 @@
 SUFFIXES=-moc.cpp
 -moc.cpp.cpp:
 	$(QT_PREFIX)/bin/moc -c -o $@ $<
-if WITH_QT
-build_player_unix=player_unix
-else
-build_player_unix=
-endif
 if WITH_GTK
 build_player_gtk=player_gtk
 else
@@ -36,7 +31,7 @@ endif
 # 2. python module (optional)
 # 3. plugins
 # 4. applications
-SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk)  $(build_player_sdl) $(build_player_macosx) $(build_npambulant)
+SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_gtk)  $(build_player_sdl) $(build_player_macosx) $(build_npambulant)
 DIST_SUBDIRS = libambulant plugins player_unix player_gtk player_sdl player_macosx pyambulant npambulant
 EXTRA_DIST= \
 	player_mfc \

@@ -12,7 +12,6 @@ endif
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
-libambulant_qt=-L$(ambulantlibdir) -lambulant_qt
 else
 #
 # Otherwise we link the ambulant libraries statically, and we
@@ -24,7 +23,6 @@ libambulant_ffmpeg=
 libambulant_sdl=
 libambulant_gstreamer=
 libambulant_gtk=
-libambulant_qt=
 endif
 
 # See which toolkit-dependent libraries we want to make
@@ -116,35 +114,6 @@ toolkit_gtk_libraries =
 libambulant_gtk_la_SOURCES =
 endif
 
-
-
-if WITH_QT
-toolkit_qt_libraries = libambulant_qt.la
-qtincludes = $(QT_CFLAGS)
-
-libambulant_qt_la_SOURCES = \
-	gui/qt/qt_renderer.cpp \
-	gui/qt/qt_fill.cpp \
-	gui/qt/qt_image_renderer.cpp \
-	gui/qt/qt_smiltext.cpp \
-	gui/qt/qt_text_renderer.cpp \
-	gui/qt/qt_transition.cpp \
-	gui/qt/qt_util.cpp \
-	gui/qt/qt_video_renderer.cpp \
-	gui/qt/qt_factory.cpp
-libambulant_qt_la_LDFLAGS=$(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
-libambulant_qt_la_DEPENDENCIES=$(toolkit_ffmpeg_libraries) libambulant.la
-else
-qtincludes=
-toolkit_qt_libraries =
-libambulant_qt_la_SOURCES =
-endif
-
-if WITH_QT_HTML_WIDGET
-libambulant_qt_la_SOURCES += \
-	gui/qt/qt_html_renderer.cpp
-endif
-
 if WITH_SDL2
 toolkit_sdl_libraries = libambulant_sdl.la
 libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core) 
@@ -227,7 +196,6 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	$(EXPAT_INCLUDES) \
 	$(xerces_includes) \
-	$(qtincludes) \
 	$(gstreamer_includes) \
 	$(gtkincludes) \
 	$(sdlincludes) \
@@ -240,7 +208,6 @@ lib_LTLIBRARIES = \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_ffmpeg_libraries) \
 	$(toolkit_cg_libraries) \
-	$(toolkit_qt_libraries) \
 	$(toolkit_gtk_libraries)
 
 libambulant_la_LDFLAGS= \
@@ -327,7 +294,6 @@ EXTRA_DIST= \
 	$(libambulant_sdl_la_SOURCES) \
 	$(libambulant_cg_la_SOURCES) \
 	$(extradist_cg) \
-	$(libambulant_qt_la_SOURCES) \
 	$(libambulant_gtk_la_SOURCES) \
 	$(libambulant_gstreamer_la_SOURCES) \
 	gui/d2 \
