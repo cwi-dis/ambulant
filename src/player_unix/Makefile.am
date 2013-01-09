@@ -1,6 +1,6 @@
 
 
-EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas ambulant-kde.desktop
+EXTRA_DIST=Ambulant.png AmbulantDoc.png ambulant.schemas ambulant-qt.desktop
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
@@ -164,9 +164,9 @@ check-ambulantplayer_qt:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
-	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-kde.desktop
+	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-qt.desktop
 
 install-data-local:
 	mkdir -p  $(DESTDIR)$(datadir)/applications
-	cp $(srcdir)/ambulant-kde.desktop $(DESTDIR)$(datadir)/applications
+	cp $(srcdir)/ambulant-qt.desktop $(DESTDIR)$(datadir)/applications
 

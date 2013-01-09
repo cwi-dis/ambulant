@@ -1,15 +1,22 @@
 Source: ambulant
 Section: graphics
 Priority: optional
-Maintainer: Jack Jansen <Jack.Jansen@cwi.nl>
-Build-Depends: debhelper (>= 7), automake, autoconf, autotools-dev, gettext, libgtk2.0-dev, libgdk-pixbuf2.0-dev, libxml2-dev, libqt3-mt-dev, liblivemedia-dev, libltdl-dev, libsdl1.2-dev, libavformat-dev, libavcodec-dev, libswscale-dev, libxerces-c-dev, libexpat1-dev, python-dev, python-gtk2-dev, python-gobject-dev
+Maintainer: PICCORO Lenz McKAY <mckaygerhard@gmail.com>, Jack Jansen <Jack.Jansen@cwi.nl>
+Build-Depends: debhelper (>= 7), automake, autoconf, autotools-dev, gettext, gobjc, gobjc++,
+ libgtk2.0-dev | libgdk-pixbuf2.0-dev, 
+ libxml2-dev, libqt3-mt-dev, liblivemedia-dev, libltdl-dev, 
+ libsdl1.2-dev, libavformat-dev (>= 4:0.8-1~bpo60+1), libavcodec-dev (>= 4:0.8-1~bpo60+1), libswscale-dev (>= 4:0.8-1~bpo60+1), 
+ libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, 
+ libmozjs-dev, xulrunner-dev, iceweasel,
+ libxerces-c-dev, libexpat1-dev, python-dev, python-gtk2-dev, python-gobject-dev,
+ liblivemedia-dev
 Standards-Version: 3.9.1
 Homepage: http://www.ambulantplayer.org
 
 Package: libambulant
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libltdl7, libsdl1.2debian|libsdl1.2debian-all|libsdl1.2debian-alsa|libsdl1.2debian-esd|libsdl1.2debian-nas|libsdl1.2debian-oss, libavformat53, libavcodec53, libswscale2
-Recommends: libgtk2.0-0 | libqt3-mt, libxerces-c | libexpat1, libxml2
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: libqt3-mt, libxerces-c | libexpat1, libxml2
 Description: Ambulant SMIL multimedia player - core engine
  SMIL 3.0 multimedia playback engine.
  .
@@ -18,35 +25,68 @@ Description: Ambulant SMIL multimedia player - core engine
 Package: libambulant-dev
 Section: devel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant
-Suggests: libgtk2.0-dev | libqt3-mt-dev, libxml2-dev, liblivemedia-dev, libltdl-dev, libsdl1.2-dev, libavformat-dev, libavcodec-dev, libswscale-dev, libxerces-c-dev, libexpat1-dev, python
+Depends: ${shlibs:Depends}, libambulant (= ${binary:Version}), ${misc:Depends}
 Description: Ambulant SMIL multimedia player - developer files
  SMIL 3.0 multimedia playback engine.
  .
  This package contains files needed when you want to extend (or embed)
- Ambulant in C++.
+ Ambulant in C/C++.
 
-Package: ambulant-gnome
+Package: ambulant-plugins
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant, libgtk2.0-0
-Description: Ambulant SMIL multimedia player - Gnome/GTK application
+Depends: ${shlibs:Depends}, libambulant (= ${binary:Version}), ambulant-common, ${misc:Depends}
+Suggests: ambulantplayer
+Description: Ambulant SMIL multimedia player - xls and xml plugins
  SMIL 3.0 multimedia playback engine.
  .
- This package contains the Gnome front-end.
+ This package contains the xls and xml plugins
+ .
+ The python package provides the python plugin.
  
-Package: ambulant-kde
+Package: ambulant-plugins-dev
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant, libqt3-mt
-Description: Ambulant SMIL multimedia player - KDE/Qt application
+Depends: ${shlibs:Depends}, ambulant-plugins (= ${binary:Version}), libambulant-dev, ${misc:Depends}
+Suggests: ambulantplayer
+Description: Ambulant SMIL multimedia player - developer plugins
  SMIL 3.0 multimedia playback engine.
  .
- This package contains the KDE front-end.
+ This package contains the xls and xml plugins for develop
+ .
+ The python package provides the python plugin for develop.
+ 
+Package: ambulant-common
+Architecture: any
+Suggests: ambulantplayer
+Description: Ambulant SMIL multimedia player - common files
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains the common files for all ambulant components
+ 
+Package: ambulant-gtk
+Architecture: any
+Depends: ${shlibs:Depends}, libambulant (= ${binary:Version}), ambulant-common, ${misc:Depends}
+Recommends: livemedia-utils, ambulant-plugins, libav-tools | ffmpeg
+Provides: ambulantplayer
+Description: Ambulant SMIL multimedia player - GTK application
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains the gtk front-end.
+ 
+Package: ambulant-qt
+Architecture: any
+Depends: ${shlibs:Depends}, libambulant (= ${binary:Version}), ambulant-common, ${misc:Depends}, libqt3-mt
+Recommends: livemedia-utils
+Provides: ambulantplayer
+Description: Ambulant SMIL multimedia player - Qt application
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains the qt front-end.
 
 Package: ambulant-python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant, python
+Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant (= ${binary:Version})
 Suggests: python-qt3 | python-gtk2
-Description: <Ambulant SMIL multimedia player - Python API
+Description: Ambulant SMIL multimedia player - Python API
  SMIL 3.0 multimedia playback engine.
  .
  This package contains files needed when you want to extend (or embed)
