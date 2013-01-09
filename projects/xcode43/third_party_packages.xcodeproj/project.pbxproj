@@ -232,6 +232,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */;
 			buildSettings = {
+				"AMBULANT_DIR[arch=*]" = "$(SRCROOT)/../..";
 			};
 			name = Common;
 		};
