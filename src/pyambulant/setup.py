@@ -13,10 +13,8 @@ import os
 ##if sys.platform == 'linux2':
 ##    # Not really the correct test, but okay for the time being
 ##    WITH_GTK=True
-##    WITH_QT=False
 ##else:
 ##    WITH_GTK=False
-##    WITH_QT=False
 ##if sys.platform == 'win32':
 ##    WITH_FFMPEG=False
 ##    WITH_SDL=False
@@ -68,9 +66,6 @@ else:
 if sys.platform != 'win32':
     DEFS.append(('ENABLE_NLS', '1'))
     
-##if WITH_QT:
-##    DEFS.append(('WITH_QT', '1'))
-##    LIBRARIES.append('ambulant_qt')
 ##if WITH_GTK:
 ##    DEFS.append(('WITH_GTK', '1'))
 ##    LIBRARIES.append('ambulant_gtk')

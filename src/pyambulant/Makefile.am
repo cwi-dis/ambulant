@@ -21,17 +21,10 @@ EXTRA_DIST=setup.py \
 	ambulantutilities.h ambulantutilities.cpp \
 	ambulantmodule.h ambulantmodule.cpp \
 	ambulantinterface.h ambulantinterface.cpp \
-	player_pygtk player_pyqt test
+	player_pygtk test
 
 # Various flags for optional features
 
-if WITH_QT
-extra_qt_cflags=-DWITH_QT=1 $(QT_CFLAGS)
-extra_qt_ldflags=-lambulant_qt $(QT_LIBS)
-else
-extra_qt_cflags=
-extra_qt_ldflags=
-endif
 if WITH_GTK
 extra_gtk_cflags=-DWITH_GTK=1 $(GTK_CFLAGS) `pkg-config --cflags pygtk-2.0`
 extra_gtk_ldflags=-lambulant_gtk $(GTK_LIBS) `pkg-config --libs pygtk-2.0`
@@ -54,9 +47,8 @@ extra_sdl_ldflags=
 endif
 
 # Get all the extra bits together
-# XXXX Why does this not work??? EXTRA_LDFLAGS=$(extra_qt_ldflags)
-extra_cflags=$(extra_qt_cflags) $(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags)
-extra_ldflags=$(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags)
+extra_cflags=$(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags)
+extra_ldflags=$(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags)
 
 # These targets are magic for automake
 

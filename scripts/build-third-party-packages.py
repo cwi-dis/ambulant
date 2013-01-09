@@ -359,7 +359,6 @@ third_party_packages={
         DebianTPP("libgtk2.0-dev"),
         DebianTPP("libgdk-pixbuf2.0-dev"),
         DebianTPP("libxml2-dev"),
-        DebianTPP("libqt3-mt-dev"),
         DebianTPP("liblivemedia-dev"),
         DebianTPP("libltdl-dev"),
         DebianTPP("libsdl1.2-dev"),

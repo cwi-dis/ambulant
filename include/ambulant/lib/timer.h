@@ -30,8 +30,6 @@ namespace ambulant {
 
 namespace lib {
 
-#ifdef WITH_REMOTE_SYNC
-
 /// An interface that can be used to receive notification when
 /// interesting things happen to a timer.
 class timer_observer {
@@ -41,7 +39,6 @@ class timer_observer {
 	virtual void paused() = 0;
 	virtual void resumed() = 0;
 };
-#endif WITH_REMOTE_SYNC
 
 /// Client interface to timer objects: allows you to get the
 /// current time and the rate at which time passes.

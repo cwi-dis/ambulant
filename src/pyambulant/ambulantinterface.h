@@ -29,7 +29,6 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/stdio_datasource.h"
 #include "ambulant/net/posix_datasource.h"
-#include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/net/ffmpeg_factory.h"
 

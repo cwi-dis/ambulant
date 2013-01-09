@@ -157,13 +157,6 @@
 			remoteGlobalIDString = 0441E7B91343132C0025FCF9;
 			remoteInfo = "plugin_xpath_state(CG)";
 		};
-		047916CF14C5CC16003952AC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
-			remoteInfo = "plugin_timesync (Cocoa)";
-		};
 		047916D114C5CC16003952AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 047916C614C5CC16003952AC /* plugin_timesync.xcodeproj */;
@@ -428,7 +421,6 @@
 		047916C714C5CC16003952AC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				047916D014C5CC16003952AC /* libamplugin_timesync(Cocoa).so */,
 				047916D214C5CC16003952AC /* libamplugin_timesync(CG).so */,
 			);
 			name = Products;
@@ -683,13 +675,6 @@
 			fileType = "compiled.mach-o.dylib";
 			path = "libamplugin_xpath_state(CG).so";
 			remoteRef = 0441E8CB134324880025FCF9 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		047916D014C5CC16003952AC /* libamplugin_timesync(Cocoa).so */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = "libamplugin_timesync(Cocoa).so";
-			remoteRef = 047916CF14C5CC16003952AC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		047916D214C5CC16003952AC /* libamplugin_timesync(CG).so */ = {

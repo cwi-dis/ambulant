@@ -33,6 +33,7 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/system.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/timer_sync.h"
 #include "ambulant/lib/transition_info.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/common/factory.h"

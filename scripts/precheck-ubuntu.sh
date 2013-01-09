@@ -15,7 +15,6 @@ packages="
   gettext
   libpango1.0-dev
   libgtk2.0-dev
-  libqt3-mt-dev
   postfix
   mailutils
   curl
@@ -30,7 +29,6 @@ debpackages="
   postfix
   mailutils
   libxml2-dev 
-  libqt3-mt-dev 
   libsdl1.2-dev 
   libavformat-dev 
   libavcodec-dev 

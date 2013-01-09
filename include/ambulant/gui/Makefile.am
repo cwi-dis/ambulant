@@ -1,1 +1,1 @@
-SUBDIRS= none qt gtk SDL d2 gstreamer cg
+SUBDIRS= none gtk SDL d2 gstreamer cg
