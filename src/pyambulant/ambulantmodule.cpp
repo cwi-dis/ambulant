@@ -4322,6 +4322,7 @@ static PyObject *timer_controlObj_skew(timer_controlObject *_self, PyObject *_ar
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
 static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -4364,6 +4365,7 @@ static PyObject *timer_controlObj_is_slaved(timer_controlObject *_self, PyObject
 	                     bool_New, _rv);
 	return _res;
 }
+#endif
 
 static PyMethodDef timer_controlObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_controlObj_elapsed_1, 1,
@@ -4394,12 +4396,14 @@ static PyMethodDef timer_controlObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_controlObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
+#ifdef WITH_REMOTE_SYNC   
 	{"set_observer", (PyCFunction)timer_controlObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
 	{"set_slaved", (PyCFunction)timer_controlObj_set_slaved, 1,
 	 PyDoc_STR("(bool slaved) -> None")},
 	{"is_slaved", (PyCFunction)timer_controlObj_is_slaved, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -4754,6 +4758,7 @@ static PyObject *timer_control_implObj_skew(timer_control_implObject *_self, PyO
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
 static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -4796,6 +4801,7 @@ static PyObject *timer_control_implObj_is_slaved(timer_control_implObject *_self
 	                     bool_New, _rv);
 	return _res;
 }
+#endif
 
 static PyMethodDef timer_control_implObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_control_implObj_elapsed_1, 1,
@@ -4826,12 +4832,14 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_control_implObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew_) -> None")},
+#ifdef WITH_REMOTE_SYNC
 	{"set_observer", (PyCFunction)timer_control_implObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
 	{"set_slaved", (PyCFunction)timer_control_implObj_set_slaved, 1,
 	 PyDoc_STR("(bool slaved) -> None")},
 	{"is_slaved", (PyCFunction)timer_control_implObj_is_slaved, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -6186,6 +6194,7 @@ static PyObject *factoriesObj_init_state_component_factory(factoriesObject *_sel
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
 static PyObject *factoriesObj_init_timer_sync_factory(factoriesObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -6198,6 +6207,7 @@ static PyObject *factoriesObj_init_timer_sync_factory(factoriesObject *_self, Py
 	_res = Py_None;
 	return _res;
 }
+#endif
 
 static PyObject *factoriesObj_init_recorder_factory(factoriesObject *_self, PyObject *_args)
 {
@@ -6380,6 +6390,7 @@ static PyObject *factoriesObj_set_state_component_factory(factoriesObject *_self
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
 static PyObject *factoriesObj_get_timer_sync_factory(factoriesObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -6407,6 +6418,7 @@ static PyObject *factoriesObj_set_timer_sync_factory(factoriesObject *_self, PyO
 	_res = Py_None;
 	return _res;
 }
+#endif
 
 static PyMethodDef factoriesObj_methods[] = {
 	{"init_factories", (PyCFunction)factoriesObj_init_factories, 1,
@@ -6423,8 +6435,10 @@ static PyMethodDef factoriesObj_methods[] = {
 	 PyDoc_STR("() -> None")},
 	{"init_state_component_factory", (PyCFunction)factoriesObj_init_state_component_factory, 1,
 	 PyDoc_STR("() -> None")},
+#ifdef WITH_REMOTE_SYNC
 	{"init_timer_sync_factory", (PyCFunction)factoriesObj_init_timer_sync_factory, 1,
 	 PyDoc_STR("() -> None")},
+#endif
 	{"init_recorder_factory", (PyCFunction)factoriesObj_init_recorder_factory, 1,
 	 PyDoc_STR("() -> None")},
 	{"get_playable_factory", (PyCFunction)factoriesObj_get_playable_factory, 1,
@@ -6451,10 +6465,12 @@ static PyMethodDef factoriesObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::node_factory* nf) -> None")},
 	{"set_state_component_factory", (PyCFunction)factoriesObj_set_state_component_factory, 1,
 	 PyDoc_STR("(ambulant::common::global_state_component_factory* sf) -> None")},
+#ifdef WITH_REMOTE_SYNC
 	{"get_timer_sync_factory", (PyCFunction)factoriesObj_get_timer_sync_factory, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer_sync_factory* _rv)")},
 	{"set_timer_sync_factory", (PyCFunction)factoriesObj_set_timer_sync_factory, 1,
 	 PyDoc_STR("(ambulant::lib::timer_sync_factory* tsf) -> None")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -7223,6 +7239,7 @@ static PyObject *gui_playerObj_get_gui_screen(gui_playerObject *_self, PyObject 
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
 static PyObject *gui_playerObj_clicked_external(gui_playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -7240,6 +7257,7 @@ static PyObject *gui_playerObj_clicked_external(gui_playerObject *_self, PyObjec
 	_res = Py_None;
 	return _res;
 }
+#endif
 
 static PyMethodDef gui_playerObj_methods[] = {
 	{"init_playable_factory", (PyCFunction)gui_playerObj_init_playable_factory, 1,
@@ -7300,8 +7318,10 @@ static PyMethodDef gui_playerObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::net::url _rv)")},
 	{"get_gui_screen", (PyCFunction)gui_playerObj_get_gui_screen, 1,
 	 PyDoc_STR("() -> (ambulant::common::gui_screen* _rv)")},
+#ifdef WITH_REMOTE_SYNC
 	{"clicked_external", (PyCFunction)gui_playerObj_clicked_external, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::timer::time_type t) -> None")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -12268,6 +12288,7 @@ static PyObject *playerObj_highlight(playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
 static PyObject *playerObj_clicked_external(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -12285,6 +12306,7 @@ static PyObject *playerObj_clicked_external(playerObject *_self, PyObject *_args
 	_res = Py_None;
 	return _res;
 }
+#endif
 
 static PyMethodDef playerObj_methods[] = {
 	{"initialize", (PyCFunction)playerObj_initialize, 1,
@@ -12333,8 +12355,10 @@ static PyMethodDef playerObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
 	{"highlight", (PyCFunction)playerObj_highlight, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, bool on) -> (bool _rv)")},
+#ifdef WITH_REMOTE_SYNC
 	{"clicked_external", (PyCFunction)playerObj_clicked_external, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::timer::time_type t) -> None")},
+#endif
 	{NULL, NULL, 0}
 };
 
