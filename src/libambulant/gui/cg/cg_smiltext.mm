@@ -90,7 +90,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 			break;
 	}
 	font = CTFontCreateWithFontDescriptor(font_descr, size, NULL);
-	AM_DBG NSLog(@"cg_smiltext_renderer::_select_font(%s) font=0x%x font_descr=0x%x#%ld", family, font, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
+	AM_DBG NSLog(@"cg_smiltext_renderer::_select_font(%s) font=0x%@ font_descr=0x%@#%ld", family, font, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
 	if (font != NULL) {
 		CTFontRef desired_font = CTFontCreateCopyWithSymbolicTraits(font, 0.0, NULL, value, mask);
 #if 0
