@@ -100,7 +100,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include/ambulant/gui \
 	-I$(top_srcdir)/src/player_gtk \
 	-I$(top_srcdir)/src/npambulant \
-	-I$(XULRUNNER_ROOT)/include \
+	-I$(NPAMBULANT_INCLUDES) \
 	$(INCLTDL)
 
 lib_LTLIBRARIES = libnpambulant.la
