@@ -2,6 +2,8 @@ AC_INIT([ambulant],[2.4.1])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
 AC_CONFIG_AUX_DIR([libltdl/config])
 AC_CONFIG_MACRO_DIR([libltdl/m4])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 AM_INIT_AUTOMAKE
 AM_PATH_PYTHON
 AMBULANT_VERSION=2.4.1
@@ -36,7 +38,6 @@ LTDL_INIT(convenience)
 # ??? AC_SUBST(INCLTDL)
 # ??? AC_SUBST(LIBLTDL)
 
-AM_GNU_GETTEXT([external])
 AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/Makefile 
 	src/npambulant/Makefile

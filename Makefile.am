@@ -31,9 +31,7 @@ macosbininstaller:
 	rm -rf `find dist -name CVS`
 	hdiutil create -srcfolder dist/$(MACOS_INSTALLDIR) dist/$(MACOS_DMGNAME).dmg
 
-
-ACLOCAL_AMFLAGS = -I libltdl/m4
-
+ACLOCAL_AMFLAGS=-I libltdl/m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libambulant.pc
 
