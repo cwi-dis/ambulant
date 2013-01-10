@@ -122,7 +122,7 @@ xyzzy
 # Build debian package (incomplete)
 #
 cd debian
-debuild -kC75B80BC -no-tgz-check
+debuild -kC75B80BC --no-tgz-check
 cd ..
 
 #
