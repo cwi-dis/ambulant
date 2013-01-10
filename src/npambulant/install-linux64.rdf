@@ -4,7 +4,7 @@
     <em:name>AmbulantPlugin</em:name>
     <em:description>Ambulant SMIL Player Plugin for Firefox</em:description>
     <em:homepageURL>http://www.ambulantplayer.org</em:homepageURL>
-    <em:version>2.4</em:version>
+    <em:version>2.4.1</em:version>
     <em:targetPlatform>Linux_x86_64-gcc3</em:targetPlatform>
     <em:targetPlatform>linux-gnu_x86_64-gcc3</em:targetPlatform>
     <em:targetApplication>

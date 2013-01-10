@@ -19,7 +19,7 @@ esac
 # Tunable parameters, to some extent
 export SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
 export MACOSX_DEPLOYMENT_TARGET=10.6
-AMBULANTVERSION=2.4
+AMBULANTVERSION=2.4.1
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
