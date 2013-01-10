@@ -106,10 +106,12 @@ x)	;;
 esac
 # Get rid of mercurial administration
 rm -r .hg
+# Get rid of Sandbox
+rm -r sandbox
 
 sh autogen.sh
 cat > debian/changelog << xyzzy
-ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low
+ambulant ($AMBULANTVERSION$VERSIONSUFFIX) unstable; urgency=low
 
   * Nightly build, for testing only
 

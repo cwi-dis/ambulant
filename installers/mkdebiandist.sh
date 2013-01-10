@@ -15,6 +15,7 @@ cd ambulant-debiandist-tmp
 hg clone .. ambulant-$VERSION
 hg up $1
 rm -rf ambulant-$VERSION/.hg
+rm -rf ambulant-$VERSION/sandbox
 tar cfz ambulant_$VERSION.orig.tar.gz ambulant-$VERSION
 cd ambulant-$VERSION
 debuild -kC75B80BC
