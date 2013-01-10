@@ -2,12 +2,11 @@ Source: ambulant
 Section: graphics
 Priority: optional
 Maintainer: PICCORO Lenz McKAY <mckaygerhard@gmail.com>, Jack Jansen <Jack.Jansen@cwi.nl>
-Build-Depends: debhelper (>= 7), automake, autoconf, autotools-dev, gettext, gobjc, gobjc++,
+Build-Depends: debhelper (>= 7), automake, autoconf, autotools-dev, gettext, 
  libgtk2.0-dev | libgdk-pixbuf2.0-dev, 
  libxml2-dev, libqt3-mt-dev, liblivemedia-dev, libltdl-dev, 
  libsdl1.2-dev, libavformat-dev (>= 4:0.8-1~bpo60+1), libavcodec-dev (>= 4:0.8-1~bpo60+1), libswscale-dev (>= 4:0.8-1~bpo60+1), 
  libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, 
- libmozjs-dev, xulrunner-dev, iceweasel,
  libxerces-c-dev, libexpat1-dev, python-dev, python-gtk2-dev, python-gobject-dev,
  liblivemedia-dev
 Standards-Version: 3.9.1
