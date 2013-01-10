@@ -13,6 +13,7 @@ fi
 mkdir ambulant-debiandist-tmp
 cd ambulant-debiandist-tmp
 hg clone .. ambulant-$VERSION
+hg up $1
 rm -rf ambulant-$VERSION/.hg
 tar cfz ambulant_$VERSION.orig.tar.gz ambulant-$VERSION
 cd ambulant-$VERSION
