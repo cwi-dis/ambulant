@@ -12,8 +12,14 @@ if [ -d ambulant-debiandist-tmp ]; then
 fi
 mkdir ambulant-debiandist-tmp
 cd ambulant-debiandist-tmp
-hg clone .. ambulant-$VERSION
-hg up $1
+case x$1 in
+x)	branch=default
+	;;
+*)	branch=$1
+	;;
+esac
+echo Building debian packages for ambulant-$VERSION from branch $branch
+hg -u $branch clone .. ambulant-$VERSION
 rm -rf ambulant-$VERSION/.hg
 rm -rf ambulant-$VERSION/sandbox
 tar cfz ambulant_$VERSION.orig.tar.gz ambulant-$VERSION
