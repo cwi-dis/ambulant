@@ -34,10 +34,6 @@ CONFIGARGS+= --with-python --with-python-plugin
 
 # LDFLAGS="-Wl,-z,defs"
 
-CFLAGS+= -I/usr/include/xulrunner-10.0/
-
-
-
 %:
 	dh --with autoreconf $@
 
