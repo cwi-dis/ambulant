@@ -1,5 +1,5 @@
 This directory contains an example of embedding Ambulant in a Python application.
-It is a minimal re-implementation of "player_unix": a GTK-based Ambulant Player.
+It is a minimal re-implementation of "player_gtk": a GTK-based Ambulant Player.
 It has been tested on Linux (and should work on MacOSX).
 
 You need the following prerequisites:
