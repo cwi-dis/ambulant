@@ -164,4 +164,4 @@ install-data-local:
 	mkdir -p  $(DESTDIR)$(datadir)/applications
 	-cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
 
-EXTRA_DIST=ambulant-gnome.desktop
+EXTRA_DIST=ambulant-gnome.desktop Ambulant.png AmbulantDoc.png
