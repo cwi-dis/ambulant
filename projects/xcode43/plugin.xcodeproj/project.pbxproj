@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		04290B81132EB6BA0015D7B7 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9331152C940009CA791 /* plugin.cpp */; };
 		04290B8E132EB6E20015D7B7 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E969612BA4DA000399893 /* libambulantCG.dylib */; };
-		042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
-		042AD9341152C940009CA791 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9331152C940009CA791 /* plugin.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,20 +40,6 @@
 			remoteGlobalIDString = 04A1E80812B57DF20060F97E;
 			remoteInfo = libambulantCG;
 		};
-		042AD9301152C916009CA791 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
-			remoteInfo = libambulant;
-		};
-		04428DC6115779330067C868 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
-			remoteInfo = libambulant;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +50,6 @@
 		042AD92C1152C916009CA791 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
 		042AD9331152C940009CA791 /* plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = plugin.cpp; path = ../../src/plugins/plugin.cpp; sourceTree = SOURCE_ROOT; };
 		32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin_Prefix.pch; sourceTree = "<group>"; };
-		D2AAC09D05546B4700DB518D /* libamplugin_plugin(Cocoa).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_plugin(Cocoa).so"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,21 +61,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D2AAC09B05546B4700DB518D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC09D05546B4700DB518D /* libamplugin_plugin(Cocoa).so */,
 				04290B85132EB6BA0015D7B7 /* libamplugin_plugin(CG).so */,
 			);
 			name = Products;
@@ -109,7 +83,6 @@
 		042AD92D1152C916009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042AD9311152C916009CA791 /* libambulant.dylib */,
 				041E969612BA4DA000399893 /* libambulantCG.dylib */,
 				041E969812BA4DA000399893 /* libambulantCGstatic.a */,
 				041E969A12BA4DA000399893 /* libambulantIPhone.a */,
@@ -165,13 +138,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D2AAC09905546B4700DB518D /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -191,24 +157,6 @@
 			name = "plugin_plugin (CG)";
 			productName = libplugin;
 			productReference = 04290B85132EB6BA0015D7B7 /* libamplugin_plugin(CG).so */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
-		D2AAC09C05546B4700DB518D /* plugin_plugin (Cocoa) */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "plugin_plugin (Cocoa)" */;
-			buildPhases = (
-				D2AAC09905546B4700DB518D /* Headers */,
-				D2AAC09B05546B4700DB518D /* Frameworks */,
-				D2AAC09A05546B4700DB518D /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				04428DC7115779330067C868 /* PBXTargetDependency */,
-			);
-			name = "plugin_plugin (Cocoa)";
-			productName = libplugin;
-			productReference = D2AAC09D05546B4700DB518D /* libamplugin_plugin(Cocoa).so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -240,7 +188,6 @@
 			);
 			projectRoot = "";
 			targets = (
-				D2AAC09C05546B4700DB518D /* plugin_plugin (Cocoa) */,
 				04290B7A132EB6BA0015D7B7 /* plugin_plugin (CG) */,
 			);
 		};
@@ -268,13 +215,6 @@
 			remoteRef = 041E969912BA4DA000399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		042AD9311152C916009CA791 /* libambulant.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libambulant.dylib;
-			remoteRef = 042AD9301152C916009CA791 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -286,14 +226,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D2AAC09A05546B4700DB518D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				042AD9341152C940009CA791 /* plugin.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -301,11 +233,6 @@
 			isa = PBXTargetDependency;
 			name = libambulantCG;
 			targetProxy = 04290B86132EB6D10015D7B7 /* PBXContainerItemProxy */;
-		};
-		04428DC7115779330067C868 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = libambulant;
-			targetProxy = 04428DC6115779330067C868 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -337,38 +264,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_plugin(CG)";
-				STRIP_INSTALLED_PRODUCT = YES;
-				STRIP_STYLE = "non-global";
-			};
-			name = Release;
-		};
-		1DEB916108733D950010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 041E96A112BA4DB700399893 /* ambulant-debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				COPY_PHASE_STRIP = NO;
-				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = plugin_Prefix.pch;
-				PRODUCT_NAME = "libamplugin_plugin(Cocoa)";
-			};
-			name = Debug;
-		};
-		1DEB916208733D950010E9CD /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 041E96A212BA4DB700399893 /* ambulant-release.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EXECUTABLE_EXTENSION = so;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = plugin_Prefix.pch;
-				PRODUCT_NAME = "libamplugin_plugin(Cocoa)";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 			};
@@ -414,15 +309,6 @@
 			buildConfigurations = (
 				04290B83132EB6BA0015D7B7 /* Debug */,
 				04290B84132EB6BA0015D7B7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "plugin_plugin (Cocoa)" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1DEB916108733D950010E9CD /* Debug */,
-				1DEB916208733D950010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

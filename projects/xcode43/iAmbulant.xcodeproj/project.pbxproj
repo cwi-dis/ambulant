@@ -86,13 +86,6 @@
 			remoteGlobalIDString = 040DAAE112B790BB002C4DFD;
 			remoteInfo = libambulantiPhone;
 		};
-		04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
-			remoteInfo = libambulant;
-		};
 		04B75D9112B80D1300161EB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
@@ -281,7 +274,6 @@
 		04B75D8912B80D1300161EB5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04B75D9012B80D1300161EB5 /* libambulant.dylib */,
 				04B75D9212B80D1300161EB5 /* libambulantCG.dylib */,
 				04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */,
 				04B75D9612B80D1300161EB5 /* libambulantIPhone.a */,
@@ -487,13 +479,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		04B75D9012B80D1300161EB5 /* libambulant.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libambulant.dylib;
-			remoteRef = 04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		04B75D9212B80D1300161EB5 /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
@@ -605,7 +590,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 			};
 			name = Distribution;
 		};
@@ -624,7 +609,7 @@
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -649,7 +634,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = iAmbulant;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -669,7 +654,7 @@
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -691,7 +676,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -710,7 +695,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "68C84755-FA62-4A8D-A458-32FF509DD26A";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

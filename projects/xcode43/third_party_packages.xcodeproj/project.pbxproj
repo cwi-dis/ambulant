@@ -192,7 +192,7 @@
 				DSTROOT = /;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = " /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/:/opt/local/bin:$PATH";
+				PATH = "$HOME:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH:/Developer/local/bin:/usr/local/bin";
 			};

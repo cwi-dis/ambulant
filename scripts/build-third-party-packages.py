@@ -240,7 +240,7 @@ if platform.system() == "Darwin":
 	# The set_environment.sh script finds the values we need and puts them in the environment of the subshell.
 	# These then are available to 'set', but not to 'echo'. Therefore we use the former, and extract the desired value from its output.
 	XCODE_SDK_BASE=os.popen('bash -c "(. $AMBULANT_DIR/scripts/set_environment.sh; set | grep -v BASH_EXECUTION_STRING | grep  XCODE_SDK_BASE)"').read().partition("=")[2][:-1]
-# print "XCODE_SDK_BASE=", XCODE_SDK_BASE
+#   print "XCODE_SDK_BASE=", XCODE_SDK_BASE
 #
 # Common flags for MacOSX 10.4
 #
@@ -570,7 +570,7 @@ third_party_packages={
             url2="expat-2.0.1.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
-            	" . $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET && "
                 "cd expat-2.0.1 && "
                 "patch --forward < $AMBULANT_DIR/third_party_packages/expat.patch && "
                 "autoconf && "
@@ -1117,6 +1117,7 @@ def checkenv_mac(target):
 
 def checkenv_iphone(target):
     rv = True
+    wanted = notwanted = ''
     if not checkenv_unix(target):
         rv = False
     if os.system("xcodebuild -version >/dev/null") != 0:
@@ -1131,7 +1132,7 @@ def checkenv_iphone(target):
         wanted = '%s/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin' % XCODE_SDK_BASE
         notwanted = '%s/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin' % XCODE_SDK_BASE
     elif target == 'iOS-Device':
-        wanted = '%s/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin' % XCODE_SDK_BASE
+        wanted = "%s/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin" % XCODE_SDK_BASE
         notwanted = '%s/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin' % XCODE_SDK_BASE
 
     else:

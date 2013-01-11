@@ -1,12 +1,13 @@
 #/bin/sh
 # exports environment variables ARCHS, ARCH_ARGS, PLATFORM_PATH, SDK_PATH and XCODE_SDK_BASE for use in  MacOSX/iOS build scripts
-# usage: set_environment <Platform> <version> e.g.: . set_environment iPphoneOS 6.0
+# usage: set_environment <Platform> <version> e.g.: . set_environment iPhoneOS 6.0
 # known bugs: no error checking (e.g. requested SDK or information in SDK not available)
 # set -x
 
 # set default _PLATFORM, _VERSION
 _PLATFORM=iPhoneOS
 _VERSION=4.3
+if [ $IPHONEOS_DEPLOYMENT_TARGET != "" ] ; then _VERSION=$IPHONEOS_DEPLOYMENT_TARGET; fi
 
 # get _PLATFORM, _VERSION from arguments, if any
 if [ $# -gt 0 ] ; then _PLATFORM=$1; shift; fi

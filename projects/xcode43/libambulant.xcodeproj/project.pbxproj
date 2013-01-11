@@ -248,8 +248,6 @@
 		04D07B68138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B69138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
 		04D07B6A138B0D4500F93772 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
-		935D1A3A169CC4F0003A3CC0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A39169CC4F0003A3CC0 /* CoreAudio.framework */; };
-		935D1A3E169CC506003A3CC0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A3D169CC506003A3CC0 /* CoreAudio.framework */; };
 		935D1A52169CC6C2003A3CC0 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A51169CC6C2003A3CC0 /* AudioUnit.framework */; };
 		935D1A54169CC71C003A3CC0 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A53169CC71C003A3CC0 /* AudioUnit.framework */; };
 		935D1A56169CC749003A3CC0 /* libbz2.1.0.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A55169CC749003A3CC0 /* libbz2.1.0.5.dylib */; };
@@ -338,12 +336,12 @@
 			remoteGlobalIDString = 041DCBD712B65714003407C8;
 			remoteInfo = third_party_packages_3264;
 		};
-		041DCBF212B66307003407C8 /* PBXContainerItemProxy */ = {
+		935D1A82169DBE51003A3CC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCBD712B65714003407C8;
-			remoteInfo = third_party_packages_3264;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8;
+			remoteInfo = third_party_packages_iOS_Simulator;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -789,8 +787,6 @@
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF5E0370ADEE00C91783 /* libambulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libambulant_Prefix.pch; sourceTree = "<group>"; };
-		935D1A39169CC4F0003A3CC0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		935D1A3D169CC506003A3CC0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
 		935D1A3F169CC582003A3CC0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
 		935D1A40169CC582003A3CC0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		935D1A41169CC582003A3CC0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -860,7 +856,6 @@
 				935D1A58169CC794003A3CC0 /* OpenGL.framework in Frameworks */,
 				935D1A56169CC749003A3CC0 /* libbz2.1.0.5.dylib in Frameworks */,
 				935D1A52169CC6C2003A3CC0 /* AudioUnit.framework in Frameworks */,
-				935D1A3A169CC4F0003A3CC0 /* CoreAudio.framework in Frameworks */,
 				04A1E85F12B57DF20060F97E /* Cocoa.framework in Frameworks */,
 				04A1E86012B57DF20060F97E /* libavcodec.dylib in Frameworks */,
 				04A1E86112B57DF20060F97E /* libavformat.dylib in Frameworks */,
@@ -884,7 +879,6 @@
 				935D1A5E169CC829003A3CC0 /* CoreVideo.framework in Frameworks */,
 				935D1A5A169CC7B4003A3CC0 /* libbz2.dylib in Frameworks */,
 				935D1A54169CC71C003A3CC0 /* AudioUnit.framework in Frameworks */,
-				935D1A3E169CC506003A3CC0 /* CoreAudio.framework in Frameworks */,
 				93C6F94E12FDFE5E0001EA04 /* QuartzCore.framework in Frameworks */,
 				93C6F95012FDFE5E0001EA04 /* CoreData.framework in Frameworks */,
 				93C6F95112FDFE5E0001EA04 /* Foundation.framework in Frameworks */,
@@ -1698,7 +1692,6 @@
 		0867D691FE84028FC02AAC07 /* libambulant */ = {
 			isa = PBXGroup;
 			children = (
-				935D1A3D169CC506003A3CC0 /* CoreAudio.framework */,
 				041DCBE912B662B4003407C8 /* Subprojects */,
 				04791AE1115193DF0007DD71 /* Configuration Files */,
 				04791C92115194990007DD71 /* include */,
@@ -1761,7 +1754,6 @@
 				935D1A40169CC582003A3CC0 /* CoreData.framework */,
 				935D1A41169CC582003A3CC0 /* CoreGraphics.framework */,
 				935D1A42169CC582003A3CC0 /* CoreText.framework */,
-				935D1A39169CC4F0003A3CC0 /* CoreAudio.framework */,
 				93C8CEA113166F360085212A /* CoreText.framework */,
 				93C8CE9F13166F130085212A /* ImageIO.framework */,
 				93C8CE9D13166EF80085212A /* CoreGraphics.framework */,
@@ -1926,7 +1918,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				041DCBF312B66307003407C8 /* PBXTargetDependency */,
+				935D1A83169DBE51003A3CC0 /* PBXTargetDependency */,
 			);
 			name = libambulantCGstatic;
 			productName = libambulantCGstatic;
@@ -2236,10 +2228,10 @@
 			name = third_party_packages_3264;
 			targetProxy = 041DCBF012B662FD003407C8 /* PBXContainerItemProxy */;
 		};
-		041DCBF312B66307003407C8 /* PBXTargetDependency */ = {
+		935D1A83169DBE51003A3CC0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = third_party_packages_3264;
-			targetProxy = 041DCBF212B66307003407C8 /* PBXContainerItemProxy */;
+			name = third_party_packages_iOS_Simulator;
+			targetProxy = 935D1A82169DBE51003A3CC0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
