@@ -1,7 +1,7 @@
 Source: ambulant
 Section: graphics
 Priority: optional
-Maintainer: Jack Jansen <Jack.Jansen@cwi.nl>
+Maintainer: CWI Ambulant Team <ambulant@cwi.nl>
 Build-Depends: debhelper (>= 7), dh-autoreconf, automake, autoconf, autotools-dev, gettext, 
  libgtk2.0-dev | libgdk-pixbuf2.0-dev, 
  libxml2-dev, libqt3-mt-dev, liblivemedia-dev, libltdl-dev, 
@@ -55,6 +55,7 @@ Description: Ambulant SMIL multimedia player - developer plugins
  
 Package: ambulant-common
 Architecture: any
+Depends: ${misc:Depends}
 Suggests: ambulantplayer
 Description: Ambulant SMIL multimedia player - common files
  SMIL 3.0 multimedia playback engine.
