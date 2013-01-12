@@ -224,6 +224,7 @@
 				PRODUCT_NAME = third_party_packages_iOS_Fat;
 				SDKROOT = iphoneos5.1;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "armv6 armv7";
 				ZERO_LINK = NO;
 			};
 			name = Common;

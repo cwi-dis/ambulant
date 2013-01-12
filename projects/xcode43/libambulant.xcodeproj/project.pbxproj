@@ -2395,7 +2395,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = ambulantCGstatic;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.1;
 			};
 			name = Debug;
 		};
@@ -2421,7 +2421,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = ambulantCGstatic;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos5.1;
 				ZERO_LINK = NO;
 			};
 			name = Release;
