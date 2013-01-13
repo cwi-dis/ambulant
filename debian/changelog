@@ -1,6 +1,7 @@
-ambulant (2.4.1.20130113) precise; urgency=low
+ambulant (2.4.1) precise; urgency=low
 
-  * Incorporating changes by PICCORO Lenz McKAY into mainstream
+  * Various tweaks to support Ubuntu PPA
+  * Incorporated changes by PICCORO Lenz McKAY into mainstream
   
  -- Jack Jansen <Jack.Jansen@cwi.nl>  Tue, 10 Jan 2013 10:55:11 -0100
  
