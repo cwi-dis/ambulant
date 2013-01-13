@@ -2,6 +2,7 @@
 set -e -x
 VERSION=2.4.1
 UVERSION=precise
+PPA=ppa:ambulant/ambulant
 if [ ! -f include/ambulant/version.h ]; then
 	echo "Please run only in a toplevel ambulant directory"
 	exit 1
@@ -36,7 +37,7 @@ rm -rf ambulant-$VERSION/sandbox
 case x$fixchangelog in
 xyes)
 	CLDATE=`date --rfc-2822`
-	cat > debian/changelog << xyzzy
+	cat > ambulant-$VERSION/debian/changelog << xyzzy
 ambulant ($VERSION) $UVERSION; urgency=low
 
   * Nightly build, for testing only
@@ -50,5 +51,5 @@ cd ambulant-$VERSION
 debuild -S -sa -kC75B80BC
 cd ..
 rm -rf ambulant-$VERSION
-
+dput $PPA ambulant-debiandist-tmp/ambulant_$VERSION_source.changes
 
