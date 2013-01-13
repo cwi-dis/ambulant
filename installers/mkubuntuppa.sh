@@ -14,7 +14,7 @@ xnightly)
 	fixchangelog=yes
 	;;
 *)
-	echo Usage: $0 [release|nightly] [branch]
+	echo Usage: $0 "[release|nightly] [branch]"
 	exit 1
 esac
 
