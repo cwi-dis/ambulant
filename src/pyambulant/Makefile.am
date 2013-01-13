@@ -116,10 +116,14 @@ check-pyambulant:
 	)
 
 install-pyambulant:
+	layout= \
+	if ($(PYTHON) -c "import sys; print sys.path" | grep -q dist-packages); then \
+		layout=--install-layout=deb ; \
+	fi ; \
 	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
-		cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"` ; \
+		cd $(srcdir) ; $(PYTHON) setup.py install $layout --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"` ; \
 	else \
-		cd $(srcdir) ; $(PYTHON) setup.py install --home $(DESTDIR)/$(prefix) ; \
+		cd $(srcdir) ; $(PYTHON) setup.py install $layout --home $(DESTDIR)/$(prefix) ; \
 	fi
 
 mostlyclean-local:
