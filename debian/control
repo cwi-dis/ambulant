@@ -3,7 +3,7 @@ Section: graphics
 Priority: optional
 Maintainer: CWI Ambulant Team <ambulant@cwi.nl>
 Build-Depends: debhelper (>= 7), dh-autoreconf, automake, autoconf, autotools-dev, autopoint, gettext, 
- libgtk2.0-dev | libgdk-pixbuf2.0-dev, 
+ libgtk2.0-dev | libgdk-pixbuf2.0-dev, gconf2,
  libxml2-dev, libqt3-mt-dev, liblivemedia-dev, libltdl-dev, 
  libsdl1.2-dev, libavformat-dev (>= 4:0.8-1~bpo60+1), libavcodec-dev (>= 4:0.8-1~bpo60+1), libswscale-dev (>= 4:0.8-1~bpo60+1), 
  libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, 
