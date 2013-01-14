@@ -116,7 +116,7 @@ check-pyambulant:
 	)
 
 install-pyambulant:
-	layout= \
+	layout= ;\
 	if $(PYTHON) -c "import sys; print sys.path" | grep -q dist-packages; then \
 		layout=--install-layout=deb ; \
 	fi ; \
