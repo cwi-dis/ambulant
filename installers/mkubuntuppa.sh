@@ -1,23 +1,27 @@
 #!/bin/sh
 set -e -x
+
 VERSION=2.4.1
 UVERSION=precise
-PPA=ppa:ambulant/ambulant
-if [ ! -f include/ambulant/version.h ]; then
-	echo "Please run only in a toplevel ambulant directory"
-	exit 1
-fi
+
+PPANAME=$1
 case x$1 in
-xrelease)
+xambulant)
 	;;
-xnightly)
+xambulant-nightly)
 	VERSION=$VERSION.`date +%Y%m%d`$PPADATESUFFIX
 	fixchangelog=yes
 	;;
 *)
-	echo Usage: $0 "[release|nightly] [branch]"
+	echo Usage: $0 "[ambulant|ambulant-nightly] [branch]"
 	exit 1
 esac
+PPA=ppa:ambulant/$PPANAME
+
+if [ ! -f include/ambulant/version.h ]; then
+	echo "Please run only in a toplevel ambulant directory"
+	exit 1
+fi
 
 if [ -d ambulant-debiandist-tmp ]; then
 	rm -rf ambulant-debiandist-tmp
