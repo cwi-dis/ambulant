@@ -1,16 +1,39 @@
 .\" Process this file with 
 .\" groff -man -Tascii ambulantplayer.1
 .\"
-.TH AMBULANTPLAYER 1 "NOVEMBER 2004" Linux "User Manuals"
+.TH AMBULANTPLAYER 1 "JANUARY 2013" Linux "User Manuals"
 .SH NAME
-AmbulantPlayer \- A fast and complete SMIL 2.0 media player
+AmbulantPlayer \- A fast and complete SMIL 3.0 media player
 .SH SYNOPSIS
 .B AmbulantPlayer [
-.I smil-file
+.I smil-file | url
+.B ]
+.P
+.B AmbulantPlayer_gtk [
+.I smil-file | url
+.B ]
+.P
+.B AmbulantPlayer_qt [
+.I smil-file | url
 .B ]
 .SH DESCRIPTION
 .B AmbulantPlayer
-The AMBULANT Open SMIL Player is an open-source, full SMIL 2.0 media player. It is intended for researchers and developers who want an source-code player upon which they can build higher-level systems solutions for authoring and content integration, or within which they can add new or extended support for networking and media transport components. The AMBULANT player may also be used as a complete, multi-platform media player for applications that do not need support for closed, proprietary media formats.
+is the command-line interface to play back SMIL 3.0 media presentations.
+On Linux, it is available with either a Qt or Gtk-based user interface.
+When started with a SMIL file or URL as parameter the player will start playback
+of the given document, otherwise only the user interface is opened.
+.P
+The AMBULANT Open SMIL Player is an open-source, full SMIL 3.0 media
+player. It is intended for researchers and developers who want an
+source-code player upon which they can build higher-level systems
+solutions for authoring and content integration, or within which they
+can add new or extended support for networking and media transport
+components. The AMBULANT player may also be used as a complete,
+multi-platform media player for applications that do not need support
+for closed, proprietary media formats.
+.P
+For use of Ambulant as plugin in a web browser, or embedding or extending
+Ambulant in Python or C/C++ please see the website for the full documentation.
 .SH FILES
 .I ~/.ambulant/preferences
 .RS
@@ -19,3 +42,5 @@ Per user configuration file
 See http://sourceforge.net/tracker/?group_id=91457&atid=597222.
 .SH SEE ALSO
 www.ambulantplayer.org
+.br
+

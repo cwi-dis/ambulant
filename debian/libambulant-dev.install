@@ -1,5 +1,4 @@
 usr/include/ambulant
-usr/lib/libambulant*.a
-usr/lib/libambulant*.la
+usr/lib/libambulant*.*a
 usr/lib/libambulant*.so
 usr/lib/pkgconfig
