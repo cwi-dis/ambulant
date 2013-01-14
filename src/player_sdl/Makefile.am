@@ -141,10 +141,6 @@ uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
 
-#	rm /usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
-
 install-data-local:
 
 EXTRA_DIST=

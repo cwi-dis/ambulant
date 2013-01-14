@@ -308,19 +308,19 @@ install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/ambulant/icons/
 	cp $(srcdir)/Ambulant.png  $(DESTDIR)$(datadir)/ambulant/icons/
 # install gnome document icon for mimetype application/smil
-	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes
-	cp $(srcdir)/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes
-	cp $(srcdir)/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/48
-	cp $(srcdir)/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/gnome/64x64/mimetypes
+	cp $(srcdir)/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/gnome/64x64/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/64x64/mimetypes
+	cp $(srcdir)/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/hicolor/64x64/mimetypes/gnome-mime-application-smil.png
+	mkdir -p $(DESTDIR)$(datadir)/icons/Humanity/mimes/64
+	cp $(srcdir)/AmbulantDoc.png $(DESTDIR)$(datadir)/icons/Humanity/mimes/64/gnome-mime-application-smil.png
 	$(LIBTOOL) --finish $(DESTDIR)$(libdir)
  
 uninstall-local:
 	-rm -f $(DESTDIR)$(datadir)/ambulant/icons/Ambulant.png
-	-rm -f $(DESTDIR)$(datadir)/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-	-rm -f $(DESTDIR)$(datadir)/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-	-rm -f $(DESTDIR)$(datadir)/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/gnome/64x64/mimetypes/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/hicolor/64x64/mimetypes/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/icons/Humanity/mimes/64/gnome-mime-application-smil.png
 
 if WITH_NPAMBULANT
 # when selinux is enblaed, identify the installed shared library

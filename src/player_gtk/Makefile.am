@@ -156,10 +156,6 @@ uninstall-local:
 	-rm -fr AM_TEST-output.txt 
 	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-gtk.desktop
 
-#	rm /usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
-
 install-data-local:
 	mkdir -p  $(DESTDIR)$(datadir)/applications
 	-cp $(srcdir)/ambulant-gtk.desktop $(DESTDIR)$(datadir)/applications
