@@ -117,7 +117,7 @@ check-pyambulant:
 
 install-pyambulant:
 	layout= \
-	if ($(PYTHON) -c "import sys; print sys.path" | grep -q dist-packages); then \
+	if $(PYTHON) -c "import sys; print sys.path" | grep -q dist-packages; then \
 		layout=--install-layout=deb ; \
 	fi ; \
 	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \

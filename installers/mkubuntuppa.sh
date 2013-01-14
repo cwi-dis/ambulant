@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e -x
 VERSION=2.4.1
+SUFFIX=a
 UVERSION=precise
 PPA=ppa:ambulant/ambulant
 if [ ! -f include/ambulant/version.h ]; then
@@ -11,7 +12,7 @@ case x$1 in
 xrelease)
 	;;
 xnightly)
-	VERSION=$VERSION.`date +%Y%m%d`
+	VERSION=$VERSION.`date +%Y%m%d`$SUFFIX
 	fixchangelog=yes
 	;;
 *)
@@ -51,5 +52,5 @@ cd ambulant-$VERSION
 debuild -S -sa -kC75B80BC
 cd ..
 rm -rf ambulant-$VERSION
-dput $PPA ambulant-debiandist-tmp/ambulant_$VERSION_source.changes
+dput $PPA ambulant_${VERSION}_source.changes
 
