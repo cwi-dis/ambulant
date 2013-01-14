@@ -1,7 +1,6 @@
 #!/bin/sh
 set -e -x
 VERSION=2.4.1
-SUFFIX=a
 UVERSION=precise
 PPA=ppa:ambulant/ambulant
 if [ ! -f include/ambulant/version.h ]; then
@@ -12,7 +11,7 @@ case x$1 in
 xrelease)
 	;;
 xnightly)
-	VERSION=$VERSION.`date +%Y%m%d`$SUFFIX
+	VERSION=$VERSION.`date +%Y%m%d`$PPADATESUFFIX
 	fixchangelog=yes
 	;;
 *)
