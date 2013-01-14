@@ -121,9 +121,9 @@ install-pyambulant:
 		layout=--install-layout=deb ; \
 	fi ; \
 	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
-		cd $(srcdir) ; $(PYTHON) setup.py install $layout --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"` ; \
+		cd $(srcdir) ; $(PYTHON) setup.py install $$layout --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"` ; \
 	else \
-		cd $(srcdir) ; $(PYTHON) setup.py install $layout --home $(DESTDIR)/$(prefix) ; \
+		cd $(srcdir) ; $(PYTHON) setup.py install $$layout --home $(DESTDIR)/$(prefix) ; \
 	fi
 
 mostlyclean-local:
