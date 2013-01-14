@@ -111,11 +111,12 @@ Before creating the distribution
   - src/pyambulant/setup.py
   - scripts/nightlybuilds/*
   - scripts/build-third-party-packages.py (MIRRORBASE variable)
+  - scripts/autotest.linux.sh
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - installers/nsis-win32/setup-ambulant-installer-xp.nsi
   - installers/mkdebiandist.sh
   - projects/vc9/npambulant-installer.vcproj
-  - projects/vc9/AmbulantActiveX-installer.vcxproj (2 times?)
+  - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
   - projects/vc10/npambulant-installer.vcxproj (many places)
   - projects/vc10/AmbulantActiveX-installer.vcxproj (many places)
   - projects/xcode32/iAmbulant-Info.plist

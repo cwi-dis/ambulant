@@ -44,7 +44,12 @@ x)
 esac
 
 # Tunable parameters, to some extent
+<<<<<<< local
 AMBULANTVERSION=2.5
+=======
+AMBULANTVERSION=2.4.1
+UBUNTUVERSION=precise
+>>>>>>> other
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -59,10 +64,14 @@ x)
 xrelease*)
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=
+	UBUNTUPPA=ppa:ambulant/ambulant
+	release=yes
 	;;
 *)
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=.$TODAY
+	UBUNTUPPA=ppa:ambulant/ambulant-nightly
+	release=no
 esac
 CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
@@ -106,36 +115,53 @@ x)	;;
 esac
 # Get rid of mercurial administration
 rm -r .hg
+# Get rid of Sandbox
+rm -r sandbox
 
 sh autogen.sh
+case x$release in
+xno)
 cat > debian/changelog << xyzzy
-ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low
+ambulant ($AMBULANTVERSION$VERSIONSUFFIX) $UBUNTUVERSION; urgency=low
 
   * Nightly build, for testing only
 
  -- CWI Ambulant Team <ambulant@cwi.nl>  $CLDATE
 xyzzy
+;;
+esac
 
 #
-# Build debian package (incomplete)
+# Build debian packages, first binary then source
 #
-cd debian
-debuild -kC75B80BC
-cd ..
-
-#
-# Upload
-#
-
-cd ..
 rm -rf $DESTINATION_STAGING
 mkdir -p $RELPATH_SRC/debian-$TODAY
 mkdir -p $RELPATH_BIN/debian-$TODAY
+
+cd debian
+debuild -kC75B80BC 
+cd ..
+mv *.deb *.dsc *.changes $RELPATH_BIN/debian-$TODAY/
+
+cd debian
+debuild -S -sa -kC75B80BC 
+cd ..
 mv *.tar.gz *.dsc *.changes *.build $RELPATH_SRC/debian-$TODAY/
-mv *.deb $RELPATH_BIN/debian-$TODAY/
+
 dpkg-scanpackages $RELPATH_BIN/debian-$TODAY | gzip -9c > $RELPATH_BIN/Packages.gz
 dpkg-scansources $RELPATH_SRC/debian-$TODAY | gzip -9c > $RELPATH_SRC/Sources.gz
+
+#
+# Upload to our repository
+#
+
 rsync -r $DESTINATION_STAGING $DESTINATION_DEBIAN
+
+#
+# Upload to PPA
+#
+dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${AMBULANTVERSION}${VERSIONSUFFIX}_source.changes
+cd ..
 
 #
 # Delete old installers, remember current

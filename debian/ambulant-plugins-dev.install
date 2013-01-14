@@ -1,0 +1,3 @@
+usr/lib/ambulant/libamplugin_x*.*a
+usr/lib/ambulant/libamplugin_x*.so
+# don ship pytho due are build as plugin so made into python package
