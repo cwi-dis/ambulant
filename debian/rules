@@ -15,21 +15,17 @@ export DH_OPTIONS
 # default configure options
 CONFIGARGS= --with-gnu-ld --with-expat --with-xerces --with-xerces-plugin --with-third-party-packages=
 # enable interfaces
-CONFIGARGS+= --with-gtk  --with-qt
+CONFIGARGS+= --with-gtk
 # configure the backends plugins
 CONFIGARGS+= --with-sdl --with-gstreamer
 # enabl extra backends
-CONFIGARGS+= --with-ffmpeg --with-live
+CONFIGARGS+= --with-ffmpeg
 # enable python plguins
 CONFIGARGS+= --with-python --with-python-plugin
 # enable browser plguin support, disabled fo now, broken script api
 #CONFIGARGS+= --with-npambulant
-# this enables a html widget for qt designer
-# --with-qt-html-widget
 # this build documentationapi develper
 #  --with-doxygen          Build doxygen API documentation
-# this enables html webkit suppot for browser debug
-#CONFIGARGS+=   --with-webkit-dom
 # --with-uikit       Enable the WebKit DOM plugin (default: disabled)
 
 # LDFLAGS="-Wl,-z,defs"

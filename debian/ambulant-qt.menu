@@ -1,2 +1,0 @@
-?package(ambulant):needs="X11" section="Applications/Viewers"\
-  title="Ambulant SMIL Player (Qt3)" command="/usr/bin/AmbulantPlayer_qt"
