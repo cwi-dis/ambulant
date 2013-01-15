@@ -422,15 +422,14 @@ third_party_packages={
                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
-            url2="gettext-0.18.1.1.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
+            url2="gettext-0.18.2.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18.1.1 && "
-            	"patch -p1 --forward < %s/third_party_packages/gettext-0.18.1.1.patch && "
+                "cd gettext-0.18.2 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
+                "make install" % ( MAC106_COMMON_CONFIGURE)
             ),
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
@@ -514,10 +513,10 @@ third_party_packages={
                 "make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18.1.1 && "
+                "cd gettext-0.18.2 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
@@ -608,10 +607,10 @@ third_party_packages={
 
 
 ##      TPP("gettext",
-##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.18.1.1 && "
+##              "cd gettext-0.18.2 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -683,10 +682,10 @@ third_party_packages={
  ),
 
 ##      TPP("gettext",
-##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##              "cd gettext-0.18.1.1 && "
+##              "cd gettext-0.18.2 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE__COMMON_CONFIGURE
@@ -807,11 +806,11 @@ third_party_packages={
             ),
 
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
-            url2="gettext-0.18.1.1.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
+            url2="gettext-0.18.2.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18.1.1 && "
+                "cd gettext-0.18.2 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
