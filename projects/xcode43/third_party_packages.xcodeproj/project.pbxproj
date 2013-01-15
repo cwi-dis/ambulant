@@ -6,39 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		043EFD30130BF57E0050B2BA /* third_party_packages_iOS_Fat */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 043EFD3E130BF59F0050B2BA /* Build configuration list for PBXAggregateTarget "third_party_packages_iOS_Fat" */;
-			buildPhases = (
-				043EFD39130BF5960050B2BA /* ShellScript */,
-			);
-			dependencies = (
-				043EFDF9130BFF110050B2BA /* PBXTargetDependency */,
-				043EFDF7130BFF110050B2BA /* PBXTargetDependency */,
-			);
-			name = third_party_packages_iOS_Fat;
-			productName = third_party_packages_iOS_Fat;
-		};
-/* End PBXAggregateTarget section */
-
-/* Begin PBXContainerItemProxy section */
-		043EFDF6130BFF110050B2BA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8;
-			remoteInfo = third_party_packages_iOS_Simulator;
-		};
-		043EFDF8130BFF110050B2BA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8;
-			remoteInfo = third_party_packages_iOS;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../scripts/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
 		04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
@@ -132,39 +99,9 @@
 				041DCBD712B65714003407C8 /* third_party_packages_mac */,
 				041DCBF612B6770B003407C8 /* third_party_packages_iOS */,
 				041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */,
-				043EFD30130BF57E0050B2BA /* third_party_packages_iOS_Fat */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		043EFD39130BF5960050B2BA /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ../..\nsh scripts/merge_iphone-3pp.sh\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		043EFDF7130BFF110050B2BA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
-			targetProxy = 043EFDF6130BFF110050B2BA /* PBXContainerItemProxy */;
-		};
-		043EFDF9130BFF110050B2BA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 041DCBF612B6770B003407C8 /* third_party_packages_iOS */;
-			targetProxy = 043EFDF8130BFF110050B2BA /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		041DCBD912B65714003407C8 /* Common */ = {
@@ -190,7 +127,7 @@
 				AMBULANT_3PP = "../../build-iOS/third_party_packages";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PATH = "$HOME:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";
@@ -212,28 +149,13 @@
 			};
 			name = Common;
 		};
-		043EFD33130BF57E0050B2BA /* Common */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DSTROOT = /;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "/usr/local/bin:$(PATH)";
-				PRODUCT_NAME = third_party_packages_iOS_Fat;
-				SDKROOT = iphoneos5.1;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
-				VALID_ARCHS = "armv6 armv7";
-				ZERO_LINK = NO;
-			};
-			name = Common;
-		};
 		1DEB919508733D9F0010E9CD /* Common */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */;
 			buildSettings = {
 				"AMBULANT_DIR[arch=*]" = "$(SRCROOT)/../..";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Common;
 		};
@@ -260,14 +182,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				041DCC0A12B6777A003407C8 /* Common */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Common;
-		};
-		043EFD3E130BF59F0050B2BA /* Build configuration list for PBXAggregateTarget "third_party_packages_iOS_Fat" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				043EFD33130BF57E0050B2BA /* Common */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Common;

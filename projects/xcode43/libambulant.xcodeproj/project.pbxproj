@@ -322,13 +322,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		041AEB33130BCCE6005165D5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 043EFD30130BF57E0050B2BA;
-			remoteInfo = third_party_packages_iOS_Fat;
-		};
 		041DCBF012B662FD003407C8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
@@ -342,6 +335,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 041DCC0712B6777A003407C8;
 			remoteInfo = third_party_packages_iOS_Simulator;
+		};
+		9370432A16A45BD500CDE04E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8;
+			remoteInfo = third_party_packages_iOS;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1882,7 +1882,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				041AEB34130BCCE6005165D5 /* PBXTargetDependency */,
+				9370432B16A45BD500CDE04E /* PBXTargetDependency */,
 			);
 			name = libambulantiPhone;
 			productName = libambulantCGstatic;
@@ -2218,11 +2218,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		041AEB34130BCCE6005165D5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = third_party_packages_iOS_Fat;
-			targetProxy = 041AEB33130BCCE6005165D5 /* PBXContainerItemProxy */;
-		};
 		041DCBF112B662FD003407C8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = third_party_packages_3264;
@@ -2232,6 +2227,11 @@
 			isa = PBXTargetDependency;
 			name = third_party_packages_iOS_Simulator;
 			targetProxy = 935D1A82169DBE51003A3CC0 /* PBXContainerItemProxy */;
+		};
+		9370432B16A45BD500CDE04E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS;
+			targetProxy = 9370432A16A45BD500CDE04E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2265,7 +2265,7 @@
 				);
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -2293,7 +2293,7 @@
 				);
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
@@ -2395,7 +2395,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = ambulantCGstatic;
-				SDKROOT = iphoneos5.1;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -2421,7 +2421,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = ambulantCGstatic;
-				SDKROOT = iphoneos5.1;
+				SDKROOT = "";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2439,7 +2439,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin:";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -2453,7 +2453,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(AMBULANT_DIR)/build-3264/third_party_packages/installed/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

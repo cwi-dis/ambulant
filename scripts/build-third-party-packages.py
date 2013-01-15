@@ -584,7 +584,7 @@ third_party_packages={
             url2="libtool-2.2.6a.tar.gz",
             checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
             buildcmd=
-            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET && "
                 "cd libtool-2.2.6 && "
                         "%s --enable-ltdl-install --disable-dependency-tracking &&"
                 "make ${MAKEFLAGS} && "
@@ -608,7 +608,7 @@ third_party_packages={
             url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET && "
                 "cd ffmpeg-1.0 && "
                 "set -x; for arch in $ARCHS ; do"
 				"    export CPU_TYPE=unknown; "
@@ -639,17 +639,17 @@ third_party_packages={
             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
-            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET && "
                 "cd SDL-1.3.0-*  && "
-                "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  --host=`uname -m`-darwin &&"                
+                "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  --host=`uname -m`-darwin && "                
 	           "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
-                "cd Xcode-iOS/SDL  && "
-                "xcodebuild -target libSDL -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&"
+                "cd Xcode-iOS/SDL && "
+                "xcodebuild -target libSDL $ARCH_ARGS -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release && "
                 "mkdir -p ../../../installed/include/SDL && "
-                "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
+                "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL && "
                 "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib"
             ),
-#                "xcodebuild -target libSDL -$ACH_ARGS -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&" # -arch only supported on Xcode >= 4.0
+#                "xcodebuild -target libSDL -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&" # -arch only supported on Xcode >= 4.0
 
 #         TPP("live",
 #             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
@@ -681,7 +681,7 @@ third_party_packages={
             url2="libxml2-2.7.7.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
+            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET && "
                 "cd libxml2-2.7.7 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
