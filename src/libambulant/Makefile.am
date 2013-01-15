@@ -289,6 +289,8 @@ libambulant_la_SOURCES = \
 	gui/none/none_factory.cpp
 
 EXTRA_DIST= \
+    Ambulant.png \
+    AmbulantDoc.png \
     lib/expat_parser.cpp \
     lib/xerces_parser.cpp \
 	$(libambulant_sdl_la_SOURCES) \
