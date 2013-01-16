@@ -99,22 +99,33 @@ scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep debian- | xargs chmod -R a+w .empty
 ls -t | tail -n +6 | grep debian- | xargs rm -rf
-hg $HGARGS clone $HGCLONEARGS $BUILDDIR
+
+#
+# Create staging area
+#
+rm -rf $DESTINATION_STAGING
+mkdir -p $RELPATH_SRC/debian-$TODAY
+mkdir -p $RELPATH_BIN/debian-$TODAY
+
 #
 # Prepare the tree
 #
+hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 cd $BUILDDIR
 case x$BRANCH in
 x)	;;
 *)
 	hg up -r $BRANCH
 esac
+
 # Get rid of mercurial administration
 rm -r .hg
 # Get rid of Sandbox
 rm -r sandbox
 
 sh autogen.sh
+
+# Replace debian changelog for nightly build distributions
 case x$release in
 xno)
 cat > debian/changelog << xyzzy
@@ -130,17 +141,17 @@ esac
 #
 # Build debian packages, first binary then source
 #
-rm -rf $DESTINATION_STAGING
-mkdir -p $RELPATH_SRC/debian-$TODAY
-mkdir -p $RELPATH_BIN/debian-$TODAY
 
 cd debian
 debuild -kC75B80BC 
 cd ..
+cd ..
 mv *.deb *.dsc *.changes $RELPATH_BIN/debian-$TODAY/
 
+cd $BUILDDIR
 cd debian
 debuild -S -sa -kC75B80BC 
+cd ..
 cd ..
 mv *.tar.gz *.dsc *.changes *.build $RELPATH_SRC/debian-$TODAY/
 
