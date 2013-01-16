@@ -160,4 +160,4 @@ install-data-local:
 	mkdir -p  $(DESTDIR)$(datadir)/applications
 	-cp $(srcdir)/ambulant-gtk.desktop $(DESTDIR)$(datadir)/applications
 
-EXTRA_DIST=ambulant-gtk.desktop Ambulant.png AmbulantDoc.png
+EXTRA_DIST=ambulant-gtk.desktop
