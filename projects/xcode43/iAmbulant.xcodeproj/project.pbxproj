@@ -76,6 +76,7 @@
 		93E20B3212D2228800D99F74 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B3112D2228800D99F74 /* QuartzCore.framework */; };
 		93E20B3412D2228800D99F74 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B3312D2228800D99F74 /* UIKit.framework */; };
 		93E20B4412D2229600D99F74 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B4312D2229600D99F74 /* OpenGLES.framework */; };
+		93F1BCE216A8020500C73AA2 /* AmbulantTabBarController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93F1BCE116A8020500C73AA2 /* AmbulantTabBarController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +198,8 @@
 		93E20B3112D2228800D99F74 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		93E20B3312D2228800D99F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		93E20B4312D2229600D99F74 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		93F1BCE016A8020500C73AA2 /* AmbulantTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantTabBarController.h; sourceTree = "<group>"; };
+		93F1BCE116A8020500C73AA2 /* AmbulantTabBarController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantTabBarController.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +321,8 @@
 				04B75CFA12B80B9800161EB5 /* AmbulantWebViewController.mm */,
 				04B75CFB12B80B9800161EB5 /* SettingsViewController.h */,
 				04B75CFC12B80B9800161EB5 /* SettingsViewController.mm */,
+				93F1BCE016A8020500C73AA2 /* AmbulantTabBarController.h */,
+				93F1BCE116A8020500C73AA2 /* AmbulantTabBarController.mm */,
 			);
 			name = Classes;
 			path = ../../src/player_iphone/Classes;
@@ -427,9 +432,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "iAmbulant" */;
 			buildPhases = (
-				1D60588D0D05DD3D006BFB54 /* Resources */,
+				93C8FCE616A811660047AEF1 /* ShellScript */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				1D60588D0D05DD3D006BFB54 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -545,6 +551,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		93C8FCE616A811660047AEF1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo Platform: $PLATFORM_NAME AMBULANT_DIR: $AMBULANT_DIR\nrm -f $AMBULANT_DIR/build-iOS\nif [ $PLATFORM_NAME = \"iphonesimulator\" ]\nthen\nln -s $AMBULANT_DIR/build-iOS-Simulator $AMBULANT_DIR/build-iOS\nelse\nln -s $AMBULANT_DIR/build-iOS-Device $AMBULANT_DIR/build-iOS\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -560,6 +582,7 @@
 				04B75D0412B80B9800161EB5 /* SettingsViewController.mm in Sources */,
 				04B75D4812B80C4900161EB5 /* mainloop.mm in Sources */,
 				04B75D4912B80C4900161EB5 /* main.mm in Sources */,
+				93F1BCE216A8020500C73AA2 /* AmbulantTabBarController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,7 +630,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)-Simulator/third_party_packages/installed/lib/";
+				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)/third_party_packages/installed/lib/";
 				PRODUCT_NAME = iAmbulant;
 				SDKROOT = iphoneos6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -632,7 +655,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)-Simulator/third_party_packages/installed/lib/";
+				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)/third_party_packages/installed/lib/";
 				PRODUCT_NAME = iAmbulant;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos6.0;
@@ -654,7 +677,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)-Simulator/third_party_packages/installed/lib/";
+				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)/third_party_packages/installed/lib/";
 				PRODUCT_NAME = iAmbulant;
 				SDKROOT = iphoneos6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

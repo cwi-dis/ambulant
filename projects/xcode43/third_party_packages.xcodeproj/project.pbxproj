@@ -46,17 +46,17 @@
 			passBuildSettingsInEnvironment = 1;
 			productName = third_party_packages_3264;
 		};
-		041DCBF612B6770B003407C8 /* third_party_packages_iOS */ = {
+		041DCBF612B6770B003407C8 /* third_party_packages_iOS_Device */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = " ../../scripts/build-third-party-packages.py iOS-Device";
-			buildConfigurationList = 041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS" */;
+			buildConfigurationList = 041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Device" */;
 			buildPhases = (
 			);
 			buildToolPath = python;
 			buildWorkingDirectory = "";
 			dependencies = (
 			);
-			name = third_party_packages_iOS;
+			name = third_party_packages_iOS_Device;
 			passBuildSettingsInEnvironment = 1;
 			productName = third_party_packages_3264;
 		};
@@ -97,7 +97,7 @@
 			projectRoot = "";
 			targets = (
 				041DCBD712B65714003407C8 /* third_party_packages_mac */,
-				041DCBF612B6770B003407C8 /* third_party_packages_iOS */,
+				041DCBF612B6770B003407C8 /* third_party_packages_iOS_Device */,
 				041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */,
 			);
 		};
@@ -124,7 +124,7 @@
 		041DCBF912B6770B003407C8 /* Common */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				AMBULANT_3PP = "../../build-iOS/third_party_packages";
+				AMBULANT_3PP = "../../build-iOS-Device/third_party_packages";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
@@ -170,7 +170,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Common;
 		};
-		041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS" */ = {
+		041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Device" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				041DCBF912B6770B003407C8 /* Common */,

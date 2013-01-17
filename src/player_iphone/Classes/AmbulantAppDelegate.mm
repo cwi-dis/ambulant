@@ -228,6 +228,7 @@ applicationDidBecomeActive:(UIApplication *)application {
     // Note: the order of adding the views to the window is important.
     // Only the first viewController will be informed about rotation, see
     // <http://developer.apple.com/library/ios/#qa/qa2010/qa1688.html>. 
+    window.rootViewController = viewController;
     if (showPlayer) {
         viewController.view.alpha = 1.0;
         viewController.view.hidden = false;
@@ -243,7 +244,6 @@ applicationDidBecomeActive:(UIApplication *)application {
     }
     [window addSubview:viewController.view];
     [window addSubview:tabBarController.view];
-
     [window makeKeyAndVisible];
 }
 

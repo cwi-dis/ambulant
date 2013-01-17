@@ -34,7 +34,7 @@ viewDidLoad
 {
     [super viewDidLoad];
 	[textField becomeFirstResponder];
-	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x)", self);
+	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%@)", self);
 }
 
 // Allow orientations other than the default portrait orientation.
@@ -48,7 +48,7 @@ shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientat
 - (IBAction)
 done:(id)sender
 {
-	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
+	AM_DBG NSLog(@"EditViewController done(0x%@)", self);
     NSString *theUrl = textField.text;
 	// Remove leading/trailing whitespace (copy/paste can be a bit
 	// finicky on the iPhone)
@@ -64,7 +64,7 @@ done:(id)sender
 - (IBAction)
 cancel:(id)sender
 {
-	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
+	AM_DBG NSLog(@"EditViewController done(0x%@)", self);
 	[textField resignFirstResponder];
 	[delegate auxViewControllerDidFinish:self];
 }
@@ -72,7 +72,7 @@ cancel:(id)sender
 // From UITextFieldDelegate
 - (BOOL)
 textFieldShouldReturn:(UITextField*) sender {
-	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x): %@", self, textField.text);
+	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%@): %@", self, textField.text);
 	[textField resignFirstResponder];
 	return YES;
 }

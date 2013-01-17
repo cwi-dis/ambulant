@@ -51,7 +51,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG ambulant::lib::logger::get_logger()->trace("document_embedder::open(0x%x) new_doc=%s start=%d old_player=%0x%x", this,  newdoc.get_url().c_str(), start, old);
 
 	if (old) {
-		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
+		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%@", (void*)m_mydocument);
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
 	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -69,7 +69,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void) awakeFromNib
 {
-    AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
+    AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%@)", self);
     is_visible = NO;
     currentURL = nil;
 
@@ -141,27 +141,27 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 // - install gesture recognizers
 - (void) viewDidLoad {
-	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%@)", self);
     [super viewDidLoad];
     [self initGestures];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	AM_DBG NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController viewWillAppear(0x%@)", self);
     [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	AM_DBG NSLog(@"AmbulantViewController viewWillDisappear(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController viewWillDisappear(0x%@)", self);
     [super viewWillDisappear:animated];
     is_visible = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-	AM_DBG NSLog(@"AmbulantViewController viewDidAppear(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController viewDidAppear(0x%@)", self);
     [super viewDidAppear:animated];
     [self play];
     is_visible = YES;
@@ -170,7 +170,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-	AM_DBG NSLog(@"AmbulantViewController viewDidUnLoad:self=0x%x", self);
+	AM_DBG NSLog(@"AmbulantViewController viewDidUnLoad:self=0x%@", self);
     [super viewDidUnload];
 }
 
@@ -187,7 +187,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void)dealloc {
-	AM_DBG NSLog(@"AmbulantViewController dealloc:self=0x%x", self);
+	AM_DBG NSLog(@"AmbulantViewController dealloc:self=0x%@", self);
     [super dealloc];
 	if (myMainloop)
 		delete myMainloop;
@@ -266,7 +266,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) pause {
-	AM_DBG NSLog(@"AmbulantViewController pause(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController pause(0x%@)", self);
 	if (myMainloop) {
 		myMainloop->pause();
 		UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
@@ -281,7 +281,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) play {
-	AM_DBG NSLog(@"AmbulantViewController play(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController play(0x%@)", self);
 	if (myMainloop) {
 		myMainloop->play();
 		UIImage* pauseImage = [UIImage imageNamed: @"Pause_iPhone.png"];
@@ -290,7 +290,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (PlaylistItem*) currentItem {
-	AM_DBG NSLog(@"AmbulantViewController currentItem(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController currentItem(0x%@)", self);
 	if (myMainloop) {
 		return myMainloop->get_current_item();
 	}
@@ -301,7 +301,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 #pragma mark View control
 
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation {
-	AM_DBG NSLog(@"AmbulantViewController isSupportedOrientation(0x%x) orientation=%d", self, orientation);
+	AM_DBG NSLog(@"AmbulantViewController isSupportedOrientation(0x%@) orientation=%d", self, orientation);
 	return 
 		orientation == UIDeviceOrientationPortrait
         ||	orientation == UIDeviceOrientationPortraitUpsideDown
@@ -309,9 +309,18 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         ||	orientation == UIDeviceOrientationLandscapeRight;
 }
 
-- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
-	AM_DBG NSLog(@"AmbulantViewController shouldAutorotateToInterfaceOrientation(0x%x): interfaceOrientation=%d", self, interfaceOrientation);
+// Adapt to device orientation
+- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {  // iOS < 6
+	AM_DBG NSLog(@"AmbulantViewController shouldAutorotateToInterfaceOrientation(0x%@): interfaceOrientation=%d", self, interfaceOrientation);
 	return [self isSupportedOrientation:(UIDeviceOrientation) interfaceOrientation];
+}
+
+- (BOOL)shouldAutorotate { // iOS >= 6
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations { // iOS >= 6
+    return UIInterfaceOrientationMaskAll;
 }
 
 // react on device rotation
@@ -378,7 +387,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 /*	Code derived from Apple's developer documentation "Gesture Recognizers"*/
 
 - (void) selectPointGesture:(UILongPressGestureRecognizer *)sender {
-	AM_DBG NSLog(@"AmbulantViewController selectPointGesture(0x%x): sender=0x%x", self, sender);
+	AM_DBG NSLog(@"AmbulantViewController selectPointGesture(0x%@): sender=0x%@", self, sender);
 	CGPoint location = [sender locationInView:playerView];
 	if ( ! [playerView tappedAtPoint:location]) {
 //		[delegate showPresentationViews:self];
@@ -386,12 +395,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 };
 
 - (void) showHUDGesture:(UITapGestureRecognizer *)sender { // select
-	AM_DBG NSLog(@"AmbulantViewController showHUDGesture(0x%x): sender=0x%x", self, sender);
+	AM_DBG NSLog(@"AmbulantViewController showHUDGesture(0x%@): sender=0x%@", self, sender);
 	[self showInteractionView: YES];
 }
 
 - (void) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
-	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
+	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%@): sender=0x%@", self, sender);
 	CGPoint location = [sender locationInView:scalerView];
 	[scalerView autoZoomAtPoint:location];
 }
@@ -415,14 +424,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (IBAction) handlePinchGesture:(UIPinchGestureRecognizer *)sender { // zoom
-	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
+	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%@): sender=0x%@", self, sender);
     [self adjustAnchorPointForGestureRecognizer: sender];
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
 	[scalerView zoomWithScale:factor inState: [sender state]];
 }
 
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
-	AM_DBG NSLog(@"AmbulantViewController handlePanGesture(0x%x): sender=0x%x", self, sender);
+	AM_DBG NSLog(@"AmbulantViewController handlePanGesture(0x%@): sender=0x%@", self, sender);
 	CGPoint translate = [sender translationInView: playerView.superview];
 	[scalerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
@@ -432,7 +441,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) doPlayOrPauseTapped: (id)sender
 {
-	AM_DBG NSLog(@"AmbulantViewController handlePlayOrPauseTapped(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController handlePlayOrPauseTapped(0x%@)", self);
 	if (myMainloop) {
 		if (myMainloop->is_play_active()) {
 			[self pause];
@@ -446,7 +455,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) doRestartTapped: (id)sender
 {
-	AM_DBG NSLog(@"AmbulantViewController handleRestartTapped(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController handleRestartTapped(0x%@)", self);
 	[self showFinishedView: NO];
 	if (myMainloop != NULL) {
 		myMainloop->restart(false);
@@ -460,13 +469,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) doNextItem: (id)sender
 {
-	AM_DBG NSLog(@"AmbulantViewController playNextItem(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController playNextItem(0x%@)", self);
     [delegate selectNextPresentation];
 }
 
 - (IBAction) doAddFavorite: (id)sender
 {
-	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
+	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%@)", sender);
     NSString *email_or_nil = @"EMail";
     if ([currentURL hasPrefix: @"file:"]) email_or_nil = nil;
     UIActionSheet *sheet = [[UIActionSheet alloc] 
@@ -543,7 +552,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
- 	AM_DBG NSLog(@"AmbulantViewController didReceiveMemoryWarning:self=0x%x", self);
+ 	AM_DBG NSLog(@"AmbulantViewController didReceiveMemoryWarning:self=0x%@", self);
    [super didReceiveMemoryWarning];
 	
 	// Release any cached data, images, etc that aren't in use.
