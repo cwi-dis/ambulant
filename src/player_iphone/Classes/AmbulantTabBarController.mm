@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
-//  AmbulantTabBarController.m
+//  AmbulantTabBarController.mm
 //  iAmbulant
 //
 //  Created by Kees Blom on 1/17/13.
