@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #!/bin/sh
 #
 # Script to do a nightly clean build of a full Ambulant
@@ -94,7 +109,7 @@ cd projects/xcode32
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos4.3 \
+	-sdk iphoneos5.1 \
 	build
 #
 # The keychain may have been locked again in the mean time
@@ -104,7 +119,7 @@ security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos4.3 \
+	-sdk iphoneos5.1 \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
