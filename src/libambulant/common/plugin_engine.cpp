@@ -171,7 +171,7 @@ void
 plugin_engine::collect_plugin_directories()
 {
 #ifdef WITH_PLUGINS
-	// First plugin dir is set through the environment
+	// First plugin path is set through the environment
 	const char *env_plugins = getenv("AMBULANT_PLUGIN_PATH");
 	if (env_plugins) {
 		std::string plugin_path(env_plugins);
@@ -184,11 +184,19 @@ plugin_engine::collect_plugin_directories()
 			first = plugin_path.find_first_not_of(':', last);
 		} while( first != std::string::npos);
 	}
-	//xxxx	m_plugindirs.push_back(env_plugins);
-	// Second dir to search is set per user preferences
+	// Second path to search is set per user preferences
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_path;
-	if(plugin_dir != "")
-		m_plugindirs.push_back(plugin_dir);
+	if(plugin_dir != "") {
+		std::string plugin_path(env_plugins);
+		size_t first=0;
+		do {
+			size_t last=plugin_path.find_first_of(':', first);
+			std::string path_element(plugin_path.substr(first, last-first));
+			if (path_element != "")
+				m_plugindirs.push_back(path_element);
+			first = plugin_path.find_first_not_of(':', last);
+		} while( first != std::string::npos);
+	}
 
 #ifdef WITH_CF_PLUGIN_FINDER
 	// On MacOSX add the bundle's plugin dir
