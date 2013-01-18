@@ -6,7 +6,6 @@
 set -e
 set -x
 export PATH=/usr/local/bin:`xcode-select -print-path`/usr/bin:$PATH
-PATH=/Users/kees/bin:/Developer/usr/bin:$PATH # Hack for missing stuff
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
@@ -75,7 +74,7 @@ hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 # We are building a binary distribution, so we want to completely ignore any
 # library installed system-wide (in /usr/local, basically)
 #
-export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/build-iOS-Fat/third_party_packages/installed/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/build-iOS/third_party_packages/installed/lib/pkgconfig
 #
 # Prepare the tree
 #
@@ -85,6 +84,7 @@ x)	;;
 *)
 hg up -r $BRANCH
 esac
+if [ ! -e m4 ] ; then mkdir m4 ; fi
 sh autogen.sh
 #
 # Build CG player
