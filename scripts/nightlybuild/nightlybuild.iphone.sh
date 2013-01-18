@@ -84,7 +84,7 @@ x)	;;
 *)
 hg up -r $BRANCH
 esac
-if [ ! -e m4 ] ; then mkdir m4 ; fi
+if [ ! -e libltdl/m4 ] ; then mkdir -p libltdl/m4 ; fi
 sh autogen.sh
 #
 # Build CG player
