@@ -192,7 +192,7 @@ gtk_settings::gtk_settings() {
 	// Plugin Directory Text Entry
 	m_plugins_dir_te = GTK_ENTRY (gtk_entry_new());
 	gtk_entry_set_editable(m_plugins_dir_te, true);
-	gtk_entry_set_text(m_plugins_dir_te, m_preferences->m_plugin_dir.c_str());
+	gtk_entry_set_text(m_plugins_dir_te, m_preferences->m_plugin_path.c_str());
 	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_plugins_dir_te), FALSE, FALSE, 0);
 
 	// show all the widgets
@@ -233,7 +233,7 @@ gtk_settings::settings_ok() {
 	if (m_use_plugins_cb)
 		m_preferences->m_use_plugins = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb));
 
-	m_preferences->m_plugin_dir = std::string((const char*) gtk_entry_get_text(m_plugins_dir_te));
+	m_preferences->m_plugin_path = std::string((const char*) gtk_entry_get_text(m_plugins_dir_te));
 
 	m_preferences->save_preferences();
 }

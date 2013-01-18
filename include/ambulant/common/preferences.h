@@ -84,7 +84,7 @@ class AMBULANTAPI preferences {
 	bool m_use_plugins;
 
 	/// Where to find the plugins
-	std::string m_plugin_dir;
+	std::string m_plugin_path;
 
 	/// Prefer ffmpeg/live555/sdl video/video over quicktime or directshow
 	bool m_prefer_ffmpeg;

@@ -160,7 +160,7 @@ PrefPluginsPropertyPage::PrefPluginsPropertyPage()
 {
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	m_do_plugins = prefs->m_use_plugins;
-	m_plugin_dir = prefs->m_plugin_dir.c_str();
+	m_plugin_path = prefs->m_plugin_path.c_str();
 }
 
 BOOL
@@ -184,7 +184,7 @@ void PrefPluginsPropertyPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_DO_PLUGINS, m_do_plugins);
-	DDX_Text(pDX, IDC_PLUGIN_DIR, m_plugin_dir);
+	DDX_Text(pDX, IDC_PLUGIN_DIR, m_plugin_path);
 }
 
 // PreferencesDlg message handlers
@@ -194,7 +194,7 @@ void PrefPluginsPropertyPage::OnOK()
 	USES_CONVERSION;
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_use_plugins = m_do_plugins;
-	prefs->m_plugin_dir = T2CA((LPCTSTR)m_plugin_dir);
+	prefs->m_plugin_path = T2CA((LPCTSTR)m_plugin_path);
 	prefs->save_preferences();
 	CPropertyPage::OnOK();
 }

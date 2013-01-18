@@ -244,22 +244,22 @@ check-am: check-ambulantplayer_macos
 orig-check-ambulantplayer_macos:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  AMBULANT_BUNDLE_DIR=$$PWD/AmbulantPlayer.app/Contents ; \
-	  export AMBULANT_PLUGIN_DIR=$$AMBULANT_BUNDLE_DIR/Plugins ; \
+	  export AMBULANT_PLUGIN_PATH=$$AMBULANT_BUNDLE_DIR/Plugins ; \
 	  export AMBULANT_PLAYER=$$AMBULANT_BUNDLE_DIR/MacOS/AmbulantPlayer ; \
 	  export AMBULANT_WELCOME=$$AMBULANT_BUNDLE_DIR/Resources/Welcome.smil ; \
-	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
+	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_PATH ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$AMBULANT_PLUGIN_DIR $(DEBUGGER) $$AMBULANT_PLAYER $$AMBULANT_WELCOME ; \
+	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$AMBULANT_PLUGIN_PATH $(DEBUGGER) $$AMBULANT_PLAYER $$AMBULANT_WELCOME ; \
 	)
 
 check-ambulantplayer_macos:
 # We run the player with one extra plugin (the test harness), obtained from src/pyambulant/test.
 # This also causes exit-on-stop to happen. It's output will be written on AM_TEST-output.txt, which
 # we will parse later.
-	AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test \
+	AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test \
 		arch -i386 ./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
 			./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil
-	AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test \
+	AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test \
 		arch -x86_64 ./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
 			./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil

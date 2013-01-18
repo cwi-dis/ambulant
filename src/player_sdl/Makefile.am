@@ -130,7 +130,7 @@ check-ambulantplayer_sdl:
 		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
 		lib=/lib; \
 		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
-		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		export AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test; \
 		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
 		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
 		./AmbulantPlayer_sdl $(top_srcdir)/Extras/Welcome/Welcome.smil; \
