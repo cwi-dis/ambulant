@@ -6,6 +6,7 @@
 set -e
 set -x
 export PATH=`which xcode-select -print-path`/usr/local/bin:/Developer/usr/bin:$PATH
+PATH=$PATH:/Users/kees/bin # Hack for missing stuff
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
