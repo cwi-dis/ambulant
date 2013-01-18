@@ -185,16 +185,15 @@ plugin_engine::collect_plugin_directories()
 		} while( first != std::string::npos);
 	}
 	// Second path to search is set per user preferences
-	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_path;
-	if(plugin_dir != "") {
-		std::string plugin_path(env_plugins);
+	std::string& pref_plugin_path = common::preferences::get_preferences()->m_plugin_path;
+	if(pref_plugin_path != "") {
 		size_t first=0;
 		do {
-			size_t last=plugin_path.find_first_of(':', first);
-			std::string path_element(plugin_path.substr(first, last-first));
+			size_t last=pref_plugin_path.find_first_of(':', first);
+			std::string path_element(pref_plugin_path.substr(first, last-first));
 			if (path_element != "")
 				m_plugindirs.push_back(path_element);
-			first = plugin_path.find_first_not_of(':', last);
+			first = pref_plugin_path.find_first_not_of(':', last);
 		} while( first != std::string::npos);
 	}
 

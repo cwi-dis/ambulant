@@ -46,7 +46,6 @@ mypreferences::load_preferences()
 		[NSNumber numberWithBool: false], @"strict_url_parsing",
 		[NSNumber numberWithBool: false], @"tabbed_links",
 		[NSNumber numberWithBool: false], @"fullScreen",
-		@"", @"plugin_dir",
 		[NSNumber numberWithBool: false], @"dynamic_content_control",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
@@ -57,7 +56,19 @@ mypreferences::load_preferences()
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = (int)[prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
-	m_plugin_path = [[prefs stringForKey: @"plugin_dir"] UTF8String];
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSArray *as_paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES);
+	NSMutableArray *plugin_paths = [NSMutableArray arrayWithCapacity:[as_paths count]];
+	NSEnumerator *e = [as_paths objectEnumerator];
+	NSString *obj;
+	while ( (obj = [e nextObject]) ) {
+		NSString *plugin_candidate = [NSString stringWithFormat:@"%@/Ambulant Player/PlugIns", obj];
+		if ([fileManager fileExistsAtPath: plugin_candidate]) {
+			[plugin_paths addObject: plugin_candidate];
+		}
+	}
+	NSString *plugin_path = [plugin_paths componentsJoinedByString: @":"];
+	m_plugin_path = [plugin_path UTF8String];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	m_prefer_rtsp_tcp = [prefs boolForKey: @"prefer_rtsp_tcp"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
@@ -79,7 +90,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_validation_schema_full_checking forKey: @"validation_schema_full_checking"];
 	[prefs setInteger: m_log_level forKey: @"log_level"];
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
-	[prefs setObject: [NSString stringWithUTF8String: m_plugin_path.c_str()] forKey: @"plugin_dir"];
+	// Gotten from system nowadays: [prefs setObject: [NSString stringWithUTF8String: m_plugin_path.c_str()] forKey: @"plugin_dir"];
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	[prefs setBool: m_prefer_rtsp_tcp forKey: @"prefer_rtsp_tcp"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
