@@ -1,18 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #!/bin/sh
 #
 # Script to do a nightly clean build of a full Ambulant
@@ -105,11 +90,11 @@ sh autogen.sh
 # Build CG player
 #
 # export MAKEFLAGS=-j`sysctl -a|grep core_count|awk '{print $2}'`
-cd projects/xcode32
+cd projects/xcode43
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos5.1 \
+	-sdk iphoneos6.0 \
 	build
 #
 # The keychain may have been locked again in the mean time
@@ -119,7 +104,7 @@ security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos5.1 \
+	-sdk iphoneos6.0 \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
