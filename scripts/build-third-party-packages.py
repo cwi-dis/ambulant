@@ -759,7 +759,7 @@ third_party_packages={
             ),
 
         TPP("SDL",
-#           url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
 #           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
