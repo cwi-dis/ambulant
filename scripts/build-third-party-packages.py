@@ -764,12 +764,9 @@ third_party_packages={
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-               "if [ ! -e SDL ] ; then hg clone http://hg.libsdl.org/SDL; "
-               "cd SDL && "
-               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch; " 
-               "else cd SDL; fi; mkdir -p build; cd build &&"
-# Note: SDL 2.0 wants a different build directory, therefore one '.' is preprended
-                ".%s --disable-video-x11-xinput&&"
+               "cd SDL-2.0.0-* && "
+               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch &&" 
+                ".%s --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
