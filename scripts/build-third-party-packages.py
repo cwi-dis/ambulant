@@ -765,11 +765,10 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL-2.0.0-* && "
-               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch &&" 
-                ".%s --disable-video-x11-xinput &&"
+                "%s --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
-                "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+                "cd .." % (LINUX_COMMON_CONFIGURE)
             ),
 
         TPP("SDL_image",
