@@ -65,18 +65,20 @@ class DummyPlayable(ambulant.playable):
     def __init__(self, context, cookie, node, evp, factories, machdep):
         if DEBUG: logger.debug("pyamplugin_playable.DummyPlayable(%s, %s, %s, %s, %s, %s)" % (context, cookie, node, evp, factories, machdep))
         self.context = context
+        self.cookie = cookie
         
     def init_with_node(self, node):
         if DEBUG: logger.debug("pyamplugin_playable.DummyPlayable.init_with_node(%s)" % node)
+        self.node = node
         pass
         
     def start(self, t):
         if DEBUG: logger.debug("pyamplugin_playable.DummyPlayable.start(%s)" % t)
-        self.context.started(self.cookie)
+        self.context.started(self.cookie, 0)
         
     def stop(self):
         if DEBUG: logger.debug("pyamplugin_playable.DummyPlayable.stop()")
-        self.context.stopped(self.cookie)
+        self.context.stopped(self.cookie, 0)
         return True
         
     def post_stop(self):
