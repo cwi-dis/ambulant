@@ -5,7 +5,7 @@
 #
 set -e
 set -x
-export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
+export PATH=/usr/local/bin:`xcode-select -print-path`/usr/bin:$PATH
 
 # Unlock the nightly build keychain
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
@@ -74,7 +74,7 @@ hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 # We are building a binary distribution, so we want to completely ignore any
 # library installed system-wide (in /usr/local, basically)
 #
-export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/build-iOS-Fat/third_party_packages/installed/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/build-iOS/third_party_packages/installed/lib/pkgconfig
 #
 # Prepare the tree
 #
@@ -84,16 +84,17 @@ x)	;;
 *)
 hg up -r $BRANCH
 esac
+if [ ! -e libltdl/m4 ] ; then mkdir -p libltdl/m4 ; fi
 sh autogen.sh
 #
 # Build CG player
 #
 # export MAKEFLAGS=-j`sysctl -a|grep core_count|awk '{print $2}'`
-cd projects/xcode32
+cd projects/xcode43
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos4.3 \
+	-sdk iphoneos6.0 \
 	build
 #
 # The keychain may have been locked again in the mean time
@@ -103,7 +104,7 @@ security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos4.3 \
+	-sdk iphoneos6.0 \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
@@ -111,7 +112,7 @@ cd ../..
 #
 # Create installer IPA file and upload
 #
-sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode32/build/Distribution-iphoneos/iAmbulant.app
+sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode43/build/Distribution-iphoneos/iAmbulant.app
 scp iAmbulant-$AMBULANTVERSION.$TODAY.ipa $DESTINATION_IPHONE
 #
 # Delete old installers, remember current
