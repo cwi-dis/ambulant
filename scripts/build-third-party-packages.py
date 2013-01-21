@@ -4,6 +4,7 @@ import subprocess
 import urllib
 import urlparse
 import posixpath
+import platform
 from optparse import OptionParser
 
 NOCHECK=False
