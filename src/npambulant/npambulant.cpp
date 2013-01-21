@@ -212,8 +212,8 @@ npambulant::init_ambulant(NPP npp)
 
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
-	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
-	ambulant::lib::textptr pn_conv(prefs->m_plugin_dir.c_str());
+	prefs->m_plugin_path = lib::win32::get_module_dir()+"\\plugins\\";
+	ambulant::lib::textptr pn_conv(prefs->m_plugin_path.c_str());
 	SetDllDirectory (pn_conv);
 #else //!XP_WIN3: Linux, Mac
 	Dl_info p;
@@ -231,7 +231,7 @@ npambulant::init_ambulant(NPP npp)
 #endif
 		char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
 		sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
-		prefs->m_plugin_dir = amplugin_path;
+		prefs->m_plugin_path = amplugin_path;
 		free (path);
 #else // WITH_LTDL_PLUGINS
 		prefs->m_use_plugins = false;

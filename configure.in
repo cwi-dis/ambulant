@@ -2,6 +2,8 @@ AC_INIT([ambulant],[2.5])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
 AC_CONFIG_AUX_DIR([libltdl/config])
 AC_CONFIG_MACRO_DIR([libltdl/m4])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 AM_INIT_AUTOMAKE
 AM_PATH_PYTHON
 AMBULANT_VERSION=2.5
@@ -33,7 +35,6 @@ LTDL_INIT(convenience)
 # ??? AC_SUBST(INCLTDL)
 # ??? AC_SUBST(LIBLTDL)
 
-AM_GNU_GETTEXT([external])
 AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/Makefile 
 	src/npambulant/Makefile
@@ -793,52 +794,44 @@ AC_MSG_RESULT($with_python_plugin)
 # Do we want the npambulant browser (firefox) plugin ?
 
 AC_MSG_CHECKING(for --with-npambulant)
+NPAMBULANT_INCLUDES=
 AC_ARG_WITH([npambulant],
     AS_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers, like firefox (default: disabled)]),
 	[
 		case "${withval}" in
 		yes)  	
 			with_npambulant=true
+			# Determine where the include files should come from, as it hasn't been passed
+			# as an option.
+			# Options tested, in order:
+			# - From a copy of the xulrunner distribution in third_party_packages. This
+			#   is used when building binary standalone plugins.
+			# - From a firefox-dev debian package (or anything else) installed
+			#   system-wide.
+			# - From a xulrunner distribution installed system-wide.
+			if test -f $third_party_packages/xulrunner-sdk/include/npapi.h; then
+				NPAMBULANT_INCLUDES=$third_party_packages/xulrunner-sdk/include
+			else
+				PKG_CHECK_MODULES(mozilla_plugin, [mozilla-plugin >= 8.0],[
+					NPAMBULANT_INCLUDES=${mozilla_plugin_INCLUDES}
+				],[
+					AC_MSG_ERROR("npapi include directory not specified and cannot find it")
+					with_npambulant=false
+				])
+			fi
 			;;
 		no)	
 			with_npambulant=false
 			;;
 		*)	
-			AC_MSG_ERROR("--with-npambulant takes no argument")
+			NPAMBULANT_INCLUDES=${withval}
+			with_npambulant=true
 			;;
 		esac],
 	[with_npambulant=false])
 
-# when working with mozilla source trunk, uncomment next line
-# XULRUNNER_ROOT=$third_party_packages/mozilla/ff-opt-static/dist
-if test x$with_npambulant = xtrue;
-then
-   if test -f $third_party_packages/xulrunner-sdk/include/npapi.h; then
-		# Require a xulrunner-sdk installation in third_party_packages
-		withvalabs=$third_party_packages/xulrunner-sdk
-		# for mozilla source trunk, uncomment next line
-		# withvalabs=$third_party_packages/mozilla/ff-opt-static/dist
-		XULRUNNER_ROOT=${withvalabs}
-		XPIDL=${XULRUNNER_ROOT}/bin/xpidl
-   else XULRUNNER_VERSION = `xulrunner --gre-version`
-   	# tested with: FC10: 1.9.0.6; FC11: 1.9.1.6; FC12: 1.9.1.8
-   	if test x$XULRUNNER_VERSION = x1.9.0.6 -o x$XULRUNNER_VERSION = x1.9.1.6 -o x$XULRUNNER_VERSION = x1.9.1.8 
-   	then	# xulrunner is by default installed from fedora 10
-		withvalabs=/usr
-		XULRUNNER_ROOT=${withvalabs}
-	     	XPIDL=
 
-   	else	AC_MSG_ERROR("--with-npambulant requires xulrunner-sdk installed in third_party_packages")
-		XULRUNNER_ROOT=
-		XPIDL=
-		with_npambulant=false
-   	fi
-    fi
-fi
-AC_SUBST(XULRUNNER_ROOT)
-AC_SUBST(XPIDL)
 AC_SUBST(NPAMBULANT_INCLUDES)
-AC_SUBST(NPAMBULANT_LIBS)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
 

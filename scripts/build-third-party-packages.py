@@ -4,7 +4,6 @@ import subprocess
 import urllib
 import urlparse
 import posixpath
-import platform
 from optparse import OptionParser
 
 NOCHECK=False
@@ -442,15 +441,14 @@ third_party_packages={
 #                 "make ${MAKEFLAGS} " % AMBULANT_DIR
 #             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
-            url2="gettext-0.18.1.1.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
+            url2="gettext-0.18.2.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18.1.1 && "
-            	"patch -p1 --forward < %s/third_party_packages/gettext-0.18.1.1.patch && "
+                "cd gettext-0.18.2 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
+                "make install" % ( MAC106_COMMON_CONFIGURE)
             ),
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
@@ -544,10 +542,10 @@ third_party_packages={
 #                 "make ${MAKEFLAGS} " % AMBULANT_DIR
 #             ),
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18.1.1 && "
+                "cd gettext-0.18.2 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
@@ -625,9 +623,9 @@ third_party_packages={
                 "        --as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' "
                 "        --extra-cflags='-arch $arch -I../installed/include' "
 				"        --extra-ldflags='-arch $arch -L../installed/lib -L$SDK_PATH/usr/lib/system' "
-                "        --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
-				"        --disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
-                "     make clean;make ${MAKEFLAGS}; "
+                " --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
+				"--disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc;"
+                "make clean;make ${MAKEFLAGS}; "
 				"	  for i in `ls */*.a`; do cp $i `dirname $i`/`basename $i .a`-$arch; done;echo $arch done ;"
                 "done &&"
                 "for i in `ls */*.a`; do rm $i; (cd `dirname $i`; lipo `basename $i .a`-arm* -create -output `basename $i`); done; "
@@ -643,10 +641,10 @@ third_party_packages={
                 "cd SDL-1.3.0-*  && "
                 "./configure --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio  --host=`uname -m`-darwin && "                
 	           "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
-                "cd Xcode-iOS/SDL && "
+                "cd Xcode-iOS/SDL  && "
                 "xcodebuild -target libSDL $ARCH_ARGS -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release && "
                 "mkdir -p ../../../installed/include/SDL && "
-                "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL && "
+                "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
                 "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib"
             ),
 #                "xcodebuild -target libSDL -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&" # -arch only supported on Xcode >= 4.0
@@ -666,11 +664,10 @@ third_party_packages={
 #             ),
 
 ##      TPP("gettext",
-##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##           	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneOS $IPHONEOS_DEPLOYMENT_TARGET; "
-##              "cd gettext-0.18.1.1 && "
+##              "cd gettext-0.18.2 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
@@ -734,7 +731,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
             	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
-            	"cd ffmpeg-1.0 && "
+                "cd ffmpeg-1.0 && "
                 "./configure --enable-cross-compile --arch=i386 --target-os=darwin --sysroot=$SDK_PATH --cc=$PLATFORM_PATH/Developer/usr/bin/gcc "
                 "--as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' --enable-cross-compile "
                 "--extra-cflags='$ARCH_ARGS -I../installed/include' "
@@ -757,7 +754,7 @@ third_party_packages={
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
                 "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % COMMON_INSTALLDIR
-		 ),
+ ),
 
 #         TPP("live",
 #             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
@@ -772,11 +769,10 @@ third_party_packages={
 #             ),
 
 ##      TPP("gettext",
-##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
+##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
 ##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
 ##          buildcmd=
-##            	". $AMBULANT_DIR/scripts/set_environment.sh iPhoneSimulator $IPHONEOS_DEPLOYMENT_TARGET; "
-##              "cd gettext-0.18.1.1 && "
+##              "cd gettext-0.18.2 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make ${MAKEFLAGS} && "
 ##              "make install"% IPHONE_SIMULATOR_COMMON_CONFIGURE
@@ -851,17 +847,14 @@ third_party_packages={
             ),
 
         TPP("SDL",
-#           url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
 #           url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-               "if [ ! -e SDL ] ; then hg clone http://hg.libsdl.org/SDL; "
-               "cd SDL && "
-               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch; " 
-               "else cd SDL; fi; mkdir -p build; cd build &&"
-# Note: SDL 2.0 wants a different build directory, therefore one '.' is preprended
-                ".%s --disable-video-x11-xinput&&"
+               "cd SDL-2.0.0-* && "
+               "patch -p1 < %s/third_party_packages/SDL-bug-1513.patch &&" 
+                ".%s --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
@@ -909,11 +902,11 @@ third_party_packages={
 #             ),
 
         TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz",
-            url2="gettext-0.18.1.1.tar.gz",
+            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
+            url2="gettext-0.18.2.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
             buildcmd=
-                "cd gettext-0.18.1.1 && "
+                "cd gettext-0.18.2 && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE

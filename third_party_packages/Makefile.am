@@ -4,6 +4,5 @@ EXTRA_DIST = \
 	SDL_Pango-0.1.2-SDL2-Changes.patch \
 	expat.patch \
 	ffmpeg-windows-compat \
-	gettext-0.18.1.1.patch \
 	libdispatch-patches
 	

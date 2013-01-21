@@ -1,5 +1,49 @@
-ambulant (2.3) unstable; urgency=low
+ambulant (2.4.1) precise; urgency=low
 
-  * Initial release, for testing only
+  * Various tweaks to support Ubuntu PPA
+  * Incorporated changes by PICCORO Lenz McKAY into mainstream
+  
+ -- Jack Jansen <Jack.Jansen@cwi.nl>  Tue, 10 Jan 2013 10:55:11 -0100
+ 
+ambulant (2.4-1) unstable; urgency=low
 
- -- CWI Ambulant Team <ambulant@cwi.nl>  Thu, 17 Feb 2011 23:43:02 +0100
+  * New upstream release, 
+    + now Closes: #345077, #697712 by real
+  * debian/control:
+    + ajust depends: ffmpeg/libav to 6:0.8.3-1~bpo60+1 as minimun due
+      the older 2.2 release use only the 0.6/0.7 api and the 2.4 use the newer 0.8/0.9 api
+    + added liblivemedia-dev as depends, older 2.2 dont follow livemdedia api detecton..
+    + ambulant players packages provides ambulantplayer command, and recommends the ambulant
+      plugins. (so then ambulant players packages handle using update-altenatives for), 
+      an manpages are yet in lowercase so not need to slave ones.
+  * debian/ambulant-plugins*.install:
+    + split plugins into separate packages, better for developers 
+      and packages that only need runtime core specific or all with plugins
+  * debian/rules:
+    + added multiarch upport if deban wheeze ar detected or above
+    + compiles now with ffmpeg plugin and livemedia support
+  * debian/*menu , debin/*install:
+    + added right classification of menues, into viewers
+    + dont install the symlink du now update-alternatives must handle ambulantplayer command
+    + change names to more close and generic to desktops
+  * debian/patches:
+    + 01-make-generic-named-files.path : made the changes below
+
+ -- PICCORO Lenz McKAY <mckaygerhard@gmail.com>  Tue, 08 Jan 2013 14:44:59 -0430
+
+ambulant (2.2-0.1) unstable; urgency=low
+
+  * Initial release (Closes: #345077, #697712)
+    + Made better pckages:
+    + added myseflt as packager
+  * debian/*install:
+    + move files to more generic names
+    + don witll support for multiarch yet!
+  * debian/rules:
+    + enable all the plugins in debian excep browser, ffmpeg and dom
+    + dont use the third party added
+  * debian/control:
+    + change names to more generic made gtk and qt packages
+
+ -- PICCORO Lenz McKAY <mckaygerhard@gmail.com>  Tue, 08 Jan 2013 14:56:29 -0430
+

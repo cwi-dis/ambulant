@@ -119,7 +119,7 @@ iOSpreferences::load_preferences()
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = (int)[prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
-	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] UTF8String];
+	m_plugin_path = [[prefs stringForKey: @"plugin_dir"] UTF8String];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	m_prefer_rtsp_tcp = [prefs boolForKey: @"prefer_rtsp_tcp"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
@@ -173,7 +173,7 @@ iOSpreferences::save_preferences()
 	[prefs setBool: m_validation_schema_full_checking forKey: @"validation_schema_full_checking"];
 	[prefs setInteger: m_log_level forKey: @"log_level"];
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
-	[prefs setObject: [NSString stringWithUTF8String: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
+	[prefs setObject: [NSString stringWithUTF8String: m_plugin_path.c_str()] forKey: @"plugin_dir"];
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	[prefs setBool: m_prefer_rtsp_tcp forKey: @"prefer_rtsp_tcp"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];

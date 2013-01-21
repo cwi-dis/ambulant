@@ -130,7 +130,7 @@ check-ambulantplayer_sdl:
 		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
 		lib=/lib; \
 		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
-		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		export AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test; \
 		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
 		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
 		./AmbulantPlayer_sdl $(top_srcdir)/Extras/Welcome/Welcome.smil; \
@@ -140,10 +140,6 @@ check-ambulantplayer_sdl:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
-
-#	rm /usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
 
 install-data-local:
 

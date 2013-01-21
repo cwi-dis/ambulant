@@ -130,7 +130,7 @@ AM_CXXFLAGS=-fPIC
 install-exec-hook: install-data-local
 	cd $(DESTDIR)$(bindir) && \
 	$(LN_S) -f $(bin_PROGRAMS) AmbulantPlayer
-	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/../player_unix/ambulant.schemas
+	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/ambulant.schemas
 ##	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
@@ -144,7 +144,7 @@ check-ambulantplayer_gtk:
 		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
 		lib=/lib; \
 		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
-		export AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test; \
+		export AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test; \
 		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
 		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
 		./AmbulantPlayer_gtk $(top_srcdir)/Extras/Welcome/Welcome.smil; \
@@ -154,14 +154,10 @@ check-ambulantplayer_gtk:
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
-	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-gnome.desktop
-
-#	rm /usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/hicolor/48x48/mimetypes/gnome-mime-application-smil.png
-#	rm /usr/share/icons/Humanity/mimes/48/gnome-mime-application-smil.png
+	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-gtk.desktop
 
 install-data-local:
 	mkdir -p  $(DESTDIR)$(datadir)/applications
-	-cp $(srcdir)/ambulant-gnome.desktop $(DESTDIR)$(datadir)/applications
+	-cp $(srcdir)/ambulant-gtk.desktop $(DESTDIR)$(datadir)/applications
 
-EXTRA_DIST=ambulant-gnome.desktop
+EXTRA_DIST=ambulant-gtk.desktop

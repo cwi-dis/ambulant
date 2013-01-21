@@ -89,7 +89,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	int m_do_plugins;
-	CString m_plugin_dir;
+	CString m_plugin_path;
 public:
 	afx_msg void OnOK();
 };

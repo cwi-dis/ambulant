@@ -77,7 +77,7 @@ unix_preferences::unix_preferences() {
 	ADD_PREF("AMBULANT_DO_SCHEMA", BOOL, &m_do_schema, valid_bools);
 	ADD_PREF("AMBULANT_DO_VALIDATION_SCHEMA_FULL_CHECKING", BOOL, &m_validation_schema_full_checking, valid_bools);
 	ADD_PREF("AMBULANT_USE_PLUGINS",BOOL, &m_use_plugins,valid_bools);
-	ADD_PREF("AMBULANT_PLUGIN_DIR",STRING, &m_plugin_dir,NULL);
+	ADD_PREF("AMBULANT_PLUGIN_PATH",STRING, &m_plugin_path,NULL);
 	ADD_PREF("AMBULANT_LOGFILE",STRING, &m_log_file,NULL);
 
 }

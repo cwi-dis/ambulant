@@ -7,8 +7,6 @@ src/libambulant/gui/cg/cg_gui.mm
 src/libambulant/gui/d2/d2_player.cpp
 src/libambulant/gui/gtk/gtk_smiltext.cpp
 src/libambulant/gui/gtk/gtk_transition.cpp
-src/libambulant/gui/qt/qt_factory.cpp
-src/libambulant/gui/qt/qt_transition.cpp
 src/libambulant/gui/SDL/sdl_audio.cpp
 src/libambulant/gui/SDL/sdl_smiltext.cpp
 src/libambulant/gui/SDL/sdl_transition.cpp
@@ -48,11 +46,6 @@ src/player_mfc/MmView.cpp
 src/player_sdl/sdl_gui.cpp
 src/player_sdl/sdl_gui_player.cpp
 src/player_sdl/unix_preferences.cpp
-src/player_unix/qt_gui.cpp
-src/player_unix/qt_logger.cpp
-src/player_unix/qt_mainloop.cpp
-src/player_unix/qt_settings.cpp
-src/player_unix/unix_preferences.cpp
 src/plugins/plugin.cpp
 src/plugins/plugin_ffmpeg.cpp
 src/plugins/pythonplugin.cpp

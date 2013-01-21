@@ -59,7 +59,7 @@ preferences::preferences()
 #else //WITH_PLUGINS
 	m_use_plugins(false),
 #endif//WITH_PLUGINS
-	m_plugin_dir(""),
+	m_plugin_path(""),
 	m_dynamic_content_control(false),
 	m_fullscreen(false),
 	m_prefer_rtsp_tcp(false)
@@ -112,7 +112,7 @@ preferences::repr() {
 	r += ", m_tabbed_links: "; r += m_tabbed_links?"yes":"no";
 	r += ", prefer_ffmpeg: "; r += m_prefer_ffmpeg?"yes":"no";
 	r += ", use_plugins: "; r += m_use_plugins?"yes":"no";
-	r += ", plugin_dir: "; r += m_plugin_dir;
+	r += ", plugin_path: "; r += m_plugin_path;
 	r += ", dynamic_content_control: "; r += m_dynamic_content_control?"yes":"no";
 	r += ", fullscreen: "; r += m_fullscreen?"yes":"no";
 	r += ", prefer_rtsp_tcp: "; r += m_prefer_rtsp_tcp?"yes":"no";
