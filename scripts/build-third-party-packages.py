@@ -412,7 +412,8 @@ third_party_packages={
             url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-            	"rm -rf ffmpeg-1.0-universal && "
+                ". $AMBULANT_DIR/scripts/set_environment.sh macosx $MACOS_DEPLOYMENT_TARGET && "
+                "rm -rf ffmpeg-1.0-universal && "
                 "mkdir ffmpeg-1.0-universal && "
                 "cd ffmpeg-1.0-universal && "
                 "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-1.0 all" % 
@@ -467,15 +468,15 @@ third_party_packages={
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
-        TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
-            checkcmd="test -f ../libltdl/.libs/libltdlc.a",
-            buildcmd=
-                "rm -rf ../libltdl &&"
-                "mkdir ../libltdl &&"
-                "cd ../libltdl &&"
-                "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
-                "make" % MAC106_COMMON_CFLAGS
-            ),
+#       TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
+#            checkcmd="test -f ../libltdl/.libs/libltdlc.a",
+#            buildcmd=
+#               "rm -rf ../libltdl &&"
+#               "mkdir ../libltdl &&"
+#               "cd ../libltdl &&"
+#               "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
+#               "make" % MAC106_COMMON_CFLAGS
+#           ),
         ],
 
     'mac10.4' : [

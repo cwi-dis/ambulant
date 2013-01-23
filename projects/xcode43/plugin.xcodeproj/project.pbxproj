@@ -250,6 +250,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_plugin(CG)";
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -264,6 +265,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_plugin(CG)";
+				SDKROOT = macosx10.7;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 			};

@@ -2344,6 +2344,7 @@
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 				);
 				PRODUCT_NAME = libambulantCG;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -2373,6 +2374,7 @@
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 				);
 				PRODUCT_NAME = libambulantCG;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};

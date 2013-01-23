@@ -7,7 +7,7 @@
 # set default _PLATFORM, _VERSION
 _PLATFORM=iPhoneOS
 _VERSION=4.3
-if [ $IPHONEOS_DEPLOYMENT_TARGET != "" ] ; then _VERSION=$IPHONEOS_DEPLOYMENT_TARGET; fi
+if [ "$IPHONEOS_DEPLOYMENT_TARGET" != "" ] ; then _VERSION=$IPHONEOS_DEPLOYMENT_TARGET; fi
 
 # get _PLATFORM, _VERSION from arguments, if any
 if [ $# -gt 0 ] ; then _PLATFORM=$1; shift; fi

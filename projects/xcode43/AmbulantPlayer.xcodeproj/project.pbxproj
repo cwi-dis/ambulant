@@ -231,7 +231,6 @@
 		04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
 		04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantPlayer_Prefix.pch; sourceTree = "<group>"; };
-		934F7A3A159DEDF200E13850 /* AmbulantPlayerCG copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AmbulantPlayerCG copy-Info.plist"; path = "/Users/kees/tmp/ambulant/projects/xcode43/AmbulantPlayerCG copy-Info.plist"; sourceTree = "<absolute>"; };
 		935D1A77169D82FC003A3CC0 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		935D1A79169D833B003A3CC0 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -401,7 +400,6 @@
 				0418D23B12DA5E1A00C56DCE /* Resources-cocoa */,
 				0418D23A12DA5E0900C56DCE /* Resources-cg */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				934F7A3A159DEDF200E13850 /* AmbulantPlayerCG copy-Info.plist */,
 			);
 			name = AmbulantPlayer;
 			sourceTree = "<group>";
@@ -838,7 +836,7 @@
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Debug;
@@ -854,7 +852,7 @@
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Release;

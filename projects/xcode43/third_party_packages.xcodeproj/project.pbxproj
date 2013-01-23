@@ -114,9 +114,11 @@
 				"DEBUG_INFORMATION_FORMAT[arch=*]" = "dwarf-with-dsym";
 				DSTROOT = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
+				PATH = "$(PATH):/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin";
 				PRODUCT_NAME = third_party_packages_3264;
-				SDKROOT = /Developer/SDKs/MacOSX10.7.sdk;
+				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk;
+				SUPPORTED_PLATFORMS = macos;
+				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = NO;
 			};
 			name = Common;

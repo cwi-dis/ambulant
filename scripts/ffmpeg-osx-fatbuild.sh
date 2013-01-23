@@ -26,7 +26,7 @@ CONFIGOPTS="$PREFIX --disable-encoders --enable-runtime-cpudetect --enable-gpl -
 ###SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
 ##export MACOSX_DEPLOYMENT_TARGET=10.4
 ##CONFIGOPTS="--cc=gcc-4.0  --extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
-SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.6.sdk"
+SYSROOT=" -isysroot $SDK_PATH"
 CONFIGOPTS="--extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
 #
 # Set variables here to true to include the ABI
@@ -46,7 +46,7 @@ ANY_RANDOM_ARCH=i386
 PPC_CONFIGOPTS="--arch=powerpc --cpu=g4 --enable-altivec --enable-shared"
 case `uname -r` in
 11.*)
-	I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.2 --disable-mmx"
+	I386_CONFIGOPTS="--arch=i386 --cpu=i686 --enable-shared --cc=clang --disable-mmx"
 	;;
 *)
 	I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.0"
