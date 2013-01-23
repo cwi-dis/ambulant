@@ -5,7 +5,7 @@
 #
 set -e
 set -x
-export PATH=/usr/local/bin:/Developer/usr/bin:$PATH
+export PATH=/usr/local/bin:`xcode-select -print-path`/usr/bin:$PATH
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
