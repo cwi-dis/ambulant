@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Script to do a nightly clean build of a full Ambulant
-# Mac 10.6 version
+# Mac 10.7 version
 #
 set -e
 set -x
@@ -17,8 +17,8 @@ x)
 esac
 
 # Tunable parameters, to some extent
-export SDKROOT=/Developer/SDKs/MacOSX10.6.sdk
-export MACOSX_DEPLOYMENT_TARGET=10.6
+export SDKROOT=/Developer/SDKs/MacOSX10.7.sdk
+export MACOSX_DEPLOYMENT_TARGET=10.7
 AMBULANTVERSION=2.5
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -43,7 +43,7 @@ xrelease*)
 esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
-BUILD3PPARGS=mac10.6
+BUILD3PPARGS=mac10.7
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin --with-included-ltdl"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
