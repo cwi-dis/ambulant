@@ -392,7 +392,7 @@ if $test_xerces; then
 fi
 
 AC_SUBST(XERCES_LIBS)
-AC_SUBST(XERCES_CFLAGS)
+AC_SUBST(XERCES_INCLUDES)
 AM_CONDITIONAL(WITH_XERCES, test x$test_xerces = xtrue)
 AC_MSG_RESULT($test_xerces)
 

@@ -582,6 +582,7 @@
 		04791C721151943B0007DD71 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		04791C731151943B0007DD71 /* posix_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posix_datasource.h; sourceTree = "<group>"; };
 		04791C741151943B0007DD71 /* rtsp_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_datasource.h; sourceTree = "<group>"; };
+		04791C751151943B0007DD71 /* rtsp_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_factory.h; sourceTree = "<group>"; };
 		04791C761151943B0007DD71 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
 		04791C771151943B0007DD71 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
 		04791C781151943B0007DD71 /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
@@ -1323,6 +1324,7 @@
 				04791C721151943B0007DD71 /* Makefile.am */,
 				04791C731151943B0007DD71 /* posix_datasource.h */,
 				04791C741151943B0007DD71 /* rtsp_datasource.h */,
+				04791C751151943B0007DD71 /* rtsp_factory.h */,
 				04791C761151943B0007DD71 /* socket.h */,
 				04791C771151943B0007DD71 /* stdio_datasource.h */,
 				04791C781151943B0007DD71 /* url.h */,
@@ -2336,6 +2338,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 				);
 				PRODUCT_NAME = libambulantCG;
 				SDKROOT = macosx10.7;
@@ -2362,6 +2368,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 				);
 				PRODUCT_NAME = libambulantCG;
 				SDKROOT = macosx10.7;
@@ -2390,6 +2400,7 @@
 					"AM_PREFER_FFMPEG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
+					"WITH_LIVE=1",
 					"WITH_EXPAT=1",
 					"WITH_PYTHON_PLUGIN=1",
 					"WITH_OVERLAY_WINDOW=1",
@@ -2443,7 +2454,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(AMBULANT_DIR)/build-3264/third_party_packages/installed/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin:";
@@ -2459,7 +2470,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(AMBULANT_DIR)/build-3264/third_party_packages/installed/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
