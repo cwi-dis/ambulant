@@ -810,7 +810,7 @@ AC_ARG_WITH([npambulant],
 			#   system-wide.
 			# - From a xulrunner distribution installed system-wide.
 			if test -f $third_party_packages/xulrunner-sdk/include/npapi.h; then
-				NPAMBULANT_INCLUDES=$third_party_packages/xulrunner-sdk/include
+				NPAMBULANT_INCLUDES=-I$third_party_packages/xulrunner-sdk/include
 			else
 				PKG_CHECK_MODULES(mozilla_plugin, [mozilla-plugin >= 8.0],[
 					NPAMBULANT_INCLUDES=${mozilla_plugin_INCLUDES}
@@ -824,7 +824,7 @@ AC_ARG_WITH([npambulant],
 			with_npambulant=false
 			;;
 		*)	
-			NPAMBULANT_INCLUDES=${withval}
+			NPAMBULANT_INCLUDES=-I${withval}
 			with_npambulant=true
 			;;
 		esac],
