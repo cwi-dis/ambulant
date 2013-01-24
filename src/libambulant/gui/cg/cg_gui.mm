@@ -1122,7 +1122,7 @@ void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void*
 	AmbulantView* v = [AmbulantView alloc];
 	r =  CGContextGetClipBoundingBox(ctxp);
 	AM_DBG NSLog(@"new_AmbulantView(%p): ctxp=%p r=(%f,%f,%f,%f)", (void*) v, ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
-		[v initWithFrame: r];
+		[v initWithFrame: NSRectFromCGRect(r)];
 	v.plugin_callback = plugin_callback; //X 
 	v.plugin_data = plugin_data;		 //X browser data for callback function
 	return (void*) v;
