@@ -787,10 +787,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = AmbulantPlayerCG;
@@ -813,10 +809,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
@@ -850,6 +842,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;

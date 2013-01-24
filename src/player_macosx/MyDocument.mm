@@ -853,7 +853,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		// No need to release myAuxView: removeFromSuperView did that for us
 		myAuxView = NULL;
 	}
-	myAuxView = [[MyAmbulantView alloc] initWithFrame: [view bounds]];
+	myAuxView = [[MyAmbulantView alloc] initWithFrame: NSRectToCGRect([view bounds])];
 	if (myAuxWindow == NULL) {
 		// Determine where on the screen the overlay window should be
 		NSPoint baseOrigin = NSMakePoint([view frame].origin.x, [view frame].origin.y);

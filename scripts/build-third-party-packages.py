@@ -235,12 +235,6 @@ print '+ Ambulant toplevel directory:', dir
 AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
 os.environ["AMBULANT_DIR"]=AMBULANT_DIR
-XCODE_SDK_BASE=""
-if platform.system() == "Darwin":
-	# The set_environment.sh script finds the values we need and puts them in the environment of the subshell.
-	# These then are available to 'set', but not to 'echo'. Therefore we use the former, and extract the desired value from its output.
-	XCODE_SDK_BASE=os.popen('bash -c "(. $AMBULANT_DIR/scripts/set_environment.sh; set | grep -v BASH_EXECUTION_STRING | grep  XCODE_SDK_BASE)"').read().partition("=")[2][:-1]
-#   print "XCODE_SDK_BASE=", XCODE_SDK_BASE
 #
 # Common flags for MacOSX 10.4
 #
@@ -412,7 +406,6 @@ third_party_packages={
             url2="ffmpeg-1.0.tar.gz",
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
-                ". $AMBULANT_DIR/scripts/set_environment.sh macosx $MACOS_DEPLOYMENT_TARGET && "
                 "rm -rf ffmpeg-1.0-universal && "
                 "mkdir ffmpeg-1.0-universal && "
                 "cd ffmpeg-1.0-universal && "
@@ -1041,6 +1034,7 @@ third_party_packages={
     
 }
 third_party_packages['mac10.7'] = third_party_packages['mac10.6']
+third_party_packages['mac10.8'] = third_party_packages['mac10.7']
 
 def checkenv_win32(target):
     ok = True
@@ -1123,15 +1117,6 @@ def checkenv_iphone(target):
         print '** IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     # Check that we have the right compilers, etc in PATH
-    if target == 'iOS-Simulator':
-        wanted = '%s/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin' % XCODE_SDK_BASE
-        notwanted = '%s/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin' % XCODE_SDK_BASE
-    elif target == 'iOS-Device':
-        wanted = "%s/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin" % XCODE_SDK_BASE
-        notwanted = '%s/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin' % XCODE_SDK_BASE
-
-    else:
-        assert 0
     if not wanted in os.environ['PATH']:
         print 'os.environ[PATH]=%s' % os.environ['PATH']
         print '** %s should be in $PATH for %s development' % (wanted, target)
@@ -1150,6 +1135,7 @@ def checkenv_iphone(target):
     return rv
         
 environment_checkers = {
+    'mac10.8' : checkenv_mac,
     'mac10.7' : checkenv_mac,
     'mac10.6' : checkenv_mac,
     'mac10.4' : checkenv_mac,
@@ -1177,7 +1163,6 @@ def main():
     parser.add_option("-m", "--loadmirror", dest="mirror", action="store_true",
         help="Mirror all third party packages in the current directory")
     options, args = parser.parse_args()
-        
     if options.mirror:
         if args:
             print '-m and platform argument are mutually exclusive'

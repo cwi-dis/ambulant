@@ -51,8 +51,6 @@
 
 /* Begin PBXFileReference section */
 		041E968812BA4D7900399893 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
-		041E968912BA4D7900399893 /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
-		041E968A12BA4D7900399893 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		041E96E612BA58FB00399893 /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
 		04290BAE132EB6FD0015D7B7 /* libamplugin_python(CG).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_python(CG).so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		042AD92C1152C916009CA791 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
@@ -64,6 +62,8 @@
 		042ADAF91152DDDB009CA791 /* ambulantutilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ambulantutilities.cpp; path = ../../src/pyambulant/ambulantutilities.cpp; sourceTree = SOURCE_ROOT; };
 		042ADAFA1152DDDB009CA791 /* ambulantutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ambulantutilities.h; path = ../../src/pyambulant/ambulantutilities.h; sourceTree = SOURCE_ROOT; };
 		04428E2411577B150067C868 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = /System/Library/Frameworks/Python.framework; sourceTree = "<absolute>"; };
+		046B705716B1EA020049AA51 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
+		046B705816B1EA020049AA51 /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
 		32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin_Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,10 +144,10 @@
 		5073E0CA09E734BC00EC74B6 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
+				046B705716B1EA020049AA51 /* ambulant-debug-cg.xcconfig */,
+				046B705816B1EA020049AA51 /* ambulant-release-cg.xcconfig */,
 				041E96E612BA58FB00399893 /* ambulant-mac.xcconfig */,
 				041E968812BA4D7900399893 /* ambulant-common.xcconfig */,
-				041E968912BA4D7900399893 /* ambulant-debug.xcconfig */,
-				041E968A12BA4D7900399893 /* ambulant-release.xcconfig */,
 			);
 			name = "Configuration Files";
 			sourceTree = "<group>";
@@ -269,7 +269,7 @@
 /* Begin XCBuildConfiguration section */
 		04290BAC132EB6FD0015D7B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 041E968912BA4D7900399893 /* ambulant-debug.xcconfig */;
+			baseConfigurationReference = 046B705716B1EA020049AA51 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -288,7 +288,7 @@
 		};
 		04290BAD132EB6FD0015D7B7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 041E968A12BA4D7900399893 /* ambulant-release.xcconfig */;
+			baseConfigurationReference = 046B705816B1EA020049AA51 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
