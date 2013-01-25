@@ -263,8 +263,8 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 #
 # Starting from Xcode 4.0, all SDKs are stored relative to the Xcode Application.
 # The script set_environment.sh gets the proper values for DEVELOPER_DIR, ARCHS, ARCH_ARGS, SDK_PATH etc.
-IPHONE_DEVICE_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH"
-IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' --disable-shared CFLAGS=\"%s\" CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
+IPHONE_DEVICE_COMMON_CFLAGS="-arch armv7 -arch armv7s -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk"
+IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin11 --prefix='%s' --disable-shared CFLAGS=\"%s\" CC=llvm-gcc CXX=llvm-g++    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
 IPHONE_SIMULATOR_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH" 
 IPHONE_SIMULATOR_COMMON_CONFIGURE="CFLAGS=\"%s\" && ./configure --prefix='%s' CFLAGS=\"$CFLAGS\" CXXFLAGS=\"$CFLAGS\"  LDFLAGS=\"$CFLAGS\" " % (IPHONE_SIMULATOR_COMMON_CFLAGS, COMMON_INSTALLDIR)
@@ -1033,6 +1033,14 @@ def checkenv_iphone(target):
         print '** IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     # Check that we have the right compilers, etc in PATH
+    if target == 'iOS-Device':
+        wanted = 'iPhoneOS.platform/Developer/usr/bin'
+        notwanted = 'iPhoneSimulator.platform/Developer/usr/bin'
+    elif target == 'iOS-Simulator':
+        wanted = 'iPhoneSimulator.platform/Developer/usr/bin'
+        notwanted = 'iPhoneOS.platform/Developer/usr/bin'
+    else:
+        assert 0
     if not wanted in os.environ['PATH']:
         print 'os.environ[PATH]=%s' % os.environ['PATH']
         print '** %s should be in $PATH for %s development' % (wanted, target)
