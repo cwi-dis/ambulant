@@ -34,7 +34,7 @@
 /* Begin PBXLegacyTarget section */
 		041DCBD712B65714003407C8 /* third_party_packages_mac */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../scripts/build-third-party-packages.py mac10.6";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py mac";
 			buildConfigurationList = 041DCBDA12B65732003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_mac" */;
 			buildPhases = (
 			);
