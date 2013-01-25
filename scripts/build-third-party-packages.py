@@ -366,7 +366,7 @@ third_party_packages={
         DebianTPP("python-gobject-dev"),
     ],
  
-    'mac10.6' : [
+    'mac' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
@@ -471,91 +471,6 @@ third_party_packages={
 #               "make" % MAC106_COMMON_CFLAGS
 #           ),
         ],
-
-    'mac10.4' : [
-        TPP("expat", 
-            url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
-            checkcmd="pkg-config --atleast-version=2.0.0 expat",
-            buildcmd=
-                "cd expat-2.0.1 && "
-                "patch --forward < %s/third_party_packages/expat.patch && "
-                "autoconf && "
-                "%s && "
-                "make ${MAKEFLAGS} && "
-                "make install" % (AMBULANT_DIR, MAC104_COMMON_CONFIGURE)
-            ),
-        TPP("xerces-c",
-            url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
-            checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
-            buildcmd=
-                "cd xerces-c-3.1.1 && "
-                "%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
-                "make ${MAKEFLAGS} && "
-                "make install" % (MAC104_COMMON_CONFIGURE, MAC104_COMMON_CFLAGS)
-            ),
-        TPP("faad2",
-            url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
-            checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
-            buildcmd=
-                "cd faad2-2.7 && "
-                "%s --disable-dependency-tracking && "
-                "make ${MAKEFLAGS} && "
-                "make install" % MAC104_COMMON_CONFIGURE
-            ),
-
-        TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
-            buildcmd=
-                "mkdir ffmpeg-export-universal && "
-                "cd ffmpeg-export-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
-                    (AMBULANT_DIR, os.getcwd())
-            ),
-
-        TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            checkcmd="pkg-config --atleast-version=1.3.0 sdl",
-            buildcmd=
-                "cd SDL-1.3.0-* && "
-                "./configure --prefix='%s' "
-                    "--disable-dependency-tracking  --enable-video-x11=no"
-                    "CC=gcc-4.0 CXX=g++-4.0 "
-                    "CFLAGS='%s' "
-                    "LDFLAGS='%s -framework ForceFeedback' &&"
-                "make ${MAKEFLAGS} && "
-                "make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
-            ),
-#         TPP("live",
-#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-#             buildcmd=
-#                 "cd live && "
-#                 "tar xf %s/third_party_packages/live-patches.tar && "
-#                 "./genMakefiles macosxfat && "
-#                 "make ${MAKEFLAGS} " % AMBULANT_DIR
-#             ),
-        TPP("gettext",
-            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
-            checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
-            buildcmd=
-                "cd gettext-0.18.2 && "
-                "%s --disable-csharp && "
-                "make ${MAKEFLAGS} && "
-                "make install" % MAC104_COMMON_CONFIGURE
-            ),
-        TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
-            buildcmd=
-                "cd libxml2-2.7.7 && "
-                "%s --disable-dependency-tracking && "
-                "make ${MAKEFLAGS} && "
-                "make install" % MAC104_COMMON_CONFIGURE
-            )
-        ],
-
 
     'iOS-Device' : [
         TPP("expat", 
@@ -1032,8 +947,8 @@ third_party_packages={
         ],
     
 }
-third_party_packages['mac10.7'] = third_party_packages['mac10.6']
-third_party_packages['mac10.8'] = third_party_packages['mac10.7']
+
+third_party_packages['mac10.8'] = third_party_packages['mac10.7'] = third_party_packages['mac10.6'] =  = third_party_packages['mac']
 
 def checkenv_win32(target):
     ok = True
@@ -1091,6 +1006,8 @@ def checkenv_mac(target):
         rv = False
     # Make sure we have MACOSX_DEPLOYMENT_TARGET set, if needed
     build_platform = get_mac_build_platform()
+    if target == 'mac':
+        target = build_platform
     if target != build_platform and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
         print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development on %s' % (target, build_platform)
         rv = False
@@ -1134,6 +1051,7 @@ def checkenv_iphone(target):
     return rv
         
 environment_checkers = {
+    'mac' : checkenv_mac,
     'mac10.8' : checkenv_mac,
     'mac10.7' : checkenv_mac,
     'mac10.6' : checkenv_mac,

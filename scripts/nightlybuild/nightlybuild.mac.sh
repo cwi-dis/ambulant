@@ -120,7 +120,7 @@ rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
 xcodebuild -project npambulant.xcodeproj \
 	-target npambulant \
-	-configuration Release -sdk macosx10.6 \
+	-configuration Release -sdk macosx10.7 \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
