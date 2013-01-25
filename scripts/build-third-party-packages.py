@@ -263,10 +263,28 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 #
 # Starting from Xcode 4.0, all SDKs are stored relative to the Xcode Application.
 # The script set_environment.sh gets the proper values for DEVELOPER_DIR, ARCHS, ARCH_ARGS, SDK_PATH etc.
-IPHONE_DEVICE_COMMON_CFLAGS="-arch armv7 -arch armv7s -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk"
+
+IOS_VERSION_TO_PARAMETERS = {
+    '5.1' : {
+        'arch' : '-arch armv6 -arch armv7',
+        'sdk' : 'iPhoneOS5.1.sdk',
+        },
+    '6.0' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'sdk' : 'iPhoneOS6.0.sdk',
+        },
+    'unknown' : {
+        'arch' : 'Unknown-IOS-Version-Please-Edit-build-third-party-packages.py',
+        'sdk' : 'Unknown-IOS-Version-Please-Edit-build-third-party-packages.py',
+        },
+}
+
+IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', 'unknown')
+
+IPHONE_DEVICE_COMMON_CFLAGS="%(arch)s -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/%(sdk)s" % IOS_VERSION_TO_PARAMETERS[IOS_VERSION]
 IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin11 --prefix='%s' --disable-shared CFLAGS=\"%s\" CC=llvm-gcc CXX=llvm-g++    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
-##XXX IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
-IPHONE_SIMULATOR_COMMON_CFLAGS="$ARCH_ARGS -isysroot $SDK_PATH" 
+
+IPHONE_SIMULATOR_COMMON_CFLAGS="-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/%(sdk)s" % IOS_VERSION_TO_PARAMETERS[IOS_VERSION]
 IPHONE_SIMULATOR_COMMON_CONFIGURE="CFLAGS=\"%s\" && ./configure --prefix='%s' CFLAGS=\"$CFLAGS\" CXXFLAGS=\"$CFLAGS\"  LDFLAGS=\"$CFLAGS\" " % (IPHONE_SIMULATOR_COMMON_CFLAGS, COMMON_INSTALLDIR)
 
 #
