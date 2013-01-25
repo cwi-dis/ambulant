@@ -32,6 +32,7 @@ def main():
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
         AMBULANT+ "common/region_info.h",
+        AMBULANT+ "common/renderer_select.h",
         AMBULANT+ "common/state.h",
         AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "gui/gtk/gtk_factory.h",

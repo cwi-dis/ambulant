@@ -11257,7 +11257,99 @@ static void renderer_selectObj_dealloc(renderer_selectObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *renderer_selectObj_get_tag(renderer_selectObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::xml_string& _rv = _self->ob_itself->get_tag();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *renderer_selectObj_get_url(renderer_selectObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::net::url& _rv = _self->ob_itself->get_url();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_url_New(_rv));
+	return _res;
+}
+
+static PyObject *renderer_selectObj_get_mimetype(renderer_selectObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const std::string& _rv = _self->ob_itself->get_mimetype();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
+static PyObject *renderer_selectObj_get_renderer_uri(renderer_selectObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const char * _rv = _self->ob_itself->get_renderer_uri();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("z",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *renderer_selectObj_get_playable_factory(renderer_selectObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::playable_factory* _rv = _self->ob_itself->get_playable_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+
+static PyObject *renderer_selectObj_set_playable_factory(renderer_selectObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* pf;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      playable_factoryObj_Convert, &pf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_playable_factory(pf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef renderer_selectObj_methods[] = {
+	{"get_tag", (PyCFunction)renderer_selectObj_get_tag, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::xml_string& _rv)")},
+	{"get_url", (PyCFunction)renderer_selectObj_get_url, 1,
+	 PyDoc_STR("() -> (const ambulant::net::url& _rv)")},
+	{"get_mimetype", (PyCFunction)renderer_selectObj_get_mimetype, 1,
+	 PyDoc_STR("() -> (const std::string& _rv)")},
+	{"get_renderer_uri", (PyCFunction)renderer_selectObj_get_renderer_uri, 1,
+	 PyDoc_STR("() -> (const char * _rv)")},
+	{"get_playable_factory", (PyCFunction)renderer_selectObj_get_playable_factory, 1,
+	 PyDoc_STR("() -> (ambulant::common::playable_factory* _rv)")},
+	{"set_playable_factory", (PyCFunction)renderer_selectObj_set_playable_factory, 1,
+	 PyDoc_STR("(ambulant::common::playable_factory* pf) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -11281,6 +11373,26 @@ static int renderer_selectObj_tp_init(PyObject *_self, PyObject *_args, PyObject
 {
 	ambulant::common::renderer_select* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	{
+		ambulant::lib::node* n;
+		if (PyArg_ParseTuple(_args, "O&",
+		                     nodeObj_Convert, &n))
+		{
+			((renderer_selectObject *)_self)->ob_itself = new ambulant::common::renderer_select(n);
+			return 0;
+		}
+	}
+
+	{
+		char* uri;
+		if (PyArg_ParseTuple(_args, "s",
+		                     &uri))
+		{
+			((renderer_selectObject *)_self)->ob_itself = new ambulant::common::renderer_select(uri);
+			return 0;
+		}
+	}
 
 	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, renderer_selectObj_Convert, &itself))
 	{

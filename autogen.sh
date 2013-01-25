@@ -298,6 +298,11 @@ for configure_in in $configure_files; do
     else
 	printbold "Processing $configure_in"
 
+	if grep "^A[CM]_PROG_LIBTOOL" $basename >/dev/null; then
+	    printbold "Running $LIBTOOLIZE..."
+	    $LIBTOOLIZE --force || exit 1
+	fi
+
 	aclocalinclude="$ACLOCAL_FLAGS"
 	printbold "Running $ACLOCAL..."
 	$ACLOCAL $aclocalinclude || exit 1
@@ -306,10 +311,6 @@ for configure_in in $configure_files; do
 	    printerr "*** obsolete gnome macros were used in $configure_in"
 	fi
 
-	if grep "^A[CM]_PROG_LIBTOOL" $basename >/dev/null; then
-	    printbold "Running $LIBTOOLIZE..."
-	    $LIBTOOLIZE --force || exit 1
-	fi
 	if grep "^AC_PROG_INTLTOOL" $basename >/dev/null; then
 	    printbold "Running $INTLTOOLIZE..."
 	    $INTLTOOLIZE --force --automake || exit 1
