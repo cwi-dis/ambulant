@@ -267,15 +267,21 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 IOS_VERSION_TO_PARAMETERS = {
     '5.1' : {
         'arch' : '-arch armv6 -arch armv7',
+        'simarch' : '-arch i386',
         'sdk' : 'iPhoneOS5.1.sdk',
+        'simsdk' : 'iPhoneSimulator5.1.sdk',
         },
     '6.0' : {
         'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
         'sdk' : 'iPhoneOS6.0.sdk',
+        'simsdk' : 'iPhoneSimulator6.0.sdk',
         },
     'unknown' : {
         'arch' : 'Unknown-IOS-Version-Please-Edit-build-third-party-packages.py',
+        'simarch' : '-arch i386',
         'sdk' : 'Unknown-IOS-Version-Please-Edit-build-third-party-packages.py',
+        'simsdk' : 'Unknown-IOS-Version-Please-Edit-build-third-party-packages.py',
         },
 }
 
@@ -284,8 +290,8 @@ IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', 'unknown')
 IPHONE_DEVICE_COMMON_CFLAGS="%(arch)s -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/%(sdk)s" % IOS_VERSION_TO_PARAMETERS[IOS_VERSION]
 IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin11 --prefix='%s' --disable-shared CFLAGS=\"%s\" CC=llvm-gcc CXX=llvm-g++    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
 
-IPHONE_SIMULATOR_COMMON_CFLAGS="-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/%(sdk)s" % IOS_VERSION_TO_PARAMETERS[IOS_VERSION]
-IPHONE_SIMULATOR_COMMON_CONFIGURE="CFLAGS=\"%s\" && ./configure --prefix='%s' CFLAGS=\"$CFLAGS\" CXXFLAGS=\"$CFLAGS\"  LDFLAGS=\"$CFLAGS\" " % (IPHONE_SIMULATOR_COMMON_CFLAGS, COMMON_INSTALLDIR)
+IPHONE_SIMULATOR_COMMON_CFLAGS="%(simarch)s -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/%(simsdk)s" % IOS_VERSION_TO_PARAMETERS[IOS_VERSION]
+IPHONE_SIMULATOR_COMMON_CONFIGURE="CFLAGS=\"%s\" && ./configure --prefix='%s'  CC=llvm-gcc CXX=llvm-g++ CFLAGS=\"$CFLAGS\" CXXFLAGS=\"$CFLAGS\"  LDFLAGS=\"$CFLAGS\" " % (IPHONE_SIMULATOR_COMMON_CFLAGS, COMMON_INSTALLDIR)
 
 #
 # Common flags for Linux

@@ -117,7 +117,7 @@
 				PATH = "$(PATH):/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin";
 				PRODUCT_NAME = third_party_packages_3264;
 				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk;
-				SUPPORTED_PLATFORMS = macos;
+				SUPPORTED_PLATFORMS = "";
 				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = NO;
 			};
@@ -129,7 +129,7 @@
 				AMBULANT_3PP = "../../build-iOS-Device/third_party_packages";
 				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PATH = "$HOME:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/opt/local/bin:$PATH";
 				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";

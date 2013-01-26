@@ -132,6 +132,10 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifdef __OBJC__
 
+#ifdef WITH_UIKIT
+typedef CGRect NSRect;
+#endif
+
 @interface NSRectHolder : NSObject
 {
 	CGRect rect;

@@ -58,7 +58,11 @@
 }
 
 - (NSUInteger)supportedInterfaceOrientations { // iOS >= 6
+#ifndef __IPHONE_6_0
+    return UIInterfaceOrientationPortrait;
+#else
     return UIInterfaceOrientationMaskAll;
+#endif
 }
 
 @end

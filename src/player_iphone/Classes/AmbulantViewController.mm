@@ -320,7 +320,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (NSUInteger)supportedInterfaceOrientations { // iOS >= 6
+#ifndef __IPHONE_6_0
+    return UIInterfaceOrientationPortrait;
+#else
     return UIInterfaceOrientationMaskAll;
+#endif
 }
 
 // react on device rotation
