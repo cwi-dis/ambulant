@@ -267,7 +267,7 @@ bad:
 
 - (id)initWithFrame:(CGRect)frameRect
 {
-	AM_DBG NSLog(@"AmbulantView.initWithFrame(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantView.initWithFrame(0x%@)", self);
 	self = [super initWithFrame: NSRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 	transition_surface = NULL;
@@ -295,7 +295,7 @@ bad:
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-	AM_DBG NSLog(@"AmbulantView.initWithCoder(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantView.initWithCoder(0x%@)", self);
 	self = [super initWithCoder:aDecoder];
 	ambulant_window = NULL;
 	transition_surface = NULL;
@@ -322,9 +322,9 @@ bad:
 }
 
 - (void)dealloc {
-	AM_DBG NSLog(@"AmbulantView.dealloc(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantView.dealloc(0x%@)", self);
 	if (transition_surface) {
-		AM_DBG NSLog(@"CFGetRetainCount(transition_surface)=%d",CFGetRetainCount(transition_surface)); 
+		AM_DBG NSLog(@"CFGetRetainCount(transition_surface)=%ld",CFGetRetainCount(transition_surface));
 		CFRelease(transition_surface);
 		transition_surface = NULL;
 	}
@@ -376,7 +376,7 @@ bad:
 {
 	CGRect my_rect = [arect rect];
 	[arect release];
-	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
+	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%@ ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
 #ifdef WITH_UIKIT
     [self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
 #else
@@ -508,10 +508,10 @@ bad:
 		where = [self convertPoint: where fromView: nil];
 	}
 	if (!NSPointInRect(where, [self bounds])) {
-		AM_DBG NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
+		AM_DBG NSLog(@"0x%@: mouseDown outside our frame", (void*)self);
 		return;
 	}
-	AM_DBG NSLog(@"0x%x: mouseDown at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"0x%@: mouseDown at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
@@ -567,7 +567,7 @@ bad:
 		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
-	AM_DBG NSLog(@"0x%x: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"0x%@: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
@@ -946,7 +946,7 @@ CreateBitmapContext (CGSize size)
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
     elapsed: (ambulant::lib::transition_info::time_type)now
 {
-	AM_DBG NSLog(@"screenTransitionStep %d engine=0x%x", (int)now, engine);
+	AM_DBG NSLog(@"screenTransitionStep %d engine=0x%@", (int)now, (void*) engine);
 	assert(fullscreen_count > 0);
 	fullscreen_engine = engine;
 	fullscreen_now = now;
@@ -956,7 +956,7 @@ CreateBitmapContext (CGSize size)
 {
 	if (fullscreen_count == 0) return;
 	// setup drawing to transition surface
-	AM_DBG NSLog(@"_screenTransitionPreRedraw: fullscreen_outtrans=%d fullscreen_oldimage=0x%x",fullscreen_outtrans,fullscreen_oldimage);
+	AM_DBG NSLog(@"_screenTransitionPreRedraw: fullscreen_outtrans=%d fullscreen_oldimage=0x%@",fullscreen_outtrans,fullscreen_oldimage);
 
 	if (fullscreen_outtrans || fullscreen_oldimage == NULL) {
 		return;
@@ -967,7 +967,7 @@ CreateBitmapContext (CGSize size)
 
 - (void) _screenTransitionPostRedraw
 {
-	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%x", fullscreen_count,fullscreen_engine);
+	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%@", fullscreen_count, (void*) fullscreen_engine);
 	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
 		// Neither in fullscreen transition nor winding one down.
 		// Take a snapshot of the screen and return.
@@ -981,7 +981,7 @@ CreateBitmapContext (CGSize size)
 	
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
-	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%x", fullscreen_count,fullscreen_engine);
+	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%@", fullscreen_count, (void*) fullscreen_engine);
 	CGRect bounds =  NSRectToCGRect(self.bounds);
 	if (fullscreen_engine && ! fullscreen_ended) {
 		fullscreen_engine->step(fullscreen_now);
@@ -1043,7 +1043,7 @@ CreateBitmapContext (CGSize size)
 
 - (void) releaseTransitionSurfaces
 {
-	AM_DBG NSLog(@"releaseTransitionSurfaces: transition_count=%d CFGetRetainCount(transition_surface)=%d",transition_count, CFGetRetainCount(transition_surface)); 
+	AM_DBG NSLog(@"releaseTransitionSurfaces: transition_count=%d CFGetRetainCount(transition_surface)=%ld",transition_count, CFGetRetainCount(transition_surface));
 	if (transition_count > 0) {
 		return;
 	}
@@ -1059,7 +1059,7 @@ CreateBitmapContext (CGSize size)
 	
 - (void) pushTransitionSurface
 {
-	AM_DBG NSLog(@"pushTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
+	AM_DBG NSLog(@"pushTransitionSurface 0x%@fullscreen_outtrans=%c transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
 	if ( ! transition_pushed) {
 #ifdef	WITH_UIKIT
 		CGLayerRef surf = [self getTransitionSurface];
@@ -1082,7 +1082,7 @@ CreateBitmapContext (CGSize size)
 	
 - (void) popTransitionSurface
 {
-	AM_DBG NSLog(@"popTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
+	AM_DBG NSLog(@"popTransitionSurface 0x%@ fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
 	if (transition_pushed) {
 #ifdef	WITH_UIKIT
 		UIGraphicsPopContext();
@@ -1122,7 +1122,7 @@ void* new_AmbulantView(CGContextRef ctxp, CGRect r, void* plugin_callback, void*
 	AmbulantView* v = [AmbulantView alloc];
 	r =  CGContextGetClipBoundingBox(ctxp);
 	AM_DBG NSLog(@"new_AmbulantView(%p): ctxp=%p r=(%f,%f,%f,%f)", (void*) v, ctxp, r.origin.x, r.origin.y,r.size.width,r.size.height);
-		[v initWithFrame: r];
+		[v initWithFrame: NSRectFromCGRect(r)];
 	v.plugin_callback = plugin_callback; //X 
 	v.plugin_data = plugin_data;		 //X browser data for callback function
 	return (void*) v;
@@ -1156,7 +1156,7 @@ void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, 
 	NSPoint p = {e_data.x, e_data.y};
 	v.plugin_mainloop = (ambulant::common::gui_player*) mainloop; //X needed for cursor appearance change
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
-	AM_DBG NSLog(@"handle_event_AmbulantView(%p): e_type=%d e_data=(%f,%f) p=(%f,%f)", obj, e_type, e_data.x, e_data.y, p.x, p.y);
+	AM_DBG NSLog(@"handle_event_AmbulantView(%p): e_type=%ld e_data=(%f,%f) p=(%f,%f)", obj, e_type, e_data.x, e_data.y, p.x, p.y);
 	// NSEvent mouseEventWithType will crash on type=NSMouseEntered or NSMouseExited showing:
 	// Invalid parameter not satisfying: NSEventMaskFromType(type) & (MouseMask|NSMouseMovedMask)
 	// The idea is to just update the cursor shape in these cases, so make it an NSMouseMoved instead.
@@ -1219,7 +1219,7 @@ const char* to_char_AmbulantView(void* obj, void* nstr) {
 		}
 #endif// WITH_UIKIT
 		
-		AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+		AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%@ ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
 		
 		if (!ambulant_window) {
 			AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");

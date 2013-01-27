@@ -1,0 +1,368 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04290B3B132EB5D80015D7B7 /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042ADA9D1152DA1C009CA791 /* libxerces-c.dylib */; };
+		04290B3D132EB5D80015D7B7 /* xercesplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADA611152D8A6009CA791 /* xercesplugin.cpp */; };
+		04290B3E132EB5D80015D7B7 /* xerces_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADA851152D981009CA791 /* xerces_parser.cpp */; };
+		04290B4A132EB5F70015D7B7 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E96C612BA4E0E00399893 /* libambulantCG.dylib */; };
+		935D1A6F169CCBE3003A3CC0 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A6E169CCBE3003A3CC0 /* CoreFoundation.framework */; };
+		935D1A71169CCC8F003A3CC0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A70169CCC8F003A3CC0 /* Carbon.framework */; };
+		935D1A73169CCCB7003A3CC0 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A72169CCCB7003A3CC0 /* libcurl.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		041E96C512BA4E0E00399893 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 04A1E87512B57DF20060F97E;
+			remoteInfo = libambulantCG;
+		};
+		041E96C712BA4E0E00399893 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 04D71F8312B628210064FBCB;
+			remoteInfo = libambulantCGstatic;
+		};
+		041E96C912BA4E0E00399893 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 040DAB3812B790BB002C4DFD;
+			remoteInfo = libambulantiPhone;
+		};
+		04290B4D132EB6590015D7B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 04A1E80812B57DF20060F97E;
+			remoteInfo = libambulantCG;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		041E96D012BA4E2D00399893 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
+		04290B42132EB5D80015D7B7 /* libamplugin_xerces(CG).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_xerces(CG).so"; sourceTree = BUILT_PRODUCTS_DIR; };
+		042AD92C1152C916009CA791 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
+		042ADA611152D8A6009CA791 /* xercesplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xercesplugin.cpp; path = ../../src/plugins/xercesplugin.cpp; sourceTree = SOURCE_ROOT; };
+		042ADA851152D981009CA791 /* xerces_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xerces_parser.cpp; path = ../../src/libambulant/lib/xerces_parser.cpp; sourceTree = SOURCE_ROOT; };
+		042ADA9D1152DA1C009CA791 /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../build-3264/third_party_packages/installed/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
+		046B705216B1E9800049AA51 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
+		046B705316B1E9800049AA51 /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
+		32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin_Prefix.pch; sourceTree = "<group>"; };
+		935D1A6E169CCBE3003A3CC0 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		935D1A70169CCC8F003A3CC0 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		935D1A72169CCCB7003A3CC0 /* libcurl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.dylib; path = usr/lib/libcurl.dylib; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04290B39132EB5D80015D7B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				935D1A73169CCCB7003A3CC0 /* libcurl.dylib in Frameworks */,
+				935D1A71169CCC8F003A3CC0 /* Carbon.framework in Frameworks */,
+				935D1A6F169CCBE3003A3CC0 /* CoreFoundation.framework in Frameworks */,
+				04290B3B132EB5D80015D7B7 /* libxerces-c.dylib in Frameworks */,
+				04290B4A132EB5F70015D7B7 /* libambulantCG.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DDFF38A45A11DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				04290B42132EB5D80015D7B7 /* libamplugin_xerces(CG).so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		042AD92B1152C90C009CA791 /* Subprojects */ = {
+			isa = PBXGroup;
+			children = (
+				042AD92C1152C916009CA791 /* libambulant.xcodeproj */,
+			);
+			name = Subprojects;
+			sourceTree = "<group>";
+		};
+		042AD92D1152C916009CA791 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				041E96C612BA4E0E00399893 /* libambulantCG.dylib */,
+				041E96C812BA4E0E00399893 /* libambulantCGstatic.a */,
+				041E96CA12BA4E0E00399893 /* libambulantIPhone.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* plugin */ = {
+			isa = PBXGroup;
+			children = (
+				935D1A72169CCCB7003A3CC0 /* libcurl.dylib */,
+				935D1A70169CCC8F003A3CC0 /* Carbon.framework */,
+				935D1A6E169CCBE3003A3CC0 /* CoreFoundation.framework */,
+				042AD92B1152C90C009CA791 /* Subprojects */,
+				5073E0CA09E734BC00EC74B6 /* Configuration Files */,
+				08FB77ACFE841707C02AAC07 /* Source */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DDFF38A45A11DB9C8B /* Products */,
+			);
+			name = plugin;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				042ADA9D1152DA1C009CA791 /* libxerces-c.dylib */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		08FB77ACFE841707C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				042ADA851152D981009CA791 /* xerces_parser.cpp */,
+				042ADA611152D8A6009CA791 /* xercesplugin.cpp */,
+				32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		5073E0CA09E734BC00EC74B6 /* Configuration Files */ = {
+			isa = PBXGroup;
+			children = (
+				046B705216B1E9800049AA51 /* ambulant-debug-cg.xcconfig */,
+				046B705316B1E9800049AA51 /* ambulant-release-cg.xcconfig */,
+				041E96D012BA4E2D00399893 /* ambulant-common.xcconfig */,
+			);
+			name = "Configuration Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		04290B38132EB5D80015D7B7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		04290B35132EB5D80015D7B7 /* plugin_xerces (CG) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04290B3F132EB5D80015D7B7 /* Build configuration list for PBXNativeTarget "plugin_xerces (CG)" */;
+			buildPhases = (
+				04290B38132EB5D80015D7B7 /* Headers */,
+				04290B39132EB5D80015D7B7 /* Frameworks */,
+				04290B3C132EB5D80015D7B7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04290B4E132EB6590015D7B7 /* PBXTargetDependency */,
+			);
+			name = "plugin_xerces (CG)";
+			productName = libplugin;
+			productReference = 04290B42132EB5D80015D7B7 /* libamplugin_xerces(CG).so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
+			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "plugin_xerces" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* plugin */;
+			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 042AD92D1152C916009CA791 /* Products */;
+					ProjectRef = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				04290B35132EB5D80015D7B7 /* plugin_xerces (CG) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		041E96C612BA4E0E00399893 /* libambulantCG.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libambulantCG.dylib;
+			remoteRef = 041E96C512BA4E0E00399893 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		041E96C812BA4E0E00399893 /* libambulantCGstatic.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libambulantCGstatic.a;
+			remoteRef = 041E96C712BA4E0E00399893 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		041E96CA12BA4E0E00399893 /* libambulantIPhone.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libambulantIPhone.a;
+			remoteRef = 041E96C912BA4E0E00399893 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		04290B3C132EB5D80015D7B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04290B3D132EB5D80015D7B7 /* xercesplugin.cpp in Sources */,
+				04290B3E132EB5D80015D7B7 /* xerces_parser.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04290B4E132EB6590015D7B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libambulantCG;
+			targetProxy = 04290B4D132EB6590015D7B7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		04290B40132EB5D80015D7B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 046B705216B1E9800049AA51 /* ambulant-debug-cg.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = plugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_XERCES=1",
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
+				);
+				PRODUCT_NAME = "libamplugin_xerces(CG)";
+				SDKROOT = macosx10.7;
+			};
+			name = Debug;
+		};
+		04290B41132EB5D80015D7B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 046B705216B1E9800049AA51 /* ambulant-debug-cg.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_EXTENSION = so;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = plugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_XERCES=1",
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
+				);
+				PRODUCT_NAME = "libamplugin_xerces(CG)";
+				SDKROOT = macosx10.7;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = "non-global";
+			};
+			name = Release;
+		};
+		1DEB916508733D950010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 041E96D012BA4E2D00399893 /* ambulant-common.xcconfig */;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					i386,
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1DEB916608733D950010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 041E96D012BA4E2D00399893 /* ambulant-common.xcconfig */;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					i386,
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04290B3F132EB5D80015D7B7 /* Build configuration list for PBXNativeTarget "plugin_xerces (CG)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04290B40132EB5D80015D7B7 /* Debug */,
+				04290B41132EB5D80015D7B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "plugin_xerces" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB916508733D950010E9CD /* Debug */,
+				1DEB916608733D950010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

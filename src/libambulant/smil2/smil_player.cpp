@@ -299,7 +299,7 @@ void smil_player::pause() {
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->pause();
 		m_playables_cs.leave();
-#endif WITH_REMOTE_SYNC
+#endif//WITH_REMOTE_SYNC
 	}
 
 	m_lock.leave();
@@ -325,7 +325,7 @@ void smil_player::_resume() {
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->resume();
 		m_playables_cs.leave();
-#endif WITH_REMOTE_SYNC
+#endif//WITH_REMOTE_SYNC
 		m_timer->resume();
 	}
 }

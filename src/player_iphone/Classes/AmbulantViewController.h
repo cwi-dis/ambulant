@@ -115,7 +115,9 @@ enum ZoomState {
 - (void) stopped;
 
 // View control
-- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation; - (BOOL)shouldAutorotate; // iOS < 6
+//- (BOOL)shouldAutorotate; // iOS >= 6
+//- (NSUInteger)supportedInterfaceOrientations; // iOS >= 6
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
 - (void) orientationChanged:(NSNotification *)notification;
 - (void) showInteractionView: (BOOL) on;

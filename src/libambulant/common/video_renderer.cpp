@@ -431,7 +431,7 @@ video_renderer::data_avail()
 	if (m_src->end_of_file() || (m_clip_end > 0 && frame_ts_micros > m_clip_end)) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: stopping playback. eof=%d, ts=%lld, now=%lld, clip_end=%lld ", (int)m_src->end_of_file(), frame_ts_micros, now_micros, m_clip_end );
 		// If we have an audio renderer and the soundlevel is not 0, then we should let it do the stopped() callback.
-		int level;
+		int level = 0;
 		if (m_dest) {
             const common::region_info *info = m_dest->get_info();
             level = info ? info->get_soundlevel() : 1;

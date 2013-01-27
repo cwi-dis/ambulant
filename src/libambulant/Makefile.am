@@ -38,7 +38,7 @@ endif
 
 if WITH_XERCES_BUILTIN
 xerces_parser_source = lib/xerces_parser.cpp
-xerces_includes = $(XERCES_INCLUDES)
+xerces_includes = $(XERCES_CFLAGS)
 xerces_core_libs = $(XERCES_LIBS)
 else
 xerces_parser_source = 

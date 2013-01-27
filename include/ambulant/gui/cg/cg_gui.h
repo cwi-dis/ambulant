@@ -132,6 +132,10 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifdef __OBJC__
 
+#ifdef WITH_UIKIT
+typedef CGRect NSRect;
+#endif
+
 @interface NSRectHolder : NSObject
 {
 	CGRect rect;
@@ -175,7 +179,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #endif// ! WITH_UIKIT
 }
 
-- (id)initWithFrame:(CGRect)frameRect;
+- (id)initWithFrame:(NSRect)frameRect;
 - (id)initWithCoder:(NSCoder *)aDecoder;
 - (void)dealloc;
 
