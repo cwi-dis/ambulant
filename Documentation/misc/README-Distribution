@@ -119,7 +119,7 @@ Before creating the distribution
   - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
   - projects/vc10/npambulant-installer.vcxproj (many places)
   - projects/vc10/AmbulantActiveX-installer.vcxproj (many places)
-  - projects/xcode32/iAmbulant-Info.plist
+  - projects/xcode43/iAmbulant-Info.plist
   - Documentation/API/Doxyfile
 - check the following files for being up-to-date:
   - README
@@ -321,6 +321,8 @@ Creating the Firefox plugin on Linux
 Creating the iOS 4.x Ad-Hoc Distribution for beta-testers.
 ==========================================================
 
+[Note: this section needs review, it may be outdated as of XCode 4]
+
 As of Oct.22, 2010, the procedure was used as extensively documented at:
 https://developer.apple.com/ios/manage/distribution/index.action
 
@@ -328,9 +330,9 @@ This includes:
 - obtain the UDID's of devices involved in beta testing
 - on the iOS Developer Portal, generate a "Distribution Profile Request" including these UDID's
 - download this new Distribution profile and drag this into Xcode.
-  The project you need is projects/xcode32/iAmbulant.xcodeproj .
+  The project you need is projects/xcode43/iAmbulant.xcodeproj .
 - build for the device using this the "Distribution" configuration.
-  The result will be in projects/xcode32/build/Distribution-iphoneos/iAmbulant.app 
+  The result will be in projects/xcode43/build/Distribution-iphoneos/iAmbulant.app 
 - Use the installers/mkiphonedist.sh to create an IPA file, which is a zipfile
   containing a Payload dir containing the app. The app will contain the embedded
   ad-hoc distribution profile.

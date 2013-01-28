@@ -115,7 +115,7 @@ cd ../..
 # Build npambulant (Internet Plugin).
 #
 cd $BUILDHOME/$BUILDDIR
-cd projects/xcode32
+cd projects/xcode43
 rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
 xcodebuild -project npambulant.xcodeproj \

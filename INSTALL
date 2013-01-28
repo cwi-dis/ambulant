@@ -107,8 +107,10 @@ should first run make in the toplevel build directory and then
 "sudo make install" in src/player_macosx. This will not install anything
 into /usr/local.
 
-Building for Mac OS X 10.6 using XCode
+Building for Mac OS X 10.7 using XCode
 --------------------------------------
+
+[Not sure the next paragraph is still true]
 
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
@@ -118,20 +120,23 @@ install them manually:
 - libtool, version 2.2.6 or later
 - pkg-config, version 0.19 or later
 
-XCode projects are available in projects/xcode32. For some components
+XCode projects are available in projects/xcode43. For some components
 such as the iOS player or the Safari plugin you must use these, for
 the desktop player you can use either the configure/make scheme described
-above or the projects. To build using the projects you need to do first
+above or the projects. To build using the projects you may need to do first
 do one initial step (in the toplevel ambulant directory):
 	$ mkdir build-3264
 	$ mkdir build-3264/third_party_packages
-Then you open any of the projects in project/xcode32, and it will build
+This should be automated through a subproject that builds this, but as of this
+writing (january 2013) that doesn't work.
+
+Then, you open any of the projects in project/xcode43, and it will build
 not only that product but also everything it depends on (including third
 party packages).
 
 The projects are parameterized, so if something like the pathname of a
 third party package changes you should inspect the files in
-projects/xcode32/config and change things there (possibly in addition to
+projects/xcode43/config and change things there (possibly in addition to
 changing the build-third-party-packages.py script).
 
 Building for older MacOSX releases
@@ -211,7 +216,7 @@ If you want to build the Firefox or IE plugin you may need to install some
 additional tools such as CabArc. Also, to build the IE plugin you must run
 Visual Studio (sic!) with Administrator permissions.
 
-Building for iPhone iOS4
+Building for iPhone iOS5
 ------------------------
 
 First there are some packages that need to be installed system-wide, i.e.
@@ -224,15 +229,15 @@ install them manually:
 
 Before opening the XCode projects, do the following (at the toplevel Ambulant
 directory):
-	$ mkdir build-{iOS,iOS-Fat,iOS-Simulator}
-	$ mkdir build-{iOS,iOS-Fat,iOS-Simulator}/third_party_packages
+	$ mkdir build-{iOS,iOS-Simulator}
+	$ mkdir build-{iOS,iOS-Simulator}/third_party_packages
 
-Now you can open projects/xcode32/iAmbulant.xcodeproj and it will build everything
+Now you can open projects/xcode43/iAmbulant.xcodeproj and it will build everything
 needed.
 
 The projects are parameterized, so if something like the pathname of a
 third party package changes you should inspect the files in
-projects/xcode32/config and change things there (possibly in addition to
+projects/xcode43/config and change things there (possibly in addition to
 changing the build-third-party-packages.py script).
 
 Finally a word of warning: if you do both MacOSX and iOS development the
