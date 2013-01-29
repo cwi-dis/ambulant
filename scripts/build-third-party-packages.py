@@ -523,7 +523,6 @@ third_party_packages={
                 "make clean;make ${MAKEFLAGS} && "
                 "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
             ),
-# create fat libraries for armv6/7/7s: foreach arch do configure ...;make; rename lib...a to lib..$arch, then use lipo to combine them 
         TPP("ffmpeg",
             url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
             url2="ffmpeg-1.0.tar.gz",
@@ -580,29 +579,6 @@ third_party_packages={
 
 #                "xcodebuild -target libSDL -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&" # -arch only supported on Xcode >= 4.0
 
-#         TPP("live",
-#             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-#             url2="live555-%s.tar.gz"%LIVE_MIRRORDATE,
-#             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-#             buildcmd=
-#                 "set -x;cd live && "
-#                 "tar xf $AMBULANT_DIR/third_party_packages/live-patches.tar && "
-#                 "export C=c; for arch in $ARCHS ; do export TARGET_CPU_ARCH=$arch; ./genMakefiles iOS && "
-#                 "make clean;make ${MAKEFLAGS}; for i in `ls */*.a`; do cp $i `basename $i .a`-$arch; done; done &&" 
-#                 "for i in `ls */*.a`; do rm $i; (cd `dirname $i`; lipo `basename $i .a`-arm* -create -output `basename $i`); done; "
-#                 "" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
-#             ),
-
-##      TPP("gettext",
-##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
-##          checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
-##          buildcmd=
-##              "cd gettext-0.18.2 && "
-##              "%s --disable-csharp && "
-##              "make clean;make ${MAKEFLAGS} && "
-##              "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
-##          ),
-
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
             url2="libxml2-2.7.7.tar.gz",
@@ -657,12 +633,36 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
                 "cd ffmpeg-1.0 && "
-                "./configure --enable-cross-compile --arch=i386 --target-os=darwin --sysroot=$SDK_PATH --cc=$PLATFORM_PATH/Developer/usr/bin/gcc "
-                "--as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' --enable-cross-compile "
-                "--extra-cflags='$ARCH_ARGS -I../installed/include' "
-                "--extra-ldflags='$ARCH_ARGS -L../installed/lib -L$SDK_PATH/usr/lib/system ' "
-                "--prefix=%s --enable-gpl --disable-mmx --disable-asm --disable-ffprobe;"
-                "make clean;make ${MAKEFLAGS}; make install" % COMMON_INSTALLDIR
+                "./configure "
+                "    --enable-cross-compile "
+                "    --arch=%(arch)s "
+                "    --target-os=darwin "
+                "    --sysroot=%(sdk)s "
+				"    --cpu=cortex-a8 "
+                "    --as='gas-preprocessor.pl %(cc)s' "
+                "    --cc=%(cc)s "
+                "    --extra-cflags='-isysroot %(sdk)s -I%(installed)s/include' "
+				"    --extra-ldflags='-isysroot %(sdk)s -L%(installed)s/lib' "
+                "    --prefix=../installed/ "
+                "    --enable-gpl  "
+                "    --disable-mmx "
+                "    --disable-asm "
+				"    --disable-ffmpeg "
+				"    --disable-ffserver "
+				"    --disable-ffplay "
+				"    --disable-ffprobe "
+				"    --disable-neon "
+				"    --disable-doc "
+				"&&"
+                "make ${MAKEFLAGS} &&"
+ 				"make install" % 
+ 			
+                    dict(
+                        arch="i386",
+                        sdk=IOSSIM_SDK,
+                        installed=COMMON_INSTALLDIR,
+                        cc="i686-apple-darwin11-llvm-gcc-4.2"
+                    )
             ),
 
         TPP("SDL",
@@ -672,12 +672,18 @@ third_party_packages={
             buildcmd=
                 "cd SDL-1.3.0-*  && "
                 "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
-                "./configure --prefix=%s --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
+                "./configure --prefix=%(installed)s --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
                 "cd Xcode-iOS/SDL  && "
-                "xcodebuild -target libSDL -sdk iphonesimulator$IPHONEOS_DEPLOYMENT_TARGET -configuration Debug ARCHS=$ARCHS &&"
-                "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
-                "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % COMMON_INSTALLDIR
+                "xcodebuild -target libSDL -sdk %(sdk)s -configuration Debug ARCHS=%(arch)s && "
+                "mkdir -p %(installed)s/include/SDL && "
+                "cp ../../include/* %(installed)s/include/SDL && "
+                "cp ./build/Debug-iphonesimulator/usr/local/include/* %(installed)s/include/SDL && "
+                "mkdir -p %(installed)s/include/lib && "
+                "cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % 
+                    dict(arch="i386",
+                        sdk=IOSSIM_SDK,
+                        installed=COMMON_INSTALLDIR,
+                    )
  ),
 
 #         TPP("live",
