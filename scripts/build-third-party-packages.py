@@ -261,7 +261,7 @@ if not IOS_VERSION:
     
 IOS_SDK=os.environ.get('SDKROOT', None)
 if not IOS_SDK:
-    IOS_SDK= "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhone%s.sdk" % IOS_VERSION
+    IOS_SDK= "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk" % IOS_VERSION
 
 IOSSIM_SDK=os.environ.get('SDKROOT', None)
 if not IOSSIM_SDK:
@@ -530,16 +530,36 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
             buildcmd=
                 "cd ffmpeg-1.0 && "
-                "./configure --enable-cross-compile --arch=armv7 --target-os=darwin "
-                "    --sysroot=%s "
+                "./configure "
+                "    --enable-cross-compile "
+                "    --arch=%(arch)s "
+                "    --target-os=darwin "
+                "    --sysroot=%(sdk)s "
 				"    --cpu=cortex-a8 "
-                "    --as='gas-preprocessor.pl $PLATFORM_PATH/Developer/usr/bin/gcc' "
-                "    --extra-cflags='-arch $arch -I../installed/include' "
-				"    --extra-ldflags='-arch $arch -L../installed/lib -L$SDK_PATH/usr/lib/system' "
-                "    --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm "
-				"    --disable-ffmpeg --disable-ffserver --disable-ffplay --disable-ffprobe --disable-neon --disable-doc &&"
+                "    --as='gas-preprocessor.pl %(cc)s' "
+                "    --cc=%(cc)s "
+                "    --extra-cflags='-isysroot %(sdk)s -I%(installed)s/include' "
+				"    --extra-ldflags='-isysroot %(sdk)s -L%(installed)s/lib' "
+                "    --prefix=../installed/ "
+                "    --enable-gpl  "
+                "    --disable-mmx "
+                "    --disable-asm "
+				"    --disable-ffmpeg "
+				"    --disable-ffserver "
+				"    --disable-ffplay "
+				"    --disable-ffprobe "
+				"    --disable-neon "
+				"    --disable-doc "
+				"&&"
                 "make ${MAKEFLAGS} &&"
- 				"make install" % IOS_SDK
+ 				"make install" % 
+ 			
+                    dict(
+                        arch="armv7",
+                        sdk=IOS_SDK,
+                        installed=COMMON_INSTALLDIR,
+                        cc="arm-apple-darwin10-llvm-gcc-4.2"
+                    )
             ),
 
         TPP("SDL",
