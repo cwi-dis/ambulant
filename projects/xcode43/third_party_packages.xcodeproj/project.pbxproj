@@ -6,6 +6,23 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		04ED3D4116B8816E00CE90A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8;
+			remoteInfo = third_party_packages_iOS_Device;
+		};
+		04ED3D4316B8816E00CE90A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8;
+			remoteInfo = third_party_packages_iOS_Simulator;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../scripts/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
 		04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
@@ -80,6 +97,22 @@
 			passBuildSettingsInEnvironment = 1;
 			productName = third_party_packages_3264;
 		};
+		04ED3D3E16B8811B00CE90A4 /* third_party_packages_iOS_BOTH */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "npth done";
+			buildConfigurationList = 04ED3D3F16B8811B00CE90A4 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_BOTH" */;
+			buildPhases = (
+			);
+			buildToolPath = echo;
+			buildWorkingDirectory = "";
+			dependencies = (
+				04ED3D4216B8816E00CE90A4 /* PBXTargetDependency */,
+				04ED3D4416B8816E00CE90A4 /* PBXTargetDependency */,
+			);
+			name = third_party_packages_iOS_BOTH;
+			passBuildSettingsInEnvironment = 1;
+			productName = third_party_packages_3264;
+		};
 /* End PBXLegacyTarget section */
 
 /* Begin PBXProject section */
@@ -105,9 +138,23 @@
 				041DCBD712B65714003407C8 /* third_party_packages_mac */,
 				041DCBF612B6770B003407C8 /* third_party_packages_iOS_Device */,
 				041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */,
+				04ED3D3E16B8811B00CE90A4 /* third_party_packages_iOS_BOTH */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXTargetDependency section */
+		04ED3D4216B8816E00CE90A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 041DCBF612B6770B003407C8 /* third_party_packages_iOS_Device */;
+			targetProxy = 04ED3D4116B8816E00CE90A4 /* PBXContainerItemProxy */;
+		};
+		04ED3D4416B8816E00CE90A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
+			targetProxy = 04ED3D4316B8816E00CE90A4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		041DCBD912B65714003407C8 /* Common */ = {
@@ -134,6 +181,12 @@
 			buildSettings = {
 				DSTROOT = "";
 				PRODUCT_NAME = third_party_packages_iOS_Simulator;
+			};
+			name = Common;
+		};
+		04ED3D4016B8811B00CE90A4 /* Common */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 			};
 			name = Common;
 		};
@@ -167,6 +220,14 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				041DCC0A12B6777A003407C8 /* Common */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Common;
+		};
+		04ED3D3F16B8811B00CE90A4 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_BOTH" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04ED3D4016B8811B00CE90A4 /* Common */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Common;

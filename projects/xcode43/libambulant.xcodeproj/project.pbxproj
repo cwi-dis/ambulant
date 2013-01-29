@@ -329,19 +329,19 @@
 			remoteGlobalIDString = 041DCBD712B65714003407C8;
 			remoteInfo = third_party_packages_3264;
 		};
+		04ED3D4716B8820D00CE90A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 04ED3D3E16B8811B00CE90A4;
+			remoteInfo = third_party_packages_iOS_BOTH;
+		};
 		935D1A82169DBE51003A3CC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 041DCC0712B6777A003407C8;
 			remoteInfo = third_party_packages_iOS_Simulator;
-		};
-		9370432A16A45BD500CDE04E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8;
-			remoteInfo = third_party_packages_iOS;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1743,7 +1743,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				9370432B16A45BD500CDE04E /* PBXTargetDependency */,
+				04ED3D4816B8820D00CE90A4 /* PBXTargetDependency */,
 			);
 			name = libambulantiPhone;
 			productName = libambulantCGstatic;
@@ -2100,15 +2100,15 @@
 			name = third_party_packages_3264;
 			targetProxy = 041DCBF012B662FD003407C8 /* PBXContainerItemProxy */;
 		};
+		04ED3D4816B8820D00CE90A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS_BOTH;
+			targetProxy = 04ED3D4716B8820D00CE90A4 /* PBXContainerItemProxy */;
+		};
 		935D1A83169DBE51003A3CC0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = third_party_packages_iOS_Simulator;
 			targetProxy = 935D1A82169DBE51003A3CC0 /* PBXContainerItemProxy */;
-		};
-		9370432B16A45BD500CDE04E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = third_party_packages_iOS;
-			targetProxy = 9370432A16A45BD500CDE04E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
