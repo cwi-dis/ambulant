@@ -179,7 +179,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04E8CF9716B7DDCA0091C476 /* ambulant-iphonesim.xcconfig */;
 			buildSettings = {
-				DSTROOT = "";
+				DSTROOT = /;
 				PRODUCT_NAME = third_party_packages_iOS_Simulator;
 			};
 			name = Common;
