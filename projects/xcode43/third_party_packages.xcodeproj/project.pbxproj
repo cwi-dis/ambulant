@@ -9,12 +9,18 @@
 /* Begin PBXFileReference section */
 		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../scripts/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
 		04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
+		04E8CF9416B7DD5F0091C476 /* ambulant-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-iphone.xcconfig"; path = "config/ambulant-iphone.xcconfig"; sourceTree = "<group>"; };
+		04E8CF9516B7DD5F0091C476 /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
+		04E8CF9716B7DDCA0091C476 /* ambulant-iphonesim.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-iphonesim.xcconfig"; path = "config/ambulant-iphonesim.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		041DCBAC12B654E5003407C8 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
+				04E8CF9716B7DDCA0091C476 /* ambulant-iphonesim.xcconfig */,
+				04E8CF9416B7DD5F0091C476 /* ambulant-iphone.xcconfig */,
+				04E8CF9516B7DD5F0091C476 /* ambulant-mac.xcconfig */,
 				04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */,
 			);
 			name = "Configuration Files";
@@ -106,47 +112,27 @@
 /* Begin XCBuildConfiguration section */
 		041DCBD912B65714003407C8 /* Common */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04E8CF9516B7DD5F0091C476 /* ambulant-mac.xcconfig */;
 			buildSettings = {
-				AMBULANT_3PP = "../../build-3264/third_party_packages";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				"DEBUG_INFORMATION_FORMAT[arch=*]" = "dwarf-with-dsym";
 				DSTROOT = /;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "$(PATH):/usr/local/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/opt/local/bin";
 				PRODUCT_NAME = third_party_packages_3264;
-				SDKROOT = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk;
-				SUPPORTED_PLATFORMS = "";
-				VALID_ARCHS = "i386 x86_64";
-				ZERO_LINK = NO;
 			};
 			name = Common;
 		};
 		041DCBF912B6770B003407C8 /* Common */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04E8CF9416B7DD5F0091C476 /* ambulant-iphone.xcconfig */;
 			buildSettings = {
-				AMBULANT_3PP = "../../build-iOS-Device/third_party_packages";
-				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = /;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "$HOME:/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/opt/local/bin:$PATH";
-				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS/third_party_packages/installed/lib/pkgconfig";
-				PRODUCT_NAME = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH:/Developer/local/bin:/usr/local/bin";
+				PRODUCT_NAME = third_party_packages_ios;
 			};
 			name = Common;
 		};
 		041DCC0A12B6777A003407C8 /* Common */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04E8CF9716B7DDCA0091C476 /* ambulant-iphonesim.xcconfig */;
 			buildSettings = {
-				AMBULANT_3PP = "../../build-iOS-Simulator/third_party_packages";
-				COMBINE_HIDPI_IMAGES = YES;
 				DSTROOT = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PATH = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/opt/local/bin:$PATH";
-				PKG_CONFIG_LIBDIR = "$AMBULANT_DIR/build-iOS-Simulator/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = third_party_packages_iOS_Simulator;
 			};
 			name = Common;
@@ -155,9 +141,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */;
 			buildSettings = {
-				"AMBULANT_DIR[arch=*]" = "$(SRCROOT)/../..";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
-				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Common;
 		};
