@@ -383,6 +383,16 @@ third_party_packages={
     ],
  
     'mac' : [
+        TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
+            checkcmd="test -f ../libltdl/.libs/libltdlc.a",
+            buildcmd=
+                "rm -rf ../libltdl &&"
+                "mkdir ../libltdl &&"
+                "cd ../libltdl &&"
+                "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
+                "make" % MAC106_COMMON_CFLAGS
+            ),
+
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
