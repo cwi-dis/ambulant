@@ -2171,7 +2171,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2191,7 +2190,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2209,7 +2207,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2245,7 +2242,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2278,7 +2274,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin:";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -2291,7 +2286,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

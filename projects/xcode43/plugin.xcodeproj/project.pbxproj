@@ -250,7 +250,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_plugin(CG)";
-				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -265,7 +264,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_plugin(CG)";
-				SDKROOT = macosx10.7;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 			};
@@ -275,16 +273,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96A012BA4DB700399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -292,14 +285,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96A012BA4DB700399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};

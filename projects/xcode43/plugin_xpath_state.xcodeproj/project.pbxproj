@@ -260,7 +260,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_xpath_state(CG)";
-				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL /usr/include/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include";
 			};
 			name = Debug;
@@ -276,7 +275,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_xpath_state(CG)";
-				SDKROOT = macosx10.7;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 			};
@@ -287,10 +285,6 @@
 			baseConfigurationReference = 041E96B812BA4DF100399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -300,7 +294,6 @@
 					/usr/local/lib,
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) /usr/local/include/libxml2";
 			};
 			name = Debug;
@@ -310,10 +303,6 @@
 			baseConfigurationReference = 041E96B812BA4DF100399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -321,7 +310,6 @@
 					"$(inherited)",
 					/usr/local/lib,
 				);
-				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) /usr/local/include/libxml2";
 			};
 			name = Release;

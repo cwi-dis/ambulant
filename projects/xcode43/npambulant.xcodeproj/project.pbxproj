@@ -458,7 +458,6 @@
 			baseConfigurationReference = 04FEB38113428B85004D0667 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				AMBULANT_3PP = "$(AMBULANT_DIR)/build-3264/third_party_packages";
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -468,7 +467,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin";
 				PRODUCT_NAME = npambulant;
-				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Debug;
@@ -478,12 +476,10 @@
 			baseConfigurationReference = 04FEB38113428B85004D0667 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				AMBULANT_3PP = "$(AMBULANT_DIR)/build-3264/third_party_packages";
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PRODUCT_NAME = npambulant;
-				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL $(AMBULANT_INCLUDE_3PP)/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include $(AMBULANT_3PP)/xulrunner-sdk/include";
 				WRAPPER_EXTENSION = plugin;
 			};
@@ -520,7 +516,6 @@
 				);
 				INFOPLIST_FILE = ../../src/npambulant/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
-				SDKROOT = macosx;
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) $(AMBULANT_3PP)/xulrunner-sdk/include";
 			};
@@ -538,7 +533,6 @@
 				GCC_PREFIX_HEADER = npambulant_Prefix.pch;
 				INFOPLIST_FILE = ../../src/npambulant/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
-				SDKROOT = macosx;
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
