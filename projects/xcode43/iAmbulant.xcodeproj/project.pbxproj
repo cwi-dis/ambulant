@@ -610,6 +610,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -629,7 +630,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
@@ -650,7 +650,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6212B80C8300161EB5 /* ambulant-debug-iphone.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
@@ -672,7 +671,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -689,6 +687,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -708,6 +707,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
