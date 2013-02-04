@@ -1060,6 +1060,19 @@ def checkenv_iphone(target):
     if not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
         print '** IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
+    # Check that we are not in an xcode-initiated build for the other platform.
+    # This is a hack, but I don't see a way around it...
+    if target == 'iOS-Device':
+        if os.environ.get('PLATFORM_NAME') == 'iphonesimulator':
+            print '* WARNING: skipping iOS-Simulator build in a iOS-Device workflow'
+            sys.exit(0)
+    elif target == 'iOS-Simulator':
+        if os.environ.get('PLATFORM_NAME') == 'iphoneos':
+            print '* WARNING: skipping iOS-Device build in a iOS-Simulator workflow'
+            sys.exit(0)
+    else:
+        assert 0
+   
     # Check that we have the right compilers, etc in PATH
     if target == 'iOS-Device':
         wanted = 'iPhoneOS.platform/Developer/usr/bin'
