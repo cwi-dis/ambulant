@@ -226,10 +226,8 @@
 		04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
 		04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
-		04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
 		04FA283012B8D1BD0080216B /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
 		04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
-		04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantPlayer_Prefix.pch; sourceTree = "<group>"; };
 		935D1A77169D82FC003A3CC0 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		935D1A79169D833B003A3CC0 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -262,9 +260,7 @@
 			children = (
 				04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */,
 				04FA283012B8D1BD0080216B /* ambulant-mac.xcconfig */,
-				04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */,
 				04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */,
-				04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */,
 				04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */,
 			);
 			name = "Configuration Files";
