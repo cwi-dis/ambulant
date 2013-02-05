@@ -1,0 +1,14 @@
+<smil version="3.0">
+<head>
+<layout>
+<root-layout width="640" height="480" backgroundColor="black"/>
+<region xml:id="all" left="0%" top="0%" width="100%" height="100%" backgroundColor="gray"/>
+</layout>
+</head>
+<body>
+<par>
+<!-- works with vlc 1.13 streamer -->
+<video id="video-01" src="rtsp://localhost:5544/webcam" region="all" dur="360000"/>
+</par>
+</body>
+</smil>
