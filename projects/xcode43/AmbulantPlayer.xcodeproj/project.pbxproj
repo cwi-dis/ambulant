@@ -854,10 +854,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -872,10 +868,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

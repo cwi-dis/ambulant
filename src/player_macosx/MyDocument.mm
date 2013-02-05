@@ -432,10 +432,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	url = [[self fileURL] absoluteString];
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
-#ifndef WITH_REMOTE_SYNC
 	// and play self
-	[self play: self];
-#endif
+	[self autoPlay: self];
 }
 
 - (void)showWindows
@@ -540,6 +538,15 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	
 	[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
 	[self validateButtons: nil];
+}
+
+- (IBAction)autoPlay:(id)sender
+{
+	if (!myMainloop) return;
+#ifdef WITH_REMOTE_SYNC
+    if (myMainLoop->uses_external_sync()) return;
+#endif // WITH_REMOTE_SYNC
+    [self play: self];
 }
 
 - (void)startPlay: (id)dummy

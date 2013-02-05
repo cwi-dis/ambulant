@@ -84,6 +84,9 @@ class smil_player :
 	bool is_playing() const { return m_state == common::ps_playing;}
 	bool is_pausing() const { return m_state == common::ps_pausing;}
 	bool is_done() const { return m_state == common::ps_done;}
+#ifdef WITH_REMOTE_SYNC
+    bool uses_external_sync() const { return m_timer_sync && m_timer_sync->uses_external_sync(); }
+#endif
 
 	common::play_state get_state() const {return m_state;}
 
