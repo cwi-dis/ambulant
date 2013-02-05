@@ -39,6 +39,7 @@ class timer_sync : public timer_observer {
 	virtual void paused() = 0;
 	virtual void resumed() = 0;
     virtual void clicked(const lib::node *n, lib::timer::time_type t) = 0;
+    virtual bool uses_external_sync() { return false; };
 };
 
 // Factory function that returns a synchronizer 

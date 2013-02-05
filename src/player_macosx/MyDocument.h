@@ -105,6 +105,7 @@ class document_embedder : public ambulant::common::embedder {
 - (void) validateButtons:(id)dummy;
 - (IBAction)pause:(id)sender;
 - (IBAction)play:(id)sender;
+- (IBAction)autoPlay:(id)sender;
 - (IBAction)stop:(id)sender;
 - (void *)view;
 - (void)startPlay: (id)dummy;

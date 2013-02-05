@@ -107,6 +107,13 @@
 			remoteGlobalIDString = 040DAB3812B790BB002C4DFD;
 			remoteInfo = libambulantiPhone;
 		};
+		04ED3D4916B8821D00CE90A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 04ED3D3E16B8811B00CE90A4;
+			remoteInfo = third_party_packages_iOS_BOTH;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -437,6 +444,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				04ED3D4A16B8821D00CE90A4 /* PBXTargetDependency */,
 				043EFDE9130BFEEC0050B2BA /* PBXTargetDependency */,
 			);
 			name = iAmbulant;
@@ -590,6 +598,11 @@
 			name = libambulantiPhone;
 			targetProxy = 043EFDE8130BFEEC0050B2BA /* PBXContainerItemProxy */;
 		};
+		04ED3D4A16B8821D00CE90A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS_BOTH;
+			targetProxy = 04ED3D4916B8821D00CE90A4 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -597,14 +610,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREFIX_HEADER = "";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -616,8 +630,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
@@ -627,13 +639,9 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)/third_party_packages/installed/lib/";
 				PRODUCT_NAME = iAmbulant;
 				PROVISIONING_PROFILE = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -642,8 +650,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6212B80C8300161EB5 /* ambulant-debug-iphone.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
@@ -655,13 +661,9 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)/third_party_packages/installed/lib/";
 				PRODUCT_NAME = iAmbulant;
 				PROVISIONING_PROFILE = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -669,8 +671,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -678,11 +678,7 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "$(AMBULANT_BUILDDIR)/third_party_packages/installed/lib/";
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -691,15 +687,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				"DEBUG_INFORMATION_FORMAT[sdk=*]" = dwarf;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREFIX_HEADER = "";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -710,14 +707,15 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREFIX_HEADER = "";
 				GCC_THUMB_SUPPORT = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

@@ -254,8 +254,9 @@ plugin_engine::collect_plugin_directories()
 }
 
 #ifdef WITH_LTDL_PLUGINS
-#ifdef AMBULANT_PLATFORM_MACOS
-#define MAYBE_CONST
+// MacOSX (SDK version 10.7 and earlier) missed the const in the filter argument
+#if defined(AMBULANT_PLATFORM_MACOS) && !defined(__MAC_10_8)
+#define MAYBE_CONST 
 #else
 #define MAYBE_CONST const
 #endif

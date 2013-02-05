@@ -25,7 +25,11 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
+#ifdef WITH_EXTERNAL_SYNC
+#define AMBULANT_PLUGIN_API_VERSION 11
+#else
 #define AMBULANT_PLUGIN_API_VERSION 10
+#endif
 
 namespace ambulant {
 

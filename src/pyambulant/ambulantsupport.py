@@ -602,7 +602,7 @@ xml_parser_object.othermethods = [
     "void set_error_handler(ambulant::lib::sax_error_handler*) { abort(); }", #XXXX
 ]
 embedder_object.othermethods = [
-    "void show_file(const ambulant::net::url& url) { system_embedder::show_file(url); }"
+    "void show_file(const ambulant::net::url& url) { ::system_embedder::show_file(url); }"
 ]
 
 renderer_object.othermethods = [
@@ -622,28 +622,28 @@ surface_template_object.othermethods = [
     "void animated() { abort(); }", # XXX
 ]
 animation_destination_object.othermethods = [
-    "std::string get_name() const { return region_info::get_name(); }",
-    "ambulant::lib::rect get_rect(const ambulant::lib::rect* dft=NULL) const { return region_info::get_rect(dft); }",
-    "ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }",
-    "ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }",
-    "ambulant::common::zindex_t get_zindex() const { return region_info::get_zindex(); }",
-    "bool get_showbackground() const { return region_info::get_showbackground(); }",
-    "bool is_subregion() const { return region_info::is_subregion(); }",
-    "double get_soundlevel() const { return region_info::get_soundlevel(); }",
-    "ambulant::common::sound_alignment get_soundalign() const { return region_info::get_soundalign(); }",
-    "ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }",
-    "const char* get_bgimage() const { return region_info::get_bgimage(); }",
-    "double get_bgopacity() const { return region_info::get_bgopacity(); }",
-    "bool get_transparent() const { return region_info::get_transparent(); }",
-    "double get_mediaopacity() const { return region_info::get_mediaopacity(); }",
-    "double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }",
-    "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }", # XXXX
+    "std::string get_name() const { return ::region_info::get_name(); }",
+    "ambulant::lib::rect get_rect(const ambulant::lib::rect* dft=NULL) const { return ::region_info::get_rect(dft); }",
+    "ambulant::common::fit_t get_fit() const { return ::region_info::get_fit(); }",
+    "ambulant::lib::color_t get_bgcolor() const { return ::region_info::get_bgcolor(); }",
+    "ambulant::common::zindex_t get_zindex() const { return ::region_info::get_zindex(); }",
+    "bool get_showbackground() const { return ::region_info::get_showbackground(); }",
+    "bool is_subregion() const { return ::region_info::is_subregion(); }",
+    "double get_soundlevel() const { return ::region_info::get_soundlevel(); }",
+    "ambulant::common::sound_alignment get_soundalign() const { return ::region_info::get_soundalign(); }",
+    "ambulant::common::tiling get_tiling() const { return ::region_info::get_tiling(); }",
+    "const char* get_bgimage() const { return ::region_info::get_bgimage(); }",
+    "double get_bgopacity() const { return ::region_info::get_bgopacity(); }",
+    "bool get_transparent() const { return ::region_info::get_transparent(); }",
+    "double get_mediaopacity() const { return ::region_info::get_mediaopacity(); }",
+    "double get_mediabgopacity() const { return ::region_info::get_mediabgopacity(); }",
+    "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return ::region_info::get_crop_rect(srcsize); }", # XXXX
     "const ambulant::common::region_dim_spec& get_region_panzoom(bool fromdom) const { abort(); static ambulant::common::region_dim_spec dummy; return dummy; }", # XXX
     "void set_region_panzoom(const ambulant::common::region_dim_spec& rds) { abort(); }",
-	"bool is_chromakey_specified() const { return region_info::is_chromakey_specified(); }",
-	"ambulant::lib::color_t get_chromakey() const { return region_info::get_chromakey(); }",
-	"ambulant::lib::color_t get_chromakeytolerance() const { return region_info::get_chromakeytolerance(); }",
-	"double get_chromakeyopacity() const { return region_info::get_chromakeyopacity(); }",
+	"bool is_chromakey_specified() const { return ::region_info::is_chromakey_specified(); }",
+	"ambulant::lib::color_t get_chromakey() const { return ::region_info::get_chromakey(); }",
+	"ambulant::lib::color_t get_chromakeytolerance() const { return ::region_info::get_chromakeytolerance(); }",
+	"double get_chromakeyopacity() const { return ::region_info::get_chromakeyopacity(); }",
 #    "ambulant::common::region_dim get_region_dim(const std::string&, bool = false) const { abort(); }",
 #    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
 ]

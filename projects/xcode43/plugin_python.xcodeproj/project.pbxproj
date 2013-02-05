@@ -281,7 +281,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_python(CG)";
-				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
 			};
 			name = Debug;
@@ -298,7 +297,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_python(CG)";
-				SDKROOT = macosx10.7;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
@@ -309,16 +307,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E968812BA4D7900399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/src/pyambulant /System/Library/Frameworks/Python.framework/Versions/Current/include/python2.6 $(inherited)";
 			};
 			name = Debug;
@@ -327,14 +320,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E968812BA4D7900399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/src/pyambulant /System/Library/Frameworks/Python.framework/Versions/Current/include/python2.6 $(inherited)";
 			};
 			name = Release;
