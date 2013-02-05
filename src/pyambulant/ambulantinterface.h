@@ -367,8 +367,12 @@ public:
 	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
+#ifdef WITH_REMOTE_SYNC
 	void set_observer(ambulant::lib::timer_observer* obs);
+#endif
+#ifdef WITH_REMOTE_SYNC
 	void set_slaved(bool slaved);
+#endif
 	bool is_slaved() const;
   private:
 	PyObject *py_timer_control;
@@ -420,6 +424,7 @@ public:
 	void paused();
 	void resumed();
 	void clicked(const ambulant::lib::node* n, ambulant::lib::timer::time_type t);
+	bool uses_external_sync();
   private:
 	PyObject *py_timer_sync;
 
@@ -495,7 +500,9 @@ public:
 	void init_parser_factory();
 	void init_node_factory();
 	void init_state_component_factory();
+#ifdef WITH_REMOTE_SYNC
 	void init_timer_sync_factory();
+#endif
 	void init_recorder_factory();
 	ambulant::common::global_playable_factory* get_playable_factory() const;
 	ambulant::common::window_factory* get_window_factory() const;
@@ -509,8 +516,12 @@ public:
 	void set_parser_factory(ambulant::lib::global_parser_factory* pf);
 	void set_node_factory(ambulant::lib::node_factory* nf);
 	void set_state_component_factory(ambulant::common::global_state_component_factory* sf);
+#ifdef WITH_REMOTE_SYNC
 	ambulant::lib::timer_sync_factory* get_timer_sync_factory() const;
+#endif
+#ifdef WITH_REMOTE_SYNC
 	void set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf);
+#endif
   private:
 	PyObject *py_factories;
 
@@ -587,7 +598,9 @@ public:
 	void set_player(ambulant::common::player* pl);
 	ambulant::net::url get_url() const;
 	ambulant::common::gui_screen* get_gui_screen();
+#ifdef WITH_REMOTE_SYNC
 	void clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t);
+#endif
   private:
 	PyObject *py_gui_player;
 
@@ -1074,7 +1087,9 @@ public:
 	ambulant::common::player_feedback* get_feedback();
 	bool goto_node(const ambulant::lib::node* n);
 	bool highlight(const ambulant::lib::node* n, bool on);
+#ifdef WITH_REMOTE_SYNC
 	void clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t);
+#endif
 	long add_ref() { return 1; }
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }

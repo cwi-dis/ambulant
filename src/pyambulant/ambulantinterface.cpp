@@ -2476,6 +2476,7 @@ void timer_control::skew(ambulant::lib::timer::signed_time_type skew)
 	PyGILState_Release(_GILState);
 }
 
+#ifdef WITH_REMOTE_SYNC
 void timer_control::set_observer(ambulant::lib::timer_observer* obs)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -2493,7 +2494,9 @@ void timer_control::set_observer(ambulant::lib::timer_observer* obs)
 
 	PyGILState_Release(_GILState);
 }
+#endif
 
+#ifdef WITH_REMOTE_SYNC
 void timer_control::set_slaved(bool slaved)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -2511,6 +2514,7 @@ void timer_control::set_slaved(bool slaved)
 
 	PyGILState_Release(_GILState);
 }
+#endif
 
 bool timer_control::is_slaved() const
 {
@@ -2643,6 +2647,7 @@ timer_sync::timer_sync(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "paused")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: paused");
 		if (!PyObject_HasAttrString(itself, "resumed")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: resumed");
 		if (!PyObject_HasAttrString(itself, "clicked")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: clicked");
+		if (!PyObject_HasAttrString(itself, "uses_external_sync")) PyErr_Warn(PyExc_Warning, "timer_sync: missing attribute: uses_external_sync");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2761,6 +2766,30 @@ void timer_sync::clicked(const ambulant::lib::node* n, ambulant::lib::timer::tim
 	Py_XDECREF(py_t);
 
 	PyGILState_Release(_GILState);
+}
+
+bool timer_sync::uses_external_sync()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_sync, "uses_external_sync", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_sync::uses_external_sync() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_sync::uses_external_sync() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
 }
 
 /* -------------------- Class timer_sync_factory -------------------- */
@@ -3129,6 +3158,7 @@ void factories::init_state_component_factory()
 	PyGILState_Release(_GILState);
 }
 
+#ifdef WITH_REMOTE_SYNC
 void factories::init_timer_sync_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3143,6 +3173,7 @@ void factories::init_timer_sync_factory()
 
 	PyGILState_Release(_GILState);
 }
+#endif
 
 void factories::init_recorder_factory()
 {
@@ -3411,6 +3442,7 @@ void factories::set_state_component_factory(ambulant::common::global_state_compo
 	PyGILState_Release(_GILState);
 }
 
+#ifdef WITH_REMOTE_SYNC
 ambulant::lib::timer_sync_factory* factories::get_timer_sync_factory() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3434,7 +3466,9 @@ ambulant::lib::timer_sync_factory* factories::get_timer_sync_factory() const
 	PyGILState_Release(_GILState);
 	return _rv;
 }
+#endif
 
+#ifdef WITH_REMOTE_SYNC
 void factories::set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3452,6 +3486,7 @@ void factories::set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf)
 
 	PyGILState_Release(_GILState);
 }
+#endif
 
 /* ------------------------ Class gui_screen ------------------------ */
 
@@ -4160,6 +4195,7 @@ ambulant::common::gui_screen* gui_player::get_gui_screen()
 	return _rv;
 }
 
+#ifdef WITH_REMOTE_SYNC
 void gui_player::clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -4179,6 +4215,7 @@ void gui_player::clicked_external(ambulant::lib::node* n, ambulant::lib::timer::
 
 	PyGILState_Release(_GILState);
 }
+#endif
 
 /* ------------------------ Class alignment ------------------------- */
 
@@ -7164,6 +7201,7 @@ bool player::highlight(const ambulant::lib::node* n, bool on)
 	return _rv;
 }
 
+#ifdef WITH_REMOTE_SYNC
 void player::clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -7183,6 +7221,7 @@ void player::clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time
 
 	PyGILState_Release(_GILState);
 }
+#endif
 
 /* ----------------------- Class region_info ------------------------ */
 
