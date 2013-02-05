@@ -50,6 +50,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0411169416C1C3C80012D00E /* ambulantobjgen.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ambulantobjgen.py; path = ../../src/pyambulant/ambulantobjgen.py; sourceTree = "<group>"; };
+		0411169516C1C3C80012D00E /* ambulantscan.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ambulantscan.py; path = ../../src/pyambulant/ambulantscan.py; sourceTree = "<group>"; };
+		0411169616C1C3C80012D00E /* ambulantsupport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ambulantsupport.py; path = ../../src/pyambulant/ambulantsupport.py; sourceTree = "<group>"; };
+		0411169716C1C3C80012D00E /* ambulanttypetest.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ambulanttypetest.py; path = ../../src/pyambulant/ambulanttypetest.py; sourceTree = "<group>"; };
+		0411169816C1C3C80012D00E /* bgenBackSupport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = bgenBackSupport.py; path = ../../src/pyambulant/bgenBackSupport.py; sourceTree = "<group>"; };
+		0411169916C1C3C80012D00E /* bgenCxxSupport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = bgenCxxSupport.py; path = ../../src/pyambulant/bgenCxxSupport.py; sourceTree = "<group>"; };
+		0411169A16C1C3C80012D00E /* setup.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = setup.py; path = ../../src/pyambulant/setup.py; sourceTree = "<group>"; };
+		0411169C16C1C43B0012D00E /* ambulantgen.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ambulantgen.py; path = ../../src/pyambulant/ambulantgen.py; sourceTree = "<group>"; };
+		0411169D16C1C43B0012D00E /* ambulantincludegen.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ambulantincludegen.py; path = ../../src/pyambulant/ambulantincludegen.py; sourceTree = "<group>"; };
+		0411169E16C1C43B0012D00E /* genobjects.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = genobjects.py; path = ../../src/pyambulant/genobjects.py; sourceTree = "<group>"; };
 		041E968812BA4D7900399893 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		041E96E612BA58FB00399893 /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
 		04290BAE132EB6FD0015D7B7 /* libamplugin_python(CG).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_python(CG).so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +98,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		0411169016C1C3920012D00E /* Generator sources */ = {
+			isa = PBXGroup;
+			children = (
+				0411169E16C1C43B0012D00E /* genobjects.py */,
+				0411169516C1C3C80012D00E /* ambulantscan.py */,
+				0411169616C1C3C80012D00E /* ambulantsupport.py */,
+				0411169816C1C3C80012D00E /* bgenBackSupport.py */,
+				0411169916C1C3C80012D00E /* bgenCxxSupport.py */,
+				0411169A16C1C3C80012D00E /* setup.py */,
+			);
+			name = "Generator sources";
+			sourceTree = "<group>";
+		};
+		0411169B16C1C40C0012D00E /* Intermediate generated sources */ = {
+			isa = PBXGroup;
+			children = (
+				0411169C16C1C43B0012D00E /* ambulantgen.py */,
+				0411169D16C1C43B0012D00E /* ambulantincludegen.py */,
+				0411169416C1C3C80012D00E /* ambulantobjgen.py */,
+				0411169716C1C3C80012D00E /* ambulanttypetest.py */,
+			);
+			name = "Intermediate generated sources";
+			sourceTree = "<group>";
+		};
 		042AD92B1152C90C009CA791 /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +145,8 @@
 			children = (
 				042AD92B1152C90C009CA791 /* Subprojects */,
 				5073E0CA09E734BC00EC74B6 /* Configuration Files */,
+				0411169016C1C3920012D00E /* Generator sources */,
+				0411169B16C1C40C0012D00E /* Intermediate generated sources */,
 				08FB77ACFE841707C02AAC07 /* Source */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DDFF38A45A11DB9C8B /* Products */,
