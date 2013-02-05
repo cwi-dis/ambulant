@@ -30,6 +30,7 @@
 #include "recorder_plugin.h"
 #include "ambulant/gui/SDL/sdl_video.h" // for SDL_BPP
 
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -85,7 +86,8 @@ recorder_plugin_factory::new_recorder(net::pixel_order pixel_order, lib::size wi
 recorder_plugin::recorder_plugin (net::pixel_order pixel_order, lib::size& window_size)
   : m_pipe(NULL),
     m_surface(NULL),
-    m_window_size(window_size)
+    m_window_size(window_size),
+    m_writer(NULL)
 {
 	const char* fun = __PRETTY_FUNCTION__;
 
@@ -112,6 +114,7 @@ recorder_plugin::recorder_plugin (net::pixel_order pixel_order, lib::size& windo
 		if (m_pipe == NULL) {
 			logger::get_logger()->trace("%s: pipe failed: %s)", fun,strerror(errno));
 		}
+		m_writer = new recorder_writer (m_pipe);
 	}
 }
 
@@ -121,6 +124,9 @@ recorder_plugin::~recorder_plugin ()
 
 	if (m_pipe != NULL) {
 		pclose (m_pipe);
+	}
+	if (m_writer != NULL) {
+		m_writer->terminate();
 	}
 	if (m_surface != NULL) {
 		SDL_FreeSurface(m_surface);
@@ -136,14 +142,14 @@ convert_bgra_to_rgb(void* data, size_t datasize, size_t* new_datasize)
 	char* rgb_buffer = (char*) malloc(length);
 	char* bgra_buffer = (char*) data;
 	if (data != NULL) {
-	  for (; bgra_idx >= 0; bgra_idx -= 4) {
-	    rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 3];
-	    rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 2];
-	    rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 1];
-	  }
+		for (; bgra_idx >= 0; bgra_idx -= 4) {
+	    	rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 3];
+			rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 2];
+			rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 1];
+		}
 	}
 	if (new_datasize != NULL) {
-	  *new_datasize = length;
+		*new_datasize = length;
 	}
 	return rgb_buffer;
 }
@@ -160,11 +166,13 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 	if (m_pipe != NULL) {
 		size_t new_datasize;
 		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize);
-		fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
-		fwrite (new_data, 1, new_datasize, m_pipe);
-		free (new_data);
+//X 	fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
+//X		logger::get_logger()->trace ("Time: %.8lu Size: %.8u W: %5u H: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
+//X		fwrite (new_data, 1, new_datasize, m_pipe);
+//X		free (new_data);
 //		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, datasize, m_window_size.w, m_window_size.h);
 //		fwrite (data, 1, datasize, m_pipe);
+		m_writer->push_data (new recorder_queue_element(new_data, new_datasize, documenttimestamp, m_window_size));
 	} else {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
@@ -180,3 +188,70 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		SDL_SaveBMP(m_surface, filename);
 	}
 }
+
+// class recorder_writer implementation.
+
+recorder_writer::recorder_writer(FILE* pipe)
+{
+	const char* fun = __PRETTY_FUNCTION__;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
+	m_pipe = pipe;
+}
+
+recorder_writer::~recorder_writer() {
+	m_lock.enter();
+	while (m_queue.size() > 0) {
+	  recorder_queue_element* qe = m_queue.front();
+	  delete qe;
+	  m_queue.pop();
+	}
+	m_lock.leave();  
+}
+
+void
+recorder_writer::push_data(recorder_queue_element* qe)
+{
+	const char* fun = __PRETTY_FUNCTION__;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
+	m_lock.enter();
+	m_queue.push (qe);
+	m_lock.leave();
+}
+
+int
+recorder_writer::_write_data ()
+{
+	size_t result = 0;
+	// lock is set, queue not empty
+	recorder_queue_element* qe = m_queue.front();
+	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h) < 0) {
+		return -1;
+	}
+	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);
+	m_queue.pop();
+	delete qe;
+	if (result != qe->m_datasize) {
+		return -1;
+	}
+	return 0;
+}
+
+unsigned long int
+recorder_writer::run()
+{
+	const char* fun = __PRETTY_FUNCTION__;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
+
+	while ( ! exit_requested() ) {
+		m_lock.enter();
+		if (m_queue.size() > 0) {
+			if (_write_data() < 0) {
+				terminate();
+			}
+		}
+		m_lock.leave();
+		ambulant::lib::sleep_msec(100);
+	}
+
+}
+

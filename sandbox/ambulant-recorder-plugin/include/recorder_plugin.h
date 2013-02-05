@@ -28,14 +28,58 @@
 #include "ambulant/common/gui_player.h"
 #include "version.h"
 
+#include "ambulant/lib/mtsync.h"	 // critical_section
+#include "ambulant/net/datasource.h" // #define BASE_THREAD
+#include <queue>
 #include "SDL.h"
 #include <stdio.h>
 
 // This version only works with sdl_renderer and dumps BMP files for each video frame
+// When AMBULANT_RECORDER_PIPE is defined, each video frame is written on stdout
+// preceded by Time: (in ms), Size: (in bytes), W: and H: (both in pixels).
 
 namespace ambulant {
 
 namespace common {
+
+class recorder_queue_element {
+
+  public:
+        recorder_queue_element (void* data, size_t datasize, lib::timer::time_type timestamp, lib::size window_size) {
+	    m_data = data;
+		m_datasize = datasize;
+		m_timestamp = timestamp;
+		m_window_size = window_size;
+	}
+	~recorder_queue_element() {
+	    free(m_data);
+	}
+
+    void* m_data;
+	size_t m_datasize;
+	lib::timer::time_type m_timestamp;
+	lib::size m_window_size;
+};
+
+class recorder_writer : BASE_THREAD {
+
+  public:
+	recorder_writer(FILE* pipe);
+	~recorder_writer();
+
+	void push_data (recorder_queue_element* qe);
+
+	bool terminate ();
+
+  protected:
+    long unsigned int run ();
+
+  private:
+	int _write_data ();
+	std::queue<recorder_queue_element*> m_queue;
+	ambulant::lib::critical_section m_lock;
+	FILE* m_pipe;
+};
 
 class recorder_plugin : recorder {
 
@@ -54,6 +98,7 @@ private:
 	Uint32 m_amask, m_rmask, m_gmask, m_bmask;
 	FILE* m_pipe;
 	lib::size m_window_size;
+	recorder_writer* m_writer;
 }; // class recorder_plugin
 
 class recorder_plugin_factory : public recorder_factory {

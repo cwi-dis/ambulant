@@ -60,6 +60,7 @@
 #  include <config.h>
 #endif
 
+#include <stdio.h>
 #include <gst/gst.h>
 #include <gst/base/gstbasesrc.h>
 
@@ -340,6 +341,8 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 
   GST_OBJECT_LOCK (asrc);
 
+  asrc->eos = TRUE;
+
   GST_OBJECT_UNLOCK (asrc);
 
   return TRUE;
@@ -349,12 +352,17 @@ static GstFlowReturn
 gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuffer ** buffer)
 {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
-  if(!asrc->silent)fprintf(stderr,"%s(bsrc=0x%p,offset=%lu,length=%u,buffer=0x%p)\n", __PRETTY_FUNCTION__,bsrc, offset, length, buffer);
+  GST_OBJECT_LOCK (asrc);
+
+  if(!asrc->silent)fprintf(stderr,"%s(bsrc=%p,offset=%lu,length=%u,buffer=%p)\n", __PRETTY_FUNCTION__,bsrc, offset, length, buffer);
+  //if(!asrc->silent)fprintf(stderr, "%s: Timestamp=%s ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
 
   if (buffer == NULL) {
+	GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_OK;
   }
   if (asrc->eos) {
+	GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_UNEXPECTED; // end of stream
   }
   if (asrc->gstbuffer != NULL) {
@@ -372,6 +380,7 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   read_header(asrc);
   read_buffer(asrc);
 
+  GST_OBJECT_UNLOCK (asrc);
   return GST_FLOW_OK;
 
 }

@@ -674,7 +674,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 #ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
 				m_dropped_count_temp++;
 #endif
-				continue;
+//				continue;
 			}
 
 			// Next step: deocde the frame to the image format we want.

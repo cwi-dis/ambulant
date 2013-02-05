@@ -469,7 +469,7 @@ video_renderer::data_avail()
 		m_src->frame_processed(frame_ts_micros);
 	} else
 #ifdef DROP_LATE_FRAMES
-	if (frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
+	if (0 && frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
 		// Frame is too late. Skip forward to now. Schedule another callback asap.
 		AM_DBG lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
 		m_frame_late++;
@@ -478,12 +478,12 @@ video_renderer::data_avail()
 		m_prev_frame_dropped = true;
 	} else
 #endif
-	if (frame_ts_micros > now_micros + frame_duration) {
+	if (0 && frame_ts_micros > now_micros + frame_duration) {
 		// Frame is too early. Do nothing, just schedule a new event at the correct time and we will get this same frame again.
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame early, ts=%lld, now=%lld, dur=%lld)",frame_ts_micros, now_micros, frame_duration);
 		m_frame_early++;
 	} else
-	if (frame_ts_micros <= m_last_frame_timestamp) {
+	if (0 && frame_ts_micros <= m_last_frame_timestamp) {
 		// This frame, or a later one, has been displayed already. Skip.
 		// We always print this message, as it could potentially denote a bug in the decoder (which should
 		// have dropped frames that are earlier than a frame already displayed).
