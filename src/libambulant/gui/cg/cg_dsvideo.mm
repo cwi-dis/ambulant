@@ -183,7 +183,6 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		rect dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 
-		CGRect cg_srcrect = CGRectMake(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		CGRect cg_dstrect = CGRectFromAmbulantRect(dstrect);
 		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 		// XXX Crop the image, if needed.

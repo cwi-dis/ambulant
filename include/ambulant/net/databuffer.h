@@ -80,7 +80,7 @@ class AMBULANTAPI databuffer
 	/// Set the maximum size for the buffer.
 	/// When the buffer becomes this full buffer_full() will start returning true.
 	/// Pass zero to set the size to unlimited.
-	void set_max_size(size_t max_size);
+	void set_max_size(ssize_t max_size);
 
 	/// Set the maximum unused size of the buffer.
 	/// As soon as this many unused bytes are occupied by the buffer

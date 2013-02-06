@@ -190,7 +190,6 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 		}
 		old_point  = p;
 		AM_DBG lib::logger::get_logger()->debug("polygon2path: point=%d, %d", p.x, p.y);
-		CGPoint pc = CGPointMake(p.x, p.y);
 		if (first) {
 			CGPathMoveToPoint(path, NULL, p.x, p.y);
 			first = false;

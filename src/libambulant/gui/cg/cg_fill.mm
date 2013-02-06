@@ -190,7 +190,6 @@ cg_background_renderer::keep_as_background()
 	}
 	rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
 }
 
 } // namespace cg

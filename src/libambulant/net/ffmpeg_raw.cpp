@@ -285,7 +285,7 @@ void
 ffmpeg_raw_datasource::pushdata(size_t sz)
 {
 	m_lock.enter();
-	if (sz >= 0) m_buffer.pushdata(sz);
+	m_buffer.pushdata(sz);
 	if (sz <= 0)
 		m_src_end_of_file = true;
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {

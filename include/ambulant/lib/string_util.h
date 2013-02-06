@@ -146,7 +146,7 @@ inline bool ends_with(const std::string& s, const char *p) {
 	if(!p) return true;
 	const char *rend = p - 1;
 	p += strlen(p) - 1;
-	for(std::string::size_type i = s.length()-1;i>=0 && p != rend;i--,p--) {
+	for(std::string::size_type i = s.length()-1;p != rend;i--,p--) {
 		if(*p != s[i]) break;
 	}
 	return p == rend;

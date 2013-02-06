@@ -241,8 +241,6 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		AM_DBG logger::get_logger()->debug("cg_image::redraw(0x%x), clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 		
 		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-		CGFloat x_factor = 1.0, y_factor = 1.0;
-		CGRect cg_srcrect = CGRectMake(srcrect.left()*x_factor, srcrect.top()*y_factor, srcrect.width()*x_factor, srcrect.height()*y_factor);
 		dstrect.translate(m_dest->get_global_topleft());
 		cg_dstrect = CGRectFromAmbulantRect(dstrect);
 		CGContextClipToRect(myContext, cg_dstrect);

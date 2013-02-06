@@ -172,7 +172,7 @@ ffmpeg_demux::~ffmpeg_demux()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) {
-		if (m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS) {
+		if (m_con->nb_streams < MAX_STREAMS) {
 			unsigned int stream_index;
 			for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
 				if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_AUDIO
