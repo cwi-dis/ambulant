@@ -189,6 +189,8 @@ class player : public state_change_callback, virtual public lib::ref_counted
 
 #ifdef WITH_REMOTE_SYNC
     virtual void clicked_external(lib::node *n, lib::timer::time_type t) {}
+
+    virtual bool uses_external_sync() const { return false; }
 #endif
 //	void set_speed(double speed);
 //	double get_speed() const;

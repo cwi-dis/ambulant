@@ -165,6 +165,8 @@ class AMBULANTAPI gui_player : public factories {
 #ifdef WITH_REMOTE_SYNC
 	/// Simulate a click (activate) on a node, from an external agent.
     virtual void clicked_external(lib::node *n, lib::timer::time_type t) { if (m_player) m_player->clicked_external(n, t); }
+
+    bool uses_external_sync() const { if (m_player) return m_player->uses_external_sync(); return false; }
 #endif
   protected:
 	/// Convenience method to parse XML.

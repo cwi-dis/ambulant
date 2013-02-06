@@ -544,7 +544,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 	if (!myMainloop) return;
 #ifdef WITH_REMOTE_SYNC
-    if (myMainLoop->uses_external_sync()) return;
+    if (myMainloop->uses_external_sync()) return;
 #endif // WITH_REMOTE_SYNC
     [self play: self];
 }

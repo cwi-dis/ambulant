@@ -25,7 +25,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
-#ifdef WITH_EXTERNAL_SYNC
+#ifdef WITH_REMOTE_SYNC
 #define AMBULANT_PLUGIN_API_VERSION 11
 #else
 #define AMBULANT_PLUGIN_API_VERSION 10

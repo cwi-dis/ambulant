@@ -43,7 +43,6 @@ class mainloop :
 	ambulant::common::gui_screen *get_gui_screen();
 
 	void node_focussed(const ambulant::lib::node *n);
-
   private:
 	void *m_view;
 	ambulant::common::gui_screen *m_gui_screen;

@@ -86,6 +86,7 @@
 		044E012A13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		044E012B13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		044E012C13D9A8E500E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
+		0478D7DE16C2825200975833 /* timer_sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 0478D7DD16C2825200975833 /* timer_sync.h */; };
 		04A1E80B12B57DF20060F97E /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
 		04A1E80C12B57DF20060F97E /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		04A1E80D12B57DF20060F97E /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
@@ -361,6 +362,7 @@
 		040DAB3812B790BB002C4DFD /* libambulantIPhone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libambulantIPhone.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
 		044E012713D9A81300E6A628 /* event_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = event_processor.cpp; sourceTree = "<group>"; };
+		0478D7DD16C2825200975833 /* timer_sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timer_sync.h; sourceTree = "<group>"; };
 		04791B821151943B0007DD71 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		04791B831151943B0007DD71 /* state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
 		04791B841151943B0007DD71 /* embedder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embedder.h; sourceTree = "<group>"; };
@@ -1136,6 +1138,7 @@
 				04791C541151943B0007DD71 /* textptr.h */,
 				04791C551151943B0007DD71 /* thread.h */,
 				04791C561151943B0007DD71 /* timer.h */,
+				0478D7DD16C2825200975833 /* timer_sync.h */,
 				04791C571151943B0007DD71 /* transition_info.h */,
 				04791C581151943B0007DD71 /* tree_builder.h */,
 				04791C591151943B0007DD71 /* unix */,
@@ -1702,6 +1705,7 @@
 				93DEE5B414475D5500091472 /* stdio_datasource.h in Headers */,
 				93DEE5B514475D5500091472 /* url.h in Headers */,
 				93DEE5B614475D5500091472 /* win32_datasource.h in Headers */,
+				0478D7DE16C2825200975833 /* timer_sync.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
