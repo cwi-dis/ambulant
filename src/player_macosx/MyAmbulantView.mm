@@ -41,6 +41,14 @@ set_statusline(void *view, const char *msg)
 	}
 }
 
+- (IBAction) toggleFullScreen:(id)sender
+{
+	if (document) {
+		[document toggleFullScreen: sender];
+	}
+}
+
+
 - (void) resetMouse: (id)sender
 {
 	if (document) {
