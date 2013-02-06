@@ -91,7 +91,7 @@ databuffer::buffer_not_empty()
 }
 
 void
-databuffer::set_max_size(size_t max_size)
+databuffer::set_max_size(ssize_t max_size)
 {
 	m_lock.enter();
 	// Zero means: no limit, <0 means: default

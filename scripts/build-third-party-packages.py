@@ -257,7 +257,6 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
 if not IOS_VERSION:
     IOS_VERSION = '5.1'
-    os.environ['IPHONEOS_DEPLOYMENT_TARGET'] = IOS_VERSION
     
 IOS_SDK=os.environ.get('SDKROOT', None)
 if not IOS_SDK:
@@ -585,9 +584,6 @@ third_party_packages={
                 "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
                 "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib"
             ),
-#                "xcodebuild -target libSDL $ARCH_ARGS -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release && "
-
-#                "xcodebuild -target libSDL -sdk iphoneos$IPHONEOS_DEPLOYMENT_TARGET -configuration Release &&" # -arch only supported on Xcode >= 4.0
 
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
@@ -1058,8 +1054,8 @@ def checkenv_iphone(target):
         rv = False
     # Make sure we have IPHONEOS_DEPLOYMENT_TARGET set
     if not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
-        print '** IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
-        rv = False
+        os.environ['IPHONEOS_DEPLOYMENT_TARGET'] = IOS_VERSION
+        print '+ IPHONEOS_DEPLOYMENT_TARGET set to %s for %s development' % (IOS_VERSION, target)
     # Check that we are not in an xcode-initiated build for the other platform.
     # This is a hack, but I don't see a way around it...
     if target == 'iOS-Device':

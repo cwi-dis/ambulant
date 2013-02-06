@@ -35,6 +35,7 @@ void set_statusline(void *view, const char *msg);
 - (void) resetMouse: (id) sender;
 - (void) fixMouse: (id) sender;
 - (void) setStatusLine: (NSString *)message;
+- (IBAction) toggleFullScreen:(id)sender;
 @end
 #endif
 

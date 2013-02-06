@@ -6,8 +6,10 @@
 # This version of the script is public domain, so feel free to add any
 # license you want if you modify it (but open would be preferred, of course!)
 #
-# Last tested with ffmpeg 0.5.
+# Last tested with ffmpeg 1.0.
 #
+
+set -e
 
 #
 # Where do you want to install?

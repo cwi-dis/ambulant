@@ -36,7 +36,7 @@
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;
 - (IBAction)showLogWindow:(id)sender;
-- (void)applyPreferences:(id)sender;
+- (IBAction)applyPreferences:(id)sender;
 - (void)showMessage:(NSString *)message;
 - (void)setLogLevel: (int)level;
 @end

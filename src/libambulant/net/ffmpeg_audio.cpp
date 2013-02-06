@@ -695,9 +695,9 @@ ffmpeg_decoder_datasource::size() const
 		assert(delta_t_unwanted >= 0);
 		size_t bytes_unwanted = (size_t)((delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000);
 		assert(bytes_unwanted >= 0);
+        assert(bytes_unwanted >= rv);
 		rv -= bytes_unwanted;
 		rv &= ~3;
-		if (rv < 0) rv = 0;
 	}
 	const_cast <ffmpeg_decoder_datasource*>(this)->m_lock.leave();
 	return rv;

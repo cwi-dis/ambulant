@@ -160,7 +160,7 @@ stdio_datasource::read_file()
 			m_buffer->pushdata(n > 0 ? n : 0);
 		} while (n > 0);
 		m_end_of_file = true;
-		if (n < 0) {
+		if (ferror(m_stream)) {
 			lib::logger::get_logger()->trace("%s: %s", m_url.get_url().c_str(), strerror(errno));
 			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_url.get_url().c_str());
 		}

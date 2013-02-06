@@ -682,7 +682,7 @@ lib::smpte_p::get_time()
 	long int time;
 	double frame_duration;
 
-	if ((m_frame_rate == 30))
+	if (m_frame_rate == 30)
 		frame_duration = 1.001/30;
 	else
 		frame_duration = 1.0/25;

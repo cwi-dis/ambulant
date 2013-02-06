@@ -89,8 +89,6 @@ bool trace_player::is_done() {
 
 void trace_player::start_playable(const node *n, double t, const lib::transition_info *trans) {
 	playable *p = get_playable(n);
-	std::map<const node*, playable *>::iterator it =
-		m_playables.find(n);
 	if(p) {
 		p->start(t);
 		return;
@@ -101,8 +99,7 @@ void trace_player::start_playable(const node *n, double t, const lib::transition
 }
 
 void trace_player::stop_playable(const node *n) {
-	std::map<const node*, playable *>::iterator it =
-		m_playables.find(n);
+	std::map<const node*, playable *>::iterator it = m_playables.find(n);
 	if(it != m_playables.end()) {
 		(*it).second->stop();
 		delete (*it).second;

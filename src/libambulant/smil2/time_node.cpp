@@ -481,7 +481,6 @@ void time_node::update_interval(qtime_type timestamp, const interval_type& new_i
 	m_interval = new_interval;
 
 	if(m_interval.begin != old.begin) {
-		time_type dt = m_interval.begin - timestamp.second;
 		qtime_type qt(sync_node(), m_interval.begin);
 		on_update_instance(timestamp, tn_begin, m_interval.begin, old.begin);
 		raise_update_event(timestamp);
