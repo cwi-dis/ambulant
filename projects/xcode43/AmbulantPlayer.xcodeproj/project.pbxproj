@@ -38,9 +38,6 @@
 		0418D25412DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
 		0418D25512DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
 		0418D25612DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
-		0418D27812DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
-		0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
-		0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
 		04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */; };
 		04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */; };
 		0471A09613AAADE2000E2F17 /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 0471A09513AAADE2000E2F17 /* Background_iPhone.png */; };
@@ -211,9 +208,6 @@
 		0418D24E12DA5EAA00C56DCE /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Credits.rtf; path = ../../src/player_macosx/Resources/Credits.rtf; sourceTree = SOURCE_ROOT; };
 		0418D24F12DA5EAA00C56DCE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Resources/Info.plist; sourceTree = SOURCE_ROOT; };
 		0418D25012DA5EAA00C56DCE /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = ../../src/player_macosx/Resources/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
-		0418D27212DA602B00C56DCE /* Log.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Log.nib; path = "../../src/player_macosx/Resources-cocoa/Log.nib"; sourceTree = SOURCE_ROOT; };
-		0418D27312DA602B00C56DCE /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MainMenu.nib; path = "../../src/player_macosx/Resources-cocoa/MainMenu.nib"; sourceTree = SOURCE_ROOT; };
-		0418D27412DA602B00C56DCE /* MyDocument.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MyDocument.nib; path = "../../src/player_macosx/Resources-cocoa/MyDocument.nib"; sourceTree = SOURCE_ROOT; };
 		042AD9511152CC13009CA791 /* plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin.xcodeproj; sourceTree = "<group>"; };
 		042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xpath_state.xcodeproj; sourceTree = "<group>"; };
 		042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xerces.xcodeproj; sourceTree = "<group>"; };
@@ -309,16 +303,6 @@
 			name = "Resources-cg";
 			sourceTree = "<group>";
 		};
-		0418D23B12DA5E1A00C56DCE /* Resources-cocoa */ = {
-			isa = PBXGroup;
-			children = (
-				0418D27212DA602B00C56DCE /* Log.nib */,
-				0418D27312DA602B00C56DCE /* MainMenu.nib */,
-				0418D27412DA602B00C56DCE /* MyDocument.nib */,
-			);
-			name = "Resources-cocoa";
-			sourceTree = "<group>";
-		};
 		042AD9521152CC13009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,7 +377,6 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				0418D23B12DA5E1A00C56DCE /* Resources-cocoa */,
 				0418D23A12DA5E0900C56DCE /* Resources-cg */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -619,9 +602,6 @@
 				0418D25412DA5EAA00C56DCE /* Credits.rtf in Resources */,
 				0418D25512DA5EAA00C56DCE /* Info.plist in Resources */,
 				0418D25612DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
-				0418D27812DA602B00C56DCE /* Log.nib in Resources */,
-				0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */,
-				0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */,
 				04CE00CE132EC5130079553C /* systemTestSettings.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
