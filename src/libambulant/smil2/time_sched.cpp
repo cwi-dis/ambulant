@@ -263,8 +263,11 @@ scheduler::time_type scheduler::exec() {
 scheduler::time_type scheduler::_exec() {
 	time_type now = m_timer->elapsed();
 	time_type next = _exec(now);
-    assert(next >= now);
-	time_type waitdur = next - now;
+	time_type waitdur;
+    if (next >= now)
+        waitdur = next - now;
+    else
+        waitdur = 0;
 	AM_DBG lib::logger::get_logger()->debug("scheduler::_exec() done, waitdur=%d, idle_resolution=%d", waitdur, idle_resolution);
 	return waitdur>idle_resolution?idle_resolution:waitdur;
 }
