@@ -57,7 +57,7 @@
 /* Begin PBXLegacyTarget section */
 		041DCBD712B65714003407C8 /* third_party_packages_mac */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../scripts/build-third-party-packages.py mac";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py macosx";
 			buildConfigurationList = 041DCBDA12B65732003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_mac" */;
 			buildPhases = (
 			);
@@ -71,7 +71,7 @@
 		};
 		041DCBF612B6770B003407C8 /* third_party_packages_iOS_Device */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../scripts/build-third-party-packages.py iOS-Device";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py iphonesimulator";
 			buildConfigurationList = 041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Device" */;
 			buildPhases = (
 			);
@@ -85,7 +85,7 @@
 		};
 		041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../scripts/build-third-party-packages.py iOS-Simulator";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py iphoneos";
 			buildConfigurationList = 041DCC0812B6777A003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Simulator" */;
 			buildPhases = (
 			);

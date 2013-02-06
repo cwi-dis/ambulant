@@ -223,18 +223,25 @@ if override_3pp:
     print '+ building in', os.getcwd()
     
 # Locate ambulant base directory
-dir=os.getcwd()
-while dir != '/':
-    dir = os.path.dirname(dir)
-    if os.path.exists(os.path.join(dir, 'configure.in')):
-        break
-if dir == '/':
-    print 'ERROR: cannot find Ambulant toplevel directory'
-    sys.exit(1)
-print '+ Ambulant toplevel directory:', dir
+dir=os.getenv('AMBULANT_DIR')
+if dir:
+    if not os.path.exists(os.path.join(dir, 'configure.in')):
+        print 'ERROR: AMBULANT_DIR=%s, but it does not look like an Ambulant toplevel directory' % dir
+        sys.exit(1)
+else:
+    os.getcwd()
+    while dir != '/':
+        dir = os.path.dirname(dir)
+        if os.path.exists(os.path.join(dir, 'configure.in')):
+            break
+    if dir == '/':
+        print 'ERROR: cannot find Ambulant toplevel directory'
+        sys.exit(1)
+    print '+ Ambulant toplevel directory:', dir
+    os.environ["AMBULANT_DIR"]=AMBULANT_DIR
 AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
-os.environ["AMBULANT_DIR"]=AMBULANT_DIR
+
 #
 # Common flags for MacOSX 10.4
 #
@@ -381,7 +388,7 @@ third_party_packages={
         DebianTPP("python-gobject-dev"),
     ],
  
-    'mac' : [
+    'macosx' : [
         TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
             checkcmd="test -f ../libltdl/.libs/libltdlc.a",
             buildcmd=
@@ -497,7 +504,7 @@ third_party_packages={
 #           ),
         ],
 
-    'iOS-Device' : [
+    'iphoneos' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
@@ -597,7 +604,7 @@ third_party_packages={
             )
         ],
 
-    'iOS-Simulator' : [
+    'iphonesimulator' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             url2="expat-2.0.1.tar.gz",
@@ -972,7 +979,7 @@ third_party_packages={
     
 }
 
-third_party_packages['mac10.8'] = third_party_packages['mac10.7'] = third_party_packages['mac10.6'] = third_party_packages['mac']
+third_party_packages['macosx10.8'] = third_party_packages['macosx10.7'] = third_party_packages['macosx10.6'] = third_party_packages['macosx']
 
 def checkenv_win32(target):
     ok = True
@@ -1019,7 +1026,7 @@ def get_mac_build_platform():
 	if un[0] != 'Darwin': return None
 	major, minor, micro = un[2].split('.')
 	osx_minor = int(major)-4
-	return "mac10.%d" % osx_minor
+	return "macosx10.%d" % osx_minor
 
 def checkenv_mac(target):
     rv = True
@@ -1030,7 +1037,7 @@ def checkenv_mac(target):
         rv = False
     # Make sure we have MACOSX_DEPLOYMENT_TARGET set, if needed
     build_platform = get_mac_build_platform()
-    if target == 'mac':
+    if target == 'macosx':
         target = build_platform
     if target != build_platform and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
         print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development on %s' % (target, build_platform)
@@ -1058,22 +1065,22 @@ def checkenv_iphone(target):
         print '+ IPHONEOS_DEPLOYMENT_TARGET set to %s for %s development' % (IOS_VERSION, target)
     # Check that we are not in an xcode-initiated build for the other platform.
     # This is a hack, but I don't see a way around it...
-    if target == 'iOS-Device':
+    if target == 'iphoneos':
         if os.environ.get('PLATFORM_NAME') == 'iphonesimulator':
-            print '* WARNING: skipping iOS-Simulator build in a iOS-Device workflow'
+            print '* WARNING: skipping iphonesimulator build in a iphoneos workflow'
             sys.exit(0)
-    elif target == 'iOS-Simulator':
+    elif target == 'iphonesimulator':
         if os.environ.get('PLATFORM_NAME') == 'iphoneos':
-            print '* WARNING: skipping iOS-Device build in a iOS-Simulator workflow'
+            print '* WARNING: skipping iphoneos build in a iphonesimulator workflow'
             sys.exit(0)
     else:
         assert 0
    
     # Check that we have the right compilers, etc in PATH
-    if target == 'iOS-Device':
+    if target == 'iphoneos':
         wanted = 'iPhoneOS.platform/Developer/usr/bin'
         notwanted = 'iPhoneSimulator.platform/Developer/usr/bin'
-    elif target == 'iOS-Simulator':
+    elif target == 'iphonesimulator':
         wanted = 'iPhoneSimulator.platform/Developer/usr/bin'
         notwanted = 'iPhoneOS.platform/Developer/usr/bin'
     else:
@@ -1095,24 +1102,24 @@ def checkenv_iphone(target):
         rv = False
     # Check that the SDK (either passed in SDKROOT or inferred at the top of this file)
     # actually exists
-    if target == 'iOS-Device':
+    if target == 'iphoneos':
         if not os.path.exists(IOS_SDK):
             print '** Selected iOS SDK does not exist: %s' % IOS_SDK
             rv = False
-    if target == 'iOS-Simulator':
+    if target == 'iphonesimulator':
         if not os.path.exists(IOSSIM_SDK):
             print '** Selected iOS Simulator SDK does not exist: %s' % IOSSIM_SDK
             rv = False
     return rv
         
 environment_checkers = {
-    'mac' : checkenv_mac,
-    'mac10.8' : checkenv_mac,
-    'mac10.7' : checkenv_mac,
-    'mac10.6' : checkenv_mac,
-    'mac10.4' : checkenv_mac,
-    'iOS-Simulator' : checkenv_iphone,
-    'iOS-Device' : checkenv_iphone,
+    'macosx' : checkenv_mac,
+    'macosx10.8' : checkenv_mac,
+    'macosx10.7' : checkenv_mac,
+    'macosx10.6' : checkenv_mac,
+    'macosx10.4' : checkenv_mac,
+    'iphonesimulator' : checkenv_iphone,
+    'iphoneos' : checkenv_iphone,
     'linux': checkenv_unix,
     'win32': checkenv_win32,
     'debian': checkenv_debian,
@@ -1153,9 +1160,14 @@ def main():
         print '+ failed: %d packages' % bad
         sys.exit(bad)
     
+    if (len(args) == 1 and args[0] == 'autoXcode':
+        # We are run from the XCode third_party_packages project.
+        # Inspect the environment to decide what needs to be built.
+        
     if len(args) != 1 or args[0] not in third_party_packages:
         parser.print_help()
         print "\nPlatform is one of:", ' '.join(third_party_packages.keys())
+        print "On Mac, a special platform 'autoXcode' will build what xcode needs"
         return 2
 
         

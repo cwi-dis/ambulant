@@ -145,6 +145,13 @@
 			remoteGlobalIDString = 04A1E87512B57DF20060F97E;
 			remoteInfo = libambulantCG;
 		};
+		04A6D08C16C2EF99003737E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 04A6D06816C2C512003737E8;
+			remoteInfo = libambulantiPhoneSimulator;
+		};
 		04CE8D8C12BB647A00801B1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */;
@@ -288,6 +295,7 @@
 				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
 				0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */,
 				04FA282912B8D16C0080216B /* libambulantIPhone.a */,
+				04A6D08D16C2EF99003737E8 /* liblibambulantiPhone copy.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -569,6 +577,13 @@
 			fileType = "compiled.mach-o.dylib";
 			path = libambulantCG.dylib;
 			remoteRef = 04A1E87712B57E100060F97E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		04A6D08D16C2EF99003737E8 /* liblibambulantiPhone copy.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "liblibambulantiPhone copy.a";
+			remoteRef = 04A6D08C16C2EF99003737E8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		04FA282912B8D16C0080216B /* libambulantIPhone.a */ = {
