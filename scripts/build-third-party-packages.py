@@ -395,8 +395,8 @@ third_party_packages={
                 "rm -rf ../libltdl &&"
                 "mkdir ../libltdl &&"
                 "cd ../libltdl &&"
-                "../../libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
-                "make" % MAC106_COMMON_CFLAGS
+                "%s/libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
+                "make" % (AMBULANT_DIR, MAC106_COMMON_CFLAGS)
             ),
 
         TPP("expat", 
