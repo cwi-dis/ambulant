@@ -265,10 +265,10 @@ bad:
 
 @implementation AmbulantView
 
-- (id)initWithFrame:(CGRect)frameRect
+- (id)initWithFrame:(NSRect)frameRect
 {
 	AM_DBG NSLog(@"AmbulantView.initWithFrame(0x%@)", self);
-	self = [super initWithFrame: NSRectFromCGRect(frameRect)];
+	self = [super initWithFrame: frameRect];
 	ambulant_window = NULL;
 	transition_surface = NULL;
 	transition_count = 0;
