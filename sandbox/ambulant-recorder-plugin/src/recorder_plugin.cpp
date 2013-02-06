@@ -30,7 +30,7 @@
 #include "recorder_plugin.h"
 #include "ambulant/gui/SDL/sdl_video.h" // for SDL_BPP
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -115,6 +115,7 @@ recorder_plugin::recorder_plugin (net::pixel_order pixel_order, lib::size& windo
 			logger::get_logger()->trace("%s: pipe failed: %s)", fun,strerror(errno));
 		}
 		m_writer = new recorder_writer (m_pipe);
+		m_writer->start();
 	}
 }
 
@@ -124,9 +125,6 @@ recorder_plugin::~recorder_plugin ()
 
 	if (m_pipe != NULL) {
 		pclose (m_pipe);
-	}
-	if (m_writer != NULL) {
-		m_writer->terminate();
 	}
 	if (m_surface != NULL) {
 		SDL_FreeSurface(m_surface);
@@ -199,6 +197,8 @@ recorder_writer::recorder_writer(FILE* pipe)
 }
 
 recorder_writer::~recorder_writer() {
+	const char* fun = __PRETTY_FUNCTION__;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
 	m_lock.enter();
 	while (m_queue.size() > 0) {
 	  recorder_queue_element* qe = m_queue.front();
@@ -212,18 +212,26 @@ void
 recorder_writer::push_data(recorder_queue_element* qe)
 {
 	const char* fun = __PRETTY_FUNCTION__;
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
+	static lib::timer::time_type s_old_timestamp = 0;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld)", fun, this, qe, qe->m_timestamp, qe->m_timestamp - s_old_timestamp);
+	s_old_timestamp = qe->m_timestamp;
 	m_lock.enter();
 	m_queue.push (qe);
 	m_lock.leave();
+	ambulant::lib::sleep_msec(10);
 }
 
 int
 recorder_writer::_write_data ()
 {
+	const char* fun = __PRETTY_FUNCTION__;
+	//AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
 	size_t result = 0;
 	// lock is set, queue not empty
 	recorder_queue_element* qe = m_queue.front();
+	static lib::timer::time_type s_old_timestamp = 0;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld)", fun, this, qe, qe->m_timestamp, qe->m_timestamp - s_old_timestamp);
+	s_old_timestamp = qe->m_timestamp;
 	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h) < 0) {
 		return -1;
 	}
@@ -250,7 +258,7 @@ recorder_writer::run()
 			}
 		}
 		m_lock.leave();
-		ambulant::lib::sleep_msec(100);
+		ambulant::lib::sleep_msec(10);
 	}
 
 }

@@ -61,7 +61,7 @@ class recorder_queue_element {
 	lib::size m_window_size;
 };
 
-class recorder_writer : BASE_THREAD {
+class recorder_writer : public BASE_THREAD {
 
   public:
 	recorder_writer(FILE* pipe);
@@ -69,10 +69,8 @@ class recorder_writer : BASE_THREAD {
 
 	void push_data (recorder_queue_element* qe);
 
-	bool terminate ();
-
   protected:
-    long unsigned int run ();
+	long unsigned int run ();
 
   private:
 	int _write_data ();
