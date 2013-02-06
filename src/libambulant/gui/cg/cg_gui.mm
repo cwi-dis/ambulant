@@ -469,7 +469,7 @@ bad:
 - (void)tappedWithPoint: (CGPoint) where
 {
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	AM_DBG NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"%p: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
 
