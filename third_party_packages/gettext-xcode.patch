@@ -1,0 +1,16 @@
+diff -ru gettext-0.18.2-orig/gettext-tools/configure gettext-0.18.2/gettext-tools/configure
+--- gettext-0.18.2-orig/gettext-tools/configure	2012-12-25 06:33:28.000000000 +0100
++++ gettext-0.18.2/gettext-tools/configure	2013-02-07 11:51:28.000000000 +0100
+@@ -53949,10 +53949,10 @@
+ 
+     /* Failure to compile this test due to missing alarm is okay,
+        since all such platforms (mingw) also lack sleep.  */
+-    unsigned int pentecost = 50 * 24 * 60 * 60; /* 50 days.  */
++    unsigned int pentecost = 60; /* Modified to be one minute. Workaround for XCode bug? */
+     unsigned int remaining;
+     signal (SIGALRM, handle_alarm);
+-    alarm (1);
++    alarm (5); /* Modified to be 5 seconds. Workaround for XCode bug? */
+     remaining = sleep (pentecost);
+     if (remaining > pentecost)
+       return 3;

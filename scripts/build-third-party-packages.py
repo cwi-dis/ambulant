@@ -466,9 +466,10 @@ third_party_packages={
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd gettext-0.18.2 && "
+                "patch -p1 --forward < %s/third_party_packages/gettext-xcode.patch && "
                 "%s --disable-csharp && "
                 "make ${MAKEFLAGS} && "
-                "make install" % ( MAC106_COMMON_CONFIGURE)
+                "make install" % ( AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
             ),
             
         TPP("libxml2",
