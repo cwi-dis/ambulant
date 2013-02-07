@@ -1,1 +1,23 @@
-This sub-project has just started. Nothing works, there is no design yet.
+This directory contains a plugin for AmbulantPlayer.
+
+It only works with SDL2 installed.
+
+When AmbulantPlayer_sdl is run and the environment variable
+AMBULANT_RECORDER_PIPE is set, the pipeline specified as the
+value of AMBULANT_RECORDER_PIPE is opened and each frame as
+displayed on screen is written on the pipe, in a format that
+is understood by gstreamer element 'ambulantsrc' contained in
+gstambulant-plugin-package.
+
+The file 'scripts/test-pipeline.sh' contains a complete example
+that streams the screen images through 'rtsp://localhost:8554/test'
+and can be viewed with the command vlc 'rtsp://localhost:8554/test'
+
+The file 'scripts/webcam.sh' starts a RTSP server streaming the webcam
+'/dev/video0' to 'rtsp://localhost:5544/webcam'
+
+AmbulantPlayer with 'scripts/test2.smil' reads the video stream
+'rtsp://localhost:5544/webcam' and displays it on screen.
+
+AmbulantPlayer with 'scripts/test3.smil' reads the video stream
+'rtsp://localhost:8544/test' and displays that on screen.
