@@ -241,11 +241,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96A112BA4DB700399893 /* ambulant-debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
@@ -257,10 +254,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96A212BA4DB700399893 /* ambulant-release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = so;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_plugin(CG)";
@@ -273,10 +268,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96A012BA4DB700399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -285,9 +277,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96A012BA4DB700399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 			};
 			name = Release;
 		};
