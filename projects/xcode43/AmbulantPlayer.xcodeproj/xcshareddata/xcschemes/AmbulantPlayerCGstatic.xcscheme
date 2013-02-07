@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "040DAAE112B790BB002C4DFD"
-               BuildableName = "libambulantIPhone.a"
-               BlueprintName = "libambulantiPhone"
-               ReferencedContainer = "container:libambulant.xcodeproj">
+               BlueprintIdentifier = "0405C01C12B6244C007AD3B2"
+               BuildableName = "AmbulantPlayerCG.app"
+               BlueprintName = "AmbulantPlayerCGstatic"
+               ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,6 +29,15 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0405C01C12B6244C007AD3B2"
+            BuildableName = "AmbulantPlayerCG.app"
+            BlueprintName = "AmbulantPlayerCGstatic"
+            ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -39,6 +48,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0405C01C12B6244C007AD3B2"
+            BuildableName = "AmbulantPlayerCG.app"
+            BlueprintName = "AmbulantPlayerCGstatic"
+            ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -48,6 +66,15 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0405C01C12B6244C007AD3B2"
+            BuildableName = "AmbulantPlayerCG.app"
+            BlueprintName = "AmbulantPlayerCGstatic"
+            ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

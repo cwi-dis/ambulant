@@ -1010,11 +1010,11 @@ def checkenv_iphone(target):
     # This is a hack, but I don't see a way around it...
     if target == 'iphoneos':
         if os.environ.get('PLATFORM_NAME') == 'iphonesimulator':
-            print '* WARNING: skipping iphonesimulator build in a iphoneos workflow'
-            sys.exit(0)
+            print 'ERROR: asking for iphoneos build but $PLATFORM_NAME=iphonesimulator'
+            sys.exit(1)
     elif target == 'iphonesimulator':
         if os.environ.get('PLATFORM_NAME') == 'iphoneos':
-            print '* WARNING: skipping iphoneos build in a iphonesimulator workflow'
+            print 'ERROR: asking for iphonesimulator build but $PLATFORM_NAME=iphoneos'
             sys.exit(0)
     else:
         assert 0

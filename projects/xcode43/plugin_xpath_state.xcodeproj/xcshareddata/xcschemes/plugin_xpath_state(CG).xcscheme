@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "040DAAE112B790BB002C4DFD"
-               BuildableName = "libambulantIPhone.a"
-               BlueprintName = "libambulantiPhone"
-               ReferencedContainer = "container:libambulant.xcodeproj">
+               BlueprintIdentifier = "0441E7B91343132C0025FCF9"
+               BuildableName = "libamplugin_xpath_state(CG).so"
+               BlueprintName = "plugin_xpath_state(CG)"
+               ReferencedContainer = "container:plugin_xpath_state.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

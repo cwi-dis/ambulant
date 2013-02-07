@@ -267,6 +267,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 508817D709F0C9AE0071BF1A /* Build configuration list for PBXNativeTarget "npambulant" */;
 			buildPhases = (
+				04525C5C16C4057E00960DC2 /* Run Script - Link to third_party_packages */,
 				508817D009F0C9AD0071BF1A /* Resources */,
 				508817D109F0C9AD0071BF1A /* Sources */,
 				508817D209F0C9AD0071BF1A /* Frameworks */,
@@ -382,6 +383,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04525C5C16C4057E00960DC2 /* Run Script - Link to third_party_packages */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script - Link to third_party_packages";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# third_party-Packages may be in Common. Create a symlink in the current configuration.\nconfig_3pp=$CONFIGURATION_BUILD_DIR/third_party_packages\ncommon_3pp=$BUILD_ROOT/Common/third_party_packages\nif [ -e $common_3pp -a ! -e $config_3pp ] ; then\nmkdir -p $CONFIGURATION_BUILD_DIR\nln -s $common_3pp $config_3pp\nfi\n";
+		};
 		0470A2BC1346726D00059573 /* Run Script - install */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
