@@ -47,7 +47,7 @@
     author = ans_author;
 	duration = ans_dur;
 	if (alast_node_repr == NULL) {
-		position_node = [NSString stringWithString: @""];
+		position_node = @"";
 	} else {
 		position_node = alast_node_repr;			
 	}

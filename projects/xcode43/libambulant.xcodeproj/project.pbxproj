@@ -174,6 +174,101 @@
 		04A1E87F12B57E950060F97E /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CAA115194C10007DD71 /* cg_renderer.mm */; };
 		04A1E88012B57E950060F97E /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CAB115194C10007DD71 /* cg_text.mm */; };
 		04A1E95A12B585030060F97E /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04A1E95912B585030060F97E /* cg_smiltext.mm */; };
+		04A6D00416C2C512003737E8 /* cg_avfoundation_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 93BBA28612DCABF700EE7501 /* cg_avfoundation_video.h */; };
+		04A6D00516C2C512003737E8 /* cg_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 93BBA28812DCAC1B00EE7501 /* cg_smiltext.h */; };
+		04A6D00616C2C512003737E8 /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
+		04A6D00716C2C512003737E8 /* connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59314475D5400091472 /* connection.h */; };
+		04A6D00816C2C512003737E8 /* databuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59414475D5400091472 /* databuffer.h */; };
+		04A6D00916C2C512003737E8 /* datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59514475D5400091472 /* datasource.h */; };
+		04A6D00A16C2C512003737E8 /* demux_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59614475D5400091472 /* demux_datasource.h */; };
+		04A6D00B16C2C512003737E8 /* ffmpeg_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59714475D5400091472 /* ffmpeg_audio.h */; };
+		04A6D00C16C2C512003737E8 /* ffmpeg_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59814475D5400091472 /* ffmpeg_common.h */; };
+		04A6D00D16C2C512003737E8 /* ffmpeg_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59914475D5400091472 /* ffmpeg_factory.h */; };
+		04A6D00E16C2C512003737E8 /* ffmpeg_raw.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59A14475D5400091472 /* ffmpeg_raw.h */; };
+		04A6D00F16C2C512003737E8 /* ffmpeg_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59B14475D5400091472 /* ffmpeg_video.h */; };
+		04A6D01016C2C512003737E8 /* posix_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE59F14475D5500091472 /* posix_datasource.h */; };
+		04A6D01116C2C512003737E8 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A214475D5500091472 /* socket.h */; };
+		04A6D01216C2C512003737E8 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A314475D5500091472 /* stdio_datasource.h */; };
+		04A6D01316C2C512003737E8 /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A414475D5500091472 /* url.h */; };
+		04A6D01416C2C512003737E8 /* win32_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 93DEE5A514475D5500091472 /* win32_datasource.h */; };
+		04A6D01616C2C512003737E8 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
+		04A6D01716C2C512003737E8 /* video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA1115194C10007DD71 /* video_renderer.cpp */; };
+		04A6D01816C2C512003737E8 /* renderer_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9D115194C10007DD71 /* renderer_impl.cpp */; };
+		04A6D01916C2C512003737E8 /* smil_alignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9F115194C10007DD71 /* smil_alignment.cpp */; };
+		04A6D01A16C2C512003737E8 /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
+		04A6D01B16C2C512003737E8 /* schema.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9E115194C10007DD71 /* schema.cpp */; };
+		04A6D01C16C2C512003737E8 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
+		04A6D01D16C2C512003737E8 /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9A115194C10007DD71 /* plugin_engine.cpp */; };
+		04A6D01E16C2C512003737E8 /* preferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9B115194C10007DD71 /* preferences.cpp */; };
+		04A6D01F16C2C512003737E8 /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C99115194C10007DD71 /* gui_player.cpp */; };
+		04A6D02016C2C512003737E8 /* region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9C115194C10007DD71 /* region.cpp */; };
+		04A6D02116C2C512003737E8 /* smil_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA0115194C10007DD71 /* smil_handler.cpp */; };
+		04A6D02216C2C512003737E8 /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA7115194C10007DD71 /* cg_fill.mm */; };
+		04A6D02316C2C512003737E8 /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA8115194C10007DD71 /* cg_gui.mm */; };
+		04A6D02416C2C512003737E8 /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CAA115194C10007DD71 /* cg_renderer.mm */; };
+		04A6D02516C2C512003737E8 /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CAB115194C10007DD71 /* cg_text.mm */; };
+		04A6D02616C2C512003737E8 /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04A1E95912B585030060F97E /* cg_smiltext.mm */; };
+		04A6D02716C2C512003737E8 /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA6115194C10007DD71 /* cg_dsvideo.mm */; };
+		04A6D02816C2C512003737E8 /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA9115194C10007DD71 /* cg_image.mm */; };
+		04A6D02916C2C512003737E8 /* none_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CDD115194C10007DD71 /* none_area.cpp */; };
+		04A6D02A16C2C512003737E8 /* none_video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CE0115194C10007DD71 /* none_video_renderer.cpp */; };
+		04A6D02B16C2C512003737E8 /* none_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CDE115194C10007DD71 /* none_factory.cpp */; };
+		04A6D02C16C2C512003737E8 /* none_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CDF115194C10007DD71 /* none_gui.cpp */; };
+		04A6D02D16C2C512003737E8 /* sdl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CED115194C10007DD71 /* sdl.cpp */; };
+		04A6D02E16C2C512003737E8 /* sdl_audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CEE115194C10007DD71 /* sdl_audio.cpp */; };
+		04A6D02F16C2C512003737E8 /* delta_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF2115194C10007DD71 /* delta_timer.cpp */; };
+		04A6D03016C2C512003737E8 /* document.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF3115194C10007DD71 /* document.cpp */; };
+		04A6D03116C2C512003737E8 /* nfa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF9115194C10007DD71 /* nfa.cpp */; };
+		04A6D03216C2C512003737E8 /* expat_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF5115194C10007DD71 /* expat_parser.cpp */; };
+		04A6D03316C2C512003737E8 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF0115194C10007DD71 /* nscontext.cpp */; };
+		04A6D03416C2C512003737E8 /* transition_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D00115194C10007DD71 /* transition_info.cpp */; };
+		04A6D03516C2C512003737E8 /* gpaths.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF6115194C10007DD71 /* gpaths.cpp */; };
+		04A6D03616C2C512003737E8 /* string_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFE115194C10007DD71 /* string_util.cpp */; };
+		04A6D03716C2C512003737E8 /* parser_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFD115194C10007DD71 /* parser_factory.cpp */; };
+		04A6D03816C2C512003737E8 /* parselets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFC115194C10007DD71 /* parselets.cpp */; };
+		04A6D03916C2C512003737E8 /* xerces_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D0C115194C10007DD71 /* xerces_parser.cpp */; };
+		04A6D03A16C2C512003737E8 /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF1115194C10007DD71 /* colors.cpp */; };
+		04A6D03B16C2C512003737E8 /* unix_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D05115194C10007DD71 /* unix_timer.cpp */; };
+		04A6D03C16C2C512003737E8 /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFF115194C10007DD71 /* timer.cpp */; };
+		04A6D03D16C2C512003737E8 /* unix_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D04115194C10007DD71 /* unix_thread.cpp */; };
+		04A6D03E16C2C512003737E8 /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF7115194C10007DD71 /* logger.cpp */; };
+		04A6D03F16C2C512003737E8 /* unix_mtsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D03115194C10007DD71 /* unix_mtsync.cpp */; };
+		04A6D04016C2C512003737E8 /* tree_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D01115194C10007DD71 /* tree_builder.cpp */; };
+		04A6D04116C2C512003737E8 /* memfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF8115194C10007DD71 /* memfile.cpp */; };
+		04A6D04216C2C512003737E8 /* ffmpeg_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D13115194C10007DD71 /* ffmpeg_common.cpp */; };
+		04A6D04316C2C512003737E8 /* ffmpeg_video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D15115194C10007DD71 /* ffmpeg_video.cpp */; };
+		04A6D04416C2C512003737E8 /* stdio_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D19115194C10007DD71 /* stdio_datasource.cpp */; };
+		04A6D04516C2C512003737E8 /* databuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D0F115194C10007DD71 /* databuffer.cpp */; };
+		04A6D04616C2C512003737E8 /* ffmpeg_raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D14115194C10007DD71 /* ffmpeg_raw.cpp */; };
+		04A6D04716C2C512003737E8 /* ffmpeg_audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D12115194C10007DD71 /* ffmpeg_audio.cpp */; };
+		04A6D04816C2C512003737E8 /* url.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1A115194C10007DD71 /* url.cpp */; };
+		04A6D04916C2C512003737E8 /* demux_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D11115194C10007DD71 /* demux_datasource.cpp */; };
+		04A6D04A16C2C512003737E8 /* datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D10115194C10007DD71 /* datasource.cpp */; };
+		04A6D04B16C2C512003737E8 /* animate_e.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1F115194C10007DD71 /* animate_e.cpp */; };
+		04A6D04C16C2C512003737E8 /* time_sched.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2B115194C10007DD71 /* time_sched.cpp */; };
+		04A6D04D16C2C512003737E8 /* test_attrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D27115194C10007DD71 /* test_attrs.cpp */; };
+		04A6D04E16C2C512003737E8 /* animate_n.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D20115194C10007DD71 /* animate_n.cpp */; };
+		04A6D04F16C2C512003737E8 /* time_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2C115194C10007DD71 /* time_state.cpp */; };
+		04A6D05016C2C512003737E8 /* time_calc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D29115194C10007DD71 /* time_calc.cpp */; };
+		04A6D05116C2C512003737E8 /* trace_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2E115194C10007DD71 /* trace_player.cpp */; };
+		04A6D05216C2C512003737E8 /* smil_time.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D25115194C10007DD71 /* smil_time.cpp */; };
+		04A6D05316C2C512003737E8 /* sync_rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D26115194C10007DD71 /* sync_rule.cpp */; };
+		04A6D05416C2C512003737E8 /* smil_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D23115194C10007DD71 /* smil_layout.cpp */; };
+		04A6D05516C2C512003737E8 /* smil_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D24115194C10007DD71 /* smil_player.cpp */; };
+		04A6D05616C2C512003737E8 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1D115194C10007DD71 /* smiltext.cpp */; };
+		04A6D05716C2C512003737E8 /* time_attrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D28115194C10007DD71 /* time_attrs.cpp */; };
+		04A6D05816C2C512003737E8 /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D21115194C10007DD71 /* params.cpp */; };
+		04A6D05916C2C512003737E8 /* transition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2F115194C10007DD71 /* transition.cpp */; };
+		04A6D05A16C2C512003737E8 /* region_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D22115194C10007DD71 /* region_node.cpp */; };
+		04A6D05B16C2C512003737E8 /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2D115194C10007DD71 /* timegraph.cpp */; };
+		04A6D05C16C2C512003737E8 /* animate_a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1E115194C10007DD71 /* animate_a.cpp */; };
+		04A6D05D16C2C512003737E8 /* time_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2A115194C10007DD71 /* time_node.cpp */; };
+		04A6D05E16C2C512003737E8 /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D16115194C10007DD71 /* posix_datasource.cpp */; };
+		04A6D05F16C2C512003737E8 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
+		04A6D06016C2C512003737E8 /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93BBA28412DCABC500EE7501 /* cg_avfoundation_video.mm */; };
+		04A6D06116C2C512003737E8 /* cg_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 939CEACC12E8659E0003D62E /* cg_transition.mm */; };
+		04A6D06216C2C512003737E8 /* node_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04D07B66138B0D4500F93772 /* node_impl.cpp */; };
+		04A6D06316C2C512003737E8 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		04ACA75512B635AE00AE64EE /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		04ACA75612B635B100AE64EE /* video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA1115194C10007DD71 /* video_renderer.cpp */; };
 		04ACA75712B635B200AE64EE /* renderer_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9D115194C10007DD71 /* renderer_impl.cpp */; };
@@ -329,6 +424,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 041DCBD712B65714003407C8;
 			remoteInfo = third_party_packages_3264;
+		};
+		04A6D00116C2C512003737E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 04ED3D3E16B8811B00CE90A4;
+			remoteInfo = third_party_packages_iOS_BOTH;
 		};
 		04ED3D4716B8820D00CE90A4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -717,6 +819,7 @@
 		049DCA1F138A8E2B0023DFBC /* d2_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_window.h; path = d2/d2_window.h; sourceTree = "<group>"; };
 		04A1E87512B57DF20060F97E /* libambulantCG.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulantCG.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A1E95912B585030060F97E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
+		04A6D06816C2C512003737E8 /* liblibambulantiPhone copy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibambulantiPhone copy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
 		04B75B6C12B79C8900161EB5 /* ambulant-debug-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-iphone.xcconfig"; path = "config/ambulant-debug-iphone.xcconfig"; sourceTree = "<group>"; };
@@ -816,6 +919,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		04A6D06416C2C512003737E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04D71F8112B628210064FBCB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -841,6 +949,7 @@
 				04A1E87512B57DF20060F97E /* libambulantCG.dylib */,
 				04D71F8312B628210064FBCB /* libambulantCGstatic.a */,
 				040DAB3812B790BB002C4DFD /* libambulantIPhone.a */,
+				04A6D06816C2C512003737E8 /* liblibambulantiPhone copy.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1709,6 +1818,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		04A6D00316C2C512003737E8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A6D00416C2C512003737E8 /* cg_avfoundation_video.h in Headers */,
+				04A6D00516C2C512003737E8 /* cg_smiltext.h in Headers */,
+				04A6D00616C2C512003737E8 /* cg_transition.h in Headers */,
+				04A6D00716C2C512003737E8 /* connection.h in Headers */,
+				04A6D00816C2C512003737E8 /* databuffer.h in Headers */,
+				04A6D00916C2C512003737E8 /* datasource.h in Headers */,
+				04A6D00A16C2C512003737E8 /* demux_datasource.h in Headers */,
+				04A6D00B16C2C512003737E8 /* ffmpeg_audio.h in Headers */,
+				04A6D00C16C2C512003737E8 /* ffmpeg_common.h in Headers */,
+				04A6D00D16C2C512003737E8 /* ffmpeg_factory.h in Headers */,
+				04A6D00E16C2C512003737E8 /* ffmpeg_raw.h in Headers */,
+				04A6D00F16C2C512003737E8 /* ffmpeg_video.h in Headers */,
+				04A6D01016C2C512003737E8 /* posix_datasource.h in Headers */,
+				04A6D01116C2C512003737E8 /* socket.h in Headers */,
+				04A6D01216C2C512003737E8 /* stdio_datasource.h in Headers */,
+				04A6D01316C2C512003737E8 /* url.h in Headers */,
+				04A6D01416C2C512003737E8 /* win32_datasource.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04D71F7F12B628210064FBCB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1772,6 +1905,25 @@
 			productReference = 04A1E87512B57DF20060F97E /* libambulantCG.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		04A6CFFF16C2C512003737E8 /* libambulantiPhoneSimulator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04A6D06516C2C512003737E8 /* Build configuration list for PBXNativeTarget "libambulantiPhoneSimulator" */;
+			buildPhases = (
+				04A6D00216C2C512003737E8 /* ShellScript */,
+				04A6D00316C2C512003737E8 /* Headers */,
+				04A6D01516C2C512003737E8 /* Sources */,
+				04A6D06416C2C512003737E8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04A6D00016C2C512003737E8 /* PBXTargetDependency */,
+			);
+			name = libambulantiPhoneSimulator;
+			productName = libambulantCGstatic;
+			productReference = 04A6D06816C2C512003737E8 /* liblibambulantiPhone copy.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		04D71F8212B628210064FBCB /* libambulantCGstatic */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04D71F8C12B628500064FBCB /* Build configuration list for PBXNativeTarget "libambulantCGstatic" */;
@@ -1822,11 +1974,25 @@
 				04A1E80812B57DF20060F97E /* libambulantCG */,
 				04D71F8212B628210064FBCB /* libambulantCGstatic */,
 				040DAAE112B790BB002C4DFD /* libambulantiPhone */,
+				04A6CFFF16C2C512003737E8 /* libambulantiPhoneSimulator */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04A6D00216C2C512003737E8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo Platform: $PLATFORM_NAME AMBULANT_DIR: $AMBULANT_DIR\nrm -f $AMBULANT_DIR/build-iOS\nif [ $PLATFORM_NAME = \"iphonesimulator\" ]\nthen\nln -s $AMBULANT_DIR/build-iOS-Simulator $AMBULANT_DIR/build-iOS\nelse\nln -s $AMBULANT_DIR/build-iOS-Device $AMBULANT_DIR/build-iOS\nfi";
+		};
 		93C8FCE816A815780047AEF1 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2012,6 +2178,91 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		04A6D01516C2C512003737E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A6D01616C2C512003737E8 /* state.cpp in Sources */,
+				04A6D01716C2C512003737E8 /* video_renderer.cpp in Sources */,
+				04A6D01816C2C512003737E8 /* renderer_impl.cpp in Sources */,
+				04A6D01916C2C512003737E8 /* smil_alignment.cpp in Sources */,
+				04A6D01A16C2C512003737E8 /* factory.cpp in Sources */,
+				04A6D01B16C2C512003737E8 /* schema.cpp in Sources */,
+				04A6D01C16C2C512003737E8 /* renderer_select.cpp in Sources */,
+				04A6D01D16C2C512003737E8 /* plugin_engine.cpp in Sources */,
+				04A6D01E16C2C512003737E8 /* preferences.cpp in Sources */,
+				04A6D01F16C2C512003737E8 /* gui_player.cpp in Sources */,
+				04A6D02016C2C512003737E8 /* region.cpp in Sources */,
+				04A6D02116C2C512003737E8 /* smil_handler.cpp in Sources */,
+				04A6D02216C2C512003737E8 /* cg_fill.mm in Sources */,
+				04A6D02316C2C512003737E8 /* cg_gui.mm in Sources */,
+				04A6D02416C2C512003737E8 /* cg_renderer.mm in Sources */,
+				04A6D02516C2C512003737E8 /* cg_text.mm in Sources */,
+				04A6D02616C2C512003737E8 /* cg_smiltext.mm in Sources */,
+				04A6D02716C2C512003737E8 /* cg_dsvideo.mm in Sources */,
+				04A6D02816C2C512003737E8 /* cg_image.mm in Sources */,
+				04A6D02916C2C512003737E8 /* none_area.cpp in Sources */,
+				04A6D02A16C2C512003737E8 /* none_video_renderer.cpp in Sources */,
+				04A6D02B16C2C512003737E8 /* none_factory.cpp in Sources */,
+				04A6D02C16C2C512003737E8 /* none_gui.cpp in Sources */,
+				04A6D02D16C2C512003737E8 /* sdl.cpp in Sources */,
+				04A6D02E16C2C512003737E8 /* sdl_audio.cpp in Sources */,
+				04A6D02F16C2C512003737E8 /* delta_timer.cpp in Sources */,
+				04A6D03016C2C512003737E8 /* document.cpp in Sources */,
+				04A6D03116C2C512003737E8 /* nfa.cpp in Sources */,
+				04A6D03216C2C512003737E8 /* expat_parser.cpp in Sources */,
+				04A6D03316C2C512003737E8 /* nscontext.cpp in Sources */,
+				04A6D03416C2C512003737E8 /* transition_info.cpp in Sources */,
+				04A6D03516C2C512003737E8 /* gpaths.cpp in Sources */,
+				04A6D03616C2C512003737E8 /* string_util.cpp in Sources */,
+				04A6D03716C2C512003737E8 /* parser_factory.cpp in Sources */,
+				04A6D03816C2C512003737E8 /* parselets.cpp in Sources */,
+				04A6D03916C2C512003737E8 /* xerces_parser.cpp in Sources */,
+				04A6D03A16C2C512003737E8 /* colors.cpp in Sources */,
+				04A6D03B16C2C512003737E8 /* unix_timer.cpp in Sources */,
+				04A6D03C16C2C512003737E8 /* timer.cpp in Sources */,
+				04A6D03D16C2C512003737E8 /* unix_thread.cpp in Sources */,
+				04A6D03E16C2C512003737E8 /* logger.cpp in Sources */,
+				04A6D03F16C2C512003737E8 /* unix_mtsync.cpp in Sources */,
+				04A6D04016C2C512003737E8 /* tree_builder.cpp in Sources */,
+				04A6D04116C2C512003737E8 /* memfile.cpp in Sources */,
+				04A6D04216C2C512003737E8 /* ffmpeg_common.cpp in Sources */,
+				04A6D04316C2C512003737E8 /* ffmpeg_video.cpp in Sources */,
+				04A6D04416C2C512003737E8 /* stdio_datasource.cpp in Sources */,
+				04A6D04516C2C512003737E8 /* databuffer.cpp in Sources */,
+				04A6D04616C2C512003737E8 /* ffmpeg_raw.cpp in Sources */,
+				04A6D04716C2C512003737E8 /* ffmpeg_audio.cpp in Sources */,
+				04A6D04816C2C512003737E8 /* url.cpp in Sources */,
+				04A6D04916C2C512003737E8 /* demux_datasource.cpp in Sources */,
+				04A6D04A16C2C512003737E8 /* datasource.cpp in Sources */,
+				04A6D04B16C2C512003737E8 /* animate_e.cpp in Sources */,
+				04A6D04C16C2C512003737E8 /* time_sched.cpp in Sources */,
+				04A6D04D16C2C512003737E8 /* test_attrs.cpp in Sources */,
+				04A6D04E16C2C512003737E8 /* animate_n.cpp in Sources */,
+				04A6D04F16C2C512003737E8 /* time_state.cpp in Sources */,
+				04A6D05016C2C512003737E8 /* time_calc.cpp in Sources */,
+				04A6D05116C2C512003737E8 /* trace_player.cpp in Sources */,
+				04A6D05216C2C512003737E8 /* smil_time.cpp in Sources */,
+				04A6D05316C2C512003737E8 /* sync_rule.cpp in Sources */,
+				04A6D05416C2C512003737E8 /* smil_layout.cpp in Sources */,
+				04A6D05516C2C512003737E8 /* smil_player.cpp in Sources */,
+				04A6D05616C2C512003737E8 /* smiltext.cpp in Sources */,
+				04A6D05716C2C512003737E8 /* time_attrs.cpp in Sources */,
+				04A6D05816C2C512003737E8 /* params.cpp in Sources */,
+				04A6D05916C2C512003737E8 /* transition.cpp in Sources */,
+				04A6D05A16C2C512003737E8 /* region_node.cpp in Sources */,
+				04A6D05B16C2C512003737E8 /* timegraph.cpp in Sources */,
+				04A6D05C16C2C512003737E8 /* animate_a.cpp in Sources */,
+				04A6D05D16C2C512003737E8 /* time_node.cpp in Sources */,
+				04A6D05E16C2C512003737E8 /* posix_datasource.cpp in Sources */,
+				04A6D05F16C2C512003737E8 /* get_version.cpp in Sources */,
+				04A6D06016C2C512003737E8 /* cg_avfoundation_video.mm in Sources */,
+				04A6D06116C2C512003737E8 /* cg_transition.mm in Sources */,
+				04A6D06216C2C512003737E8 /* node_impl.cpp in Sources */,
+				04A6D06316C2C512003737E8 /* event_processor.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04D71F8012B628210064FBCB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2103,6 +2354,11 @@
 			isa = PBXTargetDependency;
 			name = third_party_packages_3264;
 			targetProxy = 041DCBF012B662FD003407C8 /* PBXContainerItemProxy */;
+		};
+		04A6D00016C2C512003737E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS_BOTH;
+			targetProxy = 04A6D00116C2C512003737E8 /* PBXContainerItemProxy */;
 		};
 		04ED3D4816B8820D00CE90A4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2204,6 +2460,58 @@
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = libambulantCG;
+			};
+			name = Release;
+		};
+		04A6D06616C2C512003737E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04B75B6C12B79C8900161EB5 /* ambulant-debug-iphone.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-framework",
+					ImageIO,
+					"-framework",
+					UIKit,
+				);
+				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
+				PRODUCT_NAME = "libambulantiPhone copy";
+			};
+			name = Debug;
+		};
+		04A6D06716C2C512003737E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04B75B7112B79C8900161EB5 /* ambulant-release-iphone.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
+				PRODUCT_NAME = "libambulantiPhone copy";
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -2311,6 +2619,15 @@
 			buildConfigurations = (
 				04A1E87312B57DF20060F97E /* Debug */,
 				04A1E87412B57DF20060F97E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04A6D06516C2C512003737E8 /* Build configuration list for PBXNativeTarget "libambulantiPhoneSimulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04A6D06616C2C512003737E8 /* Debug */,
+				04A6D06716C2C512003737E8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

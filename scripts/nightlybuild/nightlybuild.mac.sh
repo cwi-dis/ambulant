@@ -17,9 +17,9 @@ x)
 esac
 
 # Tunable parameters, to some extent
-export SDKROOT=/Developer/SDKs/MacOSX10.7.sdk
-export MACOSX_DEPLOYMENT_TARGET=10.7
 AMBULANTVERSION=2.5
+export MACOSX_DEPLOYMENT_TARGET=10.7
+export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
@@ -43,7 +43,7 @@ xrelease*)
 esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
-BUILD3PPARGS=mac10.7
+BUILD3PPARGS=macosx$MACOSX_DEPLOYMENT_TARGET
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin --with-included-ltdl"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac

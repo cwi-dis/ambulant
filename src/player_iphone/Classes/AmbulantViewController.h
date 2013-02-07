@@ -125,12 +125,12 @@ enum ZoomState {
 - (void) autoHideInteractionView;
 
 // User interaction through gestures
-- (void) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
-- (void) showHUDGesture:(UITapGestureRecognizer*) sender;
-- (void) selectPointGesture:(UILongPressGestureRecognizer *)sender;
-- (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
-- (void) handlePinchGesture:(UIGestureRecognizer*) sender;
-- (void) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
+- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
+- (IBAction) showHUDGesture:(UITapGestureRecognizer*) sender;
+- (IBAction) selectPointGesture:(UILongPressGestureRecognizer *)sender;
+- (IBAction) handlePanGesture:(UIPanGestureRecognizer*) sender;
+- (IBAction) handlePinchGesture:(UIGestureRecognizer*) sender;
+- (IBAction) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 
 // User interaction through buttons
 - (IBAction) doRestartTapped: (id)sender;

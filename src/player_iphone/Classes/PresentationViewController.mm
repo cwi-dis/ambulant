@@ -45,7 +45,7 @@ isHistory {
 
 - (void) awakeFromNib
 {
-	AM_DBG NSLog(@"PresentationViewController awakeFromNib(0x%x)", self);
+	AM_DBG NSLog(@"PresentationViewController awakeFromNib(%p)", self);
 	if (presentationsArray == NULL) {
 		presentationsArray = [ [ NSMutableArray alloc ] init ];
 	}
@@ -63,7 +63,7 @@ isHistory {
 - (void) viewDidLoad
 {
     [super viewDidLoad];
-	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
+	AM_DBG NSLog(@"PresentationViewController viewDidLoad(%p)", self);
 //	self.tableView.rowHeight = 60;
 	if (presentationsArray == NULL) {
 		presentationsArray = [[NSMutableArray alloc] init];
@@ -78,7 +78,7 @@ isHistory {
 
 - (IBAction) done:(id)sender
 {
-	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
+	AM_DBG NSLog(@"PresentationViewController done(%p)", self);
 	[delegate auxViewControllerDidFinish:self];
 }
 
@@ -110,7 +110,7 @@ isHistory {
 // Customize the number of rows in the table view.
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	AM_DBG NSLog(@"tableView:0x%x numberOfRowsInSection(0x%x) section=%d", self, section);
+	AM_DBG NSLog(@"tableView:numberOfRowsInSection(%p) section=%d", self, section);
     return [presentationsArray count];
 }
 
@@ -160,7 +160,7 @@ isHistory {
 		label.text = aPresentation.description;
 	}
 	catch (NSException* exception) {
-		AM_DBG NSLog(@"cellForRowAtIndexPath:indexPath=%d exception name=%@ reason=%@", [exception name], [exception reason]);
+		AM_DBG NSLog(@"cellForRowAtIndexPath:indexPath=%@ exception name=%@ reason=%@", indexPath, [exception name], [exception reason]);
 	}
 	return cell;
 }
@@ -266,7 +266,7 @@ isHistory {
 		ambulant::Playlist* playlist = prefs->m_favorites;
 		PlaylistItem* new_item = prefs->m_history->get_last_item();
 		// Check if we have 'new_item' already in the playlist; if so ignore
-		AM_DBG NSLog(@"new_item.url=0x%x: %@", new_item.url, new_item.url != NULL ? [new_item.url absoluteString]:@"<nil>");
+		AM_DBG NSLog(@"new_item.url=%p: %@", new_item.url, new_item.url != NULL ? [new_item.url absoluteString]:@"<nil>");
 		BOOL found = NO;
 		BOOL* found_ref = &found;
 		NSArray* items = playlist->get_playlist();
@@ -275,7 +275,7 @@ isHistory {
             ^(id obj, NSUInteger idx, BOOL *stop)
             {
                 PlaylistItem* item = (PlaylistItem*) obj;
-                AM_DBG NSLog(@"item.url=0x%x: %@", item.url, item.url != NULL ? [item.url absoluteString]:@"<nil>");
+                AM_DBG NSLog(@"item.url=%p: %@", item.url, item.url != NULL ? [item.url absoluteString]:@"<nil>");
                 if ([new_item.url isEqual: (id) item.url]) {
                     *found_ref = YES;
                 }

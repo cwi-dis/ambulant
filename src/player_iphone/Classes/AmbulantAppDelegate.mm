@@ -370,7 +370,7 @@ document_stopped: (id) sender
 }
 
 - (void) settingsHaveChanged:(SettingsViewController *)controller {
-	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController showSettings(%p)", self);
 	// check we have the settings view
 	if (controller.view.tag != 40) {
 		return;
@@ -390,7 +390,7 @@ document_stopped: (id) sender
 }
 
 - (void) auxViewControllerDidFinish: (UIViewController *)controller {
-	AM_DBG NSLog(@"auxViewControllerDidFinish: controller=0x%x", controller);
+	AM_DBG NSLog(@"auxViewControllerDidFinish: controller=%p", controller);
     // XXX Needed?[viewController orientationChanged: nil];
 	// Most view auxiliary view controllers may change some of items stored in preferences
 	ambulant::iOSpreferences::get_preferences()->save_preferences();
@@ -400,7 +400,7 @@ document_stopped: (id) sender
 
 - (void) setHistoryViewController:(PresentationViewController *)controller
 {
-	AM_DBG NSLog(@"AmbulantViewController setHistoryViewController(0x%x) controller=0x%x", self, controller);
+	AM_DBG NSLog(@"AmbulantViewController setHistoryViewController(%p) controller=%p", self, controller);
     history = controller;
 	if (currentPVC == NULL) {
 		currentPVC = history;
@@ -419,7 +419,7 @@ document_stopped: (id) sender
 
 - (void) playURL: (NSString*) whatString {
     // XXXJACK: Change interface to get PlayListItem, which has the position_offset as well.
-	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController (%p)", self);
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	currentPVC = nil;
     [viewController doPlayURL: whatString fromNode: nil];
@@ -431,7 +431,7 @@ document_stopped: (id) sender
 
 - (void) playPresentation: (PlaylistItem*) item fromPresentationViewController: (PresentationViewController*) controller {
     // XXXJACK: Change interface to get PlayListItem, which has the position_offset as well.
-	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController (%p)", self);
 	AM_DBG NSLog(@"Selected: %@",item);
 	currentPVC = controller;
     [viewController doPlayURL: [[item url] absoluteString] fromNode: [item position_node]];

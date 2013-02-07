@@ -221,7 +221,7 @@ iOSpreferences::repr()
 
 ambulant::Playlist::Playlist(NSArray* ansarray)
 {
-	am_ios_version = [NSString stringWithString: AM_IOS_PLAYLISTVERSION];
+	am_ios_version = AM_IOS_PLAYLISTVERSION;
 	am_ios_playlist = [[NSMutableArray arrayWithArray: ansarray] retain];
 }
 
