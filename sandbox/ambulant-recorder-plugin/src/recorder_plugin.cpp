@@ -213,34 +213,51 @@ recorder_writer::push_data(recorder_queue_element* qe)
 {
 	const char* fun = __PRETTY_FUNCTION__;
 	static lib::timer::time_type s_old_timestamp = 0;
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld)", fun, this, qe, qe->m_timestamp, qe->m_timestamp - s_old_timestamp);
-	s_old_timestamp = qe->m_timestamp;
+	lib::timer::time_type diff =  qe->m_timestamp - s_old_timestamp;
 	m_lock.enter();
-	m_queue.push (qe);
+	bool drop_frame =  diff < 30 || m_queue.size() > 20;
+
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld drop_frame=%d)", fun, this, qe, qe->m_timestamp, diff, drop_frame);
+	if ( ! drop_frame) {
+		s_old_timestamp = qe->m_timestamp;
+		m_queue.push (qe);
+	} else {
+		delete qe;
+	}
 	m_lock.leave();
 	ambulant::lib::sleep_msec(10);
 }
 
+// Only for debugging. Code from: unix_timer.cpp
+#include <sys/time.h>
+// return current time in millisec. since Epoch (unix: man 2 time)
+ambulant::lib::timer::time_type clock_time() {
+	struct timeval tv;
+	if (gettimeofday(&tv, NULL) >= 0) {
+		return tv.tv_sec*1000 + tv.tv_usec / 1000;
+	}
+	return 0;
+}
+
 int
-recorder_writer::_write_data ()
+recorder_writer::_write_data (recorder_queue_element* qe)
 {
 	const char* fun = __PRETTY_FUNCTION__;
-	//AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
 	size_t result = 0;
-	// lock is set, queue not empty
-	recorder_queue_element* qe = m_queue.front();
 	static lib::timer::time_type s_old_timestamp = 0;
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld)", fun, this, qe, qe->m_timestamp, qe->m_timestamp - s_old_timestamp);
+	lib::timer::time_type start_time = clock_time();
+
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p (diff=%ld)", fun, this, qe->m_timestamp - s_old_timestamp);
 	s_old_timestamp = qe->m_timestamp;
 	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h) < 0) {
 		return -1;
 	}
 	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);
-	m_queue.pop();
 	delete qe;
 	if (result != qe->m_datasize) {
 		return -1;
 	}
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p wrote: (qe=%p time=%ld in %ld millisec)", fun, this, qe, qe->m_timestamp, clock_time() - start_time);
 	return 0;
 }
 
@@ -253,11 +270,13 @@ recorder_writer::run()
 	while ( ! exit_requested() ) {
 		m_lock.enter();
 		if (m_queue.size() > 0) {
-			if (_write_data() < 0) {
+			recorder_queue_element* qe = m_queue.front();
+			m_queue.pop();
+			m_lock.leave();
+			if (_write_data(qe) < 0) {
 				terminate();
 			}
-		}
-		m_lock.leave();
+		} else m_lock.leave();
 		ambulant::lib::sleep_msec(10);
 	}
 
