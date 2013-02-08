@@ -223,13 +223,13 @@ if override_3pp:
     print '+ building in', os.getcwd()
     
 # Locate ambulant base directory
-dir=os.getenv('AMBULANT_DIR')
+dir = os.getenv('AMBULANT_DIR')
 if dir:
     if not os.path.exists(os.path.join(dir, 'configure.in')):
         print 'ERROR: AMBULANT_DIR=%s, but it does not look like an Ambulant toplevel directory' % dir
         sys.exit(1)
 else:
-    os.getcwd()
+    dir = os.getcwd()
     while dir != '/':
         dir = os.path.dirname(dir)
         if os.path.exists(os.path.join(dir, 'configure.in')):
