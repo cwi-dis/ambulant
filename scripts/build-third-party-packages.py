@@ -238,7 +238,7 @@ else:
         print 'ERROR: cannot find Ambulant toplevel directory'
         sys.exit(1)
     print '+ Ambulant toplevel directory:', dir
-    os.environ["AMBULANT_DIR"]=AMBULANT_DIR
+    os.environ["AMBULANT_DIR"]=dir
 AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
 
