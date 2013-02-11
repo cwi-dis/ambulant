@@ -1111,8 +1111,18 @@ def main():
         # Inspect the environment to decide what needs to be built.
         args[0] = os.getenv('PLATFORM_NAME')
         if not args[0]:
-            print '** ERROR: platform autoXcode requires $PLATFORM_NAME to be set'
-            sys.exit(1)
+            sdkroot = os.getenv("SDKROOT")
+            if not sdkroot:
+                print '** ERROR: platform autoXcode requires $PLATFORM_NAME or $SDKROOT to be set'
+                sys.exit(1)
+            plistfile = os.path.join(sdkroot, "SDKSettings.plist")
+            import plistlib
+            try:
+                plist = plistlib.readPlist(plistfile)
+            except IOError:
+                print '** ERROR: $SDKROOT has no readable SDKSettings.plist'
+                raise
+            args[0] = plist['DefaultProperties']['PLATFORM_NAME']
             
     if len(args) != 1 or args[0] not in third_party_packages:
         parser.print_help()
