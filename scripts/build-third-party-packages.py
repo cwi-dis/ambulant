@@ -1116,9 +1116,10 @@ def main():
                 print '** ERROR: platform autoXcode requires $PLATFORM_NAME or $SDKROOT to be set'
                 sys.exit(1)
             plistfile = os.path.join(sdkroot, "SDKSettings.plist")
+            plistfp = os.popen("plutil -convert xml1 -o - %s" % plistfile)
             import plistlib
             try:
-                plist = plistlib.readPlist(plistfile)
+                plist = plistlib.readPlist(plistfp)
             except IOError:
                 print '** ERROR: $SDKROOT has no readable SDKSettings.plist'
                 raise
