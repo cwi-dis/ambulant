@@ -25,6 +25,11 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/mtsync.h"
 
+#ifdef AMBULANT_PLATFORM_WIN32
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 #include <iostream>
 #include <ostream>
 
