@@ -267,6 +267,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 508817D709F0C9AE0071BF1A /* Build configuration list for PBXNativeTarget "npambulant" */;
 			buildPhases = (
+				04525C5C16C4057E00960DC2 /* Run Script - Link to third_party_packages */,
 				508817D009F0C9AD0071BF1A /* Resources */,
 				508817D109F0C9AD0071BF1A /* Sources */,
 				508817D209F0C9AD0071BF1A /* Frameworks */,
@@ -382,6 +383,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04525C5C16C4057E00960DC2 /* Run Script - Link to third_party_packages */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script - Link to third_party_packages";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# third_party-Packages may be in Common. Create a symlink in the current configuration.\nconfig_3pp=$CONFIGURATION_BUILD_DIR/third_party_packages\ncommon_3pp=$BUILD_ROOT/Common/third_party_packages\nif [ -e $common_3pp -a ! -e $config_3pp ] ; then\nmkdir -p $CONFIGURATION_BUILD_DIR\nln -s $common_3pp $config_3pp\nfi\n";
+		};
 		0470A2BC1346726D00059573 /* Run Script - install */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -457,15 +472,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04FEB38113428B85004D0667 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				AMBULANT_3PP = "$(AMBULANT_DIR)/build-3264/third_party_packages";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
-				LINK_WITH_STANDARD_LIBRARIES = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PATH = "$(PATH):/usr/local/bin";
 				PRODUCT_NAME = npambulant;
 				WRAPPER_EXTENSION = plugin;
 			};
@@ -475,12 +484,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04FEB38113428B85004D0667 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				AMBULANT_3PP = "$(AMBULANT_DIR)/build-3264/third_party_packages";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				PRODUCT_NAME = npambulant;
-				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL $(AMBULANT_INCLUDE_3PP)/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include $(AMBULANT_3PP)/xulrunner-sdk/include";
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Release;
@@ -489,31 +493,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04FEB38413428B85004D0667 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = npambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_DEBUG=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INFOPLIST_FILE = ../../src/npambulant/Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
@@ -525,10 +509,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04FEB38613428B85004D0667 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = npambulant_Prefix.pch;
 				INFOPLIST_FILE = ../../src/npambulant/Info.plist;

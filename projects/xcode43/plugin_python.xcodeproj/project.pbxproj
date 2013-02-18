@@ -312,7 +312,6 @@
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = so;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
@@ -329,7 +328,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = so;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_python(CG)";
@@ -343,10 +341,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E968812BA4D7900399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/src/pyambulant /System/Library/Frameworks/Python.framework/Versions/Current/include/python2.6 $(inherited)";
 			};
@@ -356,9 +351,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E968812BA4D7900399893 /* ambulant-common.xcconfig */;
 			buildSettings = {
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/src/pyambulant /System/Library/Frameworks/Python.framework/Versions/Current/include/python2.6 $(inherited)";
 			};
 			name = Release;

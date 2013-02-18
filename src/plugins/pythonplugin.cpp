@@ -17,6 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+#include "Python.h"
+
 #include "ambulant/lib/logger.h"
 #include "ambulant/version.h"
 #include "ambulant/common/factory.h"
@@ -48,7 +50,6 @@
 #include "ambulant/net/stdio_datasource.h"
 #include "ambulant/net/posix_datasource.h"
 #endif
-#include "Python.h"
 #include "ambulantmodule.h"
 
 // The Python interface does not qualify strings with const, so we have to

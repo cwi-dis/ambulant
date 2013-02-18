@@ -94,7 +94,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 #endif
 
 	if (old) {
-		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
+		AM_DBG NSLog(@"performSelectorOnMainThread: close: on %p", (void*)m_mydocument);
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
 	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -527,7 +527,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)pause:(id)sender
 {
-	AM_DBG NSLog(@"pause for %@, myMainloop=0x%x", self, myMainloop);
+	AM_DBG NSLog(@"pause for %@, myMainloop=%p", self, myMainloop);
 	if (myMainloop) myMainloop->pause();
 	[self validateButtons: nil];
 }
@@ -765,7 +765,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if (screen == NULL) screen = [NSScreen mainScreen];
 	NSDictionary* screenInfo = [screen deviceDescription];
 	NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-	AM_DBG NSLog(@"0x%x.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
+	AM_DBG NSLog(@"%p.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
 
 	// Capture the screen.
 	CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
@@ -889,7 +889,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[[view window] addChildWindow: myAuxWindow ordered: NSWindowAbove];
 //	[myAuxWindow makeKeyAndOrderFront: self];
 	AM_DBG NSLog(@"openAuxDocument %@", auxUrl);
-	AM_DBG NSLog(@"Orig view 0x%x, auxView 0x%x", (void*)view, (void*)myAuxView);
+	AM_DBG NSLog(@"Orig view %p, auxView %p", (void*)view, (void*)myAuxView);
 	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, NULL);
 	myAuxMainloop->play();
 	[myAuxWindow makeFirstResponder: myAuxView];

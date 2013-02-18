@@ -223,13 +223,13 @@ if override_3pp:
     print '+ building in', os.getcwd()
     
 # Locate ambulant base directory
-dir=os.getenv('AMBULANT_DIR')
+dir = os.getenv('AMBULANT_DIR')
 if dir:
     if not os.path.exists(os.path.join(dir, 'configure.in')):
         print 'ERROR: AMBULANT_DIR=%s, but it does not look like an Ambulant toplevel directory' % dir
         sys.exit(1)
 else:
-    os.getcwd()
+    dir = os.getcwd()
     while dir != '/':
         dir = os.path.dirname(dir)
         if os.path.exists(os.path.join(dir, 'configure.in')):
@@ -238,7 +238,7 @@ else:
         print 'ERROR: cannot find Ambulant toplevel directory'
         sys.exit(1)
     print '+ Ambulant toplevel directory:', dir
-    os.environ["AMBULANT_DIR"]=AMBULANT_DIR
+    os.environ["AMBULANT_DIR"]=dir
 AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
 
@@ -1010,11 +1010,11 @@ def checkenv_iphone(target):
     # This is a hack, but I don't see a way around it...
     if target == 'iphoneos':
         if os.environ.get('PLATFORM_NAME') == 'iphonesimulator':
-            print '* WARNING: skipping iphonesimulator build in a iphoneos workflow'
-            sys.exit(0)
+            print 'ERROR: asking for iphoneos build but $PLATFORM_NAME=iphonesimulator'
+            sys.exit(1)
     elif target == 'iphonesimulator':
         if os.environ.get('PLATFORM_NAME') == 'iphoneos':
-            print '* WARNING: skipping iphoneos build in a iphonesimulator workflow'
+            print 'ERROR: asking for iphonesimulator build but $PLATFORM_NAME=iphoneos'
             sys.exit(0)
     else:
         assert 0
@@ -1111,8 +1111,19 @@ def main():
         # Inspect the environment to decide what needs to be built.
         args[0] = os.getenv('PLATFORM_NAME')
         if not args[0]:
-            print '** ERROR: platform autoXcode requires $PLATFORM_NAME to be set'
-            sys.exit(1)
+            sdkroot = os.getenv("SDKROOT")
+            if not sdkroot:
+                print '** ERROR: platform autoXcode requires $PLATFORM_NAME or $SDKROOT to be set'
+                sys.exit(1)
+            plistfile = os.path.join(sdkroot, "SDKSettings.plist")
+            plistfp = os.popen("plutil -convert xml1 -o - %s" % plistfile)
+            import plistlib
+            try:
+                plist = plistlib.readPlist(plistfp)
+            except IOError:
+                print '** ERROR: $SDKROOT has no readable SDKSettings.plist'
+                raise
+            args[0] = plist['DefaultProperties']['PLATFORM_NAME']
             
     if len(args) != 1 or args[0] not in third_party_packages:
         parser.print_help()

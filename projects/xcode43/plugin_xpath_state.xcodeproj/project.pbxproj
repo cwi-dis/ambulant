@@ -255,12 +255,10 @@
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = so;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_xpath_state(CG)";
-				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL /usr/include/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};
@@ -271,7 +269,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = so;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				PRODUCT_NAME = "libamplugin_xpath_state(CG)";
