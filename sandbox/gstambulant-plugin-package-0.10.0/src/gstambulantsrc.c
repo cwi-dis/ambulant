@@ -76,9 +76,14 @@ enum
   LAST_SIGNAL
 };
 
+#define DEFAULT_MIN_LATENCY ((30 * GST_MSECOND) /GST_USECOND)
+#define DEFAULT_MAX_LATENCY ((30 * GST_MSECOND) /GST_USECOND)
+
 enum
 {
   PROP_0,
+  PROP_MIN_LATENCY,
+  PROP_MAX_LATENCY,
   PROP_SILENT
 };
 
@@ -107,6 +112,7 @@ static gboolean gst_ambulantsrc_start (GstBaseSrc * basesrc);
 static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc);
 static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc);
 static gboolean gst_ambulantsrc_set_caps (GstBaseSrc * bsrc, GstCaps * caps);
+static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query);
 
 /* GstBaseSrc virtual methods we need to override */
 
@@ -157,7 +163,7 @@ void read_buffer(GstAmbulantSrc* asrc)
 static void
 gst_ambulantsrc_base_init (gpointer gclass)
 {
-//fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+  fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
 
@@ -175,7 +181,7 @@ gst_ambulantsrc_base_init (gpointer gclass)
 static void
 gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 {
-//fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+  fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   GObjectClass *gobject_class;
   GstBaseSrcClass *gstbasesrc_class;
@@ -189,11 +195,19 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
   g_object_class_install_property (gobject_class, PROP_SILENT,
       g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
           FALSE, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_MIN_LATENCY,
+      g_param_spec_int64 ("min-latency", "Minimum latency time", "Minimum latency in microseconds",
+						  1, G_MAXINT64, DEFAULT_MIN_LATENCY, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_MAX_LATENCY,
+      g_param_spec_int64 ("max-latency", "Maximum latency time", "Maximum latency in microseconds",
+						  1, G_MAXINT64, DEFAULT_MAX_LATENCY, G_PARAM_READWRITE));
+
   gstbasesrc_class->start = gst_ambulantsrc_start;
   gstbasesrc_class->stop = gst_ambulantsrc_stop;
 
   gstbasesrc_class->get_caps = gst_ambulantsrc_get_caps;
-//gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
+  gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
+  gstbasesrc_class->query = gst_ambulantsrc_query;
   gstbasesrc_class->get_size = gst_ambulantsrc_get_size;
   gstbasesrc_class->get_times = gst_ambulantsrc_get_times;
   gstbasesrc_class->create = gst_ambulantsrc_create;
@@ -209,15 +223,18 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc,
     GstAmbulantSrcClass * gclass)
 {
   asrc->silent = TRUE;
-  if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+  /*if(!asrc->silent)*/fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   asrc->eos = FALSE;
   asrc->gstbuffer = NULL;
+  asrc->min_latency = DEFAULT_MIN_LATENCY;
+  asrc->max_latency = DEFAULT_MAX_LATENCY;
   read_header(asrc);
   read_buffer(asrc);
   if ( ! asrc->eos) {
     GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
     gst_base_src_set_blocksize (bsrc, asrc->datasize);
     gst_base_src_set_live (bsrc, TRUE);
+    gst_base_src_set_format (bsrc, GST_FORMAT_TIME);
   }
 }
 
@@ -226,9 +243,15 @@ gst_ambulantsrc_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (object);
-  if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+  /*if(!asrc->silent)*/fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   switch (prop_id) {
+    case PROP_MIN_LATENCY:
+      asrc->min_latency = g_value_get_int64 (value);
+      break;
+    case PROP_MAX_LATENCY:
+      asrc->max_latency = g_value_get_int64 (value);
+      break;
     case PROP_SILENT:
       asrc->silent = g_value_get_boolean (value);
       break;
@@ -246,6 +269,12 @@ gst_ambulantsrc_get_property (GObject * object, guint prop_id,
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   switch (prop_id) {
+    case PROP_MIN_LATENCY:
+      g_value_set_int64 (value, asrc->min_latency);
+      break;
+    case PROP_MAX_LATENCY:
+      g_value_set_int64 (value, asrc->max_latency);
+      break;
     case PROP_SILENT:
       g_value_set_boolean (value, asrc->silent);
       break;
@@ -276,6 +305,28 @@ gst_ambulantsrc_set_caps (GstBaseSrc* bsrc, GstCaps * caps)
 
   free(s);
   return TRUE;
+}
+
+static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
+{
+  GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
+  gboolean res = FALSE;
+
+  if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_LATENCY:
+    {
+      gst_query_set_latency (query, TRUE, asrc->min_latency, asrc->max_latency);
+	  if(!asrc->silent)fprintf(stderr,"%s min-latency=%" G_GUINT64_FORMAT " max-latency=%"  G_GUINT64_FORMAT"\n", __PRETTY_FUNCTION__,asrc->min_latency,asrc->max_latency);
+      res = TRUE;
+      break;
+    }
+    default:
+      res = GST_BASE_SRC_CLASS (parent_class)->query (bsrc, query);
+      break;
+  }
+  return res;
 }
 
 static void gst_ambulantsrc_get_times (GstBaseSrc *src, GstBuffer *buffer,
