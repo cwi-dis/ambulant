@@ -180,7 +180,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 #endif
 	m_elapsed(0),
 	m_start_input(true),
-	m_pixel_layout(pixel_unknown)
+	m_pixel_layout(pixel_unknown),
+    m_is_live(false)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
@@ -287,7 +288,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 				delta_milli = timestamp_milli - now_milli;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: 0x%x: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d, %d frames in buffer", this, (int)timestamp_milli, (int)delta_milli, (int)now_milli, m_frames.size());
 			// Sanity check: we don't want this to be more than a second into the future
-			if (delta_milli > 1000) {
+			if (delta_milli > 1000 && ! m_src->get_is_live()) {
 				lib::logger::get_logger()->debug("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
 				lib::logger::get_logger()->debug("ffmpeg_video: elapsed()=%dms, timestamp=%dms", now_milli, timestamp_milli);
 			}
@@ -669,7 +670,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
-			if (drop_this_frame) {
+			if (drop_this_frame && ! m_src->get_is_live()) {
 				m_dropped_count++;
 #ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
 				m_dropped_count_temp++;

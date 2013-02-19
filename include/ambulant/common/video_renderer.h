@@ -30,6 +30,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/renderer_impl.h"
+#include "ambulant/smil2/params.h"
 
 namespace ambulant {
 

@@ -80,7 +80,8 @@ demux_audio_datasource::demux_audio_datasource(const net::url& url, abstract_dem
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_current_time(-1),
-	m_client_callback(NULL)
+	m_client_callback(NULL),
+    m_is_live(false)
 {
 	//AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::demux_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
 	// XXX ignoring the codec for now but i'll have to look into this real soon
@@ -370,7 +371,8 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 	m_current_time(-1),
 	m_client_callback(NULL),
 	m_audio_src(NULL),
-	m_frame_nr(0)
+	m_frame_nr(0),
+    m_is_live(false)
 {
 	assert(m_thread);
 	m_thread->add_datasink(this, stream_index);

@@ -73,6 +73,8 @@ class demux_audio_datasource:
 	common::duration get_dur();
 
     long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
+    void set_is_live (bool is_live) { m_is_live = is_live; }
+    bool get_is_live () { return m_is_live; }
 
   private:
 	bool _end_of_file();
@@ -88,6 +90,7 @@ class demux_audio_datasource:
 	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our callback to the client
 	lib::critical_section m_lock;
+    bool m_is_live;
 };
 
 typedef std::pair<timestamp_t, video_frame> ts_frame_pair;
@@ -138,6 +141,9 @@ class demux_video_datasource:
 	common::duration get_dur();
 
     long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
+    void set_is_live (bool is_live) { m_is_live = is_live; }
+    bool get_is_live () { return m_is_live; }
+    
   private:
 	bool _end_of_file();
 	bool _buffer_full();
@@ -156,7 +162,7 @@ class demux_video_datasource:
 	lib::critical_section m_lock;
 	//FILE *m_file;
 	long long int m_frame_nr;
-
+    bool m_is_live;
 };
 
 

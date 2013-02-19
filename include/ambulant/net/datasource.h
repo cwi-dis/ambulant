@@ -336,6 +336,13 @@ class audio_datasource_mixin {
 
     /// Return the timestamp of the current position in the audio data.
 	virtual timestamp_t get_elapsed() = 0;
+    
+    /// Set the 'is_live' flag
+    virtual void set_is_live (bool is_live) = 0;
+    
+    /// Return the 'is live' flag
+    virtual bool get_is_live () = 0;
+
 };
 
 /// Full interface to an object that supplies audio data to a consumer.
@@ -362,7 +369,8 @@ class raw_audio_datasource:
 	raw_audio_datasource(datasource* src) :
 		m_src(src),
 		m_fmt(audio_format(0,0,0)),
-		m_duration(false,0.0)  {};
+		m_duration(false,0.0),
+    m_is_live(false) {}
 	~raw_audio_datasource() {};
 
 
@@ -385,11 +393,14 @@ class raw_audio_datasource:
 	common::duration get_dur() {	return m_duration; };
 
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
+    void set_is_live (bool is_live) { m_is_live = is_live; }
+    bool get_is_live () { return m_is_live; }
+
   private:
 	datasource* m_src;
 	audio_format m_fmt;
 	common::duration m_duration;
-
+    bool m_is_live;
 };
 
 /// Interface to an object that supplies video data to a consumer.
@@ -473,6 +484,13 @@ class video_datasource : virtual public lib::ref_counted_obj {
 
     /// Return bandwidth usage data since last report.
     virtual long get_bandwidth_usage_data(const char **resource) { return -1; }
+    
+    /// Set the 'is_live' flag
+    virtual void set_is_live (bool is_live) = 0;
+    
+    /// Return the 'is live' flag
+    virtual bool get_is_live () = 0;
+
 };
 
 /// Interface to create a datasource for a given URL.

@@ -259,7 +259,8 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_au
 	m_src(src),
 	m_elapsed(m_src->get_start_time()),
 	m_is_audio_ds(false),
-	m_client_callback(NULL)
+	m_client_callback(NULL),
+    m_is_live(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
@@ -276,7 +277,8 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_audio_datasource *const
 	m_src(src),
 	m_elapsed(m_src->get_start_time()),
 	m_is_audio_ds(true),
-	m_client_callback(NULL)
+	m_client_callback(NULL),
+    m_is_live(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource() -> 0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
 	ffmpeg_init();
@@ -898,7 +900,8 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 	m_event_processor(NULL),
 	m_client_callback(NULL),
 	m_in_fmt(src->get_audio_format()),
-	m_out_fmt(fmts.best())
+	m_out_fmt(fmts.best()),
+    m_is_live(false)
 {
 	ffmpeg_init();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::ffmpeg_resample_datasource()->0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
