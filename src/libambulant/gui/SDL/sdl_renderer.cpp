@@ -125,14 +125,13 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_transition_dest->get_rect();
-	sdl_ambulant_window* saw = ((ambulant_sdl_window*) window)->get_sdl_ambulant_window();
+	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
+	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_sdl_surface());
 
-	SDL_Surface* surf = NULL;
 	// See whether we're in a transition
 	if (m_trans_engine && !m_fullscreen) {
-//JNK	SDL_Surface* gpm = saw->get_ambulant_surface();
-//TBD	surf = saw->get_ambulant_surface();
+     	SDL_Surface* surf = saw->get_sdl_surface();
 //TBD	if (surf == NULL)
 //TBD		surf = saw->new_ambulant_surface();
 		if (surf != NULL) {
@@ -148,6 +147,7 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 #endif//JNK
 			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to transition surface");
 //TBD		saw->set_ambulant_surface(surf);
+			asw->copy_to_sdl_screen_surface (surf, NULL, NULL, 255);
 		}
 
 	}
@@ -187,10 +187,10 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 				typedef no_arg_callback<sdl_transition_renderer>transition_callback;
 				event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);
 				transition_info::time_type delay = m_trans_engine->next_step_delay();
-				if (delay < 33) delay = 33; // XXX band-aid
-	//				delay = 1000;
+//				if (delay < 33) delay = 33; // XXX band-aid
+//				delay = 1000;
 				AM_DBG logger::get_logger()->debug("sdl_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
-				m_event_processor->add_event(ev, delay, lib::ep_low);
+				m_event_processor->add_event(ev, delay, lib::ep_med);
 			}
 		}
 	}

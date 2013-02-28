@@ -246,7 +246,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	g_object_unref(G_OBJECT (gc));
 #endif//JNK
 	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	asw->copy_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
+	asw->copy_to_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x done.", this);
 	m_lock.leave();

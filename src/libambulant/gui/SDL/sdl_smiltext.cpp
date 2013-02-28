@@ -807,7 +807,7 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	L -= offset.x;
 	T -= offset.y;
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };	
-	asdlw->copy_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
+	asdlw->copy_to_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 	SDL_FreeSurface(sdl_surface);
 #endif//GDK_PANGO
 }

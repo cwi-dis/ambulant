@@ -246,14 +246,17 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.h = r.height();
 	SDL_Renderer* renderer = get_sdl_ambulant_window()->get_sdl_window_renderer();
 	SDL_Surface* surface = get_sdl_ambulant_window()->get_sdl_surface();
-
+	SDL_Surface* screen_surface = get_sdl_ambulant_window()->get_sdl_screen_surface();
+//	dump_sdl_surface(surface, "surf");
+//	dump_sdl_surface(screen_surface, "scr1");
+	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
+//	dump_sdl_surface(screen_surface, "scr2");
 	if (m_recorder) {
 		timestamp_t timestamp = get_sdl_ambulant_window()->get_evp()->get_timer()->elapsed();
-		m_recorder->new_video_data(surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
+		m_recorder->new_video_data(screen_surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
 	}
-//	dump_sdl_surface(surface, "surf");
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);		
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x) surface=(SDL_Surface*)0x%x, renderer=(SDL_Renderer*)0x%x, texture=(SDL_Texture*)0x%x, rect=(SDL_Rect){%d,%d,%d,%d}", this, surface, renderer, texture, rect.x, rect.y, rect.w, rect.h);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);		
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x) screen_surface=(SDL_Surface*)0x%x, renderer=(SDL_Renderer*)0x%x, texture=(SDL_Texture*)0x%x, rect=(SDL_Rect){%d,%d,%d,%d}", this, screen_surface, renderer, texture, rect.x, rect.y, rect.w, rect.h);
 	assert(texture);
 	int err = SDL_RenderCopy(renderer, texture, NULL, NULL);	
 	assert (err==0);
@@ -529,42 +532,70 @@ ambulant_sdl_window::clear()
 #endif//JNK
 	color_t color = lib::to_color(255, 255, 255);
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear(): clearing to 0x%x", (long)color);
+	SDL_Surface* surface = get_sdl_ambulant_window()->get_sdl_surface();
+	SDL_Surface* screen_surface = get_sdl_ambulant_window()->get_sdl_screen_surface();
+	Uint32 sdl_color = SDL_MapRGBA(surface->format, redc(color), greenc(color), bluec(color), 255);
+	SDL_SetClipRect(surface, NULL);
+	SDL_FillRect(surface, NULL, sdl_color);
+	SDL_SetClipRect(screen_surface, NULL);
+	SDL_FillRect(screen_surface, NULL, sdl_color);
 #ifdef JNK
-	GdkColor bgc;
-	bgc.red = redc(color)*0x101;
-	bgc.blue = bluec(color)*0x101;
-	bgc.green = greenc(color)*0x101;
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_surface));
-	gdk_gc_set_rgb_fg_color (gc, &bgc);
-	gdk_draw_rectangle (GDK_DRAWABLE (m_surface), gc, TRUE,
-		m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
-	g_object_unref (G_OBJECT (gc));
-#endif//JNK
-}
+	 GdkColor bgc;
+	 bgc.red = redc(color)*0x101;
+	 bgc.blue = bluec(color)*0x101;
+	 bgc.green = greenc(color)*0x101;
+	 GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_surface));
+	 gdk_gc_set_rgb_fg_color (gc, &bgc);
+	 gdk_draw_rectangle (GDK_DRAWABLE (m_surface), gc, TRUE,
+		 m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
+	 g_object_unref (G_OBJECT (gc));
+ #endif//JNK
+ }
 
 
-//XX to sdl_ambulant_renderer
+//XX maybe to sdl_ambulant_renderer
+
 int
-ambulant_sdl_window::copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
+_copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
-	if (src != NULL && dst_rect != NULL) {
-		SDL_Surface* surface = get_sdl_ambulant_window()->get_sdl_surface();
-//		dump_sdl_surface(src, "src");
-//		dump_sdl_surface (surface, "befor");
+	if (src != NULL && dst != NULL) {
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
 		if (rv < 0) {
 			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
 			return rv;
 		}
 		while (src->locked) SDL_UnlockSurface (src); //XXXX quick hack for SDL_Pange (I guess)
- 		rv = SDL_BlitSurface(src, src_rect, surface, dst_rect);
-//		dump_sdl_surface (m_sdl_surface, "after"); 
+		rv = SDL_BlitSurface(src, src_rect, dst, dst_rect);
+		// dump_sdl_surface (src, "after"); 
 		if (rv < 0) {
 			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_BlitSurface", SDL_GetError());
 			return rv;
 		}
+	}
+	return rv;
+}
+
+int
+ambulant_sdl_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
+{
+	int rv = 0;
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	if (src != NULL) {
+		SDL_Surface* dst = get_sdl_ambulant_window()->get_sdl_surface();
+		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
+	}
+	return rv;
+}
+int
+ambulant_sdl_window::copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
+{
+	int rv = 0;
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	if (src != NULL) {
+		SDL_Surface* dst = get_sdl_ambulant_window()->get_sdl_screen_surface();
+		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
 	}
 	return rv;
 }
@@ -740,7 +771,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	if (err != 0) {
 		return err;
 	}
-	m_sdl_surface = m_sdl_screen_surface; //TMP
+	m_sdl_surface = SDL_ConvertSurface(m_sdl_screen_surface, m_sdl_screen_surface->format, 0); // Copy
 
 	// Everything OK, register the window for use by SDL_Loop in the embedder (it should have one)
 	sdl_ambulant_window::s_lock.enter();

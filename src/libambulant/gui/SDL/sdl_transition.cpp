@@ -41,31 +41,33 @@ namespace sdl {
 // Helper functions to setup transitions
 
 static void
-setup_transition(bool outtrans, ambulant_sdl_window *agw, SDL_Surface** oldpxmp, SDL_Surface** newpxmp)
+setup_transition(bool outtrans, ambulant_sdl_window *asw, SDL_Surface** old_surf, SDL_Surface** new_surf)
 {
-#ifdef TBD
 	if (outtrans) {
-		if (agw->m_tmpsurface == NULL) {
+		if (asw->m_tmpsurface == NULL) {
 			// make a copy
-			//agw->m_tmpsurface = new SDL_Surface(*agw->get_ambulant_oldsurface());
-			agw->m_tmpsurface = agw->get_ambulant_oldsurface();
+			//asw->m_tmpsurface = new SDL_Surface(*asw->get_ambulant_oldsurface());
+//TBD		  asw->m_tmpsurface = asw->get_sdl_ambulant_window()->get_ambulant_oldsurface();
 		}
-		*oldpxmp = agw->get_ambulant_surface();
-		*newpxmp = agw->m_tmpsurface;
+		*old_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+//TBD	*new_surf = asw->m_tmpsurface;
 	} else {
-		*oldpxmp = agw->get_ambulant_surface();
-		*newpxmp = agw->get_ambulant_surface();
+		*old_surf = asw->get_sdl_ambulant_window()->get_sdl_screen_surface();
+		*new_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+//		asw->dump_sdl_surface(*old_surf, "old");
+//		asw->dump_sdl_surface(*new_surf, "new");
 	}
+#ifdef TBD
 #endif//TBD
 }
 static void
-finalize_transition(bool outtrans, ambulant_sdl_window *agw,  common::surface *dest)
+finalize_transition(bool outtrans, ambulant_sdl_window *asw,  common::surface *dest)
 {
 	if (outtrans) {
 		// copy the pixels in m_tmpsurface to the on-screen surface
 #ifdef  TBD
-		SDL_Surface* dest_surface = agw->get_ambulant_surface();
-		SDL_Surface* temp_surface = agw->get_ambulant_surface();
+		SDL_Surface* dest_surface = asw->get_sdl_ambulant_window()->get_ambulant_surface();
+		SDL_Surface* temp_surface = asw->get_sdl_ambulant_window()->get_ambulant_surface();
 		const lib::rect &r=	 dest->get_clipped_screen_rect();
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_surface=0x%x: temp_surface=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_surface, temp_surface,r.left(),r.top(),r.width(), r.height());
 		GdkGC *gc = gdk_gc_new (dest_surface);
@@ -80,35 +82,28 @@ sdl_transition_blitclass_fade::update()
 {
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f)", m_progress);
-	ambulant_sdl_window *agw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *npm, *opm;
+	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	SDL_Surface *n_srf, *o_srf;
 	const rect& newrect_whole =	 m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(),  T = newrect_whole.top(),
 		W = newrect_whole.width(), H = newrect_whole.height();
-	setup_transition(m_outtrans, agw, &opm, &npm);
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) agw=0x%x, opm=0x%x,npm0x%x", m_progress, agw, opm, npm);
-#ifdef  JNK
-	GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
-	GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
-	int alpha = static_cast<int>(round(255*m_progress));
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
-	gdk_pixbuf_composite(new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
-	GdkGC *gc = gdk_gc_new (opm);
-	gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
-	g_object_unref (G_OBJECT (gc));
-	g_object_unref (G_OBJECT (new_pixbuf));
-	g_object_unref (G_OBJECT (old_pixbuf));
-#endif//JNK
-	finalize_transition(m_outtrans, agw, m_dst);
+	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
+	Uint8 alpha = static_cast<Uint8>(round(255*m_progress));
+	/*AM_DBG*/ logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) asw=0x%x, o_srf=0x%x,n_srf0x%x alpha=%u", m_progress, asw, o_srf, n_srf, alpha);
+	SDL_SetSurfaceAlphaMod(n_srf, alpha);
+	SDL_SetSurfaceBlendMode(n_srf, SDL_BLENDMODE_BLEND);
+	SDL_Rect sdl_dst_rect = { L, T, W, H};
+	SDL_BlitSurface(n_srf, NULL, o_srf, &sdl_dst_rect); 
+	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
 sdl_transition_blitclass_rect::update()
 {
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect::update(%f)", m_progress);
-	ambulant_sdl_window *agw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *npm, *opm;
-	setup_transition(m_outtrans, agw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &opm, &npm);
 
 	rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
@@ -121,16 +116,16 @@ sdl_transition_blitclass_rect::update()
 	gdk_draw_surface(opm, gc,  npm, L, T, L, T, W, H);
 	g_object_unref (G_OBJECT (gc));
 #endif//JNK
-	finalize_transition(m_outtrans, agw, m_dst);
+	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
 sdl_transition_blitclass_r1r2r3r4::update()
 {
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-	ambulant_sdl_window *agw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *npm, *opm;
-	setup_transition(m_outtrans, agw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &opm, &npm);
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update() opm=0x%x, npm=0x%x.", opm, npm);
 	rect oldsrcrect_whole = m_oldsrcrect;
 	rect olddstrect_whole = m_olddstrect;
@@ -170,7 +165,7 @@ sdl_transition_blitclass_r1r2r3r4::update()
 	gdk_draw_surface(opm, gc, npm, Lnewsrc, Tnewsrc, Lnewdst, Tnewdst, Wnewsrc, Hnewsrc);
 	g_object_unref (G_OBJECT (gc));
 #endif//JNK
-	finalize_transition(m_outtrans, agw, m_dst);
+	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
@@ -178,9 +173,9 @@ sdl_transition_blitclass_rectlist::update()
 {
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rectlist::update(%f)", m_progress);
-	ambulant_sdl_window *agw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *npm, *opm;
-	setup_transition(m_outtrans, agw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &opm, &npm);
 	const rect& dstrect_whole = m_dst->get_clipped_screen_rect();
 	int Ldst = dstrect_whole.left(), Tdst = dstrect_whole.top(),
 		Wdst = dstrect_whole.width(), Hdst = dstrect_whole.height();
@@ -207,7 +202,7 @@ sdl_transition_blitclass_rectlist::update()
 	gdk_draw_surface(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	g_object_unref (G_OBJECT (gc)); // clears region as well
 #endif//JNK
-	finalize_transition(m_outtrans, agw, m_dst);
+	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
@@ -215,10 +210,10 @@ sdl_transition_blitclass_poly::update()
 {
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_poly::update(%f)", m_progress);
-	ambulant_sdl_window *agw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *npm, *opm;
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-	setup_transition(m_outtrans, agw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &opm, &npm);
 	uint n_points = m_newpolygon.size();
 	if (n_points <= 2) { // cannot create polygon, maybe not yet implemented
 		return;
@@ -245,7 +240,7 @@ sdl_transition_blitclass_poly::update()
 	gdk_region_destroy(region);
 	g_object_unref (G_OBJECT (gc));
 #endif//JNK
-	finalize_transition(m_outtrans, agw, m_dst);
+	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
@@ -253,10 +248,10 @@ sdl_transition_blitclass_polylist::update()
 {
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_polylist::update(%f)", m_progress);
-	ambulant_sdl_window *agw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *npm, *opm;
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-	setup_transition(m_outtrans, agw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &opm, &npm);
 #ifdef  JNK
 	GdkRegion* clip_region = gdk_region_new();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
@@ -294,7 +289,7 @@ sdl_transition_blitclass_polylist::update()
 	gdk_region_destroy(clip_region);
 	g_object_unref (G_OBJECT (gc));
 #endif//JNK
-	finalize_transition(m_outtrans, agw, m_dst);
+	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 smil2::transition_engine *

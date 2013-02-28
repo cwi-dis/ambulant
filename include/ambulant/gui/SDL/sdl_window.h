@@ -76,7 +76,8 @@ class ambulant_sdl_window : public common::gui_window {
 //	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; } moved to sdl_ambulant_window
 
 	// Helper: copy the surface 'src' to the current surface (using a blit operation)
-	int copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 
 	void dump_sdl_surface (SDL_Surface* surf, const char* id); //XX
 
@@ -160,8 +161,11 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get the actual SDL_Renderer for the window
 	SDL_Renderer* get_sdl_window_renderer() { return m_sdl_window_renderer; }
 
-	/// Helper: get the actual SDL_Surface
+	/// Helper: get the current SDL_Surface used for drawing
 	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
+
+	/// Helper: get the actual SDL_Surface of the screen 
+	SDL_Surface* get_sdl_screen_surface() { return m_sdl_screen_surface; }
 
 	/// Helper: set our counterpart gui_window.
 	void set_ambulant_sdl_window( ambulant_sdl_window* asdlw);

@@ -32,8 +32,8 @@ main (int argc, char *argv[])
   GstRTSPMediaFactory *factory;
   char pipeline[512];
   char* webcam = "/dev/video0";
-  char* port = "8554"; // /etc/services: RTSP Alternate (see port 554)
-  char* url = "/test";
+  char* port = "5544"; // /etc/services: RTSP Alternate (see port 554)
+  char* url = "/webcam";
   const char* format =  "( v4l2src device=%s queue-size=2 ! video/x-raw-yuv,width=640,height=480,framerate=30/1 ! x264enc tune=zerolatency cabac=false bframes=0 ip-factor=2 ! rtph264pay name=pay0 pt=96 )";
   if (argc > 1) {
 	webcam = argv[1];
