@@ -89,7 +89,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		} else {
 			// convert the image to RGBA compatible format (necessary for blending)
 			SDL_PixelFormat* new_pixel_format = (SDL_PixelFormat*) malloc (sizeof(SDL_PixelFormat));
-			*new_pixel_format = *saw->get_sdl_surface()->format;
+			*new_pixel_format = *saw->get_SDL_Surface()->format;
 			SDL_Surface* new_image = SDL_ConvertSurface (m_image, new_pixel_format, 0);
 			if (new_image != NULL && new_image != m_image) {
 				SDL_FreeSurface (m_image);
@@ -246,7 +246,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	g_object_unref(G_OBJECT (gc));
 #endif//JNK
 	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	asw->copy_to_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
+	saw->copy_to_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x done.", this);
 	m_lock.leave();

@@ -49,11 +49,11 @@ setup_transition(bool outtrans, ambulant_sdl_window *asw, SDL_Surface** old_surf
 			//asw->m_tmpsurface = new SDL_Surface(*asw->get_ambulant_oldsurface());
 //TBD		  asw->m_tmpsurface = asw->get_sdl_ambulant_window()->get_ambulant_oldsurface();
 		}
-		*old_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+		*old_surf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
 //TBD	*new_surf = asw->m_tmpsurface;
 	} else {
-		*old_surf = asw->get_sdl_ambulant_window()->get_sdl_screen_surface();
-		*new_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+		*old_surf = asw->get_sdl_ambulant_window()->top_SDL_Surface();
+		*new_surf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
 //		asw->dump_sdl_surface(*old_surf, "old");
 //		asw->dump_sdl_surface(*new_surf, "new");
 	}
@@ -89,7 +89,7 @@ sdl_transition_blitclass_fade::update()
 		W = newrect_whole.width(), H = newrect_whole.height();
 	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
 	Uint8 alpha = static_cast<Uint8>(round(255*m_progress));
-	/*AM_DBG*/ logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) asw=0x%x, o_srf=0x%x,n_srf0x%x alpha=%u", m_progress, asw, o_srf, n_srf, alpha);
+	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) asw=0x%x, o_srf=0x%x,n_srf0x%x alpha=%u", m_progress, asw, o_srf, n_srf, alpha);
 	SDL_SetSurfaceAlphaMod(n_srf, alpha);
 	SDL_SetSurfaceBlendMode(n_srf, SDL_BLENDMODE_BLEND);
 	SDL_Rect sdl_dst_rect = { L, T, W, H};

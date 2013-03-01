@@ -235,7 +235,8 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 #endif//WITH_SDLPANGO
 	} // m_text_storage != NULL && m_sdl_surface == NULL)
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	asdlw->copy_to_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
+	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
+	saw->copy_to_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 }
 
 #endif//WITH_SDL2

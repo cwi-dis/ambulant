@@ -75,7 +75,9 @@ sdl_transition_renderer::start(double where)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
-				((ambulant_sdl_window*)m_view)->startScreenTransition();
+				ambulant_sdl_window* asw = (ambulant_sdl_window*)m_view;
+				sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+				saw->startScreenTransition();
 			}
 		}
 	}
@@ -95,7 +97,9 @@ sdl_transition_renderer::start_outtransition(const lib::transition_info *info)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
-			((ambulant_sdl_window*)m_view)->startScreenTransition();
+			ambulant_sdl_window* asw = (ambulant_sdl_window*)m_view;
+			sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+			saw->startScreenTransition();
 		}
 	}
 	m_lock.leave();
@@ -113,7 +117,9 @@ sdl_transition_renderer::stop()
 	delete m_trans_engine;
 	m_trans_engine = NULL;
 	if (m_fullscreen && m_view) {
-		((ambulant_sdl_window*)m_view)->endScreenTransition();
+		ambulant_sdl_window* asw = (ambulant_sdl_window*)m_view;
+		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+		saw->endScreenTransition();
 	}
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
@@ -127,29 +133,26 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 	const rect &r = m_transition_dest->get_rect();
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_sdl_surface());
-
-	// See whether we're in a transition
+	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_SDL_Surface());
+	if (m_trans_engine) {
+		saw->clear_SDL_Surface(saw->get_SDL_Surface());
+	}
+	// See whether we're in a transition and setup the correct surface so that
+    // redraw_body() will renderer the pixels where we want them.
 	if (m_trans_engine && !m_fullscreen) {
-     	SDL_Surface* surf = saw->get_sdl_surface();
+     	SDL_Surface* surf = saw->get_SDL_Surface();
 //TBD	if (surf == NULL)
 //TBD		surf = saw->new_ambulant_surface();
-		if (surf != NULL) {
+		if (surf != NULL) {			
 			// Copy the background pixels
-			rect dstrect = r;
-			dstrect.translate(m_transition_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), surf, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-#ifdef  JNK
-			GdkGC *gc = gdk_gc_new (surf);
-			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
-					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
-			g_object_unref (G_OBJECT (gc));
-#endif//JNK
-			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to transition surface");
+			saw->push_SDL_Surface (saw->copy_SDL_Surface (surf));
+//JNK			rect dstrect = r;
+//JNK			dstrect.translate(m_transition_dest->get_global_topleft());
+//JNK			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), surf, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: transition surface pushed");
 //TBD		saw->set_ambulant_surface(surf);
-			asw->copy_to_sdl_screen_surface (surf, NULL, NULL, 255);
+//			saw->copy_to_sdl_screen_surface (surf, NULL, NULL, 255);
 		}
-
 	}
 	m_lock.leave();
 }
@@ -160,38 +163,38 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 
 	sdl_ambulant_window* saw = ((ambulant_sdl_window*) window)->get_sdl_ambulant_window();
-	SDL_Surface* surf = saw->get_sdl_surface();
-
-	if (surf != NULL) {
-//TBD	saw->reset_ambulant_surface();
-	}
 
 	if(m_trans_engine) {
+        // If we are in a transition we need to do something: pick up the pixels
+        // deposited by redraw_body() and composite them onto the screen with the
+        // right "other source".
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
-//TBD		if (m_fullscreen)
-//TBD			saw->screenTransitionStep(NULL, 0);
-//TBD		else
+			if (m_fullscreen) {
+				saw->screenTransitionStep(NULL, 0);
+			} else {
+				SDL_Surface* old_surface = saw->pop_SDL_Surface();
+				SDL_FreeSurface (saw->get_SDL_Surface());
+				saw->set_SDL_Surface (old_surface);
 				m_trans_engine->step(now);
+			}
 			typedef lib::no_arg_callback<sdl_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &sdl_transition_renderer::stop);
 			m_event_processor->add_event(ev, 0, lib::ep_med);
 		} else {
-			if ( 1 /* XXX was: surf */) {
-				AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to view");
-				if (m_fullscreen) {
-//TBD				saw->screenTransitionStep (m_trans_engine, now);
-				} else {
-					m_trans_engine->step(now);
-				}
-				typedef no_arg_callback<sdl_transition_renderer>transition_callback;
-				event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);
-				transition_info::time_type delay = m_trans_engine->next_step_delay();
-//				if (delay < 33) delay = 33; // XXX band-aid
-//				delay = 1000;
-				AM_DBG logger::get_logger()->debug("sdl_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
-				m_event_processor->add_event(ev, delay, lib::ep_med);
+			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to view");
+			if (m_fullscreen) {
+				saw->screenTransitionStep (m_trans_engine, now);
+			} else {
+				m_trans_engine->step(now);
 			}
+			typedef no_arg_callback<sdl_transition_renderer>transition_callback;
+			event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);
+			transition_info::time_type delay = m_trans_engine->next_step_delay();
+			if (delay < 33) delay = 33; // XXX band-aid
+			delay = 1000;
+			AM_DBG logger::get_logger()->debug("sdl_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
+			m_event_processor->add_event(ev, delay, lib::ep_med);
 		}
 	}
 	m_lock.leave();

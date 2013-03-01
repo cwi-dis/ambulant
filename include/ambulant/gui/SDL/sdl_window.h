@@ -30,6 +30,7 @@
 #include "ambulant/smil2/transition.h"
 
 #include "SDL.h"
+#include <stack>
 
 namespace ambulant {
 namespace gui {
@@ -38,7 +39,18 @@ namespace sdl {
 /// SDL implementation of gui_window
 
 /// ambulant_sdl_window is the SDL implementation of gui_window, it is the
-/// class that corresponds to a SMIL topLayout element. It interfaces with sdl_ambulant_window.
+/// class that corresponds to a SMIL topLayout element.
+/// It interfaces with sdl_ambulant_window.
+/// Modeled after cg_gui.
+
+inline SDL_Rect SDL_Rect_from_ambulant_rect (const lib::rect& r) {
+	SDL_Rect rv = {r.left(), r.top(), r.width(), r.height()};
+	return rv;
+}
+inline ambulant::lib::rect ambulant_rect_from_SDL_Rect (const SDL_Rect& r) {
+  return lib::rect(lib::point(r.x, r.y), lib::size(r.w, r.h));
+}
+
 class sdl_ambulant_window;
 
 class ambulant_sdl_window : public common::gui_window {
@@ -69,20 +81,6 @@ class ambulant_sdl_window : public common::gui_window {
 	/// Get our top-level gui_player.
 	common::gui_player* get_gui_player();
 
-	/// Helper: get the actual SDL_Surface
-//	SDL_Surface* get_sdl_surface() { return m_sdl_surface; } moved to sdl_ambulant_window
-	
-	/// Helper: get the actual (backscreen) SDL_Renderer
-//	SDL_Renderer* get_sdl_renderer() { return m_sdl_renderer; } moved to sdl_ambulant_window
-
-	// Helper: copy the surface 'src' to the current surface (using a blit operation)
-	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
-	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
-
-	void dump_sdl_surface (SDL_Surface* surf, const char* id); //XX
-
-	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id); //XX
-
 	lib::rect get_bounds() { return m_bounds; }
 
 	/// Initialize a GDK cached cursortype
@@ -100,15 +98,7 @@ class ambulant_sdl_window : public common::gui_window {
 //XX	void reset_ambulant_surface(void); //XX
 //XX	void set_ambulant_surface(SDL_Surface* surf); //XX
 //XX	void delete_ambulant_surface();
-
-	void startScreenTransition();
-	void endScreenTransition();
-	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
-
-	void _screenTransitionPreRedraw();
-	void _screenTransitionPostRedraw(const lib::rect &r);
   private:
-	void clear();
 	lib::rect  m_bounds;
 	sdl_ambulant_window* m_ambulant_window;
 //XX	uint8_t* m_pixels;
@@ -118,7 +108,6 @@ class ambulant_sdl_window : public common::gui_window {
 //X	GdkCursor* m_arrow_cursor;
 //X	GdkCursor* m_hand1_cursor;
 //X	GdkCursor* m_hand2_cursor;
-	int m_fullscreen_count;
 //X	SDL_Surface* m_fullscreen_prev_surface;
 //X	SDL_Surface* m_fullscreen_old_surface;
 //X	smil2::transition_engine* m_fullscreen_engine;
@@ -162,10 +151,13 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Renderer* get_sdl_window_renderer() { return m_sdl_window_renderer; }
 
 	/// Helper: get the current SDL_Surface used for drawing
-	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
+	SDL_Surface* get_SDL_Surface() { return m_sdl_surface; }
+
+	/// Helper: set the drawing SDL_Surface
+	void set_SDL_Surface(SDL_Surface* s) {  m_sdl_surface = s; }
 
 	/// Helper: get the actual SDL_Surface of the screen 
-	SDL_Surface* get_sdl_screen_surface() { return m_sdl_screen_surface; }
+//	SDL_Surface* get_sdl_screen_surface() { return m_sdl_screen_surface; }
 
 	/// Helper: set our counterpart gui_window.
 	void set_ambulant_sdl_window( ambulant_sdl_window* asdlw);
@@ -173,9 +165,19 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get our counterpart gui_window.
 	ambulant_sdl_window* get_ambulant_sdl_window() { return m_ambulant_sdl_window; } 
 
+	/// Helper: copy the surface 'src' to the current surface (using a blit operation)
+	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+
+	/// Debug aids
+	void dump_sdl_surface (SDL_Surface* surf, const char* id);
+
+	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id);
+
 	void set_evp (lib::event_processor* evp) { m_evp = evp; }
 	lib::event_processor* get_evp() { return m_evp; }
-//X	// SDLWindow API:
+
+/// TBD: Event handling
 //X	void do_paint_event (GdkEventExpose * event);
 //X	void do_motion_notify_event(GdkEventMotion *event);
 //X	void do_button_release_event(GdkEventButton *event);
@@ -185,46 +187,53 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// gui_screen implementation
 	void get_size(int *width, int *height) {} //TBD
 	bool get_screenshot(const char *type, char **out_data, size_t *out_size) {} //TBD
+
+	/// Transitions
+
+	void startScreenTransition();
+	void endScreenTransition();
+	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
+
+	void _screenTransitionPreRedraw();
+	void _screenTransitionPostRedraw(const lib::rect &r);
+	/// SDL_Surface handling
+	SDL_Surface* copy_SDL_Surface(SDL_Surface* surface);
+	void push_SDL_Surface(SDL_Surface* s);
+	SDL_Surface* top_SDL_Surface (void) { 
+		return m_transition_surfaces.empty() ? NULL : m_transition_surfaces.top();
+	}
+	SDL_Surface* pop_SDL_Surface (void) { 
+		SDL_Surface* s = top_SDL_Surface();
+		m_transition_surfaces.pop();
+		return s;
+	}
+	void clear_SDL_Surface (SDL_Surface* surf);
+
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);
-//X	bool set_overlay(const char *type, const char *data, size_t size);
-//X	bool clear_overlay();
 //X	bool set_screenshot(char **screenshot_data, size_t *screenshot_size);
 
 	// For the gui_screen implementation
-//X	gchar * m_screenshot_data;
-//X	gsize m_screenshot_size;
 	void* m_screenshot_data;
 	long int m_screenshot_size;
 
-	// sdl_ambulant_window::m_draw_area_tags contains the set of tags returned by
-	// g_idle_queue_add() that are not yet processed. This set is maintained because
-	// in the npambulant plugin, when the plugin is unloaded all unprocessed queue entries
-	// must be removed from the main event loop, otherwise the callback will be done on
-	// removed code and the browser may crash.
-//X	std::set<guint> m_draw_area_tags;
   private:
 	// Helper: create the actual SDL_Window*, foreground and background pixels, surfaces and renderers
 	int create_sdl_window_and_renderers(const char* window_name, lib::rect);
 	int create_sdl_surface_and_pixels(SDL_Rect*, uint8_t** pixels=NULL, SDL_Surface** surface=NULL, SDL_Renderer** renderer=NULL);
 	
 	ambulant_sdl_window* m_ambulant_sdl_window;
-	/// The actual SDL_Window*
+	// The actual SDL_Window*
 	SDL_Window*   m_sdl_window;
 	SDL_Renderer* m_sdl_window_renderer;
-	/// A surface contains the current surface for drawing
+	// A surface contains the current surface for drawing
 	SDL_Surface*  m_sdl_surface;
 	SDL_Renderer* m_sdl_renderer;
 	// The screen_surface/renderer represent the actual pixels of the window
 	SDL_Surface*  m_sdl_screen_surface;
 	SDL_Renderer* m_sdl_screen_renderer; // the "real" renderer, for SDL_Present()
-	// The back_surface/renderer represent the actual pixels during drawing operations
-	// to be copied to the screen surface at the end of each redraw call during the loop
-	SDL_Surface*  m_sdl_back_surface;
-	SDL_Renderer* m_sdl_back_renderer;
 	lib::event_processor* m_evp;
 	uint8_t* m_screen_pixels;
-	uint8_t* m_back_pixels;
 	// window counter (with s_lock protection) is used to assuere that the SdlWindow
 	// in drawing callback functions are still valid pointers at the time the callback
 	// is executed by the main thread */
@@ -235,6 +244,10 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// - s_id_sdl_ambulant_window_map: to find a sdl_ambulant_window* given a window_id
 	static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map; //XX is this really needed ????
 	static std::map<int, sdl_ambulant_window*> s_id_sdl_ambulant_window_map;
+
+	std::stack<SDL_Surface*> m_transition_surfaces;
+	int m_fullscreen_count;
+
 //X	SDL_Window* m_parent_window;
 //X	sdl_ambulant_window* m_parent_window;
 //X	gulong m_expose_event_handler_id;
