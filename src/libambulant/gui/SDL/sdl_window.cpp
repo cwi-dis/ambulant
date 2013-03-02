@@ -203,7 +203,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 //X	_screenTransitionPreRedraw();
 	saw->clear_SDL_Surface(saw->get_SDL_Surface());
-
+	saw->clear_SDL_Surface(saw->get_transition_surface());
+	
 	m_handler->redraw(r, this);
 #ifdef JNK
 //XXXX	if ( ! isEqualToPrevious(m_surface))
@@ -430,6 +431,227 @@ ambulant_sdl_window::delete_ambulant_surface()
 }
 #endif//XXX
 
+//
+// sdl_ambulant_window
+//
+//*** The following comment is inherited from gtk_factory and probably garbage
+// sdl_ambulant_window::s_windows is a counter to check for the liveliness of sdl_window during
+// execution of sdl*draw() functions by a callback function in the main thread
+// sdl_ambulant_window::s_lock is for the protection of the counter
+// TBD: a better approach would be to have s static protected std::vector<dirty_window>
+// to be updated when callbacks are scheduled and executed
+// and use these entries to remove any scheduled callbacks with
+// gboolean g_idle_remove_by_data (gpointer data); when the sdl_window is destroyed
+// then the ugly dependence on the parent window couls also be removed
+int sdl_ambulant_window::s_windows = 0;
+lib::critical_section sdl_ambulant_window::s_lock;
+std::map<SDL_Window*, SDL_Renderer*>  sdl_ambulant_window::s_window_renderer_map;
+std::map<int, sdl_ambulant_window*>  sdl_ambulant_window::s_id_sdl_ambulant_window_map;
+
+sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
+  :	m_ambulant_sdl_window(NULL),
+	m_screen_pixels(NULL),
+	m_sdl_screen_renderer(NULL),
+	m_sdl_transition_surface(NULL),
+	m_sdl_screen_surface(NULL),
+	m_sdl_renderer(NULL),
+	m_sdl_surface(NULL),
+	m_sdl_window(NULL),
+	m_evp(NULL),
+  	m_screenshot_data(NULL),
+	m_screenshot_size(0)
+{
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): window=(SDL_Window*)0x%x", this, window);
+}
+
+sdl_ambulant_window::~sdl_ambulant_window()
+{
+	sdl_ambulant_window::s_lock.enter();
+
+	AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(x%x) sdl_ambulant_window::s_windows=%d sdl_ambulant_window::s_id_sdl_ambulant_window_map.size()=%d", this, sdl_ambulant_window::s_windows, sdl_ambulant_window::s_id_sdl_ambulant_window_map.size());
+	sdl_ambulant_window::s_windows--;
+	// erase corresponding entries in the maps
+	for (std::map<int, sdl_ambulant_window*>::iterator it =  sdl_ambulant_window::s_id_sdl_ambulant_window_map.begin();
+		it !=  sdl_ambulant_window::s_id_sdl_ambulant_window_map.end(); it++) {
+	  int key = (*it).first;
+	  sdl_ambulant_window* value = (*it).second;
+	  AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(0x%x): key=0x%x value=0x%x", this, key, value);
+		if (value == this) {
+			sdl_ambulant_window::s_id_sdl_ambulant_window_map.erase(it);
+		}
+	}
+	if (m_sdl_screen_renderer != NULL) {
+		SDL_DestroyRenderer(m_sdl_renderer);
+	}
+	if (m_sdl_screen_surface != NULL) {
+		SDL_FreeSurface(m_sdl_screen_surface);
+	}
+	if (m_sdl_transition_surface != NULL) {
+		SDL_FreeSurface(m_sdl_transition_surface);
+	}
+	if(m_screen_pixels != NULL) {
+		free(m_screen_pixels);
+	}
+	if (m_sdl_window != NULL) {
+		SDL_DestroyWindow(m_sdl_window);
+	}
+#ifdef JNK
+	if ( ! m_draw_area_tags.empty()) {
+		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
+			AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window removing tag %d", (*it));
+			g_source_remove((*it));
+		}
+	}
+#endif//JNK
+#ifdef JNK
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(0x%x): m_sdl_window=0x%x s_windows=%d", (void*)this, m_sdl_window, sdl_ambulant_window::s_windows);
+	GObject* ancestor_window = G_OBJECT (SDL_WINDOW (sdl_window_get_ancestor(m_window, SDL_TYPE_WINDOW)));
+	if (g_signal_handler_is_connected (G_OBJECT (m_window), m_expose_event_handler_id))
+		g_signal_handler_disconnect(G_OBJECT (m_window), m_expose_event_handler_id);
+	if (g_signal_handler_is_connected (ancestor_window, m_motion_notify_handler_id))
+		g_signal_handler_disconnect(ancestor_window, m_motion_notify_handler_id);
+	if (g_signal_handler_is_connected (ancestor_window, m_button_release_handler_id))
+		g_signal_handler_disconnect(ancestor_window, m_button_release_handler_id);
+	if (g_signal_handler_is_connected (ancestor_window, m_key_release_handler_id))
+		g_signal_handler_disconnect(ancestor_window, m_key_release_handler_id);
+	if (m_sdl_window) {
+		m_sdl_window->set_ambulant_window(NULL);
+		m_sdl_window = NULL;
+	}
+	if (m_screenshot_data) {
+		g_free(m_screenshot_data);
+		m_screenshot_data = NULL;
+		m_screenshot_size = 0;
+	}
+#endif//JNK
+
+	sdl_ambulant_window::s_lock.leave();
+}
+
+int
+sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, lib::rect r)
+{
+	int err = 0;
+	if (m_sdl_window != NULL) {
+		return err;
+	}
+	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+	if (m_sdl_window == NULL) {
+		SDL_SetError("Out of memory");
+		err = -1;
+	}
+	if (err != 0) {
+		return err;
+	}
+	assert (m_sdl_window);
+	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(): m_window=(SDL_Window*)0x%x, window ID=%d",  m_sdl_window, SDL_GetWindowID(m_sdl_window));
+	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
+	err = create_sdl_surface_and_pixels(&sdl_rect, &m_screen_pixels, &m_sdl_screen_surface, &m_sdl_screen_renderer);
+	if (err != 0) {
+		return err;
+	}
+	m_sdl_surface = m_sdl_screen_surface;
+
+	// Everything OK, register the window for use by SDL_Loop in the embedder (it should have one)
+	sdl_ambulant_window::s_lock.enter();
+	sdl_ambulant_window::s_windows++;
+
+	// The screen_renderer is special, it is the rendering context for the window pixels instead the surface pixels
+	m_sdl_window_renderer = s_window_renderer_map[m_sdl_window]; //XXX is this mapping really needed ????
+	if (m_sdl_window_renderer == NULL) {
+		m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
+		if (m_sdl_window_renderer == NULL) {
+			AM_DBG lib::logger::get_logger()->trace("sdl_ambulant_window.sdl_ambulant_window(0x%x): trying software renderer", this);
+			m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
+			if (m_sdl_window_renderer == NULL) {
+				lib::logger::get_logger()->warn("Cannot open: %s, error: %s for window %d", "SDL Createrenderer", SDL_GetError(), SDL_GetWindowID(m_sdl_window));
+				return -1;
+			}
+		}
+		s_window_renderer_map[m_sdl_window] = m_sdl_window_renderer; //XXX is this mapping really needed ????
+	}
+	m_sdl_renderer = m_sdl_screen_renderer; //TMP
+	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
+	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_surface=(SDL_Surface*)0x%x m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
+	sdl_ambulant_window::s_lock.leave();
+	return err;
+}
+
+int
+sdl_ambulant_window::create_sdl_surface_and_pixels(SDL_Rect* r, uint8_t** pixels, SDL_Surface** surface, SDL_Renderer** renderer)
+{
+	int err = 0;
+	if (pixels != NULL) {
+		*pixels = (uint8_t*) malloc( r->w * r->h * SDL_BPP);
+	}
+	// From SDL documentation
+ 	/* Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
+ 	   as expected by OpenGL for textures */
+ 	
+ 	/* SDL interprets each pixel as a 32-bit number, so our masks must depend
+ 	   on the endianness (byte order) of the machine */
+	// In ffmpeg_video, we use ARGB instead.
+ #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	Uint32 rmask=0xff000000, gmask = 0x00ff0000, bmask = 0x0000ff00, amask = 0x000000ff;
+ #else
+	Uint32 rmask=0x000000ff, gmask = 0x0000ff00, bmask = 0x00ff0000, amask = 0xff000000;
+ #endif	
+	if (surface != NULL) {
+		if (pixels != NULL) {
+// Using the following call will create a surface that fails to produce a proper SDL_Texture* later
+// using SDL_CreateTextureFromSurface(), although this function does not indicate an error.
+// The alternative using the default masks does not show this problem. Bug in SDL2 ?? 
+// disabled:		*surface = SDL_CreateRGBSurfaceFrom(*pixels, r->w, r->h, 32, r->w*SDL_BPP, rmask, gmask, bmask, amask);
+			if (*surface == NULL) {
+				/* or using the default masks for the depth: */
+				*surface = SDL_CreateRGBSurfaceFrom(*pixels, r->w, r->h, 32, r->w*SDL_BPP, 0, 0, 0, 0);
+			}
+		} else {
+			*surface = SDL_CreateRGBSurface(0, r->w, r->h, r->w*SDL_BPP, rmask, gmask, bmask, amask);
+			if (*surface == NULL) {
+				SDL_CreateRGBSurface(0, r->w, r->h, r->w*SDL_BPP, 0, 0, 0,0);
+			}
+		}
+		err = SDL_SetSurfaceBlendMode (*surface, SDL_BLENDMODE_BLEND);
+		if (err != 0) {
+			return err;
+		}
+	}
+	if (renderer != NULL) {
+		*renderer = SDL_CreateSoftwareRenderer(*surface);
+		// enable alpha blending
+		err = SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_BLEND);
+	}
+	return err;
+}
+
+sdl_ambulant_window*
+sdl_ambulant_window::get_sdl_ambulant_window(Uint32 windowID)
+{
+	sdl_ambulant_window* rv = NULL;
+	sdl_ambulant_window::s_lock.enter();
+	if ( ! s_id_sdl_ambulant_window_map.empty()) {
+		rv = s_id_sdl_ambulant_window_map[windowID];
+	}
+	sdl_ambulant_window::s_lock.leave();
+	return rv;
+}
+
+void
+sdl_ambulant_window::set_ambulant_sdl_window( ambulant_sdl_window* asw)
+{
+	// Note: the window and window are destucted independently.
+	//	if (m_sdl_window != NULL)
+	//	  delete m_sdl_window;
+	m_ambulant_sdl_window = asw;
+	if (asw != NULL) {
+		create_sdl_window_and_renderers("SDL2 Video_Test", asw->get_bounds());
+	}
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::set_sdl_window(0x%x): m_ambulant_sdl_window=(ambulant_sdl_window*)0x%x, m_sdl_window=(SDL_Window*)0x%x)",
+											this, m_ambulant_sdl_window, m_sdl_window);
+}
+
 // Transitions
 
 void
@@ -550,6 +772,16 @@ sdl_ambulant_window::push_SDL_Surface(SDL_Surface* new_surface)
 	m_transition_surfaces.push(new_surface);
 }
 
+SDL_Surface*
+sdl_ambulant_window::get_transition_surface()
+{
+	if (m_sdl_transition_surface == NULL) {
+		m_sdl_transition_surface = copy_SDL_Surface (m_sdl_screen_surface);
+	}
+	assert(m_sdl_transition_surface);
+	return m_sdl_transition_surface;
+}
+
 int
 _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha)
 {
@@ -578,9 +810,7 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
 		SDL_Surface* dst = get_SDL_Surface();
-		dump_sdl_surface (src, "A"); 
 		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
-		dump_sdl_surface (src, "B"); 
 	}
 	return rv;
 }
@@ -634,223 +864,6 @@ sdl_ambulant_window::dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect r, cons
 		free (pixels);
 	}
 	assert(err==0);
-}
-
-//
-// sdl_ambulant_window
-//
-//*** The following comment is inherited from gtk_factory and probably garbage
-// sdl_ambulant_window::s_windows is a counter to check for the liveliness of sdl_window during
-// execution of sdl*draw() functions by a callback function in the main thread
-// sdl_ambulant_window::s_lock is for the protection of the counter
-// TBD: a better approach would be to have s static protected std::vector<dirty_window>
-// to be updated when callbacks are scheduled and executed
-// and use these entries to remove any scheduled callbacks with
-// gboolean g_idle_remove_by_data (gpointer data); when the sdl_window is destroyed
-// then the ugly dependence on the parent window couls also be removed
-int sdl_ambulant_window::s_windows = 0;
-lib::critical_section sdl_ambulant_window::s_lock;
-std::map<SDL_Window*, SDL_Renderer*>  sdl_ambulant_window::s_window_renderer_map;
-std::map<int, sdl_ambulant_window*>  sdl_ambulant_window::s_id_sdl_ambulant_window_map;
-
-sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
-  :	m_ambulant_sdl_window(NULL),
-	m_screen_pixels(NULL),
-	m_sdl_screen_renderer(NULL),
-	m_sdl_screen_surface(NULL),
-	m_sdl_renderer(NULL),
-	m_sdl_surface(NULL),
-	m_sdl_window(NULL),
-	m_evp(NULL),
-  	m_screenshot_data(NULL),
-	m_screenshot_size(0)
-{
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): window=(SDL_Window*)0x%x", this, window);
-}
-
-sdl_ambulant_window::~sdl_ambulant_window()
-{
-	sdl_ambulant_window::s_lock.enter();
-
-	AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(x%x) sdl_ambulant_window::s_windows=%d sdl_ambulant_window::s_id_sdl_ambulant_window_map.size()=%d", this, sdl_ambulant_window::s_windows, sdl_ambulant_window::s_id_sdl_ambulant_window_map.size());
-	sdl_ambulant_window::s_windows--;
-	// erase corresponding entries in the maps
-	for (std::map<int, sdl_ambulant_window*>::iterator it =  sdl_ambulant_window::s_id_sdl_ambulant_window_map.begin();
-		it !=  sdl_ambulant_window::s_id_sdl_ambulant_window_map.end(); it++) {
-	  int key = (*it).first;
-	  sdl_ambulant_window* value = (*it).second;
-	  AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(0x%x): key=0x%x value=0x%x", this, key, value);
-		if (value == this) {
-			sdl_ambulant_window::s_id_sdl_ambulant_window_map.erase(it);
-		}
-	}
-	if (m_sdl_screen_renderer != NULL) {
-		SDL_DestroyRenderer(m_sdl_renderer);
-	}
-	if (m_sdl_screen_surface != NULL) {
-		SDL_FreeSurface(m_sdl_surface);
-	}
-	if(m_screen_pixels != NULL) {
-		free(m_screen_pixels);
-	}
-	if (m_sdl_window != NULL) {
-		SDL_DestroyWindow(m_sdl_window);
-	}
-#ifdef JNK
-	if ( ! m_draw_area_tags.empty()) {
-		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
-			AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window removing tag %d", (*it));
-			g_source_remove((*it));
-		}
-	}
-#endif//JNK
-#ifdef JNK
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(0x%x): m_sdl_window=0x%x s_windows=%d", (void*)this, m_sdl_window, sdl_ambulant_window::s_windows);
-	GObject* ancestor_window = G_OBJECT (SDL_WINDOW (sdl_window_get_ancestor(m_window, SDL_TYPE_WINDOW)));
-	if (g_signal_handler_is_connected (G_OBJECT (m_window), m_expose_event_handler_id))
-		g_signal_handler_disconnect(G_OBJECT (m_window), m_expose_event_handler_id);
-	if (g_signal_handler_is_connected (ancestor_window, m_motion_notify_handler_id))
-		g_signal_handler_disconnect(ancestor_window, m_motion_notify_handler_id);
-	if (g_signal_handler_is_connected (ancestor_window, m_button_release_handler_id))
-		g_signal_handler_disconnect(ancestor_window, m_button_release_handler_id);
-	if (g_signal_handler_is_connected (ancestor_window, m_key_release_handler_id))
-		g_signal_handler_disconnect(ancestor_window, m_key_release_handler_id);
-	if (m_sdl_window) {
-		m_sdl_window->set_ambulant_window(NULL);
-		m_sdl_window = NULL;
-	}
-	if (m_screenshot_data) {
-		g_free(m_screenshot_data);
-		m_screenshot_data = NULL;
-		m_screenshot_size = 0;
-	}
-#endif//JNK
-
-	sdl_ambulant_window::s_lock.leave();
-}
-
-int
-sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, lib::rect r)
-{
-	int err = 0;
-	if (m_sdl_window != NULL) {
-		return err;
-	}
-	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
-	if (m_sdl_window == NULL) {
-		SDL_SetError("Out of memory");
-		err = -1;
-	}
-	if (err != 0) {
-		return err;
-	}
-	assert (m_sdl_window);
-	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(): m_window=(SDL_Window*)0x%x, window ID=%d",  m_sdl_window, SDL_GetWindowID(m_sdl_window));
-	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
-	err = create_sdl_surface_and_pixels(&sdl_rect, &m_screen_pixels, &m_sdl_screen_surface, &m_sdl_screen_renderer);
-	if (err != 0) {
-		return err;
-	}
-	m_sdl_surface = SDL_ConvertSurface(m_sdl_screen_surface, m_sdl_screen_surface->format, 0); // Copy
-
-	// Everything OK, register the window for use by SDL_Loop in the embedder (it should have one)
-	sdl_ambulant_window::s_lock.enter();
-	sdl_ambulant_window::s_windows++;
-
-	// The screen_renderer is special, it is the rendering context for the window pixels instead the surface pixels
-	m_sdl_window_renderer = s_window_renderer_map[m_sdl_window]; //XXX is this mapping really needed ????
-	if (m_sdl_window_renderer == NULL) {
-		m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
-		if (m_sdl_window_renderer == NULL) {
-			AM_DBG lib::logger::get_logger()->trace("sdl_ambulant_window.sdl_ambulant_window(0x%x): trying software renderer", this);
-			m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
-			if (m_sdl_window_renderer == NULL) {
-				lib::logger::get_logger()->warn("Cannot open: %s, error: %s for window %d", "SDL Createrenderer", SDL_GetError(), SDL_GetWindowID(m_sdl_window));
-				return -1;
-			}
-		}
-		s_window_renderer_map[m_sdl_window] = m_sdl_window_renderer; //XXX is this mapping really needed ????
-	}
-	m_sdl_renderer = m_sdl_screen_renderer; //TMP
-	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
-	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_surface=(SDL_Surface*)0x%x m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
-	sdl_ambulant_window::s_lock.leave();
-	return err;
-}
-
-int
-sdl_ambulant_window::create_sdl_surface_and_pixels(SDL_Rect* r, uint8_t** pixels, SDL_Surface** surface, SDL_Renderer** renderer)
-{
-	int err = 0;
-	if (pixels != NULL) {
-		*pixels = (uint8_t*) malloc( r->w * r->h * SDL_BPP);
-	}
-	// From SDL documentation
- 	/* Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
- 	   as expected by OpenGL for textures */
- 	
- 	/* SDL interprets each pixel as a 32-bit number, so our masks must depend
- 	   on the endianness (byte order) of the machine */
-	// In ffmpeg_video, we use ARGB instead.
- #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	Uint32 rmask=0xff000000, gmask = 0x00ff0000, bmask = 0x0000ff00, amask = 0x000000ff;
- #else
-	Uint32 rmask=0x000000ff, gmask = 0x0000ff00, bmask = 0x00ff0000, amask = 0xff000000;
- #endif	
-	if (surface != NULL) {
-		if (pixels != NULL) {
-// Using the following call will create a surface that fails to produce a proper SDL_Texture* later
-// using SDL_CreateTextureFromSurface(), although this function does not indicate an error.
-// The alternative using the default masks does not show this problem. Bug in SDL2 ?? 
-// disabled:		*surface = SDL_CreateRGBSurfaceFrom(*pixels, r->w, r->h, 32, r->w*SDL_BPP, rmask, gmask, bmask, amask);
-			if (*surface == NULL) {
-				/* or using the default masks for the depth: */
-				*surface = SDL_CreateRGBSurfaceFrom(*pixels, r->w, r->h, 32, r->w*SDL_BPP, 0, 0, 0, 0);
-			}
-		} else {
-			*surface = SDL_CreateRGBSurface(0, r->w, r->h, r->w*SDL_BPP, rmask, gmask, bmask, amask);
-			if (*surface == NULL) {
-				SDL_CreateRGBSurface(0, r->w, r->h, r->w*SDL_BPP, 0, 0, 0,0);
-			}
-		}
-		err = SDL_SetSurfaceBlendMode (*surface, SDL_BLENDMODE_BLEND);
-		if (err != 0) {
-			return err;
-		}
-	}
-	if (renderer != NULL) {
-		*renderer = SDL_CreateSoftwareRenderer(*surface);
-		// enable alpha blending
-		err = SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_BLEND);
-	}
-	return err;
-}
-
-sdl_ambulant_window*
-sdl_ambulant_window::get_sdl_ambulant_window(Uint32 windowID)
-{
-	sdl_ambulant_window* rv = NULL;
-	sdl_ambulant_window::s_lock.enter();
-	if ( ! s_id_sdl_ambulant_window_map.empty()) {
-		rv = s_id_sdl_ambulant_window_map[windowID];
-	}
-	sdl_ambulant_window::s_lock.leave();
-	return rv;
-}
-
-void
-sdl_ambulant_window::set_ambulant_sdl_window( ambulant_sdl_window* asw)
-{
-	// Note: the window and window are destucted independently.
-	//	if (m_sdl_window != NULL)
-	//	  delete m_sdl_window;
-	m_ambulant_sdl_window = asw;
-	if (asw != NULL) {
-		create_sdl_window_and_renderers("SDL2 Video_Test", asw->get_bounds());
-	}
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::set_sdl_window(0x%x): m_ambulant_sdl_window=(ambulant_sdl_window*)0x%x, m_sdl_window=(SDL_Window*)0x%x)",
-											this, m_ambulant_sdl_window, m_sdl_window);
 }
 
 #ifdef JNK

@@ -135,7 +135,7 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_SDL_Surface());
 	if (m_trans_engine) {
-		saw->clear_SDL_Surface(saw->get_SDL_Surface());
+//		saw->clear_SDL_Surface(saw->get_SDL_Surface());
 	}
 	// See whether we're in a transition and setup the correct surface so that
     // redraw_body() will renderer the pixels where we want them.
@@ -145,7 +145,10 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 //TBD		surf = saw->new_ambulant_surface();
 		if (surf != NULL) {			
 			// Copy the background pixels
-			saw->push_SDL_Surface (saw->copy_SDL_Surface (surf));
+			saw->push_SDL_Surface (surf);
+			// make the transition surface current for all drawing
+			saw->set_SDL_Surface (saw->get_transition_surface());
+			saw->clear_SDL_Surface(saw->get_SDL_Surface());
 //JNK			rect dstrect = r;
 //JNK			dstrect.translate(m_transition_dest->get_global_topleft());
 //JNK			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), surf, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
@@ -180,13 +183,15 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 			}
 			typedef lib::no_arg_callback<sdl_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &sdl_transition_renderer::stop);
-			m_event_processor->add_event(ev, 0, lib::ep_med);
+			m_event_processor->add_event(ev, 0, lib::ep_high);
 		} else {
 			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: drawing to view");
 			if (m_fullscreen) {
 				saw->screenTransitionStep (m_trans_engine, now);
 			} else {
 				m_trans_engine->step(now);
+				SDL_Surface* s = saw->pop_SDL_Surface();
+				saw->set_SDL_Surface(s);
 			}
 			typedef no_arg_callback<sdl_transition_renderer>transition_callback;
 			event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);

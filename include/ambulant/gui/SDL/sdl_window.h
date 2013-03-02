@@ -153,6 +153,9 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get the current SDL_Surface used for drawing
 	SDL_Surface* get_SDL_Surface() { return m_sdl_surface; }
 
+	/// Helper: get the SDL_Surface used during transitions, create if needed
+	SDL_Surface* get_transition_surface();
+
 	/// Helper: set the drawing SDL_Surface
 	void set_SDL_Surface(SDL_Surface* s) {  m_sdl_surface = s; }
 
@@ -197,16 +200,22 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	void _screenTransitionPreRedraw();
 	void _screenTransitionPostRedraw(const lib::rect &r);
 	/// SDL_Surface handling
+
+	/// Copy surface and pixels 
 	SDL_Surface* copy_SDL_Surface(SDL_Surface* surface);
+	/// Push a SDL_Surface on the transition surface stack
 	void push_SDL_Surface(SDL_Surface* s);
+	/// Get the topmost SDL_Surface from the transition surface stack
 	SDL_Surface* top_SDL_Surface (void) { 
 		return m_transition_surfaces.empty() ? NULL : m_transition_surfaces.top();
 	}
+	/// Pop the topmost SDL_Surface from the transition surface stack and return it
 	SDL_Surface* pop_SDL_Surface (void) { 
 		SDL_Surface* s = top_SDL_Surface();
-		m_transition_surfaces.pop();
+		if ( ! m_transition_surfaces.empty()) m_transition_surfaces.pop();
 		return s;
 	}
+	/// Clear the pixels of a SDL_Surface 
 	void clear_SDL_Surface (SDL_Surface* surf);
 
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
@@ -228,6 +237,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Renderer* m_sdl_window_renderer;
 	// A surface contains the current surface for drawing
 	SDL_Surface*  m_sdl_surface;
+	SDL_Surface*  m_sdl_transition_surface;
 	SDL_Renderer* m_sdl_renderer;
 	// The screen_surface/renderer represent the actual pixels of the window
 	SDL_Surface*  m_sdl_screen_surface;

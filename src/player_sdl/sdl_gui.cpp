@@ -733,6 +733,9 @@ sdl_gui::sdl_loop() {
 					if (surf != NULL) {
 						SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
 						bool ok = SDL_SetClipRect(saw->get_SDL_Surface(), &sdl_rect);
+						if ( ! ok) {
+							lib::logger::get_logger()->error("%s SDL_SetClipRect: %s",__PRETTY_FUNCTION__, SDL_GetError());
+						}
 						assert(ok);
 						asw->redraw(*redraw_rectp);
 					}
