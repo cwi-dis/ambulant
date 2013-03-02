@@ -250,8 +250,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.h = r.height();
 	SDL_Renderer* renderer = saw->get_sdl_window_renderer();
 	SDL_Surface* surface = saw->get_SDL_Surface();
-	SDL_Surface* screen_surface = saw->top_SDL_Surface();
-//	dump_sdl_surface(surface, "surf");
+	SDL_Surface* screen_surface = surface;
+	saw->dump_sdl_surface(surface, "surf");
 //	dump_sdl_surface(screen_surface, "scr1");
 	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
 //	dump_sdl_surface(screen_surface, "scr2");
@@ -750,6 +750,9 @@ void
 sdl_ambulant_window::clear_SDL_Surface(SDL_Surface* surface)
 // helper: clear the surface
 {
+	if (surface == NULL || surface->format == NULL) {
+		return;
+	}
 	// Fill with <brush> color
 	color_t color = lib::to_color(255, 255, 255);
 
