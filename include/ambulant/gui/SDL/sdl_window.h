@@ -170,7 +170,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	/// Helper: copy the surface 'src' to the current surface (using a blit operation)
 	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
-	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+//X	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
@@ -216,7 +216,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 		return s;
 	}
 	/// Clear the pixels of a SDL_Surface 
-	void clear_SDL_Surface (SDL_Surface* surf);
+	void clear_SDL_Surface (SDL_Surface* surface, SDL_Rect sdl_rect);
 
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);

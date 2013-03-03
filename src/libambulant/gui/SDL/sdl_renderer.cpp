@@ -133,10 +133,9 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 	const rect &r = m_transition_dest->get_rect();
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_SDL_Surface());
-	if (m_trans_engine) {
-//		saw->clear_SDL_Surface(saw->get_SDL_Surface());
-	}
+	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw_pre(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_SDL_Surface());
+//	saw->dump_sdl_surface(saw->get_SDL_Surface(), "pre");
+
 	// See whether we're in a transition and setup the correct surface so that
     // redraw_body() will renderer the pixels where we want them.
 	if (m_trans_engine && !m_fullscreen) {
@@ -144,17 +143,12 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 //TBD	if (surf == NULL)
 //TBD		surf = saw->new_ambulant_surface();
 		if (surf != NULL) {			
-			// Copy the background pixels
+			// Push (and copy)  the background pixels
 			saw->push_SDL_Surface (surf);
-			// make the transition surface current for all drawing
+			// clear the transition surface and make it current for subsequent redraw_body()
+			saw->clear_SDL_Surface(saw->get_transition_surface(), SDL_Rect_from_ambulant_rect(r));
 			saw->set_SDL_Surface (saw->get_transition_surface());
-			saw->clear_SDL_Surface(saw->get_SDL_Surface());
-//JNK			rect dstrect = r;
-//JNK			dstrect.translate(m_transition_dest->get_global_topleft());
-//JNK			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), surf, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: transition surface pushed");
-//TBD		saw->set_ambulant_surface(surf);
-//			saw->copy_to_sdl_screen_surface (surf, NULL, NULL, 255);
 		}
 	}
 	m_lock.leave();
@@ -196,12 +190,13 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 			typedef no_arg_callback<sdl_transition_renderer>transition_callback;
 			event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);
 			transition_info::time_type delay = m_trans_engine->next_step_delay();
-			if (delay < 33) delay = 33; // XXX band-aid
-			delay = 1000;
+			if (delay < 33) delay = 33; // limit redraw frequency to 30 redraws per second
+//			delay = 1000; // suitable for debug
 			AM_DBG logger::get_logger()->debug("sdl_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
 			m_event_processor->add_event(ev, delay, lib::ep_med);
 		}
 	}
+//	saw->dump_sdl_surface(saw->get_SDL_Surface(), "pst");
 	m_lock.leave();
 }
 

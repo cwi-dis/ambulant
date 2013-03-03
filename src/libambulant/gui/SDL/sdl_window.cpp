@@ -202,8 +202,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 //X	_screenTransitionPreRedraw();
-	saw->clear_SDL_Surface(saw->get_SDL_Surface());
-	saw->clear_SDL_Surface(saw->get_transition_surface());
+	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect(r); 
+	saw->clear_SDL_Surface(saw->get_SDL_Surface(), sdl_rect);
 	
 	m_handler->redraw(r, this);
 #ifdef JNK
@@ -251,10 +251,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	SDL_Renderer* renderer = saw->get_sdl_window_renderer();
 	SDL_Surface* surface = saw->get_SDL_Surface();
 	SDL_Surface* screen_surface = surface;
-	saw->dump_sdl_surface(surface, "surf");
-//	dump_sdl_surface(screen_surface, "scr1");
-	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
-//	dump_sdl_surface(screen_surface, "scr2");
+//	saw->dump_sdl_surface(surface, "surf");
+//X	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
 	if (m_recorder) {
 		timestamp_t timestamp = saw->get_evp()->get_timer()->elapsed();
 		m_recorder->new_video_data(screen_surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
@@ -265,8 +263,6 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 		return;
 	}
 	int err = SDL_RenderCopy(renderer, texture, NULL, NULL);	
-	assert (err==0);
-//	dump_sdl_renderer(renderer, rect, "rend");
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
@@ -747,7 +743,7 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 #endif//JNK
 
 void
-sdl_ambulant_window::clear_SDL_Surface(SDL_Surface* surface)
+sdl_ambulant_window::clear_SDL_Surface (SDL_Surface* surface, SDL_Rect sdl_rect)
 // helper: clear the surface
 {
 	if (surface == NULL || surface->format == NULL) {
@@ -758,8 +754,8 @@ sdl_ambulant_window::clear_SDL_Surface(SDL_Surface* surface)
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear(): clearing to 0x%x", (long)color);
 	Uint32 sdl_color = SDL_MapRGBA(surface->format, redc(color), greenc(color), bluec(color), 255);
-	SDL_SetClipRect(surface, NULL);
-	SDL_FillRect(surface, NULL, sdl_color);
+	SDL_SetClipRect(surface, &sdl_rect);
+	SDL_FillRect(surface, &sdl_rect, sdl_color);
 }
 
 SDL_Surface*
@@ -817,6 +813,7 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	}
 	return rv;
 }
+#ifdef XXX
 int
 sdl_ambulant_window::copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
@@ -828,6 +825,7 @@ sdl_ambulant_window::copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src
 	}
 	return rv;
 }
+#endif//XXX
 
 void
 sdl_ambulant_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
