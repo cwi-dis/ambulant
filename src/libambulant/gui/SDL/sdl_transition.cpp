@@ -99,25 +99,50 @@ sdl_transition_blitclass_fade::update()
 	finalize_transition(m_outtrans, asw, m_dst);
 }
 
+// return the difference of 2 SDL_Rects for the special case that one of their
+// corners coincide and either their width or their hight are equal
+//XXXX quick hack, not complete, crappy ununderstandable code
+SDL_Rect
+SDL_Rect_Substract (SDL_Rect A, SDL_Rect B)
+{
+	SDL_Rect rv = {0,0,0,0};
+
+//	printf("A=(%d,%d,%d,%d),B=(%d,%d,%d,%d)\n",A.x,A.y,A.w,A.h,B.x,B.y,B.w,B.h);
+	if (SDL_HasIntersection (&A, &B) && 
+		(A.x == B.x &&  A.y == B.y &&  (A.h == B.h ||  A.w == B.w)) ||
+		(A.x+A.w == B.x+B.w && A.y+A.h == B.y+B.h && (A.h == B.h || A.w == B.w)))
+ {
+		rv.x = A.h == B.h ? A.x+A.w != B.x+B.w ? A.x < B.x ? A.w : B.w : A.x : B.x;
+		rv.y = A.w == B.w ? B.y + B.h : B.y;
+		rv.w = A.h == B.h ? A.w >= B.w ? A.w - B.w : B.w - A.w : A.w; 
+		rv.h = A.w == B.w ? A.h >= B.h ? A.h - B.h : B.h - A.h : A.h; 
+//		printf("rv=(%d,%d,%d,%d)\n",rv.x,rv.y,rv.w,rv.h);
+	}
+	return rv;
+}
 void
 sdl_transition_blitclass_rect::update()
 {
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect::update(%f)", m_progress);
-	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *npm, *opm;
-	setup_transition(m_outtrans, asw, &opm, &npm);
+    AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect::update(%f)", m_progress);
+	ambulant_sdl_window* asw = (ambulant_sdl_window *)m_dst->get_gui_window();
+	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+	SDL_Surface *n_srf, *o_srf;
+	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
+	lib::rect dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(m_dst->get_global_topleft());
+	dstrect_whole &= m_dst->get_clipped_screen_rect();
 
 	rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	newrect_whole &= m_dst->get_clipped_screen_rect();
-	int L = newrect_whole.left(),  T = newrect_whole.top(),
-		W = newrect_whole.width(), H = newrect_whole.height();
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect: opm=0x%x, npm=0x%x, (L,T,W,H)=(%d,%d,%d,%d)",opm,npm,L,T,W,H);
-#ifdef  JNK
-	GdkGC *gc = gdk_gc_new (opm);
-	gdk_draw_surface(opm, gc,  npm, L, T, L, T, W, H);
-	g_object_unref (G_OBJECT (gc));
-#endif//JNK
+	SDL_Rect SDL_Rect_dst = SDL_Rect_from_ambulant_rect(dstrect_whole);
+	SDL_Rect SDL_Rect_new = SDL_Rect_from_ambulant_rect(newrect_whole);
+	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect: SDL_Rect_dst=(%d,%d,%d,%d))", SDL_Rect_dst.x,SDL_Rect_dst.y,SDL_Rect_dst.w,SDL_Rect_dst.h);	
+	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect: SDL_Rect_new=(%d,%d,%d,%d))", SDL_Rect_new.x,SDL_Rect_new.y,SDL_Rect_new.w,SDL_Rect_new.h);	
+	if (m_outtrans) {
+		SDL_Rect_new = SDL_Rect_Substract (SDL_Rect_dst, SDL_Rect_new);
+	}
+	SDL_BlitSurface(n_srf, &SDL_Rect_new, o_srf, &SDL_Rect_new);
 	finalize_transition(m_outtrans, asw, m_dst);
 }
 
@@ -126,9 +151,13 @@ sdl_transition_blitclass_r1r2r3r4::update()
 {
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *npm, *opm;
-	setup_transition(m_outtrans, asw, &opm, &npm);
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update() opm=0x%x, npm=0x%x.", opm, npm);
+	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+	SDL_Surface *n_srf, *o_srf;
+	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
+	if (o_srf == NULL || n_srf == NULL) {
+		return;
+	}
+	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update() o_srf=0x%x, n_srf=0x%x.", o_srf, n_srf);
 	rect oldsrcrect_whole = m_oldsrcrect;
 	rect olddstrect_whole = m_olddstrect;
 	rect newsrcrect_whole = m_newsrcrect;
@@ -141,6 +170,7 @@ sdl_transition_blitclass_r1r2r3r4::update()
 	newsrcrect_whole &= m_dst->get_clipped_screen_rect();
 	newdstrect_whole.translate(m_dst->get_global_topleft());
 	newdstrect_whole &= m_dst->get_clipped_screen_rect();
+#ifdef JUNK
 	int Loldsrc = oldsrcrect_whole.left(),
 		Toldsrc = oldsrcrect_whole.top(),
 		Woldsrc = oldsrcrect_whole.width(),
@@ -161,13 +191,29 @@ sdl_transition_blitclass_r1r2r3r4::update()
 		Wnewdst = newdstrect_whole.width(),
 		Hnewdst = newdstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4: (Lnewdst,Tnewdst,Wnewdst,Hnewdst)=(%d,%d,%d,%d)",Lnewdst,Tnewdst,Wnewdst,Hnewdst);
-#ifdef  JNK
-	GdkGC *gc = gdk_gc_new (opm);
-	gdk_draw_surface(opm, gc, opm, Loldsrc, Toldsrc, Lolddst, Tolddst, Woldsrc, Hnewsrc);
-	gdk_draw_surface(opm, gc, npm, Lnewsrc, Tnewsrc, Lnewdst, Tnewdst, Wnewsrc, Hnewsrc);
-	g_object_unref (G_OBJECT (gc));
-#endif//JNK
-	finalize_transition(m_outtrans, asw, m_dst);
+#endif//JUNK
+
+	SDL_Rect SDL_Rect_oldsrc = SDL_Rect_from_ambulant_rect(oldsrcrect_whole);
+	SDL_Rect SDL_Rect_olddst = SDL_Rect_from_ambulant_rect(olddstrect_whole);
+	SDL_Rect SDL_Rect_newsrc = SDL_Rect_from_ambulant_rect(newsrcrect_whole);
+	SDL_Rect SDL_Rect_newdst = SDL_Rect_from_ambulant_rect(newdstrect_whole);
+	if (m_outtrans) {
+		lib::rect screen_rect = m_dst->get_clipped_screen_rect();
+		screen_rect.translate(m_dst->get_global_topleft());
+		SDL_Rect SDL_Rect_screen = SDL_Rect_from_ambulant_rect(screen_rect);
+		SDL_Rect_oldsrc = SDL_Rect_Substract(SDL_Rect_screen, SDL_Rect_oldsrc);
+		SDL_Rect_olddst = SDL_Rect_Substract(SDL_Rect_screen, SDL_Rect_olddst);
+
+		SDL_Rect_newsrc = SDL_Rect_Substract(SDL_Rect_screen, SDL_Rect_newsrc);
+		SDL_Rect_newdst = SDL_Rect_Substract(SDL_Rect_screen, SDL_Rect_newdst);
+	}
+	// SDL_BlitSurface does't handle overlapping surfaces properly
+	SDL_Surface* tmp_srf = saw->copy_SDL_Surface (o_srf);
+	SDL_BlitSurface(o_srf, &SDL_Rect_oldsrc, tmp_srf, &SDL_Rect_oldsrc);
+	SDL_BlitSurface(tmp_srf, &SDL_Rect_oldsrc, o_srf, &SDL_Rect_olddst);
+	SDL_FreeSurface(tmp_srf);
+	SDL_BlitSurface(n_srf, &SDL_Rect_newsrc, o_srf, &SDL_Rect_newdst);
+   	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
@@ -176,14 +222,14 @@ sdl_transition_blitclass_rectlist::update()
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rectlist::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *npm, *opm;
-	setup_transition(m_outtrans, asw, &opm, &npm);
+	SDL_Surface *n_srf, *o_srf;
+	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
 	const rect& dstrect_whole = m_dst->get_clipped_screen_rect();
 	int Ldst = dstrect_whole.left(), Tdst = dstrect_whole.top(),
 		Wdst = dstrect_whole.width(), Hdst = dstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
 #ifdef  JNK
-	GdkGC *gc = gdk_gc_new (opm);
+	GdkGC *gc = gdk_gc_new (o_srf);
 	GdkRegion* region = gdk_region_new();
 	std::vector< rect >::iterator newrect;
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
@@ -201,7 +247,7 @@ sdl_transition_blitclass_rectlist::update()
 		gdk_region_union_with_rect(region, &rectangle);
 	}
 	gdk_gc_set_clip_region(gc, region);
-	gdk_draw_surface(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
+	gdk_draw_surface(o_srf, gc, n_srf, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	g_object_unref (G_OBJECT (gc)); // clears region as well
 #endif//JNK
 	finalize_transition(m_outtrans, asw, m_dst);
@@ -213,9 +259,9 @@ sdl_transition_blitclass_poly::update()
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_poly::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *npm, *opm;
+	SDL_Surface *n_srf, *o_srf;
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-	setup_transition(m_outtrans, asw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
 	uint n_points = m_newpolygon.size();
 	if (n_points <= 2) { // cannot create polygon, maybe not yet implemented
 		return;
@@ -232,13 +278,13 @@ sdl_transition_blitclass_poly::update()
 	}
 	GdkRegion* region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
 	free(points);
-	GdkGC *gc = gdk_gc_new (opm);
+	GdkGC *gc = gdk_gc_new (o_srf);
 	gdk_gc_set_clip_region(gc, region);
 	const rect& newrect_whole =	 m_dst->get_clipped_screen_rect();
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
 		Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
-	gdk_draw_surface(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
+	gdk_draw_surface(o_srf, gc, n_srf, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(region);
 	g_object_unref (G_OBJECT (gc));
 #endif//JNK
@@ -251,9 +297,9 @@ sdl_transition_blitclass_polylist::update()
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_polylist::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *npm, *opm;
+	SDL_Surface *n_srf, *o_srf;
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-	setup_transition(m_outtrans, asw, &opm, &npm);
+	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
 #ifdef  JNK
 	GdkRegion* clip_region = gdk_region_new();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
@@ -285,9 +331,9 @@ sdl_transition_blitclass_polylist::update()
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
 		Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_polylist::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
-	GdkGC *gc = gdk_gc_new (opm);
+	GdkGC *gc = gdk_gc_new (o_srf);
 	gdk_gc_set_clip_region(gc, clip_region);
-	gdk_draw_surface(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
+	gdk_draw_surface(o_srf, gc, n_srf, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(clip_region);
 	g_object_unref (G_OBJECT (gc));
 #endif//JNK

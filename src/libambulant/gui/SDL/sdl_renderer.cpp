@@ -191,7 +191,7 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 			event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);
 			transition_info::time_type delay = m_trans_engine->next_step_delay();
 			if (delay < 33) delay = 33; // limit redraw frequency to 30 redraws per second
-//			delay = 1000; // suitable for debug
+			delay = 250; // suitable for debug
 			AM_DBG logger::get_logger()->debug("sdl_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
 			m_event_processor->add_event(ev, delay, lib::ep_med);
 		}
