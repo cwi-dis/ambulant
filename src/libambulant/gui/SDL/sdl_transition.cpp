@@ -99,24 +99,26 @@ sdl_transition_blitclass_fade::update()
 	finalize_transition(m_outtrans, asw, m_dst);
 }
 
-// return the difference of 2 SDL_Rects for the special case that one of their
-// corners coincide and either their width or their hight are equal
-//XXXX quick hack, not complete, crappy ununderstandable code
+// return the difference of 2 SDL_Rects A-B for the special case that 3 sides
+// coincide and either their width or their hight are equal
+// From: http://stackoverflow.com/questions/3765283/how-to-subtract-a-rectangle-from-another
+// (max(Ax, Bx), max(Ay, By), min(Ax + Aw, Bx + Bw) - max(Ax, Bx), min(Ay + Ah, By + Bh) - max(Ay, By)
 SDL_Rect
 SDL_Rect_Substract (SDL_Rect A, SDL_Rect B)
 {
 	SDL_Rect rv = {0,0,0,0};
-
-//	printf("A=(%d,%d,%d,%d),B=(%d,%d,%d,%d)\n",A.x,A.y,A.w,A.h,B.x,B.y,B.w,B.h);
+#define MAX(x,y) ((x)>(y)?(x):(y))
+#define MIN(x,y) ((x)<(y)?(x):(y))
+	printf("A=(%d,%d,%d,%d),B=(%d,%d,%d,%d)\n",A.x,A.y,A.w,A.h,B.x,B.y,B.w,B.h);
 	if (SDL_HasIntersection (&A, &B) && 
 		(A.x == B.x &&  A.y == B.y &&  (A.h == B.h ||  A.w == B.w)) ||
 		(A.x+A.w == B.x+B.w && A.y+A.h == B.y+B.h && (A.h == B.h || A.w == B.w)))
  {
-		rv.x = A.h == B.h ? A.x+A.w != B.x+B.w ? A.x < B.x ? A.w : B.w : A.x : B.x;
-		rv.y = A.w == B.w ? B.y + B.h : B.y;
-		rv.w = A.h == B.h ? A.w >= B.w ? A.w - B.w : B.w - A.w : A.w; 
-		rv.h = A.w == B.w ? A.h >= B.h ? A.h - B.h : B.h - A.h : A.h; 
-//		printf("rv=(%d,%d,%d,%d)\n",rv.x,rv.y,rv.w,rv.h);
+ 		rv.x = MAX(A.x,B.x);
+ 		rv.y = MAX(A.y,B.y);
+		rv.w = MIN(A.x+A.w,B.x+B.w)-MAX(A.x,B.x);
+		rv.h = MIN(A.y+A.h,B.y+B.h)-MAX(A.y,B.y);
+		printf("rv=(%d,%d,%d,%d)\n",rv.x,rv.y,rv.w,rv.h);
 	}
 	return rv;
 }
