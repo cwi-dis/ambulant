@@ -773,8 +773,9 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
             buildcmd=
                 "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
-                "cd SDL_image && mkdir -p build && cd build && "
-                ".%s &&"
+                "cd SDL_image && sh autogen.sh && "
+                "mkdir -p build && cd build && "
+                "SDL_CONFIG=`pwd`/../../installed/bin/sdl2-config .%s &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % LINUX_COMMON_CONFIGURE
