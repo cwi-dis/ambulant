@@ -44,19 +44,11 @@ static void
 setup_transition(bool outtrans, ambulant_sdl_window *asw, SDL_Surface** old_surf, SDL_Surface** new_surf)
 {
 	if (outtrans) {
-		if (asw->m_tmpsurface == NULL) {
-			// make a copy
-			//asw->m_tmpsurface = new SDL_Surface(*asw->get_ambulant_oldsurface());
-//TBD		  asw->m_tmpsurface = asw->get_sdl_ambulant_window()->get_ambulant_oldsurface();
-		}
 		*old_surf = asw->get_sdl_ambulant_window()->top_SDL_Surface();
 		*new_surf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
-//TBD	*new_surf = asw->m_tmpsurface;
 	} else {
 		*old_surf = asw->get_sdl_ambulant_window()->top_SDL_Surface();
 		*new_surf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
-//		asw->dump_sdl_surface(*old_surf, "old");
-//		asw->dump_sdl_surface(*new_surf, "new");
 	}
 #ifdef TBD
 #endif//TBD
@@ -84,19 +76,19 @@ sdl_transition_blitclass_fade::update()
 
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
-	SDL_Surface *n_srf, *o_srf;
+	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_SDL_Surface();;
+	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_SDL_Surface();;
 	const rect& newrect_whole =	 m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(),  T = newrect_whole.top(),
 		W = newrect_whole.width(), H = newrect_whole.height();
-	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
 	double d_alpha = m_outtrans ? 1.0 - m_progress : m_progress;
 	Uint8 alpha = static_cast<Uint8>(round(255*d_alpha));
+
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) asw=0x%x, o_srf=0x%x,n_srf0x%x alpha=%u", m_progress, asw, o_srf, n_srf, alpha);
 	SDL_SetSurfaceAlphaMod(n_srf, alpha);
 	SDL_SetSurfaceBlendMode(n_srf, SDL_BLENDMODE_BLEND);
 	SDL_Rect sdl_dst_rect = { L, T, W, H};
 	SDL_BlitSurface(n_srf, NULL, o_srf, &sdl_dst_rect); 
-	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 // return the difference of 2 SDL_Rects A-B for the special case that 3 sides
@@ -134,8 +126,8 @@ sdl_transition_blitclass_rect::update()
     AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect::update(%f)", m_progress);
 	ambulant_sdl_window* asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	SDL_Surface *n_srf, *o_srf;
-	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
+	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_SDL_Surface();;
+	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_SDL_Surface();;
 	lib::rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	dstrect_whole &= m_dst->get_clipped_screen_rect();
@@ -151,7 +143,6 @@ sdl_transition_blitclass_rect::update()
 		SDL_Rect_new = SDL_Rect_Substract (SDL_Rect_dst, SDL_Rect_new);
 	}
 	SDL_BlitSurface(n_srf, &SDL_Rect_new, o_srf, &SDL_Rect_new);
-	finalize_transition(m_outtrans, asw, m_dst);
 }
 
 void
@@ -160,8 +151,8 @@ sdl_transition_blitclass_r1r2r3r4::update()
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	SDL_Surface *n_srf, *o_srf;
-	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
+	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_SDL_Surface();;
+	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_SDL_Surface();;
 	if (o_srf == NULL || n_srf == NULL) {
 		return;
 	}
@@ -178,28 +169,6 @@ sdl_transition_blitclass_r1r2r3r4::update()
 	newsrcrect_whole &= m_dst->get_clipped_screen_rect();
 	newdstrect_whole.translate(m_dst->get_global_topleft());
 	newdstrect_whole &= m_dst->get_clipped_screen_rect();
-#ifdef JUNK
-	int Loldsrc = oldsrcrect_whole.left(),
-		Toldsrc = oldsrcrect_whole.top(),
-		Woldsrc = oldsrcrect_whole.width(),
-		Holdsrc = oldsrcrect_whole.height();
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4: (Loldsrc,Toldsrc,Woldsrc,Holdsrc)=(%d,%d,%d,%d)",Loldsrc,Toldsrc,Woldsrc,Holdsrc);
-	int Lolddst = olddstrect_whole.left(),
-		Tolddst = olddstrect_whole.top(),
-		Wolddst = olddstrect_whole.width(),
-		Holddst = olddstrect_whole.height();
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4: (Lolddst,Tolddst,Wolddst,Holddst)=(%d,%d,%d,%d)",Lolddst,Tolddst,Wolddst,Holddst);
-	int Lnewsrc = newsrcrect_whole.left(),
-		Tnewsrc = newsrcrect_whole.top(),
-		Wnewsrc = newsrcrect_whole.width(),
-		Hnewsrc = newsrcrect_whole.height();
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4: (Lnewsrc,Tnewsrc,Wnewsrc,Hnewsrc)=(%d,%d,%d,%d)",Lnewsrc,Tnewsrc,Wnewsrc,Hnewsrc);
-	int Lnewdst = newdstrect_whole.left(),
-		Tnewdst = newdstrect_whole.top(),
-		Wnewdst = newdstrect_whole.width(),
-		Hnewdst = newdstrect_whole.height();
-	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4: (Lnewdst,Tnewdst,Wnewdst,Hnewdst)=(%d,%d,%d,%d)",Lnewdst,Tnewdst,Wnewdst,Hnewdst);
-#endif//JUNK
 
 	SDL_Rect SDL_Rect_oldsrc = SDL_Rect_from_ambulant_rect(oldsrcrect_whole);
 	SDL_Rect SDL_Rect_olddst = SDL_Rect_from_ambulant_rect(olddstrect_whole);
@@ -215,19 +184,22 @@ sdl_transition_blitclass_r1r2r3r4::update()
 		SDL_Rect_newsrc = SDL_Rect_Substract(SDL_Rect_screen, SDL_Rect_newsrc);
 		SDL_Rect_newdst = SDL_Rect_Substract(SDL_Rect_screen, SDL_Rect_newdst);
 	}
-	// SDL_BlitSurface does't handle overlapping surfaces properly
+	// SDL_BlitSurface does't handle overlapping rects in of a surface properly
 	SDL_Surface* tmp_srf = saw->copy_SDL_Surface (o_srf);
 	SDL_BlitSurface(o_srf, &SDL_Rect_oldsrc, tmp_srf, &SDL_Rect_oldsrc);
 	SDL_BlitSurface(tmp_srf, &SDL_Rect_oldsrc, o_srf, &SDL_Rect_olddst);
 	SDL_FreeSurface(tmp_srf);
 	SDL_BlitSurface(n_srf, &SDL_Rect_newsrc, o_srf, &SDL_Rect_newdst);
-   	finalize_transition(m_outtrans, asw, m_dst);
+}
+
+void
+SDL_BlitRect (SDL_Surface* src_surf, SDL_Rect* src_rect, SDL_Surface* dst_surf, SDL_Rect* dst_rect) {
+  SDL_BlitSurface (src_surf, src_rect, dst_surf, dst_rect);
 }
 
 void
 sdl_transition_blitclass_rectlist::update()
 {
-
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rectlist::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *n_srf, *o_srf;
@@ -236,6 +208,14 @@ sdl_transition_blitclass_rectlist::update()
 	int Ldst = dstrect_whole.left(), Tdst = dstrect_whole.top(),
 		Wdst = dstrect_whole.width(), Hdst = dstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
+	std::vector< rect >::iterator newrect;
+	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+    	lib::rect r = *newrect;
+		r.translate(m_dst->get_global_topleft());
+		r &= m_dst->get_clipped_screen_rect();
+		SDL_Rect sdl_new =  SDL_Rect_from_ambulant_rect(r);
+		SDL_BlitSurface(n_srf, &sdl_new, o_srf, &sdl_new);
+	}
 #ifdef  JNK
 	GdkGC *gc = gdk_gc_new (o_srf);
 	GdkRegion* region = gdk_region_new();
@@ -264,7 +244,6 @@ sdl_transition_blitclass_rectlist::update()
 void
 sdl_transition_blitclass_poly::update()
 {
-
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_poly::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	SDL_Surface *n_srf, *o_srf;
