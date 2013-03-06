@@ -130,7 +130,8 @@ void
 sdl_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	const rect &r = m_transition_dest->get_rect();
+	const rect &tdr = m_transition_dest->get_rect();
+	rect r = tdr;
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 	AM_DBG logger::get_logger()->debug("sdl_renderer.redraw_pre(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x surface=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,saw->get_SDL_Surface());
@@ -146,6 +147,7 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 			// Push (and copy)  the background pixels
 			saw->push_SDL_Surface (surf);
 			// clear the transition surface and make it current for subsequent redraw_body()
+			r.translate(m_transition_dest->get_global_topleft());
 			saw->clear_SDL_Surface(saw->get_transition_surface(), SDL_Rect_from_ambulant_rect(r));
 			saw->set_SDL_Surface (saw->get_transition_surface());
 			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: transition surface pushed");
@@ -170,10 +172,10 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 			if (m_fullscreen) {
 				saw->screenTransitionStep(NULL, 0);
 			} else {
+				m_trans_engine->step(now);
 				SDL_Surface* old_surface = saw->pop_SDL_Surface();
 				SDL_FreeSurface (saw->get_SDL_Surface());
 				saw->set_SDL_Surface (old_surface);
-				m_trans_engine->step(now);
 			}
 			typedef lib::no_arg_callback<sdl_transition_renderer> stop_transition_callback;
 			lib::event *ev = new stop_transition_callback(this, &sdl_transition_renderer::stop);
@@ -191,12 +193,11 @@ sdl_transition_renderer::redraw_post(gui_window *window)
 			event *ev = new transition_callback (this, &sdl_transition_renderer::transition_step);
 			transition_info::time_type delay = m_trans_engine->next_step_delay();
 			if (delay < 33) delay = 33; // limit redraw frequency to 30 redraws per second
-			delay = 250; // suitable for debug
+//			delay = 1000; // suitable for debug
 			AM_DBG logger::get_logger()->debug("sdl_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
 			m_event_processor->add_event(ev, delay, lib::ep_med);
 		}
 	}
-//	saw->dump_sdl_surface(saw->get_SDL_Surface(), "pst");
 	m_lock.leave();
 }
 

@@ -175,6 +175,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
 
+
 	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id);
 
 	void set_evp (lib::event_processor* evp) { m_evp = evp; }

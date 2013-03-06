@@ -251,7 +251,6 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	SDL_Renderer* renderer = saw->get_sdl_window_renderer();
 	SDL_Surface* surface = saw->get_SDL_Surface();
 	SDL_Surface* screen_surface = surface;
-//	saw->dump_sdl_surface(surface, "surf");
 //X	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
 	if (m_recorder) {
 		timestamp_t timestamp = saw->get_evp()->get_timer()->elapsed();
@@ -830,14 +829,20 @@ sdl_ambulant_window::copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src
 void
 sdl_ambulant_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
 {
+	if (surf == NULL || id == NULL) {
+		return;
+	}
 	char filename[256];
 	sprintf(filename,"%%%.8lu%s.bmp", get_evp()->get_timer()->elapsed(), id);
 	SDL_SaveBMP(surf, filename);
 }
 
 void
-sdl_ambulant_window::dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect r, const char* id)
+sdl_ambulant_window::dump_sdl_renderer (SDL_Renderer* renderer, const SDL_Rect r, const char* id)
 {
+	if (renderer == NULL || id == NULL) {
+		return;
+	}
 	void* pixels = malloc(r.w*r.h*SDL_BPP);
 	int err = pixels ? 0 : -1;
 	if (err == 0) {
