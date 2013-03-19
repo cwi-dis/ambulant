@@ -57,6 +57,12 @@
             ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "/Users/jack/src/vconect/Sandbox/jack/activemq/studioclient/pyamplugin_vclient/studio/studio.smil"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"
