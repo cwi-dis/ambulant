@@ -1,13 +1,16 @@
-This directory contains a plugin for AmbulantPlayer.
+This directory contains a plugin for AmbulantPlayer_sdl.
 
-It only works with SDL2 installed.
+It only works when SDL2 Ambulant are installed.
+
+It implements a screen grabber for Ambulant_sdl, that after each
+redraw the screen content is written to a file named: '%'<timestamp>'.bmp'.
 
 When AmbulantPlayer_sdl is run and the environment variable
 AMBULANT_RECORDER_PIPE is set, the pipeline specified as the
 value of AMBULANT_RECORDER_PIPE is opened and each frame as
 displayed on screen is written on the pipe, in a format that
 is understood by gstreamer element 'ambulantsrc' contained in
-gstambulant-plugin-package.
+gstambulant-plugin-package, instead of being written on a file.
 
 The file 'scripts/test-pipeline.sh' contains a complete example
 that streams the screen images through 'rtsp://localhost:8554/test'
