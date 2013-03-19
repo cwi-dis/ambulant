@@ -8,4 +8,4 @@ Description: library that renders SMIL
 Version: @VERSION@
 Requires:
 Libs: -L${libdir} -lambulant 
-Cflags: -I${includedir}/ambulant
+Cflags: -I${includedir} -I${includedir}/ambulant
