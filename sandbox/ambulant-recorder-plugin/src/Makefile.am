@@ -1,5 +1,5 @@
-INCLUDES = \
-			$(AMBULANT_CFLAGS) $(SDL_CFLAGS)
+AM_CPPFLAGS = \
+			-I$(top_srcdir)/include $(AMBULANT_CFLAGS) $(SDL_CFLAGS)
 
 LIBS = \
 			$(AMBULANT_LIBS) $(SDL_LIBS)

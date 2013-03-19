@@ -1,10 +1,8 @@
 # Experimental plugin for AmbulantPlayer (www.ambulantplayer.org)
-# It implements a wrapper for ginga-ncl (http://www.gingancl.org.br/)
-# s.t. NCL media presentations can be used inside SMIL presentations
 #
-# Ginga-NCL and Ambulant need to be installed, with their header files.
+# See: README for details
 #
-AC_INIT(ambulant-recorder_plugin, 2.3, Ambulant-feedback@ambulantplayer.org)
+AC_INIT(ambulant-recorder_plugin, 2.5, Ambulant-feedback@ambulantplayer.org)
 
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -14,21 +12,12 @@ AC_PROG_CXX([g++])
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
-for incdir in /usr/include/ /usr/local/include/ ${prefix}/include; do
-if test -d ${incdir}; then
-CPPFLAGS="-I${incdir} $CPPFLAGS"
-fi
-done
-CPPFLAGS="-I../../include $CPPFLAGS"
-LDFLAGS="-L${prefix}/lib $LDFLAGS"
-export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:$PKG_CONFIG_PATH
-
 #
 # Find ambulant SMIL player library
 #
 AC_MSG_CHECKING(for ambulant SMIL rendering library)
 test_ambulant=true
-PKG_CHECK_MODULES(AMBULANT, libambulant >= 2.3, test_ambulant=true, test_ambulant=false)
+PKG_CHECK_MODULES(AMBULANT,libambulant >= 2.3, test_ambulant=true,test_ambulant=false)
 if $test_ambulant; then
 	AC_DEFINE(WITH_AMBULANT, 1, [Define to enable 'ambulant' SMIL rendering library])
 else 
