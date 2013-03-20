@@ -818,7 +818,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
