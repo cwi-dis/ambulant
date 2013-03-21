@@ -77,6 +77,7 @@ struct _GstAmbulantSrc
   gulong datasize;
   gulong timestamp;
   gpointer databuffer;
+  gulong checksum;
 
   // Latency
   GstClockTime min_latency;

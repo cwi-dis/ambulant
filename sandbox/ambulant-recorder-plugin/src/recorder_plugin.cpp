@@ -132,22 +132,26 @@ recorder_plugin::~recorder_plugin ()
 }
 
 void*
-convert_bgra_to_rgb(void* data, size_t datasize, size_t* new_datasize)
+convert_bgra_to_rgb(void* data, size_t datasize, size_t* new_datasize, unsigned long int* csp)
 {
 	int length = ( datasize*3 ) / 4;
 	int rgb_idx = length - 1;
 	int bgra_idx = datasize - 1;
-	char* rgb_buffer = (char*) malloc(length);
-	char* bgra_buffer = (char*) data;
+	unsigned char* rgb_buffer = (unsigned char*) malloc(length);
+	unsigned char* bgra_buffer = (unsigned char*) data;
+	unsigned long int checksum = 0;
 	if (data != NULL) {
 		for (; bgra_idx >= 0; bgra_idx -= 4) {
-	    	rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 3];
-			rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 2];
-			rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 1];
+	    		checksum += rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 3];
+			checksum += rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 2];
+			checksum += rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 1];
 		}
 	}
 	if (new_datasize != NULL) {
 		*new_datasize = length;
+	}
+	if (csp != NULL) {
+		*csp = checksum;
 	}
 	return rgb_buffer;
 }
@@ -163,14 +167,15 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 	}
 	if (m_pipe != NULL) {
 		size_t new_datasize;
-		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize);
+		unsigned long int checksum;
+		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize, &checksum);
 //X 	fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
 //X		logger::get_logger()->trace ("Time: %.8lu Size: %.8u W: %5u H: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
 //X		fwrite (new_data, 1, new_datasize, m_pipe);
 //X		free (new_data);
 //		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, datasize, m_window_size.w, m_window_size.h);
 //		fwrite (data, 1, datasize, m_pipe);
-		m_writer->push_data (new recorder_queue_element(new_data, new_datasize, documenttimestamp, m_window_size));
+		m_writer->push_data (new recorder_queue_element(new_data, new_datasize, documenttimestamp, m_window_size, checksum));
 	} else {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
@@ -215,7 +220,7 @@ recorder_writer::push_data(recorder_queue_element* qe)
 	static lib::timer::time_type s_old_timestamp = 0;
 	lib::timer::time_type diff =  qe->m_timestamp - s_old_timestamp;
 	m_lock.enter();
-	bool drop_frame =  diff < 30 || m_queue.size() > 20;
+	bool drop_frame =  diff < 30 || m_queue.size() > 2;
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld drop_frame=%d)", fun, this, qe, qe->m_timestamp, diff, drop_frame);
 	if ( ! drop_frame) {
@@ -249,7 +254,7 @@ recorder_writer::_write_data (recorder_queue_element* qe)
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p (diff=%ld)", fun, this, qe->m_timestamp - s_old_timestamp);
 	s_old_timestamp = qe->m_timestamp;
-	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h) < 0) {
+	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8lu\nW: %5u\nH: %5u\nChksm: %.24lx\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h, qe->m_checksum) < 0) {
 		return -1;
 	}
 	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);
