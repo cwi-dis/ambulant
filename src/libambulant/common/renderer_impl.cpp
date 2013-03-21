@@ -368,10 +368,13 @@ global_playable_factory_impl::new_playable(
 
 	// First make sure we have the node in our renderer selection cache
 	int nid = node->get_numid();
+    m_lock.enter();
 	if (m_renderer_select.count(nid) == 0) {
 		m_renderer_select[nid] = new renderer_select(node);
 	}
 	renderer_select *rs = m_renderer_select[nid];
+    m_lock.leave();
+    
 
 	// If we don't have a renderer selected yet select one
 	playable *rv = NULL;
