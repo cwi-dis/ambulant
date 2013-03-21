@@ -131,11 +131,21 @@ void read_header(GstAmbulantSrc* asrc)
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   if (asrc != NULL) {
-    if (fscanf(stdin, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\n",
-	       &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H) < 0) {
+    if (fscanf(stdin, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
+	       &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) < 0) {
       asrc->eos = TRUE;
     }
   }
+}
+
+gulong checksum (void* data, gulong size)
+{
+  gulong cs = 0;
+  guchar* dp = &((guchar*)data)[size];
+
+  while (dp > (guchar* )data) cs += *--dp;
+
+  return cs;
 }
 
 void read_buffer(GstAmbulantSrc* asrc)
@@ -155,9 +165,15 @@ void read_buffer(GstAmbulantSrc* asrc)
     size_t n_bytes = fread (asrc->databuffer,1,asrc->datasize,stdin);
     if (n_bytes != asrc->datasize) {
       asrc->eos = TRUE;
+    } else {
+//      gulong cs = checksum (asrc->databuffer,asrc->datasize);
+//      if (cs != asrc->checksum) {
+//	fprintf (stderr, "checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
+//      }
     }
   }
 }
+
 /* GObject virtual method implementations */
 
 static void
