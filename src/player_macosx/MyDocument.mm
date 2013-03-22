@@ -355,9 +355,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		// If an error occurs here, send a [self release] message and return nil.
 
 	}
-#ifndef WITH_CG
-	saved_window = nil;
-#endif
 	return self;
 }
 

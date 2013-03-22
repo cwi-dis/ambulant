@@ -19,6 +19,7 @@
 
 #import "MyAppDelegate.h"
 #import "MyDocument.h"
+#import "MyAppDelegate.h"
 #import "LogController.h"
 #import "mypreferences.h"
 #import <CoreFoundation/CoreFoundation.h>
@@ -169,11 +170,7 @@ initialize_logger()
 #endif
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/%s/%s"), __DATE__,
-#ifdef WITH_CG
 		"CoreGraphics",
-#else
-		"Cocoa",
-#endif
 #ifdef __ppc64__
 		"ppc64"
 #elif defined(__ppc__)

@@ -665,7 +665,7 @@
 		};
 		04A1E9A012B585D80060F97E /* Internalize dylibs */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -673,9 +673,9 @@
 			name = "Internalize dylibs";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "if [ x$CONFIGURATION = xRelease ]; then python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${TARGET_BUILD_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"; fi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -818,7 +818,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
