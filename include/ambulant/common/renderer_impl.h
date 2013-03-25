@@ -254,7 +254,7 @@ class global_playable_factory_impl : public global_playable_factory {
 	std::list<playable_factory *> m_factories;
 	playable_factory *m_default_factory;
 	std::map<int, renderer_select*> m_renderer_select;
-    critical_section m_lock;
+    lib::critical_section m_lock;
     
 };
 
