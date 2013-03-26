@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "04A1E80812B57DF20060F97E"
-               BuildableName = "libambulantCG.dylib"
-               BlueprintName = "libambulantCG"
+               BuildableName = "libambulant.dylib"
+               BlueprintName = "libambulant"
                ReferencedContainer = "container:libambulant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
