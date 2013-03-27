@@ -715,7 +715,7 @@
 		049DCA1D138A8E2B0023DFBC /* d2_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_text.h; path = d2/d2_text.h; sourceTree = "<group>"; };
 		049DCA1E138A8E2B0023DFBC /* d2_transition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_transition.h; path = d2/d2_transition.h; sourceTree = "<group>"; };
 		049DCA1F138A8E2B0023DFBC /* d2_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = d2_window.h; path = d2/d2_window.h; sourceTree = "<group>"; };
-		04A1E87512B57DF20060F97E /* libambulantCG.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulantCG.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		04A1E87512B57DF20060F97E /* libambulant.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulant.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A1E95912B585030060F97E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
 		04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
@@ -727,7 +727,7 @@
 		04B75B7112B79C8900161EB5 /* ambulant-release-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-iphone.xcconfig"; path = "config/ambulant-release-iphone.xcconfig"; sourceTree = "<group>"; };
 		04B75B7212B79C8900161EB5 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		04D07B66138B0D4500F93772 /* node_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = node_impl.cpp; sourceTree = "<group>"; };
-		04D71F8312B628210064FBCB /* libambulantCGstatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libambulantCGstatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		04D71F8312B628210064FBCB /* libambulantStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libambulantStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF5E0370ADEE00C91783 /* libambulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libambulant_Prefix.pch; sourceTree = "<group>"; };
@@ -838,8 +838,8 @@
 		034768DFFF38A50411DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04A1E87512B57DF20060F97E /* libambulantCG.dylib */,
-				04D71F8312B628210064FBCB /* libambulantCGstatic.a */,
+				04A1E87512B57DF20060F97E /* libambulant.dylib */,
+				04D71F8312B628210064FBCB /* libambulantStatic.a */,
 				040DAB3812B790BB002C4DFD /* libambulantIPhone.a */,
 			);
 			name = Products;
@@ -1754,9 +1754,9 @@
 			productReference = 040DAB3812B790BB002C4DFD /* libambulantIPhone.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		04A1E80812B57DF20060F97E /* libambulantCG */ = {
+		04A1E80812B57DF20060F97E /* libambulant */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 04A1E87212B57DF20060F97E /* Build configuration list for PBXNativeTarget "libambulantCG" */;
+			buildConfigurationList = 04A1E87212B57DF20060F97E /* Build configuration list for PBXNativeTarget "libambulant" */;
 			buildPhases = (
 				04525BE716C403DE00960DC2 /* Run Script - link to third_party_packages */,
 				04A1E80912B57DF20060F97E /* Headers */,
@@ -1768,14 +1768,14 @@
 			dependencies = (
 				041DCBF112B662FD003407C8 /* PBXTargetDependency */,
 			);
-			name = libambulantCG;
+			name = libambulant;
 			productName = libambulantCG;
-			productReference = 04A1E87512B57DF20060F97E /* libambulantCG.dylib */;
+			productReference = 04A1E87512B57DF20060F97E /* libambulant.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		04D71F8212B628210064FBCB /* libambulantCGstatic */ = {
+		04D71F8212B628210064FBCB /* libambulantStatic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 04D71F8C12B628500064FBCB /* Build configuration list for PBXNativeTarget "libambulantCGstatic" */;
+			buildConfigurationList = 04D71F8C12B628500064FBCB /* Build configuration list for PBXNativeTarget "libambulantStatic" */;
 			buildPhases = (
 				04525C5E16C405E000960DC2 /* Run Script - link to third_party_packages */,
 				04D71F7F12B628210064FBCB /* Headers */,
@@ -1787,9 +1787,9 @@
 			dependencies = (
 				044086C616C3DEB50012AEC6 /* PBXTargetDependency */,
 			);
-			name = libambulantCGstatic;
+			name = libambulantStatic;
 			productName = libambulantCGstatic;
-			productReference = 04D71F8312B628210064FBCB /* libambulantCGstatic.a */;
+			productReference = 04D71F8312B628210064FBCB /* libambulantStatic.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -1821,8 +1821,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				04A1E80812B57DF20060F97E /* libambulantCG */,
-				04D71F8212B628210064FBCB /* libambulantCGstatic */,
+				04A1E80812B57DF20060F97E /* libambulant */,
+				04D71F8212B628210064FBCB /* libambulantStatic */,
 				040DAAE112B790BB002C4DFD /* libambulantiPhone */,
 			);
 		};
@@ -2217,7 +2217,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
 				INSTALL_PATH = "";
-				PRODUCT_NAME = libambulantCG;
+				PRODUCT_NAME = libambulant;
 			};
 			name = Debug;
 		};
@@ -2234,7 +2234,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = libambulantCG;
+				PRODUCT_NAME = libambulant;
 			};
 			name = Release;
 		};
@@ -2269,7 +2269,7 @@
 					"-framework",
 					AppKit,
 				);
-				PRODUCT_NAME = ambulantCGstatic;
+				PRODUCT_NAME = ambulantStatic;
 			};
 			name = Debug;
 		};
@@ -2292,7 +2292,7 @@
 					"-framework",
 					AppKit,
 				);
-				PRODUCT_NAME = ambulantCGstatic;
+				PRODUCT_NAME = ambulantStatic;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2337,7 +2337,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04A1E87212B57DF20060F97E /* Build configuration list for PBXNativeTarget "libambulantCG" */ = {
+		04A1E87212B57DF20060F97E /* Build configuration list for PBXNativeTarget "libambulant" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04A1E87312B57DF20060F97E /* Debug */,
@@ -2346,7 +2346,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04D71F8C12B628500064FBCB /* Build configuration list for PBXNativeTarget "libambulantCGstatic" */ = {
+		04D71F8C12B628500064FBCB /* Build configuration list for PBXNativeTarget "libambulantStatic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04D71F8412B628220064FBCB /* Debug */,

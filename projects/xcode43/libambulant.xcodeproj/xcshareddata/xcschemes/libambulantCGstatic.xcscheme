@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "04D71F8212B628210064FBCB"
-               BuildableName = "libambulantCGstatic.a"
-               BlueprintName = "libambulantCGstatic"
+               BuildableName = "libambulantStatic.a"
+               BlueprintName = "libambulantStatic"
                ReferencedContainer = "container:libambulant.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
