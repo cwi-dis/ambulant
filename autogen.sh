@@ -6,8 +6,8 @@ PKG_NAME="ambulant"
 srcdir=${srcdir:-.}
 
 # default version requirements ...
-REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.61}
-REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.10}
+REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.69}
+REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.13}
 REQUIRED_LIBTOOL_VERSION=${REQUIRED_LIBTOOL_VERSION:-2.2.6}
 REQUIRED_PKG_CONFIG_VERSION=${REQUIRED_PKG_CONFIG_VERSION:-0.21}
 REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.18.1}
@@ -251,6 +251,7 @@ case $REQUIRED_AUTOMAKE_VERSION in
     1.8*) automake_progs="automake-1.10 automake-1.9 automake-1.8" ;;
     1.9*) automake_progs="automake-1.10 automake-1.9" ;;
     1.10*) automake_progs="automake-1.10 automake" ;;
+    1.13*) automake_progs="automake-1.13 automake" ;;
 esac
 version_check automake AUTOMAKE "$automake_progs" $REQUIRED_AUTOMAKE_VERSION \
     "http://ftp.gnu.org/pub/gnu/automake/automake-$REQUIRED_AUTOMAKE_VERSION.tar.gz" || DIE=1
