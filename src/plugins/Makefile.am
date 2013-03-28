@@ -73,7 +73,7 @@ pymodule_libs = \
 
 python_plugin = libamplugin_python.la
 python_includes = $(PYTHON_INCLUDES) $(pymodule_includes)
-libamplugin_python_la_LDFLAGS = -module $(PYTHON_LIBS) $(pymodule_libs)
+libamplugin_python_la_LDFLAGS = -module $(PYTHON_LIBS) $(pymodule_libs) $(LIBINTL)
 libamplugin_python_la_LIBADD = $(libambulant_core)
 libamplugin_python_la_SOURCES = pythonplugin.cpp
 
