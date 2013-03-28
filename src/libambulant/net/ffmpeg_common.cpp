@@ -247,6 +247,12 @@ ffmpeg_demux::supported(const net::url& url)
 	}
     err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
 #endif
+
+	// For live streams, we want to set mac_analyze_duration to a high value
+	const std::string& protocol = url.get_protocol();
+	if (url.guesstype() == "application/sdp" || protocol == "rtp") {
+		ic->max_analyze_duration = 24*3600*1000;
+	}
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
