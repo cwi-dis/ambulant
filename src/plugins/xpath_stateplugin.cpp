@@ -82,6 +82,7 @@ class xpath_state_component : public common::state_component {
 	xmlXPathContextPtr m_context;
 	common::state_test_methods *m_state_test_methods;
 	std::vector<std::pair<std::string, common::state_change_callback* > > m_state_change_callbacks;
+	lib::critical_section m_lock;
 };
 
 // -------------------
@@ -237,6 +238,7 @@ xpath_state_component::xpath_state_component(ambulant::common::factories* factor
 
 xpath_state_component::~xpath_state_component()
 {
+	m_lock.enter();
 	if (m_state) {
 		xmlFreeDoc(m_state);
 		m_state = NULL;
@@ -245,18 +247,22 @@ xpath_state_component::~xpath_state_component()
 		xmlXPathFreeContext(m_context);
 		m_context = NULL;
 	}
+	m_lock.leave();
 }
 
 void
 xpath_state_component::register_state_test_methods(common::state_test_methods *stm)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::register_state_test_methods(0x%x)", stm);
 	m_state_test_methods = stm;
+	m_lock.leave();
 }
 
 void
 xpath_state_component::declare_state(const lib::node *state)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::declare_state(%s)", state->get_sig().c_str());
 	// First we free any old document and state.
 	if (m_context) {
@@ -272,17 +278,8 @@ xpath_state_component::declare_state(const lib::node *state)
 		// Check for src= attribute for remote state
 		if (state->get_attribute("src")) {
 			net::url src_url = state->get_url("src");
-#if 0
-			if (!src_url.is_local_file()) {
-				lib::logger::get_logger()->trace("xpath_state_component: only file: scheme implemented for <state>");
-				return;
-			}
-			std::string src_filename = src_url.get_file();
-			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
-#else
 			std::string src_filename = src_url.get_url();
 			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
-#endif
 			if (m_state) {
 				// Finally we set up the XPath expression context.
 				// NOTE: m_context->node has to be re-set before every evaluation,
@@ -292,6 +289,7 @@ xpath_state_component::declare_state(const lib::node *state)
 				m_context->funcLookupFunc = smil_function_lookup;
 				m_context->funcLookupData = (void *)this;
 				assert(m_context);
+				m_lock.leave();
 				return;
 			}
 			// Otherwise we fall through and use the default (in-line) state.
@@ -306,6 +304,7 @@ xpath_state_component::declare_state(const lib::node *state)
 			m_state = xmlReadDoc(BAD_CAST "<data/>\n", NULL, NULL, 0);
 			if (m_state == NULL) {
 				lib::logger::get_logger()->trace("xpath_state_component: xmlReadDoc(\"<data/>\") failed");
+				m_lock.leave();
 				return;
 			}
 			// Finally we set up the XPath expression context
@@ -314,6 +313,7 @@ xpath_state_component::declare_state(const lib::node *state)
 			m_context->funcLookupFunc = smil_function_lookup;
 			m_context->funcLookupData = (void *)this;
 			assert(m_context);
+			m_lock.leave();
 			return;
 		}
 
@@ -323,6 +323,7 @@ xpath_state_component::declare_state(const lib::node *state)
 	while (arootnext) {
 		if (!arootnext->is_data_node()) {
 			lib::logger::get_logger()->trace("xpath_state_component: <state> must have exactly one child");
+			m_lock.leave();
 			return;
 		}
 		arootnext = arootnext->next();
@@ -370,20 +371,24 @@ xpath_state_component::declare_state(const lib::node *state)
 	m_context->funcLookupFunc = smil_function_lookup;
 	m_context->funcLookupData = (void *)this;
 	assert(m_context);
+	m_lock.leave();
 }
 
 bool
 xpath_state_component::bool_expression(const char *expr)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s)", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		m_lock.leave();
 		return true;
 	}
 	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate expr=\"%s\"", expr);
+		m_lock.leave();
 		return true;
 	}
 	// If we now have a nodeset we try to cast to a string
@@ -391,6 +396,7 @@ xpath_state_component::bool_expression(const char *expr)
 		result = xmlXPathConvertString(result);
 		if (result == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: expr=\"%s\": cannot convert to string", expr);
+			m_lock.leave();
 			return true;
 		}
 	}
@@ -398,21 +404,25 @@ xpath_state_component::bool_expression(const char *expr)
 		result = xmlXPathConvertNumber(result);
 		if (result == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: expr=\"%s\": cannot convert to number", expr);
+			m_lock.leave();
 			return true;
 		}
 	}
 	bool rv = xmlXPathCastToBoolean(result) != 0;
 	xmlXPathFreeObject(result);
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
+	m_lock.leave();
 	return rv;
 }
 
 void
 xpath_state_component::set_value(const char *var, const char *expr)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::set_value(%s, %s)", var, expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		m_lock.leave();
 		return;
 	}
 	// Evaluate the expression, get a string as result
@@ -420,6 +430,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate expr=\"%s\"", expr);
+		m_lock.leave();
 		return;
 	}
 	xmlChar *result_str = xmlXPathCastToString(result);
@@ -429,19 +440,23 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	result = xmlXPathEvalExpression(BAD_CAST var, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate var=\"%s\"", var);
+		m_lock.leave();
 		return;
 	}
 	if (result->type != XPATH_NODESET) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" is not a node-set", var);
+		m_lock.leave();
 		return;
 	}
 	xmlNodeSetPtr nodeset = result->nodesetval;
 	if (nodeset == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" does not refer to an existing item", var);
+		m_lock.leave();
 		return;
 	}
 	if (nodeset->nodeNr != 1) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", var, nodeset->nodeNr);
+		m_lock.leave();
 		return;
 	}
 	// Finally set the value
@@ -449,15 +464,18 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	xmlNodeSetContent(nodeptr, result_str);
 	xmlFree(result_str);
 	_check_state_change(nodeptr);
+	m_lock.leave();
 }
 
 void
 xpath_state_component::new_value(const char *ref, const char *where, const char *name, const char *expr)
 {
+	m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::new_value(ref=%s, where=%s, name=%s, expr=%s)",
 		ref, where, name, expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		m_lock.leave();
 		return;
 	}
 	// Evaluate the expression, get a string as result
@@ -465,6 +483,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate expr=\"%s\"", expr);
+		m_lock.leave();
 		return;
 	}
 	xmlChar *result_str = xmlXPathCastToString(result);
@@ -476,19 +495,23 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 	result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate ref=\"%s\"", ref);
+		m_lock.leave();
 		return;
 	}
 	if (result->type != XPATH_NODESET) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: ref=\"%s\" is not a node-set", ref);
+		m_lock.leave();
 		return;
 	}
 	xmlNodeSetPtr nodeset = result->nodesetval;
 	if (nodeset == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: ref=\"%s\" does not refer to an existing item", ref);
+		m_lock.leave();
 		return;
 	}
 	if (nodeset->nodeNr != 1) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: ref=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+		m_lock.leave();
 		return;
 	}
 	xmlNodePtr refnodeptr = *nodeset->nodeTab;
@@ -503,6 +526,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		xmlNodePtr rv = xmlAddPrevSibling(refnodeptr, newnodeptr);
 		if (rv == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: <newvalue ref=\"%s\" name=\"%s\">: xmlAddPrevSibling failed", ref, name);
+			m_lock.leave();
 			return;
 		}
 	} else
@@ -510,6 +534,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		xmlNodePtr rv = xmlAddNextSibling(refnodeptr, newnodeptr);
 		if (rv == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: <newvalue ref=\"%s\" name=\"%s\">: xmlAddNextSibling failed", ref, name);
+			m_lock.leave();
 			return;
 		}
 	} else
@@ -517,23 +542,28 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		xmlNodePtr rv = xmlAddChild(refnodeptr, newnodeptr);
 		if (rv == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: <newvalue ref=\"%s\" name=\"%s\">: xmlAddChild failed", ref, name);
+			m_lock.leave();
 			return;
 		}
 	} else {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: where=\"%s\": unknown location", where);
 		xmlFreeNode(newnodeptr);
+		m_lock.leave();
 		return;
 	}
 	// Re-set the context: it may have changed.
 	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
+	m_lock.leave();
 }
 
 void
 xpath_state_component::del_value(const char *ref)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::del_value(%s)", ref);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		m_lock.leave();
 		return;
 	}
 	// Compute the node-set expression and check that it begets a single node
@@ -541,32 +571,39 @@ xpath_state_component::del_value(const char *ref)
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: delvalue: cannot evaluate ref=\"%s\"", ref);
+		m_lock.leave();
 		return;
 	}
 	if (result->type != XPATH_NODESET) {
 		lib::logger::get_logger()->trace("xpath_state_component: delvalue: ref=\"%s\" is not a node-set", ref);
+		m_lock.leave();
 		return;
 	}
 	xmlNodeSetPtr nodeset = result->nodesetval;
 	if (nodeset == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: delvalue: ref=\"%s\" does not refer to an existing item", ref);
+		m_lock.leave();
 		return;
 	}
 	if (nodeset->nodeNr != 1) {
 		lib::logger::get_logger()->trace("xpath_state_component: delvalue: ref=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+		m_lock.leave();
 		return;
 	}
 	xmlNodePtr refnodeptr = *nodeset->nodeTab;
 	xmlUnlinkNode(refnodeptr);
 	xmlFreeNode(refnodeptr);
+	m_lock.leave();
 }
 
 void
 xpath_state_component::send(const lib::node *submission)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::send(%s)", submission->get_sig().c_str());
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: send: state not initialized");
+		m_lock.leave();
 		return;
 	}
 	m_context->node = xmlDocGetRootElement(m_state);
@@ -580,6 +617,7 @@ xpath_state_component::send(const lib::node *submission)
 		is_get = true;
 	} else {
 		lib::logger::get_logger()->trace("xpath_state_component: send: unknown method=\"%s\"", method);
+		m_lock.leave();
 		return;
 	}
 	const char *replace = submission->get_attribute("replace");
@@ -587,16 +625,19 @@ xpath_state_component::send(const lib::node *submission)
 	net::url dst_url = submission->get_url("action");
 	if (dst_url.is_empty_path()) {
 		lib::logger::get_logger()->trace("xpath_state_component: send: submission action attribute missing");
+		m_lock.leave();
 		return;
 	}
 
 	if (dst_url.is_local_file()) {
 		if (!is_put) {
 			lib::logger::get_logger()->trace("xpath_state_component: send: only method=\"put\" implemented for file: URLs");
+			m_lock.leave();
 			return;
 		}
         if (replace && strcmp(replace, "none") != 0) {
             lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
+            m_lock.leave();
             return;
         }
 		std::string dst_filename = dst_url.get_file();
@@ -608,6 +649,7 @@ xpath_state_component::send(const lib::node *submission)
 		// Lazy implementor warning in effect: For now we only need get, and with url-encoded data and no return value.
 		if (!is_get) {
 			lib::logger::get_logger()->trace("xpath_state_component: send: only method=\"get\" implemented for nonlocal URLs");
+			m_lock.leave();
 			return;
 		}
 		const char *ref = submission->get_attribute("ref");
@@ -621,19 +663,23 @@ xpath_state_component::send(const lib::node *submission)
 			xmlXPathObjectPtr refobj = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 			if (refobj == NULL) {
 				lib::logger::get_logger()->trace("xpath_state_component: send: cannot evaluate ref=\"%s\"", ref);
+				m_lock.leave();
 				return;
 			}
 			if (refobj->type != XPATH_NODESET) {
 				lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" is not a node-set", ref);
+				m_lock.leave();
 				return;
 			}
 			xmlNodeSetPtr nodeset = refobj->nodesetval;
 			if (nodeset == NULL) {
 				lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" does not refer to an existing item", ref);
+				m_lock.leave();
 				return;
 			}
 			if (nodeset->nodeNr != 1) {
 				lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+				m_lock.leave();
 				return;
 			}
 			// Finally set the value
@@ -647,29 +693,36 @@ xpath_state_component::send(const lib::node *submission)
         lib::logger::get_logger()->trace("xpath_state_component: submitting to URL <%s>", query_url.get_url().c_str());
         if (!net::read_data_from_url(query_url, m_factories->get_datasource_factory(), &data, &datasize)) {
             lib::logger::get_logger()->error("%s: Cannot open", query_url.get_url().c_str());
+            m_lock.leave();
             return;
         }
         // Lazy programmer: here we could parse data and insert into the tree.
         if (replace && strcmp(replace, "none") != 0) {
             lib::logger::get_logger()->trace("xpath_state_component: send: only replace=\"none\" implemented");
+            m_lock.leave();
             return;
         }
+        m_lock.leave();
 		return;
 	}
+	m_lock.leave();
 }
 
 std::string
 xpath_state_component::string_expression(const char *expr)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s)", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		m_lock.leave();
 		return "";
 	}
 	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate \"{%s}\"", expr);
+		m_lock.leave();
 		return "";
 	}
 	// Sanity check, for document authors
@@ -680,20 +733,24 @@ xpath_state_component::string_expression(const char *expr)
 	xmlXPathFreeObject(result);
 	if (result_str == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\" does not evaluate to a string", expr);
+		m_lock.leave();
 		return "";
 	}
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (void*)result_str);
 	std::string rv((char *)result_str);
 	xmlFree(result_str);
+	m_lock.leave();
 	return rv;
 }
 
 void
 xpath_state_component::want_state_change(const char *ref, common::state_change_callback *cb)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::want_state_change(%s)", ref);
 	std::pair<std::string, common::state_change_callback*> item(ref, cb);
 	m_state_change_callbacks.push_back(item);
+	m_lock.leave();
 }
 
 void
