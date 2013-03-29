@@ -250,8 +250,10 @@ ffmpeg_demux::supported(const net::url& url)
 
 	// For live streams, we want to set mac_analyze_duration to a high value
 	const std::string& protocol = url.get_protocol();
-	if (url.guesstype() == "application/sdp" || protocol == "rtp") {
-		ic->max_analyze_duration = 24*3600*1000;
+    std::string tp = url.guesstype();
+	if (tp == "application/sdp" || protocol == "rtp") {
+		ic->max_analyze_duration = INT_MAX;
+		lib::logger::get_logger()->trace("ffmpeg_demux: setting long analyze duration for supposed live stream %s", url_str.c_str());
 	}
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);

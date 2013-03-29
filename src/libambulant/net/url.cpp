@@ -755,6 +755,8 @@ net::url::guesstype() const
 		return "image/jpeg";
 	if (ext == ".png" || ext == ".PNG")
 		return "image/png";
+	if (ext == ".sdp" || ext == ".SDP")
+		return "application/sdp";
 	return "";
 }
 

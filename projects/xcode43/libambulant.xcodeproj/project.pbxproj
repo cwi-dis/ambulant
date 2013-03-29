@@ -667,8 +667,6 @@
 		04791D14115194C10007DD71 /* ffmpeg_raw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpeg_raw.cpp; sourceTree = "<group>"; };
 		04791D15115194C10007DD71 /* ffmpeg_video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpeg_video.cpp; sourceTree = "<group>"; };
 		04791D16115194C10007DD71 /* posix_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = posix_datasource.cpp; sourceTree = "<group>"; };
-		04791D17115194C10007DD71 /* rtsp_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtsp_datasource.cpp; sourceTree = "<group>"; };
-		04791D18115194C10007DD71 /* rtsp_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtsp_factory.cpp; sourceTree = "<group>"; };
 		04791D19115194C10007DD71 /* stdio_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdio_datasource.cpp; sourceTree = "<group>"; };
 		04791D1A115194C10007DD71 /* url.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = url.cpp; sourceTree = "<group>"; };
 		04791D1B115194C10007DD71 /* win32_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = win32_datasource.cpp; sourceTree = "<group>"; };
@@ -1479,8 +1477,6 @@
 				04791D14115194C10007DD71 /* ffmpeg_raw.cpp */,
 				04791D15115194C10007DD71 /* ffmpeg_video.cpp */,
 				04791D16115194C10007DD71 /* posix_datasource.cpp */,
-				04791D17115194C10007DD71 /* rtsp_datasource.cpp */,
-				04791D18115194C10007DD71 /* rtsp_factory.cpp */,
 				04791D19115194C10007DD71 /* stdio_datasource.cpp */,
 				04791D1A115194C10007DD71 /* url.cpp */,
 				04791D1B115194C10007DD71 /* win32_datasource.cpp */,
