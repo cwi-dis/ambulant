@@ -101,7 +101,8 @@ class video_renderer : public common::renderer_playable {
 	common::playable *m_audio_renderer;	///< the audio playable.
   private:
 	typedef lib::no_arg_callback <video_renderer > dataavail_callback;
-	double now();
+	double _now();
+	void _resync(bool speedup);
 	lib::timer *m_timer;
 	long int m_epoch;
 	bool m_activated;			// True if a datasource callback is outstanding

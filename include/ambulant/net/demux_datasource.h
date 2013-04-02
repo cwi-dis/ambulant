@@ -126,6 +126,7 @@ class demux_video_datasource:
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_thread->get_start_time(); };
+	timestamp_t get_buffer_time() { return m_frames.size() * frameduration(); };
 	int width();
 	int height();
 	timestamp_t frameduration();

@@ -845,7 +845,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 
 	timestamp_t frame_duration = frameduration();
 	assert (frame_duration > 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_frames.front().first, now, frame_duration);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld, %d in queue",m_frames.front().first, now, frame_duration, m_frames.size());
 
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.front().first, now);
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there

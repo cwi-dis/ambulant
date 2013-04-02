@@ -107,6 +107,7 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
 	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
+	timestamp_t get_buffer_time() { return m_frames.size() * frameduration(); };
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }

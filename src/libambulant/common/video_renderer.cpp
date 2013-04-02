@@ -70,8 +70,8 @@ video_renderer::video_renderer(
     ambulant::smil2::params *params = smil2::params::for_node(node);
     bool is_live = false;
 	if (params) {
-        std::string s = params->get_str("is_live");
-        if (s == "true" || s == "TRUE") {
+        const char *s = params->get_str("is_live");
+        if (s && (strcmp(s, "true") == 0 || strcmp(s, "TRUE") == 0)) {
             is_live = true;
         }
         m_src->set_is_live(is_live);
@@ -318,9 +318,9 @@ video_renderer::get_dur()
 	return rv;
 }
 
-// now() returns the time in seconds !
+// _now() returns the time in seconds !
 double
-video_renderer::now()
+video_renderer::_now()
 {
 	assert( m_timer );
 	// private method - no locking
@@ -338,6 +338,24 @@ video_renderer::now()
 		rv = (double)(elapsed - m_epoch) / 1000;
 	AM_DBG lib::logger::get_logger()->trace("video_renderer: now(0x%x): m_paused_epoch=%d, m_epoch=%d rv=%lf", this, m_paused_epoch,  m_epoch, rv);
 	return rv;
+}
+
+// _resync() is caled when time needs to speed up or slow down.
+void
+video_renderer::_resync(bool speedup)
+{
+	lib::timer::signed_time_type drift = speedup ? 15 : -15; // Adjust in 15ms increments
+
+#if 0
+	// Disable this for now, until we have fixed clocks.
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::resync: drift=%dms", drift);
+	// We may be able to adjust the system clock with this drift. Let's try.
+	drift = m_timer->set_drift(drift);
+#endif
+
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::resync: residual drift=%dms", drift);
+	// Whatever residual drift there is we compensate for by changing our epoch.
+	m_epoch -= drift;
 }
 
 void
@@ -404,7 +422,7 @@ video_renderer::data_avail()
 	// Get the next frame, dropping any frames whose timestamp has passed.
 	char *buf = NULL;
 	size_t size = 0;
-	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
+	net::timestamp_t now_micros = (net::timestamp_t)(_now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
 
@@ -476,13 +494,13 @@ video_renderer::data_avail()
 	} else
 	if (frame_ts_micros + frame_duration < m_clip_begin) {
 		// Frame from before begin-of-movie (funny comparison because of unsignedness). Skip silently, and schedule another callback asap.
-		AM_DBG lib::logger::get_logger()->debug("video_renderer: frame skipped, ts (%lld) < clip_begin(%lld)", frame_ts_micros, m_clip_begin);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer: frame skipped, ts (%lld) < clip_begin(%lld)", frame_ts_micros, m_clip_begin);
 		m_src->frame_processed(frame_ts_micros);
 	} else
 #ifdef DROP_LATE_FRAMES
 	if ( ! src->get_is_live()   && frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
 		// Frame is too late. Skip forward to now. Schedule another callback asap.
-		AM_DBG lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
 		m_frame_late++;
 		frame_ts_micros = now_micros;
 		m_src->frame_processed(frame_ts_micros);
@@ -491,7 +509,7 @@ video_renderer::data_avail()
 #endif
 	if ( ! m_src->get_is_live()  && frame_ts_micros > now_micros + frame_duration) {
 		// Frame is too early. Do nothing, just schedule a new event at the correct time and we will get this same frame again.
-		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame early, ts=%lld, now=%lld, dur=%lld)",frame_ts_micros, now_micros, frame_duration);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::data_avail: frame early, ts=%lld, now=%lld, dur=%lld)",frame_ts_micros, now_micros, frame_duration);
 		m_frame_early++;
 	} else if ( ! m_src->get_is_live()  && frame_ts_micros <= m_last_frame_timestamp) {
 		// This frame, or a later one, has been displayed already. Skip.
@@ -528,6 +546,10 @@ video_renderer::data_avail()
 			m_src->frame_processed(frame_ts_micros);
 		}
 	}
+
+	// If we are watching a live stream *and* there is a lot of frames in the buffer we speed up time.
+	if (m_src->get_is_live() && m_src->get_buffer_time() > frame_duration)
+		_resync(true);
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %lld)", frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
