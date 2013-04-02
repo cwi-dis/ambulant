@@ -58,7 +58,7 @@ ambulant::net::ffmpeg_init()
 	if (is_inited) return;
 #if 0
 	// Enable this line to get lots of ffmpeg debug output:
-	av_log_set_level(99);
+	av_log_set_level(AV_LOG_DEBUG);
 #endif
 // avcodec_init() was useless since years, replaced by av_register_all().
 // After being marked deprecated for some time, it is now completely been from API.
@@ -248,13 +248,6 @@ ffmpeg_demux::supported(const net::url& url)
     err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
 #endif
 
-	// For live streams, we want to set mac_analyze_duration to a high value
-	const std::string& protocol = url.get_protocol();
-    std::string tp = url.guesstype();
-	if (tp == "application/sdp" || protocol == "rtp") {
-		ic->max_analyze_duration = INT_MAX;
-		lib::logger::get_logger()->trace("ffmpeg_demux: setting long analyze duration for supposed live stream %s", url_str.c_str());
-	}
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
