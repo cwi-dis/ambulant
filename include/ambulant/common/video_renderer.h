@@ -22,6 +22,8 @@
 #ifndef AMBULANT_COMMON_VIDEO_RENDERER_H
 #define AMBULANT_COMMON_VIDEO_RENDERER_H
 
+#define WITH_LIVE_VIDEO_FEEDBACK
+
 #include "ambulant/config/config.h"
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
@@ -117,6 +119,9 @@ class video_renderer : public common::renderer_playable {
 	long int m_frame_late;
 	long int m_frame_missing;
 	net::timestamp_t m_previous_clip_position;
+#ifdef WITH_LIVE_VIDEO_FEEDBACK
+    const char *m_video_feedback_var;
+#endif
   protected:
 	lib::critical_section m_lock;	///< Critical section.
 };

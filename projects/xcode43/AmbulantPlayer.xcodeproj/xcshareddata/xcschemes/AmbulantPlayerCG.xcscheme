@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/jack/src/vconect/Sandbox/jack/activemq/studioclient/pyamplugin_vclient/studio/studio.smil"
+            argument = "/Users/jack/src/vconect/Sandbox/jack/activemq/studioclient/pyamplugin_vclient/studio/studio9.smil"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

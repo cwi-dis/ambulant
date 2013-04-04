@@ -54,6 +54,9 @@ video_renderer::video_renderer(
 	m_frame_early(0),
 	m_frame_late(0),
 	m_previous_clip_position(-1),
+#ifdef WITH_LIVE_VIDEO_FEEDBACK
+    m_video_feedback_var(NULL),
+#endif
 	m_frame_missing(0)
 {
 	m_lock.enter();
@@ -75,6 +78,9 @@ video_renderer::video_renderer(
             is_live = true;
         }
         m_src->set_is_live(is_live);
+#ifdef WITH_LIVE_VIDEO_FEEDBACK
+        m_video_feedback_var = params->get_str("live_feedback");
+#endif
     }
 	if (m_src->has_audio()) {
 		m_audio_ds = m_src->get_audio_datasource();
@@ -536,6 +542,23 @@ video_renderer::data_avail()
 		m_last_frame_timestamp = frame_ts_micros;
 		m_frame_displayed++;
 
+#ifdef WITH_LIVE_VIDEO_FEEDBACK
+        if (m_video_feedback_var) {
+            common::state_component *sc = m_node->get_context()->get_state();
+            if (!sc) {
+                lib::logger::get_logger()->trace("%s: no state engine, skip live video feedback", m_node->get_sig().c_str());
+            } else {
+                bool oldValue = sc->bool_expression(m_video_feedback_var);
+                if (!oldValue) {
+                    char buffer[32];
+                    snprintf(buffer, sizeof buffer, "%lld", frame_ts_micros);
+                    sc->set_value(m_video_feedback_var, buffer);
+                    /*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer: set live video feedback %s to %s", m_video_feedback_var, buffer);
+                }
+            }
+
+        }
+#endif
 		// Now we need to decide when we want the next callback, by computing what the timestamp
 		// of the next frame is expected to be.
 		frame_ts_micros += frame_duration;
