@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		0441E7BF1343132C0025FCF9 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0495994813168A6600311F05 /* libxml2.dylib */; };
 		0441E7C11343132C0025FCF9 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */; };
-		044C392A13CB3362002DF651 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E96AE12BA4DD200399893 /* libambulantCG.dylib */; };
+		044C392A13CB3362002DF651 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E96AE12BA4DD200399893 /* libambulant.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,7 +63,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0441E7BF1343132C0025FCF9 /* libxml2.dylib in Frameworks */,
-				044C392A13CB3362002DF651 /* libambulantCG.dylib in Frameworks */,
+				044C392A13CB3362002DF651 /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,8 +89,8 @@
 		042AD92D1152C916009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				041E96AE12BA4DD200399893 /* libambulantCG.dylib */,
-				041E96B012BA4DD200399893 /* libambulantCGstatic.a */,
+				041E96AE12BA4DD200399893 /* libambulant.dylib */,
+				041E96B012BA4DD200399893 /* libambulantStatic.a */,
 				041E96B212BA4DD200399893 /* libambulantIPhone.a */,
 			);
 			name = Products;
@@ -204,17 +204,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		041E96AE12BA4DD200399893 /* libambulantCG.dylib */ = {
+		041E96AE12BA4DD200399893 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulant.dylib;
 			remoteRef = 041E96AD12BA4DD200399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		041E96B012BA4DD200399893 /* libambulantCGstatic.a */ = {
+		041E96B012BA4DD200399893 /* libambulantStatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libambulantCGstatic.a;
+			path = libambulantStatic.a;
 			remoteRef = 041E96AF12BA4DD200399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

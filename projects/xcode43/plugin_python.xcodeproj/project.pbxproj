@@ -15,7 +15,7 @@
 		04290BA8132EB6FD0015D7B7 /* ambulantinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF51152DDDB009CA791 /* ambulantinterface.cpp */; };
 		04290BA9132EB6FD0015D7B7 /* ambulantmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF71152DDDB009CA791 /* ambulantmodule.cpp */; };
 		04290BAA132EB6FD0015D7B7 /* ambulantutilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF91152DDDB009CA791 /* ambulantutilities.cpp */; };
-		04290BAF132EB7150015D7B7 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E967C12BA4D5B00399893 /* libambulantCG.dylib */; };
+		04290BAF132EB7150015D7B7 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E967C12BA4D5B00399893 /* libambulant.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,7 +83,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04290BA5132EB6FD0015D7B7 /* Python.framework in Frameworks */,
-				04290BAF132EB7150015D7B7 /* libambulantCG.dylib in Frameworks */,
+				04290BAF132EB7150015D7B7 /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,8 +133,8 @@
 		042AD92D1152C916009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				041E967C12BA4D5B00399893 /* libambulantCG.dylib */,
-				041E967E12BA4D5B00399893 /* libambulantCGstatic.a */,
+				041E967C12BA4D5B00399893 /* libambulant.dylib */,
+				041E967E12BA4D5B00399893 /* libambulantStatic.a */,
 				041E968012BA4D5B00399893 /* libambulantIPhone.a */,
 			);
 			name = Products;
@@ -257,17 +257,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		041E967C12BA4D5B00399893 /* libambulantCG.dylib */ = {
+		041E967C12BA4D5B00399893 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulant.dylib;
 			remoteRef = 041E967B12BA4D5B00399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		041E967E12BA4D5B00399893 /* libambulantCGstatic.a */ = {
+		041E967E12BA4D5B00399893 /* libambulantStatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libambulantCGstatic.a;
+			path = libambulantStatic.a;
 			remoteRef = 041E967D12BA4D5B00399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
