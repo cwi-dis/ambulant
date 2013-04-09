@@ -776,6 +776,12 @@ class abstract_demux : public BASE_THREAD, public lib::ref_counted_obj {
 
     /// Return bandwidth consumed for a given stream number
     virtual long get_bandwidth_usage_data(int stream_index, const char **resource) = 0;
+
+    /// Set the 'is_live' flag
+    virtual void set_is_live (bool is_live) = 0;
+
+    /// Return the 'is live' flag
+    virtual bool get_is_live () = 0;
 };
 
 

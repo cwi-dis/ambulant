@@ -73,8 +73,8 @@ class demux_audio_datasource:
 	common::duration get_dur();
 
     long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
-    void set_is_live (bool is_live) { m_is_live = is_live; }
-    bool get_is_live () { return m_is_live; }
+    void set_is_live (bool is_live) { m_thread->set_is_live(is_live); }
+    bool get_is_live () { return m_thread->get_is_live(); }
 
   private:
 	bool _end_of_file();
@@ -142,9 +142,9 @@ class demux_video_datasource:
 	common::duration get_dur();
 
     long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
-    void set_is_live (bool is_live) { m_is_live = is_live; }
-    bool get_is_live () { return m_is_live; }
-    
+    void set_is_live (bool is_live) { m_thread->set_is_live(is_live); }
+    bool get_is_live () { return m_thread->get_is_live(); }
+
   private:
 	bool _end_of_file();
 	bool _buffer_full();

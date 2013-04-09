@@ -56,7 +56,7 @@ ambulant::net::ffmpeg_init()
 {
 	static bool is_inited = false;
 	if (is_inited) return;
-#if 0
+#if 1
 	// Enable this line to get lots of ffmpeg debug output:
 	av_log_set_level(AV_LOG_DEBUG);
 #endif
@@ -136,7 +136,8 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_
 	m_nstream(0),
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
-	m_clip_begin_changed(false)
+	m_clip_begin_changed(false),
+	m_is_live(false)
 {
 	assert(m_clip_begin >= 0);
 	if ( m_clip_begin ) m_clip_begin_changed = true;
@@ -500,7 +501,7 @@ ffmpeg_demux::run()
 
 		if (ret < 0) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: eof encountered (%d), wait some time before continuing the while loop", ret);
-			if (!eof_sent_to_clients) {
+			if (!m_is_live && !eof_sent_to_clients) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
 				for (int i=0; i<MAX_STREAMS; i++) {
 					if (m_sinks[i]) {
