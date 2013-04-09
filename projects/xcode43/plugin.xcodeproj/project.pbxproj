@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04290B81132EB6BA0015D7B7 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9331152C940009CA791 /* plugin.cpp */; };
-		04290B8E132EB6E20015D7B7 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E969612BA4DA000399893 /* libambulantCG.dylib */; };
+		04290B8E132EB6E20015D7B7 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E969612BA4DA000399893 /* libambulant.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04290B8E132EB6E20015D7B7 /* libambulantCG.dylib in Frameworks */,
+				04290B8E132EB6E20015D7B7 /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +83,7 @@
 		042AD92D1152C916009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				041E969612BA4DA000399893 /* libambulantCG.dylib */,
+				041E969612BA4DA000399893 /* libambulant.dylib */,
 				041E969812BA4DA000399893 /* libambulantCGstatic.a */,
 				041E969A12BA4DA000399893 /* libambulantIPhone.a */,
 			);
@@ -194,17 +194,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		041E969612BA4DA000399893 /* libambulantCG.dylib */ = {
+		041E969612BA4DA000399893 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulant.dylib;
 			remoteRef = 041E969512BA4DA000399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		041E969812BA4DA000399893 /* libambulantCGstatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libambulantCGstatic.a;
+			path = libambulantStatic.a;
 			remoteRef = 041E969712BA4DA000399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

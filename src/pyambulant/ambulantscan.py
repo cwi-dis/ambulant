@@ -208,6 +208,7 @@ class MyScanner(CxxScanner):
                 'get_timer_sync_factory',
                 'set_timer_sync_factory',
                 'clicked_external',
+                'uses_external_sync',
                 ]
             ),
         ]

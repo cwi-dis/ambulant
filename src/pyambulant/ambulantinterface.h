@@ -424,7 +424,9 @@ public:
 	void paused();
 	void resumed();
 	void clicked(const ambulant::lib::node* n, ambulant::lib::timer::time_type t);
+#ifdef WITH_REMOTE_SYNC
 	bool uses_external_sync();
+#endif
   private:
 	PyObject *py_timer_sync;
 
@@ -1090,6 +1092,9 @@ public:
 #ifdef WITH_REMOTE_SYNC
 	void clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time_type t);
 #endif
+#ifdef WITH_REMOTE_SYNC
+	bool uses_external_sync() const;
+#endif
 	long add_ref() { return 1; }
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }
@@ -1271,6 +1276,7 @@ public:
 	void send(const ambulant::lib::node* submission);
 	std::string string_expression(const char* expr);
 	void want_state_change(const char* ref, ambulant::common::state_change_callback* cb);
+	std::string getsubtree(const char* ref, bool as_query);
   private:
 	PyObject *py_state_component;
 

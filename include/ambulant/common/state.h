@@ -130,6 +130,9 @@ class state_component {
 
 	/// Register the fact that we want state_change_callback::on_state_change() callback for a given variable
 	virtual void want_state_change(const char *ref, state_change_callback *cb) = 0;
+
+	/// Get subtree (or whole tree) either as XML or as query-string.
+	virtual std::string getsubtree(const char *ref, bool as_query) = 0;
 };
 
 /// Factory to create SMIL State component for a specific language.
