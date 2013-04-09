@@ -111,8 +111,8 @@ class ffmpeg_video_decoder_datasource:
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
-    void set_is_live (bool is_live) { m_is_live = is_live; }
-    bool get_is_live () { return m_is_live; }
+    void set_is_live (bool is_live) { m_src->set_is_live(is_live); }
+    bool get_is_live () { return m_src->get_is_live(); }
         
 
   private:
@@ -148,7 +148,6 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t m_elapsed;
 	bool m_start_input;		// True when m_src->start_frame() is needed
 	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
-    bool m_is_live;
 #ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
 	FILE* m_beforeDecodingDroppingFile;
 	FILE* m_afterDecodingDroppingFile;

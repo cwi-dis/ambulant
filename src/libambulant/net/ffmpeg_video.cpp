@@ -180,8 +180,7 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 #endif
 	m_elapsed(0),
 	m_start_input(true),
-	m_pixel_layout(pixel_unknown),
-    m_is_live(false)
+	m_pixel_layout(pixel_unknown)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
