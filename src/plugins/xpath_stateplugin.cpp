@@ -468,8 +468,9 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	xmlNodePtr nodeptr = *nodeset->nodeTab;
 	xmlNodeSetContent(nodeptr, result_str);
 	xmlFree(result_str);
-	_check_state_change(nodeptr);
+    // XXXJACK: this looks dangerous, but otherwise we get deadlocks...
 	m_lock.leave();
+	_check_state_change(nodeptr);
 }
 
 void
@@ -557,8 +558,9 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		return;
 	}
 	// Re-set the context: it may have changed.
-	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
+    // XXXJACK: this looks dangerous, but otherwise we get deadlocks...
 	m_lock.leave();
+	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
 }
 
 void

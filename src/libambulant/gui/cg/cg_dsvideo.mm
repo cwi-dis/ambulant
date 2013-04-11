@@ -191,7 +191,7 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		double alfa = 1.0;
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
-		/*AM_DBG*/ lib::logger::get_logger()->debug("0x%x: drawImage(0x%x, %f)", this, cropped_image, alfa);
+		AM_DBG lib::logger::get_logger()->debug("0x%x: drawImage(0x%x, %f)", this, cropped_image, alfa);
 		CGContextSaveGState(myContext);
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG
         // We need to mirror the image, because CGImage uses bottom-left coordinates.
