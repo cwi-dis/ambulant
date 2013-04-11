@@ -172,6 +172,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 	m_frame_count(0),
 	m_dropped_count(0),
+    m_complete_frame_seen(false),
+    m_is_live(false),
 #ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
 	m_dropped_count_before_decoding(0),
 	m_possibility_dropping_nonref(0),
@@ -596,6 +598,16 @@ ffmpeg_video_decoder_datasource::data_avail()
 			} else {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoder is %lld us ahead of playout", ipts-m_oldest_timestamp_wanted);
 			}
+            
+            // For live streams, don't display anything until we have seen a full frame.
+            // Also, if we haven't seen frames for a while, wait for an iframe again
+            if (m_is_live) {
+                if (!m_complete_frame_seen) {
+                    AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: waiting for full frame");
+                    m_con->skip_frame = AVDISCARD_NONREF;
+                }
+                // xxxjack
+            }
 			AVPacket avpkt;
 			av_init_packet(&avpkt);
 			avpkt.data = ptr;
@@ -623,6 +635,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
 		
+            // We have gotten a frame
+            if (!m_complete_frame_seen) {
+                AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: found full frame");m_complete_frame_seen = true;
+            }
 			// At this point we need m_fmt to be correct, we are going to use
 			// sizes, durations, etc.
 			_need_fmt_uptodate();

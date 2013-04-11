@@ -111,8 +111,8 @@ class ffmpeg_video_decoder_datasource:
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
-    void set_is_live (bool is_live) { m_src->set_is_live(is_live); }
-    bool get_is_live () { return m_src->get_is_live(); }
+        void set_is_live (bool is_live) { m_src->set_is_live(is_live); m_is_live = is_live; }
+        bool get_is_live () { return m_is_live; }
         
 
   private:
@@ -129,14 +129,10 @@ class ffmpeg_video_decoder_datasource:
 	struct SwsContext *m_img_convert_ctx;
 
 	bool m_con_owned;	// True if we have to close/free m_con
-//	int m_stream_index;
 	video_format m_fmt;
-//	bool m_src_end_of_file;
 	lib::event_processor *m_event_processor;
 	sorted_frames  m_frames;
 	int m_size;		// NOTE: this assumes all decoded frames are the same size!
-//	databuffer m_buffer;
-//	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
 	timestamp_t m_pts_last_frame;
 	timestamp_t m_oldest_timestamp_wanted;
@@ -147,6 +143,8 @@ class ffmpeg_video_decoder_datasource:
 	lib::critical_section m_lock;
 	timestamp_t m_elapsed;
 	bool m_start_input;		// True when m_src->start_frame() is needed
+    bool m_complete_frame_seen; // True whenever a real frame has been seen
+    bool m_is_live; // True for live streams
 	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
 #ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
 	FILE* m_beforeDecodingDroppingFile;
