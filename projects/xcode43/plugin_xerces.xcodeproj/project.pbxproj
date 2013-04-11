@@ -10,7 +10,7 @@
 		04290B3B132EB5D80015D7B7 /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042ADA9D1152DA1C009CA791 /* libxerces-c.dylib */; };
 		04290B3D132EB5D80015D7B7 /* xercesplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADA611152D8A6009CA791 /* xercesplugin.cpp */; };
 		04290B3E132EB5D80015D7B7 /* xerces_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADA851152D981009CA791 /* xerces_parser.cpp */; };
-		04290B4A132EB5F70015D7B7 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E96C612BA4E0E00399893 /* libambulantCG.dylib */; };
+		04290B4A132EB5F70015D7B7 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E96C612BA4E0E00399893 /* libambulant.dylib */; };
 		935D1A6F169CCBE3003A3CC0 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A6E169CCBE3003A3CC0 /* CoreFoundation.framework */; };
 		935D1A71169CCC8F003A3CC0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A70169CCC8F003A3CC0 /* Carbon.framework */; };
 		935D1A73169CCCB7003A3CC0 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 935D1A72169CCCB7003A3CC0 /* libcurl.dylib */; };
@@ -71,7 +71,7 @@
 				935D1A71169CCC8F003A3CC0 /* Carbon.framework in Frameworks */,
 				935D1A6F169CCBE3003A3CC0 /* CoreFoundation.framework in Frameworks */,
 				04290B3B132EB5D80015D7B7 /* libxerces-c.dylib in Frameworks */,
-				04290B4A132EB5F70015D7B7 /* libambulantCG.dylib in Frameworks */,
+				04290B4A132EB5F70015D7B7 /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +97,7 @@
 		042AD92D1152C916009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				041E96C612BA4E0E00399893 /* libambulantCG.dylib */,
+				041E96C612BA4E0E00399893 /* libambulant.dylib */,
 				041E96C812BA4E0E00399893 /* libambulantCGstatic.a */,
 				041E96CA12BA4E0E00399893 /* libambulantIPhone.a */,
 			);
@@ -213,17 +213,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		041E96C612BA4E0E00399893 /* libambulantCG.dylib */ = {
+		041E96C612BA4E0E00399893 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulant.dylib;
 			remoteRef = 041E96C512BA4E0E00399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		041E96C812BA4E0E00399893 /* libambulantCGstatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libambulantCGstatic.a;
+			path = libambulantStatic.a;
 			remoteRef = 041E96C712BA4E0E00399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

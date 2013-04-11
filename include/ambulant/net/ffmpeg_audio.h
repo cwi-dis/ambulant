@@ -94,9 +94,9 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	timestamp_t get_elapsed();
 
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
-    void set_is_live (bool is_live) { m_is_live = is_live; }
-    bool get_is_live () { return m_is_live; }
-    
+    void set_is_live (bool is_live) { m_src->set_is_live(is_live); }
+    bool get_is_live () { return m_src->get_is_live(); }
+
   protected:
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(audio_format &fmt);
@@ -115,7 +115,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 
 	databuffer m_buffer;
 	bool m_blocked_full;
-    bool m_is_live;
 
 	lib::event *m_client_callback;  // This is our calllback to the client
 	lib::critical_section m_lock;

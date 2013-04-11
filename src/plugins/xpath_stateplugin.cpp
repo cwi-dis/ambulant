@@ -68,12 +68,17 @@ class xpath_state_component : public common::state_component {
 
 	/// Register interest in stateChange events
 	void want_state_change(const char *ref, common::state_change_callback *cb);
-  
+
+	/// Get subtree (or whole tree) either as XML or as query-string.
+	std::string getsubtree(const char *ref, bool as_query);
   private:
   
 	// Helper: call relevant state_change_callbacks.
     void _check_state_change(xmlNodePtr changed);
-    
+
+	// Helper: get a node or document, either as xml or query string
+	bool _node_content(const char *ref, bool url_encoded, std::string& query);
+
     // Helper: construct query string for submission.
     std::string _node_as_form_urlencoded(xmlNodePtr node);
 
@@ -646,47 +651,13 @@ xpath_state_component::send(const lib::node *submission)
 		xmlDocDump(fp, m_state);
 		fclose(fp);
 	} else {
-		// Lazy implementor warning in effect: For now we only need get, and with url-encoded data and no return value.
-		if (!is_get) {
-			lib::logger::get_logger()->trace("xpath_state_component: send: only method=\"get\" implemented for nonlocal URLs");
+		const char *ref = submission->get_attribute("ref");
+		std::string query;
+		if ( !_node_content(ref, is_get, query)) {
+			// No need for error: this is provided by _node_content().
 			m_lock.leave();
 			return;
 		}
-		const char *ref = submission->get_attribute("ref");
-		m_context->node = xmlDocGetRootElement(m_state);
-		
-		// Get the set of nodes that ref points to, or the root.
-		xmlNodePtr refnode;
-		if (ref == NULL) {
-			refnode = m_context->node; // The root
-		} else {
-			xmlXPathObjectPtr refobj = xmlXPathEvalExpression(BAD_CAST ref, m_context);
-			if (refobj == NULL) {
-				lib::logger::get_logger()->trace("xpath_state_component: send: cannot evaluate ref=\"%s\"", ref);
-				m_lock.leave();
-				return;
-			}
-			if (refobj->type != XPATH_NODESET) {
-				lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" is not a node-set", ref);
-				m_lock.leave();
-				return;
-			}
-			xmlNodeSetPtr nodeset = refobj->nodesetval;
-			if (nodeset == NULL) {
-				lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" does not refer to an existing item", ref);
-				m_lock.leave();
-				return;
-			}
-			if (nodeset->nodeNr != 1) {
-				lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", ref, nodeset->nodeNr);
-				m_lock.leave();
-				return;
-			}
-			// Finally set the value
-			refnode = *nodeset->nodeTab;
-		}
-		assert(refnode);
-		std::string query = _node_as_form_urlencoded(refnode);
 		net::url query_url = net::url::from_url(dst_url.get_url() + "?" + query);
         char *data = NULL;
         size_t datasize = 0;
@@ -706,6 +677,75 @@ xpath_state_component::send(const lib::node *submission)
 		return;
 	}
 	m_lock.leave();
+}
+
+bool
+xpath_state_component::_node_content(const char *ref, bool url_encoded, std::string& query)
+{
+	// Special case: if we want the whole document as XML we make sure to create a document
+	if ((ref == NULL || *ref == '\0') && !url_encoded) {
+		xmlChar *data;
+		int dataSize;
+		xmlDocDumpFormatMemory(m_state, &data, &dataSize, 0);
+		query = (char *)data;
+		xmlFree(data);
+		return true;
+	}
+	m_context->node = xmlDocGetRootElement(m_state);
+
+	// Get the set of nodes that ref points to, or the root.
+	xmlNodePtr refnode;
+	if (ref == NULL || *ref == '\0') {
+		refnode = m_context->node; // The root
+	} else {
+		xmlXPathObjectPtr refobj = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+		if (refobj == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: send: cannot evaluate ref=\"%s\"", ref);
+			m_lock.leave();
+			return false;
+		}
+		if (refobj->type != XPATH_NODESET) {
+			lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" is not a node-set", ref);
+			m_lock.leave();
+			return false;
+		}
+		xmlNodeSetPtr nodeset = refobj->nodesetval;
+		if (nodeset == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" does not refer to an existing item", ref);
+			m_lock.leave();
+			return false;
+		}
+		if (nodeset->nodeNr != 1) {
+			lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+			m_lock.leave();
+			return false;
+		}
+		// Finally set the value
+		refnode = *nodeset->nodeTab;
+	}
+	assert(refnode);
+
+	if (url_encoded) {
+		query = _node_as_form_urlencoded(refnode);
+		return true;
+	} else {
+		xmlBufferPtr buf = xmlBufferCreate();
+		xmlNodeDump(buf, m_state, refnode, 0, 0);
+		query = (char *)xmlBufferContent(buf);
+		xmlBufferFree(buf);
+		return true;
+	}
+}
+
+std::string
+xpath_state_component::getsubtree(const char *ref, bool as_query)
+{
+	std::string rv;
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::getsubtree(%s, %d)", ref, as_query);
+	(void)_node_content(ref, as_query, rv);
+	m_lock.leave();
+	return rv;
 }
 
 std::string

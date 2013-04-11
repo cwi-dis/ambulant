@@ -104,6 +104,8 @@ class ffmpeg_demux : public abstract_demux {
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };
     long get_bandwidth_usage_data(int stream_index, const char **resource);
+    void set_is_live (bool is_live) { m_is_live = is_live; }
+    bool get_is_live () { return m_is_live; }
   protected:
 	unsigned long run();
   private:
@@ -120,6 +122,7 @@ class ffmpeg_demux : public abstract_demux {
 	timestamp_t m_clip_begin;
 	timestamp_t m_clip_end;
 	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
+	bool m_is_live;		// True if this is a live stream
 };
 
 /// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.

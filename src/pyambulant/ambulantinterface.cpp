@@ -2768,6 +2768,7 @@ void timer_sync::clicked(const ambulant::lib::node* n, ambulant::lib::timer::tim
 	PyGILState_Release(_GILState);
 }
 
+#ifdef WITH_REMOTE_SYNC
 bool timer_sync::uses_external_sync()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -2791,6 +2792,7 @@ bool timer_sync::uses_external_sync()
 	PyGILState_Release(_GILState);
 	return _rv;
 }
+#endif
 
 /* -------------------- Class timer_sync_factory -------------------- */
 
@@ -3609,6 +3611,7 @@ gui_player::gui_player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_url")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_url");
 		if (!PyObject_HasAttrString(itself, "get_gui_screen")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: get_gui_screen");
 		if (!PyObject_HasAttrString(itself, "clicked_external")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: clicked_external");
+		if (!PyObject_HasAttrString(itself, "uses_external_sync")) PyErr_Warn(PyExc_Warning, "gui_player: missing attribute: uses_external_sync");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -6723,6 +6726,7 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "goto_node")) PyErr_Warn(PyExc_Warning, "player: missing attribute: goto_node");
 		if (!PyObject_HasAttrString(itself, "highlight")) PyErr_Warn(PyExc_Warning, "player: missing attribute: highlight");
 		if (!PyObject_HasAttrString(itself, "clicked_external")) PyErr_Warn(PyExc_Warning, "player: missing attribute: clicked_external");
+		if (!PyObject_HasAttrString(itself, "uses_external_sync")) PyErr_Warn(PyExc_Warning, "player: missing attribute: uses_external_sync");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -7220,6 +7224,32 @@ void player::clicked_external(ambulant::lib::node* n, ambulant::lib::timer::time
 	Py_XDECREF(py_t);
 
 	PyGILState_Release(_GILState);
+}
+#endif
+
+#ifdef WITH_REMOTE_SYNC
+bool player::uses_external_sync() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "uses_external_sync", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::uses_external_sync() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::uses_external_sync() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
 }
 #endif
 
@@ -8508,6 +8538,7 @@ state_component::state_component(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "send")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: send");
 		if (!PyObject_HasAttrString(itself, "string_expression")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: string_expression");
 		if (!PyObject_HasAttrString(itself, "want_state_change")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: want_state_change");
+		if (!PyObject_HasAttrString(itself, "getsubtree")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: getsubtree");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -8718,6 +8749,36 @@ void state_component::want_state_change(const char* ref, ambulant::common::state
 	Py_XDECREF(py_cb);
 
 	PyGILState_Release(_GILState);
+}
+
+std::string state_component::getsubtree(const char* ref, bool as_query)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	std::string _rv;
+	PyObject *py_ref = Py_BuildValue("s", ref);
+	PyObject *py_as_query = Py_BuildValue("O&", bool_New, as_query);
+
+	PyObject *py_rv = PyObject_CallMethod(py_state_component, "getsubtree", "(OO)", py_ref, py_as_query);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during state_component::getsubtree() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr="";
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during state_component::getsubtree() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ref);
+	Py_XDECREF(py_as_query);
+
+	PyGILState_Release(_GILState);
+	return _rv;
 }
 
 /* ----------------- Class state_component_factory ------------------ */

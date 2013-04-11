@@ -5322,6 +5322,8 @@ static PyObject *timer_syncObj_clicked(timer_syncObject *_self, PyObject *_args)
 	return _res;
 }
 
+#ifdef WITH_REMOTE_SYNC
+
 static PyObject *timer_syncObj_uses_external_sync(timer_syncObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -5334,6 +5336,7 @@ static PyObject *timer_syncObj_uses_external_sync(timer_syncObject *_self, PyObj
 	                     bool_New, _rv);
 	return _res;
 }
+#endif
 
 static PyMethodDef timer_syncObj_methods[] = {
 	{"initialize", (PyCFunction)timer_syncObj_initialize, 1,
@@ -5348,8 +5351,11 @@ static PyMethodDef timer_syncObj_methods[] = {
 	 PyDoc_STR("() -> None")},
 	{"clicked", (PyCFunction)timer_syncObj_clicked, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::timer::time_type t) -> None")},
+
+#ifdef WITH_REMOTE_SYNC
 	{"uses_external_sync", (PyCFunction)timer_syncObj_uses_external_sync, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -7301,6 +7307,22 @@ static PyObject *gui_playerObj_clicked_external(gui_playerObject *_self, PyObjec
 }
 #endif
 
+#ifdef WITH_REMOTE_SYNC
+
+static PyObject *gui_playerObj_uses_external_sync(gui_playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->uses_external_sync();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+#endif
+
 static PyMethodDef gui_playerObj_methods[] = {
 	{"init_playable_factory", (PyCFunction)gui_playerObj_init_playable_factory, 1,
 	 PyDoc_STR("() -> None")},
@@ -7364,6 +7386,11 @@ static PyMethodDef gui_playerObj_methods[] = {
 #ifdef WITH_REMOTE_SYNC
 	{"clicked_external", (PyCFunction)gui_playerObj_clicked_external, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::timer::time_type t) -> None")},
+#endif
+
+#ifdef WITH_REMOTE_SYNC
+	{"uses_external_sync", (PyCFunction)gui_playerObj_uses_external_sync, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
 #endif
 	{NULL, NULL, 0}
 };
@@ -12464,6 +12491,22 @@ static PyObject *playerObj_clicked_external(playerObject *_self, PyObject *_args
 }
 #endif
 
+#ifdef WITH_REMOTE_SYNC
+
+static PyObject *playerObj_uses_external_sync(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->uses_external_sync();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+#endif
+
 static PyMethodDef playerObj_methods[] = {
 	{"initialize", (PyCFunction)playerObj_initialize, 1,
 	 PyDoc_STR("() -> None")},
@@ -12515,6 +12558,11 @@ static PyMethodDef playerObj_methods[] = {
 #ifdef WITH_REMOTE_SYNC
 	{"clicked_external", (PyCFunction)playerObj_clicked_external, 1,
 	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::timer::time_type t) -> None")},
+#endif
+
+#ifdef WITH_REMOTE_SYNC
+	{"uses_external_sync", (PyCFunction)playerObj_uses_external_sync, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
 #endif
 	{NULL, NULL, 0}
 };
@@ -14236,6 +14284,24 @@ static PyObject *state_componentObj_want_state_change(state_componentObject *_se
 	return _res;
 }
 
+static PyObject *state_componentObj_getsubtree(state_componentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	bool as_query;
+	if (!PyArg_ParseTuple(_args, "sO&",
+	                      &ref,
+	                      bool_Convert, &as_query))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	std::string _rv = _self->ob_itself->getsubtree(ref,
+	                                               as_query);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
 static PyMethodDef state_componentObj_methods[] = {
 	{"register_state_test_methods", (PyCFunction)state_componentObj_register_state_test_methods, 1,
 	 PyDoc_STR("(ambulant::common::state_test_methods* stm) -> None")},
@@ -14255,6 +14321,8 @@ static PyMethodDef state_componentObj_methods[] = {
 	 PyDoc_STR("(char* expr) -> (std::string _rv)")},
 	{"want_state_change", (PyCFunction)state_componentObj_want_state_change, 1,
 	 PyDoc_STR("(char* ref, ambulant::common::state_change_callback* cb) -> None")},
+	{"getsubtree", (PyCFunction)state_componentObj_getsubtree, 1,
+	 PyDoc_STR("(char* ref, bool as_query) -> (std::string _rv)")},
 	{NULL, NULL, 0}
 };
 

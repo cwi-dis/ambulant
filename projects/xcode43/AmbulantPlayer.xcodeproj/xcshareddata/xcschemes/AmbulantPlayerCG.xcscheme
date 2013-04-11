@@ -65,6 +65,21 @@
       </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
+            key = "SESSION_ID"
+            value = "session42"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "VCONECT_CLIENTID"
+            value = "client8b"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "VC_CAM_OVERRIDE"
+            value = "videotestsrc"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"
             value = "1"
             isEnabled = "YES">
