@@ -253,12 +253,15 @@ region_node::fix_from_dom_node()
 			sl = strtod(soundlevel_attr, &lastp);
 			if (*lastp == '%') {
 				sl *= 0.01;
+                lastp++;
 			} else if (strcmp(lastp,"dB") == 0) {
 				sl = pow(10.0, sl/20);
+                lastp+=2;
 			} else {
 				// default: percentage implied
 				sl *= 0.01;
 			}
+            if (*lastp) lib::logger::get_logger()->trace("%s: invalid soundLevel value: %s", m_node->get_sig().c_str(), soundlevel_attr);
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundLevel=%g", sl);
 		if (sl != m_soundlevel) {
@@ -309,7 +312,11 @@ region_node::fix_from_dom_node()
 		double bo = m_bgopacity;
 		if (bgopacity_attr) {
 			bo = strtod(bgopacity_attr, &lastp);
-			if (*lastp == '%') bo *= 0.01;
+			if (*lastp == '%') {
+                bo *= 0.01;
+                lastp++;
+            }
+            if (*lastp) lib::logger::get_logger()->trace("%s: invalid backgroundOpacity value: %s", m_node->get_sig().c_str(), bgopacity_attr);
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: backgroundOpacity=%g", bo);
 		if (bo != m_bgopacity) {
@@ -324,7 +331,11 @@ region_node::fix_from_dom_node()
 		double fo = m_mediaopacity;
 		if (mediaopacity_attr) {
 			fo = strtod(mediaopacity_attr, &lastp);
-			if (*lastp == '%') fo *= 0.01;
+			if (*lastp == '%') {
+                fo *= 0.01;
+                lastp++;
+            }
+            if (*lastp) lib::logger::get_logger()->trace("%s: invalid mediaOpacity value: %s", m_node->get_sig().c_str(), mediaopacity_attr);
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaOpacity=%g", fo);
 		if (fo != m_mediaopacity) {
@@ -339,7 +350,11 @@ region_node::fix_from_dom_node()
 		double mbo = m_mediabgopacity;
 		if (mediabgopacity_attr) {
 			mbo = strtod(mediabgopacity_attr, &lastp);
-			if (*lastp == '%') mbo *= 0.01;
+			if (*lastp == '%') {
+                mbo *= 0.01;
+                lastp++;
+            }
+            if (*lastp) lib::logger::get_logger()->trace("%s: invalid mediaBackgroundOpacity value: %s", m_node->get_sig().c_str(), mediabgopacity_attr);
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaBackgroundOpacity=%g", mbo);
 		if (mbo != m_mediabgopacity) {
@@ -354,7 +369,11 @@ region_node::fix_from_dom_node()
 		double fo = m_chromakeyopacity;
 		if (chromakeyopacity_attr) {
 			fo = strtod(chromakeyopacity_attr, &lastp);
-			if (*lastp == '%') fo *= 0.01;
+			if (*lastp == '%') {
+                fo *= 0.01;
+                lastp++;
+            }
+            if (*lastp) lib::logger::get_logger()->trace("%s: invalid chromaKeyOpacity value: %s", m_node->get_sig().c_str(), chromakeyopacity_attr);
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: chromaKeyOpacity=%g", fo);
 		if (fo != m_chromakeyopacity) {
