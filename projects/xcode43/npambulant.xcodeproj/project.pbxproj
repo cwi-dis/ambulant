@@ -423,7 +423,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python \"${AMBULANT_DIR}/scripts/internalize_dylibs.py\" -v -s /usr/local/lib:${BUILT_PRODUCTS_DIR} \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "case x$INSTALL_PATH in\nx) INSTALL_PATH=/usr/local/lib\nesac\npython \"${AMBULANT_DIR}/scripts/internalize_dylibs.py\" -v -s \"${INSTALL_PATH}:${BUILT_PRODUCTS_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
