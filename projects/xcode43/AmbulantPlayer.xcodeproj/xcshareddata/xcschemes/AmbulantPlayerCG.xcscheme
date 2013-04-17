@@ -70,6 +70,11 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "DYLD_FALLBACK_LIBRARY_PATH"
+            value = "/Users/jack/packages/gstreamer/installed/lib:"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "VCONECT_CLIENTID"
             value = "client8b"
             isEnabled = "YES">
@@ -82,11 +87,6 @@
          <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"
             value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "VCONECT_CLIENTID"
-            value = "client5aDBG"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

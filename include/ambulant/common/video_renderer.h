@@ -104,7 +104,7 @@ class video_renderer : public common::renderer_playable {
   private:
 	typedef lib::no_arg_callback <video_renderer > dataavail_callback;
 	double _now();
-	void _resync(bool speedup);
+	void _resync(lib::timer::signed_time_type drift);
 	lib::timer *m_timer;
 	long int m_epoch;
 	bool m_activated;			// True if a datasource callback is outstanding

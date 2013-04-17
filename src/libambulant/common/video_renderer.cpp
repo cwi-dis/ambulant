@@ -348,9 +348,9 @@ video_renderer::_now()
 
 // _resync() is caled when time needs to speed up or slow down.
 void
-video_renderer::_resync(bool speedup)
+video_renderer::_resync(lib::timer::signed_time_type drift)
 {
-	lib::timer::signed_time_type drift = speedup ? 15 : -15; // Adjust in 15ms increments
+	// lib::timer::signed_time_type drift = speedup ? 15 : -15; // Adjust in 15ms increments
 
 #if 0
 	// Disable this for now, until we have fixed clocks.
@@ -571,8 +571,10 @@ video_renderer::data_avail()
 	}
 
 	// If we are watching a live stream *and* there is a lot of frames in the buffer we speed up time.
-	if (m_src->get_is_live() && m_src->get_buffer_time() > frame_duration)
-		_resync(true);
+	if (m_src->get_is_live() && m_src->get_buffer_time() > frame_duration) {
+		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: resyncing (%lld us in input buffer)", m_src->get_buffer_time());
+		_resync(m_src->get_buffer_time() - frame_duration);
+	}
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %lld)", frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
