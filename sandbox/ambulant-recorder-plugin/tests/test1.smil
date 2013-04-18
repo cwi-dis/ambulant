@@ -6,11 +6,17 @@
   <head>
     <layout>
       <root-layout width="640" height="480" backgroundColor="black"/>
-      <region xml:id="screen" left="0%" top="0" width="100%" height="100%" backgroundColor="gray"/>
+      <region xml:id="screen" left="0%" top="0" width="100%" height="100%" backgroundColor="yellow"/>
+      <region xml:id="brush" left="33%" top="33%" width="33%" height="33%" backgroundColor="blue"/>
     </layout>
   </head>
   <body>
-    <par dur="10" >
-    </par>
+    <seq>
+      <par dur="2" >
+        <brush region="brush" begin="1" color="green" />
+      </par>
+      <brush region="brush" dur="1" color="red" />
+      <brush region="brush" dur="1" color="yellow" />
+    </seq>
   </body>
 </smil>
