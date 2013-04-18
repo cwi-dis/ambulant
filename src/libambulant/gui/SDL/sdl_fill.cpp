@@ -280,7 +280,7 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
 
-		Uint8 red = redc(bgcolor), green = bluec(bgcolor), blue = greenc(bgcolor);
+		Uint8 red = redc(bgcolor), green = greenc(bgcolor), blue = bluec(bgcolor);
 //TMP		if (background_renderer == NULL) { // TMP disable SDL_Renderer* caching
 			background_renderer = saw->get_sdl_renderer();
 			if (background_renderer == NULL) {
