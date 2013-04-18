@@ -3,4 +3,8 @@ export LD_LIBRARY_PATH=/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/l
 
 export BROWSER=firefox
 
-AmbulantPlayer $srcdir/test1.smil
+AmbulantPlayer $srcdir/test1.smil &
+pid=$!
+sleep 5
+kill -9 $pid
+
