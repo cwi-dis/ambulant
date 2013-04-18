@@ -96,6 +96,7 @@ public:
 private:
 	SDL_Surface* m_surface;
 	Uint32 m_amask, m_rmask, m_gmask, m_bmask;
+	bool m_dumpflag;
 	FILE* m_pipe;
 	lib::size m_window_size;
 	recorder_writer* m_writer;

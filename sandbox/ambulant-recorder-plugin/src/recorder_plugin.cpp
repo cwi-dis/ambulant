@@ -84,7 +84,8 @@ recorder_plugin_factory::new_recorder(net::pixel_order pixel_order, lib::size wi
 	
 // Construct a new recorder to accept pixels of the given 'pixel_order'
 recorder_plugin::recorder_plugin (net::pixel_order pixel_order, lib::size& window_size)
-  : m_pipe(NULL),
+  : m_dumpflag(false),
+    m_pipe(NULL),
     m_surface(NULL),
     m_window_size(window_size),
     m_writer(NULL)
@@ -110,12 +111,16 @@ recorder_plugin::recorder_plugin (net::pixel_order pixel_order, lib::size& windo
 	}
 	char* command = getenv("AMBULANT_RECORDER_PIPE");
 	if (command != NULL) {
-		m_pipe = popen(command, "w");
-		if (m_pipe == NULL) {
-			logger::get_logger()->trace("%s: pipe failed: %s)", fun,strerror(errno));
+		if (strcmp(command, "dump") == 0) {
+			m_dumpflag = true;
+		} else {
+			m_pipe = popen(command, "w");
+			if (m_pipe == NULL) {
+				logger::get_logger()->trace("%s: pipe failed: %s)", fun,strerror(errno));
+			}
+			m_writer = new recorder_writer (m_pipe);
+			m_writer->start();
 		}
-		m_writer = new recorder_writer (m_pipe);
-		m_writer->start();
 	}
 }
 
@@ -176,7 +181,7 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 //		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, datasize, m_window_size.w, m_window_size.h);
 //		fwrite (data, 1, datasize, m_pipe);
 		m_writer->push_data (new recorder_queue_element(new_data, new_datasize, documenttimestamp, m_window_size, checksum));
-	} else {
+	} else if (m_dumpflag) {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
 		}
