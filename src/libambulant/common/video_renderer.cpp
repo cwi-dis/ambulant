@@ -551,6 +551,9 @@ video_renderer::data_avail()
                 bool oldValue = sc->bool_expression(m_video_feedback_var);
                 if (!oldValue) {
                     char buffer[32];
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
                     snprintf(buffer, sizeof buffer, "%lld", frame_ts_micros);
                     sc->set_value(m_video_feedback_var, buffer);
                     AM_DBG lib::logger::get_logger()->debug("video_renderer: set live video feedback %s to %s", m_video_feedback_var, buffer);
