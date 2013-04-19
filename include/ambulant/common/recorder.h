@@ -51,9 +51,10 @@ public:
 };
 
 class recorder_factory {  /*TBD: not all details known yet*/
-public:
+
+ public:
 	/// recorder factory destructor
-	virtual ~recorder_factory() = 0;
+	virtual ~recorder_factory() {}
 	
 	/// return new recorder for the given 'pixel_order' and window size, or NULL if not supported
  	virtual recorder* new_recorder(net::pixel_order, lib::size window_size) = 0;
