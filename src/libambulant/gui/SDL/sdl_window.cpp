@@ -70,7 +70,7 @@ long unsigned int ambulant_sdl_window::s_num_events = 0;
 
 ambulant_sdl_window::~ambulant_sdl_window()
 {
-
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::~ambulant_sdl_window(0x%x): m_ambulant_window=0x%x",this,m_ambulant_window);
 	// Note that we don't destroy the window, only sver the connection.
 	// the window itself is destroyed independently.
@@ -79,12 +79,14 @@ ambulant_sdl_window::~ambulant_sdl_window()
 		m_ambulant_window = NULL;
 	}
 	if (ambulant_sdl_window::s_num_events == 0) {
+		m_lock.leave();
 		return;
 	}
 	// Remove any outstanding SDL_Events from the SDL Event Queue that contain 'this'
 	// but leave all others
 	SDL_Event* events = (SDL_Event*) malloc (ambulant_sdl_window::s_num_events*sizeof(SDL_Event)), * events_left =  (SDL_Event*) NULL;
 	if (events == NULL) {
+		m_lock.leave();
 		return;
 	}					      
 	int n_events_left = 0;
@@ -124,6 +126,8 @@ ambulant_sdl_window::~ambulant_sdl_window()
 		m_tmpsurface = NULL;
 	}
 **/
+	m_lock.leave();
+	return;
 }
 #ifdef JNK
 void
@@ -153,9 +157,11 @@ ambulant_sdl_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
 void
 ambulant_sdl_window::need_redraw(const lib::rect &r)
 {
+	m_lock.enter();
 	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
 	if (m_ambulant_window == NULL) {
 		lib::logger::get_logger()->error("ambulant_sdl_window::need_redraw(0x%x): m_ambulant_window == NULL !!!", (void*) this);
+		m_lock.leave();
 		return;
 	}
 #ifdef JNK
@@ -191,21 +197,24 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 	SDL_PushEvent(&e);
 	ambulant_sdl_window::s_num_events++;
 	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(0x%x): SDL_PushEvent called r=(%d,%d,%d,%d) e={type=%d user.code=%d user.data1=0x%x user.data2=0x%x}", this,r.left(),r.top(),r.width(),r.height(), e.type, e.user.code, e.user.data1, e.user.data2);
+	m_lock.leave();
 }
 
 void
 ambulant_sdl_window::redraw(const lib::rect &r)
 {
-
+	m_lock.enter();
 	ambulant_sdl_window::s_num_events--;
 	sdl_ambulant_window* saw = get_sdl_ambulant_window();
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 //X	_screenTransitionPreRedraw();
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect(r); 
-	saw->clear_SDL_Surface(saw->get_SDL_Surface(), sdl_rect);
+	saw->clear_sdl_surface(saw->get_sdl_surface(), sdl_rect);
 	
+	m_lock.leave();
 	m_handler->redraw(r, this);
+	m_lock.enter();
 #ifdef JNK
 //XXXX	if ( ! isEqualToPrevious(m_surface))
 	_screenTransitionPostRedraw(r);
@@ -249,7 +258,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	rect.w = r.width();
 	rect.h = r.height();
 	SDL_Renderer* renderer = saw->get_sdl_window_renderer();
-	SDL_Surface* surface = saw->get_SDL_Surface();
+	SDL_Surface* surface = saw->get_sdl_surface();
 	SDL_Surface* screen_surface = surface;
 //X	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
 	if (m_recorder) {
@@ -265,6 +274,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
+	m_lock.leave();
 }
 
 void
@@ -289,7 +299,8 @@ ambulant_sdl_window::need_events(bool want)
 void
 ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 {
-  AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_window(0x%x), m_ambulant_window=(sdl_ambulant_window*)0x%x", this, sdlas);
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_window(0x%x), m_ambulant_window=(sdl_ambulant_window*)0x%x", this, sdlas);
 	// Don't destroy!
 	//if (m_ambulant_window != NULL)
 	//	delete m_ambulant_window;
@@ -317,6 +328,7 @@ ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 		// User Interaction
 	}
 #endif//JNK
+	m_lock.leave();
 }
 
 sdl_ambulant_window*
@@ -338,6 +350,7 @@ ambulant_sdl_window::get_ambulant_surface()
 void
 ambulant_sdl_window::set_gui_player(gui_player* gpl)
 {
+	m_lock.enter();
 	m_gui_player = gpl;
 	if (gpl != NULL && gpl->get_recorder_factory() != NULL) {
 		m_recorder = gpl->get_recorder_factory()->new_recorder(net::pixel_argb, m_bounds.size());
@@ -345,6 +358,8 @@ ambulant_sdl_window::set_gui_player(gui_player* gpl)
 		delete m_recorder;
 		m_recorder = NULL;
 	}
+	m_lock.leave();
+
 }
 
 gui_player*
@@ -357,6 +372,7 @@ ambulant_sdl_window::get_gui_player()
 SDL_Surface*
 ambulant_sdl_window::new_ambulant_surface()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::new_ambulant_surface(0x%x)",(void *)m_surface);
 	if (m_surface != NULL) delete m_surface;
 #ifdef JNK
@@ -366,6 +382,7 @@ ambulant_sdl_window::new_ambulant_surface()
 #endif//JNK
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::new_ambulant_surface(0x%x)",(void *)m_surface);
 	return m_surface;
+	m_lock.leave();
 }
 
 SDL_Surface*
@@ -408,9 +425,11 @@ ambulant_sdl_window::reset_ambulant_surface(void)
 void
 ambulant_sdl_window::set_ambulant_surface(SDL_Surface* surf)
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_surface(0x%x) surf = 0x%x",(void *)this,(void *)surf);
 	m_oldsurface = m_surface;
 	if (surf != NULL) m_surface = surf;
+	m_lock.leave();
 }
 #ifdef JNK
 #endif//JNK
@@ -418,11 +437,13 @@ ambulant_sdl_window::set_ambulant_surface(SDL_Surface* surf)
 void
 ambulant_sdl_window::delete_ambulant_surface()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::delete_ambulant_surface(0x%x) m_surface = 0x%x",(void *)this, (void *)m_surface);
 #ifdef JNK
 	delete m_surface;
 	m_surface = NULL;
 #endif//JNK
+	m_lock.leave();
 }
 #endif//XXX
 
@@ -479,9 +500,11 @@ sdl_ambulant_window::~sdl_ambulant_window()
 		SDL_DestroyRenderer(m_sdl_renderer);
 	}
 	if (m_sdl_screen_surface != NULL) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("%s  SDL_FreeSurface(0x%x: m_sdl_screen_surface=0x%x)", __PRETTY_FUNCTION__, (void*)this, m_sdl_screen_surface);
 		SDL_FreeSurface(m_sdl_screen_surface);
 	}
 	if (m_sdl_transition_surface != NULL) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("%s  SDL_FreeSurface(0x%x: m_sdl_transition_surface=0x%x)", __PRETTY_FUNCTION__, (void*)this, m_sdl_transition_surface);
 		SDL_FreeSurface(m_sdl_transition_surface);
 	}
 	if(m_screen_pixels != NULL) {
@@ -742,7 +765,7 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 #endif//JNK
 
 void
-sdl_ambulant_window::clear_SDL_Surface (SDL_Surface* surface, SDL_Rect sdl_rect)
+sdl_ambulant_window::clear_sdl_surface (SDL_Surface* surface, SDL_Rect sdl_rect)
 // helper: clear the surface
 {
 	if (surface == NULL || surface->format == NULL) {
@@ -758,26 +781,51 @@ sdl_ambulant_window::clear_SDL_Surface (SDL_Surface* surface, SDL_Rect sdl_rect)
 }
 
 SDL_Surface*
-sdl_ambulant_window::copy_SDL_Surface(SDL_Surface* surface)
+sdl_ambulant_window::copy_sdl_surface(SDL_Surface* surface)
 {
 	SDL_Surface* new_surface = SDL_ConvertSurface(surface, surface->format, surface->flags);
 	return new_surface;
 }
 
 void
-sdl_ambulant_window::push_SDL_Surface(SDL_Surface* new_surface)
+sdl_ambulant_window::push_sdl_surface(SDL_Surface* new_surface)
 {
 	m_transition_surfaces.push(new_surface);
+}
+
+void 
+sdl_ambulant_window::set_sdl_surface(SDL_Surface* s) {
+	if (s != NULL) {
+		m_sdl_surface = s;
+	}
+}
+
+void 
+sdl_ambulant_window::delete_sdl_surface() {
+	if (m_sdl_surface != NULL) {
+		SDL_FreeSurface (m_sdl_surface);
+	}
+	m_sdl_surface = NULL;
 }
 
 SDL_Surface*
 sdl_ambulant_window::get_transition_surface()
 {
 	if (m_sdl_transition_surface == NULL) {
-		m_sdl_transition_surface = copy_SDL_Surface (m_sdl_screen_surface);
+		m_sdl_transition_surface = copy_sdl_surface (m_sdl_screen_surface);
 	}
-	assert(m_sdl_transition_surface);
+	SDL_Surface* s = m_sdl_transition_surface;
+	assert(s && s->format && s->map && s->refcount > 0);
 	return m_sdl_transition_surface;
+}
+
+void
+sdl_ambulant_window::delete_transition_surface()
+{
+	if (m_sdl_transition_surface != NULL) {
+		SDL_FreeSurface (m_sdl_screen_surface);
+		m_sdl_transition_surface = NULL;
+	}
 }
 
 int
@@ -807,7 +855,7 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	int rv = 0;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
-		SDL_Surface* dst = get_SDL_Surface();
+		SDL_Surface* dst = get_sdl_surface();
 		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
 	}
 	return rv;
@@ -819,7 +867,7 @@ sdl_ambulant_window::copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src
 	int rv = 0;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
-		SDL_Surface* dst = get_SDL_Surface();
+		SDL_Surface* dst = get_sdl_surface();
 		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
 	}
 	return rv;

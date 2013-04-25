@@ -729,10 +729,10 @@ sdl_gui::sdl_loop() {
 				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
 				saw = asw == NULL ? NULL : asw->get_sdl_ambulant_window();
 				if (saw != NULL) {
-					SDL_Surface* surf = saw->get_SDL_Surface();
+					SDL_Surface* surf = saw->get_sdl_surface();
 					if (surf != NULL) {
 						SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
-						bool ok = SDL_SetClipRect(saw->get_SDL_Surface(), &sdl_rect);
+						bool ok = SDL_SetClipRect(saw->get_sdl_surface(), &sdl_rect);
 						if ( ! ok) {
 							lib::logger::get_logger()->error("%s SDL_SetClipRect: %s",__PRETTY_FUNCTION__, SDL_GetError());
 						}
