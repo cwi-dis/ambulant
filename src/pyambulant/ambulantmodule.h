@@ -112,6 +112,12 @@ extern int playable_factoryObj_Convert(PyObject *v, ambulant::common::playable_f
 extern PyObject *global_playable_factoryObj_New(ambulant::common::global_playable_factory* itself);
 extern int global_playable_factoryObj_Convert(PyObject *v, ambulant::common::global_playable_factory* *p_itself);
 
+extern PyObject *recorderObj_New(ambulant::common::recorder* itself);
+extern int recorderObj_Convert(PyObject *v, ambulant::common::recorder* *p_itself);
+
+extern PyObject *recorder_factoryObj_New(ambulant::common::recorder_factory* itself);
+extern int recorder_factoryObj_Convert(PyObject *v, ambulant::common::recorder_factory* *p_itself);
+
 extern PyObject *renderer_selectObj_New(ambulant::common::renderer_select* itself);
 extern int renderer_selectObj_Convert(PyObject *v, ambulant::common::renderer_select* *p_itself);
 

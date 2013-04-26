@@ -25,6 +25,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/recorder.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
@@ -6338,6 +6339,19 @@ static PyObject *factoriesObj_get_state_component_factory(factoriesObject *_self
 	return _res;
 }
 
+static PyObject *factoriesObj_get_recorder_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::recorder_factory* _rv = _self->ob_itself->get_recorder_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     recorder_factoryObj_New, _rv);
+	return _res;
+}
+
 static PyObject *factoriesObj_set_playable_factory(factoriesObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -6462,6 +6476,21 @@ static PyObject *factoriesObj_set_timer_sync_factory(factoriesObject *_self, PyO
 }
 #endif
 
+static PyObject *factoriesObj_set_recorder_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::recorder_factory* rf;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      recorder_factoryObj_Convert, &rf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_recorder_factory(rf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef factoriesObj_methods[] = {
 	{"init_factories", (PyCFunction)factoriesObj_init_factories, 1,
 	 PyDoc_STR("() -> None")},
@@ -6496,6 +6525,8 @@ static PyMethodDef factoriesObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::node_factory* _rv)")},
 	{"get_state_component_factory", (PyCFunction)factoriesObj_get_state_component_factory, 1,
 	 PyDoc_STR("() -> (ambulant::common::global_state_component_factory* _rv)")},
+	{"get_recorder_factory", (PyCFunction)factoriesObj_get_recorder_factory, 1,
+	 PyDoc_STR("() -> (ambulant::common::recorder_factory* _rv)")},
 	{"set_playable_factory", (PyCFunction)factoriesObj_set_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::global_playable_factory* pf) -> None")},
 	{"set_window_factory", (PyCFunction)factoriesObj_set_window_factory, 1,
@@ -6518,6 +6549,8 @@ static PyMethodDef factoriesObj_methods[] = {
 	{"set_timer_sync_factory", (PyCFunction)factoriesObj_set_timer_sync_factory, 1,
 	 PyDoc_STR("(ambulant::lib::timer_sync_factory* tsf) -> None")},
 #endif
+	{"set_recorder_factory", (PyCFunction)factoriesObj_set_recorder_factory, 1,
+	 PyDoc_STR("(ambulant::common::recorder_factory* rf) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -11258,6 +11291,328 @@ PyTypeObject global_playable_factory_Type = {
 };
 
 /* ------------ End object type global_playable_factory ------------- */
+
+
+/* ---------------------- Object type recorder ---------------------- */
+
+extern PyTypeObject recorder_Type;
+
+inline bool recorderObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &recorder_Type);
+}
+
+typedef struct recorderObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::recorder* ob_itself;
+} recorderObject;
+
+PyObject *recorderObj_New(ambulant::common::recorder* itself)
+{
+	recorderObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder
+	recorder *encaps_itself = dynamic_cast<recorder *>(itself);
+	if (encaps_itself && encaps_itself->py_recorder)
+	{
+		Py_INCREF(encaps_itself->py_recorder);
+		return encaps_itself->py_recorder;
+	}
+#endif
+	it = PyObject_NEW(recorderObject, &recorder_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int recorderObj_Convert(PyObject *v, ambulant::common::recorder* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder
+	if (!recorderObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_recorder(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!recorderObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "recorder required");
+		return 0;
+	}
+	*p_itself = ((recorderObject *)v)->ob_itself;
+	return 1;
+}
+
+static void recorderObj_dealloc(recorderObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyMethodDef recorderObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define recorderObj_getsetlist NULL
+
+
+static int recorderObj_compare(recorderObject *self, recorderObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define recorderObj_repr NULL
+
+static long recorderObj_hash(recorderObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int recorderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::recorder* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, recorderObj_Convert, &itself))
+	{
+		((recorderObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define recorderObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *recorderObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((recorderObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define recorderObj_tp_free PyObject_Del
+
+
+PyTypeObject recorder_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.recorder", /*tp_name*/
+	sizeof(recorderObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) recorderObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) recorderObj_compare, /*tp_compare*/
+	(reprfunc) recorderObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) recorderObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	recorderObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	recorderObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	recorderObj_tp_init, /* tp_init */
+	recorderObj_tp_alloc, /* tp_alloc */
+	recorderObj_tp_new, /* tp_new */
+	recorderObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type recorder -------------------- */
+
+
+/* ------------------ Object type recorder_factory ------------------ */
+
+extern PyTypeObject recorder_factory_Type;
+
+inline bool recorder_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &recorder_factory_Type);
+}
+
+typedef struct recorder_factoryObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::recorder_factory* ob_itself;
+} recorder_factoryObject;
+
+PyObject *recorder_factoryObj_New(ambulant::common::recorder_factory* itself)
+{
+	recorder_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder_factory
+	recorder_factory *encaps_itself = dynamic_cast<recorder_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_recorder_factory)
+	{
+		Py_INCREF(encaps_itself->py_recorder_factory);
+		return encaps_itself->py_recorder_factory;
+	}
+#endif
+	it = PyObject_NEW(recorder_factoryObject, &recorder_factory_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int recorder_factoryObj_Convert(PyObject *v, ambulant::common::recorder_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder_factory
+	if (!recorder_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_recorder_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!recorder_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "recorder_factory required");
+		return 0;
+	}
+	*p_itself = ((recorder_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void recorder_factoryObj_dealloc(recorder_factoryObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyMethodDef recorder_factoryObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define recorder_factoryObj_getsetlist NULL
+
+
+static int recorder_factoryObj_compare(recorder_factoryObject *self, recorder_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define recorder_factoryObj_repr NULL
+
+static long recorder_factoryObj_hash(recorder_factoryObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int recorder_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::recorder_factory* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, recorder_factoryObj_Convert, &itself))
+	{
+		((recorder_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define recorder_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *recorder_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((recorder_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define recorder_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject recorder_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.recorder_factory", /*tp_name*/
+	sizeof(recorder_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) recorder_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) recorder_factoryObj_compare, /*tp_compare*/
+	(reprfunc) recorder_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) recorder_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	recorder_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	recorder_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	recorder_factoryObj_tp_init, /* tp_init */
+	recorder_factoryObj_tp_alloc, /* tp_alloc */
+	recorder_factoryObj_tp_new, /* tp_new */
+	recorder_factoryObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type recorder_factory ---------------- */
 
 
 /* ------------------ Object type renderer_select ------------------- */
@@ -19218,6 +19573,16 @@ void initambulant(void)
 	if (PyType_Ready(&global_playable_factory_Type) < 0) return;
 	Py_INCREF(&global_playable_factory_Type);
 	PyModule_AddObject(m, "global_playable_factory", (PyObject *)&global_playable_factory_Type);
+	recorder_Type.ob_type = &PyType_Type;
+	recorder_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&recorder_Type) < 0) return;
+	Py_INCREF(&recorder_Type);
+	PyModule_AddObject(m, "recorder", (PyObject *)&recorder_Type);
+	recorder_factory_Type.ob_type = &PyType_Type;
+	recorder_factory_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&recorder_factory_Type) < 0) return;
+	Py_INCREF(&recorder_factory_Type);
+	PyModule_AddObject(m, "recorder_factory", (PyObject *)&recorder_factory_Type);
 	renderer_select_Type.ob_type = &PyType_Type;
 	renderer_select_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&renderer_select_Type) < 0) return;

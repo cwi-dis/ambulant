@@ -3025,6 +3025,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_parser_factory");
 		if (!PyObject_HasAttrString(itself, "get_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_node_factory");
 		if (!PyObject_HasAttrString(itself, "get_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_state_component_factory");
+		if (!PyObject_HasAttrString(itself, "get_recorder_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_recorder_factory");
 		if (!PyObject_HasAttrString(itself, "set_playable_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_playable_factory");
 		if (!PyObject_HasAttrString(itself, "set_window_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_window_factory");
 		if (!PyObject_HasAttrString(itself, "set_datasource_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_datasource_factory");
@@ -3033,6 +3034,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_state_component_factory");
 		if (!PyObject_HasAttrString(itself, "get_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_timer_sync_factory");
 		if (!PyObject_HasAttrString(itself, "set_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_timer_sync_factory");
+		if (!PyObject_HasAttrString(itself, "set_recorder_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_recorder_factory");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -3336,6 +3338,30 @@ ambulant::common::global_state_component_factory* factories::get_state_component
 	return _rv;
 }
 
+ambulant::common::recorder_factory* factories::get_recorder_factory() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::recorder_factory* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "get_recorder_factory", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::get_recorder_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", recorder_factoryObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during factories::get_recorder_factory() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 void factories::set_playable_factory(ambulant::common::global_playable_factory* pf)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3489,6 +3515,24 @@ void factories::set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf)
 	PyGILState_Release(_GILState);
 }
 #endif
+
+void factories::set_recorder_factory(ambulant::common::recorder_factory* rf)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rf = Py_BuildValue("O&", recorder_factoryObj_New, rf);
+
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "set_recorder_factory", "(O)", py_rf);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::set_recorder_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_rf);
+
+	PyGILState_Release(_GILState);
+}
 
 /* ------------------------ Class gui_screen ------------------------ */
 

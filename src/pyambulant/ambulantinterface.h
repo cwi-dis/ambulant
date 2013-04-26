@@ -20,6 +20,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/recorder.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
@@ -512,6 +513,7 @@ public:
 	ambulant::lib::global_parser_factory* get_parser_factory() const;
 	ambulant::lib::node_factory* get_node_factory() const;
 	ambulant::common::global_state_component_factory* get_state_component_factory() const;
+	ambulant::common::recorder_factory* get_recorder_factory() const;
 	void set_playable_factory(ambulant::common::global_playable_factory* pf);
 	void set_window_factory(ambulant::common::window_factory* wf);
 	void set_datasource_factory(ambulant::net::datasource_factory* df);
@@ -524,6 +526,7 @@ public:
 #ifdef WITH_REMOTE_SYNC
 	void set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf);
 #endif
+	void set_recorder_factory(ambulant::common::recorder_factory* rf);
   private:
 	PyObject *py_factories;
 

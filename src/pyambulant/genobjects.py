@@ -88,6 +88,10 @@ OBJECTS=[
 	("playable_factory", "ambulant::common::playable_factory", None),
 	("global_playable_factory", "ambulant::common::global_playable_factory", "playable_factory"),
 	
+	"common/recorder.h",
+	("recorder", "ambulant::common::recorder", None),
+	("recorder_factory", "ambulant::common::recorder_factory", None),
+	
 	"common/renderer_select.h",
 	("renderer_select", "ambulant::common::renderer_select", None),
 	
