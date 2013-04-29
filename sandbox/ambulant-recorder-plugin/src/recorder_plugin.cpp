@@ -135,31 +135,6 @@ recorder_plugin::~recorder_plugin ()
 		SDL_FreeSurface(m_surface);
 	}
 }
-
-void*
-convert_bgra_to_rgb(void* data, size_t datasize, size_t* new_datasize, unsigned long int* csp)
-{
-	int length = ( datasize*3 ) / 4;
-	int rgb_idx = length - 1;
-	int bgra_idx = datasize - 1;
-	unsigned char* rgb_buffer = (unsigned char*) malloc(length);
-	unsigned char* bgra_buffer = (unsigned char*) data;
-	unsigned long int checksum = 0;
-	if (data != NULL) {
-		for (; bgra_idx >= 0; bgra_idx -= 4) {
-	    		checksum += rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 3];
-			checksum += rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 2];
-			checksum += rgb_buffer[rgb_idx--] = bgra_buffer[bgra_idx - 1];
-		}
-	}
-	if (new_datasize != NULL) {
-		*new_datasize = length;
-	}
-	if (csp != NULL) {
-		*csp = checksum;
-	}
-	return rgb_buffer;
-}
 	
 // Record new video data with timestamp (ms) in document time
 void
@@ -171,16 +146,9 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		return;
 	}
 	if (m_pipe != NULL) {
-		size_t new_datasize;
 		unsigned long int checksum;
-		void* new_data = convert_bgra_to_rgb (data, datasize, &new_datasize, &checksum);
-//X 	fprintf(m_pipe, "Time: %.8lu\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
-//X		logger::get_logger()->trace ("Time: %.8lu Size: %.8u W: %5u H: %5u\n", documenttimestamp, new_datasize, m_window_size.w, m_window_size.h);
-//X		fwrite (new_data, 1, new_datasize, m_pipe);
-//X		free (new_data);
-//		fprintf(m_pipe, "Time: %0.8u\nSize: %.8u\nW: %5u\nH: %5u\n", documenttimestamp, datasize, m_window_size.w, m_window_size.h);
-//		fwrite (data, 1, datasize, m_pipe);
-		m_writer->push_data (new recorder_queue_element(new_data, new_datasize, documenttimestamp, m_window_size, checksum));
+		void* new_data = malloc (datasize); memcpy (new_data, data, datasize);
+		m_writer->push_data (new recorder_queue_element(new_data, datasize, documenttimestamp, m_window_size, checksum));
 	} else if (m_dumpflag) {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
@@ -263,8 +231,9 @@ recorder_writer::_write_data (recorder_queue_element* qe)
 		return -1;
 	}
 	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);
+	size_t datasize = qe->m_datasize;
 	delete qe;
-	if (result != qe->m_datasize) {
+	if (result != datasize) {
 		return -1;
 	}
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p wrote: (qe=%p time=%ld in %ld millisec)", fun, this, qe, qe->m_timestamp, clock_time() - start_time);
