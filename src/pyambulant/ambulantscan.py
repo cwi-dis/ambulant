@@ -150,7 +150,7 @@ class MyScanner(CxxScanner):
             "event_processor_observer_ptr",
             "single_playable_factory",
             "single_playable_factory_ptr",
-            "recorder_factory_ptr", # XXX for now
+#            "recorder_factory_ptr", # XXX for now
             "sdl_window_factory_ptr", # XXX For now
             "sdl_window_factory",
             
