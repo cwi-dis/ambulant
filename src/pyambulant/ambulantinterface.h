@@ -1011,6 +1011,49 @@ inline global_playable_factory *Py_WrapAs_global_playable_factory(PyObject *o)
 	return rv;
 }
 
+class recorder : public cpppybridge, public ambulant::common::recorder {
+public:
+	recorder(PyObject *itself);
+	virtual ~recorder();
+
+	void new_video_data(const char *data__in__, size_t data__len__, ambulant::lib::timer::time_type documenttimestamp);
+	void new_audio_data(const char *data__in__, size_t data__len__, ambulant::lib::timer::time_type documenttimestamp);
+  private:
+	PyObject *py_recorder;
+
+	friend PyObject *recorderObj_New(ambulant::common::recorder *itself);
+};
+#define BGEN_BACK_SUPPORT_recorder
+inline recorder *Py_WrapAs_recorder(PyObject *o)
+{
+	recorder *rv = dynamic_cast<recorder*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new recorder(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class recorder_factory : public cpppybridge, public ambulant::common::recorder_factory {
+public:
+	recorder_factory(PyObject *itself);
+	virtual ~recorder_factory();
+
+	ambulant::common::recorder* new_recorder(ambulant::net::pixel_order pixel_order, ambulant::lib::size window_size);
+  private:
+	PyObject *py_recorder_factory;
+
+	friend PyObject *recorder_factoryObj_New(ambulant::common::recorder_factory *itself);
+};
+#define BGEN_BACK_SUPPORT_recorder_factory
+inline recorder_factory *Py_WrapAs_recorder_factory(PyObject *o)
+{
+	recorder_factory *rv = dynamic_cast<recorder_factory*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new recorder_factory(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
 class focus_feedback : public cpppybridge, public ambulant::common::focus_feedback {
 public:
 	focus_feedback(PyObject *itself);

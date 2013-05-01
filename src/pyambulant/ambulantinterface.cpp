@@ -6430,6 +6430,135 @@ void global_playable_factory::preferred_renderer(const char* name)
 	PyGILState_Release(_GILState);
 }
 
+/* ------------------------- Class recorder ------------------------- */
+
+recorder::recorder(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_video_data")) PyErr_Warn(PyExc_Warning, "recorder: missing attribute: new_video_data");
+		if (!PyObject_HasAttrString(itself, "new_audio_data")) PyErr_Warn(PyExc_Warning, "recorder: missing attribute: new_audio_data");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_recorder = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+recorder::~recorder()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *itself = py_recorder;
+	py_recorder = NULL;
+	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
+	{
+		pycppbridge_setwrapper(itself, NULL);
+	}
+	Py_XDECREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+
+void recorder::new_video_data(const char *data__in__, size_t data__len__, ambulant::lib::timer::time_type documenttimestamp)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
+	PyObject *py_documenttimestamp = Py_BuildValue("l", documenttimestamp);
+
+	PyObject *py_rv = PyObject_CallMethod(py_recorder, "new_video_data", "(OO)", py_data, py_documenttimestamp);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during recorder::new_video_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_data);
+	Py_XDECREF(py_documenttimestamp);
+
+	PyGILState_Release(_GILState);
+}
+
+void recorder::new_audio_data(const char *data__in__, size_t data__len__, ambulant::lib::timer::time_type documenttimestamp)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
+	PyObject *py_documenttimestamp = Py_BuildValue("l", documenttimestamp);
+
+	PyObject *py_rv = PyObject_CallMethod(py_recorder, "new_audio_data", "(OO)", py_data, py_documenttimestamp);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during recorder::new_audio_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_data);
+	Py_XDECREF(py_documenttimestamp);
+
+	PyGILState_Release(_GILState);
+}
+
+/* --------------------- Class recorder_factory --------------------- */
+
+recorder_factory::recorder_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_recorder")) PyErr_Warn(PyExc_Warning, "recorder_factory: missing attribute: new_recorder");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_recorder_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+recorder_factory::~recorder_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *itself = py_recorder_factory;
+	py_recorder_factory = NULL;
+	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
+	{
+		pycppbridge_setwrapper(itself, NULL);
+	}
+	Py_XDECREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::recorder* recorder_factory::new_recorder(ambulant::net::pixel_order pixel_order, ambulant::lib::size window_size)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::recorder* _rv;
+	PyObject *py_pixel_order = Py_BuildValue("l", pixel_order);
+	PyObject *py_window_size = Py_BuildValue("O", ambulant_size_New(window_size));
+
+	PyObject *py_rv = PyObject_CallMethod(py_recorder_factory, "new_recorder", "(OO)", py_pixel_order, py_window_size);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during recorder_factory::new_recorder() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", recorderObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during recorder_factory::new_recorder() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_pixel_order);
+	Py_XDECREF(py_window_size);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ---------------------- Class focus_feedback ---------------------- */
 
 focus_feedback::focus_feedback(PyObject *itself)

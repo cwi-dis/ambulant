@@ -168,6 +168,8 @@ tiling = Type("ambulant::common::tiling", "l")
 fit_t = Type("ambulant::common::fit_t", "l")
 sound_alignment = Type("ambulant::common::sound_alignment", "l")
 pause_display = Type("ambulant::common::pause_display", "l")
+pixel_order = Type("ambulant::net::pixel_order", "l")
+net_pixel_order = pixel_order
 
 pycobject = OpaqueByValueType("void*", "cobject")
 pygobject = OpaqueByValueType("void *", "PyGObjectAsVoidPtr")

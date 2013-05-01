@@ -31,6 +31,7 @@ def main():
         AMBULANT+ "common/layout.h",
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
+        AMBULANT+ "common/recorder.h",
         AMBULANT+ "common/region_info.h",
         AMBULANT+ "common/renderer_select.h",
         AMBULANT+ "common/state.h",
@@ -150,7 +151,6 @@ class MyScanner(CxxScanner):
             "event_processor_observer_ptr",
             "single_playable_factory",
             "single_playable_factory_ptr",
-            "recorder_factory_ptr", # XXX for now
             "sdl_window_factory_ptr", # XXX For now
             "sdl_window_factory",
             

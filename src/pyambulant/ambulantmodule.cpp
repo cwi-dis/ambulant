@@ -11360,7 +11360,53 @@ static void recorderObj_dealloc(recorderObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *recorderObj_new_video_data(recorderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char *data__in__;
+	size_t data__len__;
+	int data__in_len__;
+	ambulant::lib::timer::time_type documenttimestamp;
+	if (!PyArg_ParseTuple(_args, "s#l",
+	                      &data__in__, &data__in_len__,
+	                      &documenttimestamp))
+		return NULL;
+	data__len__ = data__in_len__;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->new_video_data(data__in__, data__len__,
+	                                 documenttimestamp);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *recorderObj_new_audio_data(recorderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char *data__in__;
+	size_t data__len__;
+	int data__in_len__;
+	ambulant::lib::timer::time_type documenttimestamp;
+	if (!PyArg_ParseTuple(_args, "s#l",
+	                      &data__in__, &data__in_len__,
+	                      &documenttimestamp))
+		return NULL;
+	data__len__ = data__in_len__;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->new_audio_data(data__in__, data__len__,
+	                                 documenttimestamp);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef recorderObj_methods[] = {
+	{"new_video_data", (PyCFunction)recorderObj_new_video_data, 1,
+	 PyDoc_STR("(Buffer data, ambulant::lib::timer::time_type documenttimestamp) -> None")},
+	{"new_audio_data", (PyCFunction)recorderObj_new_audio_data, 1,
+	 PyDoc_STR("(Buffer data, ambulant::lib::timer::time_type documenttimestamp) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -11521,7 +11567,27 @@ static void recorder_factoryObj_dealloc(recorder_factoryObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *recorder_factoryObj_new_recorder(recorder_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::pixel_order pixel_order;
+	ambulant::lib::size window_size;
+	if (!PyArg_ParseTuple(_args, "lO&",
+	                      &pixel_order,
+	                      ambulant_size_Convert, &window_size))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::recorder* _rv = _self->ob_itself->new_recorder(pixel_order,
+	                                                                 window_size);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     recorderObj_New, _rv);
+	return _res;
+}
+
 static PyMethodDef recorder_factoryObj_methods[] = {
+	{"new_recorder", (PyCFunction)recorder_factoryObj_new_recorder, 1,
+	 PyDoc_STR("(ambulant::net::pixel_order pixel_order, ambulant::lib::size window_size) -> (ambulant::common::recorder* _rv)")},
 	{NULL, NULL, 0}
 };
 

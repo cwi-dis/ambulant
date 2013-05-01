@@ -27,8 +27,6 @@ def initialize(apiversion, factories, gui_player):
     	return
     
     pf = DummyRecorderFactory(factories, None)
-    import pdb
-    pdb.set_trace()
     factories.set_recorder_factory(pf)
     
     logger.trace('pyamplugin_recorder: registered')
