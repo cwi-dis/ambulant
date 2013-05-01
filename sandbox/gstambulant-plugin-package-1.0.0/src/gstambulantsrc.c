@@ -93,7 +93,7 @@ enum
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("ANY")
+    GST_STATIC_CAPS ("video/x-raw,format=BGRA,width=(int) [ 1, 2147483647 ],height=(int) [ 1, 2147483647 ],bpp=32,depth=32,framerate=[ 0/1, 2147483647/1 ],endianness=4321,pixel-aspect-ratio=1/1,green_mask=16711680,red_mask=65280;")
     );
 
 #define gst_ambulantsrc_parent_class parent_class
@@ -149,8 +149,8 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 
   gstbasesrc_class->start = gst_ambulantsrc_start;
   gstbasesrc_class->stop = gst_ambulantsrc_stop;
-  gstbasesrc_class->get_caps = gst_ambulantsrc_get_caps;
-  gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
+//gstbasesrc_class->get_caps = gst_ambulantsrc_get_caps;
+//gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
   gstbasesrc_class->query = gst_ambulantsrc_query;
   gstbasesrc_class->get_size = gst_ambulantsrc_get_size;
   gstbasesrc_class->get_times = gst_ambulantsrc_get_times;
@@ -162,7 +162,7 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
     " and push these as buffers in a gstreamer pipeline",
     "Kees Blom <<Kees.Blom@cwi.nl>>");
   gst_element_class_add_pad_template ((GstElementClass*) gstbasesrc_class,
-      gst_static_pad_template_get (&src_factory));
+  gst_static_pad_template_get (&src_factory));
 }
 
 

@@ -24,3 +24,11 @@ libamplugin_recorder_la_LIBFLAGS = \
 MAINTAINERCLEANFILES = \
 			Makefile.in
 
+EXTRA_DIST = \
+			pyamplugin_recorder.py
+
+
+install-data-local:
+	echo Installing in: $(libdir)
+	$(INSTALL) $(srcdir)/pyamplugin_recorder.py $(libdir)
+
