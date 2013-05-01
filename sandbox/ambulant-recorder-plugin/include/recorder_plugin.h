@@ -89,9 +89,9 @@ public:
 	~recorder_plugin ();
 	
 	/// Record new video data with timestamp (ms) in document time
-	void new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp);
+	void new_video_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp);
 	/// Record new audio data with timestamp (ms) in document time
-	void new_audio_data(void* data, size_t datasize, lib::timer::timer::time_type _documentimestamp)  { assert(0); }
+	void new_audio_data(const char* data, size_t datasize, lib::timer::timer::time_type _documentimestamp)  { assert(0); }
 
 private:
 	SDL_Surface* m_surface;

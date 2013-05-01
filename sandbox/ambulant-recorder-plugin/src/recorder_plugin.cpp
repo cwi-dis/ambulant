@@ -138,7 +138,7 @@ recorder_plugin::~recorder_plugin ()
 	
 // Record new video data with timestamp (ms) in document time
 void
-recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp)
+recorder_plugin::new_video_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp)
 {
 	const char* fun = __PRETTY_FUNCTION__;
 
@@ -153,7 +153,7 @@ recorder_plugin::new_video_data (void* data, size_t datasize, lib::timer::time_t
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
 		}
-		m_surface = SDL_CreateRGBSurfaceFrom (data, m_window_size.w, m_window_size.h, 32, m_window_size.w * 4,
+		m_surface = SDL_CreateRGBSurfaceFrom ((void*) data, m_window_size.w, m_window_size.h, 32, m_window_size.w * 4,
 						  m_rmask, m_gmask, m_bmask, m_amask);
 		if (m_surface == NULL) {
 			logger::get_logger()->trace("%s: SDL_CreateSurface failed: %s)", fun, SDL_GetError());

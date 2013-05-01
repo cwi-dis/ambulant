@@ -263,7 +263,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 //X	SDL_BlitSurface(surface, &rect, screen_surface, &rect);
 	if (m_recorder) {
 		timestamp_t timestamp = saw->get_evp()->get_timer()->elapsed();
-		m_recorder->new_video_data(screen_surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
+		m_recorder->new_video_data((const char*) screen_surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
 	}
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);		
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(0x%x) screen_surface=(SDL_Surface*)0x%x, renderer=(SDL_Renderer*)0x%x, texture=(SDL_Texture*)0x%x, rect=(SDL_Rect){%d,%d,%d,%d}", this, screen_surface, renderer, texture, rect.x, rect.y, rect.w, rect.h);
