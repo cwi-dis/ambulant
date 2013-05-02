@@ -7,6 +7,7 @@ LIBS = \
 libdir = \
 		       $(prefix)/lib/ambulant
 
+if ! WITH_PYTHON
 lib_LTLIBRARIES = \
 		       libamplugin_recorder.la
 
@@ -27,8 +28,17 @@ MAINTAINERCLEANFILES = \
 EXTRA_DIST = \
 			pyamplugin_recorder.py
 
+install-data-local:
+	rm -fr $(libdir)/pyamplugin_recorder.py*
+
+else
 
 install-data-local:
 	echo Installing in: $(libdir)
+	rm -fr $(libdir)/libamplugin_recorder.*
 	$(INSTALL) $(srcdir)/pyamplugin_recorder.py $(libdir)
+endif
+
+uninstall:
+	rm -fr $(libdir)/pyamplugin_recorder.py*
 

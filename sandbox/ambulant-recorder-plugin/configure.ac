@@ -45,6 +45,27 @@ AC_SUBST(SDL_CFLAGS)
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
 AC_MSG_RESULT($test_sdl)
 
+AC_ARG_WITH(python,
+    AS_HELP_STRING([--with-python], [Use Python plugin instead of C-version]),
+    [
+    	case "${withval}" in
+        yes)
+            PYTHON=`which python` 
+            with_python=true
+            ;;
+        no)
+            PYTHON=
+            with_python=false
+            ;;
+        *)
+            PYTHON=`which ${withval}`
+            with_python=true
+            ;;
+    	esac],
+    [with_python=false])
+AM_CONDITIONAL(WITH_PYTHON, test x$with_python = xtrue)
+AC_SUBST(PYTHON)
+
 AC_CONFIG_FILES(Makefile src/Makefile tests/Makefile)
 AC_OUTPUT
 
