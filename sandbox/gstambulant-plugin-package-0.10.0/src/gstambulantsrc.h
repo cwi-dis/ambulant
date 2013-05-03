@@ -79,6 +79,9 @@ struct _GstAmbulantSrc
   gpointer databuffer;
   gulong checksum;
 
+  // Caps
+  GstCaps* caps;
+  gboolean caps_complete;
   // Latency
   GstClockTime min_latency;
   GstClockTime max_latency;

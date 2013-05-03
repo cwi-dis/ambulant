@@ -44,7 +44,7 @@
  */
 
 /**
- * SECTION: ambulantsrc-plugin
+ * SECTION: ambulantsrc
  *
  * ambulantsrc reads data from stdin, expected to be produced by ambulant_recorder_plugin
  * 
@@ -166,7 +166,7 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
   gst_element_class_set_details_simple((GstElementClass*) gstbasesrc_class,
     "Ambulant Source Element",
     "Source",
-    "Read data produced by 'ambulant-recorder-plugin' from 'stdin' (RGB 24bpp)"
+    "Read data produced by 'ambulant-recorder-plugin' from 'stdin' (BGRA 32bpp)"
     " and push these as buffers in a gstreamer pipeline",
     "Kees Blom <<Kees.Blom@cwi.nl>>");
   gst_element_class_add_pad_template ((GstElementClass*) gstbasesrc_class,

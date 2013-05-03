@@ -2,7 +2,7 @@
  * GStreamer
  * Copyright (C) 2005 Thomas Vander Stichele <thomas@apestaart.org>
  * Copyright (C) 2005 Ronald S. Bultje <rbultje@ronald.bitfreak.net>
- * Copyright (C) 2012 Kees Blom <<user@hostname.org>>
+ * Copyright (C) 2013 Kees Blom <<user@hostname.org>>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -44,14 +44,18 @@
  */
 
 /**
- * SECTION:basesrc-ambulantsrc
+ * SECTION: ambulantsrc
  *
- * FIXME:Describe ambulantsrc here.
+ * ambulantsrc reads data from stdin, expected to be produced by ambulant_recorder_plugin
+ * 
+ * The data is assembled into GstBuffers on each call to gst_ambulantsrc_create ()
+ * which overrides the default implementation of the 'create()' function of the
+ * gst_basesrc parent class
  *
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch -v -m ambulantsrc ! fakesink silent=TRUE
+ * gst-launch-1.0  ambulantsrc ! videoconvert ! videoscale ! ximagesink < tests/input
  * ]|
  * </refsect2>
  */
@@ -95,14 +99,16 @@ enum
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ( "ANY" 
-		      ) 
-    );
+// The caps are compatible with the data produced by anbulant_recorder_plugin.
+// 'width' and 'height' are taken the header preceding each frame.
+// When (if ever) the window size may change,  possibly the plugin need to be adapted to 
+// implement caps renogetiation using the new width and height.  
+    GST_STATIC_CAPS ("video/x-raw-rgb,width=(int) [ 1, 2147483647 ],height=(int) [ 1, 2147483647 ],bpp=32,depth=32,framerate=30/1,endianness=4321,pixel-aspect-ratio=1/1,green_mask=16711680,red_mask=65280;")
 
+    );
 
 GST_BOILERPLATE (GstAmbulantSrc, gst_ambulantsrc, GstBaseSrc,
     GST_TYPE_BASE_SRC);
-
 
 static void gst_ambulantsrc_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
@@ -111,7 +117,7 @@ static void gst_ambulantsrc_get_property (GObject * object, guint prop_id,
 static gboolean gst_ambulantsrc_start (GstBaseSrc * basesrc);
 static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc);
 static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc);
-static gboolean gst_ambulantsrc_set_caps (GstBaseSrc * bsrc, GstCaps * caps);
+//static gboolean gst_ambulantsrc_set_caps (GstBaseSrc * bsrc, GstCaps * caps);
 static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query);
 
 /* GstBaseSrc virtual methods we need to override */
@@ -186,7 +192,7 @@ gst_ambulantsrc_base_init (gpointer gclass)
   gst_element_class_set_details_simple(element_class,
     "Ambulant Source",
     "Source",
-    "Read data produced by 'ambulant-recorder-plugin' from 'stdin' (RGB 24bpp)"
+    "Read data produced by 'ambulant-recorder-plugin' from 'stdin' (BGRA 32bpp)"
     "and push these as buffers in a gstreamer pipeline",
     "Kees Blom <<Kees.Blom@cwi.nl>>");
    gst_element_class_add_pad_template (element_class,
@@ -222,7 +228,7 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
   gstbasesrc_class->stop = gst_ambulantsrc_stop;
 
   gstbasesrc_class->get_caps = gst_ambulantsrc_get_caps;
-  gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
+//gstbasesrc_class->set_caps = gst_ambulantsrc_set_caps; // disabled, SEGV
   gstbasesrc_class->query = gst_ambulantsrc_query;
   gstbasesrc_class->get_size = gst_ambulantsrc_get_size;
   gstbasesrc_class->get_times = gst_ambulantsrc_get_times;
@@ -244,14 +250,21 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc,
   asrc->gstbuffer = NULL;
   asrc->min_latency = DEFAULT_MIN_LATENCY;
   asrc->max_latency = DEFAULT_MAX_LATENCY;
-  read_header(asrc);
-  read_buffer(asrc);
   if ( ! asrc->eos) {
     GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
     gst_base_src_set_blocksize (bsrc, asrc->datasize);
     gst_base_src_set_live (bsrc, TRUE);
     gst_base_src_set_format (bsrc, GST_FORMAT_TIME);
   }
+  /*
+  GstAmbulantSrcClass* aclass = GST_AMBULANTSRC_GET_CLASS(asrc);
+  GstPadTemplate *pad_template = gst_element_class_get_pad_template (GST_ELEMENT_CLASS (aclass), "src");
+   if (pad_template != NULL) {
+    asrc->caps = gst_caps_ref (gst_pad_template_get_caps (pad_template));
+}
+  */
+  asrc->caps = gst_static_pad_template_get_caps(&src_template);
+  asrc->caps_complete = FALSE;
 }
 
 static void
@@ -307,11 +320,37 @@ static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc)
   GstCaps* caps =  gst_static_pad_template_get_caps(&src_template);
   gchar* s = gst_caps_to_string(caps);
   if(!asrc->silent)fprintf(stderr,"%s=%s\n", __PRETTY_FUNCTION__,s);
-
   free(s);
-  return caps;
+  if (asrc->databuffer != NULL && ! asrc->caps_complete) {
+    if (!asrc->silent)fprintf(stderr,"%s caps_completion\n", __PRETTY_FUNCTION__);
+    // expand template caps + witdh, height from input data header
+    GstCaps* caps_org = asrc->caps;
+    GstCaps* caps_new = NULL;
+    if (caps_org != NULL && ! gst_caps_is_fixed (caps_org)) {
+      // convert original caps to string
+      gchar* caps_org_str = gst_caps_to_string (caps_org);
+      // create new caps including actual width, height
+      gchar* caps_new_str = g_strdup_printf ("%s,width=(int)%d, height=(int)%d", caps_org_str, asrc->W, asrc->H);
+      caps_new = gst_caps_from_string (caps_new_str);
+      g_free (caps_org_str);
+      g_free (caps_new_str);
+      if (caps_new != NULL) {
+	// simplify (remove multiple width,height) and fixate
+	gst_caps_do_simplify (caps_new);
+	if (!asrc->silent) {
+	  gchar* caps_simplified_str = gst_caps_to_string (caps_new);
+	  fprintf(stderr,"%s caps_new_str=%s\n", __PRETTY_FUNCTION__, caps_simplified_str);
+	  g_free (caps_simplified_str);
+	}
+	gst_caps_unref (asrc->caps);
+	asrc->caps = caps_new;
+	asrc->caps_complete = TRUE;
+      }
+    }
+  }
+  return asrc->caps;
 }
-/* this function handles the link with other elements */
+/* this function handles the link with other elements
 static gboolean
 gst_ambulantsrc_set_caps (GstBaseSrc* bsrc, GstCaps * caps)
 {
@@ -322,6 +361,7 @@ gst_ambulantsrc_set_caps (GstBaseSrc* bsrc, GstCaps * caps)
   free(s);
   return TRUE;
 }
+ */
 
 static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 {
@@ -392,7 +432,10 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (basesrc);
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
-
+  if (asrc->databuffer == NULL) {
+    read_header(asrc);
+    read_buffer(asrc);
+  }
   // TBD GstAmbulantSrc *src;
 
   // TBD src = GST_AMBULANTSRC (basesrc);
@@ -407,6 +450,10 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   GST_OBJECT_LOCK (asrc);
+  if (asrc->databuffer != NULL) {
+    g_free (asrc->databuffer);
+    asrc->databuffer = NULL;
+  }
 
   asrc->eos = TRUE;
 
