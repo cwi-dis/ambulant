@@ -62,6 +62,9 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_AMBULANTSRC))
 #define GST_IS_AMBULANTSRC_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_AMBULANTSRC))
+#define GST_AMBULANTSRC_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_AMBULANTSRC, GstAmbulantSrcClass))
+
 
 typedef struct _GstAmbulantSrc      GstAmbulantSrc;
 typedef struct _GstAmbulantSrcClass GstAmbulantSrcClass;
@@ -84,6 +87,8 @@ struct _GstAmbulantSrc
   void* datapointer;
   gulong checksum;
 
+  // Caps
+  GstCaps* caps;
   // Latency
   GstClockTime min_latency;
   GstClockTime max_latency;
