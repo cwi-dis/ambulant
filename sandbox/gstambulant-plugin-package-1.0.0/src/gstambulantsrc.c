@@ -260,11 +260,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
     gst_base_src_set_live (bsrc, TRUE);
     gst_base_src_set_format (bsrc, GST_FORMAT_TIME);
   }
-  GstAmbulantSrcClass* aclass = GST_AMBULANTSRC_GET_CLASS(asrc);
-  GstPadTemplate *pad_template = gst_element_class_get_pad_template (GST_ELEMENT_CLASS (aclass), "src");
-   if (pad_template != NULL) {
-    asrc->caps = gst_caps_ref (gst_pad_template_get_caps (pad_template));
-   }
+  asrc->caps = gst_static_pad_template_get_caps(&src_factory);
 }
 
 static void
