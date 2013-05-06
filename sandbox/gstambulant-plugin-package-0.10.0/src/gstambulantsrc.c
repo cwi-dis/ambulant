@@ -321,7 +321,7 @@ static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc)
   gchar* s = gst_caps_to_string(caps);
   if(!asrc->silent)fprintf(stderr,"%s=%s\n", __PRETTY_FUNCTION__,s);
   free(s);
-  if (asrc->databuffer != NULL && ! asrc->caps_complete) {
+  if (asrc->W != 0 && ! asrc->caps_complete) {
     if (!asrc->silent)fprintf(stderr,"%s caps_completion\n", __PRETTY_FUNCTION__);
     // expand template caps + witdh, height from input data header
     GstCaps* caps_org = asrc->caps;
@@ -434,7 +434,6 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   if (asrc->databuffer == NULL) {
     read_header(asrc);
-    read_buffer(asrc);
   }
   // TBD GstAmbulantSrc *src;
 
@@ -475,6 +474,7 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
 	GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_OK;
   }
+  read_buffer(asrc);
   if (asrc->eos) {
 	GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_UNEXPECTED; // end of stream
@@ -492,7 +492,6 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   *buffer = asrc->gstbuffer;
 
   read_header(asrc);
-  read_buffer(asrc);
 
   GST_OBJECT_UNLOCK (asrc);
   return GST_FLOW_OK;
