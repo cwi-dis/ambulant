@@ -60,7 +60,12 @@ class DummyRecorder(ambulant.recorder):
         if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder(%s, %s)" % (pixel_order, size))
         self.pixel_order = pixel_order
         self.size = size
-        self.pipe = os.popen2(os.getenv("AMBULANT_RECORDER_PIPE"))[0]
+        ambulant_recorder_pipe = os.getenv("AMBULANT_RECORDER_PIPE")
+        print ambulant_recorder_pipe
+        if ambulant_recorder_pipe == None:
+            self.pipe = None
+        else:
+            self.pipe = os.popen2(ambulant_recorder_pipe)[0]
         
     def new_video_data(self, data, timestamp):
         if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder.new_video_data: size=%d timestamp=%d)" % (len(data), timestamp))
@@ -77,10 +82,12 @@ class DummyRecorder(ambulant.recorder):
 #       s = "%#8lu\n" % timestamp
 #       print "pyamplugin_recorder.DummyRecorder.write_header() s=%s" % s
 #       print "pipe=%r " % self.pipe
-        self.pipe.write(s)
+        if self.pipe != None:
+            self.pipe.write(s)
         pass
 
     def write_data(self, data):
-        self.pipe.write(data)
+        if self.pipe != None:
+            self.pipe.write(data)
         pass
 
