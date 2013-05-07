@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS     = \
 LIBS                 = 
 
 SUBDIRS              = \
-                       src tests
+                       include src tests
 
 
 EXTRA_DIST = \
