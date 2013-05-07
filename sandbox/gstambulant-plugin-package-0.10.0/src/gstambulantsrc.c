@@ -70,6 +70,9 @@
 
 #include "gstambulantsrc.h"
 
+
+#include <sys/time.h>
+
 GST_DEBUG_CATEGORY_STATIC (gst_ambulantsrc_debug);
 #define GST_CAT_DEFAULT gst_ambulantsrc_debug
 
@@ -467,8 +470,14 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
   GST_OBJECT_LOCK (asrc);
 
-  if(!asrc->silent)fprintf(stderr,"%s(bsrc=%p,offset=%lu,length=%u,buffer=%p)\n", __PRETTY_FUNCTION__,bsrc, offset, length, buffer);
-  //if(!asrc->silent)fprintf(stderr, "%s: Timestamp=%s ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
+#ifdef FRAME_DELAY_DEBUG  
+  time_t now  = time(NULL);
+  struct tm *lt = localtime(&now);
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+#else
+  if(!asrc->silent)fprintf(stderr, "%s: Timestamp=%ld ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
+#endif//FRAME_DELAY_DEBUG  
 
   if (buffer == NULL) {
 	GST_OBJECT_UNLOCK (asrc);
@@ -490,6 +499,9 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   GST_BUFFER_OFFSET (asrc->gstbuffer) = offset;
   gst_buffer_ref(asrc->gstbuffer);
   *buffer = asrc->gstbuffer;
+#ifdef FRAME_DELAY_DEBUG  
+  if(!asrc->silent)fprintf(stderr,"%02d:%02d:%02d.%06d %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld data=0x%x\n", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, offset, length, buffer, asrc->timestamp, *(void**) asrc->databuffer);  // enable for frame delay debugging
+#endif//FRAME_DELAY_DEBUG  
 
   read_header(asrc);
 
