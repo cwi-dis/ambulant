@@ -193,9 +193,9 @@ recorder_writer::push_data(recorder_queue_element* qe)
 	static lib::timer::time_type s_old_timestamp = 0;
 	lib::timer::time_type diff =  qe->m_timestamp - s_old_timestamp;
 	m_lock.enter();
-	bool drop_frame =  diff < 30 || m_queue.size() > 2;
-
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld drop_frame=%d)", fun, this, qe, qe->m_timestamp, diff, drop_frame);
+	bool drop_frame = diff < 30;
+					  
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld drop_frame=%d data=0x%x)", fun, this, qe, qe->m_timestamp, diff, drop_frame, *(void**) qe->m_data); // enable for frame delay debugging
 	if ( ! drop_frame) {
 		s_old_timestamp = qe->m_timestamp;
 		m_queue.push (qe);
@@ -203,7 +203,6 @@ recorder_writer::push_data(recorder_queue_element* qe)
 		delete qe;
 	}
 	m_lock.leave();
-	ambulant::lib::sleep_msec(10);
 }
 
 // Only for debugging. Code from: unix_timer.cpp
@@ -225,12 +224,13 @@ recorder_writer::_write_data (recorder_queue_element* qe)
 	static lib::timer::time_type s_old_timestamp = 0;
 	lib::timer::time_type start_time = clock_time();
 
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p (diff=%ld)", fun, this, qe->m_timestamp - s_old_timestamp);
+	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p timestamp=%ld, (diff=%ld) data=0x%x", fun, this, qe->m_timestamp, qe->m_timestamp - s_old_timestamp, *(void**)qe->m_data); // enable for frame delay debugging
 	s_old_timestamp = qe->m_timestamp;
 	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8lu\nW: %5u\nH: %5u\nChksm: %.24lx\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h, qe->m_checksum) < 0) {
 		return -1;
 	}
 	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);
+	fflush(m_pipe);
 	size_t datasize = qe->m_datasize;
 	delete qe;
 	if (result != datasize) {

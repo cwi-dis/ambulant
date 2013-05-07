@@ -40,5 +40,6 @@ install-data-local:
 endif
 
 uninstall:
+	rm -fr $(libdir)/libamplugin_recorder.*
 	rm -fr $(libdir)/pyamplugin_recorder.py*
 
