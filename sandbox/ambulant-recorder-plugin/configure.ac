@@ -66,7 +66,7 @@ AC_ARG_WITH(python,
 AM_CONDITIONAL(WITH_PYTHON, test x$with_python = xtrue)
 AC_SUBST(PYTHON)
 
-AC_CONFIG_FILES(Makefile src/Makefile tests/Makefile)
+AC_CONFIG_FILES(Makefile include/Makefile src/Makefile tests/Makefile)
 AC_OUTPUT
 
 AC_MSG_RESULT([
