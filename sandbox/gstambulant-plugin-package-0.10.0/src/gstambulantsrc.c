@@ -70,8 +70,9 @@
 
 #include "gstambulantsrc.h"
 
-
+#ifdef  FRAME_DELAY_DEBUG  
 #include <sys/time.h>
+#endif//FRAME_DELAY_DEBUG  
 
 GST_DEBUG_CATEGORY_STATIC (gst_ambulantsrc_debug);
 #define GST_CAT_DEFAULT gst_ambulantsrc_debug
