@@ -194,8 +194,13 @@ recorder_writer::push_data(recorder_queue_element* qe)
 	lib::timer::time_type diff =  qe->m_timestamp - s_old_timestamp;
 	m_lock.enter();
 	bool drop_frame = diff < 30;
-					  
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld drop_frame=%d data=0x%x)", fun, this, qe, qe->m_timestamp, diff, drop_frame, *(void**) qe->m_data); // enable for frame delay debugging
+// add CXXFLAGS=-DFRAME_DELAY_DEBUG in './configue' for frame delay debugging					  
+#ifdef FRAME_DELAY_DEBUG
+	/*AM_DBG*/
+#else
+	AM_DBG
+#endif//FRAME_DELAY_DEBUG  
+	  ambulant::lib::logger::get_logger()->debug("%s%p(qe=%p time=%ld diff=%ld drop_frame=%d data=0x%x)", fun, this, qe, qe->m_timestamp, diff, drop_frame, *(unsigned int**) qe->m_data);
 	if ( ! drop_frame) {
 		s_old_timestamp = qe->m_timestamp;
 		m_queue.push (qe);
