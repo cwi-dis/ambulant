@@ -67,6 +67,10 @@
 #include "gstambulantsrc.h"
 #include <stdio.h>
 
+#ifdef  FRAME_DELAY_DEBUG  
+#include <sys/time.h>
+#endif//FRAME_DELAY_DEBUG  
+
 static gboolean tracing = FALSE; // turn on to trace all function calls
 GST_DEBUG_CATEGORY_STATIC (gst_ambulantsrc_debug);
 #define GST_CAT_DEFAULT gst_ambulantsrc_debug
@@ -176,13 +180,21 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 
 void read_header(GstAmbulantSrc* asrc)
 {
-  // assume locked
-  if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
-
   if (asrc != NULL) {
+    // don' block during read
+    if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+    gboolean was_locked = asrc->locked;
+    if (was_locked) {
+      asrc->locked = FALSE;
+      GST_OBJECT_UNLOCK (asrc);
+    }
     if (fscanf(stdin, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
 	       &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) < 0) {
       asrc->eos = TRUE;
+    }
+    if (was_locked) {
+      GST_OBJECT_LOCK (asrc);
+      asrc->locked = TRUE;
     }
   }
 }
@@ -199,42 +211,50 @@ gulong checksum (void* data, gulong size)
 
 void read_buffer(GstAmbulantSrc* asrc)
 {
-  // assume locked
-  if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+  if (asrc != NULL) {
+    if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
-  if (asrc->eos) {
-    return;
-  }
-  if (asrc != NULL && asrc->datasize != 0) {
-    if (asrc->databuffer != NULL && ! gst_buffer_is_writable (asrc->databuffer)) {
-      // someone still working on old data, let it go
-      gst_buffer_unref (asrc->databuffer);
-      asrc->databuffer = NULL;
-      read_buffer (asrc);
-      return;
-    }
-    if (asrc->databuffer == NULL) {      
-      asrc->datapointer = g_malloc (asrc->datasize);
-      if (asrc->datapointer == NULL) {
-	asrc->eos = TRUE;
+    if ( ! asrc->eos && asrc->datasize != 0) {
+      if (asrc->databuffer != NULL && ! gst_buffer_is_writable (asrc->databuffer)) {
+	// someone still working on old data, let it continue
+	gst_buffer_unref (asrc->databuffer);
+	asrc->databuffer = NULL;
+	read_buffer (asrc);
 	return;
       }
-      asrc->databuffer = gst_buffer_new_wrapped (asrc->datapointer, asrc->datasize);
-      if (asrc->databuffer == NULL) {
-	g_free (asrc->datapointer);
-	asrc->eos = TRUE;
-	return;
+      if (asrc->databuffer == NULL) {      
+	asrc->datapointer = g_malloc (asrc->datasize);
+	if (asrc->datapointer == NULL) {
+	  asrc->eos = TRUE;
+	  return;
+	}
+	asrc->databuffer = gst_buffer_new_wrapped (asrc->datapointer, asrc->datasize);
+	if (asrc->databuffer == NULL) {
+	  g_free (asrc->datapointer);
+	  asrc->eos = TRUE;
+	  return;
+	}
       }
-    }
-    clearerr(stdin);
-    size_t n_bytes = fread (asrc->datapointer,1,asrc->datasize,stdin);
-    if (n_bytes != asrc->datasize) {
-      asrc->eos = TRUE;
-    } else {
-//    gulong cs = checksum (asrc->databuffer,asrc->datasize);
-//    if (cs != asrc->checksum) {
-//      fprintf (stderr, "checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
-//    }
+      gboolean was_locked = asrc->locked;
+      if (was_locked) {
+	// don' block during read
+	asrc->locked = FALSE;
+	GST_OBJECT_UNLOCK (asrc);
+      }
+      clearerr(stdin);
+      size_t n_bytes = fread (asrc->datapointer,1,asrc->datasize,stdin);
+      if (n_bytes != asrc->datasize) {
+	asrc->eos = TRUE;
+      } else {
+//      gulong cs = checksum (asrc->databuffer,asrc->datasize);
+//      if (cs != asrc->checksum) {
+//        fprintf (stderr, "checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
+//      }
+      }
+      if (was_locked) {
+	GST_OBJECT_LOCK (asrc);
+	asrc->locked = TRUE;
+      }
     }
   }
 }
@@ -254,6 +274,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
   asrc->max_latency = DEFAULT_MAX_LATENCY;
   asrc->databuffer = NULL;
   asrc->datapointer = NULL;
+  asrc->locked = FALSE;
   if ( ! asrc->eos) {
     GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
     gst_base_src_set_blocksize (bsrc, asrc->datasize);
@@ -319,7 +340,6 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
   if(tracing || !asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   if (asrc->databuffer == NULL) {
     read_header (asrc);
-    read_buffer (asrc);
   }
   // TBD GstAmbulantSrc *src;
 
@@ -335,17 +355,21 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
   if(tracing || !asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   GST_OBJECT_LOCK (asrc);
+  asrc->locked = TRUE;
 
   asrc->eos = TRUE;
   if (asrc->databuffer != NULL) {
     gst_buffer_unref (asrc->databuffer);
     asrc->databuffer = NULL;
   }
+  asrc->locked = FALSE;
   GST_OBJECT_UNLOCK (asrc);
 
   return TRUE;
 }
 
+// The caps are fully known, simplified and fixated during the first call of gst_ambulantxrsc_query() after
+// gst_ambulantsrc_init() was called, since then the actual With,Height of the video data are read.
 static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc, GstCaps* filter) {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
   gchar* s = gst_caps_to_string(filter);
@@ -385,7 +409,7 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
     }
     case GST_QUERY_CAPS:
     {
-      if (asrc->databuffer == NULL) {
+      if (asrc->W == 0) { // W,H not yet known
 	break;
       }
       if(tracing || !asrc->silent)fprintf(stderr,"%s caps_query\n", __PRETTY_FUNCTION__);
@@ -427,15 +451,24 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
   GST_OBJECT_LOCK (asrc);
+  asrc->locked = TRUE;
 
-  if(tracing || !asrc->silent)fprintf(stderr,"%s(bsrc=%p,offset=%lu,length=%u,buffer=%p)\n", __PRETTY_FUNCTION__,bsrc, offset, length, buffer);
-  //if(tracing || !asrc->silent)fprintf(stderr, "%s: Timestamp=%s ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
+#ifdef FRAME_DELAY_DEBUG  
+  time_t now  = time(NULL);
+  struct tm *lt = localtime(&now);
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+#else
+  if(tracing || !asrc->silent)fprintf(stderr, "%s: Timestamp=%s ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
+#endif//FRAME_DELAY_DEBUG  
 
   if (buffer == NULL) {
+    asrc->locked = FALSE;
     GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_OK;
   }
   if (asrc->eos) {
+    asrc->locked = FALSE;
     GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_EOS; // end of stream
   }
@@ -446,12 +479,12 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
     asrc->datapointer = NULL;
   }
   if (asrc->databuffer == NULL) {
-    read_header (asrc);
     read_buffer (asrc);
   }
   if (asrc->databuffer == NULL) {
-    GST_OBJECT_UNLOCK (asrc);
     asrc->eos = TRUE;
+    asrc->locked = FALSE;
+    GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_EOS; // end of stream
   }
   GstBuffer* buf = asrc->databuffer;
@@ -461,7 +494,12 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
   GST_BUFFER_OFFSET (buf) = offset;
   gst_buffer_ref(buf);
   *buffer = buf;
+#ifdef FRAME_DELAY_DEBUG  
+  fprintf(stderr,"%02d:%02d:%02d.%06ld %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld data=0x%x\n", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, offset, length, buffer, asrc->timestamp, *(unsigned int*) asrc->datapointer);  // enable for frame delay debugging
+#endif//FRAME_DELAY_DEBUG  
+  read_header (asrc);
 
+  asrc->locked = FALSE;
   GST_OBJECT_UNLOCK (asrc);
   return GST_FLOW_OK;
 

@@ -86,6 +86,7 @@ struct _GstAmbulantSrc
   GstBuffer* databuffer;
   void* datapointer;
   gulong checksum;
+  gboolean locked;
 
   // Caps
   GstCaps* caps;
