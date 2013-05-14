@@ -89,5 +89,6 @@ class DummyRecorder(ambulant.recorder):
     def write_data(self, data):
         if self.pipe != None:
             self.pipe.write(data)
+            self.pipe.flush()
         pass
 
