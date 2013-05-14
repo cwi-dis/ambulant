@@ -459,7 +459,7 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
   struct timeval tv;
   gettimeofday(&tv, NULL);
 #else
-  if(tracing || !asrc->silent)fprintf(stderr, "%s: Timestamp=%s ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
+  if(tracing || !asrc->silent)fprintf(stderr, "%s: Timestamp=%d ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
 #endif//FRAME_DELAY_DEBUG  
 
   if (buffer == NULL) {
@@ -509,10 +509,10 @@ static void gst_ambulantsrc_get_times (GstBaseSrc *src, GstBuffer *buffer,
 					GstClockTime *start, GstClockTime *end)
 {
   GstAmbulantSrc *asrc = GST_AMBULANTSRC(src);
-  if(tracing || !asrc->silent)fprintf(stderr,"%s timestamp=%lu\n", __PRETTY_FUNCTION__, asrc->timestamp);
+  if(tracing || !asrc->silent)fprintf(stderr,"%s timestamp=%lu\n", __PRETTY_FUNCTION__, GST_BUFFER_PTS (buffer));
 
   if (start != NULL) {
-    *start = asrc->timestamp * 1000000; // millis to nanos
+    *start = GST_BUFFER_PTS (buffer);
   }
   if (end != NULL) {
     *end =  GST_CLOCK_TIME_NONE;
