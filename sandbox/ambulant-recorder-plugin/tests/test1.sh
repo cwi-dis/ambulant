@@ -5,6 +5,6 @@ export BROWSER=firefox
 
 AmbulantPlayer $srcdir/test1.smil &
 pid=$!
-sleep 7
+sleep 13
 kill -9 $pid
 
