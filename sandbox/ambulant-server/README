@@ -1,0 +1,16 @@
+Using Ambulant without video card (Linux).
+
+1. make sure Xorg and the xorg dummy video driver are installed.
+   (rpm: xorg-x11-drv-dummy.x86_64 or deb: xserver-xorg-video-dummy)
+   Also, make sure that Ambulant and its recorder plugin are installed 
+   (configured --with-sdl2=sdl2 CXXFLAGS=-DWITH_SDL_VIDEO, for SDL2 compilation in ttp use
+    ./configure --disable-video-x11-xinput --disable-video-opengl on that machine).
+2. Start Xorg with xorg.conf in this directory as follows:
+   Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile ./10.log -config ./xorg.conf  vt8 :9
+   (you may have to select another vt, DISPLAY, tweak the xorg.conf a little, and/or do this as root).
+3. On another machine with a video card and Xorg running on DISPLAY=:0 as usual, and
+   gstambulantsrc-0.10 installed, login (ssh) to the machine where the dummy Xorg video is running
+   and type:
+   AMBULANT_RECORDER_PIPE="ssh <linux-with-video> DISPLAY=:0 gst-launch ambulantsrc ! ffmpegcolorspace ! videoscale ! ximagesink sync=0" AmbulantPlayer_sdl /usr/local/share/ambulant/Welcome/Welcome-smiltext.smil
+
+   The .smil will be rendered on the machine without video and displayed on the machine with video.
