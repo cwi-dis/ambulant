@@ -188,8 +188,10 @@ void read_header(GstAmbulantSrc* asrc)
       asrc->locked = FALSE;
       GST_OBJECT_UNLOCK (asrc);
     }
-    if (fscanf(stdin, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
-	       &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) < 0) {
+    char buf[80];
+    if (fread(buf,1,80,stdin) != 80 
+	|| sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
+		  &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) != 5) {
       asrc->eos = TRUE;
     }
     if (was_locked) {
@@ -278,6 +280,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
   if ( ! asrc->eos) {
     GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
     gst_base_src_set_blocksize (bsrc, asrc->datasize);
+    gst_base_src_set_async (bsrc, TRUE);
     gst_base_src_set_live (bsrc, TRUE);
     gst_base_src_set_format (bsrc, GST_FORMAT_TIME);
   }
@@ -460,7 +463,7 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
   gettimeofday(&tv, NULL);
   fprintf(stderr,"%02d:%02d:%02d.%06ld %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld datapointer=0x%lx\n", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, offset, length, buffer, asrc->timestamp, (long unsigned int) asrc->datapointer);  // enable for frame delay debugging
 #else
-  if(tracing || !asrc->silent)fprintf(stderr, "%s: Timestamp=%d ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
+  if(tracing || !asrc->silent)fprintf(stderr, "%s: Timestamp=%ld ms size=%ld offset=%ld \n",  __PRETTY_FUNCTION__, asrc->timestamp, asrc->datasize, offset);
 #endif//FRAME_DELAY_DEBUG  
 
   if (buffer == NULL) {

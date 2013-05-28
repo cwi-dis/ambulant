@@ -141,11 +141,13 @@ void read_header(GstAmbulantSrc* asrc)
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
   if (asrc != NULL) {
-    if (fscanf(stdin, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
-	       &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) < 0) {
+    char buf[80];
+    if (fread(buf,1,80,stdin) != 80 
+	|| sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
+		  &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) != 5) {
       asrc->eos = TRUE;
     }
-  }
+   }
 }
 
 gulong checksum (void* data, gulong size)
@@ -174,6 +176,7 @@ void read_buffer(GstAmbulantSrc* asrc)
     clearerr(stdin);
     size_t n_bytes = fread (asrc->databuffer,1,asrc->datasize,stdin);
     if (n_bytes != asrc->datasize) {
+      if (!asrc->silent)fprintf (stderr, "wanted: %ld, got: %ld\n", asrc->datasize, n_bytes);
       asrc->eos = TRUE;
     } else {
 //      gulong cs = checksum (asrc->databuffer,asrc->datasize);
