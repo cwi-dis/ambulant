@@ -72,6 +72,7 @@ struct _GstAmbulantSrc
   GstBuffer* gstbuffer;
   gboolean silent;
   gboolean eos;
+  gboolean need_header;
 
   guint W, H;
   gulong datasize;

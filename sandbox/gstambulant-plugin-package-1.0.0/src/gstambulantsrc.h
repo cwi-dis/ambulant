@@ -79,6 +79,7 @@ struct _GstAmbulantSrc
 
   gboolean silent;
   gboolean eos;
+  gboolean need_header;
 
   guint W, H;
   gulong datasize;

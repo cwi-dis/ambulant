@@ -55,7 +55,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0  ambulantsrc ! videoconvert ! videoscale ! ximagesink < tests/input
+ * gst-launch-0.10  ambulantsrc ! ffmpegcolorspace ! videoscale ! ximagesink < tests/input
  * ]|
  * </refsect2>
  */
@@ -254,6 +254,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc,
   asrc->silent = TRUE;
   /*if(!asrc->silent)*/fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   asrc->eos = FALSE;
+  asrc->need_header = TRUE;
   asrc->gstbuffer = NULL;
   asrc->min_latency = DEFAULT_MIN_LATENCY;
   asrc->max_latency = DEFAULT_MAX_LATENCY;
@@ -441,6 +442,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   if (asrc->databuffer == NULL) {
     read_header(asrc);
+	asrc->need_header = FALSE;
   }
   // TBD GstAmbulantSrc *src;
 
@@ -487,6 +489,11 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
 	GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_OK;
   }
+  if (asrc->need_header) {
+	read_header(asrc);
+  } else {
+	asrc->need_header = TRUE;
+  }
   read_buffer(asrc);
   if (asrc->eos) {
 	GST_OBJECT_UNLOCK (asrc);
@@ -507,11 +514,8 @@ gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuff
   if(!asrc->silent)fprintf(stderr,"%02d:%02d:%02d.%06d %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld data=0x%x\n", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, offset, length, buffer, asrc->timestamp, *(void**) asrc->databuffer);  // enable for frame delay debugging
 #endif//FRAME_DELAY_DEBUG  
 
-  read_header(asrc);
-
   GST_OBJECT_UNLOCK (asrc);
   return GST_FLOW_OK;
-
 }
 
 /* PACKAGE: this is usually set by autotools depending on some _INIT macro

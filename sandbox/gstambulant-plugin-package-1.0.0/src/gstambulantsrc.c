@@ -271,6 +271,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
   if(tracing || !asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   asrc->silent = TRUE;
   asrc->eos = FALSE;
+  asrc->need_header = TRUE;
   asrc->caps = NULL;
   asrc->min_latency = DEFAULT_MIN_LATENCY;
   asrc->max_latency = DEFAULT_MAX_LATENCY;
@@ -343,6 +344,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
   if(tracing || !asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
   if (asrc->databuffer == NULL) {
     read_header (asrc);
+	asrc->need_header = FALSE;
   }
   // TBD GstAmbulantSrc *src;
 
@@ -413,7 +415,7 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
     case GST_QUERY_CAPS:
     {
       if (asrc->W == 0) { // W,H not yet known
-	break;
+		break;
       }
       if(tracing || !asrc->silent)fprintf(stderr,"%s caps_query\n", __PRETTY_FUNCTION__);
       // answer to query: template caps + witdh, height from input data header
@@ -482,7 +484,12 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 //  g_free (asrc->datapointer);
     asrc->datapointer = NULL;
   }
-  if (asrc->databuffer == NULL) {
+  if (asrc->need_header) {
+	read_header(asrc);
+  } else {
+	asrc->need_header = TRUE;
+  }
+  if (asrc->databuffer == NULL && ! asrc->eos) {
     read_buffer (asrc);
   }
   if (asrc->databuffer == NULL) {
@@ -504,7 +511,6 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
   gettimeofday(&tv, NULL);
   fprintf(stderr,"%02d:%02d:%02d.%06ld %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld data=0x%x\n", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, offset, length, buffer, asrc->timestamp, *(unsigned int*) asrc->datapointer);  // enable for frame delay debugging
 #endif//FRAME_DELAY_DEBUG  
-  read_header (asrc);
 
   asrc->locked = FALSE;
   GST_OBJECT_UNLOCK (asrc);
