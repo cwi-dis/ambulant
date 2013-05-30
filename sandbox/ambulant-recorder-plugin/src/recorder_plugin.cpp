@@ -204,6 +204,7 @@ recorder_writer::push_data(recorder_queue_element* qe)
 	if ( ! drop_frame) {
 		s_old_timestamp = qe->m_timestamp;
 		m_queue.push (qe);
+		m_lock.signal ();
 	} else {
 		delete qe;
 	}
@@ -251,18 +252,19 @@ recorder_writer::run()
 	const char* fun = __PRETTY_FUNCTION__;
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
 
+	m_lock.enter();
+
 	while ( ! exit_requested() ) {
-		m_lock.enter();
+	  	m_lock.wait();
 		if (m_queue.size() > 0) {
 			recorder_queue_element* qe = m_queue.front();
 			m_queue.pop();
-			m_lock.leave();
 			if (_write_data(qe) < 0) {
 				terminate();
 			}
-		} else m_lock.leave();
+		}
 		ambulant::lib::sleep_msec(10);
 	}
-
+	m_lock.leave();
 }
 

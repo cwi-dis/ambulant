@@ -77,7 +77,7 @@ class recorder_writer : public BASE_THREAD {
   private:
 	int _write_data (recorder_queue_element* qe);
 	std::queue<recorder_queue_element*> m_queue;
-	ambulant::lib::critical_section m_lock;
+	ambulant::lib::critical_section_cv m_lock;
 	FILE* m_pipe;
 };
 
