@@ -136,6 +136,7 @@ static void gst_ambulantsrc_get_times (GstBaseSrc *src, GstBuffer *buffer,
 /* get the total size of the resource in bytes */
 static gboolean gst_ambulantsrc_get_size (GstBaseSrc *src, guint64 *size);
 
+// read fixed size (80 bytes) header preceding variable size pixel data        
 void read_header(GstAmbulantSrc* asrc)
 {
   if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);

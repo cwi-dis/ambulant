@@ -178,6 +178,7 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 }
 
 
+// read fixed size (80 bytes) header preceding variable size pixel data        
 void read_header(GstAmbulantSrc* asrc)
 {
   if (asrc != NULL) {

@@ -76,7 +76,7 @@ class DummyRecorder(ambulant.recorder):
     def new_audio_data(self, data, timestamp):
         if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder.new_audio_data %s %s)" % (data, timestamp))
         pass
-        
+# write fixed size (80 bytes) header preceding variable size pixel data        
     def write_header(self, timestamp, datasize):
         s = "Time: %08lu\nSize: %08lu\nW: %#5u\nH: %#5u\nChksm: %024lx\n" % (timestamp, datasize, self.size[0], self.size[1], 0)
 #       s = "%#8lu\n" % timestamp
