@@ -214,7 +214,8 @@ recorder_writer::push_data(recorder_queue_element* qe)
 // Only for debugging. Code from: unix_timer.cpp
 #include <sys/time.h>
 // return current time in millisec. since Epoch (unix: man 2 time)
-ambulant::lib::timer::time_type clock_time() {
+ambulant::lib::timer::time_type
+clock_time() {
 	struct timeval tv;
 	if (gettimeofday(&tv, NULL) >= 0) {
 		return tv.tv_sec*1000 + tv.tv_usec / 1000;
@@ -222,13 +223,14 @@ ambulant::lib::timer::time_type clock_time() {
 	return 0;
 }
 
+// write fixed size (80 bytes) header preceding variable size pixel data        
 int
 recorder_writer::_write_data (recorder_queue_element* qe)
 {
 	const char* fun = __PRETTY_FUNCTION__;
 	size_t result = 0;
 	static lib::timer::time_type s_old_timestamp = 0;
-	lib::timer::time_type start_time = clock_time();
+//	lib::timer::time_type start_time = clock_time();
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p timestamp=%ld, (diff=%ld) data=0x%x", fun, this, qe->m_timestamp, qe->m_timestamp - s_old_timestamp, *(void**)qe->m_data); // enable for frame delay debugging
 	s_old_timestamp = qe->m_timestamp;
@@ -242,7 +244,7 @@ recorder_writer::_write_data (recorder_queue_element* qe)
 	if (result != datasize) {
 		return -1;
 	}
-	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p wrote: (qe=%p time=%ld in %ld millisec)", fun, this, qe, qe->m_timestamp, clock_time() - start_time);
+//	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p wrote: (qe=%p time=%ld in %ld millisec)", fun, this, qe, qe->m_timestamp, clock_time() - start_time);
 	return 0;
 }
 
@@ -252,19 +254,16 @@ recorder_writer::run()
 	const char* fun = __PRETTY_FUNCTION__;
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s(%p)", fun, this);
 
-	m_lock.enter();
-
+	// process queue until it is empty. Then wait, ignoring spurious wakeups
 	while ( ! exit_requested() ) {
-	  	m_lock.wait();
-		if (m_queue.size() > 0) {
-			recorder_queue_element* qe = m_queue.front();
-			m_queue.pop();
-			if (_write_data(qe) < 0) {
-				terminate();
-			}
+		m_lock.enter();
+		while (m_queue.size() == 0)  m_lock.wait();
+		recorder_queue_element* qe = m_queue.front();
+		m_queue.pop();
+		m_lock.leave();
+		if (_write_data(qe) < 0) {
+			terminate();
 		}
-		ambulant::lib::sleep_msec(10);
 	}
-	m_lock.leave();
 }
 
