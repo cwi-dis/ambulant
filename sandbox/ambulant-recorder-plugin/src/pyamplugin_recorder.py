@@ -1,8 +1,12 @@
 import ambulant
 import os
 import subprocess
+import threading
+import Queue
 
 DEBUG=False
+# with THREADED-=True, do actual writing of data onto the pipe  in a seperate thread
+THREADED=True
 
 #
 # Trickery for logging output: if we cannot get at the Ambulant
@@ -66,11 +70,20 @@ class DummyRecorder(ambulant.recorder):
             self.pipe = None
         else:
             self.pipe = os.popen2(ambulant_recorder_pipe)[0]
-        
+        if THREADED: # create queue and worker thread
+            self.queue = Queue.Queue();
+            self.alive = True;
+            self.thread = threading.Thread(target=self.worker)
+            self.thread.setDaemon(True)
+            self.thread.start()
+
     def new_video_data(self, data, timestamp):
         if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder.new_video_data: size=%d timestamp=%d)" % (len(data), timestamp))
-        self.write_header(timestamp, len(data))
-        self.write_data(data)
+        if THREADED:
+            self.queue.put((timestamp, data))
+        else:
+            self.write_header(timestamp, len(data))
+            self.write_data(data)
         pass
 
     def new_audio_data(self, data, timestamp):
@@ -92,3 +105,10 @@ class DummyRecorder(ambulant.recorder):
             self.pipe.flush()
         pass
 
+    def worker(self):
+        while self.alive:
+            (timestamp, data) = self.queue.get()
+            if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder.worker: size=%d timestamp=%d)" % (len(data), timestamp))
+            self.write_header(timestamp, len(data))
+            self.write_data(data)
+#           self.queue.task_done()
