@@ -350,6 +350,7 @@ ambulant_sdl_window::get_ambulant_surface()
 void
 ambulant_sdl_window::set_gui_player(gui_player* gpl)
 {
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_gui_player(0x%x: 0x%x)",this, (void *) gpl);
 	m_lock.enter();
 	m_gui_player = gpl;
 	if (gpl != NULL && gpl->get_recorder_factory() != NULL) {
@@ -553,6 +554,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	if (m_sdl_window != NULL) {
 		return err;
 	}
+	AM_DBG lib::logger::get_logger()->trace("sdl_gui::create_sdl_window_and_renderers(0x%x): m_window=(SDL_Window*)0x%x, window ID=%d", this, m_sdl_window, SDL_GetWindowID(m_sdl_window));
 	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
 	if (m_sdl_window == NULL) {
 		SDL_SetError("Out of memory");
@@ -562,7 +564,6 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	assert (m_sdl_window);
-	AM_DBG lib::logger::get_logger()->trace("sdl_gui::sdl_gui(): m_window=(SDL_Window*)0x%x, window ID=%d",  m_sdl_window, SDL_GetWindowID(m_sdl_window));
 	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
 	err = create_sdl_surface_and_pixels(&sdl_rect, &m_screen_pixels, &m_sdl_screen_surface, &m_sdl_screen_renderer);
 	if (err != 0) {
@@ -591,7 +592,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	m_sdl_renderer = m_sdl_screen_renderer; //TMP
 	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
 	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(0x%x): m_sdl_surface=(SDL_Surface*)0x%x m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::create_sdl_window_and_renderers::(0x%x): m_sdl_surface=(SDL_Surface*)0x%x m_sdl_renderer=(SDL_Renderer*)0x%x win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=0x%x", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
 	sdl_ambulant_window::s_lock.leave();
 	return err;
 }
@@ -771,6 +772,7 @@ sdl_ambulant_window::clear_sdl_surface (SDL_Surface* surface, SDL_Rect sdl_rect)
 	if (surface == NULL || surface->format == NULL) {
 		return;
 	}
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear_SDL_Surface(0x%x) = 0x%x, sdl_rect={%d,%d,%d,%d}", this, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
 	// Fill with <brush> color
 	color_t color = lib::to_color(255, 255, 255);
 
@@ -832,14 +834,15 @@ int
 _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
-	if (src != NULL && dst != NULL) {
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): src=0x%x src_rect={%d,%d,%d,%d} dst=0x%x dst_rect={%d,%d,%d,%d} alpha=%u", src, src_rect?src_rect->x:0, src_rect?src_rect->y:0, src_rect?src_rect->w:0, src_rect?src_rect->h:0, dst,  dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	// Check requirements for SDL blitting
+	if (src != NULL && dst != NULL && src->format != NULL && dst->format != NULL) {
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
 		if (rv < 0) {
 			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
 			return rv;
 		}
-		while (src->locked) SDL_UnlockSurface (src); //XXXX quick hack for SDL_Pange (I guess)
+//		while (src->locked) SDL_UnlockSurface (src); //XXXX quick hack for SDL_Pange (I guess)
 		rv = SDL_BlitSurface(src, src_rect, dst, dst_rect);
 		if (rv < 0) {
 			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_BlitSurface", SDL_GetError());

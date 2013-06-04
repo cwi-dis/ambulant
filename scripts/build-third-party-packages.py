@@ -760,7 +760,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL-2.0.0-* && "
-                "%s --disable-video-x11-xinput &&"
+                "%s --disable-mmx --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (LINUX_COMMON_CONFIGURE)
