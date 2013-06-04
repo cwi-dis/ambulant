@@ -371,7 +371,10 @@ plugin_engine::load_plugins(std::string dirname)
 				// And similar for a Python plugin
 				if (is_python_plugin) {
 					std::string filename_str = filename;
-					m_python_plugins.push_back(filename_str);
+					// ignore if filename ends with '.pyc'
+					if ( ! filename_str.compare(filename_str.length()-4,4,".pyc")) {
+					      m_python_plugins.push_back(filename_str);
+					}
 					free(namelist[nr_of_files]);
 					continue;
 				}
