@@ -24,23 +24,22 @@ libamplugin_recorder_la_LIBFLAGS = \
 
 MAINTAINERCLEANFILES = \
 			Makefile.in
-
-EXTRA_DIST = \
-			pyamplugin_recorder.py
-
+ 
 install-data-local:
-	rm -fr $(libdir)/pyamplugin_recorder.py*
+	rm -fr $(DESTDIR)$(libdir)/pyamplugin_recorder.py*
 
 else
 
 install-data-local:
-	echo Installing in: $(libdir)
-	rm -fr $(libdir)/libamplugin_recorder.*
-	rm -fr $(libdir)/pyamplugin_recorder.py*
-	$(INSTALL) $(srcdir)/pyamplugin_recorder.py $(libdir)
+	echo Installing in: $(DESTDIR)$(libdir)
+	rm -fr $(DESTDIR)$(libdir)/libamplugin_recorder.*
+	rm -fr $(DESTDIR)$(libdir)/pyamplugin_recorder.py*
+	$(INSTALL) $(srcdir)/pyamplugin_recorder.py $(DESTDIR)$(libdir)
 endif
 
+EXTRA_DIST = pyamplugin_recorder.py
+
 uninstall:
-	rm -fr $(libdir)/libamplugin_recorder.*
-	rm -fr $(libdir)/pyamplugin_recorder.py*
+	rm -fr $(DESTDIR)$(libdir)/libamplugin_recorder.*
+	rm -fr $(DESTDIR)$(libdir)/pyamplugin_recorder.py*
 
