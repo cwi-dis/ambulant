@@ -36,6 +36,7 @@ else
 install-data-local:
 	echo Installing in: $(libdir)
 	rm -fr $(libdir)/libamplugin_recorder.*
+	rm -fr $(libdir)/pyamplugin_recorder.py*
 	$(INSTALL) $(srcdir)/pyamplugin_recorder.py $(libdir)
 endif
 
