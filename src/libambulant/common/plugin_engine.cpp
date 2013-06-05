@@ -226,9 +226,9 @@ plugin_engine::collect_plugin_directories()
 #elif defined(AMBULANT_PLATFORM_UNIX)
 	// On other unix platforms add the pkglibdir
 #ifdef AMBULANT_PLUGINDIR
-	char *normal_plugin_dir = AMBULANT_PLUGINDIR;
+	char *normal_plugin_dir = (char*) AMBULANT_PLUGINDIR;
 #else
-	char *normal_plugin_dir = "/usr/local/lib/ambulant"
+	char *normal_plugin_dir =  (char*) "/usr/local/lib/ambulant"
 #endif // AMBULANT_PLUGINDIR
 	if (access(normal_plugin_dir, 0) == 0) {
 		m_plugindirs.push_back(normal_plugin_dir);
@@ -372,7 +372,7 @@ plugin_engine::load_plugins(std::string dirname)
 				if (is_python_plugin) {
 					std::string filename_str = filename;
 					// ignore if filename ends with '.pyc'
-					if ( ! filename_str.compare(filename_str.length()-4,4,".pyc")) {
+					if (filename_str.compare(filename_str.length()-4,4,".pyc") != 0) {
 					      m_python_plugins.push_back(filename_str);
 					}
 					free(namelist[nr_of_files]);
