@@ -5,7 +5,7 @@ import threading
 import Queue
 
 DEBUG=False
-# with THREADED-=True, do actual writing of data onto the pipe  in a seperate thread
+# with THREADED=True, the writing of data to the pipe is done in a seperate thread
 THREADED=True
 
 #

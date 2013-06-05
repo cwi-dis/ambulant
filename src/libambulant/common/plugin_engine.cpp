@@ -320,6 +320,7 @@ plugin_engine::load_plugins(std::string dirname)
 				strcmp(namelist[nr_of_files]->d_name, ".."))
 			{
 				char *pluginname = namelist[nr_of_files]->d_name;
+				lib::logger::get_logger()->trace("plugin_engine: examining Python plugin %s", pluginname);
 #ifdef WITH_PYTHON_PLUGIN
 				bool is_python_plugin = false;
 				bool is_python_engine = false;
@@ -329,7 +330,6 @@ plugin_engine::load_plugins(std::string dirname)
 				if (strncmp(PYTHON_PLUGIN_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
 					is_python_plugin = true;
-					lib::logger::get_logger()->trace("plugin_engine: recording Python plugin %s", pluginname);
 #else
 					lib::logger::get_logger()->trace("plugin_engine: skipping Python plugin %s", pluginname);
 					continue;
@@ -343,7 +343,6 @@ plugin_engine::load_plugins(std::string dirname)
 				if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
 					is_python_engine = true;
-					lib::logger::get_logger()->trace("plugin_engine: recording Python engine %s", pluginname);
 #else
 					lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
 					free(namelist[nr_of_files]);
@@ -372,7 +371,9 @@ plugin_engine::load_plugins(std::string dirname)
 				if (is_python_plugin) {
 					std::string filename_str = filename;
 					// ignore if filename ends with '.pyc'
-					if (filename_str.compare(filename_str.length()-4,4,".pyc") != 0) {
+					if (filename_str.compare(filename_str.length()-4,4,".pyc") == 0) {
+					      lib::logger::get_logger()->trace("plugin_engine: ignoring Python plugin %s", pluginname);
+					} else {
 					      m_python_plugins.push_back(filename_str);
 					}
 					free(namelist[nr_of_files]);
