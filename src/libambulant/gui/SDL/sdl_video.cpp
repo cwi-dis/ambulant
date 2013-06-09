@@ -24,14 +24,6 @@
 //X #include "ambulant/gui/sdl/sdl_includes.h"
 //X #include "ambulant/gui/sdl/sdl_renderer.h"
 #define __STDC_CONSTANT_MACROS //XXXX Grrr.. for ‘UINT64_C’ not declared
-#include "ambulant/gui/SDL/sdl_factory.h"
-#include "ambulant/gui/SDL/sdl_video.h"
-#include "ambulant/gui/SDL/sdl_window.h"
-#include "ambulant/common/region_info.h"
-#include "ambulant/common/factory.h"
-#include <stdlib.h>
-#include "ambulant/common/playable.h"
-#include "ambulant/smil2/test_attrs.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -41,6 +33,14 @@ extern "C" {
 #define AV_NUM_DATA_POINTERS 4
 #endif// !  AV_NUM_DATA_POINTERS
 };
+#include "ambulant/gui/SDL/sdl_factory.h"
+#include "ambulant/gui/SDL/sdl_video.h"
+#include "ambulant/gui/SDL/sdl_window.h"
+#include "ambulant/common/region_info.h"
+#include "ambulant/common/factory.h"
+#include <stdlib.h>
+#include "ambulant/common/playable.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -68,16 +68,21 @@ sdl_video_renderer::sdl_video_renderer(
 
 	m_data(NULL),
 	m_datasize(0),
-   	m_img_displayed(0)
+	m_img_displayed(0),
+	m_sws_ctx(0)
 {
 	SDL_Init(SDL_INIT_VIDEO);
 }
 
 sdl_video_renderer::~sdl_video_renderer()
-{
+{	
 	m_lock.enter();
 	if (m_data)
 		free(m_data);
+	if (m_sws_ctx) {
+		sws_freeContext (m_sws_ctx);
+		m_sws_ctx = NULL;
+	}
 	m_lock.leave();
 }
 
@@ -107,7 +112,6 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 	m_lock.enter();
 	if (m_data){
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(0x%x)",(void*) this);
-
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
 		lib::rect dst_rect_whole = r;
@@ -134,8 +138,10 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
 		SDL_Renderer* renderer = asw->get_sdl_ambulant_window()->get_sdl_renderer();
 		SDL_Surface* surface = NULL;
-		static struct SwsContext* s_sws_ctx = NULL; //XXX member !
-		s_sws_ctx = sws_getCachedContext(s_sws_ctx, src_width, src_height, SDL_SWS_PIX_FMT, dst_width, dst_height, SDL_SWS_PIX_FMT, SWS_BILINEAR, NULL, NULL, NULL);
+  
+		// prevent warnings: Forcing full internal H chroma due to odd output size
+		int flags = SWS_BILINEAR | SWS_FULL_CHR_H_INT;
+		m_sws_ctx = sws_getCachedContext(m_sws_ctx, src_width, src_height, SDL_SWS_PIX_FMT, dst_width, dst_height, SDL_SWS_PIX_FMT, flags, NULL, NULL, NULL);
 		uint8_t* pixels[AV_NUM_DATA_POINTERS];
 		int dst_stride[AV_NUM_DATA_POINTERS];
 		int src_stride[AV_NUM_DATA_POINTERS];
@@ -146,14 +152,16 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 				dst_stride[i] = src_stride[i] = 0;
 		}
 		pixels[0] = (uint8_t*) malloc(dst_stride[0]*dst_height); 
-		int rv = sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, src_stride, 0, src_height, pixels, dst_stride);
+		memset(pixels[0], 0, dst_stride[0]*dst_height);
+		int rv = sws_scale(m_sws_ctx,(const uint8_t* const*) &m_data, src_stride, 0, src_height, pixels, dst_stride);
+		AM_DBG { 		static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) src=%dx%d dst=%dx%d rv=%d", this, src_width, src_height, dst_width, dst_height,rv); }}
 		dst_rect.h = dst_height = rv;
 		Uint32 rmask, gmask, bmask, amask;
 		// we use ARGB
 		amask = 0xff000000;
 		rmask = 0x00ff0000;
 		gmask = 0x0000ff00;
-		bmask = 0x000000ff;
+		bmask = 0x000000ff;     
 		// convert to SDL
 		surface = SDL_CreateRGBSurfaceFrom(pixels[0], dst_width, dst_height, 32, dst_stride[0], rmask, gmask, bmask, amask);
 		SDL_Rect sdl_dst_rect = {dst_rect.left(), dst_rect.top(), dst_width, dst_height};
