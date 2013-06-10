@@ -146,15 +146,14 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		int dst_stride[AV_NUM_DATA_POINTERS];
 		int src_stride[AV_NUM_DATA_POINTERS];
 		dst_stride[0] = dst_width*SDL_BPP;
-		src_stride[0] = src_width*SDL_BPP;
+		src_stride[0] = m_size.w*SDL_BPP;
 		for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
 				pixels[i] = NULL;
 				dst_stride[i] = src_stride[i] = 0;
 		}
 		pixels[0] = (uint8_t*) malloc(dst_stride[0]*dst_height); 
-		memset(pixels[0], 0, dst_stride[0]*dst_height);
 		int rv = sws_scale(m_sws_ctx,(const uint8_t* const*) &m_data, src_stride, 0, src_height, pixels, dst_stride);
-		AM_DBG { 		static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) src=%dx%d dst=%dx%d rv=%d", this, src_width, src_height, dst_width, dst_height,rv); }}
+		AM_DBG { 		static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) src=%dx%d dst=%dx%d rv=%d src_stride=%d", this, src_width, src_height, dst_width, dst_height,rv,src_stride[0]); }}
 		dst_rect.h = dst_height = rv;
 		Uint32 rmask, gmask, bmask, amask;
 		// we use ARGB
