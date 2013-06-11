@@ -122,12 +122,16 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=0x%x", info);
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
-			// XXXX Fill with background color TBD
-			lib::color_t bgcolor = info->get_bgcolor();
+				// XXXX Fill with background color TBD
+				lib::color_t bgcolor = info->get_bgcolor();
 		}
 		lib::rect src_rect; // lib::rect(lib::point(0,0), lib::size(width, height)), dst_rect;
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		lib::rect dst_rect = m_dest->get_fit_rect(croprect, m_size, &src_rect, m_alignment);
+		if (src_rect.w == 0 || src_rect.h == 0 || dst_rect.w == 0 || dst_rect.h == 0) {
+				// either nothing to redraw from source or to destination)
+				return;
+		}
 		dst_rect.translate(p);
 		int dst_width = dst_rect.w;
 		int dst_height = dst_rect.h;
@@ -140,7 +144,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		SDL_Surface* surface = NULL;
   
 		// prevent warnings: Forcing full internal H chroma due to odd output size
-		int flags = SWS_BILINEAR | SWS_FULL_CHR_H_INT;
+		int flags = SWS_FAST_BILINEAR | SWS_FULL_CHR_H_INT;
 		m_sws_ctx = sws_getCachedContext(m_sws_ctx, src_width, src_height, SDL_SWS_PIX_FMT, dst_width, dst_height, SDL_SWS_PIX_FMT, flags, NULL, NULL, NULL);
 		uint8_t* pixels[AV_NUM_DATA_POINTERS];
 		int dst_stride[AV_NUM_DATA_POINTERS];
