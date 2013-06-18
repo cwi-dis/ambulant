@@ -68,32 +68,39 @@ G_BEGIN_DECLS
 
 typedef struct _GstAmbulantSrc      GstAmbulantSrc;
 typedef struct _GstAmbulantSrcClass GstAmbulantSrcClass;
+typedef struct _GstAmbulantFrame    GstAmbulantFrame;
 
-struct _GstAmbulantSrc
-{
-  GstBaseSrc basesrc;
-
-//  GstPad *sinkpad, *srcpad;
-
-//  gboolean silent;
-
-  gboolean silent;
-  gboolean eos;
-  gboolean need_header;
-
+struct _GstAmbulantFrame {
   guint W, H;
   gulong datasize;
   gulong timestamp;
   GstBuffer* databuffer;
   void* datapointer;
   gulong checksum;
-  gboolean locked;
+};
 
-  // Caps
-  GstCaps* caps;
+struct _GstAmbulantSrc
+{
+  GstBaseSrc basesrc;       // gstreamer base class
+
+  // Properties
+  gboolean silent;          // no diagnostics
+  gboolean eos;             // end of stream
+  gboolean no_wait;         // do not wait for input: asynchronous, threaded implementation
   // Latency
   GstClockTime min_latency;
   GstClockTime max_latency;
+
+  // Caps
+  GstCaps* caps;            // caps after (re)negotiation
+  GstAmbulantFrame* frame;  // current frame
+  gboolean initial_frame;   // initial frame is used to get and fixate the capabilties
+
+  // Threading
+  gboolean locked;          // true when the inherited (GObject) mutex is locked
+  GThread* thread;          // the reader thread
+  gboolean exit_requested;  // when set to true, terminates the reader thread
+  GQueue* queue;            // fifo queue where the read thread stores all frames read
 };
 
 struct _GstAmbulantSrcClass 
