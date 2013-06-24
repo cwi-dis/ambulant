@@ -305,7 +305,6 @@ ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 	//if (m_ambulant_window != NULL)
 	//	delete m_ambulant_window;
 	m_ambulant_window = sdlas;
-
 #ifdef JNK
 	if (sdlas != NULL) {
 		GdkColor color;
@@ -328,7 +327,9 @@ ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 		// User Interaction
 	}
 #endif//JNK
+	lib::rect r = m_bounds;
 	m_lock.leave();
+	need_redraw(r);
 }
 
 sdl_ambulant_window*
