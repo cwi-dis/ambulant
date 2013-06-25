@@ -6,7 +6,7 @@ import Queue
 
 DEBUG=False
 # with THREADED=True, the writing of data to the pipe is done in a seperate thread
-THREADED=False
+THREADED=True #False
 
 #
 # Trickery for logging output: if we cannot get at the Ambulant
@@ -64,7 +64,7 @@ class DummyRecorder(ambulant.recorder):
         if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder(%s, %s)" % (pixel_order, size))
         self.pixel_order = pixel_order
         self.size = size
-        self.eof = False
+        self.eos = False # true when pipe cannot be written
         ambulant_recorder_pipe = os.getenv("AMBULANT_RECORDER_PIPE")
         print ambulant_recorder_pipe
         if ambulant_recorder_pipe == None:
@@ -83,43 +83,32 @@ class DummyRecorder(ambulant.recorder):
         if THREADED:
             self.queue.put((timestamp, data))
         else:
-            self.write_header(timestamp, len(data))
-            self.write_data(data)
+            self.write_frame(timestamp, len(data), data)
         pass
 
     def new_audio_data(self, data, timestamp):
         if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder.new_audio_data %s %s)" % (data, timestamp))
         pass
-# write fixed size (80 bytes) header preceding variable size pixel data        
-    def write_header(self, timestamp, datasize):
-        if self.eof:
+
+# write pixel data, preceded by fixed size (80 bytes) header        
+    def write_frame(self, timestamp, datasize, data):
+        if self.eos or self.pipe == None:
             return
         s = "Time: %08lu\nSize: %08lu\nW: %#5u\nH: %#5u\nChksm: %024lx\n" % (timestamp, datasize, self.size[0], self.size[1], 0)
 #       s = "%#8lu\n" % timestamp
 #       print "pyamplugin_recorder.DummyRecorder.write_header() s=%s" % s
 #       print "pipe=%r " % self.pipe
-        if self.pipe != None:
-            try:
-                self.pipe.write(s)
-            except IOError:
-                self.eof = True
-        pass
-
-    def write_data(self, data):
-        if self.eof:
-            return
-        if self.pipe != None:
-            try:
-                self.pipe.write(data)
-                self.pipe.flush()
-            except IOError:
-                self.eof = True
+        try:
+            self.pipe.write(s)
+            self.pipe.write(data)
+            self.pipe.flush()
+        except IOError:
+            self.eos = True
         pass
 
     def worker(self):
         while self.alive:
             (timestamp, data) = self.queue.get()
             if DEBUG: logger.debug("pyamplugin_recorder.DummyRecorder.worker: size=%d timestamp=%d)" % (len(data), timestamp))
-            self.write_header(timestamp, len(data))
-            self.write_data(data)
+            self.write_frame(timestamp, len(data), data)
 #           self.queue.task_done()
