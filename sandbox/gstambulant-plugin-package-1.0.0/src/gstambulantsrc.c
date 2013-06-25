@@ -293,22 +293,22 @@ void get_next_frame (GstAmbulantSrc* asrc)
     }
     // while nothing has been read from <stdin>, stick to the initial frame
     if (asrc->initial_frame) {
-        if (asrc->queue != NULL && g_queue_get_length (asrc->queue) > 0) {
+        if (asrc->queue == NULL || g_queue_get_length (asrc->queue) > 0) {
             asrc->initial_frame = FALSE;
 	}
     }
     if ( ! asrc->initial_frame) {
-        delete_frame (asrc->frame);
-	asrc->frame = NULL;
-	if (asrc->queue != NULL) {
-	    if (g_queue_get_length (asrc->queue) > 0) {
+        if (asrc->queue == NULL || g_queue_get_length (asrc->queue) > 0) {
+	    delete_frame (asrc->frame);
+	    asrc->frame = NULL;
+	    if (asrc->queue == NULL) {
+	        asrc->frame = read_frame (asrc);
+	    } else {
                 asrc->frame = g_queue_pop_tail (asrc->queue);
 	    }
-	} else {
-	  asrc->frame = read_frame (asrc);
-	}
-	if (asrc->frame == NULL) {
-            asrc->eos = TRUE;
+	    if (asrc->frame == NULL) {
+                asrc->eos = TRUE;
+	    }
 	}
     }
     if ( ! was_locked) {
@@ -345,7 +345,7 @@ static void
 gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 {
     GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
-    if(tracing || !asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+    if(tracing)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
     asrc->silent = TRUE;
     asrc->eos = FALSE;
     asrc->initial_frame = FALSE;
@@ -464,7 +464,6 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	}
     } else if (asrc->frame == NULL) {
         asrc->frame = read_frame (asrc);
-        asrc->initial_frame = TRUE;
     }
     asrc->locked = FALSE;
     GST_OBJECT_UNLOCK (asrc);
@@ -476,7 +475,7 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 {
     GstAmbulantSrc *asrc = GST_AMBULANTSRC (basesrc);
     if(!asrc->silent)fprintf(stderr,"%s databuffer=0x%p\n", __PRETTY_FUNCTION__,
-			     asrc-> frame == NULL ? "<no frame>" : asrc->frame->databuffer);
+			     asrc-> frame == NULL ? NULL : asrc->frame->databuffer);
 
     GST_OBJECT_LOCK (asrc);
     asrc->locked = TRUE;
