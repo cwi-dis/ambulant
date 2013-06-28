@@ -97,7 +97,9 @@ struct _GstAmbulantSrc
   //XXXX initial_frame is probably a bad idea because initially nothing is known about
   //XXXX the actual width,height (maybe fixable by adding width,height properties).
   //XXXX Only effective no-wait=true (asynchronous operation)
-  gboolean initial_frame;   // true when a fake initial frame is used to get and fixate the capabilties
+  guint width, height;      // default: undefined, when one is set, the other also should be set
+  gboolean initial_frame;   // default: false; true when both width,height are set,
+                            // an initial white frame is used to fixate the capabilties
 
   // Threading
   gboolean locked;          // true when the inherited (GObject) mutex is locked

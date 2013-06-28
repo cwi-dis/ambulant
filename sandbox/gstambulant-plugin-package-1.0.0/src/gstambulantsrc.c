@@ -85,13 +85,15 @@ enum
 
 #define DEFAULT_MIN_LATENCY ((30 * GST_MSECOND) /GST_USECOND)
 #define DEFAULT_MAX_LATENCY ((30 * GST_MSECOND) /GST_USECOND)
-
+#define DEFAULT_WIDTH 0 // undefined
+#define DEFAULT_HEIGHT 0 // undefined
 enum
 {
     PROP_0,
     PROP_MIN_LATENCY,
     PROP_MAX_LATENCY,
-    PROP_NO_WAIT,
+    PROP_WIDTH,
+    PROP_HEIGHT,
     PROP_SILENT
 };
 
@@ -153,9 +155,15 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
     g_object_class_install_property (gobject_class, PROP_SILENT,
         g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
 			      FALSE, G_PARAM_READWRITE));
-    g_object_class_install_property (gobject_class, PROP_NO_WAIT,
-        g_param_spec_boolean ("no-wait", "No wait", "Do not wait for input on stdin, always produce a frame",
-			      FALSE, G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class, PROP_WIDTH,
+				     g_param_spec_uint ("width", "Frame width", "width of initial frame in pixels",
+			   0, G_MAXINT32, DEFAULT_WIDTH, G_PARAM_READWRITE));
+    g_object_class_install_property (gobject_class, PROP_HEIGHT,
+				     g_param_spec_uint ("height", "Frame height","height of initial frame in pixels",
+			   0, G_MAXINT32, DEFAULT_HEIGHT, G_PARAM_READWRITE));
+//  g_object_class_install_property (gobject_class, PROP_NO_WAIT,
+//      g_param_spec_boolean ("no-wait", "No wait", "Do not wait for input on stdin, always produce a frame",
+//			      FALSE, G_PARAM_READWRITE));
     g_object_class_install_property (gobject_class, PROP_MIN_LATENCY,
         g_param_spec_int64 ("min-latency", "Minimum latency time", "Minimum latency in microseconds",
 			    1, G_MAXINT64, DEFAULT_MIN_LATENCY, G_PARAM_READWRITE));
@@ -174,9 +182,11 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
     gst_element_class_set_details_simple((GstElementClass*) gstbasesrc_class,
         "Ambulant Source Element",
         "Source",
-        "Read frames produced by 'ambulant-recorder-plugin' from 'stdin'"
-        "(format: 80 byte ASCII header, follewed by variable number of pixels, BGRA 32bpp)"
-        " and push these as buffers in a gstreamer pipeline",
+        "Read frames produced by 'ambulant-recorder-plugin' from 'stdin' "
+        "(format: 80 byte ASCII header, followed by variable number of pixels, BGRA 32bpp)"
+        " and push these as buffers in a gstreamer pipeline. "
+	"When both properties 'width' and 'height' are set greater than 0, "
+	"the element pushes a white frame of that size before reading from 'stdin'.",
         "Kees Blom <<Kees.Blom@cwi.nl>>");
     gst_element_class_add_pad_template ((GstElementClass*) gstbasesrc_class,
 					gst_static_pad_template_get (&src_factory));
@@ -349,6 +359,8 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
     asrc->silent = TRUE;
     asrc->eos = FALSE;
     asrc->initial_frame = FALSE;
+    asrc->width = 0;
+    asrc->height = 0;
     asrc->frame = NULL;
     asrc->min_latency = DEFAULT_MIN_LATENCY;
     asrc->max_latency = DEFAULT_MAX_LATENCY;
@@ -396,8 +408,11 @@ gst_ambulantsrc_set_property (GObject * object, guint prop_id,
         case PROP_MAX_LATENCY:
 	    asrc->max_latency = g_value_get_int64 (value);
 	    break;
-        case PROP_NO_WAIT:
-            asrc->no_wait = g_value_get_boolean (value);
+        case PROP_WIDTH:
+            asrc->width = g_value_get_uint (value);
+	    break;
+        case PROP_HEIGHT:
+            asrc->height = g_value_get_uint (value);
 	    break;
         case PROP_SILENT:
             asrc->silent = g_value_get_boolean (value);
@@ -422,8 +437,11 @@ gst_ambulantsrc_get_property (GObject * object, guint prop_id,
         case PROP_MAX_LATENCY:
             g_value_set_int64 (value, asrc->max_latency);
 	    break;
-        case PROP_NO_WAIT:
-            g_value_set_boolean (value, asrc->no_wait);
+        case PROP_WIDTH:
+            g_value_set_uint (value, asrc->width);
+	    break;
+        case PROP_HEIGHT:
+            g_value_set_uint (value, asrc->height);
 	    break;
         case PROP_SILENT:
             g_value_set_boolean (value, asrc->silent);
@@ -445,6 +463,9 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
     GST_OBJECT_LOCK (asrc);
     asrc->locked = TRUE;
     if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+    if (asrc->width != 0 && asrc->height != 0) {
+        asrc->no_wait = TRUE;
+    }
     if (asrc->no_wait && asrc->thread == NULL) {
 	asrc->queue = g_queue_new();
 	if (asrc->queue == NULL) {
