@@ -259,6 +259,15 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 		      &timestamp, &datasize, &W, &H, &checksum) != 5) {
             asrc->eos = TRUE;
 	}
+	if (asrc->width == 0 && asrc->height == 0) {
+	    // first frame, remember width, heigh
+	    asrc->width = W;
+	    asrc->height = H;
+	} else if (asrc->width != W || asrc->height != H) {
+	    // error: frame has different dimensions
+	    fprintf (stderr, "Input size (%d,%d) differs from (%d, %d)\n", W, H, asrc->width, asrc->height);
+	    asrc->eos = TRUE;
+	}
 	if ( ! asrc->eos) {
 	    frame = new_frame (W, H, datasize, timestamp, checksum, NULL);
 	    size_t n_bytes = fread (frame->datapointer,1,frame->datasize,stdin);
@@ -633,10 +642,6 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 	    lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, 
 	    offset, length, buffer, asrc->timestamp, (long unsigned int) asrc->datapointer);  // enable for frame delay debugging
 #else
-    if(!asrc->silent) {
-        fprintf(stderr, "%s: Timestamp=%ld ms size=%ld offset=%ld \n",
-		__PRETTY_FUNCTION__, asrc->frame->timestamp, asrc->frame->datasize, offset);
-    }
 #endif//FRAME_DELAY_DEBUG  
 
     if (buffer == NULL) {
@@ -655,6 +660,10 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
 	return GST_FLOW_EOS; // end of stream
+    }
+    if(!asrc->silent) {
+        fprintf(stderr, "%s: Timestamp=%ld ms size=%ld offset=%ld \n",
+		__PRETTY_FUNCTION__, asrc->frame->timestamp, asrc->frame->datasize, offset);
     }
     GstBuffer* buf = asrc->frame->databuffer;
     GST_BUFFER_DTS (buf) =  asrc->frame->timestamp * 1000000; // millis to nanos
