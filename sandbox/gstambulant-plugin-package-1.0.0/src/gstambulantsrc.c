@@ -633,17 +633,6 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
     GST_OBJECT_LOCK (asrc);
     asrc->locked = TRUE;
 
-#ifdef FRAME_DELAY_DEBUG  
-    time_t now  = time(NULL);
-    struct tm *lt = localtime(&now);
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    fprintf(stderr,"%02d:%02d:%02d.%06ld %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld datapointer=0x%lx\n", 
-	    lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, 
-	    offset, length, buffer, asrc->timestamp, (long unsigned int) asrc->datapointer);  // enable for frame delay debugging
-#else
-#endif//FRAME_DELAY_DEBUG  
-
     if (buffer == NULL) {
         asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
@@ -672,13 +661,6 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
     GST_BUFFER_OFFSET (buf) = offset;
     gst_buffer_ref(buf);
     *buffer = buf;
-#ifdef FRAME_DELAY_DEBUG
-    now  = time(NULL);
-    lt   = localtime(&now);
-    gettimeofday(&tv, NULL);
-    fprintf(stderr,"%02d:%02d:%02d.%06ld %s(bsrc=%p,offset=%lu,length=%u,buffer=%p) timestamp=%ld data=0x%x\n",
-	    lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec, __PRETTY_FUNCTION__,bsrc, offset, length, buffer, asrc->timestamp, *(unsigned int*) asrc->datapointer);  // enable for frame delay debugging
-#endif//FRAME_DELAY_DEBUG  
     asrc->locked = FALSE;
     GST_OBJECT_UNLOCK (asrc);
     return GST_FLOW_OK;
