@@ -258,12 +258,11 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 	    || sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
 		      &timestamp, &datasize, &W, &H, &checksum) != 5) {
             asrc->eos = TRUE;
-	}
-	if (asrc->width == 0 && asrc->height == 0) {
+	} else if (asrc->width == 0 && asrc->height == 0) { // first fread OK
 	    // first frame, remember width, heigh
 	    asrc->width = W;
 	    asrc->height = H;
-	} else if (asrc->width != W || asrc->height != H) {
+	} else if (asrc->width != W || asrc->height != H) { // fread OK, but W,H not OK
 	    // error: frame has different dimensions
 	    fprintf (stderr, "Input size (%d,%d) differs from (%d, %d)\n", W, H, asrc->width, asrc->height);
 	    asrc->eos = TRUE;
