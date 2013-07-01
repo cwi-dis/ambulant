@@ -1,5 +1,5 @@
 #!/bin/sh
-# set -x
+set -x
 echo "Using ximagesink. On the commandline you may specify OPTIONS=... for ambulantsrc. "
     
 if [ "x$DELAY" = 'x' ] ; then DELAY=0; fi

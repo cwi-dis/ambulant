@@ -339,7 +339,7 @@ void init_frame(GstAmbulantSrc* asrc)
 {
     if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
     
-    guint W=300, H=240;
+    guint W = asrc->width, H = asrc->height;
     glong datasize = W * H * 4;
     unsigned char* data = (unsigned char*) g_malloc (datasize);
     if (data == NULL) {
@@ -350,7 +350,7 @@ void init_frame(GstAmbulantSrc* asrc)
     while (i < datasize) {
         data[i++] = 0x0FF;
     }
-    asrc->frame = new_frame (300,240,datasize,0,0,data);
+    asrc->frame = new_frame (W,H,datasize,0,0,data);
     asrc->initial_frame = TRUE;
 } 
 

@@ -96,7 +96,7 @@ class DummyRecorder(ambulant.recorder):
             return
         s = "Time: %08lu\nSize: %08lu\nW: %#5u\nH: %#5u\nChksm: %024lx\n" % (timestamp, datasize, self.size[0], self.size[1], 0)
 #       s = "%#8lu\n" % timestamp
-#       print "pyamplugin_recorder.DummyRecorder.write_header() s=%s" % s
+#       print "pyamplugin_recorder.DummyRecorder.write_frame() s=%s" % s
 #       print "pipe=%r " % self.pipe
         try:
             self.pipe.write(s)
