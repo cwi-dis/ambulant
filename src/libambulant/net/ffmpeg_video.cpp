@@ -637,7 +637,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 		
             // We have gotten a frame
             if (!m_complete_frame_seen) {
-                AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: found full frame");m_complete_frame_seen = true;
+                AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: found full frame");
+				m_complete_frame_seen = true;
             }
 			// At this point we need m_fmt to be correct, we are going to use
 			// sizes, durations, etc.

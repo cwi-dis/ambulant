@@ -38,7 +38,7 @@ typedef float CGFloat;
 #define AM_DBG if(0)
 #endif
 
-/*AM_DBG*/ void dumpResponderChain(NSResponder *r) {
+/*"""AM_DBG"""*/ void dumpResponderChain(NSResponder *r) {
     std::string x = "";
     while (r) {
         NSLog(@"%snext responder %@", x.c_str(), r);
