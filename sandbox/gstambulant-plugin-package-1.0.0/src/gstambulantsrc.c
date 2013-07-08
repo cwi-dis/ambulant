@@ -64,8 +64,9 @@
 #  include <config.h>
 #endif
 
-#include "gstambulantsrc.h"
+#include <unistd.h>
 #include <stdio.h>
+#include "gstambulantsrc.h"
 
 #ifdef  FRAME_DELAY_DEBUG  
 #include <sys/time.h>
@@ -244,7 +245,7 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 
     if (asrc != NULL) {
         // don' block during read
-        if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+        if(!asrc->silent)fprintf(stderr,"%s: input_fd=%d\n", __PRETTY_FUNCTION__, asrc->input_fd);
 	gboolean was_locked = asrc->locked;
 	if (was_locked) {
 	    asrc->locked = FALSE;
@@ -254,7 +255,7 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 
 	char buf[81]; buf[80] = 0;
 	guint W,H; gulong timestamp, datasize, checksum;
-	if (fread(buf,1,80,stdin) != 80 
+	if (fread(buf,1,80,asrc->input_stream) != 80 
 	    || sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
 		      &timestamp, &datasize, &W, &H, &checksum) != 5) {
             asrc->eos = TRUE;
@@ -269,7 +270,7 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 	}
 	if ( ! asrc->eos) {
 	    frame = new_frame (W, H, datasize, timestamp, checksum, NULL);
-	    size_t n_bytes = fread (frame->datapointer,1,frame->datasize,stdin);
+	    size_t n_bytes = fread (frame->datapointer,1,frame->datasize,asrc->input_stream);
 	    if (n_bytes != frame->datasize) {
                 asrc->eos = TRUE;
 	    } else {
@@ -380,12 +381,15 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
     asrc->thread = NULL;
     asrc->no_wait = FALSE;
     asrc->exit_requested = FALSE;
+    asrc->input_fd = -1;
+    asrc->input_stream = NULL;
 }
 
 static void
 gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 {
     if (asrc != NULL) {
+        if ( ! asrc->silent) fprintf(stderr,"%s start\n", __PRETTY_FUNCTION__);
         GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 	while ( ! asrc->eos && ! asrc->exit_requested) {
@@ -398,6 +402,7 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 	}
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
+        if ( ! asrc->silent) fprintf(stderr,"%s stop\n", __PRETTY_FUNCTION__);
 	g_thread_exit((gpointer) NULL);
     }
 }  
@@ -471,6 +476,13 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
     GST_OBJECT_LOCK (asrc);
     asrc->locked = TRUE;
     if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+    int stdin_fd = fileno(stdin);
+    asrc->input_fd = dup (stdin_fd);
+    asrc->input_stream = fdopen (asrc->input_fd, "r");
+    if (stdin_fd == -1 || asrc->input_fd == -1 || asrc->input_stream == NULL) {
+        fprintf (stderr, "Cannot 'dup' <stdin>: stdin_fd=%d, input_fd=%d, input_stream=%p, errno=%d\n", stdin_fd, asrc->input_fd, asrc->input_stream, errno);
+	asrc->eos = TRUE;
+    }
     if (asrc->width != 0 && asrc->height != 0) {
         asrc->no_wait = TRUE;
     }
@@ -505,10 +517,8 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
     GstAmbulantSrc *asrc = GST_AMBULANTSRC (basesrc);
     if(!asrc->silent)fprintf(stderr,"%s databuffer=0x%p\n", __PRETTY_FUNCTION__,
 			     asrc-> frame == NULL ? NULL : asrc->frame->databuffer);
-
     GST_OBJECT_LOCK (asrc);
     asrc->locked = TRUE;
-
     asrc->eos = TRUE;
 //    if (asrc->caps != NULL) {
 //      gst_caps_unref (asrc->caps);
@@ -522,6 +532,10 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 	asrc->queue = NULL;
     }
     delete_frame (asrc->frame);
+    if (close (asrc->input_fd) != 0) {
+        fprintf(stderr,"%s: close() failed%d\n", __PRETTY_FUNCTION__, errno);
+    }
+    asrc->input_fd = -1;
     asrc->locked = FALSE;
     GST_OBJECT_UNLOCK (asrc);
 

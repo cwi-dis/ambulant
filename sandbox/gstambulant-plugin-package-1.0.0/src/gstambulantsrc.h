@@ -94,11 +94,9 @@ struct _GstAmbulantSrc
   // Caps
   GstCaps* caps;            // caps after (re)negotiation
   GstAmbulantFrame* frame;  // current frame
-  //XXXX initial_frame is probably a bad idea because initially nothing is known about
-  //XXXX the actual width,height (maybe fixable by adding width,height properties).
-  //XXXX Only effective no-wait=true (asynchronous operation)
   guint width, height;      // default: undefined, when one is set, the other also should be set
-  gboolean initial_frame;   // default: false; true when both width,height are set,
+                            // When both width and height are set, operation is threaded
+  gboolean initial_frame;   // default: false; true when both width,height are set:
                             // an initial white frame is used to fixate the capabilties
 
   // Threading
@@ -106,6 +104,8 @@ struct _GstAmbulantSrc
   GThread* thread;          // the reader thread
   gboolean exit_requested;  // when set to true, terminates the reader thread
   GQueue* queue;            // fifo queue where the read thread stores all frames read
+  int input_fd;
+  FILE* input_stream;
 };
 
 struct _GstAmbulantSrcClass 
