@@ -100,6 +100,7 @@ void
 demux_audio_datasource::stop()
 {
 	m_lock.enter();
+	m_event_processor = NULL;
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop(0x%x)", (void*)this);
 
 	if (m_thread) {
@@ -241,9 +242,8 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 		}
 	}
 	if ( m_queue.size() > 0 || _end_of_file()  ) {
-		if ( m_client_callback ) {
+		if ( m_client_callback && m_event_processor) {
 			AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
-			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
@@ -395,6 +395,7 @@ demux_video_datasource::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop(0x%x): m_thread=0x%x, m_client_callback=0x%x, m_frames.size()=%d", (void*)this, m_thread, m_client_callback,m_frames.size());
+	m_event_processor = NULL;
 	if (m_thread) {
 		abstract_demux *tmpthread = m_thread;
 		m_thread = NULL;
@@ -606,9 +607,8 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 	}
 
 	if ( m_frames.size() || _end_of_file()	) {
-		if ( m_client_callback ) {
+		if ( m_client_callback && m_event_processor) {
 			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
-			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
