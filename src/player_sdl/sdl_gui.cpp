@@ -776,12 +776,12 @@ int
 main (int argc, char*argv[]) {
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {
-		fprintf (stderr, "SDL_Init failed: %s\n", SDL_GetError());
+		fprintf (stderr, "Ambulant: SDL_Init failed: %s\n", SDL_GetError());
 		exit (-1);
 	}
-	int img_flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP; 
+	int img_flags = IMG_INIT_JPG | IMG_INIT_PNG ; 
 	if (IMG_Init(img_flags) != img_flags) {
-		fprintf (stderr, "IMG_Init failed.\n");
+		fprintf (stderr, "Ambulant: IMG_Init failed: %s\n", SDL_GetError());
 		exit (-2);
 	}
 #ifdef	ENABLE_NLS
