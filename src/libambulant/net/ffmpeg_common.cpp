@@ -56,7 +56,7 @@ ambulant::net::ffmpeg_init()
 {
 	static bool is_inited = false;
 	if (is_inited) return;
-#if 1
+#if 0
 	// Enable this line to get lots of ffmpeg debug output:
 	av_log_set_level(AV_LOG_DEBUG);
 #endif
