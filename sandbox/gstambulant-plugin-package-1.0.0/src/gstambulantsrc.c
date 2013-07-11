@@ -193,7 +193,7 @@ gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 					gst_static_pad_template_get (&src_factory));
 }
 
-void delete_frame (GstAmbulantFrame* frame) {
+void gst_ambulantsrc_delete_frame (GstAmbulantFrame* frame) {
     if (frame != NULL) {
         if(tracing)fprintf(stderr,"%s databuffer=0x%p datapointer=0x%p\n", __PRETTY_FUNCTION__, frame->databuffer, frame->datapointer);
 	if (frame->databuffer != NULL) {
@@ -206,7 +206,7 @@ void delete_frame (GstAmbulantFrame* frame) {
     }
 }
 
-GstAmbulantFrame* new_frame (guint W, guint H, gulong datasize, gulong timestamp,  gulong checksum, gpointer data)
+GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, gulong timestamp,  gulong checksum, gpointer data)
 {
     if (W == 0 || H == 0 || datasize == 0) {
         return NULL;
@@ -218,7 +218,7 @@ GstAmbulantFrame* new_frame (guint W, guint H, gulong datasize, gulong timestamp
     if (data == NULL) {
         frame->datapointer = g_malloc(datasize);
 	if (frame->datapointer == NULL) {
-            delete_frame (frame);
+            gst_ambulantsrc_delete_frame (frame);
 	    return NULL;
 	}
     } else {
@@ -226,7 +226,7 @@ GstAmbulantFrame* new_frame (guint W, guint H, gulong datasize, gulong timestamp
     }
     frame->databuffer = gst_buffer_new_wrapped (frame->datapointer, datasize);
     if (frame->databuffer == NULL) {
-        delete_frame (frame);
+        gst_ambulantsrc_delete_frame (frame);
 	return NULL;
     }
     frame->W = W;
@@ -239,9 +239,10 @@ GstAmbulantFrame* new_frame (guint W, guint H, gulong datasize, gulong timestamp
 }
 
 // read a frame from stdin: fixed size (80 bytes) header followed by variable size pixel data
-GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
+GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 {
     GstAmbulantFrame* frame = NULL;
+    gulong timestamp = 0;
 
     if (asrc != NULL) {
         // don' block during read
@@ -254,11 +255,12 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 	clearerr(stdin);
 
 	char buf[81]; buf[80] = 0;
-	guint W,H; gulong timestamp, datasize, checksum;
+	guint W,H; gulong datasize, checksum;
 	if (fread(buf,1,80,asrc->input_stream) != 80 
 	    || sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
 		      &timestamp, &datasize, &W, &H, &checksum) != 5) {
-            asrc->eos = TRUE;
+	    if(!asrc->silent)fprintf(stderr,"%s return: eos detected fread header\n", __PRETTY_FUNCTION__);
+	    asrc->eos = TRUE;
 	} else if (asrc->width == 0 && asrc->height == 0) { // first fread OK
 	    // first frame, remember width, heigh
 	    asrc->width = W;
@@ -269,14 +271,15 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 	    asrc->eos = TRUE;
 	}
 	if ( ! asrc->eos) {
-	    frame = new_frame (W, H, datasize, timestamp, checksum, NULL);
+	    frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, checksum, NULL);
 	    size_t n_bytes = fread (frame->datapointer,1,frame->datasize,asrc->input_stream);
 	    if (n_bytes != frame->datasize) {
+	      if(!asrc->silent)fprintf(stderr,"%s return: eos detected fread returns n_bytes=%ld\n", __PRETTY_FUNCTION__, (long int) n_bytes);
                 asrc->eos = TRUE;
 	    } else {
-//              gulong cs = checksum (asrc->databuffer,asrc->datasize);
+//              gulong cs = gst_ambulantsrc_checksum (asrc->databuffer,asrc->datasize);
 //              if (cs != asrc->checksum) {
-//                  fprintf (stderr, "checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
+//                  fprintf (stderr, "gst_ambulantsrc_checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
 //              }
 	    }
 	}
@@ -285,10 +288,11 @@ GstAmbulantFrame* read_frame(GstAmbulantSrc* asrc)
 	    asrc->locked = TRUE;
 	}
     }
+    if(!asrc->silent)fprintf(stderr,"%s return: eos=%d, frame=%p timestamp=%ld\n", __PRETTY_FUNCTION__, asrc ? asrc->eos : -1, frame, timestamp);
     return frame;
 }
 
-gulong checksum (void* data, gulong size)
+gulong gst_ambulantsrc_checksum (void* data, gulong size)
 {
     gulong cs = 0;
     guchar* dp = &((guchar*)data)[size];
@@ -299,7 +303,7 @@ gulong checksum (void* data, gulong size)
 }
 
 
-void get_next_frame (GstAmbulantSrc* asrc)
+void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 {
     if (asrc == NULL) {
         return;
@@ -318,10 +322,10 @@ void get_next_frame (GstAmbulantSrc* asrc)
     }
     if ( ! asrc->initial_frame) {
         if (asrc->queue == NULL || g_queue_get_length (asrc->queue) > 0) {
-	    delete_frame (asrc->frame);
+	    gst_ambulantsrc_delete_frame (asrc->frame);
 	    asrc->frame = NULL;
 	    if (asrc->queue == NULL) {
-	        asrc->frame = read_frame (asrc);
+	        asrc->frame = gst_ambulantsrc_read_frame (asrc);
 	    } else {
                 asrc->frame = g_queue_pop_tail (asrc->queue);
 	    }
@@ -336,7 +340,7 @@ void get_next_frame (GstAmbulantSrc* asrc)
     }
 }
 
-void init_frame(GstAmbulantSrc* asrc)
+void gst_ambulantsrc_init_frame(GstAmbulantSrc* asrc)
 {
     if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
     
@@ -351,7 +355,7 @@ void init_frame(GstAmbulantSrc* asrc)
     while (i < datasize) {
         data[i++] = 0x0FF;
     }
-    asrc->frame = new_frame (W,H,datasize,0,0,data);
+    asrc->frame = gst_ambulantsrc_new_frame (W,H,datasize,0,0,data);
     asrc->initial_frame = TRUE;
 } 
 
@@ -393,16 +397,16 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
         GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 	while ( ! asrc->eos && ! asrc->exit_requested) {
-	    GstAmbulantFrame* frame = read_frame(asrc);
+	    GstAmbulantFrame* frame = gst_ambulantsrc_read_frame(asrc);
 	    if (asrc->exit_requested) {
-	        delete_frame (frame);
+	        gst_ambulantsrc_delete_frame (frame);
 	    } else {
 	        g_queue_push_head (asrc->queue, frame);
 	    }
 	}
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
-        if ( ! asrc->silent) fprintf(stderr,"%s stop\n", __PRETTY_FUNCTION__);
+        if ( ! asrc->silent) fprintf(stderr,"%s stop eos: %d exit_requested: %d\n", __PRETTY_FUNCTION__,asrc->eos,asrc->exit_requested);
 	g_thread_exit((gpointer) NULL);
     }
 }  
@@ -493,7 +497,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	    rv = FALSE;
 	}
 	if (rv) {
-	    init_frame (asrc); // XXXX wrong sprops
+	    gst_ambulantsrc_init_frame (asrc); // XXXX wrong sprops
 	    asrc->locked = FALSE;
 	    GST_OBJECT_UNLOCK (asrc);
 	    GThread* thread = g_thread_new ("reader", (GThreadFunc) &gst_ambulantsrc_run, asrc);
@@ -504,7 +508,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	    // XXXXX cond wait here until properly initialized
 	}
     } else if (asrc->frame == NULL) {
-        asrc->frame = read_frame (asrc);
+        asrc->frame = gst_ambulantsrc_read_frame (asrc);
     }
     asrc->locked = FALSE;
     GST_OBJECT_UNLOCK (asrc);
@@ -528,10 +532,10 @@ gst_ambulantsrc_stop (GstBaseSrc * basesrc)
         asrc->exit_requested = TRUE;
     }
     if (asrc->queue != NULL) {
-        g_queue_free_full (asrc->queue, (GDestroyNotify) delete_frame);
+        g_queue_free_full (asrc->queue, (GDestroyNotify) gst_ambulantsrc_delete_frame);
 	asrc->queue = NULL;
     }
-    delete_frame (asrc->frame);
+    gst_ambulantsrc_delete_frame (asrc->frame);
     if (close (asrc->input_fd) != 0) {
         fprintf(stderr,"%s: close() failed%d\n", __PRETTY_FUNCTION__, errno);
     }
@@ -590,7 +594,7 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 	    {
 	        if (asrc->no_wait) {
 		    if (asrc->thread) {
-		        init_frame(asrc);
+		        gst_ambulantsrc_init_frame(asrc);
 		    } else break;
 		} else {
 	            if (asrc->frame == NULL) { // W,H not yet known
@@ -656,7 +660,7 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 	GST_OBJECT_UNLOCK (asrc);
 	return GST_FLOW_EOS; // end of stream
     }
-    get_next_frame(asrc);
+    gst_ambulantsrc_get_next_frame(asrc);
     if (asrc->frame == NULL) {
         asrc->eos = TRUE;
 	asrc->locked = FALSE;
