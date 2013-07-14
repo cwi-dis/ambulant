@@ -779,7 +779,7 @@ main (int argc, char*argv[]) {
 		fprintf (stderr, "Ambulant: SDL_Init failed: %s\n", SDL_GetError());
 		exit (-1);
 	}
-	int img_flags = IMG_INIT_JPG | IMG_INIT_PNG ; 
+	int img_flags = 0; // XXXJACK: don't think we need these: IMG_INIT_JPG | IMG_INIT_PNG ; 
 	if (IMG_Init(img_flags) != img_flags) {
 		fprintf (stderr, "Ambulant: IMG_Init failed: %s\n", SDL_GetError());
 		exit (-2);
