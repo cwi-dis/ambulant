@@ -48,8 +48,8 @@
 #endif
 //
 // Jack checked 4.4 with boost configure and it seems fine:
-// Kees: Ambulant builds fine with 4.6.1
-#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 6))
+// Jack: Ambulant builds fine with 4.7.3
+#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 7))
 #  if defined(AMBULANT_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else
