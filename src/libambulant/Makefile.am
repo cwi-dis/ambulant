@@ -116,7 +116,7 @@ endif
 
 if WITH_SDL2
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core) 
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(FFMPEG_LIBS) $(libambulant_core) 
 libambulant_sdl_la_DEPENDENCIES=libambulant.la
 sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
 libambulant_sdl_la_SOURCES = \

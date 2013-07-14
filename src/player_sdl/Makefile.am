@@ -36,7 +36,7 @@ endif
 
 if WITH_SDL2
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL2
-extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
+extra_sdl_LDADD=$(libambulant_sdl) $(FFMPEG_LIBS) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
