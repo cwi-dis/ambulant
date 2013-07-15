@@ -255,57 +255,74 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
     gulong timestamp = 0;
     GST_LOG_OBJECT (asrc, "");
 
-    if (asrc != NULL) {
-        // don' block during read
-//      if(!asrc->silent)fprintf(stderr,"%s: input_fd=%d\n", __PRETTY_FUNCTION__, asrc->input_fd);
-        GST_LOG_OBJECT (asrc, "input_fd=%" G_GUINT32_FORMAT, asrc->input_fd);
+    if (asrc == NULL) {
+    	GST_LOG_OBJECT(NULL, "asrc==NULL, should not happen");
+    	return;
+    }
+        
+	// don' block during read
+	GST_LOG_OBJECT (asrc, "input_fd=%" G_GUINT32_FORMAT, asrc->input_fd);
 	gboolean was_locked = asrc->locked;
 	if (was_locked) {
-	    asrc->locked = FALSE;
-	    GST_OBJECT_UNLOCK (asrc);
+		asrc->locked = FALSE;
+		GST_OBJECT_UNLOCK (asrc);
 	}
-	clearerr(stdin);
 
-	char buf[81]; buf[80] = 0;
-	guint W,H; gulong datasize, checksum;
-	if (fread(buf,1,80,asrc->input_stream) != 80 
-	    || sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
-		      &timestamp, &datasize, &W, &H, &checksum) != 5) {
-//	    if(!asrc->silent)fprintf(stderr,"%s return: eos detected fread header\n", __PRETTY_FUNCTION__);
-	    GST_DEBUG_OBJECT (asrc, "return: eos detected while reading frame header");
-	    asrc->eos = TRUE;
-	} else if (asrc->width == 0 && asrc->height == 0) { // first fread OK
-	    // first frame, remember width, heigh
-	    asrc->width = W;
-	    asrc->height = H;
-	} else if (asrc->width != W || asrc->height != H) { // fread OK, but W,H not OK
-	    // error: frame has different dimensions
-	    GST_ERROR_OBJECT (asrc, "Input size (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ") differs from (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ")", W, H, asrc->width, asrc->height);
-//	    fprintf (stderr, "Input size (%d,%d) differs from (%d, %d)\n", W, H, asrc->width, asrc->height);
-	    asrc->eos = TRUE;
-	}
-	if ( ! asrc->eos) {
-	    frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, checksum, NULL);
-	    size_t n_bytes = fread (frame->datapointer,1,frame->datasize,asrc->input_stream);
-	    if (n_bytes != frame->datasize) {
-// 	        if(!asrc->silent)fprintf(stderr,"%s return: eos detected fread returns n_bytes=%ld\n", __PRETTY_FUNCTION__, (long int) n_bytes);
-		GST_DEBUG_OBJECT (asrc, "return: eos detected fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
-
-                asrc->eos = TRUE;
-//	    } else {
-//              gulong cs = gst_ambulantsrc_checksum (asrc->databuffer,asrc->datasize);
-//              if (cs != asrc->checksum) {
-//                  fprintf (stderr, "gst_ambulantsrc_checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
-//              }
-	    }
-	}
-	if (was_locked) {
-	    GST_OBJECT_LOCK (asrc);
-	    asrc->locked = TRUE;
-	}
+    if(asrc->eos) {
+    	GST_LOG_OBJECT(asrc, "eos already true, bailing out");
+    	goto done;
     }
-    GST_LOG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT ", frame=%p timestamp=%" G_GUINT64_FORMAT, asrc ? asrc->eos : -1, frame, timestamp);
-//  if(!asrc->silent)fprintf(stderr,"%s return: eos=%d, frame=%p timestamp=%ld\n", __PRETTY_FUNCTION__, asrc ? asrc->eos : -1, frame, timestamp);
+    
+	char buf[81]; 
+	buf[80] = 0;
+	guint W,H; 
+	gulong datasize, checksum;
+
+	// First read the 80-byte header.
+	GST_DEBUG_OBJECT(asrc, "xxxjack about to do fread for header fd=%d", fileno(asrc->input_stream));
+	if (fread(buf,1,80,asrc->input_stream) != 80) {
+		GST_DEBUG_OBJECT (asrc, "end-of-file reading frame header fd=%d", fileno(asrc->input_stream));
+		asrc->eos = TRUE;
+		goto done;
+	}
+	GST_DEBUG_OBJECT(asrc, "xxxjack returned from fread for header");
+	if (sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n", &timestamp, &datasize, &W, &H, &checksum) != 5) {
+		GST_DEBUG_OBJECT (asrc, "scanf failed while reading frame header");
+		asrc->eos = TRUE;
+		goto done;
+	}
+	
+	// first frame, remember width, height
+	if (asrc->width == 0 && asrc->height == 0) {
+		asrc->width = W;
+		asrc->height = H;
+	}
+
+	// Check that frame has same dimensions as specified (or as the first frame read)
+	if (asrc->width != W || asrc->height != H) {
+		GST_ERROR_OBJECT (asrc, "Input size (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ") differs from (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ")", W, H, asrc->width, asrc->height);
+		asrc->eos = TRUE;
+		goto done;
+	}
+	
+	// Now read the frame data
+	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, checksum, NULL);
+	GST_DEBUG_OBJECT(asrc, "xxxjack about to do fread for data fd=%d", fileno(asrc->input_stream));
+	size_t n_bytes = fread (frame->datapointer,1,frame->datasize,asrc->input_stream);
+	GST_DEBUG_OBJECT(asrc, "xxxjack returned from fread for data fd=%d", fileno(asrc->input_stream));
+	if (n_bytes != frame->datasize) {
+		GST_DEBUG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
+		asrc->eos = TRUE;
+	}
+	
+done:
+	if (was_locked) {
+		GST_OBJECT_LOCK (asrc);
+		asrc->locked = TRUE;
+	}
+    
+    GST_LOG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT ", frame=%p timestamp=%" G_GUINT64_FORMAT, asrc->eos, frame, timestamp);
+
     return frame;
 }
 
