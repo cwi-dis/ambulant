@@ -529,6 +529,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 	if(sz == 0 && !m_src->end_of_file() ) {
 		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: no data, not eof?");
+		m_src->frame_processed(0);
 		// Attempt at bug fix for hanging video
 		goto out_of_memory;
 	}
@@ -612,6 +613,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			av_init_packet(&avpkt);
 			avpkt.data = ptr;
 			avpkt.size = sz;
+			got_pic = 0;
 			len = avcodec_decode_video2(m_con, frame, &got_pic, &avpkt);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
 			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
