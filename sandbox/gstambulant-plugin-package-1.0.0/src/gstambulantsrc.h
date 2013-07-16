@@ -106,8 +106,6 @@ struct _GstAmbulantSrc
 	 GQueue* queue;            // fifo queue where the read thread stores all frames read
 	//XXXX TBD remove
 	gboolean no_wait;         // do not wait for input: asynchronous, threaded implementation
-	int input_fd;
-	FILE* input_stream;
 };
 
 struct _GstAmbulantSrcClass 

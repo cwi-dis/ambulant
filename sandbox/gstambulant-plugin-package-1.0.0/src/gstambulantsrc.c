@@ -260,11 +260,10 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 	GST_LOG_OBJECT (asrc, "");
 
 	if (asrc == NULL) {
-		GST_LOG_OBJECT(NULL, "asrc==NULL, should not happen");
+		GST_ERROR_OBJECT(NULL, "asrc==NULL, should not happen");
 		return;
 	}
 	// don' block during read
-	GST_LOG_OBJECT (asrc, "input_fd=%" G_GUINT32_FORMAT, asrc->input_fd);
 	gboolean was_locked = asrc->locked;
 	if (was_locked) {
 		asrc->locked = FALSE;
@@ -280,15 +279,13 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 	gulong datasize, checksum;
 
 	// First read the 80-byte header.
-	GST_DEBUG_OBJECT(asrc, "xxxjack about to do fread for header fd=%d", fileno(asrc->input_stream));
-	if (fread(buf,1,80,asrc->input_stream) != 80) {
-		GST_DEBUG_OBJECT (asrc, "end-of-file reading frame header fd=%d", fileno(asrc->input_stream));
+	if (fread(buf,1,80,stdin) != 80) {
+		GST_LOG_OBJECT (asrc, "end-of-file reading frame header fd=%d", fileno(stdin));
 		asrc->eos = TRUE;
 		goto done;
 	}
-	GST_DEBUG_OBJECT(asrc, "xxxjack returned from fread for header");
 	if (sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n", &timestamp, &datasize, &W, &H, &checksum) != 5) {
-		GST_DEBUG_OBJECT (asrc, "scanf failed while reading frame header");
+		GST_ERROR_OBJECT (asrc, "scanf failed while reading frame header");
 		asrc->eos = TRUE;
 		goto done;
 	}
@@ -308,14 +305,11 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 	
 	// Now read the frame data
 	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, checksum, NULL);
-	GST_DEBUG_OBJECT(asrc, "xxxjack about to do fread for data fd=%d", fileno(asrc->input_stream));
-	size_t n_bytes = fread (frame->datapointer,1,frame->datasize,asrc->input_stream);
-	GST_DEBUG_OBJECT(asrc, "xxxjack returned from fread for data fd=%d", fileno(asrc->input_stream));
+	size_t n_bytes = fread (frame->datapointer,1,frame->datasize,stdin);
 	if (n_bytes != frame->datasize) {
-		GST_DEBUG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
+		GST_LOG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
 		asrc->eos = TRUE;
-	}
-	
+	}	
 done:
 	if (was_locked) {
 		GST_OBJECT_LOCK (asrc);
@@ -335,13 +329,12 @@ gulong gst_ambulantsrc_checksum (void* data, gulong size)
 	return cs;
 }
 
-
 void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 {
 	if (asrc == NULL) {
 		return;
 	}
-	GST_LOG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "");
 
 //	if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 	gboolean was_locked = asrc->locked;
@@ -422,8 +415,6 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	asrc->thread = NULL;
 	asrc->no_wait = FALSE;
 	asrc->exit_requested = FALSE;
-	asrc->input_fd = -1;
-	asrc->input_stream = NULL;
 }
 
 static void
@@ -529,13 +520,6 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 //	if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
-	int stdin_fd = fileno(stdin);
-	asrc->input_fd = dup (stdin_fd);
-	asrc->input_stream = fdopen (asrc->input_fd, "r");
-	if (stdin_fd == -1 || asrc->input_fd == -1 || asrc->input_stream == NULL) { //XXXX GST_DEBUG
-		fprintf (stderr, "Cannot 'dup' <stdin>: stdin_fd=%d, input_fd=%d, input_stream=%p, errno=%d\n", stdin_fd, asrc->input_fd, asrc->input_stream, errno);
-		asrc->eos = TRUE;
-	}
 	if (asrc->width != 0 && asrc->height != 0) {
 		asrc->no_wait = TRUE;
 	}
@@ -585,11 +569,6 @@ static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 		asrc->queue = NULL;
 	}
 	gst_ambulantsrc_delete_frame (asrc->frame);
-	if (close (asrc->input_fd) != 0) {
-		GST_ERROR_OBJECT (asrc, "close() failed%" G_GUINT32_FORMAT, errno);
-//		fprintf(stderr,"%s: close() failed%d\n", __PRETTY_FUNCTION__, errno);
-	}
-	asrc->input_fd = -1;
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
 
