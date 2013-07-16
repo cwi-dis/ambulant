@@ -336,7 +336,6 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 	}
 	GST_DEBUG_OBJECT (asrc, "");
 
-//	if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 	gboolean was_locked = asrc->locked;
 	if ( ! was_locked) {
 		asrc->locked = TRUE;
@@ -371,7 +370,7 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 void gst_ambulantsrc_init_frame(GstAmbulantSrc* asrc)
 {
 	GST_DEBUG_OBJECT (asrc, "");
-//	if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+
 	guint W = asrc->width, H = asrc->height;
 	glong datasize = W * H * 4;
 	unsigned char* data = (unsigned char*) g_malloc (datasize);
@@ -398,7 +397,8 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	GST_LOG_OBJECT (asrc, "");
 
 	GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
-//	if(tracing)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+
+	if(tracing)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 	asrc->silent = TRUE;
 	asrc->eos = FALSE;
 	asrc->initial_frame = FALSE;
@@ -423,7 +423,6 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 	if (asrc != NULL) {
 		GST_DEBUG_OBJECT (asrc, "");
 
-//		if ( ! asrc->silent) fprintf(stderr,"%s start\n", __PRETTY_FUNCTION__);
 		GST_OBJECT_LOCK (asrc);
 		asrc->locked = TRUE;
 		while ( ! asrc->eos && ! asrc->exit_requested) {
@@ -437,7 +436,6 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
 		GST_LOG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT " timestamp=%" G_GUINT32_FORMAT, asrc->eos, asrc->exit_requested);
-//		if ( ! asrc->silent) fprintf(stderr,"%s stop eos: %d exit_requested: %d\n", __PRETTY_FUNCTION__,asrc->eos,asrc->exit_requested);
 		g_thread_exit((gpointer) NULL);
 	}
 }
@@ -447,7 +445,6 @@ static void gst_ambulantsrc_set_property (GObject * object, guint prop_id,
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (object);
 	GST_DEBUG_OBJECT (asrc, "");
-//	if (tracing || ! asrc->silent) fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
 	switch (prop_id) {
 		case PROP_MIN_LATENCY:
@@ -480,7 +477,6 @@ gst_ambulantsrc_get_property (GObject * object, guint prop_id,
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (object);
 	GST_DEBUG_OBJECT (asrc, "");
-//	if(tracing || !asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
 
 	switch (prop_id) {
 		case PROP_MIN_LATENCY:
@@ -519,7 +515,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	gboolean rv = TRUE;
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
-//	if(!asrc->silent)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
+
 	if (asrc->width != 0 && asrc->height != 0) {
 		asrc->no_wait = TRUE;
 	}
@@ -552,8 +548,6 @@ static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (basesrc);
 	GST_DEBUG_OBJECT (asrc, "databuffer=0x%p", asrc->frame == NULL ? NULL : asrc->frame->databuffer);
-//	if(!asrc->silent)fprintf(stderr,"%s databuffer=0x%p\n", __PRETTY_FUNCTION__,
-//				asrc-> frame == NULL ? NULL : asrc->frame->databuffer);
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 	asrc->eos = TRUE;
@@ -582,8 +576,6 @@ static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc, GstCaps* filter) {
 	gchar* s = gst_caps_to_string(filter);
 	GST_DEBUG_OBJECT (asrc, "");
 
-//	if(!asrc->silent)fprintf(stderr,"%s=%s\n", __PRETTY_FUNCTION__,s);
-
 	g_free(s);
 	return asrc->caps;
 }
@@ -592,7 +584,6 @@ static gboolean gst_ambulantsrc_set_caps (GstBaseSrc* bsrc, GstCaps * caps)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
 	gchar* s = gst_caps_to_string(caps);
-	if(!asrc->silent)fprintf(stderr,"%s=%s\n", __PRETTY_FUNCTION__,s);
 
 	g_free(s);
 	return TRUE;
@@ -605,18 +596,11 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 	gboolean res = FALSE;
 	GST_DEBUG_OBJECT (asrc, "%s",	gst_query_type_get_name(GST_QUERY_TYPE(query)));
 
-//	if(!asrc->silent) {
-//		fprintf(stderr,"%s:%s\n", __PRETTY_FUNCTION__,
-//			gst_query_type_get_name(GST_QUERY_TYPE(query)));
-//	}
 	switch (GST_QUERY_TYPE (query)) {
 		case GST_QUERY_LATENCY: {
 			gst_query_set_latency (query, TRUE, asrc->min_latency, asrc->max_latency);
 			if(!asrc->silent) {
 				GST_DEBUG_OBJECT(asrc, "min-latency=%" G_GUINT64_FORMAT " max-latency=%" G_GUINT64_FORMAT,asrc->min_latency,asrc->max_latency);
-//	        		fprintf(stderr,"%s min-latency=%" G_GUINT64_FORMAT 
-//			        	" max-latency=%" G_GUINT64_FORMAT"\n",
-//					__PRETTY_FUNCTION__,asrc->min_latency,asrc->max_latency);
 			}
 			res = TRUE;
 			break;
@@ -633,10 +617,6 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 			}
 			GST_DEBUG_OBJECT(asrc, "%s caps_query: frame=%p W=%" G_GUINT32_FORMAT " H=%" G_GUINT32_FORMAT, 
 					 asrc->frame, asrc->frame->W, asrc->frame->H);
-//			if(!asrc->silent) {
-//				fprintf(stderr,"%s caps_query: frame=%p W=%d H=%d\n", 
-//				__PRETTY_FUNCTION__, asrc->frame, asrc->frame->W, asrc->frame->H);
-//			}
 			// answer to query: template caps + witdh, height from input data header
 			GstCaps* caps_org = asrc->caps;
 			GstCaps* caps_new = NULL;
@@ -656,12 +636,6 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 					caps_simplified = gst_caps_fixate (caps_simplified); //XXXX make depend on debug level
 					GST_DEBUG_OBJECT(asrc, "caps_new_str=%s", caps_simplified_str);
 					g_free (caps_simplified_str);
-//					if(!asrc->silent) {
-//						gchar* caps_simplified_str = gst_caps_to_string (caps_simplified);
-//						fprintf(stderr,"%s caps_new_str=%s\n",
-//							__PRETTY_FUNCTION__, caps_simplified_str);
-//						g_free (caps_simplified_str);
-//					}
 					gst_query_set_caps_result (query, caps_simplified);
 					gst_caps_unref (asrc->caps);
 					asrc->caps = caps_simplified;
@@ -706,8 +680,6 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 	}
 	if(!asrc->silent) {
 		GST_LOG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT "size=%" G_GUINT64_FORMAT "offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
-//      	fprintf(stderr, "%s: Timestamp=%ld ms size=%ld offset=%ld \n",
-//			__PRETTY_FUNCTION__, asrc->frame->timestamp, asrc->frame->datasize, offset);
 	}
 	GstBuffer* buf = asrc->frame->databuffer;
 	GST_BUFFER_DTS (buf) = asrc->frame->timestamp * 1000000; // millis to nanos
@@ -727,9 +699,6 @@ static void gst_ambulantsrc_get_times (GstBaseSrc *src, GstBuffer *buffer,
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC(src);
 	GST_LOG_OBJECT (asrc, "timestamp=%" G_GUINT64_FORMAT, GST_BUFFER_PTS (buffer));
 
-//	if(!asrc->silent) {
-//      	fprintf(stderr,"%s timestamp=%lu\n", __PRETTY_FUNCTION__, GST_BUFFER_PTS (buffer));
-//	}
 	if (start != NULL) {
 		*start = GST_BUFFER_PTS (buffer);
 	}
@@ -743,8 +712,6 @@ static gboolean gst_ambulantsrc_get_size (GstBaseSrc *src, guint64 *size)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC(src);
 	GST_LOG_OBJECT (asrc, "");
-
-//	if(asrc && asrc->frame && !asrc->silent) fprintf(stderr,"%s=%ld\n", __PRETTY_FUNCTION__, asrc->frame->datasize);
 
 	return 0; // size of datafile undetermined
 }
