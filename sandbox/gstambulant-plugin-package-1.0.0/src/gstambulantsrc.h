@@ -84,18 +84,14 @@ struct _GstAmbulantSrc
 	GstBaseSrc basesrc;       // gstreamer base class
 
 	// Properties
-	gboolean silent;          // no diagnostics
-	gboolean eos;             // end of stream
-	gboolean no_stdin;        // do not use stdin, produce only initial frame (w. width, height only)
-	// Latency
 	GstClockTime min_latency;
 	GstClockTime max_latency;
 
 	// Caps
 	GstCaps* caps;            // caps after (re)negotiation
 	GstAmbulantFrame* frame;  // current frame
-	guint width, height;      // default: undefined, when one is set, the other also should be set
-	                          // When both width and height are set, operation is threaded
+	guint width, height;      // default: undefined; when one is set, the other also should be set
+	                          // When both width and height are set, operation becomes threaded (asynchronous read)
 	gboolean initial_frame;   // default: false; true when both width,height are set:
 	                          // an initial white frame is used to fixate the capabilties
 
@@ -103,9 +99,8 @@ struct _GstAmbulantSrc
 	gboolean locked;          // true when the inherited (GObject) mutex is locked
 	GThread* thread;          // the reader thread
 	gboolean exit_requested;  // when set to true, terminates the reader thread
-	 GQueue* queue;            // fifo queue where the read thread stores all frames read
-	//XXXX TBD remove
-	gboolean no_wait;         // do not wait for input: asynchronous, threaded implementation
+	GQueue* queue;            // fifo queue where the read thread stores all frames read
+	gboolean eos;             // end of stream
 };
 
 struct _GstAmbulantSrcClass 

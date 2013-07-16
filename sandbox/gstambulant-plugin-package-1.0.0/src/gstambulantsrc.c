@@ -90,9 +90,7 @@ enum
 	PROP_MIN_LATENCY,
 	PROP_MAX_LATENCY,
 	PROP_WIDTH,
-	PROP_HEIGHT,
-	PROP_NO_STDIN,
-	PROP_SILENT
+	PROP_HEIGHT
 };
 
 /* the capabilities of the outputs.
@@ -154,22 +152,12 @@ static void gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 	
 	gobject_class->set_property = gst_ambulantsrc_set_property;
 	gobject_class->get_property = gst_ambulantsrc_get_property;
-	
-	g_object_class_install_property (gobject_class, PROP_SILENT,
-		g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
-				      FALSE, G_PARAM_READWRITE));
 	g_object_class_install_property (gobject_class, PROP_WIDTH,
 		g_param_spec_uint ("width", "Frame width", "width of initial frame in pixels",
 				   0, G_MAXINT32, DEFAULT_WIDTH, G_PARAM_READWRITE));
 	g_object_class_install_property (gobject_class, PROP_HEIGHT,
 		g_param_spec_uint ("height", "Frame height","height of initial frame in pixels",
 				   0, G_MAXINT32, DEFAULT_HEIGHT, G_PARAM_READWRITE));
-	g_object_class_install_property (gobject_class, PROP_NO_STDIN,
-		g_param_spec_boolean ("no-stdin", "No >stdin>", "Do not use stdin, produce only initial frame (valid with width, height only)",
-				      FALSE, G_PARAM_READWRITE));
-//	g_object_class_install_property (gobject_class, PROP_NO_WAIT,
-//		g_param_spec_boolean ("no-wait", "No wait", "Do not wait for input on stdin, always produce a frame",
-//				      FALSE, G_PARAM_READWRITE));
 	g_object_class_install_property (gobject_class, PROP_MIN_LATENCY,
 		g_param_spec_int64 ("min-latency", "Minimum latency time", "Minimum latency in microseconds",
 				    1, G_MAXINT64, DEFAULT_MIN_LATENCY, G_PARAM_READWRITE));
@@ -399,7 +387,6 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
 
 	if(tracing)fprintf(stderr,"%s\n", __PRETTY_FUNCTION__);
-	asrc->silent = TRUE;
 	asrc->eos = FALSE;
 	asrc->initial_frame = FALSE;
 	asrc->width = 0;
@@ -413,7 +400,6 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	gst_base_src_set_format (bsrc, GST_FORMAT_TIME);
 	asrc->caps = gst_static_pad_template_get_caps(&src_factory);
 	asrc->thread = NULL;
-	asrc->no_wait = FALSE;
 	asrc->exit_requested = FALSE;
 }
 
@@ -459,12 +445,6 @@ static void gst_ambulantsrc_set_property (GObject * object, guint prop_id,
 		case PROP_HEIGHT:
 			asrc->height = g_value_get_uint (value);
 			break;
-		case PROP_SILENT:
-			asrc->no_stdin = g_value_get_boolean (value);
-			break;
-		case PROP_NO_STDIN:
-			asrc->silent = g_value_get_boolean (value);
-			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
@@ -491,12 +471,6 @@ gst_ambulantsrc_get_property (GObject * object, guint prop_id,
 		case PROP_HEIGHT:
 			g_value_set_uint (value, asrc->height);
 			break;
-		case PROP_NO_STDIN:
-			g_value_set_boolean (value, asrc->no_stdin);
-			break;
-		case PROP_SILENT:
-			g_value_set_boolean (value, asrc->silent);
-			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
@@ -516,10 +490,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 
-	if (asrc->width != 0 && asrc->height != 0) {
-		asrc->no_wait = TRUE;
-	}
-	if (asrc->no_wait && asrc->thread == NULL) {
+	if (asrc->width != 0 && asrc->height != 0 && asrc->thread == NULL) {
 		asrc->queue = g_queue_new();
 		if (asrc->queue == NULL) {
 			asrc->eos = TRUE;
@@ -599,14 +570,12 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 	switch (GST_QUERY_TYPE (query)) {
 		case GST_QUERY_LATENCY: {
 			gst_query_set_latency (query, TRUE, asrc->min_latency, asrc->max_latency);
-			if(!asrc->silent) {
-				GST_DEBUG_OBJECT(asrc, "min-latency=%" G_GUINT64_FORMAT " max-latency=%" G_GUINT64_FORMAT,asrc->min_latency,asrc->max_latency);
-			}
+			GST_DEBUG_OBJECT(asrc, "min-latency=%" G_GUINT64_FORMAT " max-latency=%" G_GUINT64_FORMAT,asrc->min_latency,asrc->max_latency);
 			res = TRUE;
 			break;
 		}
 		case GST_QUERY_CAPS: {
-		if (asrc->no_wait) {
+			if (asrc->width != 0 && asrc->height != 0) {
 				if (asrc->thread) {
 					gst_ambulantsrc_init_frame(asrc);
 				} else break;
@@ -656,7 +625,7 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuffer ** buffer)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
-	GST_LOG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "");
 	
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
@@ -678,9 +647,7 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 		GST_OBJECT_UNLOCK (asrc);
 		return GST_FLOW_EOS; // end of stream
 	}
-	if(!asrc->silent) {
-		GST_LOG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT "size=%" G_GUINT64_FORMAT "offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
-	}
+	GST_DEBUG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT "size=%" G_GUINT64_FORMAT "offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
 	GstBuffer* buf = asrc->frame->databuffer;
 	GST_BUFFER_DTS (buf) = asrc->frame->timestamp * 1000000; // millis to nanos
 	GST_BUFFER_PTS (buf) = GST_BUFFER_DTS (buf);
