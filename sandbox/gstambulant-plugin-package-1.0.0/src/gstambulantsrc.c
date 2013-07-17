@@ -58,6 +58,7 @@
  * gst-launch-1.0 ambulantsrc ! videoconvert ! videoscale ! ximagesink < tests/input
  * ]|
  * </refsect2>
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -68,7 +69,9 @@
 #include <stdio.h>
 #include "gstambulantsrc.h"
 
-static gboolean tracing = FALSE; // turn on to trace static function calls (without object)
+static gboolean tracing = TRUE; //FALSE: turn on to trace function calls without object (e.g. static)
+// Turn on gstreamer debugging output e.g.: GST_DEBUG=ambulantsrc:6 gst-launch-1.0
+// We us level 5 (during start/stop) and level 6 (during frame processing and details during start/stop)
 GST_DEBUG_CATEGORY_STATIC (gst_ambulantsrc_debug);
 #define GST_CAT_DEFAULT gst_ambulantsrc_debug
 
@@ -197,14 +200,12 @@ static void gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 
 void gst_ambulantsrc_delete_frame (GstAmbulantFrame* frame) {
 	if (frame != NULL) {
-		if(tracing)fprintf(stderr,"%s databuffer=0x%p datapointer=0x%p\n", __PRETTY_FUNCTION__, frame->databuffer, frame->datapointer);
-		if (frame->databuffer != NULL) {
+		if(tracing)fprintf(stderr,"%s frame=%p databuffer=%p datapointer=%p\n", __PRETTY_FUNCTION__, frame, frame->databuffer, frame->datapointer);
+       		if (frame->databuffer != NULL) {
+			// frame->datapointer is destroyed as well
 			gst_buffer_unref (frame->databuffer);
-		} else {
-			if (frame->datapointer != NULL) {
-				g_free (frame->datapointer);
-			}
 		}
+		g_free (frame);
 	}
 }
 
@@ -236,7 +237,7 @@ GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, 
 	frame->datasize = datasize;
 	frame->timestamp = timestamp;
 	frame->checksum = checksum;
-	if(tracing)fprintf(stderr,"%s databuffer=0x%p datapointer=0x%p\n", __PRETTY_FUNCTION__, frame->databuffer, frame->datapointer);
+	if(tracing)fprintf(stderr,"%s frame=%p databuffer=%p datapointer=%p\n", __PRETTY_FUNCTION__, frame, frame->databuffer, frame->datapointer);
 	return frame;
 }
 
@@ -249,7 +250,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 
 	if (asrc == NULL) {
 		GST_ERROR_OBJECT(NULL, "asrc==NULL, should not happen");
-		return;
+		return NULL;
 	}
 	// don' block during read
 	gboolean was_locked = asrc->locked;
@@ -258,7 +259,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		GST_OBJECT_UNLOCK (asrc);
 	}
 	if(asrc->eos) {
-		GST_LOG_OBJECT(asrc, "eos already true, bailing out");
+		GST_DEBUG_OBJECT(asrc, "eos already true, bailing out");
 		goto done;
 	}
 	char buf[81]; 
@@ -268,7 +269,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 
 	// First read the 80-byte header.
 	if (fread(buf,1,80,stdin) != 80) {
-		GST_LOG_OBJECT (asrc, "end-of-file reading frame header fd=%d", fileno(stdin));
+		GST_DEBUG_OBJECT (asrc, "end-of-file reading frame header fd=%d", fileno(stdin));
 		asrc->eos = TRUE;
 		goto done;
 	}
@@ -276,26 +277,25 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		GST_ERROR_OBJECT (asrc, "scanf failed while reading frame header");
 		asrc->eos = TRUE;
 		goto done;
-	}
-	
-	// first frame, remember width, height
+	}	
+	// first frame: remember width, height if not specified as properties
 	if (asrc->width == 0 && asrc->height == 0) {
 		asrc->width = W;
 		asrc->height = H;
+		GST_LOG_OBJECT (asrc, "Input framesize (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ") registered", W, H);
+	} else {
+		// Check that frame has same dimensions as specified (or as the first frame read)
+		if (asrc->width != W || asrc->height != H) {
+			GST_ERROR_OBJECT (asrc, "Input frame size (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ") differs from properties (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ")", W, H, asrc->width, asrc->height);
+			asrc->eos = TRUE;
+			goto done;
+		}
 	}
-
-	// Check that frame has same dimensions as specified (or as the first frame read)
-	if (asrc->width != W || asrc->height != H) {
-		GST_ERROR_OBJECT (asrc, "Input size (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ") differs from (%" G_GUINT32_FORMAT ",%" G_GUINT32_FORMAT ")", W, H, asrc->width, asrc->height);
-		asrc->eos = TRUE;
-		goto done;
-	}
-	
 	// Now read the frame data
 	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, checksum, NULL);
 	size_t n_bytes = fread (frame->datapointer,1,frame->datasize,stdin);
 	if (n_bytes != frame->datasize) {
-		GST_LOG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
+		GST_DEBUG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
 		asrc->eos = TRUE;
 	}	
 done:
@@ -322,7 +322,7 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 	if (asrc == NULL) {
 		return;
 	}
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_LOG_OBJECT (asrc, "");
 
 	gboolean was_locked = asrc->locked;
 	if ( ! was_locked) {
@@ -382,7 +382,7 @@ void gst_ambulantsrc_init_frame(GstAmbulantSrc* asrc)
 static void
 gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 {
-	GST_LOG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "");
 
 	GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
 
@@ -419,9 +419,13 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 				g_queue_push_head (asrc->queue, frame);
 			}
 		}
+		if (asrc->queue != NULL) {
+			g_queue_free_full (asrc->queue, (GDestroyNotify) gst_ambulantsrc_delete_frame);
+			asrc->queue = NULL;
+		}
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
-		GST_LOG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT " timestamp=%" G_GUINT32_FORMAT, asrc->eos, asrc->exit_requested);
+		GST_DEBUG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT " timestamp=%" G_GUINT32_FORMAT, asrc->eos, asrc->exit_requested);
 		g_thread_exit((gpointer) NULL);
 	}
 }
@@ -430,7 +434,7 @@ static void gst_ambulantsrc_set_property (GObject * object, guint prop_id,
 					  const GValue * value, GParamSpec * pspec)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (object);
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "prop_id=%" G_GUINT32_FORMAT " value=%" G_GUINT32_FORMAT, prop_id, g_value_get_uint (value));
 
 	switch (prop_id) {
 		case PROP_MIN_LATENCY:
@@ -497,15 +501,17 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 			rv = FALSE;
 		}
 		if (rv) {
-		gst_ambulantsrc_init_frame (asrc); // XXXX wrong sprops
-		asrc->locked = FALSE;
-		GST_OBJECT_UNLOCK (asrc);
-		GThread* thread = g_thread_new ("reader", (GThreadFunc) &gst_ambulantsrc_run, asrc);
-		GST_OBJECT_LOCK (asrc);
-		asrc->thread = thread;
-		asrc->locked = TRUE;
-		// g_thread_new() aborts on failure
-		// XXXXX cond wait here until properly initialized
+		  if (asrc->frame == NULL) {
+				gst_ambulantsrc_init_frame (asrc); // should not happen
+			}
+			asrc->locked = FALSE;
+			GST_OBJECT_UNLOCK (asrc);
+			GThread* thread = g_thread_new ("reader", (GThreadFunc) &gst_ambulantsrc_run, asrc);
+			GST_OBJECT_LOCK (asrc);
+			asrc->thread = thread;
+			asrc->locked = TRUE;
+			// g_thread_new() aborts on failure
+			// XXXXX cond wait here until properly initialized
 		}
 	} else if (asrc->frame == NULL) {
 		asrc->frame = gst_ambulantsrc_read_frame (asrc);
@@ -540,14 +546,15 @@ static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 	return TRUE;
 }
 
-// The caps are fully known, simplified and fixated during the first call of gst_ambulantxrsc_query() after
+// The caps are fully known, simplified and fixated during the first call of gst_ambulantsrc_query() after
 // gst_ambulantsrc_init() was called, since then the actual With,Height of the video data are read.
 static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc, GstCaps* filter) {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
-	gchar* s = gst_caps_to_string(filter);
-	GST_DEBUG_OBJECT (asrc, "");
+	gchar* s = filter != NULL ? gst_caps_to_string(filter) : NULL;
+	GST_DEBUG_OBJECT (asrc, "caps=%p filter=%s", asrc->caps, s);
 
-	g_free(s);
+	if (s != NULL) g_free(s);
+	gst_caps_ref (asrc->caps);
 	return asrc->caps;
 }
 /* this function handles the link with other elements 
@@ -565,35 +572,34 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
 	gboolean res = FALSE;
-	GST_DEBUG_OBJECT (asrc, "%s",	gst_query_type_get_name(GST_QUERY_TYPE(query)));
+	GST_DEBUG_OBJECT (asrc, "%s", gst_query_type_get_name(GST_QUERY_TYPE(query)));
 
 	switch (GST_QUERY_TYPE (query)) {
 		case GST_QUERY_LATENCY: {
 			gst_query_set_latency (query, TRUE, asrc->min_latency, asrc->max_latency);
-			GST_DEBUG_OBJECT(asrc, "min-latency=%" G_GUINT64_FORMAT " max-latency=%" G_GUINT64_FORMAT,asrc->min_latency,asrc->max_latency);
+			GST_LOG_OBJECT(asrc, "min-latency=%" G_GUINT64_FORMAT " max-latency=%" G_GUINT64_FORMAT,asrc->min_latency,asrc->max_latency);
 			res = TRUE;
 			break;
 		}
 		case GST_QUERY_CAPS: {
-			if (asrc->width != 0 && asrc->height != 0) {
-				if (asrc->thread) {
-					gst_ambulantsrc_init_frame(asrc);
-				} else break;
+			if (asrc->width != 0 && asrc->height != 0 && asrc->frame == NULL) {
+				gst_ambulantsrc_init_frame(asrc);
 			} else {
 				if (asrc->frame == NULL) { // W,H not yet known
 					break;
 				}
 			}
-			GST_DEBUG_OBJECT(asrc, "%s caps_query: frame=%p W=%" G_GUINT32_FORMAT " H=%" G_GUINT32_FORMAT, 
-					 asrc->frame, asrc->frame->W, asrc->frame->H);
+			GST_LOG_OBJECT(asrc, "caps=%p frame=%p W=%" G_GUINT32_FORMAT " H=%" G_GUINT32_FORMAT, 
+				       asrc->caps, asrc->frame, asrc->frame->W, asrc->frame->H);
 			// answer to query: template caps + witdh, height from input data header
 			GstCaps* caps_org = asrc->caps;
 			GstCaps* caps_new = NULL;
 			if (caps_org != NULL && ! gst_caps_is_fixed (caps_org)) {
 				// convert original caps to string
 				gchar* caps_org_str = gst_caps_to_string (caps_org);
+				GST_LOG_OBJECT(asrc, "fixating: caps=%p %s", caps_org, caps_org_str);
 				// create new caps including actual width, height
-				gchar* caps_new_str = g_strdup_printf ("%s,width=(int)%d, height=(int)%d", 
+				gchar* caps_new_str = g_strdup_printf ("%s, width=(int)%d, height=(int)%d", 
 								       caps_org_str, asrc->frame->W, asrc->frame->H);
 				caps_new = gst_caps_from_string (caps_new_str);
 				g_free (caps_org_str);
@@ -603,11 +609,12 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 					GstCaps* caps_simplified = gst_caps_simplify (caps_new);
 					gchar* caps_simplified_str = gst_caps_to_string (caps_simplified);
 					caps_simplified = gst_caps_fixate (caps_simplified); //XXXX make depend on debug level
-					GST_DEBUG_OBJECT(asrc, "caps_new_str=%s", caps_simplified_str);
+					GST_LOG_OBJECT(asrc, "fixated: caps=%p %s", caps_simplified, caps_simplified_str);
 					g_free (caps_simplified_str);
 					gst_query_set_caps_result (query, caps_simplified);
 					gst_caps_unref (asrc->caps);
 					asrc->caps = caps_simplified;
+					gst_caps_ref (asrc->caps);
 					// now we know the size of each frame
 					GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
 					gst_base_src_set_blocksize (bsrc, asrc->frame->datasize);
@@ -625,7 +632,7 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuffer ** buffer)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_LOG_OBJECT (asrc, "");
 	
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
@@ -647,7 +654,7 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 		GST_OBJECT_UNLOCK (asrc);
 		return GST_FLOW_EOS; // end of stream
 	}
-	GST_DEBUG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT "size=%" G_GUINT64_FORMAT "offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
+	GST_LOG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT " size=%" G_GUINT64_FORMAT " offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
 	GstBuffer* buf = asrc->frame->databuffer;
 	GST_BUFFER_DTS (buf) = asrc->frame->timestamp * 1000000; // millis to nanos
 	GST_BUFFER_PTS (buf) = GST_BUFFER_DTS (buf);
