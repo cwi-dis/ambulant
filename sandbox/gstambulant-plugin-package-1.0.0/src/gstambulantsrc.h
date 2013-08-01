@@ -76,7 +76,6 @@ struct _GstAmbulantFrame {
 	gulong timestamp;
 	GstBuffer* databuffer;
 	void* datapointer;
-	gulong checksum;
 };
 
 struct _GstAmbulantSrc

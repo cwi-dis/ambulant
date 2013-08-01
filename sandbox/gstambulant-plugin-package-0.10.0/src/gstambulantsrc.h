@@ -78,7 +78,6 @@ struct _GstAmbulantSrc
   gulong datasize;
   gulong timestamp;
   gpointer databuffer;
-  gulong checksum;
 
   // Caps
   GstCaps* caps;

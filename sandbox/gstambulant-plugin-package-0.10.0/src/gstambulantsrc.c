@@ -143,22 +143,12 @@ void read_header(GstAmbulantSrc* asrc)
 
   if (asrc != NULL) {
     char buf[80];
+    char type[5];
     if (fread(buf,1,80,stdin) != 80 
-	|| sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n",
-		  &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H, &asrc->checksum) != 5) {
+	|| sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &asrc->timestamp, &asrc->datasize, &asrc->W, &asrc->H) != 5) {
       asrc->eos = TRUE;
     }
    }
-}
-
-gulong checksum (void* data, gulong size)
-{
-  gulong cs = 0;
-  guchar* dp = &((guchar*)data)[size];
-
-  while (dp > (guchar* )data) cs += *--dp;
-
-  return cs;
 }
 
 void read_buffer(GstAmbulantSrc* asrc)
@@ -179,11 +169,6 @@ void read_buffer(GstAmbulantSrc* asrc)
     if (n_bytes != asrc->datasize) {
       if (!asrc->silent)fprintf (stderr, "wanted: %ld, got: %ld\n", asrc->datasize, n_bytes);
       asrc->eos = TRUE;
-    } else {
-//      gulong cs = checksum (asrc->databuffer,asrc->datasize);
-//      if (cs != asrc->checksum) {
-//	fprintf (stderr, "checksum failed:  cs=%lx, asrc->checksum=%lx\n", cs, asrc->checksum);
-//      }
     }
   }
 }

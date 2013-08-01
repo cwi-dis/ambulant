@@ -14,6 +14,6 @@ get_input () {
 }
 
 echo "Showing video"
-get_input | $VALGRIND gst-launch-1.0 ambulantsrc $OPTIONS ! videoconvert ! videoscale ! ximagesink sync=false
+get_input | $VALGRIND gst-launch-1.0 $GSTOPTIONS ambulantsrc $OPTIONS ! videoconvert ! videoscale ! ximagesink sync=false
 
 

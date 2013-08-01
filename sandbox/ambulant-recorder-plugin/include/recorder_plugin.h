@@ -33,6 +33,7 @@
 #include <queue>
 #include "SDL.h"
 #include <stdio.h>
+#include <string.h>
 
 // This version only works with sdl_renderer and dumps BMP files for each video frame
 // When AMBULANT_RECORDER_PIPE is defined, each video frame is written on stdout
@@ -45,12 +46,12 @@ namespace common {
 class recorder_queue_element {
 
   public:
-  recorder_queue_element (void* data, size_t datasize, lib::timer::time_type timestamp, lib::size window_size, unsigned long int checksum) {
+  recorder_queue_element (void* data, size_t datasize, lib::timer::time_type timestamp, lib::size window_size, char type[4]) {
 		m_data = data;
 		m_datasize = datasize;
 		m_timestamp = timestamp;
 		m_window_size = window_size;
-		m_checksum = checksum;
+		strncpy(m_type, type, 4);
 	}
 	~recorder_queue_element() {
 	    free(m_data);
@@ -60,7 +61,7 @@ class recorder_queue_element {
 	size_t m_datasize;
 	lib::timer::time_type m_timestamp;
 	lib::size m_window_size;
-	unsigned long int m_checksum;
+	char m_type[4];
 };
 
 class recorder_writer : public BASE_THREAD {

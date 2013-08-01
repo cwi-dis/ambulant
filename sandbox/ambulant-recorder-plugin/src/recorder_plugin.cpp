@@ -146,9 +146,9 @@ recorder_plugin::new_video_data (const char* data, size_t datasize, lib::timer::
 		return;
 	}
 	if (m_pipe != NULL) {
-		unsigned long int checksum;
+		char type[4] = {'B','G','R','A' };
 		void* new_data = malloc (datasize); memcpy (new_data, data, datasize);
-		m_writer->push_data (new recorder_queue_element(new_data, datasize, documenttimestamp, m_window_size, checksum));
+		m_writer->push_data (new recorder_queue_element(new_data, datasize, documenttimestamp, m_window_size, type));
 	} else if (m_dumpflag) {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
@@ -234,7 +234,8 @@ recorder_writer::_write_data (recorder_queue_element* qe)
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p timestamp=%ld, (diff=%ld) data=0x%x", fun, this, qe->m_timestamp, qe->m_timestamp - s_old_timestamp, *(void**)qe->m_data); // enable for frame delay debugging
 	s_old_timestamp = qe->m_timestamp;
-	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8lu\nW: %5u\nH: %5u\nChksm: %.24lx\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h, qe->m_checksum) < 0) {
+// Header video format: "Type: 11 bytes, Time: 19, Size: 16, W: 9, H: 9. 16 free" total 80
+	if (fprintf(m_pipe, "Type: %4s\nTime: %.12lu\nSize: %.9lu\nW: %5u\nH: %5u\n%15c\n", qe->m_type, qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h, ' ') < 0) {
 		return -1;
 	}
 	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);

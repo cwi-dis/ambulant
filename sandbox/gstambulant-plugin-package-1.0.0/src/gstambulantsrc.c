@@ -209,7 +209,7 @@ void gst_ambulantsrc_delete_frame (GstAmbulantFrame* frame) {
 	}
 }
 
-GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, gulong timestamp, gulong checksum, gpointer data)
+GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, gulong timestamp, gpointer data)
 {
 	if (W == 0 || H == 0 || datasize == 0) {
 		return NULL;
@@ -236,7 +236,6 @@ GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, 
 	frame->H = H;
 	frame->datasize = datasize;
 	frame->timestamp = timestamp;
-	frame->checksum = checksum;
 	if(tracing)fprintf(stderr,"%s frame=%p databuffer=%p datapointer=%p\n", __PRETTY_FUNCTION__, frame, frame->databuffer, frame->datapointer);
 	return frame;
 }
@@ -263,9 +262,10 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		goto done;
 	}
 	char buf[81]; 
+	char type[5];
 	buf[80] = 0;
 	guint W,H; 
-	gulong datasize, checksum;
+	gulong datasize;
 
 	// First read the 80-byte header.
 	if (fread(buf,1,80,stdin) != 80) {
@@ -273,7 +273,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		asrc->eos = TRUE;
 		goto done;
 	}
-	if (sscanf(buf, "Time: %8lu\nSize: %8lu\nW: %5u\nH: %5u\nChksm: %24lx\n", &timestamp, &datasize, &W, &H, &checksum) != 5) {
+	if (sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &timestamp, &datasize, &W, &H) != 5) {
 		GST_ERROR_OBJECT (asrc, "scanf failed while reading frame header");
 		asrc->eos = TRUE;
 		goto done;
@@ -292,7 +292,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		}
 	}
 	// Now read the frame data
-	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, checksum, NULL);
+	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, NULL);
 	size_t n_bytes = fread (frame->datapointer,1,frame->datasize,stdin);
 	if (n_bytes != frame->datasize) {
 		GST_DEBUG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
@@ -305,16 +305,6 @@ done:
 	}
 	GST_LOG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT ", frame=%p timestamp=%" G_GUINT64_FORMAT, asrc->eos, frame, timestamp);
 	return frame;
-}
-
-gulong gst_ambulantsrc_checksum (void* data, gulong size)
-{
-	gulong cs = 0;
-	guchar* dp = &((guchar*)data)[size];
-
-	while (dp > (guchar* )data) cs += *--dp;
-
-	return cs;
 }
 
 void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
@@ -370,7 +360,7 @@ void gst_ambulantsrc_init_frame(GstAmbulantSrc* asrc)
 	while (i < datasize) {
 		data[i++] = 0x0FF;
 	}
-	asrc->frame = gst_ambulantsrc_new_frame (W,H,datasize,0,0,data);
+	asrc->frame = gst_ambulantsrc_new_frame (W,H,datasize,0,data);
 	asrc->initial_frame = TRUE;
 } 
 
