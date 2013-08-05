@@ -330,7 +330,8 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_outtransition(NULL),
 	m_transition_engine(NULL),
 	m_previous_clip_position(-1),
-    m_audio_clock(0)
+	m_recorder(NULL),
+	m_audio_clock(0)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_audio_renderer() -> 0x%x",	 this);
 	if (init() != 0)
@@ -352,8 +353,11 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
 		lib::logger::get_logger()->error(gettext("%s: audio format not supported"), url.get_url().c_str());
 		m_audio_src->stop();
-	m_audio_src->release();
-	m_audio_src = NULL;
+		m_audio_src->release();
+		m_audio_src = NULL;
+	}
+	if (factory->get_recorder_factory() != NULL) {
+		m_recorder = factory->get_recorder_factory()->new_recorder(net::pixel_unknown, lib::size(0,0));
 	}
 }
 
@@ -397,6 +401,10 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 			m_audio_src = resample_ds;
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: opened resample datasource !");
 		}
+		if (factory->get_recorder_factory() != NULL) {
+			m_recorder = factory->get_recorder_factory()->new_recorder(net::pixel_unknown, lib::size(0,0));
+		}
+
 	}
 }
 
@@ -599,6 +607,10 @@ gui::sdl::sdl_audio_renderer::_get_data(size_t bytes_wanted, Uint8 **ptr, size_t
 				m_volumes[1] = (float)rightlevel;
 			}
 		}
+	}
+	if (m_recorder) {
+		net::timestamp_t timestamp = m_event_processor->get_timer()->elapsed();
+		m_recorder->new_audio_data((const char*) *ptr, (size_t) rv, timestamp);
 	}
 	m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data(0x%x) return rv=%d, m_volcount=%d, m_volumes=[%f,%f]",this,rv,m_volcount,m_volcount>=1?m_volumes[0]:1,m_volcount==2?m_volumes[1]:m_volcount==1?0:1);
