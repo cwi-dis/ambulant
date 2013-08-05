@@ -46,7 +46,7 @@ namespace common {
 class recorder_queue_element {
 
   public:
-  recorder_queue_element (void* data, size_t datasize, lib::timer::time_type timestamp, lib::size window_size, char type[4]) {
+  recorder_queue_element (void* data, size_t datasize, lib::timer::time_type timestamp, lib::size window_size, const char* type) {
 		m_data = data;
 		m_datasize = datasize;
 		m_timestamp = timestamp;
@@ -92,9 +92,11 @@ public:
 	/// Record new video data with timestamp (ms) in document time
 	void new_video_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp);
 	/// Record new audio data with timestamp (ms) in document time
-	void new_audio_data(const char* data, size_t datasize, lib::timer::timer::time_type _documentimestamp)  { assert(0); }
+	void new_audio_data(const char* data, size_t datasize, lib::timer::timer::time_type _documentimestamp);
 
 private:
+	void new_data(const char* data, size_t datasize, lib::timer::timer::time_type _documentimestamp, const char* type);
+
 	SDL_Surface* m_surface;
 	Uint32 m_amask, m_rmask, m_gmask, m_bmask;
 	bool m_dumpflag;

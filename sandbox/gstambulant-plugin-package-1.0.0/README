@@ -10,4 +10,7 @@ After "./configure;make;sudo make intall", this input  will displayed by:
 make check
 
 which sets: export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0 # change this appropriately when a --prefix 'configure' option value is used
-and gst-launch-1.0 $GSTOPTIONS ambulantsrc ! videoconvert ! videoscale ! ximagesink < tests/input
+and executes gst-launch-1.0 $GSTOPTIONS ambulantsrc ! videoconvert ! videoscale ! ximagesink < tests/input
+
+There is initial support for audio (currently disabling video) with ./configure CFLAGS=-DWITH_AUDIO, then make check executes:
+gst-launch-1.0 ambulantsrc ! audiorate ! audioconvert  ! audioresample ! alsasink sync=false < tests/Welcome-audio-raw

@@ -69,7 +69,7 @@
 #include <stdio.h>
 #include "gstambulantsrc.h"
 
-static gboolean tracing = TRUE; //FALSE: turn on to trace function calls without object (e.g. static)
+static gboolean tracing = FALSE; //TRUE: turn on to trace function calls without object (e.g. static)
 // Turn on gstreamer debugging output e.g.: GST_DEBUG=ambulantsrc:6 gst-launch-1.0
 // We us level 5 (during start/stop) and level 6 (during frame processing and details during start/stop)
 GST_DEBUG_CATEGORY_STATIC (gst_ambulantsrc_debug);
@@ -103,12 +103,17 @@ enum
 static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
 	GST_PAD_SRC,
 	GST_PAD_ALWAYS,
+#ifndef WITH_AUDIO
 // The caps are compatible with the data produced by anbulant_recorder_plugin.
 // 'width' and 'height' are taken the header preceding each frame, or should match,
 // if they are specified as properties. In the latter case, all data is read asynchronous.
 // When (if ever) the window size may change, possibly the plugin need to be adapted to 
 // implement caps renogetiation using the new width and height.
 	GST_STATIC_CAPS ("video/x-raw,format=BGRA,width=(int) [ 1, 2147483647 ],height=(int) [ 1, 2147483647 ],bpp=32,depth=32,framerate=30/1,endianness=4321,pixel-aspect-ratio=1/1,green_mask=16711680,red_mask=65280;")
+#else// WITH_AUDIO
+	GST_STATIC_CAPS ("audio/x-raw,format=S16LE,rate=44100,channels=2,layout=interleaved;")
+//	GST_STATIC_CAPS_ANY
+#endif
 	);
 
 #define gst_ambulantsrc_parent_class parent_class
@@ -211,7 +216,8 @@ void gst_ambulantsrc_delete_frame (GstAmbulantFrame* frame) {
 
 GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, gulong timestamp, gpointer data)
 {
-	if (W == 0 || H == 0 || datasize == 0) {
+//	if (W == 0 || H == 0 || datasize == 0) {
+	if (datasize == 0) {
 		return NULL;
 	}
 	GstAmbulantFrame* frame = (GstAmbulantFrame*) g_malloc (sizeof(GstAmbulantFrame));
@@ -293,6 +299,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 	}
 	// Now read the frame data
 	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, NULL);
+	if (frame == NULL) return frame;
 	size_t n_bytes = fread (frame->datapointer,1,frame->datasize,stdin);
 	if (n_bytes != frame->datasize) {
 		GST_DEBUG_OBJECT (asrc, "return: eos detected: fread returns n_bytes=%" G_GUINT64_FORMAT, n_bytes);
