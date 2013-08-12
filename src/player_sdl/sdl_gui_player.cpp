@@ -50,8 +50,8 @@
 #include "ambulant/lib/xerces_parser.h"
 #endif
 
-#include "sdl_gui.h"
 #include "sdl_gui_player.h"
+#include "sdl_gui.h"
 
 using namespace ambulant;
 using namespace gui::sdl;
@@ -87,7 +87,8 @@ open_web_browser(const std::string &href)
 sdl_gui_player::sdl_gui_player(sdl_gui* gui)
 :	m_gui(gui),
 	m_logger(NULL),
-	m_sdl_window(NULL),
+	m_ambulant_sdl_window(NULL),
+	m_sdl_ambulant_window(NULL),
 	m_running(false)
 {
 	gui_player();
@@ -132,7 +133,7 @@ sdl_gui_player::~sdl_gui_player()
 		delete m_doc;
 		m_doc = NULL;
 	}
-	delete m_sdl_window;
+	delete m_sdl_ambulant_window;
 //	delete m_window_factory;
 }
 
@@ -170,10 +171,25 @@ sdl_gui_player::init_datasource_factory()
 
 void
 sdl_gui_player::redraw() {
-	if (m_sdl_window != NULL) {
-		ambulant_sdl_window* sdl_window = m_sdl_window->get_ambulant_sdl_window();
+	if (m_sdl_ambulant_window != NULL) {
+		ambulant_sdl_window* sdl_window = m_sdl_ambulant_window->get_ambulant_sdl_window();
 		if (sdl_window != NULL) {
 			sdl_window->redraw(m_rect);
+		}
+	}
+}
+
+void
+sdl_gui_player::redraw(void* winp, void* rp) {
+	if (winp != NULL) {
+		ambulant_sdl_window* asw = (ambulant_sdl_window*) winp;
+		if (m_ambulant_sdl_window == NULL) {
+			m_ambulant_sdl_window = asw;
+			m_sdl_ambulant_window = asw->get_sdl_ambulant_window();
+		}
+		rect r = *(rect*) rp;
+		if (asw != NULL) {
+			asw->redraw(r);
 		}
 	}
 }
@@ -211,8 +227,8 @@ sdl_gui_player::create_player(const char* filename) {
 void
 sdl_gui_player::init_window_factory()
 {
-//X	m_sdl_window = new sdl_ambulant_window(m_gui->get_document_container()); // delayed for correct size
-	common::window_factory* sdl_wf = gui::sdl::create_sdl_window_factory(m_sdl_window, this);
+//X	m_sdl_ambulant_window = new sdl_ambulant_window(m_gui->get_document_container()); // delayed for correct size
+	common::window_factory* sdl_wf = gui::sdl::create_sdl_window_factory(m_sdl_ambulant_window, this);
 	set_window_factory(sdl_wf);
 }
 
@@ -256,6 +272,21 @@ sdl_gui_player::init_parser_factory()
 	pf->add_factory(new lib::xerces_factory());
 	AM_DBG m_logger->debug("player::player: add xerces_factory");
 #endif
+}
+
+bool
+sdl_gui_player::user_event(const point& p, int what) {
+	bool rv = false;
+	if (m_ambulant_sdl_window != NULL) {
+		rv = m_ambulant_sdl_window->user_event(p, what);
+	}
+	return rv;
+}
+
+bool
+sdl_gui_player::user_event(SDL_Point& p, int what) {
+	point am_p(p.x, p.y);
+	return user_event(am_p, what);
 }
 
 #ifdef JNK
@@ -387,7 +418,7 @@ char* sdl_gui_player::convert_data_to_image(const guchar* data, gsize size){
 
 ambulant::common::gui_screen*
 sdl_gui_player::get_gui_screen(){
-	return m_sdl_window;
+	return m_sdl_ambulant_window;
 }
 #endif//JNK
 
