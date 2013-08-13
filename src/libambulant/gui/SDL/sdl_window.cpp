@@ -498,7 +498,7 @@ sdl_ambulant_window::~sdl_ambulant_window()
 			sdl_ambulant_window::s_id_sdl_ambulant_window_map.erase(it);
 		}
 	}
-	if (m_sdl_screen_renderer != NULL) {
+	if (m_sdl_renderer != NULL) {
 		SDL_DestroyRenderer(m_sdl_renderer);
 	}
 	if (m_sdl_screen_surface != NULL) {

@@ -95,7 +95,9 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 	m_toplevelcontainer(NULL),
 	m_guicontainer(NULL),
 	m_documentcontainer(NULL),
-	m_window(NULL)
+	m_window(NULL),
+	m_arrow_cursor(NULL),
+	m_hand_cursor(NULL)
 //JNK	m_renderer(NULL),
 //JNK	m_texture(NULL)
 //TBD	menubar(NULL),
@@ -149,12 +151,21 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 #endif//JNK
 	m_toplevelcontainer = m_documentcontainer = m_window;
 	m_gui_player = new sdl_gui_player(this);
+	m_arrow_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+	m_hand_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_HAND);
+	SDL_SetCursor (m_arrow_cursor);
 }
 
 sdl_gui::~sdl_gui() {
 
 	// remove all dynamic data in reverse order as they are constructed
 	// m_programfilename - not dynamic
+	if (m_arrow_cursor != NULL) {
+//		SDL_FreeCursor (m_arrow_cursor);
+	}
+	if (m_hand_cursor != NULL) {
+//		SDL_FreeCursor (m_hand_cursor);
+	}
 	if (m_smilfilename != NULL) {
 		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
@@ -759,7 +770,13 @@ sdl_gui::sdl_loop() {
 				SDL_Point p;
 				p.x = event.motion.x;
 				p.y = event.motion.y;
+				m_gui_player->before_mousemove(0);
 				m_gui_player->user_event(p, 1);
+				if (m_gui_player->after_mousemove()) {
+					SDL_SetCursor (m_hand_cursor);
+				} else {
+					SDL_SetCursor (m_arrow_cursor);
+				}	
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN: // mouse button pressed
