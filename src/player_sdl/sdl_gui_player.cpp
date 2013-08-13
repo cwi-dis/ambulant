@@ -133,7 +133,6 @@ sdl_gui_player::~sdl_gui_player()
 		delete m_doc;
 		m_doc = NULL;
 	}
-	delete m_sdl_ambulant_window;
 //	delete m_window_factory;
 }
 
