@@ -539,6 +539,9 @@ ffmpeg_demux::run()
 					pts = pkt->pts;
 				}
 
+#if 0
+				// 15-Jul-2013 Jack disabled this again. For h264 over RTP we need to reassemble data manually based on timestamp
+				// and for this the timestamps fiddling here messes things up.
 				// 17-feb-2010 To fix the chopping audio playback in vobis/ogg
 				// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
 				// sometime, the pts and dts got by ffmpeg is not valid any more (which equal to AV_NOPTS_VALUE)
@@ -559,7 +562,6 @@ ffmpeg_demux::run()
 
 					last_valid_audio_pts++;
 					pts = last_valid_audio_pts;
-
 #if RESYNC_TO_INITIAL_AUDIO_PTS
 					// We seem to be getting values with a non-zero epoch sometimes (?)
 					// Remember initial audio pts, and resync everything to that.
@@ -578,6 +580,7 @@ ffmpeg_demux::run()
 					// assert(pts >= 0);
 #endif // RESYNC_TO_INITIAL_AUDIO_PTS
 				}
+#endif // 0
 			}
 			// We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
 			// we have already sent one earlier.
