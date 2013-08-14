@@ -26,6 +26,8 @@
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/datasource.h"
 
+#define XXXJACK_COMBINE_HACK 1
+
 #include <queue>
 
 struct video_frame {
@@ -164,6 +166,11 @@ class demux_video_datasource:
 	//FILE *m_file;
 	long long int m_frame_nr;
     bool m_is_live;
+#ifdef XXXJACK_COMBINE_HACK
+	timestamp_t m_combinehack_pts;
+	uint8_t *m_combinehack_buf;
+	size_t m_combinehack_buf_size;
+#endif
 };
 
 

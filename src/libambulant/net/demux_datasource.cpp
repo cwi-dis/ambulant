@@ -373,6 +373,12 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 	m_audio_src(NULL),
 	m_frame_nr(0),
     m_is_live(false)
+#ifdef XXXJACK_COMBINE_HACK
+	, m_combinehack_pts(-1)
+	, m_combinehack_buf(NULL)
+	, m_combinehack_buf_size(0)
+#endif
+	
 {
 	assert(m_thread);
 	m_thread->add_datasink(this, stream_index);
@@ -591,6 +597,36 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 		return false;
 	}
 	if(sz > 0) {
+#ifdef XXXJACK_COMBINE_HACK
+		// Combine all data with the same timestamp
+		if (pts == m_combinehack_pts) {
+			// Store this packet at the end of the previous packet, or alloc a new one
+			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): pts=%d, adding %d bytes to %d already there\n", pts, sz, m_combinehack_buf_size) ;
+			assert (m_combinehack_buf != NULL);
+			m_combinehack_buf = (uint8_t*)realloc(m_combinehack_buf, m_combinehack_buf_size + sz);
+			assert(m_combinehack_buf);
+			memcpy(m_combinehack_buf + m_combinehack_buf_size, inbuf, sz);
+			m_combinehack_buf_size += sz;
+			m_lock.leave();
+			return true;
+		}
+		// New timestamp. Store, and pass old data on to the decoder.
+		uint8_t *oldbuf = m_combinehack_buf;
+		size_t oldsize = m_combinehack_buf_size;
+		timestamp_t oldpts = m_combinehack_pts;
+
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): pts=%d, storing %d bytes\n", pts, sz);
+		m_combinehack_buf = (uint8_t*)malloc(sz);
+		assert(m_combinehack_buf);
+		memcpy(m_combinehack_buf, inbuf, sz);
+		m_combinehack_buf_size = sz;
+		m_combinehack_pts = pts;
+
+		inbuf = oldbuf;
+		sz = oldsize;
+		pts = oldpts;
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): oldpts=%d, forwarding %d bytes\n", pts, sz) ;
+#endif	
 		//m_frame_nr++;
 		// Of all obfuscated interfaces in ffmpeg this is probably the worst: all data passed to avcodec_decode_video
 		// (and possibly others) needs to be padded out with 8 (currently) zero bytes.
@@ -603,12 +639,16 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 		video_frame vframe;
 		vframe.data = frame_data;
 		vframe.size = sz;
-		m_frames.push(ts_frame_pair(pts, vframe));
+		ts_frame_pair mypair(pts, vframe);
+		m_frames.push(mypair);
+#ifdef XXXJACK_COMBINE_HACK
+		free(oldbuf);
+#endif
 	}
 
 	if ( m_frames.size() || _end_of_file()	) {
 		if ( m_client_callback && m_event_processor) {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
+			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d, front size=%d)", m_src_end_of_file, m_frames.front().second.size);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
