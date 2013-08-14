@@ -77,7 +77,7 @@ class sdl_gui_player :
 
 	bool is_open() const { return m_player != NULL; }
 
-	void show_file(const ambulant::net::url&) {} //TBD
+	void show_file(const ambulant::net::url&);
 	void close(common::player *p) {} //TBD
 //TBD	void done(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL) {} //TBD

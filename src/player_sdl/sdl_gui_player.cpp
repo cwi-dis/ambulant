@@ -288,6 +288,13 @@ sdl_gui_player::user_event(SDL_Point& p, int what) {
 	return user_event(am_p, what);
 }
 
+void
+sdl_gui_player::show_file(const net::url &url)
+{
+	open_web_browser(url.get_url());
+}
+
+
 #ifdef JNK
 
 ambulant::common::player*
@@ -298,12 +305,6 @@ sdl_gui_player::create_player(const char* filename) {
 	player->initialize();
 
 	return player;
-}
-
-void
-sdl_gui_player::show_file(const net::url &url)
-{
-	open_web_browser(url.get_url());
 }
 
 void
