@@ -89,6 +89,8 @@ class sdl_gui {
 	SDL_Window* m_documentcontainer; // The drawable area
 	// SDL interface
 	SDL_Window* m_window;	// the top-level window, containing all visuals
+	SDL_Cursor* m_arrow_cursor;
+	SDL_Cursor* m_hand_cursor;
 /* JNK
 	SDL_Renderer* m_renderer;// its associated 2D rendering context
 	SDL_Surface* m_surface;	// a (software) pixel destination

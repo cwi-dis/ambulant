@@ -128,6 +128,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	smil2::audio_transition_engine* m_transition_engine;
 	net::timestamp_t m_previous_clip_position;
 	lib::timer::time_type m_audio_clock;
+	common::recorder* m_recorder;
 	// class methods and attributes:
 	static int init();
 	static void register_renderer(sdl_audio_renderer *rnd);

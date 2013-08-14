@@ -77,7 +77,7 @@ class sdl_gui_player :
 
 	bool is_open() const { return m_player != NULL; }
 
-	void show_file(const ambulant::net::url&) {} //TBD
+	void show_file(const ambulant::net::url&);
 	void close(common::player *p) {} //TBD
 //TBD	void done(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL) {} //TBD
@@ -86,7 +86,9 @@ class sdl_gui_player :
 //TBD	ambulant::common::gui_screen *get_gui_screen();
 //	char* convert_data_to_image(const guchar* m_data, gsize size);
 	void redraw();
+	void redraw(void* /*ambulant_sdl_window* */, void* /*ambulant::lib::rect* */);
 	SDL_Window* get_window() { return m_gui->get_window(); }
+	bool user_event (SDL_Point &p, int what = 0);
 //JNK	SDL_Renderer* get_renderer() { return m_gui->get_renderer(); }
 //JNK	SDL_Surface* get_surface() { return m_gui->get_surface(); }
   private:
@@ -100,6 +102,7 @@ class sdl_gui_player :
 	std::stack<frame*> m_frames;
 #endif
 	ambulant::common::player* create_player(const char* filename);
+	bool user_event (const point &p, int what = 0);
 	// top level drawing window
 	void create_top_window ();
 	lib::point m_origin;
@@ -109,6 +112,7 @@ class sdl_gui_player :
 	sdl_gui *m_gui;
 	lib::logger *m_logger;
 	bool m_running;
-	ambulant::gui::sdl::sdl_ambulant_window *m_sdl_window;
+	ambulant::gui::sdl::sdl_ambulant_window *m_sdl_ambulant_window;
+	ambulant::gui::sdl::ambulant_sdl_window *m_ambulant_sdl_window;
 };
 #endif/*__SDL_PLAYER_H__*/

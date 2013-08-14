@@ -260,7 +260,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// sdl_ambulant_window maintains 2 mappings:
 	// - s_window_renderer_map: to find a SDL_Renderer* given a SDL_Window* (for drawing) 
 	// - s_id_sdl_ambulant_window_map: to find a sdl_ambulant_window* given a window_id
-	static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map; //XX is this really needed ????
+	//XX static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map; //XX is this really needed ????
 	static std::map<int, sdl_ambulant_window*> s_id_sdl_ambulant_window_map;
 
 	std::stack<SDL_Surface*> m_transition_surfaces;

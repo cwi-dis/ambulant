@@ -95,7 +95,9 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 	m_toplevelcontainer(NULL),
 	m_guicontainer(NULL),
 	m_documentcontainer(NULL),
-	m_window(NULL)
+	m_window(NULL),
+	m_arrow_cursor(NULL),
+	m_hand_cursor(NULL)
 //JNK	m_renderer(NULL),
 //JNK	m_texture(NULL)
 //TBD	menubar(NULL),
@@ -149,12 +151,21 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 #endif//JNK
 	m_toplevelcontainer = m_documentcontainer = m_window;
 	m_gui_player = new sdl_gui_player(this);
+	m_arrow_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+	m_hand_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_HAND);
+	SDL_SetCursor (m_arrow_cursor);
 }
 
 sdl_gui::~sdl_gui() {
 
 	// remove all dynamic data in reverse order as they are constructed
 	// m_programfilename - not dynamic
+	if (m_arrow_cursor != NULL) {
+//		SDL_FreeCursor (m_arrow_cursor);
+	}
+	if (m_hand_cursor != NULL) {
+//		SDL_FreeCursor (m_hand_cursor);
+	}
 	if (m_smilfilename != NULL) {
 		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
@@ -710,8 +721,6 @@ void
 sdl_gui::sdl_loop() {
 	bool busy = true;
 	SDL_Event event;
-	ambulant::gui::sdl::ambulant_sdl_window* asw;
-	ambulant::gui::sdl::sdl_ambulant_window* saw;
 
 	while (busy) {
 		if (SDL_WaitEvent(&event) == 0) {
@@ -725,25 +734,14 @@ sdl_gui::sdl_loop() {
 		case SDL_USEREVENT:
 			AM_DBG lib::logger::get_logger()->debug("%s SDL_USEREVENT: code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
 			if (event.user.code == 317107) {
-				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
-				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
-				saw = asw == NULL ? NULL : asw->get_sdl_ambulant_window();
-				if (saw != NULL) {
-					SDL_Surface* surf = saw->get_sdl_surface();
-					if (surf != NULL) {
-						SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
-						bool ok = SDL_SetClipRect(saw->get_sdl_surface(), &sdl_rect);
-						if ( ! ok) {
-							lib::logger::get_logger()->error("%s SDL_SetClipRect: %s",__PRETTY_FUNCTION__, SDL_GetError());
-						}
-						assert(ok);
-						asw->redraw(*redraw_rectp);
-					}
+				if (m_gui_player != NULL) {
+					m_gui_player->redraw(event.user.data1, event.user.data2);
 				}
-				free(redraw_rectp);
-			}
+ 			}
 			break;
 		case SDL_WINDOWEVENT:
+			ambulant::gui::sdl::ambulant_sdl_window* asw; //XX no refs to 'ambulant' 
+			ambulant::gui::sdl::sdl_ambulant_window* saw;
 			saw = ambulant::gui::sdl::sdl_ambulant_window::get_sdl_ambulant_window (event.window.windowID);
 			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
 			if (saw != NULL && (asw = saw->get_ambulant_sdl_window()) != NULL) {
@@ -753,7 +751,7 @@ sdl_gui::sdl_loop() {
 					saw->set_evp(player->get_evp()); // for timestamps
 					saw->get_ambulant_sdl_window()->set_gui_player (m_gui_player);
 				}
-				ambulant::lib::rect r;
+				ambulant::lib::rect r; //XX no refs to 'ambulant' 
 				switch ( event.window.event ) {
 				case  SDL_WINDOWEVENT_SHOWN:
 				case  SDL_WINDOWEVENT_EXPOSED:
@@ -765,6 +763,33 @@ sdl_gui::sdl_loop() {
 					break;
 				}
 			}
+			break;
+		case SDL_MOUSEMOTION: // mouse moved
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_MOUSEMOTION: type=%d windowID=%d which=%d state=%d x=%d y=%d relx=%d rely=%d",__PRETTY_FUNCTION__, event.motion.type,  event.motion.windowID, event.motion.which, event.motion.state,event.motion.x,event.motion.y,event.motion.xrel,event.motion.yrel);
+			if (m_gui_player != NULL) {
+				SDL_Point p;
+				p.x = event.motion.x;
+				p.y = event.motion.y;
+				m_gui_player->before_mousemove(0);
+				m_gui_player->user_event(p, 1);
+				if (m_gui_player->after_mousemove()) {
+					SDL_SetCursor (m_hand_cursor);
+				} else {
+					SDL_SetCursor (m_arrow_cursor);
+				}	
+			}
+			break;
+		case SDL_MOUSEBUTTONDOWN: // mouse button pressed
+		case SDL_MOUSEBUTTONUP: // mouse button released
+			AM_DBG lib::logger::get_logger()->debug("%s %s: type=%d windowID=%d which=%d button=%d, state=%d, x=%d y=%d",__PRETTY_FUNCTION__, event.button.state ? "SDL_MOUSEBUTTONDOWN":"SDL_MOUSEBUTTONUP", event.button.type,  event.button.windowID, event.button.which, event.button.button, event.button.state ,event.button.x,event.button.y);
+			if (m_gui_player != NULL && event.button.state == 0) { // button released
+				SDL_Point p;
+				p.x = event.motion.x;
+				p.y = event.motion.y;
+				m_gui_player->user_event(p, 0);
+			}
+			break;
+		case SDL_MOUSEWHEEL: // mouse wheel motion
 			break;
 		default:
 			break;

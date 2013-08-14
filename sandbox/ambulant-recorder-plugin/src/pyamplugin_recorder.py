@@ -94,7 +94,9 @@ class DummyRecorder(ambulant.recorder):
     def write_frame(self, timestamp, datasize, data):
         if self.eos or self.pipe == None:
             return
-        s = "Time: %08lu\nSize: %08lu\nW: %#5u\nH: %#5u\nChksm: %024lx\n" % (timestamp, datasize, self.size[0], self.size[1], 0)
+# Header video format: "Type: 11 bytes, Time: 19, Size: 16, W: 9, H: 9. 16 free" total 80
+# In C: fprintf(m_pipe, "Type: %4s\nTime: %.12lu\nSize: %.9lu\nW: %5u\nH: %5u\n%15c\n"
+        s = "Type: %s\nTime: %012lu\nSize: %09lu\nW: %#5u\nH: %#5u\n%15s\n" % ("BGRA",timestamp, datasize, self.size[0], self.size[1], " ")
 #       s = "%#8lu\n" % timestamp
 #       print "pyamplugin_recorder.DummyRecorder.write_frame() s=%s" % s
 #       print "pipe=%r " % self.pipe

@@ -463,7 +463,6 @@ ambulant_sdl_window::delete_ambulant_surface()
 // then the ugly dependence on the parent window couls also be removed
 int sdl_ambulant_window::s_windows = 0;
 lib::critical_section sdl_ambulant_window::s_lock;
-std::map<SDL_Window*, SDL_Renderer*>  sdl_ambulant_window::s_window_renderer_map;
 std::map<int, sdl_ambulant_window*>  sdl_ambulant_window::s_id_sdl_ambulant_window_map;
 
 sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
@@ -489,16 +488,7 @@ sdl_ambulant_window::~sdl_ambulant_window()
 	AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(x%x) sdl_ambulant_window::s_windows=%d sdl_ambulant_window::s_id_sdl_ambulant_window_map.size()=%d", this, sdl_ambulant_window::s_windows, sdl_ambulant_window::s_id_sdl_ambulant_window_map.size());
 	sdl_ambulant_window::s_windows--;
 	// erase corresponding entries in the maps
-	for (std::map<int, sdl_ambulant_window*>::iterator it =  sdl_ambulant_window::s_id_sdl_ambulant_window_map.begin();
-		it !=  sdl_ambulant_window::s_id_sdl_ambulant_window_map.end(); it++) {
-	  int key = (*it).first;
-	  sdl_ambulant_window* value = (*it).second;
-	  AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(0x%x): key=0x%x value=0x%x", this, key, value);
-		if (value == this) {
-			sdl_ambulant_window::s_id_sdl_ambulant_window_map.erase(it);
-		}
-	}
-	if (m_sdl_screen_renderer != NULL) {
+	if (m_sdl_renderer != NULL) {
 		SDL_DestroyRenderer(m_sdl_renderer);
 	}
 	if (m_sdl_screen_surface != NULL) {
@@ -577,7 +567,6 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	sdl_ambulant_window::s_windows++;
 
 	// The screen_renderer is special, it is the rendering context for the window pixels instead the surface pixels
-	m_sdl_window_renderer = s_window_renderer_map[m_sdl_window]; //XXX is this mapping really needed ????
 	if (m_sdl_window_renderer == NULL) {
 		m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
 		if (m_sdl_window_renderer == NULL) {
@@ -588,7 +577,6 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 				return -1;
 			}
 		}
-		s_window_renderer_map[m_sdl_window] = m_sdl_window_renderer; //XXX is this mapping really needed ????
 	}
 	m_sdl_renderer = m_sdl_screen_renderer; //TMP
 	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);

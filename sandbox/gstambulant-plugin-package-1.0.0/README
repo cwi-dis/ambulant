@@ -2,17 +2,15 @@ This directory contains a gstreamer plugin named 'ambulantsrc'
 (based on gstplugin.c in gst-template from git clone git://anongit.freedesktop.org/gstreamer/gst-template.git,
 as described in Gstreamer Plugin  Writer's Guide).
 
-It reads 'stdin' containing lines such as: 'Time: <int>\n' 'Size: <int>\n' 'W: <int>\n' H: <int>\n',
-followed by 'Size' bytes of binary data in RGB24 format, which is output from ambulant-recorder-plugin.
+It reads 'stdin' containing lines such as: 'Type: <fourcc>\nTime: <int>\n' 'Size: <int>\n' 'W: <int>\n' H: <int>\n',
+followed by '<size>' bytes of binary data in BGRA format, which is output from ambulant-recorder-plugin.
 
 After "./configure;make;sudo make intall", this input  will displayed by:
 
 make check
 
-which sets: export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-0.10 # change this appropriately when a --prefix 'configure' option value is used
-and gst-launch --gst-debug-level=2 ambulantsrc ! video/x-raw-rgb,width=300,height=260,bpp=24,depth=24,framerate=30/1,endianness=4321,pixel-aspect-ratio=5/4,red_mask=16711680,green_mask=65280,blue_mask=255 ! ffmpegcolorspace ! sdlvideosink < tests/input
+which sets: export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0 # change this appropriately when a --prefix 'configure' option value is used
+and executes gst-launch-1.0 $GSTOPTIONS ambulantsrc ! videoconvert ! videoscale ! ximagesink < tests/input
 
-If the line above does not work, the test is re-tried using 'autovideosink'.
-
-Note: the capability settings need to match EXACTLY with the binary data format.
-Later some of them (hopefully all) will be set automagicaly.
+There is initial support for audio (currently disabling video) with ./configure CFLAGS=-DWITH_AUDIO, then make check executes:
+gst-launch-1.0 ambulantsrc ! audiorate ! audioconvert  ! audioresample ! alsasink sync=false < tests/Welcome-audio-raw

@@ -71,9 +71,16 @@ recorder_plugin_factory::new_recorder(net::pixel_order pixel_order, lib::size wi
 	recorder_plugin* result = NULL;
 
 	switch (pixel_order) {
+#ifdef	WITH_AUDIO
+	case net::pixel_unknown:
+		result = new recorder_plugin(pixel_order, window_size);
+		break;
+#endif//WITH_AUDIO
+#ifndef	WITH_AUDIO
 	case net::pixel_argb:
 		result = new recorder_plugin(pixel_order, window_size);
 		break;
+#endif//WITH_AUDIO
 	default:
 		break;
 	}
@@ -104,6 +111,8 @@ recorder_plugin::recorder_plugin (net::pixel_order pixel_order, lib::size& windo
 		m_gmask = 0x00FF0000;
 		m_bmask = 0x0000FF00;
 		m_amask = 0x000000FF;
+		break;
+	case net::pixel_unknown:
 		break;
 	default:
 		logger::get_logger()->trace("%s: unimplemented 'pixel_order' %d)", fun, pixel_order);
@@ -138,7 +147,7 @@ recorder_plugin::~recorder_plugin ()
 	
 // Record new video data with timestamp (ms) in document time
 void
-recorder_plugin::new_video_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp)
+recorder_plugin::new_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp, const char* type)
 {
 	const char* fun = __PRETTY_FUNCTION__;
 
@@ -146,15 +155,14 @@ recorder_plugin::new_video_data (const char* data, size_t datasize, lib::timer::
 		return;
 	}
 	if (m_pipe != NULL) {
-		unsigned long int checksum;
 		void* new_data = malloc (datasize); memcpy (new_data, data, datasize);
-		m_writer->push_data (new recorder_queue_element(new_data, datasize, documenttimestamp, m_window_size, checksum));
+		m_writer->push_data (new recorder_queue_element(new_data, datasize, documenttimestamp, m_window_size, type));
 	} else if (m_dumpflag) {
 		if (m_surface) {
 			SDL_FreeSurface(m_surface);
 		}
 		m_surface = SDL_CreateRGBSurfaceFrom ((void*) data, m_window_size.w, m_window_size.h, 32, m_window_size.w * 4,
-						  m_rmask, m_gmask, m_bmask, m_amask);
+						      m_rmask, m_gmask, m_bmask, m_amask);
 		if (m_surface == NULL) {
 			logger::get_logger()->trace("%s: SDL_CreateSurface failed: %s)", fun, SDL_GetError());
 		}
@@ -164,6 +172,24 @@ recorder_plugin::new_video_data (const char* data, size_t datasize, lib::timer::
 		SDL_SaveBMP(m_surface, filename);
 	}
 }
+
+// Record new audio data with timestamp (ms) in document time
+void
+recorder_plugin::new_audio_data(const char* data, size_t datasize, lib::timer::timer::time_type documenttimestamp)
+{
+	const char* type = "S16L";
+	new_data (data, datasize, documenttimestamp, type);
+}
+
+// Record new video data with timestamp (ms) in document time
+void
+recorder_plugin::new_video_data(const char* data, size_t datasize, lib::timer::timer::time_type documenttimestamp)
+{
+	const char* type = "BGRA";// [4] = {'B','G','R','A' };
+	new_data (data, datasize, documenttimestamp, type);
+}
+
+
 
 // class recorder_writer implementation.
 
@@ -234,7 +260,8 @@ recorder_writer::_write_data (recorder_queue_element* qe)
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("%s%p timestamp=%ld, (diff=%ld) data=0x%x", fun, this, qe->m_timestamp, qe->m_timestamp - s_old_timestamp, *(void**)qe->m_data); // enable for frame delay debugging
 	s_old_timestamp = qe->m_timestamp;
-	if (fprintf(m_pipe, "Time: %.8lu\nSize: %.8lu\nW: %5u\nH: %5u\nChksm: %.24lx\n", qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h, qe->m_checksum) < 0) {
+// Header audio/video format: "Type: 11 bytes, Time: 19, Size: 16, W: 9, H: 9. 16 free" total 80
+	if (fprintf(m_pipe, "Type: %.4s\nTime: %.12lu\nSize: %.9lu\nW: %5u\nH: %5u\n%15c\n", qe->m_type, qe->m_timestamp, qe->m_datasize, qe->m_window_size.w, qe->m_window_size.h, ' ') < 0) {
 		return -1;
 	}
 	result = fwrite (qe->m_data, 1, qe->m_datasize, m_pipe);
