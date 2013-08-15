@@ -140,7 +140,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 				GDK_RGB_DITHER_NONE,
 				0,
 				0);
-			gdk_pixbuf_unref (m_image);
+			g_object_unref (G_OBJECT(m_image));
 			g_object_unref (G_OBJECT (gc));
 		}
 		m_lock.leave();

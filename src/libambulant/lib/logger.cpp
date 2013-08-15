@@ -262,7 +262,7 @@ void lib::logger::log_cstr(int level, const char *buf) {
 		if( ! logger::logdate) {
 			struct timeval tv;
 			gettimeofday(&tv, NULL);
-			sprintf(tbuf, "%02d:%02d:%02d.%06d ", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec);
+			sprintf(tbuf, "%02d:%02d:%02d.%06d ", lt->tm_hour, lt->tm_min, lt->tm_sec, (int) tv.tv_usec);
 			os << tbuf;
 		}
 #else // WITH_MICROSECOND_LOGTIMES
