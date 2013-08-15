@@ -379,7 +379,8 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	m_intransition(NULL),
 	m_outtransition(NULL),
 	m_transition_engine(NULL),
-    m_audio_clock(0)
+	m_recorder(NULL),
+	m_audio_clock(0)
 {
 	net::audio_format_choices supported(s_ambulant_format);
 	net::url url = node->get_url("src");
