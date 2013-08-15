@@ -18,7 +18,7 @@ Studio 2010.
 For Linux desktop you need at least autoconf, automake, libtool, gettext,
 GNU gcc++ (at least version 4.0), gtk2-devel and/or qt-devel (for graphics),
 yasm and alsa-devel (for sound). For SDL2 (video) you need also libxext-devel,
-mercurial, and pango-devel. 
+asound2-devel, pulse-devel, mercurial, and pango-devel. 
 
 For MacOSX and iOS you need the Apple Developer tools (XCode 3.2 or later).
 
