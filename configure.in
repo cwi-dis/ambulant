@@ -491,7 +491,7 @@ AC_ARG_WITH(uikit,
 		*)
 			AC_MSG_ERROR(bad value ${withval} for --with-uikit)
 			;;
-		esac],[uikit=false])
+		esac],[uikit=false] )
 if test x$uikit = xtrue; then
     if test ! x$cg = xtrue; then
         AC_MSG_ERROR(--with-uikit requires --with-cg)
@@ -516,65 +516,80 @@ AC_SUBST(OBJCFLAGS)
 OBJC=$CC
 AC_SUBST(OBJC)
 
-
-dnl Test for SDL
+dnl Test for SDL (audio only)
 dnl ======================================================================
-# set -x
-test_sdl=true
-test_sdl2=false
-test_sdl2_image=false
-test_sdl2_ttf=false
-test_sdl_pango=false
-
-AC_MSG_CHECKING(for sdl - Simple Direct Media layer)
+test_sdl_audio=true
+AC_MSG_CHECKING(for sdl - Simple Direct Media layer - Audio support)
 AC_ARG_WITH(sdl,
-	AS_HELP_STRING([--with-sdl], [Turn on/off SDL support (=sdl2 for SDL2)]),
+	AS_HELP_STRING([--with-sdl], [Turn on/off SDL audio support]),
 	[
 		if test "x$withval" = "xno"; then
-			test_sdl=false
-		elif test "x$withval" = "xsdl2" ; then
-		     	test_sdl2=true
+		   test_sdl_audio=false
 		fi
-	])
-if $test_sdl; then
+	] )
+if $test_sdl_audio; then
+	# sdl-config will work for sdl 1.2.X
+	if sdl-config --version > /dev/null; then
+		SDL_CFLAGS=`sdl-config --cflags`
+		SDL_LIBS=`sdl-config --libs`
+	else
+		# for 1.3 we need to use pkg-config
+		PKG_CHECK_MODULES(SDL, [sdl >= 1.3.0], test_sdl_audio=true, test_sdl_audio=false)
+	fi
+fi
+AC_SUBST(SDL_CFLAGS)
+AC_SUBST(SDL_LIBS)
+AM_CONDITIONAL(WITH_SDL, test x$test_sdl_audio = xtrue)
+
+dnl Test for SDL2 (audio/video)
+dnl ======================================================================
+# set -x
+test_sdl_video=true
+test_sdl_image=false
+test_sdl_pango=false
+
+AC_MSG_CHECKING(for sdl2 - Simple Direct Media layer - Video support)
+AC_ARG_WITH(sdl-video,
+AS_HELP_STRING([--with-sdl-video], [Turn on/off SDL2 audio/video support]),
+[
+	if test "x$withval" = "xno"; then
+		test_sdl_video=false
+	fi
+])
+if $test_sdl_video; then
 	# set -x
 	echo $PATH
 	# sdl2-config will work for sdl 2.0.X
-	if  test "x$test_sdl" = "xtrue"; then
-		if test "x$test_sdl2" = "xtrue" -a "sdl2-config --version > /dev/null"; then 
-        		SDL_CFLAGS="`sdl2-config --cflags` -DWITH_SDL_VIDEO"
-    			SDL_LIBS=`sdl2-config --libs`
-			with_frontend=true
-			PKG_CHECK_MODULES(SDL, [SDL2_image >= 1.2.13], test_sdl2_image=true, test_sdl2_image=false)
-			if test "x$test_sdl2_image" = "xtrue" ; then
-				SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_image`"
-				SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` -lpng12"
-			fi		
-			PKG_CHECK_MODULES(SDL, [SDL2_ttf >= 2.0.12], test_sdl2_ttf=true, test_sdl2_ttf=false)
-			if test "x$test_sdl2_ttf" = "xtrue" ; then
-				SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_ttf`"
-				SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_ttf`"
-			fi
-			PKG_CHECK_MODULES(SDL, [SDL_Pango >= 0.1.3], test_sdl_pango=true, test_sdl_pango=false)
-			if test "x$test_sdl_pango" = "xtrue" ; then
-				SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL_Pango`"
-				SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
-			fi
-    		elif sdl-config --version > /dev/null; then
-			# sdl-config will work for sdl 1.2.X (audio only)
-			SDL_CFLAGS=`sdl-config --cflags`
-			SDL_LIBS=`sdl-config --libs`
-		else	# for 1.3 we need to use pkg-config
-			PKG_CHECK_MODULES(SDL, [sdl >= 1.3.0], test_sdl=true, test_sdl=false)
+	if sdl2-config --version > /dev/null; then 
+	   	# overwrite values found --with-sdl
+        	SDL_CFLAGS="`sdl2-config --cflags` -DWITH_SDL_VIDEO"
+    		SDL_LIBS=`sdl2-config --libs`
+	else
+		PKG_CHECK_MODULES(SDL2, [sdl >= 2.0.0], test_sdl_video=true, test_sdl_video=false)
+	fi
+	if $test_sdl_video; then
+		test_sdl_audio=true   # have audio as well
+		with_frontend=true    # have AmbulantPlayer_sdl too
+	   	# need SDL2_image for images (.png,.gif,.jpg)
+		PKG_CHECK_MODULES(SDL2_image, [SDL2_image >= 1.2.13], test_sdl_image=true, test_sdl_image=false)
+		if test "x$test_sdl_image" = "xtrue" ; then
+			SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_image`"
+			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` -lpng12"
+		fi		
+		# need SDL_Pango for smiltext layout
+		PKG_CHECK_MODULES(SDL_Pango, [SDL_Pango >= 0.1.3], test_sdl_pango=true, test_sdl_pango=false)
+		if test "x$test_sdl_pango" = "xtrue" ; then
+			SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL_Pango`"
+			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
 		fi
 	fi
 fi
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
-AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
-AM_CONDITIONAL(WITH_SDL2, test x$test_sdl2 = xtrue)
-AC_MSG_RESULT($test_sdl)
-AC_MSG_RESULT($test_sdl2)
+AM_CONDITIONAL(WITH_SDL, test x$test_sdl_audio = xtrue)
+AM_CONDITIONAL(WITH_SDL2, test x$test_sdl_video = xtrue)
+AC_MSG_RESULT($test_sdl_audio)
+AC_MSG_RESULT($test_sdl_video)
 set +x
 dnl Testing for GTK
 dnl ====================================================================
@@ -1077,17 +1092,16 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Use xerces XML library:         ${test_xerces}
     Enable Xerces as plugin:        ${xerces_plugin}
     Build with ffmpeg:              ${test_ffmpeg}
-    Build with SDL:                 ${test_sdl}
-    Build with SDL2:                ${test_sdl2}
-    Build with SDL_image:           ${test_sdl2_image}
-    Build with SDL_ttf:             ${test_sdl2_ttf}
+    Build with SDL audio:           ${test_sdl_audio}
+    Build with SDL2 video:          ${test_sdl_video}
+    Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}
 
     Build with WebKit DOM plugin:   ${with_webkit_dom}
-    Build CG frontend:           	${cg}
+    Build CG frontend:              ${cg}
     Build UIKit frontend:           ${uikit}
     Build OSX 10.4 universal:       ${with_universalsdk}
     Build OSX 10.6 universal:       ${with_macfat}

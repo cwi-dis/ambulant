@@ -4,6 +4,11 @@ library_include_HEADERS= \
 	sdl_factory.h \
 	sdl_fill.h \
 	sdl_gui.h \
+	sdl_image_renderer.h \
+	sdl_renderer.h \
+	sdl_smiltext.h \
+	sdl_text_renderer.h \
+	sdl_transition.h \
 	sdl_video.h \
 	sdl_window.h
 
