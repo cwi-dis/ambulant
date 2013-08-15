@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 2.2\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2012-10-26 22:27+0200\n"
+"POT-Creation-Date: 2013-08-14 16:58+0200\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
-"Language: en\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +21,7 @@ msgid "Cannot play document: no player"
 msgstr "Kan document niet spelen: geen speler"
 
 #: src/libambulant/common/gui_player.cpp:134
-#: src/npambulant/cg_mainloop.cpp:197 src/player_macosx/mainloop.cpp:229
+#: src/npambulant/cg_mainloop.cpp:189 src/player_macosx/mainloop.cpp:199
 #, c-format
 msgid "Failed to parse document %s"
 msgstr "Document kan niet geparseerd worden: %s"
@@ -53,20 +53,20 @@ msgstr ""
 msgid "Plugin loader encountered problem: plugins disabled"
 msgstr "Plugins uitgeschakeld: plugin-lader werkt niet"
 
-#: src/libambulant/common/plugin_engine.cpp:270
-#: src/libambulant/common/plugin_engine.cpp:282
-#: src/libambulant/common/plugin_engine.cpp:386
+#: src/libambulant/common/plugin_engine.cpp:288
+#: src/libambulant/common/plugin_engine.cpp:300
+#: src/libambulant/common/plugin_engine.cpp:408
 #, c-format
 msgid "Plugin skipped due to errors: %s "
 msgstr "Plugin niet geladen vanwege fout: %s "
 
-#: src/libambulant/common/plugin_engine.cpp:398
+#: src/libambulant/common/plugin_engine.cpp:420
 #, c-format
 msgid "Plugin skipped due to errors: %s"
 msgstr "Plugin niet geladen vanwege fout: %s"
 
-#: src/libambulant/common/plugin_engine.cpp:422
-#: src/libambulant/common/plugin_engine.cpp:458
+#: src/libambulant/common/plugin_engine.cpp:444
+#: src/libambulant/common/plugin_engine.cpp:480
 #, c-format
 msgid "Error reading plugin directory: %s: 0x%x"
 msgstr "Plugin map %s kan niet worden gelezen: 0x%x"
@@ -82,79 +82,22 @@ msgstr "Interne fout gedetecteerd"
 msgid "Cannot parse %s"
 msgstr "Foutieve waarde voor: %s"
 
-#: src/libambulant/common/video_renderer.cpp:66
+#: src/libambulant/common/video_renderer.cpp:69
 #, c-format
 msgid "Cannot open video: %s"
 msgstr "Video-bestand kan niet geopend worden: %s"
 
 #: src/libambulant/gui/cg/cg_gui.mm:160
-#: src/libambulant/gui/cocoa/cocoa_gui.mm:150
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
 msgstr "Openen van meerdere vensters nog niet ondersteund door AmbulantPlayer"
 
-#: src/libambulant/gui/cocoa/cocoa_audio.mm:69
-#, c-format
-msgid "cocoa_audio: cannot play non-local sound %s"
-msgstr ""
-
-#: src/libambulant/gui/cocoa/cocoa_audio.mm:74
-#, c-format
-msgid "%s: cannot open soundfile"
-msgstr "Audiobestand kan niet geopend worden: %s"
-
-#: src/libambulant/gui/cocoa/cocoa_audio.mm:103
-#, c-format
-msgid "%s: Cannot start audio playback"
-msgstr "%s: audio kan niet gestart worden"
-
-#: src/libambulant/gui/cocoa/cocoa_audio.mm:151
-#, c-format
-msgid "%s: Cannot stop audio playback"
-msgstr "Kan audio niet stoppen: %s"
-
-#: src/libambulant/gui/cocoa/cocoa_audio.mm:169
-#, c-format
-msgid "%s: Cannot pause audio playback"
-msgstr "Kan audio niet pauzeren: %s"
-
-#: src/libambulant/gui/cocoa/cocoa_audio.mm:183
-#, c-format
-msgid "%s: Cannot resume audio playback"
-msgstr "Kan audio niet starten: %s"
-
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:140
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:168
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:178
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:199
-msgid "Out of memory while showing video"
-msgstr "Geheugen vol (tijdens afspelen van video)"
-
-#: src/libambulant/gui/cocoa/cocoa_ink.mm:113
-msgid "cocoa_ink_renderer: Could not create DOM tree"
-msgstr "cocoa_ink_renderer: Kan geen DOM-tree bouwen"
-
-#: src/libambulant/gui/cocoa/cocoa_ink.mm:129
-msgid "cocoa_ink_renderer: no <ink> found"
-msgstr ""
-
-#: src/libambulant/gui/cocoa/cocoa_video.mm:213
-#, c-format
-msgid "%s: cannot convert to URL"
-msgstr "Geen correcte internetlocatie (URL): %s"
-
-#: src/libambulant/gui/cocoa/cocoa_video.mm:221
-#, c-format
-msgid "%s: cannot open movie"
-msgstr "Videobestand kan niet geopend worden: %s"
-
-#: src/libambulant/gui/d2/d2_player.cpp:203
-#: src/libambulant/gui/dx/dx_player.cpp:175 src/npambulant/cg_mainloop.cpp:96
-#: src/player_macosx/mainloop.cpp:103
+#: src/libambulant/gui/d2/d2_player.cpp:199 src/npambulant/cg_mainloop.cpp:93
+#: src/player_macosx/mainloop.cpp:96
 #, c-format
 msgid "%s: node ID not found"
 msgstr "%s: Node ID niet gevonden"
 
-#: src/libambulant/gui/d2/d2_player.cpp:1393
+#: src/libambulant/gui/d2/d2_player.cpp:1382
 #, c-format
 msgid "%s:multiple screen transitions in progress (m_fullscreen_count=%d)"
 msgstr ""
@@ -166,16 +109,10 @@ msgid "Geometry error in smil document at %s"
 msgstr "Fout in geometrie in SMIL document (%s)"
 
 #: src/libambulant/gui/gtk/gtk_transition.cpp:418
-#: src/libambulant/gui/qt/qt_transition.cpp:428
-#: src/libambulant/gui/SDL/sdl_transition.cpp:425
+#: src/libambulant/gui/SDL/sdl_transition.cpp:511
 #, c-format
 msgid "%s: transition type %s not yet implemented"
 msgstr "%s: transitie type %s is nog niet gemaakt"
-
-#: src/libambulant/gui/qt/qt_factory.cpp:339
-#, c-format
-msgid "%s:multiple Screen transitions in progress (m_fullscreen_count=%d)"
-msgstr ""
 
 #: src/libambulant/gui/SDL/sdl_audio.cpp:94
 msgid "Cannot initialize SDL audio library"
@@ -190,17 +127,17 @@ msgstr "SDL audiokanaal kan niet geopend worden: %s"
 msgid "Cannot open SDL audio output stream with required characteristics"
 msgstr "SDL audiokanaal kan niet geopend worden met de juiste eigenschappen"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:332
+#: src/libambulant/gui/SDL/sdl_audio.cpp:352
 #, c-format
 msgid "%s: cannot open audio file"
 msgstr "Audiobestand kan niet geopend worden: %s"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:334
+#: src/libambulant/gui/SDL/sdl_audio.cpp:354
 #, c-format
 msgid "%s: audio format not supported"
 msgstr "Onbekend audio formaat in: %s"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:371
+#: src/libambulant/gui/SDL/sdl_audio.cpp:394
 #, c-format
 msgid "%s: cannot open"
 msgstr "Bestand kan niet geopend worden: %s"
@@ -295,36 +232,35 @@ msgid "datasource_reader: out of memory"
 msgstr "datasource_reader: geen geheugen meer"
 
 #: src/libambulant/net/demux_datasource.cpp:66
-#: src/libambulant/net/demux_datasource.cpp:353
+#: src/libambulant/net/demux_datasource.cpp:354
 #, c-format
 msgid "%s: no more audio streams"
 msgstr "%s: kan geen audiokanaal meer aanmaken"
 
-#: src/libambulant/net/demux_datasource.cpp:150
+#: src/libambulant/net/demux_datasource.cpp:152
 #: src/libambulant/net/ffmpeg_audio.cpp:342
 #: src/libambulant/net/ffmpeg_audio.cpp:404
 #: src/libambulant/net/ffmpeg_audio.cpp:542
-#: src/libambulant/net/ffmpeg_audio.cpp:981
-#: src/libambulant/net/ffmpeg_audio.cpp:1019
-#: src/libambulant/net/ffmpeg_audio.cpp:1229
+#: src/libambulant/net/ffmpeg_audio.cpp:982
+#: src/libambulant/net/ffmpeg_audio.cpp:1020
+#: src/libambulant/net/ffmpeg_audio.cpp:1230
 msgid "Programmer error encountered during audio playback"
 msgstr "Interne fout gedetecteerd tijdens het spelen van audio"
 
-#: src/libambulant/net/demux_datasource.cpp:520
-#: src/libambulant/net/ffmpeg_video.cpp:297
-#: src/libambulant/net/ffmpeg_video.cpp:915
-#: src/libambulant/net/ffmpeg_video.cpp:920
-#: src/libambulant/net/ffmpeg_video.cpp:928
+#: src/libambulant/net/demux_datasource.cpp:529
+#: src/libambulant/net/ffmpeg_video.cpp:299
+#: src/libambulant/net/ffmpeg_video.cpp:934
+#: src/libambulant/net/ffmpeg_video.cpp:939
+#: src/libambulant/net/ffmpeg_video.cpp:947
 msgid "Programmer error encountered during video playback"
 msgstr "Interne fout gedetecteerd tijdens het spelen van video"
 
-#: src/libambulant/net/demux_datasource.cpp:769
+#: src/libambulant/net/demux_datasource.cpp:811
 #, c-format
 msgid "%s: Ignoring audio, unsupported encoding"
 msgstr "%s: Onbekende audio-codering, overgeslagen"
 
 #: src/libambulant/net/ffmpeg_audio.cpp:170
-#: src/libambulant/net/rtsp_factory.cpp:101
 #, c-format
 msgid "%s: unable to create audio resampler"
 msgstr "%s: audio resampler kan niet gecreëerd worden"
@@ -350,7 +286,7 @@ msgstr "ffmpeg_decoder_datasource: kan %s(0x%x) decoder niet selecteren"
 msgid "No support for \"%s\" audio"
 msgstr "Geen ondersteuning voor \"%s\" audio"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:968
+#: src/libambulant/net/ffmpeg_audio.cpp:969
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr "Audio kan niet geconverteerd worden naar 44Khz stereo"
 
@@ -363,23 +299,23 @@ msgstr "%s: thread voor lezer kan niet gestart worden"
 msgid "Programmer error encountered"
 msgstr "Interne fout gedetecteerd"
 
-#: src/libambulant/net/ffmpeg_video.cpp:191
+#: src/libambulant/net/ffmpeg_video.cpp:193
 #, c-format
 msgid "ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr "ffmpeg_video_decoder_datasource: kan %s(0x%x) decoder niet selecteren"
 
-#: src/libambulant/net/ffmpeg_video.cpp:542
-#: src/libambulant/net/ffmpeg_video.cpp:718
+#: src/libambulant/net/ffmpeg_video.cpp:545
+#: src/libambulant/net/ffmpeg_video.cpp:737
 msgid "Out of memory playing video"
 msgstr "Geheugen vol (tijdens afspelen van video)"
 
-#: src/libambulant/net/ffmpeg_video.cpp:612
+#: src/libambulant/net/ffmpeg_video.cpp:626
 #, c-format
 msgid "error decoding video frame (timestamp=%lld)"
 msgstr "fout tijdens decoderen videoframe (timestamp=%lld)"
 
-#: src/libambulant/net/ffmpeg_video.cpp:878
 #: src/libambulant/net/ffmpeg_video.cpp:897
+#: src/libambulant/net/ffmpeg_video.cpp:916
 #, c-format
 msgid "No support for \"%s\" video"
 msgstr "Geen ondersteuning voor \"%s\" video"
@@ -421,10 +357,10 @@ msgstr "Fout in SMIL document"
 #: src/libambulant/smil2/region_node.cpp:182
 #: src/libambulant/smil2/region_node.cpp:202
 #: src/libambulant/smil2/region_node.cpp:224
-#: src/libambulant/smil2/region_node.cpp:285
-#: src/libambulant/smil2/region_node.cpp:372
+#: src/libambulant/smil2/region_node.cpp:288
 #: src/libambulant/smil2/region_node.cpp:391
-#: src/libambulant/smil2/region_node.cpp:427
+#: src/libambulant/smil2/region_node.cpp:410
+#: src/libambulant/smil2/region_node.cpp:446
 msgid "Ignoring minor errors in document"
 msgstr "Kleine fouten in SMIL document, genegeerd"
 
@@ -448,21 +384,21 @@ msgstr "Document bevat geen <body> gedeelte, er kan niets gespeeld worden"
 msgid "Programmer error encountered, attempting to continue"
 msgstr "Interne fout gedetecteerd"
 
-#: src/libambulant/smil2/smil_player.cpp:205
+#: src/libambulant/smil2/smil_player.cpp:220
 msgid "Document uses state, but no state support configured"
 msgstr "Document gebruikt SMIL State, maar dat is niet beschikbaar"
 
-#: src/libambulant/smil2/smil_player.cpp:210
+#: src/libambulant/smil2/smil_player.cpp:225
 #, c-format
 msgid "No state support for language %s"
 msgstr "Geen SMIL State support voor taal: %s"
 
-#: src/libambulant/smil2/smil_player.cpp:1117
+#: src/libambulant/smil2/smil_player.cpp:1157
 #, c-format
 msgid "Link destination not found: %s"
 msgstr "Linkbestemming niet gevonden: %s"
 
-#: src/libambulant/smil2/smil_player.cpp:1123
+#: src/libambulant/smil2/smil_player.cpp:1163
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr "Deze versie kan <%s> niet in een nieuw venster openen"
@@ -520,14 +456,13 @@ msgstr "Fout in SMIL interactie in document"
 msgid "Error in SMIL transition info in document"
 msgstr "Fout in SMIL transitie in document"
 
-#: src/npambulant/cg_mainloop.cpp:83 src/player_gtk/gtk_mainloop.cpp:282
-#: src/player_macosx/mainloop.cpp:90 src/player_sdl/sdl_gui_player.cpp:328
-#: src/player_unix/qt_mainloop.cpp:249
+#: src/npambulant/cg_mainloop.cpp:80 src/player_gtk/gtk_mainloop.cpp:274
+#: src/player_macosx/mainloop.cpp:83 src/player_sdl/sdl_gui_player.cpp:351
 #, c-format
 msgid "%s: Cannot build DOM tree"
 msgstr "DOM-tree kan niet gebouwd worden: %s"
 
-#: src/npambulant/npambulant.cpp:273
+#: src/npambulant/npambulant.cpp:274
 msgid "Ambulant plugin loaded"
 msgstr "Ambulant insteekmodule is geladen"
 
@@ -671,58 +606,53 @@ msgstr "_Speel Welkom-document"
 msgid "Plays a simple SMIL file"
 msgstr "Speelt een eenvoudige SMIL file"
 
-#: src/player_gtk/gtk_gui.cpp:473 src/player_sdl/sdl_gui.cpp:250
-#: src/player_unix/qt_gui.cpp:196
+#: src/player_gtk/gtk_gui.cpp:473 src/player_sdl/sdl_gui.cpp:261
 msgid "About AmbulantPlayer"
 msgstr "Over AmbulantPlayer"
 
-#: src/player_gtk/gtk_gui.cpp:497 src/player_sdl/sdl_gui.cpp:274
-#: src/player_unix/qt_gui.cpp:215
+#: src/player_gtk/gtk_gui.cpp:497 src/player_sdl/sdl_gui.cpp:285
 msgid "Cannot find Welcome.smil document"
 msgstr "Welcome.smil document niet gevonden"
 
-#: src/player_gtk/gtk_gui.cpp:514 src/player_sdl/sdl_gui.cpp:291
-#: src/player_unix/qt_gui.cpp:226
+#: src/player_gtk/gtk_gui.cpp:514 src/player_sdl/sdl_gui.cpp:302
 msgid "Cannot find Ambulant Player Help"
 msgstr "AmbulantPlayer Help is niet gevonden"
 
-#: src/player_gtk/gtk_gui.cpp:533 src/player_sdl/sdl_gui.cpp:310
-#: src/player_unix/qt_gui.cpp:248
+#: src/player_gtk/gtk_gui.cpp:533 src/player_sdl/sdl_gui.cpp:321
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr "%s: Bestand kan niet geopend worden: %s"
 
-#: src/player_gtk/gtk_gui.cpp:566 src/player_sdl/sdl_gui.cpp:324
+#: src/player_gtk/gtk_gui.cpp:566 src/player_sdl/sdl_gui.cpp:335
 msgid "Please, select a file"
 msgstr "Selecteer een bestand a.u.b."
 
-#: src/player_gtk/gtk_gui.cpp:569 src/player_sdl/sdl_gui.cpp:327
+#: src/player_gtk/gtk_gui.cpp:569 src/player_sdl/sdl_gui.cpp:338
 msgid "SMIL files"
 msgstr "SMIL bestanden"
 
-#: src/player_gtk/gtk_gui.cpp:574 src/player_sdl/sdl_gui.cpp:332
+#: src/player_gtk/gtk_gui.cpp:574 src/player_sdl/sdl_gui.cpp:343
 msgid "All files"
 msgstr "Alle bestanden"
 
-#: src/player_gtk/gtk_gui.cpp:580 src/player_sdl/sdl_gui.cpp:338
+#: src/player_gtk/gtk_gui.cpp:580 src/player_sdl/sdl_gui.cpp:349
 msgid "Any file"
 msgstr "Alles (*)"
 
-#: src/player_gtk/gtk_gui.cpp:618 src/player_sdl/sdl_gui.cpp:376
+#: src/player_gtk/gtk_gui.cpp:618 src/player_sdl/sdl_gui.cpp:387
 msgid "Please, select a settings file"
 msgstr "Selecteer een instellingen-bestand"
 
-#: src/player_gtk/gtk_gui.cpp:621 src/player_sdl/sdl_gui.cpp:379
+#: src/player_gtk/gtk_gui.cpp:621 src/player_sdl/sdl_gui.cpp:390
 msgid "XML files"
 msgstr "XML bestanden"
 
-#: src/player_gtk/gtk_gui.cpp:659 src/player_sdl/sdl_gui.cpp:417
-#: src/player_unix/qt_gui.cpp:333
+#: src/player_gtk/gtk_gui.cpp:659 src/player_sdl/sdl_gui.cpp:428
 msgid "URL to open:"
 msgstr "Open URL:"
 
-#: src/player_gtk/gtk_gui.cpp:953 src/player_macosx/MyAppDelegate.mm:170
-#: src/player_mfc/MmView.cpp:253 src/player_unix/qt_gui.cpp:548
+#: src/player_gtk/gtk_gui.cpp:953 src/player_macosx/MyAppDelegate.mm:171
+#: src/player_mfc/MmView.cpp:237
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr "Ambulant Player: gebouwd voor versie %s, draait met versie %s"
@@ -732,37 +662,34 @@ msgstr "Ambulant Player: gebouwd voor versie %s, draait met versie %s"
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr "Ambulant Player: gebouwd op %s voor Unix/GTK"
 
-#: src/player_gtk/gtk_gui.cpp:956 src/player_mfc/MmView.cpp:272
-#: src/player_unix/qt_gui.cpp:551
+#: src/player_gtk/gtk_gui.cpp:956 src/player_mfc/MmView.cpp:256
 msgid "Ambulant Player: localization enabled (english)"
 msgstr "Ambulant Player: met taalondersteuning (nederlands)"
 
-#: src/player_gtk/gtk_logger.cpp:88 src/player_unix/qt_logger.cpp:84
+#: src/player_gtk/gtk_logger.cpp:88
 #, c-format
 msgid "Cannot open logfile: %s"
 msgstr "Logboekbestand kan niet geopend worden: %s"
 
-#: src/player_gtk/gtk_mainloop.cpp:81 src/player_sdl/sdl_gui_player.cpp:77
-#: src/player_unix/qt_mainloop.cpp:75
+#: src/player_gtk/gtk_mainloop.cpp:78 src/player_sdl/sdl_gui_player.cpp:74
 #, c-format
 msgid "$BROWSER not set: cannot open webpage <%s>"
 msgstr "$BROWSER niet gespecificeerd, kan webpagina <%s> niet openen"
 
-#: src/player_gtk/gtk_mainloop.cpp:90 src/player_sdl/sdl_gui_player.cpp:86
-#: src/player_unix/qt_mainloop.cpp:85
+#: src/player_gtk/gtk_mainloop.cpp:87 src/player_sdl/sdl_gui_player.cpp:83
 #, c-format
 msgid "Attempt to start browser returned status %d. Command: %s"
 msgstr "Fout %d tijdens starten van webbrowser %s"
 
-#: src/player_gtk/gtk_settings.cpp:78 src/player_unix/qt_settings.cpp:66
+#: src/player_gtk/gtk_settings.cpp:78
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: src/player_gtk/gtk_settings.cpp:93 src/player_unix/qt_settings.cpp:71
+#: src/player_gtk/gtk_settings.cpp:93
 msgid "Log level:"
 msgstr "Logboek detail:"
 
-#: src/player_gtk/gtk_settings.cpp:110 src/player_unix/qt_settings.cpp:81
+#: src/player_gtk/gtk_settings.cpp:110
 msgid "XML parser:"
 msgstr "XML parser:"
 
@@ -770,7 +697,7 @@ msgstr "XML parser:"
 msgid "Xerces Options:"
 msgstr "Xerces opties:"
 
-#: src/player_gtk/gtk_settings.cpp:135 src/player_unix/qt_settings.cpp:90
+#: src/player_gtk/gtk_settings.cpp:135
 msgid "Enable XML namespace support"
 msgstr "Gebruik XML namespace ondersteuning"
 
@@ -778,15 +705,15 @@ msgstr "Gebruik XML namespace ondersteuning"
 msgid "Enable XML Validation:"
 msgstr "Gebruik XML validering"
 
-#: src/player_gtk/gtk_settings.cpp:161 src/player_unix/qt_settings.cpp:104
+#: src/player_gtk/gtk_settings.cpp:161
 msgid "Using Schema"
 msgstr "Met Schema"
 
-#: src/player_gtk/gtk_settings.cpp:162 src/player_unix/qt_settings.cpp:106
+#: src/player_gtk/gtk_settings.cpp:162
 msgid "Using DTD"
 msgstr "Met DTD"
 
-#: src/player_gtk/gtk_settings.cpp:169 src/player_unix/qt_settings.cpp:110
+#: src/player_gtk/gtk_settings.cpp:169
 msgid "Validation Schema full checking"
 msgstr "Volledige controle Schema"
 
@@ -794,7 +721,7 @@ msgstr "Volledige controle Schema"
 msgid "Plugin Options:"
 msgstr "Opties voor insteekmodules:"
 
-#: src/player_gtk/gtk_settings.cpp:183 src/player_unix/qt_settings.cpp:115
+#: src/player_gtk/gtk_settings.cpp:183
 msgid "Use plugins"
 msgstr "Gebruik insteekmodules"
 
@@ -804,57 +731,52 @@ msgstr "Map voor insteekmodules:"
 
 #: src/player_gtk/unix_preferences.cpp:135
 #: src/player_sdl/unix_preferences.cpp:135
-#: src/player_unix/unix_preferences.cpp:137
 #, c-format
 msgid "Invalid value from preference file: %s=%s"
 msgstr "Fout in voorkeuren-bestand: %s=%s"
 
 #: src/player_gtk/unix_preferences.cpp:164
 #: src/player_sdl/unix_preferences.cpp:164
-#: src/player_unix/unix_preferences.cpp:168
 #, c-format
 msgid "Invalid preference name: %s"
 msgstr "Onbekende voorkeursspecificatie: %s"
 
 #: src/player_gtk/unix_preferences.cpp:211
 #: src/player_sdl/unix_preferences.cpp:211
-#: src/player_unix/unix_preferences.cpp:215
 msgid "Invalid preference file format"
 msgstr "Voorkeuren-bestand niet in het juiste formaat"
 
 #: src/player_gtk/unix_preferences.cpp:269
 #: src/player_sdl/unix_preferences.cpp:269
-#: src/player_unix/unix_preferences.cpp:273
 msgid "HOME environment variable not set"
 msgstr "HOME omgevingsvariabele niet gespecificeerd"
 
 #: src/player_gtk/unix_preferences.cpp:281
 #: src/player_sdl/unix_preferences.cpp:281
-#: src/player_unix/unix_preferences.cpp:286
 #, c-format
 msgid "mkdir(\"%s\") failed: %s"
 msgstr "mkdir(\"%s\") mislukt: %s"
 
-#: src/player_macosx/MyAppDelegate.mm:171
+#: src/player_macosx/MyAppDelegate.mm:172
 #, c-format
 msgid "Ambulant Player: built on %s for Macintosh/%s/%s"
 msgstr "Ambulant Player: gebouwd op %s voor Macintosh/%s/%s"
 
-#: src/player_macosx/MyAppDelegate.mm:192
+#: src/player_macosx/MyAppDelegate.mm:189
 #, c-format
 msgid "Ambulant Player: localization enabled (english; user requested %s)"
 msgstr ""
 "Ambulant Player: met taalondersteuning (nederlands; gebruikersvoorkeur: %s)"
 
-#: src/player_macosx/MyAppDelegate.mm:313
+#: src/player_macosx/MyAppDelegate.mm:310
 msgid "Welcome.smil could not be opened"
 msgstr "Welcome.smil kan niet geopend worden"
 
-#: src/player_macosx/MyAppDelegate.mm:316
+#: src/player_macosx/MyAppDelegate.mm:313
 msgid "No Welcome.smil in application bundle"
 msgstr "Applicatie bevat geen Welcome.smil"
 
-#: src/player_macosx/MyAppDelegate.mm:328
+#: src/player_macosx/MyAppDelegate.mm:325
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr "Kan http://www.ambulantplayer.org niet openen"
 
@@ -868,171 +790,164 @@ msgstr "Bestand kan niet geopend worden: %s"
 msgid "Cannot open: %s, error: %s"
 msgstr "Bestand kan niet geopend worden: %s, foutcode: %s"
 
-#: src/player_mfc/MmView.cpp:254
+#: src/player_mfc/MmView.cpp:238
 #, c-format
 msgid "Ambulant Player: built on %s for Windows/MFC with VS%s%s"
 msgstr "Ambulant Player: gebouwd op %s voor Windows/MFC met VS%s%s"
 
-#: src/player_mfc/MmView.cpp:275
+#: src/player_mfc/MmView.cpp:259
 msgid "Ambulant Player: using AmbulantPlayer in DLL"
 msgstr "Ambulant Player: gebruikt AmbulantPlayer in DLL"
 
-#: src/player_unix/qt_gui.cpp:125
-msgid "&Open..."
-msgstr "&Open..."
-
-#: src/player_unix/qt_gui.cpp:127
-msgid "Open &URL..."
-msgstr "Open &URL..."
-
-#: src/player_unix/qt_gui.cpp:129
-msgid "&Reload..."
-msgstr "Laad Opnieuw (Alt-L)"
-
-#: src/player_unix/qt_gui.cpp:132
-msgid "&Preferences..."
-msgstr "&Voorkeuren..."
-
-#: src/player_unix/qt_gui.cpp:133
-msgid "&Document Settings..."
-msgstr "&Documentinstellingen..."
-
-#: src/player_unix/qt_gui.cpp:136
-msgid "&Quit"
-msgstr "&Stop"
-
-#: src/player_unix/qt_gui.cpp:138
-msgid "&File"
-msgstr "&Bestand"
-
-#: src/player_unix/qt_gui.cpp:143 src/player_unix/qt_gui.cpp:151
-msgid "Pla&y"
-msgstr "&Speel"
-
-#: src/player_unix/qt_gui.cpp:146
-msgid "&Pause"
-msgstr "&Pauzeer"
-
-#: src/player_unix/qt_gui.cpp:149
-msgid "&Stop"
-msgstr "&Stop"
-
-#: src/player_unix/qt_gui.cpp:155
-msgid "&Full Screen"
-msgstr "&Hele Scherm"
-
-#: src/player_unix/qt_gui.cpp:157
-msgid "&Window"
-msgstr "&Venster"
-
-#: src/player_unix/qt_gui.cpp:161
-msgid "&Log Window..."
-msgstr "Logboek"
-
-#: src/player_unix/qt_gui.cpp:163
-msgid "&View"
-msgstr "&Weergave"
-
-#: src/player_unix/qt_gui.cpp:168
-msgid "&About AmbulantPlayer"
-msgstr "&Over AmbulantPlayer"
-
-#: src/player_unix/qt_gui.cpp:169
-msgid "AmbulantPlayer &Help..."
-msgstr "AmbulantPlayer &Help..."
-
-#: src/player_unix/qt_gui.cpp:172
-msgid "AmbulantPlayer &Website..."
-msgstr "AmbulantPlayer &Website..."
-
-#: src/player_unix/qt_gui.cpp:173
-msgid "&Play Welcome Document"
-msgstr "&Speel Welkom-document"
-
-#: src/player_unix/qt_gui.cpp:174
-msgid "&Help"
-msgstr "&Help"
-
-#: src/player_unix/qt_gui.cpp:198 src/player_unix/qt_gui.cpp:396
-msgid "OK"
-msgstr "OK"
-
-#: src/player_unix/qt_gui.cpp:278
-msgid ""
-"SMIL files (*.smil *.smi);; All files (*.smil *.smi *.grins);; Any file (*)"
-msgstr ""
-"SMIL bestanden (*.smil *.smi);; Alle bestanden (*.smil *.smi *.grins);; "
-"Alles (*)"
-
-#: src/player_unix/qt_gui.cpp:280
-msgid "open file dialog"
-msgstr "Open Bestand"
-
-#: src/player_unix/qt_gui.cpp:281
-msgid "Double Click a file to open"
-msgstr "Dubbelklik om een bestand te openen"
-
-#: src/player_unix/qt_gui.cpp:316
-msgid "Settings files (*.xml)"
-msgstr "Instellingenbestanden (*.xml)"
-
-#: src/player_unix/qt_gui.cpp:318
-msgid "open settings file dialog"
-msgstr "open instellingen-bestand"
-
-#: src/player_unix/qt_gui.cpp:319
-msgid "Double Click a settings file to open"
-msgstr "Dubbelklik om een instellingen-bestand te openen"
-
-#: src/player_unix/qt_gui.cpp:360
-msgid "No file open: Please first select File->Open"
-msgstr "Geen document open: gebruik Bestand->Open"
-
-#: src/player_unix/qt_gui.cpp:398
-msgid "Cancel"
-msgstr "Annuleer"
-
-#: src/player_unix/qt_gui.cpp:549
-#, c-format
-msgid "Ambulant Player: built on %s for Unix/Qt"
-msgstr "Ambulant Player: gebouwd op %s voor Unix/Qt"
-
-#: src/player_unix/qt_gui.cpp:586
-msgid "Cannot open: "
-msgstr "Bestand kan niet geopend worden: "
-
-#: src/player_unix/qt_settings.cpp:88
-msgid "Xerces options:"
-msgstr "Xerces opties:"
-
-#: src/player_unix/qt_settings.cpp:94
-msgid "Enable XML validation:"
-msgstr "Gebruik XML validering"
-
-#: src/player_unix/qt_settings.cpp:114
-msgid "Plugin options:"
-msgstr "Opties voor insteekmodules:"
-
-#: src/player_unix/qt_settings.cpp:118
-msgid "Plugin directory:\n"
-msgstr "Map voor insteekmodules:\n"
-
-#: src/plugins/plugin.cpp:174 src/plugins/plugin_ffmpeg.cpp:121
-#: src/plugins/pythonplugin.cpp:136 src/plugins/rot13plugin.cpp:97
+#: src/plugins/plugin.cpp:174 src/plugins/plugin_ffmpeg.cpp:110
+#: src/plugins/pythonplugin.cpp:138 src/plugins/rot13plugin.cpp:97
 #: src/plugins/wkdomplugin.cpp:58 src/plugins/xercesplugin.cpp:83
-#: src/plugins/xpath_stateplugin.cpp:787
+#: src/plugins/xpath_stateplugin.cpp:886
 #, c-format
 msgid "%s: built for plugin-api version %d, current %d. Skipping."
 msgstr ""
 "%s: is gemaakt voor plugin-api versie %d, de huidige is %d. Niet geladen."
 
-#: src/plugins/plugin.cpp:178 src/plugins/plugin_ffmpeg.cpp:125
-#: src/plugins/pythonplugin.cpp:140 src/plugins/rot13plugin.cpp:101
+#: src/plugins/plugin.cpp:178 src/plugins/plugin_ffmpeg.cpp:114
+#: src/plugins/pythonplugin.cpp:142 src/plugins/rot13plugin.cpp:101
 #: src/plugins/wkdomplugin.cpp:62 src/plugins/xercesplugin.cpp:87
-#: src/plugins/xpath_stateplugin.cpp:791
+#: src/plugins/xpath_stateplugin.cpp:890
 #, c-format
 msgid "%s: built for different Ambulant version (%s)"
 msgstr "%s: is gebouwd voor een andere versie van Ambulant (%s)"
+
+#~ msgid "%s: cannot open soundfile"
+#~ msgstr "Audiobestand kan niet geopend worden: %s"
+
+#~ msgid "%s: Cannot start audio playback"
+#~ msgstr "%s: audio kan niet gestart worden"
+
+#~ msgid "%s: Cannot stop audio playback"
+#~ msgstr "Kan audio niet stoppen: %s"
+
+#~ msgid "%s: Cannot pause audio playback"
+#~ msgstr "Kan audio niet pauzeren: %s"
+
+#~ msgid "%s: Cannot resume audio playback"
+#~ msgstr "Kan audio niet starten: %s"
+
+#~ msgid "Out of memory while showing video"
+#~ msgstr "Geheugen vol (tijdens afspelen van video)"
+
+#~ msgid "cocoa_ink_renderer: Could not create DOM tree"
+#~ msgstr "cocoa_ink_renderer: Kan geen DOM-tree bouwen"
+
+#~ msgid "%s: cannot convert to URL"
+#~ msgstr "Geen correcte internetlocatie (URL): %s"
+
+#~ msgid "%s: cannot open movie"
+#~ msgstr "Videobestand kan niet geopend worden: %s"
+
+#~ msgid "&Open..."
+#~ msgstr "&Open..."
+
+#~ msgid "Open &URL..."
+#~ msgstr "Open &URL..."
+
+#~ msgid "&Reload..."
+#~ msgstr "Laad Opnieuw (Alt-L)"
+
+#~ msgid "&Preferences..."
+#~ msgstr "&Voorkeuren..."
+
+#~ msgid "&Document Settings..."
+#~ msgstr "&Documentinstellingen..."
+
+#~ msgid "&Quit"
+#~ msgstr "&Stop"
+
+#~ msgid "&File"
+#~ msgstr "&Bestand"
+
+#~ msgid "Pla&y"
+#~ msgstr "&Speel"
+
+#~ msgid "&Pause"
+#~ msgstr "&Pauzeer"
+
+#~ msgid "&Stop"
+#~ msgstr "&Stop"
+
+#~ msgid "&Full Screen"
+#~ msgstr "&Hele Scherm"
+
+#~ msgid "&Window"
+#~ msgstr "&Venster"
+
+#~ msgid "&Log Window..."
+#~ msgstr "Logboek"
+
+#~ msgid "&View"
+#~ msgstr "&Weergave"
+
+#~ msgid "&About AmbulantPlayer"
+#~ msgstr "&Over AmbulantPlayer"
+
+#~ msgid "AmbulantPlayer &Help..."
+#~ msgstr "AmbulantPlayer &Help..."
+
+#~ msgid "AmbulantPlayer &Website..."
+#~ msgstr "AmbulantPlayer &Website..."
+
+#~ msgid "&Play Welcome Document"
+#~ msgstr "&Speel Welkom-document"
+
+#~ msgid "&Help"
+#~ msgstr "&Help"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid ""
+#~ "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.grins);; Any file "
+#~ "(*)"
+#~ msgstr ""
+#~ "SMIL bestanden (*.smil *.smi);; Alle bestanden (*.smil *.smi *.grins);; "
+#~ "Alles (*)"
+
+#~ msgid "open file dialog"
+#~ msgstr "Open Bestand"
+
+#~ msgid "Double Click a file to open"
+#~ msgstr "Dubbelklik om een bestand te openen"
+
+#~ msgid "Settings files (*.xml)"
+#~ msgstr "Instellingenbestanden (*.xml)"
+
+#~ msgid "open settings file dialog"
+#~ msgstr "open instellingen-bestand"
+
+#~ msgid "Double Click a settings file to open"
+#~ msgstr "Dubbelklik om een instellingen-bestand te openen"
+
+#~ msgid "No file open: Please first select File->Open"
+#~ msgstr "Geen document open: gebruik Bestand->Open"
+
+#~ msgid "Cancel"
+#~ msgstr "Annuleer"
+
+#~ msgid "Ambulant Player: built on %s for Unix/Qt"
+#~ msgstr "Ambulant Player: gebouwd op %s voor Unix/Qt"
+
+#~ msgid "Cannot open: "
+#~ msgstr "Bestand kan niet geopend worden: "
+
+#~ msgid "Xerces options:"
+#~ msgstr "Xerces opties:"
+
+#~ msgid "Enable XML validation:"
+#~ msgstr "Gebruik XML validering"
+
+#~ msgid "Plugin options:"
+#~ msgstr "Opties voor insteekmodules:"
+
+#~ msgid "Plugin directory:\n"
+#~ msgstr "Map voor insteekmodules:\n"
 
 #~ msgid "%s: URL contains illegal characters"
 #~ msgstr "%s: URL bevat foutieve symbolen"
