@@ -19,7 +19,7 @@
 
 #ifdef  WITH_SDL2 // work in progress
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -856,19 +856,6 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	}
 	return rv;
 }
-#ifdef XXX
-int
-sdl_ambulant_window::copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
-{
-	int rv = 0;
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
-	if (src != NULL) {
-		SDL_Surface* dst = get_sdl_surface();
-		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
-	}
-	return rv;
-}
-#endif//XXX
 
 void
 sdl_ambulant_window::dump_sdl_surface (SDL_Surface* surf, const char* id)

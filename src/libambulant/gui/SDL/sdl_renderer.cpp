@@ -148,7 +148,6 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 			saw->push_sdl_surface (surf);
 			// clear the transition surface and make it current for subsequent redraw_body()
 			r.translate(m_transition_dest->get_global_topleft());
-//?			saw->clear_sdl_surface(saw->get_transition_surface(), SDL_Rect_from_ambulant_rect(r));
 			saw->set_sdl_surface (saw->get_transition_surface());
 			AM_DBG logger::get_logger()->debug("sdl_renderer.redraw: transition surface pushed");
 		}
