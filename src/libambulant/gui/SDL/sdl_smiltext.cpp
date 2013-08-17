@@ -68,7 +68,15 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 :	sdl_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params()),
-	m_motion_done(false),
+	m_epoch(0),
+// for SDL_Pango
+	m_sdl_pango_context(NULL),
+	m_pango_attr_list(NULL),
+	m_pango_context(NULL),
+	m_pango_layout(NULL),
+	m_bg_pango_attr_list(NULL),
+	m_bg_layout(NULL),
+
 	m_transparent(SDL_TRANSPARENT_COLOR),
 	m_alternative(SDL_ALTERNATIVE_COLOR),
 	m_alpha_media(1.0),
@@ -82,16 +90,10 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 	m_needs_conditional_newline(false),
 	m_wrap(true),
 	m_is_changed(false),
+	m_motion_done(false),
 	m_start(lib::point(0,0)),
 	m_origin(lib::point(0,0)),
-
-	m_pango_attr_list(NULL),
-	m_bg_layout(NULL),
-	m_bg_pango_attr_list(NULL),
-	m_pango_layout(NULL),
-	m_pango_context(NULL),
-
-	m_sdl_pango_context(NULL)
+	m_log_rect(m_origin, lib::size(0,0))
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
@@ -173,7 +175,7 @@ sdl_smiltext_renderer::smiltext_changed()
 void
 sdl_smiltext_renderer::_sdl_smiltext_changed()
 {
-AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
+AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 #ifdef  GDK_PANGO
 	if ( ! m_pango_context) {
 		// initialize the pango context, layout...
@@ -443,7 +445,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x)",this);
 		m_engine.done();
 	}
 	bool finished = m_engine.is_finished();
-AM_DBG	lib::logger::get_logger()->debug("sdl_smiltext_changed(0x%x), m_text_storage=%s",this,m_text_storage.c_str());
+AM_DBG	lib::logger::get_logger()->debug("sdl_smiltext_changed(%p), m_text_storage=%s",this,m_text_storage.c_str());
 	if (finished)
 		m_context->stopped(m_cookie);
 }
@@ -460,7 +462,7 @@ sdl_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 	m_engine.lock();
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (m_is_changed) {
 		// compute the changes
 		_sdl_smiltext_changed();
@@ -671,7 +673,7 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	const char* data = m_text_storage.c_str();
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
 
-	AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
+	AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_render(%p): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
 	if ( ! (m_pango_layout && window))
 		return; // nothing to do
 
@@ -810,7 +812,7 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
 	saw->copy_to_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 	SDL_FreeSurface(sdl_surface);
-#endif//GDK_PANGO
+#endif// ! GDK_PANGO
 }
 #ifdef  TBD
 #endif//TBD
