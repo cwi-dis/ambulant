@@ -180,6 +180,10 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
+	if (srcrect.w == 0 || srcrect.h == 0 || dstrect.w == 0 || dstrect.h == 0) {
+		// either nothing to redraw from source or to destination)
+		return;
+	}
 #ifdef JNK
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asw->get_ambulant_pixmap()));
 #endif//JNK
@@ -245,8 +249,16 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	g_object_unref(G_OBJECT (new_image_pixbuf));
 	g_object_unref(G_OBJECT (gc));
 #endif//JNK
-	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	saw->copy_to_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
+	SDL_Surface* surface = saw->scale_SDL_Surface (m_image, srcrect, dstrect);
+	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.w, dstrect.h};
+	SDL_Rect sdl_src_rect = {srcrect.left(), srcrect.top(), srcrect.w, srcrect.h};
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+//	saw->dump_sdl_surface(surface, "surf");  // use this for debugging
+	saw->copy_to_sdl_surface (surface, NULL, &sdl_dst_rect, 255 * alpha_media);
+	void* pixels = surface->pixels;
+	SDL_FreeSurface(surface);
+	free (pixels);
+//	saw->copy_to_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p done.", this);
 	m_lock.leave();

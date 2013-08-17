@@ -24,6 +24,16 @@
 #define AM_DBG if(0)
 #endif
 
+#define __STDC_CONSTANT_MACROS //XXXX Grrr.. for ‘UINT64_C’ not declared
+extern "C" {
+#include "libavcodec/avcodec.h"
+#include "libswscale/swscale.h"
+#ifndef AV_NUM_DATA_POINTERS
+// needed for older versions of ffmpeg (< 0.9)
+#define AV_NUM_DATA_POINTERS 4
+#endif// !  AV_NUM_DATA_POINTERS
+};
+
 #include "ambulant/lib/colors.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_window.h"
@@ -208,6 +218,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 {
 	m_lock.enter();
 	ambulant_sdl_window::s_num_events--;
+
+//	lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): redraw starts.", this);
 	sdl_ambulant_window* saw = get_sdl_ambulant_window();
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
@@ -278,6 +290,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
 	m_lock.leave();
+//	lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): redraw done.\n", this);
 }
 
 void
@@ -479,6 +492,7 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 	m_sdl_renderer(NULL),
 	m_sdl_screen_renderer(NULL),
 	m_sdl_screen_surface(NULL),
+	m_sws_context(NULL),
 	m_evp(NULL),
 	m_screen_pixels(NULL)
 {
@@ -509,6 +523,10 @@ sdl_ambulant_window::~sdl_ambulant_window()
 	if (m_sdl_window != NULL) {
 		SDL_DestroyWindow(m_sdl_window);
 	}
+	if (m_sws_context != NULL) {
+		sws_freeContext(m_sws_context);
+	}
+	
 #ifdef JNK
 	if ( ! m_draw_area_tags.empty()) {
 		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
@@ -1002,6 +1020,38 @@ bool sdl_ambulant_window::set_screenshot(char **screenshot_data, size_t *screens
 }
 
 #endif//JNK
+
+SDL_Surface*
+sdl_ambulant_window::scale_pixels_to_SDL_Surface (void* pixel_data, lib::size size, lib::rect src_rect, lib::rect dst_rect, Uint32 amask, Uint32 rmask, Uint32 gmask, Uint32 bmask)
+{
+	int dst_width = dst_rect.w;
+	int dst_height = dst_rect.h;
+	int src_width = src_rect.w;
+	int src_height = src_rect.h;
+	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d", dst_width, dst_height, src_width, src_height);
+
+	SDL_Surface* surface = NULL;
+  
+	// prevent warnings: Forcing full internal H chroma due to odd output size
+	int flags = SWS_FAST_BILINEAR | SWS_FULL_CHR_H_INT;
+	m_sws_context = sws_getCachedContext(m_sws_context, src_width, src_height, SDL_SWS_PIX_FMT, dst_width, dst_height, SDL_SWS_PIX_FMT, flags, NULL, NULL, NULL);
+	uint8_t* pixels[AV_NUM_DATA_POINTERS];
+	int dst_stride[AV_NUM_DATA_POINTERS];
+	int src_stride[AV_NUM_DATA_POINTERS];
+	dst_stride[0] = dst_width*SDL_BPP;
+	src_stride[0] = size.w*SDL_BPP;
+	for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
+			pixels[i] = NULL;
+			dst_stride[i] = src_stride[i] = 0;
+	}
+	pixels[0] = (uint8_t*) malloc(dst_stride[0]*dst_height); 
+	int rv = sws_scale(m_sws_context,(const uint8_t* const*) &pixel_data, src_stride, 0, src_height, pixels, dst_stride);
+	AM_DBG { static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::scale() src=%dx%d dst=%dx%d rv=%d src_stride=%d", src_width, src_height, dst_width, dst_height,rv,src_stride[0]); }}
+	dst_rect.h = dst_height = rv;
+	// convert to SDL
+	surface = SDL_CreateRGBSurfaceFrom(pixels[0], dst_width, dst_height, 32, dst_stride[0], rmask, gmask, bmask, amask);
+	return surface;
+}
 
 #endif//WITH_SDL2
 
