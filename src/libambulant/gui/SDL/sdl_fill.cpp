@@ -58,7 +58,7 @@ ambulant::gui::sdl::create_sdl_fill_playable_factory(common::factories *factory,
 sdl_fill_renderer::~sdl_fill_renderer()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("~sdl_fill_renderer(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("~sdl_fill_renderer(%p)", (void *)this);
 	m_intransition = NULL;
 	m_outtransition = NULL;
 //TBD	if (m_trans_engine) delete m_trans_engine;
@@ -71,15 +71,15 @@ void
 sdl_fill_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.start(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.start(%p)", (void *)this);
 	if (m_is_showing) {
-		logger::get_logger()->trace("sdl_fill_renderer.start(0x%x): already started", (void*)this);
+		logger::get_logger()->trace("sdl_fill_renderer.start(%p): already started", (void*)this);
 		m_lock.leave();
 		return;
 	}
 	m_is_showing = true;
 	if (!m_dest) {
-		logger::get_logger()->trace("sdl_fill_renderer.start(0x%x): no surface", (void *)this);
+		logger::get_logger()->trace("sdl_fill_renderer.start(%p): no surface", (void *)this);
 		return;
 	}
 	if (m_intransition) {
@@ -110,9 +110,9 @@ bool
 sdl_fill_renderer::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.stop(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.stop(%p)", (void *)this);
 	if (!m_is_showing) {
-		logger::get_logger()->trace("sdl_fill_renderer.stop(0x%x): already stopped", (void*)this);
+		logger::get_logger()->trace("sdl_fill_renderer.stop(%p): already stopped", (void*)this);
 	} else {
 		m_is_showing = false;
 		if (m_dest) m_dest->renderer_done(this);
@@ -130,7 +130,7 @@ sdl_fill_renderer::redraw(const rect &dirty, gui_window *window)
 
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
+	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
 	SDL_Surface* surf = NULL;
 //X GdkPixmap *surf = NULL;
@@ -150,7 +150,7 @@ sdl_fill_renderer::redraw(const rect &dirty, gui_window *window)
 			// Copy the background pixels
 			rect dstrect = r;
 			dstrect.translate(m_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("sdl_fill.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			AM_DBG logger::get_logger()->debug("sdl_fill.redraw: bitBlt to=%p (%d,%d) from=%p (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 //			bitBlt(surf, dstrect.left(),dstrect.top(),
 //				qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
 //			bitBlt(surf, dstrect.left(), dstrect.top(),
@@ -204,7 +204,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 
 	// <brush> drawing
 
-	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer::redraw_body(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer::redraw_body(%p)", (void *)this);
 	int err = 0;
 	const common::region_info *info = m_dest->get_info();
 	lib::rect r = m_dest->get_rect();
@@ -232,7 +232,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	Uint8 alpha = info ? info->get_mediaopacity()* 255 : 255;
 	Uint8 bgalpha = info ? info->get_bgopacity()* 255 : 255;
-	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
+	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to %p", (long)color);
 	SDL_Rect sdl_dst_rect = {L, T, W, H};
 	// Set and draw the background color for the region
 	err = SDL_SetRenderDrawColor (renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha);
@@ -244,7 +244,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	assert (err==0);
 	err = SDL_RenderFillRect (renderer, &sdl_dst_rect);
 	assert (err==0);
-	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
+	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(%p, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 	SDL_Rect sdl_src_rect = {0, 0, W, H};
 //TBD	err = asw->copy_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
 //	assert (err==0);
@@ -260,7 +260,7 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 	if ( !	(m_src && m_dst))
 		return;
 	const lib::rect &r = m_dst->get_rect();
-	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw(0x%x)", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw(%p)", (void *)this);
 	double opacity = m_src->get_bgopacity();
 	if (opacity > 0.0) {
 	// First find our whole area to be cleared to background color
@@ -278,7 +278,7 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			H = dstrect_whole.height();
 		// Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
+		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=%p local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
 
 		Uint8 red = redc(bgcolor), green = greenc(bgcolor), blue = bluec(bgcolor);
 //TMP		if (background_renderer == NULL) { // TMP disable SDL_Renderer* caching
@@ -341,7 +341,7 @@ void sdl_background_renderer::highlight(gui_window *window)
 void
 sdl_background_renderer::keep_as_background()
 {
-	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::keep_as_background(0x%x) called", (void *)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::keep_as_background(%p) called", (void *)this);
 	const lib::rect &r = m_dst->get_rect();
 /*TBD
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) m_dst->get_gui_window();

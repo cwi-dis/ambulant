@@ -66,9 +66,9 @@ sdl_video_renderer::sdl_video_renderer(
     // sdl_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
   	common::video_renderer(context, cookie, node, evp, factory, mdp),
 
+	m_img_displayed(0),
 	m_data(NULL),
 	m_datasize(0),
-	m_img_displayed(0),
 	m_sws_ctx(0)
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -95,7 +95,7 @@ sdl_video_renderer::pixel_layout()
 void
 sdl_video_renderer::_push_frame(char* frame, size_t size)
 {
-	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer::_push_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer::_push_frame: frame=%p, size=%d, this=%p", (void*) frame, size, (void*) this);
 	if (m_data)
 		free(m_data);
 	m_data = frame;
@@ -111,7 +111,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 	//XXXX but as far as we know this has never happened
 	m_lock.enter();
 	if (m_data){
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(0x%x)",(void*) this);
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(%p)",(void*) this);
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
 		lib::rect dst_rect_whole = r;
@@ -119,7 +119,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		dst_rect_whole.translate(p);
 		// XXXX WRONG! This is the info for the region, not for the node!
 		const common::region_info *info = m_dest->get_info();
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=0x%x", info);
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=%p", info);
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
 				// XXXX Fill with background color TBD
@@ -137,7 +137,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		int dst_height = dst_rect.h;
 		int src_width = src_rect.w;
 		int src_height = src_rect.h;
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d",(void *)this, dst_width, dst_height, src_width, src_height);
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d",(void *)this, dst_width, dst_height, src_width, src_height);
 
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
 		SDL_Renderer* renderer = asw->get_sdl_ambulant_window()->get_sdl_renderer();
@@ -157,7 +157,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		}
 		pixels[0] = (uint8_t*) malloc(dst_stride[0]*dst_height); 
 		int rv = sws_scale(m_sws_ctx,(const uint8_t* const*) &m_data, src_stride, 0, src_height, pixels, dst_stride);
-		AM_DBG { 		static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) src=%dx%d dst=%dx%d rv=%d src_stride=%d", this, src_width, src_height, dst_width, dst_height,rv,src_stride[0]); }}
+		AM_DBG { 		static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) src=%dx%d dst=%dx%d rv=%d src_stride=%d", this, src_width, src_height, dst_width, dst_height,rv,src_stride[0]); }}
 		dst_rect.h = dst_height = rv;
 		Uint32 rmask, gmask, bmask, amask;
 		// we use ARGB
@@ -169,7 +169,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		surface = SDL_CreateRGBSurfaceFrom(pixels[0], dst_width, dst_height, 32, dst_stride[0], rmask, gmask, bmask, amask);
 		SDL_Rect sdl_dst_rect = {dst_rect.left(), dst_rect.top(), dst_width, dst_height};
 		SDL_Rect sdl_src_rect = {src_rect.left(), src_rect.top(), src_width, src_height};
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 //		saw->dump_sdl_surface(surface, "surf");  // use this for debugging
 		saw->copy_to_sdl_surface (surface, NULL, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));

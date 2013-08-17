@@ -70,8 +70,8 @@ sdl_text_renderer::sdl_text_renderer(
 :	sdl_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_text_storage(NULL),
 	m_text_color(0),
-	m_text_font(NULL),
 	m_text_size(DEFAULT_FONT_HEIGHT),
+	m_text_font(NULL),
 #ifndef WITH_SDLPANGO
 	m_ttf_font(NULL),
 	m_ttf_style(TTF_STYLE_NORMAL),
@@ -79,7 +79,7 @@ sdl_text_renderer::sdl_text_renderer(
 	m_sdl_surface(NULL)
 {
 	smil2::params *params = smil2::params::for_node(node);
-	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(0x%x) params=0x%x",this,params);
+	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(%p) params=%p",this,params);
 	if (params) {
 #ifndef WITH_SDLPANGO
 		int ttf_font_style = TTF_STYLE_NORMAL;
@@ -100,7 +100,7 @@ sdl_text_renderer::sdl_text_renderer(
 }
 
 sdl_text_renderer::~sdl_text_renderer() {
-	AM_DBG lib::logger::get_logger()->debug("~sdl_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~sdl_text_renderer(%p)", this);
 	m_lock.enter();
 	if (m_text_storage != NULL) {
 		free(m_text_storage);
@@ -132,7 +132,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		m_text_storage[m_data_size] = '\0';
 	}
 	AM_DBG lib::logger::get_logger()->debug(
-		"sdl_text_renderer.redraw(0x%x):"
+		"sdl_text_renderer.redraw(%p):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
 		"font-family=(%s)",
 		(void *)this, r.left(), r.top(), r.width(), r.height(),

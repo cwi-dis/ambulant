@@ -88,8 +88,8 @@ class sdl_smiltext_renderer :
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
 		unsigned int start_index, unsigned int end_index);
-	SDLPango_Context* m_sdl_pango_context;
 
+	SDLPango_Context* m_sdl_pango_context;
 	PangoAttrList* m_pango_attr_list;
 	PangoContext* m_pango_context;
 	PangoLayout* m_pango_layout;

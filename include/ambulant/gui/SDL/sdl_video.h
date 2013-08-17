@@ -97,11 +97,12 @@ class sdl_video_renderer :  public common::video_renderer  {
   protected:
 	void _push_frame(char* frame, size_t size);
 private:
+	void render_frame();
+
 	long int m_img_displayed;
 	char* m_data;
 	unsigned int m_datasize;
 	struct SwsContext* m_sws_ctx;
-	void render_frame();
 };
 
 
