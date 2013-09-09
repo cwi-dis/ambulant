@@ -278,7 +278,7 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 
 	AM_DBG av_dump_format(ic, 0, ffmpeg_name.c_str(), 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
 	assert(ic);
 	return ic;
 }

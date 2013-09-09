@@ -29,6 +29,7 @@ using namespace ambulant;
 #else
 #define MUTEX_DEBUG
 #endif//NDEBUG
+#define MUTEX_DEBUG
 
 lib::unix::critical_section::critical_section()
 {
