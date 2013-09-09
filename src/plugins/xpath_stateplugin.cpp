@@ -794,6 +794,9 @@ xpath_state_component::want_state_change(const char *ref, common::state_change_c
 void
 xpath_state_component::_check_state_change(xmlNodePtr changed)
 {
+	typedef std::pair<common::state_change_callback*, std::string> todo;
+	typedef std::list<todo> todolisttype;
+	todolisttype todolist;
 	m_lock.enter();
 	std::vector<std::pair<std::string, common::state_change_callback* > >::iterator i;
 	AM_DBG lib::logger::get_logger()->debug("_check_state_change()");
@@ -816,7 +819,7 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 						AM_DBG lib::logger::get_logger()->debug("check_state_change: raising stateChange(%s)", ref.c_str());
 						common::state_change_callback *cb = (*i).second;
 						assert(cb);
-						cb->on_state_change(ref.c_str());
+						todolist.push_back(todo(cb, ref));
 						break;
 					}
 				}
@@ -824,6 +827,10 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 		}
 	}
 	m_lock.leave();
+	todolisttype::iterator t;
+	for(t=todolist.begin(); t != todolist.end(); t++) {
+		((*t).first)->on_state_change((*t).second.c_str());
+	}
 }
 
 // Helper function: get data from a subtree and return it as an application/x-www-form-urlencoded string
