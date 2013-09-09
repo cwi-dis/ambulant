@@ -108,8 +108,11 @@ video_renderer::~video_renderer() {
 	m_dest = NULL;
 	if (m_audio_renderer) m_audio_renderer->release();
 	m_audio_renderer = NULL;
-	if (m_src) m_src->release();
-	m_src = NULL;
+	if (m_src) {
+        m_src->stop();
+        m_src->release();
+        m_src = NULL;
+    }
 	m_lock.leave();
 }
 
