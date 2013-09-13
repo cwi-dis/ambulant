@@ -276,7 +276,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	SDL_Surface* surface = saw->get_sdl_surface();
 	SDL_Surface* screen_surface = surface;
 //X	SDL_BlitSurface(surface, &rect, screen_surface, &sdl_rect);
-	if (m_recorder) {
+	if (m_recorder && saw->get_evp()) {
 		timestamp_t timestamp = saw->get_evp()->get_timer()->elapsed();
 		m_recorder->new_video_data((const char*) screen_surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
 	}
@@ -878,11 +878,11 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 void
 sdl_ambulant_window::dump_sdl_surface (SDL_Surface* surf, const char* id)
 {
-	if (surf == NULL || id == NULL) {
+	if (surf == NULL || id == NULL || m_evp == NULL) {
 		return;
 	}
 	char filename[256];
-	sprintf(filename,"%%%.8lu%s.bmp", get_evp()->get_timer()->elapsed(), id);
+	sprintf(filename,"%%%.8lu%s.bmp", m_evp->get_timer()->elapsed(), id);
 	SDL_SaveBMP(surf, filename);
 }
 

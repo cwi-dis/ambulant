@@ -71,7 +71,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	m_lock.enter();
 	const point p = m_dest->get_global_topleft();
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): m_image=%p, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
+	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): m_image=%p, ltrb=(%d,%d,%d,%d), p=(%d,%d) sig=%s", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y,m_node->get_sig().c_str());
 
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
@@ -170,55 +170,33 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		} else alpha_chroma = alpha_media;
 	}
 	dstrect.translate(p);
-#ifdef JNK
-	// S_ for source image coordinates
-	// D_ for destination coordinates
-	int S_L = srcrect.left(),
-		S_T = srcrect.top(),
-		S_W = srcrect.width(),
-		S_H = srcrect.height();
-	int D_L = dstrect.left(),
-		D_T = dstrect.top(),
-		D_W = dstrect.width(),
-		D_H = dstrect.height();
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
-#endif//JNK
 	if (srcrect.w == 0 || srcrect.h == 0 || dstrect.w == 0 || dstrect.h == 0) {
 		// either nothing to redraw from source or to destination)
 		return;
 	}
-#ifdef JNK
-	// scale image s.t. the viewbox specified fits in destination area:
-	// zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X
-	float	fact_W = (float)D_W/(float)S_W,
-		fact_H = (float)D_H/(float)S_H;
-	// N_ for new (scaled) image coordinates
-	int N_L = (int)roundf(S_L*fact_W),
-		N_T = (int)roundf(S_T*fact_H),
-		N_W = (int)roundf(width*fact_W),
-		N_H = (int)roundf(height*fact_H);
-	N_L = N_T = 0;
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): alpha_chroma=%f, alpha_media=%f, chrona_low=%p, chroma_high=%p", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
-#endif//JNK
 	SDL_Rect sdl_srcrect = SDL_Rect_from_ambulant_rect (srcrect);
 	SDL_Rect sdl_dstrect = SDL_Rect_from_ambulant_rect (dstrect);
 	if (alpha_chroma != 1.0) { //TBD
 	} else {
 	}
 	if (srcrect != dstrect) {
-		SDL_Surface* surface = 	surface = SDL_CreateRGBSurface(0, srcrect.width(), srcrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
+		SDL_Surface* surface = SDL_CreateRGBSurface(0, srcrect.width(), srcrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
 		if (surface != NULL) {
-			int err = SDL_BlitScaled (m_image, &sdl_srcrect, surface, &sdl_dstrect);
+//			saw->dump_sdl_surface(m_image, "rimg");  // use this for debugging
+			int err = SDL_BlitScaled (m_image, NULL, surface, NULL);
 			if (err < 0) {
-			  lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): SDL_BlitScaled return %s", SDL_GetError());
+				lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): SDL_BlitScaled return %s", SDL_GetError());
 			} else {
-//				saw->dump_sdl_surface(surface, "surf");  // use this for debugging
-				saw->copy_to_sdl_surface (surface, &sdl_dstrect, &sdl_dstrect, 255 * alpha_media);
+//				saw->dump_sdl_surface(surface, "simg");  // use this for debugging
+				saw->copy_to_sdl_surface (surface, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
+			}
+			SDL_FreeSurface(surface);
 		}
-		SDL_FreeSurface(surface);
-	} else
+	} else {
+//		saw->dump_sdl_surface(m_image, "uimg");  // use this for debugging
 		saw->copy_to_sdl_surface (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
 	}
+//	saw->dump_sdl_surface(saw->get_sdl_surface(), "surf");  // use this for debugging
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p done.", this);
 	m_lock.leave();
 }
