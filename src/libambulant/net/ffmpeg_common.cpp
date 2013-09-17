@@ -59,6 +59,7 @@ ambulant::net::ffmpeg_init()
 #if 1
 	// Enable this line to get lots of ffmpeg debug output:
 	if (getenv("AMBULANT_FFMPEG_DEBUG")) av_log_set_level(AV_LOG_DEBUG);
+	if (getenv("AMBULANT_FFMPEG_QUIET")) av_log_set_level(AV_LOG_PANIC);
 #endif
 // avcodec_init() was useless since years, replaced by av_register_all().
 // After being marked deprecated for some time, it is now completely been from API.

@@ -80,7 +80,6 @@ video_datasource*
 ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 {
 
-	printf("LIBAVCODEC_VERSION_INT=0x%x\n", LIBAVCODEC_VERSION_INT);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
 
 	// First we check that the file format is supported by the file reader.
