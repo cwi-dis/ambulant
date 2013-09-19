@@ -24,6 +24,25 @@
 //X #include "ambulant/gui/sdl/sdl_includes.h"
 //X #include "ambulant/gui/sdl/sdl_renderer.h"
 
+// temporarily re-enabled old (wrong) sws_scale code i.o. SDL_BlitScaled
+#define WITH_SWS_SCALE
+#ifdef  WITH_SWS_SCALE
+extern "C" {
+#define UINT64_C(c) (c ## ULL)
+#include "libavcodec/avcodec.h"
+#include "libswscale/swscale.h"
+#ifndef AV_NUM_DATA_POINTERS
+// needed for older versions of ffmpeg (< 0.9)
+#define AV_NUM_DATA_POINTERS 4
+#endif// !  AV_NUM_DATA_POINTERS
+};
+#define SDL_PIXEL_LAYOUT net::pixel_argb
+#define SDL_PIXELFORMAT SDL_PIXELFORMAT_ARGB8888
+#define SDL_SWS_PIX_FMT PIX_FMT_RGB32
+#define SDL_BPP 4
+#endif//WITH_SWS_SCALE
+
+
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_video.h"
 #include "ambulant/gui/SDL/sdl_window.h"
@@ -126,15 +145,49 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		rmask = 0x00ff0000;
 		gmask = 0x0000ff00;
 		bmask = 0x000000ff;     
+		
+        int dst_width = dst_rect.w;
+		int dst_height = dst_rect.h;
+		int src_width = src_rect.w;
+		int src_height = src_rect.h;
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d",(void *)this, dst_width, dst_height, src_width, src_height);
+#ifdef  WITH_SWS_SCALE
+		SDL_Renderer* renderer = asw->get_sdl_ambulant_window()->get_sdl_renderer();
+		SDL_Surface* surface = NULL;
+		// prevent warnings: Forcing full internal H chroma due to odd output size
+		int flags = SWS_FAST_BILINEAR | SWS_FULL_CHR_H_INT;
+		static struct SwsContext* s_sws_ctx;
+		s_sws_ctx = sws_getCachedContext(s_sws_ctx, src_width, src_height, SDL_SWS_PIX_FMT, dst_width, dst_height, SDL_SWS_PIX_FMT, flags, NULL, NULL, NULL);
+		uint8_t* pixels[AV_NUM_DATA_POINTERS];
+		int dst_stride[AV_NUM_DATA_POINTERS];
+		int src_stride[AV_NUM_DATA_POINTERS];
+		dst_stride[0] = dst_width*SDL_BPP;
+		src_stride[0] = m_size.w*SDL_BPP;
+		for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
+			pixels[i] = NULL;
+			dst_stride[i] = src_stride[i] = 0;
+		}
+		pixels[0] = (uint8_t*) malloc(dst_stride[0]*dst_height); 
+		int rv = sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, src_stride, 0, src_height, pixels, dst_stride);
+		AM_DBG {static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) src=%dx%d dst=%dx%d rv=%d src_stride=%d", this, src_width, src_height, dst_width, dst_height,rv,src_stride[0]); }}
+		dst_rect.h = dst_height = rv;
+		// convert pixels to SDL_Surface
+		surface = SDL_CreateRGBSurfaceFrom(pixels[0], dst_width, dst_height, 32, dst_stride[0], rmask, gmask, bmask, amask);
+#else// ! WITH_SWS_SCALE
 		SDL_Surface* surface = saw->scale_pixels_to_SDL_Surface (m_data, m_size, src_rect, dst_rect, amask, rmask, gmask, bmask);
+//		saw->dump_sdl_surface(surface, "surf");  // use this for debugging
+		void* pixels = surface->pixels;
+#endif// ! WITH_SWS_SCALE
 		SDL_Rect sdl_dst_rect = {dst_rect.left(), dst_rect.top(), dst_rect.w, dst_rect.h};
 		SDL_Rect sdl_src_rect = {src_rect.left(), src_rect.top(), src_rect.w, src_rect.h};
 		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
-//		saw->dump_sdl_surface(surface, "surf");  // use this for debugging
 		saw->copy_to_sdl_surface (surface, NULL, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
-		void* pixels = surface->pixels;
 		SDL_FreeSurface(surface);
+#ifdef  WITH_SWS_SCALE
+		free (pixels[0]);
+#else// ! WITH_SWS_SCALE
 		free (pixels);
+#endif// ! WITH_SWS_SCALE
 	}
 	m_lock.leave();
 }
