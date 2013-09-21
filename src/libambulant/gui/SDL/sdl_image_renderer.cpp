@@ -180,7 +180,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	} else {
 	}
 	if (srcrect != dstrect) {
-		SDL_Surface* surface = SDL_CreateRGBSurface(0, srcrect.width(), srcrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
+		SDL_Surface* surface = SDL_CreateRGBSurface(0, dstrect.width(), dstrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
 		if (surface != NULL) {
 //			saw->dump_sdl_surface(m_image, "rimg");  // use this for debugging
 			int err = SDL_BlitScaled (m_image, NULL, surface, NULL);
