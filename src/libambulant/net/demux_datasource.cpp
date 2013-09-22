@@ -644,6 +644,9 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 #ifdef XXXJACK_COMBINE_HACK
 		free(oldbuf);
 #endif
+#ifdef LOGGER_VIDEOLATENCY
+        logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 2-push %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
+#endif
 	}
 
 	if ( m_frames.size() || _end_of_file()	) {

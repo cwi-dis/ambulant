@@ -202,6 +202,9 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		CGContextDrawImage (myContext, cg_dstrect, cropped_image); // ignoring alfa, for now
 		CGContextRestoreGState(myContext);
 		// XXX	release cropped_image
+#ifdef LOGGER_VIDEOLATENCY
+        logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 7-display %lld %lld %s", 0LL, m_last_frame_timestamp, m_node->get_url("src").get_url().c_str());
+#endif
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("0x%x: cg_dsvideo.redraw: no image to show", this);
 	}

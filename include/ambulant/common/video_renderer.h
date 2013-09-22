@@ -101,6 +101,7 @@ class video_renderer : public common::renderer_playable {
 	net::video_datasource* m_src;	///< video datasource.
 	net::audio_datasource *m_audio_ds;	///< audio datasource.
 	common::playable *m_audio_renderer;	///< the audio playable.
+	net::timestamp_t m_last_frame_timestamp;
   private:
 	typedef lib::no_arg_callback <video_renderer > dataavail_callback;
 	double _now();
@@ -112,7 +113,6 @@ class video_renderer : public common::renderer_playable {
 	bool m_is_stalled;			// True if we emitted a stalled() feedback call
 	bool m_is_paused;
 	long int m_paused_epoch;
-	net::timestamp_t m_last_frame_timestamp;
 	long int m_frame_displayed;
 	long int m_frame_duplicate;
 	long int m_frame_early;
