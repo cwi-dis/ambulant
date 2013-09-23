@@ -22,7 +22,7 @@ class LatencyData:
         if dts:
             perpts['dts'] = dts
         if stage in perpts:
-            print >>sys.stderr, 'Duplicate %s for PTS=%d: %d and %d' % (stage, pts, timestamp, perpts[stage])
+            pass # print >>sys.stderr, 'Duplicate %s for PTS=%d: %f and %f' % (stage, pts, timestamp, perpts[stage])
         else:
             perpts[stage] = timestamp
             

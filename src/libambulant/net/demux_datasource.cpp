@@ -598,6 +598,9 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 	}
 	if(sz > 0) {
 #ifdef XXXJACK_COMBINE_HACK
+#ifdef LOGGER_VIDEOLATENCY
+        lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 1-combine %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
+#endif
 		// Combine all data with the same timestamp
 		if (pts == m_combinehack_pts) {
 			// Store this packet at the end of the previous packet, or alloc a new one
