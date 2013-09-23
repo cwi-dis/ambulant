@@ -539,7 +539,7 @@ ffmpeg_demux::run()
                     timestamp_t pr_pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
                     timestamp_t pr_dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 #ifdef LOGGER_VIDEOLATENCY
-                    logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 1-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
+                    lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 1-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
 #endif
                 }
 				if (pts == (int64_t)AV_NOPTS_VALUE) {

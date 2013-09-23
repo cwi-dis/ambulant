@@ -523,7 +523,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	// Get the input data
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts, &sz);
 #ifdef LOGGER_VIDEOLATENCY
-    logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 3-predecode %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
+    lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 3-predecode %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
 #endif
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available", sz);
 
@@ -618,7 +618,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			got_pic = 0;
 			len = avcodec_decode_video2(m_con, frame, &got_pic, &avpkt);
 #ifdef LOGGER_VIDEOLATENCY
-            logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 4-decoded %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
+            lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 4-decoded %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
 #endif
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
 			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
@@ -760,7 +760,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			// Finally send the frame upstream.
 			std::pair<timestamp_t, char*> element(pts, framedata);
 #ifdef LOGGER_VIDEOLATENCY
-            logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 5-scaled %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
+            lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 5-scaled %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
 #endif
 			m_frames.push(element);
 
