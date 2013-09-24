@@ -709,6 +709,9 @@ class demux_datasink : virtual public lib::ref_counted_obj {
 	virtual bool push_data(timestamp_t pts, const uint8_t *data, size_t size) = 0;
 
 };
+#define MAGIC_SIZE_EOF 0		///< push_data flag: we have reached end of file
+#define MAGIC_SIZE_AVPACKET -1	///< push_data flag: data is an AVPacket
+#define MAGIC_SIZE_FLUSH -2		///< push_data flag: seek will hapen, flush codec buffers
 
 /// Interface for objects that demultiplex audio/video streams.
 /// A demultiplexer will feed stream data into multiple

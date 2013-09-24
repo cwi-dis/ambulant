@@ -406,7 +406,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 		// If the sink is currently busy (in run()) then
 		// run() will take care of disposal.
 		// signal EOF
-		ds->push_data(0, 0, 0);
+		ds->push_data(0, 0, MAGIC_SIZE_EOF);
 		ds->release();
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream);
@@ -438,7 +438,7 @@ ffmpeg_demux::run()
 	while (!exit_requested()) {
 		AVPacket pkt1, *pkt = &pkt1;
 
-		pkt->pts = 0;
+		av_init_packet(pkt);
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_clip_begin_changed) {
@@ -468,6 +468,7 @@ ffmpeg_demux::run()
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
 			m_clip_begin_changed = false;
+			// XXXJACK: Must push flush packet down all streams, so decoders can call avcodec_flush_buffers().
 		}
 		m_lock.leave();
 		int ret = av_read_frame(m_con, pkt);
@@ -480,7 +481,7 @@ ffmpeg_demux::run()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
 				for (int i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 					if (m_sinks[i]) {
-						m_sinks[i]->push_data(0, 0, 0);
+						m_sinks[i]->push_data(0, 0, MAGIC_SIZE_EOF);
 					}
 				}
 				eof_sent_to_clients = true;
@@ -520,6 +521,7 @@ ffmpeg_demux::run()
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
 					pts = pkt->pts;
 				}
+				
 				if (!m_is_live) {
 					// 17-feb-2010 To fix the chopping audio playback in vobis/ogg
 					// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
@@ -583,19 +585,24 @@ ffmpeg_demux::run()
 				m_current_sink = sink;
 
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
+				AVPacket *pkt_copy = (AVPacket *)malloc(sizeof(AVPacket));
+				*pkt_copy = *pkt;
+
 				m_lock.leave();
-				accepted = sink->push_data((timestamp_t)pts, pkt->data, (size_t)pkt->size);
+				accepted = sink->push_data((timestamp_t)pts, (uint8_t*)pkt_copy, MAGIC_SIZE_AVPACKET);
 				if ( ! accepted) {
+					free(pkt_copy);
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 					// sleep 10 millisec, hardly noticeable
 					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
 				}
 				m_lock.enter();
+
 				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
 				{
-					sink->push_data(0,0,0);
+					sink->push_data(0,0,MAGIC_SIZE_EOF);
 					sink->release();
 				}
 				m_current_sink = NULL;
@@ -610,27 +617,13 @@ ffmpeg_demux::run()
 	m_lock.leave();
 	for (i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 		if (m_sinks[i]) {
-			m_sinks[i]->push_data(0, 0, 0);
+			m_sinks[i]->push_data(0, 0, MAGIC_SIZE_EOF);
 			m_sinks[i]->release();
 			m_sinks[i] = NULL;
 		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
 	return 0;
-}
-
-AVCodecContext *
-ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
-{
-	ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
-	AVCodecContext *ffcontext = avcodec_alloc_context3(NULL);
-	if (video) {
-		ffcontext->codec_type = AVMEDIA_TYPE_VIDEO;
-	} else {
-		ffcontext->codec_type = AVMEDIA_TYPE_AUDIO;
-	}
-	ffcontext->codec_id = codecid->get_codec_id(name);
-	return ffcontext;
 }
 
 lib::critical_section s_lock;

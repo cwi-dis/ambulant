@@ -225,20 +225,18 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 	// XXX timestamp is ignored, for now
 	bool rv = true;
 	m_lock.enter();
-	m_src_end_of_file = (sz == 0);
+	m_src_end_of_file = (sz == MAGIC_SIZE_EOF);
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
 	if ( ! m_src_end_of_file) {
 		if (_buffer_full()) {
 			rv = false;
-		} else {
-			char* data = (char*)malloc(sz+FF_INPUT_BUFFER_PADDING_SIZE);
-			assert(data);
-			memcpy(data, inbuf, sz);
-#if FF_INPUT_BUFFER_PADDING_SIZE
-			memset(data+sz, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-#endif
-			ts_packet_t tsp(pts,data,sz);
+		} else if (sz == MAGIC_SIZE_AVPACKET) {
+			ts_packet_t tsp(pts,(void*)inbuf,MAGIC_SIZE_AVPACKET);
 			m_queue.push(tsp);
+		} else if (sz == MAGIC_SIZE_FLUSH) {
+			ts_packet_t tsp(pts,NULL,MAGIC_SIZE_FLUSH);
+			m_queue.push(tsp);
+
 		}
 	}
 	if ( m_queue.size() > 0 || _end_of_file()  ) {
@@ -581,7 +579,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 {
 	m_lock.enter();
 
-	m_src_end_of_file = (sz == 0);
+	m_src_end_of_file = (sz == MAGIC_SIZE_EOF);
 
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data sz=%d ,pts=%lld, %d already in queue", sz, pts, m_frames.size());
 	if ( ! m_thread) {
@@ -596,61 +594,25 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 		m_lock.leave();
 		return false;
 	}
-	if(sz > 0) {
-#ifdef XXXJACK_COMBINE_HACK
-#ifdef LOGGER_VIDEOLATENCY
-        lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 1-combine %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
-#endif
-		// Combine all data with the same timestamp
-		if (pts == m_combinehack_pts) {
-			// Store this packet at the end of the previous packet, or alloc a new one
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): pts=%d, adding %d bytes to %d already there\n", pts, sz, m_combinehack_buf_size) ;
-			assert (m_combinehack_buf != NULL);
-			m_combinehack_buf = (uint8_t*)realloc(m_combinehack_buf, m_combinehack_buf_size + sz);
-			assert(m_combinehack_buf);
-			memcpy(m_combinehack_buf + m_combinehack_buf_size, inbuf, sz);
-			m_combinehack_buf_size += sz;
-			m_lock.leave();
-			return true;
-		}
-		// New timestamp. Store, and pass old data on to the decoder.
-		uint8_t *oldbuf = m_combinehack_buf;
-		size_t oldsize = m_combinehack_buf_size;
-		timestamp_t oldpts = m_combinehack_pts;
-
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): pts=%d, storing %d bytes\n", pts, sz);
-		m_combinehack_buf = (uint8_t*)malloc(sz);
-		assert(m_combinehack_buf);
-		memcpy(m_combinehack_buf, inbuf, sz);
-		m_combinehack_buf_size = sz;
-		m_combinehack_pts = pts;
-
-		inbuf = oldbuf;
-		sz = oldsize;
-		pts = oldpts;
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): oldpts=%d, forwarding %d bytes\n", pts, sz) ;
-#endif	
-		//m_frame_nr++;
-		// Of all obfuscated interfaces in ffmpeg this is probably the worst: all data passed to avcodec_decode_video
-		// (and possibly others) needs to be padded out with 8 (currently) zero bytes.
-		char* frame_data = (char*) malloc(sz+FF_INPUT_BUFFER_PADDING_SIZE);
-		assert(frame_data);
-		memcpy(frame_data, inbuf, sz);
-#if FF_INPUT_BUFFER_PADDING_SIZE
-		memset(frame_data+sz, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-#endif
+	if (sz == MAGIC_SIZE_AVPACKET) {
 		video_frame vframe;
-		vframe.data = frame_data;
-		vframe.size = sz;
+		vframe.data = (char *)inbuf;
+		vframe.size = MAGIC_SIZE_AVPACKET;
 		ts_frame_pair mypair(pts, vframe);
 		m_frames.push(mypair);
-#ifdef XXXJACK_COMBINE_HACK
-		free(oldbuf);
-#endif
-#ifdef LOGGER_VIDEOLATENCY
-        lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 2-push %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
-#endif
+	} else if (sz == MAGIC_SIZE_FLUSH) {
+		video_frame vframe;
+		vframe.data = NULL;
+		vframe.size = MAGIC_SIZE_FLUSH;
+		ts_frame_pair mypair(pts, vframe);
+		m_frames.push(mypair);
+	} else {
+		assert(0);
 	}
+
+#ifdef LOGGER_VIDEOLATENCY
+	lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 2-push %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
+#endif
 
 	if ( m_frames.size() || _end_of_file()	) {
 		if ( m_client_callback && m_event_processor) {
