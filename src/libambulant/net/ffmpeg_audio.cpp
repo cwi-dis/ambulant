@@ -493,9 +493,6 @@ ffmpeg_decoder_datasource::data_avail()
 				if (decoded == 0 && cursz > 0)
 					lib::logger::get_logger()->trace("ffmpeg_audio_decoder: last %d bytes of packet dropped");
 
-				inbuf = (uint8_t*) audio_packet.data;
-				free(inbuf);
-
 				_need_fmt_uptodate();
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
@@ -556,7 +553,9 @@ ffmpeg_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail m_src->readdone(0) called this=0x%x");
 		}
 		if (tmp_pkt) {
+            AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: free pkt=%p (data %p, size %d)\n", tmp_pkt, tmp_pkt->data, tmp_pkt->size);
 			av_free_packet(tmp_pkt);
+            free(tmp_pkt);
 		}
 		// Restart reading if we still have room to accomodate more data
 		// XXX The note regarding m_elapsed holds here as well.

@@ -597,7 +597,7 @@ video_renderer::data_avail()
 
 	// If we are watching a live stream *and* there is a lot of frames in the buffer we speed up time.
 	if (m_src->get_is_live() && m_src->get_buffer_time() > frame_duration) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::data_avail: resyncing (%lld us in input buffer)", m_src->get_buffer_time());
+		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: resyncing (%lld us in input buffer)", m_src->get_buffer_time());
 		_resync(m_src->get_buffer_time() - frame_duration);
 	}
 

@@ -253,7 +253,7 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 
 	AM_DBG av_dump_format(ic, 0, ffmpeg_name.c_str(), 0);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
 	assert(ic);
 	return ic;
 }
@@ -539,7 +539,7 @@ ffmpeg_demux::run()
 							last_valid_audio_pts = pts;
 						}
 					} else {
-						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
 						last_valid_audio_pts++;
 						pts = last_valid_audio_pts;
@@ -590,7 +590,8 @@ ffmpeg_demux::run()
 
 				m_lock.leave();
 				accepted = sink->push_data((timestamp_t)pts, (uint8_t*)pkt_copy, MAGIC_SIZE_AVPACKET);
-				if ( ! accepted) {
+                AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pkt=%p (data %p, size %d)\n", pkt_copy, pkt_copy->data, pkt_copy->size);
+				if ( !accepted) {
 					free(pkt_copy);
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
@@ -609,8 +610,8 @@ ffmpeg_demux::run()
 				sink = m_sinks[pkt->stream_index];
 			}
 		}
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
-		av_free_packet(pkt);
+		//AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
+		//av_free_packet(pkt);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
 	int i;
