@@ -147,8 +147,8 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
 	if (fmt.name != "ffmpeg") return false;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-	if (enc->codec_type != CODEC_TYPE_VIDEO) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, CODEC_TYPE_VIDEO);
+	if (enc->codec_type != AVMEDIA_TYPE_VIDEO) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, AVMEDIA_TYPE_VIDEO);
 		return false;
 	}
 	if (avcodec_find_decoder(enc->codec_id) == NULL) {
@@ -174,12 +174,6 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_dropped_count(0),
     m_complete_frame_seen(false),
     m_is_live(false),
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-	m_dropped_count_before_decoding(0),
-	m_possibility_dropping_nonref(0),
-	m_frame_count_temp(0),
-	m_dropped_count_temp(0),
-#endif
 	m_elapsed(0),
 	m_start_input(true),
 	m_pixel_layout(pixel_unknown)
@@ -192,13 +186,6 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
 	m_fmt = fmt;
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-	// initialize random seed
-	srand ( time(NULL) );
-	m_beforeDecodingDroppingFile = fopen ("beforeDecodingDropping.txt","w");
-	m_afterDecodingDroppingFile = fopen ("afterDecodingDropping.txt","w");
-	m_noDroppingFile = fopen ("noDropping.txt","w");
-#endif
 }
 
 ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
@@ -207,12 +194,6 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 	stop();
 	if (m_img_convert_ctx) sws_freeContext(m_img_convert_ctx);
 	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames after decoding", m_dropped_count, m_frame_count);
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-	if (m_dropped_count_before_decoding) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d frames before decoding", m_dropped_count_before_decoding);
-	fclose(m_beforeDecodingDroppingFile);
-	fclose(m_afterDecodingDroppingFile);
-	fclose(m_noDroppingFile);
-#endif
 }
 
 void
@@ -555,49 +536,11 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d bytes of data ", sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-			// we begin to compute the dropping rate 
-			if (m_dropped_count_temp > 5 ) {
-				// if the dropping rate is bigger than 1/2 
-				// then increase the threshold value of dropping possibility 
-				if (m_frame_count_temp/m_dropped_count_temp <= 2) {
-					m_possibility_dropping_nonref+=3;
-					m_frame_count_temp = 0;
-					m_dropped_count_temp = 0;
-				} else {
-					// otherwise decrease the threshold of dropping possibility
-					m_possibility_dropping_nonref-=3;
-					if (m_possibility_dropping_nonref < 0 )
-						m_possibility_dropping_nonref = 0;
-					m_frame_count_temp = 0;
-					m_dropped_count_temp = 0;				
-				}
-			}
-			AM_DBG lib::logger::get_logger()->debug("m_possibility_dropping_nonref = %d", m_possibility_dropping_nonref);
-			
-			//xxxbo tell ffmpeg to drop no reference frames with some possibility 
-			// generate a random number between 1 to 10
-			int random_dropping_nonref;
-			random_dropping_nonref = rand() % 10 + 1;
-			
-			// the possibility of dropping no refence frame
-			assert(random_dropping_nonref > 0);
-			
-			if (random_dropping_nonref < m_possibility_dropping_nonref)
-				m_con->skip_frame = AVDISCARD_NONREF; 
-#endif
 			// We use skip_frame to make the decoder run faster in case we
 			// are not interested in the data (still seeking forward).
 			if (ipts != (int64_t)AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 				m_con->skip_frame = AVDISCARD_NONREF;
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-				//m_dropped_count++; // This is not necessarily correct
-				m_dropped_count_before_decoding++;
-				//AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame analysis before decoding dropping frame ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)", ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
-				AM_DBG lib::logger::get_logger()->debug("BeforeDecodingDropping pts %lld m_dropped_count_before_decoding %d", ipts, m_dropped_count_before_decoding);
-				fprintf(m_beforeDecodingDroppingFile,"BeforeDecodingDropping\t pts\t %lld\t 1\n",ipts);
-#endif
 			} else {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoder is %lld us ahead of playout", ipts-m_oldest_timestamp_wanted);
 			}
@@ -616,6 +559,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			avpkt.data = ptr;
 			avpkt.size = sz;
 			got_pic = 0;
+			//avcodec_get_frame_defaults(frame);
 			len = avcodec_decode_video2(m_con, frame, &got_pic, &avpkt);
 #ifdef LOGGER_VIDEOLATENCY
             lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 4-decoded %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
@@ -670,34 +614,18 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 			m_frame_count++;
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-			m_frame_count_temp++;
-#endif
 			if (pts < m_oldest_timestamp_wanted) {
 				// A non-essential frame while skipping forward.
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-				AM_DBG lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
-				m_dropped_count_before_decoding--;
-				fprintf(m_afterDecodingDroppingFile, "AfterDecodingDropping\t pts\t %lld\t 2\n",pts);
-#endif
 				drop_this_frame = true;
 			}
 			if (m_frames.size() > 0 && pts < m_frames.front().first) {
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-				AM_DBG lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
-				m_dropped_count_before_decoding--;
-				fprintf(m_afterDecodingDroppingFile, "AfterDecodingDropping\t pts\t %lld\t 2\n",pts);
-#endif
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
 			if (drop_this_frame && ! m_src->get_is_live()) {
 				m_dropped_count++;
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-				m_dropped_count_temp++;
-#endif
 				continue;
 			}
 
@@ -765,9 +693,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 			m_frames.push(element);
 
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): push pts = %lld into buffer", pts);
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-			fprintf(m_noDroppingFile, "NoDropping\t pts\t %lld\t 3\n",pts);
-#endif
 			did_generate_frame = true;
 		} // End of while loop
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
@@ -905,20 +830,12 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
 		return false;
 	}
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-	m_con = avcodec_alloc_context();
-#else
 	m_con = avcodec_alloc_context3(codec);
-#endif
 	m_con_owned = true;
 
 	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 	ffmpeg_lock->enter();
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-	if(avcodec_open(m_con,codec) < 0) {
-#else
 	  if(avcodec_open2(m_con,codec,NULL) < 0) {
-#endif
 		ffmpeg_lock->leave();
 		lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
@@ -942,7 +859,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 			return false;
 		}
-		if (enc->codec_type != CODEC_TYPE_VIDEO) {
+		if (enc->codec_type != AVMEDIA_TYPE_VIDEO) {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-video stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 			return false;
@@ -959,11 +876,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-		if(avcodec_open(m_con,codec) < 0) {
-#else
 		  if(avcodec_open2(m_con,codec,NULL) < 0) {
-#endif
 			ffmpeg_lock->leave();
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
 			return false;
@@ -983,19 +896,11 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): codec found!");
 
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-		m_con = avcodec_alloc_context();
-#else
 		m_con = avcodec_alloc_context3(codec);
-#endif
 		m_con_owned = true;
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-		if((avcodec_open(m_con,codec) < 0) ) {
-#else
 		  if(avcodec_open2(m_con,codec,NULL) < 0) {
-#endif
 			ffmpeg_lock->leave();
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open video codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			return false;
@@ -1004,7 +909,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		ffmpeg_lock->leave();
 
-		m_con->codec_type = CODEC_TYPE_VIDEO;
+		m_con->codec_type = AVMEDIA_TYPE_VIDEO;
 		// We doe a fmt update here to sure that we have the correct values.
 		_need_fmt_uptodate();
 		return true;

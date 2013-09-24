@@ -40,8 +40,8 @@ extern "C" {
 #include "libavformat/avformat.h"
 
 // See if we must use swscale, or can use the older method
-#if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
-#error Cannot use ffmpeg older than release 0.5
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 59, 0)
+#error Cannot use ffmpeg older than release 1.0
 #endif
 
 #ifdef WITH_FFMPEG_SWSCALE
@@ -147,14 +147,6 @@ class ffmpeg_video_decoder_datasource:
     bool m_complete_frame_seen; // True whenever a real frame has been seen
     bool m_is_live; // True for live streams
 	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-	FILE* m_beforeDecodingDroppingFile;
-	FILE* m_afterDecodingDroppingFile;
-	FILE* m_noDroppingFile;
-	int m_possibility_dropping_nonref;
-	int m_dropped_count_temp;
-	int m_frame_count_temp;
-#endif
 
     static lib::critical_section s_lock;
 };

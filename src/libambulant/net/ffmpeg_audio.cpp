@@ -26,8 +26,8 @@
 #include "ambulant/net/ffmpeg_factory.h"
 #include "ambulant/net/demux_datasource.h"
 
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(52, 48, 0)
-#error Ambulant needs at least version 52.48.0 of ffmpeg libavcodec
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(54, 59, 0)
+#error Ambulant needs at least version 54.59.0 of ffmpeg libavcodec
 #endif
  
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
@@ -213,7 +213,7 @@ ffmpeg_decoder_datasource::supported(const audio_format& fmt)
 {
 	if (fmt.name == "ffmpeg") {
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-		if (enc->codec_type != CODEC_TYPE_AUDIO) return false;
+		if (enc->codec_type != AVMEDIA_TYPE_AUDIO) return false;
 		if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
 		return true;
 	}
@@ -748,20 +748,12 @@ ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
 		return false;
 	}
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-	m_con = avcodec_alloc_context();
-#else
 	m_con = avcodec_alloc_context3(codec);
-#endif
 	m_con_owned = true;
 
 	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 	ffmpeg_lock->enter();
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-	if(avcodec_open(m_con,codec) < 0) {
-#else
 	if(avcodec_open2(m_con,codec,NULL) < 0) {
-#endif
 		ffmpeg_lock->leave();
 		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
@@ -783,7 +775,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 			return false;
 		}
-		if (m_con->codec_type != CODEC_TYPE_AUDIO) {
+		if (m_con->codec_type != AVMEDIA_TYPE_AUDIO) {
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), m_con->codec_type);
 			return false;
 		}
@@ -797,11 +789,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-		if(avcodec_open(m_con,codec) < 0) {
-#else
 		if(avcodec_open2(m_con,codec,NULL) < 0) {
-#endif
 			ffmpeg_lock->leave();
 			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
 			av_free(m_con);
@@ -826,20 +814,12 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::selectdecoder(): codec found!");
 		}
 
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-		m_con = avcodec_alloc_context();
-#else
 		m_con = avcodec_alloc_context3(codec);
-#endif
 		m_con_owned = true;
 		m_con->channels = 0;
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-		if((avcodec_open(m_con,codec) < 0) ) {
-#else
 	    if((avcodec_open2(m_con,codec, NULL) < 0) ) {
-#endif
 			ffmpeg_lock->leave();
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			av_free(m_con);
@@ -850,7 +830,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 		ffmpeg_lock->leave();
 
-		m_con->codec_type = CODEC_TYPE_AUDIO;
+		m_con->codec_type = AVMEDIA_TYPE_AUDIO;
 		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
 		return true;
 	}

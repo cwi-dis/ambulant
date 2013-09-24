@@ -120,7 +120,7 @@ struct rtsp_context_t {
 	~rtsp_context_t() {
 		//Have to tear down session here, so that the server is not left hanging till timeout.
 		rtsp_client->teardownMediaSession(*media_session);
-		for (int i=0; i < MAX_STREAMS; i++) {
+		for (int i=0; i < AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 			if (sinks[i] != NULL)
 				delete sinks[i];
 		}
@@ -176,8 +176,8 @@ struct rtsp_context_t {
 	bool first_sync_time_set;	// True when first_sync_time has been set
 	audio_format audio_fmt;
 	video_format video_fmt;
-	demux_datasink *sinks[MAX_STREAMS];
-    long data_consumed[MAX_STREAMS];
+	demux_datasink *sinks[AMBULANT_MAX_FFMPEG_STREAMS];
+    long data_consumed[AMBULANT_MAX_FFMPEG_STREAMS];
 	int nsinks;
 
 };

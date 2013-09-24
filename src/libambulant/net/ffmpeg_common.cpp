@@ -38,9 +38,9 @@
 const AVRational AMBULANT_TIMEBASE = {1, 1000000};
 
 // Update the minimal required MIN_AVFORMAT_BUILD whenever we use a newer libavformat.
-#define MIN_LIBAVFORMAT_BUILD ((51<<16)+(12<<8)+2)
+#define MIN_LIBAVFORMAT_BUILD AV_VERSION_INT(54, 29, 0)
 #if LIBAVFORMAT_BUILD < MIN_LIBAVFORMAT_BUILD
-//#error Your ffmpeg is too old. Either download a newer one or remove this test in the sourcefile (at your own risk).
+#error Your ffmpeg is too old. Either download a newer one or remove this test in the sourcefile (at your own risk).
 #endif
 
 using namespace ambulant;
@@ -56,18 +56,13 @@ ambulant::net::ffmpeg_init()
 {
 	static bool is_inited = false;
 	if (is_inited) return;
-#if 1
-	// Enable this line to get lots of ffmpeg debug output:
+	// Set this environment variable to get lots of ffmpeg debug output:
 	if (getenv("AMBULANT_FFMPEG_DEBUG")) av_log_set_level(AV_LOG_DEBUG);
+	// Set this environment variable to get very little ffmpeg debug output:
 	if (getenv("AMBULANT_FFMPEG_QUIET")) av_log_set_level(AV_LOG_PANIC);
-#endif
-// avcodec_init() was useless since years, replaced by av_register_all().
-// After being marked deprecated for some time, it is now completely been from API.
+
 	av_register_all();
-// Version number from https://lists.ffmpeg.org/pipermail/ffmpeg-cvslog/2011-November/043068.html
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53, 13, 0)
 	avformat_network_init();
-#endif
 	is_inited = true;
 }
 
@@ -174,21 +169,16 @@ ffmpeg_demux::~ffmpeg_demux()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) {
-		if (m_con->nb_streams < MAX_STREAMS) {
+		if (m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS) {
 			unsigned int stream_index;
 			for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-				if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_AUDIO
-					|| m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
+				if (m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_AUDIO
+					|| m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 					avcodec_close(m_con->streams[stream_index]->codec);
 				}
 			}
 		}
-#if LIBAVFORMAT_VERSION_INT < 0x350400
-		av_close_input_file(m_con);
-		// Implies av_free(m_con);
-#else
 		avformat_close_input(&m_con);
-#endif
 	}
 	m_con = NULL;
 	m_lock.leave();
@@ -238,9 +228,6 @@ ffmpeg_demux::supported(const net::url& url)
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), ffmpeg_name.c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
 	int err;
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 2, 0)
-    err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
-#else
 	// Force rtsp-over-tcp, if that preference has been set.
 	common::preferences* prefs = common::preferences::get_preferences();
 	AVDictionary *options = 0;
@@ -248,32 +235,19 @@ ffmpeg_demux::supported(const net::url& url)
 		av_dict_set(&options, "rtsp_transport", "tcp", 0);
 	}
     err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
-#endif
 
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
-			av_close_input_file(ic);
-#else
 			avformat_close_input(&ic);
-#endif
 		}
 		return NULL;
 	}
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
-	err = av_find_stream_info(ic);
-#else
 	err = avformat_find_stream_info(ic, NULL);
-#endif
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
-			av_close_input_file(ic);
-#else
 			avformat_close_input(&ic);
-#endif
 		}
 		return NULL;
 	}
@@ -295,10 +269,10 @@ int
 ffmpeg_demux::audio_stream_nr()
 {
 	// Failure of this assert may be an c-compiler alignment problem
-	assert(m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS);
+	assert(m_con->nb_streams >= 0 && m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS);
 	unsigned int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_AUDIO)
+		if (m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
 			return stream_index;
 	}
 
@@ -309,10 +283,10 @@ int
 ffmpeg_demux::video_stream_nr()
 {
 	// Failure of this assert may be an c-compiler alignment problem
-	assert(m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS);
+	assert(m_con->nb_streams >= 0 && m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS);
 	unsigned int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
+		if (m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 			return stream_index;
 		}
 	}
@@ -365,7 +339,7 @@ void
 ffmpeg_demux::add_datasink(demux_datasink *parent, int stream_index)
 {
 	m_lock.enter();
-	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
+	assert(stream_index >= 0 && stream_index < AMBULANT_MAX_FFMPEG_STREAMS);
 	assert(m_sinks[stream_index] == 0);
 	m_sinks[stream_index] = parent;
 	parent->add_ref();
@@ -410,7 +384,7 @@ long
 ffmpeg_demux::get_bandwidth_usage_data(int stream_index, const char **resource)
 {
 	m_lock.enter();
-    assert(stream_index >= 0 && stream_index <= MAX_STREAMS);
+    assert(stream_index >= 0 && stream_index <= AMBULANT_MAX_FFMPEG_STREAMS);
     long rv = m_data_consumed[stream_index];
     m_data_consumed[stream_index] = 0;
     *resource = m_bandwidth_resource.c_str();
@@ -423,7 +397,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 {
 	demux_datasink* ds;
 	m_lock.enter();
-	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
+	assert(stream_index >= 0 && stream_index < AMBULANT_MAX_FFMPEG_STREAMS);
 	ds = m_sinks[stream_index];
 	m_sinks[stream_index] = 0;
 	if (ds) m_nstream--;
@@ -504,7 +478,7 @@ ffmpeg_demux::run()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: eof encountered (%d), wait some time before continuing the while loop", ret);
 			if (!m_is_live && !eof_sent_to_clients) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
-				for (int i=0; i<MAX_STREAMS; i++) {
+				for (int i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 					if (m_sinks[i]) {
 						m_sinks[i]->push_data(0, 0, 0);
 					}
@@ -522,7 +496,7 @@ ffmpeg_demux::run()
 		pkt_nr++;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
-		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
+		assert(pkt->stream_index >= 0 && pkt->stream_index < AMBULANT_MAX_FFMPEG_STREAMS);
 		// Keep statistics
 		m_data_consumed[pkt->stream_index] += pkt->size;
 		
@@ -634,7 +608,7 @@ ffmpeg_demux::run()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
 	int i;
 	m_lock.leave();
-	for (i=0; i<MAX_STREAMS; i++) {
+	for (i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 		if (m_sinks[i]) {
 			m_sinks[i]->push_data(0, 0, 0);
 			m_sinks[i]->release();
@@ -649,15 +623,11 @@ AVCodecContext *
 ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
 {
 	ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-	AVCodecContext *ffcontext = avcodec_alloc_context();
-#else
 	AVCodecContext *ffcontext = avcodec_alloc_context3(NULL);
-#endif
 	if (video) {
-		ffcontext->codec_type = CODEC_TYPE_VIDEO;
+		ffcontext->codec_type = AVMEDIA_TYPE_VIDEO;
 	} else {
-		ffcontext->codec_type = CODEC_TYPE_AUDIO;
+		ffcontext->codec_type = AVMEDIA_TYPE_AUDIO;
 	}
 	ffcontext->codec_id = codecid->get_codec_id(name);
 	return ffcontext;
