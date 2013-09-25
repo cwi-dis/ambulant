@@ -160,14 +160,8 @@ extern int none_window_factoryObj_Convert(PyObject *v, ambulant::gui::none::none
 extern PyObject *datasourceObj_New(ambulant::net::datasource* itself);
 extern int datasourceObj_Convert(PyObject *v, ambulant::net::datasource* *p_itself);
 
-extern PyObject *pkt_datasourceObj_New(ambulant::net::pkt_datasource* itself);
-extern int pkt_datasourceObj_Convert(PyObject *v, ambulant::net::pkt_datasource* *p_itself);
-
 extern PyObject *audio_datasourceObj_New(ambulant::net::audio_datasource* itself);
 extern int audio_datasourceObj_Convert(PyObject *v, ambulant::net::audio_datasource* *p_itself);
-
-extern PyObject *pkt_datasourceObj_New(ambulant::net::pkt_datasource* itself);
-extern int pkt_datasourceObj_Convert(PyObject *v, ambulant::net::pkt_datasource* *p_itself);
 
 extern PyObject *video_datasourceObj_New(ambulant::net::video_datasource* itself);
 extern int video_datasourceObj_Convert(PyObject *v, ambulant::net::video_datasource* *p_itself);

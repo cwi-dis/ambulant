@@ -121,9 +121,9 @@ OBJECTS=[
 	"net/datasource.h",
 #	("audio_format_choices", "ambulant::net::audio_format_choices", None),
 	("datasource", "ambulant::net::datasource", None), # XXX Refcounted
-	("pkt_datasource", "ambulant::net::pkt_datasource", None), # XXX Refcounted
+#	("pkt_datasource", "ambulant::net::pkt_datasource", None), # XXX Refcounted
 	("audio_datasource", "ambulant::net::audio_datasource", "datasource"), # XXX Refcounted
-	("pkt_datasource", "ambulant::net::pkt_datasource", "pkt_datasource"), # XXX Refcounted
+#	("pkt_datasource", "ambulant::net::pkt_datasource", "pkt_datasource"), # XXX Refcounted
 	("video_datasource", "ambulant::net::video_datasource", None), # XXX Refcounted
 	("datasource_factory", "ambulant::net::datasource_factory", None),
 	("raw_datasource_factory", "ambulant::net::raw_datasource_factory", None),

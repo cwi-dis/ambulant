@@ -81,6 +81,8 @@ class MyScanner(CxxScanner):
             "create_gtk_window_factory",
             "single_playable_factory",
             "create_sdl_window_factory", # XXXX for now
+            "get_packet",
+            "datasource_packet",
            
         ]
 
@@ -97,6 +99,8 @@ class MyScanner(CxxScanner):
             "abstract_demux", #XXX
             "demux_datasink", #XXX
             "demux_datasink_ptr", #XXX
+            "video_datasource_mixin",
+            "pkt_datasource",
             "posix_datasource", # We want only the factory and (abstract) interface
             "posix_datasource_ptr", # Ditto
             "posix_datasource_factory", # Ditto
@@ -107,7 +111,9 @@ class MyScanner(CxxScanner):
             "filter_datasource_impl_ptr", # XXXX
             "raw_filter_finder", # XXXX
             "raw_filter_finder_ptr", # XXXX
-            "datasource_packet", # XXXX Lazy: should do this one.
+            "datasource_packet",
+            "datasource_packet_ptr",
+            "pkt_datasource_ptr",
             "av_datasource_mixin", #  XXXX Multiple inheritance is difficult!
             "Where_we_get_our", # Parser trips over a comment:-)
             "flag_event",  # Holds a reference to a bool, not useful for Python

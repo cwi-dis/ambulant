@@ -27,14 +27,9 @@
 // Minimum delay
 #define MIN_EVENT_DELAY 1
 
-// How many video frames we would like to buffer at most
-#define MAX_VIDEO_FRAMES 300
-
-// How many audio packets we would like to buffer at most
-// This limit is indicative: if demux_datasource::buffer_full()
-// returns true, you are advised not to throw in more data; but if
-// you nevertheless do, no data is lost and a DEBUG message is printed
-#define MAX_AUDIO_PACKETS 300
+// How many audio/video frames we would like to buffer
+// at most between the reader and the decoder
+#define MAX_PACKETS_BUFFERED 300
 
 // WARNING: turning on AM_DBG globally in this file seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
@@ -75,17 +70,14 @@ demux_datasource::new_demux_datasource(
 demux_datasource::demux_datasource(const net::url& url, abstract_demux *thread, int stream_index)
 :	m_url(url),
 	m_stream_index(stream_index),
-//	m_fmt(audio_format("ffmpeg")),
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
 	m_current_time(-1),
 	m_client_callback(NULL),
-    m_is_live(false)
+    m_is_live(false),
+    m_is_video(false)
 {
-	//AM_DBG lib::logger::get_logger()->debug("demux_datasource::demux_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
-	// XXX ignoring the codec for now but i'll have to look into this real soon
-	//m_fmt.parameters = (void *)&context->streams[m_stream_index]->codec;
 	m_thread->add_datasink(this, stream_index);
 	m_current_time = m_thread->get_clip_begin();
 }
@@ -172,8 +164,7 @@ demux_datasource::seek(timestamp_t time)
 		m_lock.leave();
 		return;
 	}
-	// NOTE: the seek is outside the lock, otherwise there's a deadlock with the
-	// thread trying to deliver new data to this demux_datasource.
+
 	m_thread->seek(time);
 
 	AM_DBG lib::logger::get_logger()->debug("demux_datasource::seek(%d): flushing %d packets", time, m_frames.size());
@@ -189,10 +180,8 @@ demux_datasource::seek(timestamp_t time)
 		m_frames.pop();
 	}
 	m_current_time = time;
+	m_src_end_of_file = false;
 	m_lock.leave();
-	// NOTE: we do the seek after the flush, this may cause some incorrect data (from
-	// before the seek) to be deposited in our queue.
-	//m_thread->seek(time);
 }
 
 void
@@ -222,19 +211,25 @@ bool
 demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
 {
 	// XXX timestamp is ignored, for now
-	bool rv = true;
 	m_lock.enter();
 	m_src_end_of_file = (flag == datasource_packet_flag_eof);
 	AM_DBG lib::logger::get_logger()->debug("demux_datasource.push_data: pts=%lld, pkt=%p, flag=%d", pts, pkt, flag);
-	if ( ! m_src_end_of_file) {
-		if (_buffer_full()) {
-			rv = false;
-		} else {
-			datasource_packet tsp(pts, pkt, flag);
-			m_frames.push(tsp);
-
-		}
+	if ( !m_thread) {
+		// video stopped
+		AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): no demux thread, returning");
+		m_lock.leave();
+		return true;
 	}
+	if ( _buffer_full()) {
+		// video stopped
+		AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): buffer full, returning");
+		m_lock.leave();
+		return false;
+	}
+
+	datasource_packet qel(pts, pkt, flag);
+	m_frames.push(qel);
+    
 	if ( m_frames.size() > 0 || _end_of_file()  ) {
 		if ( m_client_callback && m_event_processor) {
 			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
@@ -246,7 +241,7 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
 		}
 	}
 	m_lock.leave();
-	return rv;
+	return true;
 }
 
 
@@ -269,7 +264,7 @@ demux_datasource::_end_of_file()
 bool
 demux_datasource::_buffer_full()
 {
-	return m_frames.size() >= MAX_AUDIO_PACKETS;
+	return m_frames.size() >= MAX_PACKETS_BUFFERED;
 }
 
 datasource_packet
@@ -356,22 +351,11 @@ demux_video_datasource::new_demux_video_datasource(
 }
 
 demux_video_datasource::demux_video_datasource(const net::url& url, abstract_demux *thread, int stream_index)
-:	m_url(url),
-	m_stream_index(stream_index),
-//	m_fmt(audio_format(0,0,0)),
-	m_src_end_of_file(false),
-	m_event_processor(NULL),
-	m_thread(thread),
-	m_current_time(-1),
-	m_client_callback(NULL),
+:   demux_datasource(url, thread, stream_index), 
 	m_audio_src(NULL),
-	m_frame_nr(0),
-    m_is_live(false)
-	
+	m_frame_nr(0)
 {
-	assert(m_thread);
-	m_thread->add_datasink(this, stream_index);
-	m_current_time = m_thread->get_clip_begin();
+    m_is_video = true;
 	int audio_stream_idx = m_thread->audio_stream_nr();
 	if (audio_stream_idx >= 0)
 		m_audio_src = new demux_datasource(m_url, m_thread, audio_stream_idx);
@@ -381,343 +365,10 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 
 demux_video_datasource::~demux_video_datasource()
 {
-	stop();
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::~demux_video_datasource(0x%x)", (void*)this);
 }
 
-void
-demux_video_datasource::stop()
-{
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop(0x%x): m_thread=0x%x, m_client_callback=0x%x, m_frames.size()=%d", (void*)this, m_thread, m_client_callback,m_frames.size());
-	m_event_processor = NULL;
-	if (m_thread) {
-		abstract_demux *tmpthread = m_thread;
-		m_thread = NULL;
-		m_lock.leave();
-		tmpthread->remove_datasink(m_stream_index);
-		m_lock.enter();
-	}
-	m_thread = NULL;
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop: thread stopped");
-	if (m_client_callback) {
-		lib::logger::get_logger()->debug("demux_video_datasource::stop: m_client_callback != NULL after remove_datasink()");
-		delete m_client_callback;
-		m_client_callback = NULL;
-	}
-	if (m_old_frame.pkt)
-		m_frames.push(m_old_frame);
-	while (m_frames.size() > 0) {
-		// flush frame queue
-		datasource_packet element = m_frames.front();
-		if (element.pkt) {
-			free(element.pkt);
-			element.pkt = NULL;
-		}
-		m_frames.pop();
-		m_current_time = -1;
-	}
-	m_src_end_of_file = true;
-	m_lock.leave();
-
-}
-
-void
-demux_video_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
-{
-	m_lock.enter();
-	assert(m_thread);
-	m_thread->start();
-    
-	if (m_client_callback != NULL) {
-		delete m_client_callback;
-		m_client_callback = NULL;
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start(): m_client_callback already set!");
-	}
-	if (m_frames.size() > 0 || _end_of_file()) {
-		// We have data (or EOF) available. Don't bother starting up our source again, in stead
-		// immedeately signal our client again
-		if (callbackk) {
-			assert(evp);
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start: trigger client callback");
-			evp->add_event(callbackk, MIN_EVENT_DELAY, ambulant::lib::ep_med);
-		} else {
-			lib::logger::get_logger()->debug("Internal error: demux_video_datasource::start(): no client callback!");
-			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-		}
-	} else {
-		// We have no data available. Start our source, and in our data available callback we
-		// will signal the client.
-		m_client_callback = callbackk;
-		m_event_processor = evp;
-	}
-	m_lock.leave();
-}
-
-
-void
-demux_video_datasource::read_ahead(timestamp_t time)
-{
-	m_lock.enter();
-	assert(m_thread);
-	assert(!m_thread->is_running());
-	assert(m_frames.size() == 0);
-	m_current_time = time;
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::read_ahead: (this = 0x%x), clip_begin=%d", (void*) this, time);
-
-	m_thread->read_ahead(time);
-	m_thread->start();
-	m_lock.leave();
-}
-
-void
-demux_video_datasource::seek(timestamp_t time)
-{
-	m_lock.enter();
-	assert( time >= 0);
-	if (time == m_current_time) {
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::seek(%d): already there, skipping", time);
-		m_lock.leave();
-		return;
-	}
-
-	m_thread->seek(time);
-
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::seek: (this = 0x%x), time=%d", (void*) this, time);
-	assert(m_thread);
-	size_t nbuf = m_frames.size();
-	if ( nbuf > 0) {
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource: flush %d frames due to seek", nbuf);
-	}
-	while (m_frames.size() > 0) {
-		// flush frame queue
-		datasource_packet element = m_frames.front();
-		if (element.pkt) {
-			free (element.pkt);
-			element.pkt = NULL;
-		}
-		m_frames.pop();
-	}
-
-	m_current_time = time;
-
-	m_lock.leave();
-	// NOTE: the seek is outside the lock, otherwise there's a deadlock with the
-	// thread trying to deliver new data to this demux_datasource.
-	// NOTE 2: Jack thinks this is no longer true (should check).In that case, the
-	// same holds for the audio datasource, and the seek there should also be moved
-	// inside the lock and before the flush.
-#if 1
-	// XXXJACK untested code, but Jack thinks it's needed; if we seek we must reset
-	// any previous end-of-file condition.
-	m_src_end_of_file = false;
-#endif
-}
-
-void
-demux_video_datasource::set_clip_end(timestamp_t clip_end)
-{
-	m_lock.enter();
-	m_thread->set_clip_end(clip_end);
-}
-
 #if 0
-void
-demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
-	ambulant::lib::event *callbackk, timestamp_t timestamp)
-{
-	m_lock.enter();
-	assert(m_thread);
-	m_thread->start();
-
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start_frame: (this = 0x%x), callback = 0x%x", (void*) this, (void*) callbackk);
-
-	if (m_client_callback != NULL) {
-		delete m_client_callback;
-		m_client_callback = NULL;
-		lib::logger::get_logger()->debug("demux_video_datasource::start(): m_client_callback already set!");
-	}
-
-	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
-		// We have data (or EOF) available. Don't bother starting up our source again, in stead
-		// immedeately signal our client again
-		if (callbackk) {
-			assert(evp);
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start: trigger client callback");
-			evp->add_event(callbackk, MIN_EVENT_DELAY, ambulant::lib::ep_med);
-		} else {
-			lib::logger::get_logger()->debug("Internal error: demux_video_datasource::start(): no client callback!");
-			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-		}
-	} else {
-		// We have no data available. Start our source, and in our data available callback we
-		// will signal the client.
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start: remembering callback");
-		m_client_callback = callbackk;
-		m_event_processor = evp;
-	}
-
-	m_lock.leave();
-}
-
-void
-demux_video_datasource::frame_processed_keepdata(timestamp_t pts, char *data)
-{
-	m_lock.enter();
-	assert(0); // XXXJACK no longer needed?
-	assert(pts == 0);
-	assert(m_frames.size() == 0);
-	datasource_packet& frontref = m_frames.front();
-
-	frontref.pkt = NULL;
-	m_lock.leave();
-}
-
-void
-demux_video_datasource::frame_processed(timestamp_t pts)
-{
-	// Note: we ignore pts and always discard a single frame.
-	m_lock.enter();
-	assert(pts == 0);
-	assert(m_frames.size() > 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource.frame_processed(%d)", pts);
-	datasource_packet element = m_frames.front();
-
-	if (m_old_frame.pkt) {
-		free(m_old_frame.pkt);
-		AM_DBG	lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: free(0x%x)", m_old_frame.pkt);
-		m_old_frame.pkt = NULL;
-	}
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::frame_processed(%d): removing frame with ts=%d", pts, element.pts);
-	AM_DBG	lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: %lld 0x%x %d", element.pts, element.pkt, element.flag);
-	m_old_frame = element;
-	m_frames.pop();
-	free(m_old_frame.pkt);
-	m_old_frame.pkt = NULL;
-	m_lock.leave();
-}
-#endif
-
-bool
-demux_video_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
-{
-	m_lock.enter();
-
-	m_src_end_of_file = (flag == datasource_packet_flag_eof);
-
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data flag=%d ,pts=%lld, %d already in queue", flag, pts, m_frames.size());
-	if ( ! m_thread) {
-		// video stopped
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): no demux thread, returning");
-		m_lock.leave();
-		return true;
-	}
-	if ( _buffer_full()) {
-		// video stopped
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): buffer full, returning");
-		m_lock.leave();
-		return false;
-	}
-
-	datasource_packet qel(pts, pkt, flag);
-	m_frames.push(qel);
-
-#ifdef LOGGER_VIDEOLATENCY
-	lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 2-push %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
-#endif
-
-	if ( m_frames.size() || _end_of_file()	) {
-		if ( m_client_callback && m_event_processor) {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
-			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
-			m_client_callback = NULL;
-			m_event_processor = NULL;
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): No client callback");
-		}
-	}
-	m_lock.leave();
-	return true;
-}
-
-
-bool
-demux_video_datasource::end_of_file()
-{
-	m_lock.enter();
-	bool rv = _end_of_file();
-	m_lock.leave();
-	return rv;
-}
-
-bool
-demux_video_datasource::_end_of_file()
-{
-	// private method - no need to lock
-	if (m_frames.size()) {
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::_end_of_file() returning false (still %d frames in local buffer)",m_frames.size());
-		return false;
-	}
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::_end_of_file() no frames in buffer returning %d", m_src_end_of_file);
-	return m_src_end_of_file;
-}
-
-bool
-demux_video_datasource::_buffer_full()
-{
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::_buffer_full() (this=0x%x, count=%d)", (void*) this, m_frames.size(), MAX_VIDEO_FRAMES);
-	return (m_frames.size() > MAX_VIDEO_FRAMES);
-
-}
-
-timestamp_t
-demux_video_datasource::get_clip_end()
-{
-	m_lock.enter();
-	assert(m_thread);
-	timestamp_t clip_end = m_thread->get_clip_end();
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_clip_end: clip_end=%d", clip_end);
-	m_lock.leave();
-	return	clip_end;
-}
-
-timestamp_t
-demux_video_datasource::get_clip_begin()
-{
-	m_lock.enter();
-	assert(m_thread);
-	timestamp_t clip_begin = m_thread->get_clip_begin();
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_clip_begin: clip_begin=%d", clip_begin);
-	m_lock.leave();
-	return	clip_begin;
-}
-
-#if 0
-char*
-demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep)
-{
-
-	// We ignore now here and always return a the oldest frame in the queue.
-	m_lock.enter();
-	assert(now == 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_frame() (this=0x%x, size=%d", (void*) this, m_frames.size());
-	if (m_frames.size() == 0) {
-		*sizep = 0;
-		*timestamp = 0;
-		m_lock.leave();
-		return NULL;
-	}
-	datasource_packet frame = m_frames.front();
-
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_frame(): ts=%lld 0x%x %d", frame.pts, frame.pkt, frame.flag);
-	char *rv = (char*) frame.pkt;
-	*sizep = (size_t)frame.flag;
-	*timestamp = frame.pts;
-	m_current_time = -1;
-	m_lock.leave();
-	return rv;
-}
-#endif
 int
 demux_video_datasource::size() const
 {
@@ -762,20 +413,18 @@ demux_video_datasource::frameduration()
 	assert(0);
 	return 0;
 }
+#endif
+
 bool
 demux_video_datasource::has_audio()
 {
+    bool rv;
 	m_lock.enter();
 	assert(m_thread);
-	if (m_thread->audio_stream_nr() >= 0) {
-		m_lock.leave();
-		return true;
-	} else {
-		m_lock.leave();
-		return false;
-	}
+	rv = (m_thread->audio_stream_nr() >= 0);
+    m_lock.leave();
+    return rv;
 }
-
 
 audio_datasource*
 demux_video_datasource::get_audio_datasource()
@@ -805,6 +454,7 @@ demux_video_datasource::get_audio_datasource()
 	return NULL;
 }
 
+#if 0
 common::duration
 demux_video_datasource::get_dur()
 {
@@ -818,3 +468,4 @@ demux_video_datasource::get_dur()
 	m_lock.leave();
 	return rv;
 }
+#endif

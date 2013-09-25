@@ -234,13 +234,13 @@ class datasource_packet {
 	datasource_packet()
 	:	pts(0),
 		pkt(NULL),
-		flag(datasource_packet_flag_avpacket)
-	{}
+        flag(datasource_packet_flag_avpacket)
+    {};
 	datasource_packet(timestamp_t _pts, struct AVPacket *_pkt, datasource_packet_flag _flag)
 	:	pts(_pts),
 		pkt(_pkt),
 		flag(_flag)
-	{}
+	{};
 	timestamp_t pts;
 	struct AVPacket *pkt;
 	datasource_packet_flag flag;
@@ -292,14 +292,8 @@ class av_datasource_mixin {
   public:
 	virtual ~av_datasource_mixin() {};
 
-	/// Returns the native format of the audio data. Audio-specific.
-	virtual audio_format& get_audio_format() = 0;
-
-	/// Return true if there is audio with this video. Video-specific.
-	virtual bool has_audio() { return false; }
-
-	/// Return corresponding audio datasource. Video-specific.
-	audio_datasource *get_audio_datasource() { return NULL; }
+    /// Returns the native format of the audio data. Audio-specific.
+    virtual audio_format& get_audio_format() = 0;
 
 	/// Tells the datasource to start reading data starting from time t.
 	/// Call only once, early in initialization.
@@ -337,9 +331,24 @@ class av_datasource_mixin {
 
 };
 
+typedef av_datasource_mixin audio_datasource_mixin;
+/// Extra methods for av_datasource_mixin that are relevant only to video.
+/// Note that this is not a subclass of av_datasource_mixin
+class video_datasource_mixin {
+public:
+    virtual ~video_datasource_mixin() {}
+    
+	/// Return true if there is audio with this video. Video-specific.
+	virtual bool has_audio() = 0;
+    
+	/// Return corresponding audio datasource. Video-specific.
+	virtual audio_datasource *get_audio_datasource() = 0;
+    
+};
+    
 /// Full interface to an object that supplies audio data to a consumer.
 /// Simply inherits both datasource and av_datasource_mixin.
-class audio_datasource : public datasource, public av_datasource_mixin {
+class audio_datasource : public datasource, public audio_datasource_mixin {
   public:
 	virtual ~audio_datasource() {};
 };
