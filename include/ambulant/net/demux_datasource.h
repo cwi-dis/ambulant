@@ -26,14 +26,8 @@
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/datasource.h"
 
-#define XXXJACK_COMBINE_HACK 1
-
 #include <queue>
 
-struct video_frame {
-	char* data;
-	size_t size;
-};
 
 namespace ambulant
 {
@@ -64,12 +58,12 @@ class demux_audio_datasource:
 	void seek(timestamp_t time);
 	void set_clip_end(timestamp_t clip_end);
 	timestamp_t get_elapsed() { assert(0); /* XXXJACK Should be based on pts in head of queue */ return 0; }
-	bool push_data(timestamp_t pts, const uint8_t *data, size_t size);
+	bool push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag);
 	bool end_of_file();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_thread->get_start_time(); };
-	ts_packet_t get_ts_packet_t();
+	datasource_packet get_packet();
 	audio_format& get_audio_format();
 
 	common::duration get_dur();
@@ -87,7 +81,7 @@ class demux_audio_datasource:
 //	audio_format m_fmt;
 	bool m_src_end_of_file;
 	lib::event_processor *m_event_processor;
-	std::queue<ts_packet_t> m_queue;
+	std::queue<datasource_packet> m_queue;
 	abstract_demux *m_thread;
 	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our callback to the client
@@ -95,8 +89,6 @@ class demux_audio_datasource:
     bool m_is_live;
 };
 
-typedef std::pair<timestamp_t, video_frame> ts_frame_pair;
-	
 class demux_video_datasource:
 	virtual public video_datasource,
 	public demux_datasink,
@@ -123,7 +115,7 @@ class demux_video_datasource:
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep);
 	void frame_processed_keepdata(timestamp_t timestamp, char *data);
 	void frame_processed(timestamp_t timestamp);
-	bool push_data(timestamp_t pts, const uint8_t *data, size_t size);
+	bool push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag);
 	bool end_of_file();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
@@ -156,8 +148,8 @@ class demux_video_datasource:
 //	audio_format m_fmt;
 	bool m_src_end_of_file;
 	lib::event_processor *m_event_processor;
-	std::queue<ts_frame_pair > m_frames;
-	ts_frame_pair m_old_frame;
+	std::queue<datasource_packet > m_frames;
+	datasource_packet m_old_frame;
 	abstract_demux *m_thread;
 	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our calllback to the client
@@ -166,11 +158,6 @@ class demux_video_datasource:
 	//FILE *m_file;
 	long long int m_frame_nr;
     bool m_is_live;
-#ifdef XXXJACK_COMBINE_HACK
-	timestamp_t m_combinehack_pts;
-	uint8_t *m_combinehack_buf;
-	size_t m_combinehack_buf_size;
-#endif
 };
 
 

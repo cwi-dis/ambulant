@@ -409,20 +409,32 @@ ffmpeg_decoder_datasource::data_avail()
 	}
 	if (!m_buffer.buffer_full()) {
 		AVPacket *tmp_pkt = NULL;
+		uint8_t *inbuf = NULL;
+		size_t sz = 0;
+		timestamp_t old_elapsed;
+
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_src->get_read_ptr() m_src=0x%x, this=0x%x", (void*) m_src, (void*) this);
 
-		ts_packet_t audio_packet = m_src->get_ts_packet_t();
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed %lld, pts %lld", m_elapsed, audio_packet.timestamp);
-		uint8_t *inbuf = (uint8_t*) audio_packet.data;
-		size_t sz = audio_packet.size;
-		if (sz == MAGIC_SIZE_AVPACKET) {
-			tmp_pkt = (AVPacket *)inbuf;
-			inbuf = tmp_pkt->data;
-			sz = tmp_pkt->size;
-		} else if (sz == MAGIC_SIZE_FLUSH) {
-			/* flush codec */;
-			sz = 0;
-		}
+		if (m_src->end_of_file()) {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: end of file");
+		} else {
+			datasource_packet audio_packet = m_src->get_packet();
+			old_elapsed = audio_packet.pts;
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed %lld, pts=%lld pkt=%p flag=%d", m_elapsed, audio_packet.pts, audio_packet.pkt, (int)audio_packet.flag);
+			if (audio_packet.flag == datasource_packet_flag_avpacket) {
+				tmp_pkt = audio_packet.pkt;
+				if (tmp_pkt == NULL) {
+					lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: pkt=NULL for pts=%lld", audio_packet.pts);
+					m_lock.leave();
+					return;
+				}
+				inbuf = tmp_pkt->data;
+				sz = tmp_pkt->size;
+			} else if (sz == datasource_packet_flag_flush) {
+				/* flush codec */;
+				sz = 0;
+			}
+	}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: %d bytes available", (int)sz);
 
 		// Note: outsize is only written by avcodec_decode_audio, not read!
@@ -499,7 +511,6 @@ ffmpeg_decoder_datasource::data_avail()
 
 				assert(m_fmt.samplerate);
 				timestamp_t duration = ((timestamp_t) outsize) * sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-				timestamp_t old_elapsed = audio_packet.timestamp;
 #if 1
 				// We only warn, we don't reset. Resetting has adverse consequences...
 				if (old_elapsed < m_elapsed) {

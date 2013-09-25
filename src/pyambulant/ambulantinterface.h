@@ -1425,7 +1425,7 @@ public:
 	long get_ref_count() const { return 1; }
 	char *get_read_ptr() { abort(); return NULL; }
 	long get_bandwidth_usage_data(const char **resource) { return -1; }
-	ambulant::net::ts_packet_t get_ts_packet_t() { abort(); return ambulant::net::ts_packet_t(0, NULL, 0); }
+	ambulant::net::datasource_packet get_packet() { abort(); return ambulant::net::datasource_packet(); }
   private:
 	PyObject *py_pkt_datasource;
 

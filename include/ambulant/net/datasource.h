@@ -46,6 +46,10 @@ typedef unsigned char uint8_t;
 //#pragma warning(disable : 4251)
 #endif
 
+extern "C" {
+	struct AVPacket;
+}
+
 namespace ambulant {
 
 namespace net {
@@ -218,20 +222,30 @@ class AMBULANTAPI audio_format_choices {
 
 };
 
-/// Helper struct: a packet plus its timestamp.
-struct ts_packet_t {
-	timestamp_t timestamp;	///< Timestamp of this packet.
-	void* data;	///< Data pointer.
-	size_t size;	///< Size of the data (in bytes).
-	
-	/// Constructor.
-	ts_packet_t(timestamp_t t, void* d, size_t s)
-	:   timestamp(t),
-		data(d),
-		size(s)
-	{}
+/// Helper struct: a packet plus its timestamp plus a flag.
+enum datasource_packet_flag {
+	datasource_packet_flag_eof,
+	datasource_packet_flag_flush,
+	datasource_packet_flag_avpacket
 };
 
+class datasource_packet {
+  public:
+	datasource_packet()
+	:	pts(0),
+		pkt(NULL),
+		flag(datasource_packet_flag_avpacket)
+	{}
+	datasource_packet(timestamp_t _pts, struct AVPacket *_pkt, datasource_packet_flag _flag)
+	:	pts(_pts),
+		pkt(_pkt),
+		flag(_flag)
+	{}
+	timestamp_t pts;
+	struct AVPacket *pkt;
+	datasource_packet_flag flag;
+};
+	
 /// The interface to an object that supplies data to a consumer.
 /// The consumer calls start() whenever it wants
 /// data. This call returns immedeately and later the datasource arranges
@@ -274,7 +288,7 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 /// The consumer calls start() whenever it wants
 /// data. This call returns immedeately and later the datasource arranges
 /// that the callback is done, when data is available. The consumer then
-/// calls get_ts_packet_t() and end_of_file() to get an available data packet.
+/// calls get_packet() and end_of_file() to get an available data packet.
 /// The packet is discarded upon return from the available callback.
 class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
   public:
@@ -292,7 +306,7 @@ class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
 	virtual bool end_of_file() = 0;
 
 	/// Return the next timestamped packet and discard it.
-	virtual ts_packet_t get_ts_packet_t() = 0;
+	virtual datasource_packet get_packet() = 0;
 
     /// Called by the client to obtain bandwidth usage data.
     virtual long get_bandwidth_usage_data(const char **resource) = 0;
@@ -700,18 +714,16 @@ class AMBULANTAPI filter_datasource_impl :
 /// constituent substreams (usually one audio stream and one video stream). The
 /// data for these substreams is then sent to demux_datasink objects for further
 /// processing.
+
 class demux_datasink : virtual public lib::ref_counted_obj {
   public:
 	virtual ~demux_datasink(){}
 
 	/// Data push call: consume data with given size and timestamp. Must copy data
 	/// before returning. Returns true if data was swallowed, else false.
-	virtual bool push_data(timestamp_t pts, const uint8_t *data, size_t size) = 0;
+	virtual bool push_data(timestamp_t pts, struct ::AVPacket *pkt, datasource_packet_flag flag) = 0;
 
 };
-#define MAGIC_SIZE_EOF 0		///< push_data flag: we have reached end of file
-#define MAGIC_SIZE_AVPACKET -1	///< push_data flag: data is an AVPacket
-#define MAGIC_SIZE_FLUSH -2		///< push_data flag: seek will hapen, flush codec buffers
 
 /// Interface for objects that demultiplex audio/video streams.
 /// A demultiplexer will feed stream data into multiple

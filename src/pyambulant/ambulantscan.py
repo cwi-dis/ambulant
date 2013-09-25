@@ -107,7 +107,7 @@ class MyScanner(CxxScanner):
             "filter_datasource_impl_ptr", # XXXX
             "raw_filter_finder", # XXXX
             "raw_filter_finder_ptr", # XXXX
-            "ts_packet_t", # XXXX Lazy: should do this one.
+            "datasource_packet", # XXXX Lazy: should do this one.
             "audio_datasource_mixin", #  XXXX Multiple inheritance is difficult!
             "Where_we_get_our", # Parser trips over a comment:-)
             "flag_event",  # Holds a reference to a bool, not useful for Python

@@ -406,7 +406,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 		// If the sink is currently busy (in run()) then
 		// run() will take care of disposal.
 		// signal EOF
-		ds->push_data(0, 0, MAGIC_SIZE_EOF);
+		ds->push_data(0, 0, datasource_packet_flag_eof);
 		ds->release();
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream);
@@ -481,7 +481,7 @@ ffmpeg_demux::run()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
 				for (int i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 					if (m_sinks[i]) {
-						m_sinks[i]->push_data(0, 0, MAGIC_SIZE_EOF);
+						m_sinks[i]->push_data(0, 0, datasource_packet_flag_eof);
 					}
 				}
 				eof_sent_to_clients = true;
@@ -589,7 +589,7 @@ ffmpeg_demux::run()
 				*pkt_copy = *pkt;
 
 				m_lock.leave();
-				accepted = sink->push_data((timestamp_t)pts, (uint8_t*)pkt_copy, MAGIC_SIZE_AVPACKET);
+				accepted = sink->push_data((timestamp_t)pts, pkt_copy, datasource_packet_flag_avpacket);
                 AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pkt=%p (data %p, size %d)\n", pkt_copy, pkt_copy->data, pkt_copy->size);
 				if ( !accepted) {
 					free(pkt_copy);
@@ -603,7 +603,7 @@ ffmpeg_demux::run()
 				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
 				{
-					sink->push_data(0,0,MAGIC_SIZE_EOF);
+					sink->push_data(0,0,datasource_packet_flag_eof);
 					sink->release();
 				}
 				m_current_sink = NULL;
@@ -618,7 +618,7 @@ ffmpeg_demux::run()
 	m_lock.leave();
 	for (i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 		if (m_sinks[i]) {
-			m_sinks[i]->push_data(0, 0, MAGIC_SIZE_EOF);
+			m_sinks[i]->push_data(0, 0, datasource_packet_flag_eof);
 			m_sinks[i]->release();
 			m_sinks[i] = NULL;
 		}

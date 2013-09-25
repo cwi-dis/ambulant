@@ -119,9 +119,8 @@ demux_audio_datasource::stop()
 		m_client_callback = NULL;
 	}
 	while (m_queue.size() > 0) {
-		ts_packet_t tsp(0,NULL,0);
-		tsp = m_queue.front();
-		free(tsp.data);
+		datasource_packet tsp = m_queue.front();
+		free(tsp.pkt);
 		m_queue.pop();
 	}
 	m_current_time = -1;
@@ -183,7 +182,7 @@ demux_audio_datasource::seek(timestamp_t time)
 		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource: flush %d buffers due to seek", nbuf);
 	}
 	while (m_queue.size() > 0) {
-		void* data = m_queue.front().data;
+		AVPacket* data = m_queue.front().pkt;
 		if (data != NULL) {
 			free(data);
 		}
@@ -220,21 +219,18 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 
 
 bool
-demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t sz)
+demux_audio_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
 {
 	// XXX timestamp is ignored, for now
 	bool rv = true;
 	m_lock.enter();
-	m_src_end_of_file = (sz == MAGIC_SIZE_EOF);
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
+	m_src_end_of_file = (flag == datasource_packet_flag_eof);
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: pts=%lld, pkt=%p, flag=%d", pts, pkt, flag);
 	if ( ! m_src_end_of_file) {
 		if (_buffer_full()) {
 			rv = false;
-		} else if (sz == MAGIC_SIZE_AVPACKET) {
-			ts_packet_t tsp(pts,(void*)inbuf,MAGIC_SIZE_AVPACKET);
-			m_queue.push(tsp);
-		} else if (sz == MAGIC_SIZE_FLUSH) {
-			ts_packet_t tsp(pts,NULL,MAGIC_SIZE_FLUSH);
+		} else {
+			datasource_packet tsp(pts, pkt, flag);
 			m_queue.push(tsp);
 
 		}
@@ -276,10 +272,10 @@ demux_audio_datasource::_buffer_full()
 	return m_queue.size() >= MAX_AUDIO_PACKETS;
 }
 
-ts_packet_t
-demux_audio_datasource::get_ts_packet_t()
+datasource_packet
+demux_audio_datasource::get_packet()
 {
-	ts_packet_t tsp(0,NULL,0);
+	datasource_packet tsp;
 	m_lock.enter();
 	if (m_queue.size() > 0) {
 		tsp = m_queue.front();
@@ -371,11 +367,6 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 	m_audio_src(NULL),
 	m_frame_nr(0),
     m_is_live(false)
-#ifdef XXXJACK_COMBINE_HACK
-	, m_combinehack_pts(-1)
-	, m_combinehack_buf(NULL)
-	, m_combinehack_buf_size(0)
-#endif
 	
 {
 	assert(m_thread);
@@ -414,14 +405,14 @@ demux_video_datasource::stop()
 		delete m_client_callback;
 		m_client_callback = NULL;
 	}
-	if (m_old_frame.second.data)
+	if (m_old_frame.pkt)
 		m_frames.push(m_old_frame);
 	while (m_frames.size() > 0) {
 		// flush frame queue
-		ts_frame_pair element = m_frames.front();
-		if (element.second.data) {
-			free (element.second.data);
-			element.second.data = NULL;
+		datasource_packet element = m_frames.front();
+		if (element.pkt) {
+			free(element.pkt);
+			element.pkt = NULL;
 		}
 		m_frames.pop();
 		m_current_time = -1;
@@ -469,10 +460,10 @@ demux_video_datasource::seek(timestamp_t time)
 	}
 	while (m_frames.size() > 0) {
 		// flush frame queue
-		ts_frame_pair element = m_frames.front();
-		if (element.second.data) {
-			free (element.second.data);
-			element.second.data = NULL;
+		datasource_packet element = m_frames.front();
+		if (element.pkt) {
+			free (element.pkt);
+			element.pkt = NULL;
 		}
 		m_frames.pop();
 	}
@@ -542,11 +533,12 @@ void
 demux_video_datasource::frame_processed_keepdata(timestamp_t pts, char *data)
 {
 	m_lock.enter();
+	assert(0); // XXXJACK no longer needed?
 	assert(pts == 0);
 	assert(m_frames.size() == 0);
-	ts_frame_pair& frontref = m_frames.front();
+	datasource_packet& frontref = m_frames.front();
 
-	frontref.second.data = NULL;
+	frontref.pkt = NULL;
 	m_lock.leave();
 }
 
@@ -558,30 +550,30 @@ demux_video_datasource::frame_processed(timestamp_t pts)
 	assert(pts == 0);
 	assert(m_frames.size() > 0);
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource.frame_processed(%d)", pts);
-	ts_frame_pair element = m_frames.front();
+	datasource_packet element = m_frames.front();
 
-	if (m_old_frame.second.data) {
-		free(m_old_frame.second.data);
-		AM_DBG	lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: free(0x%x)", m_old_frame.second.data);
-		m_old_frame.second.data = NULL;
+	if (m_old_frame.pkt) {
+		free(m_old_frame.pkt);
+		AM_DBG	lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: free(0x%x)", m_old_frame.pkt);
+		m_old_frame.pkt = NULL;
 	}
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::frame_processed(%d): removing frame with ts=%d", pts, element.first);
-	AM_DBG	lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: %lld 0x%x %d", element.first, element.second.data, element.second.size);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::frame_processed(%d): removing frame with ts=%d", pts, element.pts);
+	AM_DBG	lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: %lld 0x%x %d", element.pts, element.pkt, element.flag);
 	m_old_frame = element;
 	m_frames.pop();
-	free(m_old_frame.second.data);
-	m_old_frame.second.data = NULL;
+	free(m_old_frame.pkt);
+	m_old_frame.pkt = NULL;
 	m_lock.leave();
 }
 
 bool
-demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t sz)
+demux_video_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
 {
 	m_lock.enter();
 
-	m_src_end_of_file = (sz == MAGIC_SIZE_EOF);
+	m_src_end_of_file = (flag == datasource_packet_flag_eof);
 
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data sz=%d ,pts=%lld, %d already in queue", sz, pts, m_frames.size());
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data flag=%d ,pts=%lld, %d already in queue", flag, pts, m_frames.size());
 	if ( ! m_thread) {
 		// video stopped
 		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): no demux thread, returning");
@@ -594,21 +586,9 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 		m_lock.leave();
 		return false;
 	}
-	if (sz == MAGIC_SIZE_AVPACKET) {
-		video_frame vframe;
-		vframe.data = (char *)inbuf;
-		vframe.size = MAGIC_SIZE_AVPACKET;
-		ts_frame_pair mypair(pts, vframe);
-		m_frames.push(mypair);
-	} else if (sz == MAGIC_SIZE_FLUSH) {
-		video_frame vframe;
-		vframe.data = NULL;
-		vframe.size = MAGIC_SIZE_FLUSH;
-		ts_frame_pair mypair(pts, vframe);
-		m_frames.push(mypair);
-	} else {
-		assert(0);
-	}
+
+	datasource_packet qel(pts, pkt, flag);
+	m_frames.push(qel);
 
 #ifdef LOGGER_VIDEOLATENCY
 	lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 2-push %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
@@ -616,7 +596,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 
 	if ( m_frames.size() || _end_of_file()	) {
 		if ( m_client_callback && m_event_processor) {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d, front size=%d)", m_src_end_of_file, m_frames.front().second.size);
+			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
@@ -694,12 +674,12 @@ demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, size_
 		m_lock.leave();
 		return NULL;
 	}
-	ts_frame_pair frame = m_frames.front();
+	datasource_packet frame = m_frames.front();
 
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_frame(): ts=%lld 0x%x %d", frame.first, frame.second.data, frame.second.size);
-	char *rv = (char*) frame.second.data;
-	*sizep = frame.second.size;
-	*timestamp = frame.first;
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_frame(): ts=%lld 0x%x %d", frame.pts, frame.pkt, frame.flag);
+	char *rv = (char*) frame.pkt;
+	*sizep = (size_t)frame.flag;
+	*timestamp = frame.pts;
 	m_current_time = -1;
 	m_lock.leave();
 	return rv;

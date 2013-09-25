@@ -671,7 +671,7 @@ pkt_datasource_object.othermethods = [
     "long get_ref_count() const { return 1; }",
     "char *get_read_ptr() { abort(); return NULL; }", # XXX
     "long get_bandwidth_usage_data(const char **resource) { return -1; }",
-    "ambulant::net::ts_packet_t get_ts_packet_t() { abort(); return ambulant::net::ts_packet_t(0, NULL, 0); }", # XXX
+    "ambulant::net::datasource_packet get_packet() { abort(); return ambulant::net::datasource_packet(0, NULL, 0); }", # XXX
 ]
 event_processor_object.othermethods = [
     "void set_observer(ambulant::lib::event_processor_observer*) { abort(); }"
