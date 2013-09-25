@@ -284,35 +284,7 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 
 };
 
-/// Interface for an object that provides packetized data to a consumer.
-/// The consumer calls start() whenever it wants
-/// data. This call returns immedeately and later the datasource arranges
-/// that the callback is done, when data is available. The consumer then
-/// calls get_packet() and end_of_file() to get an available data packet.
-/// The packet is discarded upon return from the available callback.
-class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
-  public:
-	virtual ~pkt_datasource() {};
-
-	/// Called by the client to indicate it wants more data.
-	/// When the data is available (or end of file reached) exactly one
-	/// callback is scheduled through the event_processor.
-	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;
-
-	/// Called by the client to indicate it wants no more data.
-	virtual void stop() = 0;
-
-	/// Return true if all data has been consumed.
-	virtual bool end_of_file() = 0;
-
-	/// Return the next timestamped packet and discard it.
-	virtual datasource_packet get_packet() = 0;
-
-    /// Called by the client to obtain bandwidth usage data.
-    virtual long get_bandwidth_usage_data(const char **resource) = 0;
-};
-
-/// Mixin interface to an object that supplies audio data to a consumer.
+/// Mixin interface to an object that supplies video or audio data to a consumer.
 /// Audio_datasource extends the datasource protocol with methods to obtain
 /// information on the way the audio data is encoded and methods to support
 /// temporal clipping of the audio.
@@ -371,16 +343,35 @@ class audio_datasource : public datasource, public av_datasource_mixin {
   public:
 	virtual ~audio_datasource() {};
 };
-
-/// Full interface to an object that supplies packetized audio data to a consumer.
-/// Simply inherits both pkt_datasource and av_datasource_mixin.
-class pkt_audio_datasource : public pkt_datasource, public av_datasource_mixin {
+    
+/// Interface for an object that provides packetized data to a consumer.
+/// The consumer calls start() whenever it wants
+/// data. This call returns immedeately and later the datasource arranges
+/// that the callback is done, when data is available. The consumer then
+/// calls get_packet() and end_of_file() to get an available data packet.
+/// The packet is discarded upon return from the available callback.
+class AMBULANTAPI pkt_datasource : public av_datasource_mixin, virtual public ambulant::lib::ref_counted {
   public:
-	virtual ~pkt_audio_datasource() {};
+    virtual ~pkt_datasource() {};
+    
+    /// Called by the client to indicate it wants more data.
+    /// When the data is available (or end of file reached) exactly one
+    /// callback is scheduled through the event_processor.
+    virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;
+    
+    /// Called by the client to indicate it wants no more data.
+    virtual void stop() = 0;
+    
+    /// Return true if all data has been consumed.
+    virtual bool end_of_file() = 0;
+    
+    /// Return the next timestamped packet and discard it.
+    virtual datasource_packet get_packet() = 0;
+    
+    /// Called by the client to obtain bandwidth usage data.
+    virtual long get_bandwidth_usage_data(const char **resource) = 0;
 };
-
-typedef pkt_audio_datasource pkt_video_datasource;
-
+    
 /// Implementation of audio_datasource that reads raw audio data from a datasource.
 class raw_audio_datasource:
 	virtual public audio_datasource,
@@ -543,19 +534,19 @@ class AMBULANTAPI audio_datasource_factory  {
 	virtual audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
-/// Interface to create a pkt_audio_datasource for a given URL.
-/// This class is the client API used to create a pkt_audio_datasource for
+/// Interface to create a pkt_datasource for a given URL.
+/// This class is the client API used to create a pkt_datasource for
 /// a given URL, with an extra parameter specifying which audio encodings
 /// the client is able to handle.
-class AMBULANTAPI pkt_audio_datasource_factory  {
+class AMBULANTAPI pkt_datasource_factory  {
   public:
-	virtual ~pkt_audio_datasource_factory() {};
+	virtual ~pkt_datasource_factory() {};
 
 	/// Create a new audio_datasource to read the given URL.
 	/// The fmt parameter describes the audio formats the client can handle,
 	/// the actual format can then be obtained from the audio_datasource returned.
 	/// Returns NULL if this factory cannot create such a datasource.
-	virtual pkt_audio_datasource* new_pkt_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
+	virtual pkt_datasource* new_pkt_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 /// Factory for finding an audio format parser.
@@ -590,7 +581,7 @@ class audio_decoder_finder {
 	virtual ~audio_decoder_finder() {};
 
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
-	virtual audio_datasource* new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& fmts) = 0;
+	virtual audio_datasource* new_audio_decoder(pkt_datasource *src, const audio_format_choices& fmts) = 0;
 };
 
 /// Factory for finding a raw data filter.
@@ -642,7 +633,7 @@ class AMBULANTAPI datasource_factory :
 	audio_datasource* new_audio_filter(const net::url& url, const audio_format_choices& fmt, audio_datasource* ds);
 
 // XXX No implementation?
-//	audio_datasource* new_audio_decoder(const net::url& url, const audio_format_choices& fmt, pkt_audio_datasource* ds);
+//	audio_datasource* new_audio_decoder(const net::url& url, const audio_format_choices& fmt, pkt_datasource* ds);
 
 	/// Provider interface: add a raw_datasource_factory.
 	void add_raw_factory(raw_datasource_factory *df);

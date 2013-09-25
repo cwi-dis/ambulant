@@ -9422,27 +9422,27 @@ ambulant::net::audio_datasource* audio_datasource_factory::new_audio_datasource(
 	return _rv;
 }
 
-/* --------------- Class pkt_audio_datasource_factory --------------- */
+/* --------------- Class pkt_datasource_factory --------------- */
 
-pkt_audio_datasource_factory::pkt_audio_datasource_factory(PyObject *itself)
+pkt_datasource_factory::pkt_datasource_factory(PyObject *itself)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	if (itself)
 	{
-		if (!PyObject_HasAttrString(itself, "new_pkt_audio_datasource")) PyErr_Warn(PyExc_Warning, "pkt_audio_datasource_factory: missing attribute: new_pkt_audio_datasource");
+		if (!PyObject_HasAttrString(itself, "new_pkt_datasource")) PyErr_Warn(PyExc_Warning, "pkt_datasource_factory: missing attribute: new_pkt_datasource");
 	}
 	if (itself == NULL) itself = Py_None;
 
-	py_pkt_audio_datasource_factory = itself;
+	py_pkt_datasource_factory = itself;
 	Py_XINCREF(itself);
 	PyGILState_Release(_GILState);
 }
 
-pkt_audio_datasource_factory::~pkt_audio_datasource_factory()
+pkt_datasource_factory::~pkt_datasource_factory()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_pkt_audio_datasource_factory;
-	py_pkt_audio_datasource_factory = NULL;
+	PyObject *itself = py_pkt_datasource_factory;
+	py_pkt_datasource_factory = NULL;
 	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
 	{
 		pycppbridge_setwrapper(itself, NULL);
@@ -9452,25 +9452,25 @@ pkt_audio_datasource_factory::~pkt_audio_datasource_factory()
 }
 
 
-ambulant::net::pkt_audio_datasource* pkt_audio_datasource_factory::new_pkt_audio_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end)
+ambulant::net::pkt_datasource* pkt_datasource_factory::new_pkt_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::net::pkt_audio_datasource* _rv;
+	ambulant::net::pkt_datasource* _rv;
 	PyObject *py_url = Py_BuildValue("O", ambulant_url_New(url));
 	PyObject *py_fmt = Py_BuildValue("O", audio_format_choicesObj_New(&fmt));
 	PyObject *py_clip_begin = Py_BuildValue("L", clip_begin);
 	PyObject *py_clip_end = Py_BuildValue("L", clip_end);
 
-	PyObject *py_rv = PyObject_CallMethod(py_pkt_audio_datasource_factory, "new_pkt_audio_datasource", "(OOOO)", py_url, py_fmt, py_clip_begin, py_clip_end);
+	PyObject *py_rv = PyObject_CallMethod(py_pkt_datasource_factory, "new_pkt_datasource", "(OOOO)", py_url, py_fmt, py_clip_begin, py_clip_end);
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during pkt_audio_datasource_factory::new_pkt_audio_datasource() callback:\n");
+		PySys_WriteStderr("Python exception during pkt_datasource_factory::new_pkt_datasource() callback:\n");
 		PyErr_Print();
 	}
 
-	if (py_rv && !PyArg_Parse(py_rv, "O&", pkt_audio_datasourceObj_Convert, &_rv))
+	if (py_rv && !PyArg_Parse(py_rv, "O&", pkt_datasourceObj_Convert, &_rv))
 	{
-		PySys_WriteStderr("Python exception during pkt_audio_datasource_factory::new_pkt_audio_datasource() return:\n");
+		PySys_WriteStderr("Python exception during pkt_datasource_factory::new_pkt_datasource() return:\n");
 		PyErr_Print();
 	}
 
@@ -9692,11 +9692,11 @@ audio_decoder_finder::~audio_decoder_finder()
 }
 
 
-ambulant::net::audio_datasource* audio_decoder_finder::new_audio_decoder(ambulant::net::pkt_audio_datasource* src, const ambulant::net::audio_format_choices& fmts)
+ambulant::net::audio_datasource* audio_decoder_finder::new_audio_decoder(ambulant::net::pkt_datasource* src, const ambulant::net::audio_format_choices& fmts)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	ambulant::net::audio_datasource* _rv;
-	PyObject *py_src = Py_BuildValue("O&", pkt_audio_datasourceObj_New, src);
+	PyObject *py_src = Py_BuildValue("O&", pkt_datasourceObj_New, src);
 	PyObject *py_fmts = Py_BuildValue("O", audio_format_choicesObj_New(&fmts));
 
 	PyObject *py_rv = PyObject_CallMethod(py_audio_decoder_finder, "new_audio_decoder", "(OO)", py_src, py_fmts);

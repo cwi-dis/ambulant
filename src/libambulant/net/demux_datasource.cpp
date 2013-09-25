@@ -31,7 +31,7 @@
 #define MAX_VIDEO_FRAMES 300
 
 // How many audio packets we would like to buffer at most
-// This limit is indicative: if demux_audio_datasource::buffer_full()
+// This limit is indicative: if demux_datasource::buffer_full()
 // returns true, you are advised not to throw in more data; but if
 // you nevertheless do, no data is lost and a DEBUG message is printed
 #define MAX_AUDIO_PACKETS 300
@@ -47,17 +47,17 @@
 using namespace ambulant;
 using namespace net;
 
-// **************************** demux_audio_datasource ******************************
+// **************************** demux_datasource ******************************
 
-demux_audio_datasource *
-demux_audio_datasource::new_demux_audio_datasource(
+demux_datasource *
+demux_datasource::new_demux_datasource(
 	const net::url& url,
 	abstract_demux *thread)
 {
 
 	int stream_index;
 
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::new_demux_audio_datasource()");
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::new_demux_datasource()");
 	// Find the index of the audio stream
 	stream_index = thread->audio_stream_nr();
 	assert(stream_index >= 0);
@@ -67,12 +67,12 @@ demux_audio_datasource::new_demux_audio_datasource(
 		return NULL;
 	}
 
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::new_demux_audio_datasource() looking for the right codec");
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::new_demux_datasource() looking for the right codec");
 
-	return new demux_audio_datasource(url, thread, stream_index);
+	return new demux_datasource(url, thread, stream_index);
 }
 
-demux_audio_datasource::demux_audio_datasource(const net::url& url, abstract_demux *thread, int stream_index)
+demux_datasource::demux_datasource(const net::url& url, abstract_demux *thread, int stream_index)
 :	m_url(url),
 	m_stream_index(stream_index),
 //	m_fmt(audio_format("ffmpeg")),
@@ -83,25 +83,25 @@ demux_audio_datasource::demux_audio_datasource(const net::url& url, abstract_dem
 	m_client_callback(NULL),
     m_is_live(false)
 {
-	//AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::demux_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
+	//AM_DBG lib::logger::get_logger()->debug("demux_datasource::demux_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
 	// XXX ignoring the codec for now but i'll have to look into this real soon
 	//m_fmt.parameters = (void *)&context->streams[m_stream_index]->codec;
 	m_thread->add_datasink(this, stream_index);
 	m_current_time = m_thread->get_clip_begin();
 }
 
-demux_audio_datasource::~demux_audio_datasource()
+demux_datasource::~demux_datasource()
 {
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::~demux_audio_datasource(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::~demux_datasource(0x%x)", (void*)this);
 	stop();
 }
 
 void
-demux_audio_datasource::stop()
+demux_datasource::stop()
 {
 	m_lock.enter();
 	m_event_processor = NULL;
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::stop(0x%x)", (void*)this);
 
 	if (m_thread) {
 		abstract_demux *tmpthread = m_thread;
@@ -111,24 +111,24 @@ demux_audio_datasource::stop()
 		m_lock.enter();
 	}
 	m_thread = NULL;
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop: thread stopped");
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::stop: thread stopped");
 
 	if (m_client_callback) {
-		lib::logger::get_logger()->debug("demux_audio_datasource::stop: m_client_callback non-NULL, after remove_datasink()");
+		lib::logger::get_logger()->debug("demux_datasource::stop: m_client_callback non-NULL, after remove_datasink()");
 		delete m_client_callback;
 		m_client_callback = NULL;
 	}
-	while (m_queue.size() > 0) {
-		datasource_packet tsp = m_queue.front();
+	while (m_frames.size() > 0) {
+		datasource_packet tsp = m_frames.front();
 		free(tsp.pkt);
-		m_queue.pop();
+		m_frames.pop();
 	}
 	m_current_time = -1;
 	m_lock.leave();
 }
 
 void
-demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
+demux_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
 	assert(m_thread);
@@ -137,17 +137,17 @@ demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
-		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::start(): m_client_callback already set!");
+		AM_DBG lib::logger::get_logger()->debug("demux_datasource::start(): m_client_callback already set!");
 	}
-	if (m_queue.size() > 0 || _end_of_file()) {
+	if (m_frames.size() > 0 || _end_of_file()) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (callbackk) {
 			assert(evp);
-			AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::start: trigger client callback");
+			AM_DBG lib::logger::get_logger()->debug("demux_datasource::start: trigger client callback");
 			evp->add_event(callbackk, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 		} else {
-			lib::logger::get_logger()->debug("Internal error: demux_audio_datasource::start(): no client callback!");
+			lib::logger::get_logger()->debug("Internal error: demux_datasource::start(): no client callback!");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 		}
 	} else {
@@ -160,7 +160,7 @@ demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 }
 
 void
-demux_audio_datasource::seek(timestamp_t time)
+demux_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
 	assert( time >= 0);
@@ -168,7 +168,7 @@ demux_audio_datasource::seek(timestamp_t time)
 
 	if (time == m_current_time) {
 		// The head of our queue has the timestamp we want to seek to. Don't do anything.
-		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::seek(%d): already there", time);
+		AM_DBG lib::logger::get_logger()->debug("demux_datasource::seek(%d): already there", time);
 		m_lock.leave();
 		return;
 	}
@@ -176,17 +176,17 @@ demux_audio_datasource::seek(timestamp_t time)
 	// thread trying to deliver new data to this demux_datasource.
 	m_thread->seek(time);
 
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::seek(%d): flushing %d packets", time, m_queue.size());
-	size_t nbuf = m_queue.size();
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::seek(%d): flushing %d packets", time, m_frames.size());
+	size_t nbuf = m_frames.size();
 	if ( nbuf > 0) {
-		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource: flush %d buffers due to seek", nbuf);
+		AM_DBG lib::logger::get_logger()->debug("demux_datasource: flush %d buffers due to seek", nbuf);
 	}
-	while (m_queue.size() > 0) {
-		AVPacket* data = m_queue.front().pkt;
+	while (m_frames.size() > 0) {
+		AVPacket* data = m_frames.front().pkt;
 		if (data != NULL) {
 			free(data);
 		}
-		m_queue.pop();
+		m_frames.pop();
 	}
 	m_current_time = time;
 	m_lock.leave();
@@ -196,7 +196,7 @@ demux_audio_datasource::seek(timestamp_t time)
 }
 
 void
-demux_audio_datasource::set_clip_end(timestamp_t clip_end)
+demux_datasource::set_clip_end(timestamp_t clip_end)
 {
 	assert(m_thread);
 	// NOTE: the seek is outside the lock, otherwise there's a deadlock with the
@@ -205,12 +205,12 @@ demux_audio_datasource::set_clip_end(timestamp_t clip_end)
 }
 
 void
-demux_audio_datasource::read_ahead(timestamp_t time)
+demux_datasource::read_ahead(timestamp_t time)
 {
 	m_lock.enter();
 	assert(m_thread);
 	assert(!m_thread->is_running());
-	assert(m_queue.size() == 0);	// Jack assumes this should be true
+	assert(m_frames.size() == 0);	// Jack assumes this should be true
 	m_current_time = time;
 	m_thread->read_ahead(time);
 	m_thread->start();
@@ -219,30 +219,30 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 
 
 bool
-demux_audio_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
+demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
 {
 	// XXX timestamp is ignored, for now
 	bool rv = true;
 	m_lock.enter();
 	m_src_end_of_file = (flag == datasource_packet_flag_eof);
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: pts=%lld, pkt=%p, flag=%d", pts, pkt, flag);
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource.push_data: pts=%lld, pkt=%p, flag=%d", pts, pkt, flag);
 	if ( ! m_src_end_of_file) {
 		if (_buffer_full()) {
 			rv = false;
 		} else {
 			datasource_packet tsp(pts, pkt, flag);
-			m_queue.push(tsp);
+			m_frames.push(tsp);
 
 		}
 	}
-	if ( m_queue.size() > 0 || _end_of_file()  ) {
+	if ( m_frames.size() > 0 || _end_of_file()  ) {
 		if ( m_client_callback && m_event_processor) {
-			AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
+			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
 		} else {
-			AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::push_data(): No client callback");
+			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): No client callback");
 		}
 	}
 	m_lock.leave();
@@ -251,7 +251,7 @@ demux_audio_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasou
 
 
 bool
-demux_audio_datasource::end_of_file()
+demux_datasource::end_of_file()
 {
 	m_lock.enter();
 	bool rv = _end_of_file();
@@ -260,26 +260,26 @@ demux_audio_datasource::end_of_file()
 }
 
 bool
-demux_audio_datasource::_end_of_file()
+demux_datasource::_end_of_file()
 {
 	// private method - no need to lock
-	return m_src_end_of_file && m_queue.empty();
+	return m_src_end_of_file && m_frames.empty();
 }
 
 bool
-demux_audio_datasource::_buffer_full()
+demux_datasource::_buffer_full()
 {
-	return m_queue.size() >= MAX_AUDIO_PACKETS;
+	return m_frames.size() >= MAX_AUDIO_PACKETS;
 }
 
 datasource_packet
-demux_audio_datasource::get_packet()
+demux_datasource::get_packet()
 {
 	datasource_packet tsp;
 	m_lock.enter();
-	if (m_queue.size() > 0) {
-		tsp = m_queue.front();
-		m_queue.pop();
+	if (m_frames.size() > 0) {
+		tsp = m_frames.front();
+		m_frames.pop();
 		m_current_time = -1;
 	}
 	m_lock.leave();
@@ -287,43 +287,43 @@ demux_audio_datasource::get_packet()
 }
 
 timestamp_t
-demux_audio_datasource::get_clip_end()
+demux_datasource::get_clip_end()
 {
 	m_lock.enter();
 	assert(m_thread);
 	timestamp_t clip_end = m_thread->get_clip_end();
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_end: clip_end=%d", clip_end);
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::get_clip_end: clip_end=%d", clip_end);
 	m_lock.leave();
 	return	clip_end;
 }
 
 timestamp_t
-demux_audio_datasource::get_clip_begin()
+demux_datasource::get_clip_begin()
 {
 	m_lock.enter();
 	assert(m_thread);
 	timestamp_t clip_begin = m_thread->get_clip_begin();
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_clip_begin: clip_begin=%d", clip_begin);
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::get_clip_begin: clip_begin=%d", clip_begin);
 	m_lock.leave();
 	return	clip_begin;
 }
 
 audio_format&
-demux_audio_datasource::get_audio_format()
+demux_datasource::get_audio_format()
 {
 	assert(m_thread);
 	return m_thread->get_audio_format();
 }
 
 common::duration
-demux_audio_datasource::get_dur()
+demux_datasource::get_dur()
 {
 	common::duration rv(false, 0.0);
 	m_lock.enter();
 	assert(m_thread);
 	if (m_thread->duration() >= 0) {
 		rv = common::duration(true, m_thread->duration());
-		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::get_dur: duration=%f", rv.second);
+		AM_DBG lib::logger::get_logger()->debug("demux_datasource::get_dur: duration=%f", rv.second);
 	}
 	m_lock.leave();
 	return rv;
@@ -374,7 +374,7 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 	m_current_time = m_thread->get_clip_begin();
 	int audio_stream_idx = m_thread->audio_stream_nr();
 	if (audio_stream_idx >= 0)
-		m_audio_src = new demux_audio_datasource(m_url, m_thread, audio_stream_idx);
+		m_audio_src = new demux_datasource(m_url, m_thread, audio_stream_idx);
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::demux_video_datasource(0x%x) m_audio_src=0x%x url=%s", (void*)this, m_audio_src, url.get_url().c_str());
 
 }
@@ -422,6 +422,37 @@ demux_video_datasource::stop()
 
 }
 
+void
+demux_video_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
+{
+	m_lock.enter();
+	assert(m_thread);
+	m_thread->start();
+    
+	if (m_client_callback != NULL) {
+		delete m_client_callback;
+		m_client_callback = NULL;
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start(): m_client_callback already set!");
+	}
+	if (m_frames.size() > 0 || _end_of_file()) {
+		// We have data (or EOF) available. Don't bother starting up our source again, in stead
+		// immedeately signal our client again
+		if (callbackk) {
+			assert(evp);
+			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::start: trigger client callback");
+			evp->add_event(callbackk, MIN_EVENT_DELAY, ambulant::lib::ep_med);
+		} else {
+			lib::logger::get_logger()->debug("Internal error: demux_video_datasource::start(): no client callback!");
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+		}
+	} else {
+		// We have no data available. Start our source, and in our data available callback we
+		// will signal the client.
+		m_client_callback = callbackk;
+		m_event_processor = evp;
+	}
+	m_lock.leave();
+}
 
 
 void
@@ -490,6 +521,7 @@ demux_video_datasource::set_clip_end(timestamp_t clip_end)
 	m_thread->set_clip_end(clip_end);
 }
 
+#if 0
 void
 demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
@@ -528,7 +560,6 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 	m_lock.leave();
 }
 
-#if 0
 void
 demux_video_datasource::frame_processed_keepdata(timestamp_t pts, char *data)
 {
@@ -759,7 +790,7 @@ demux_video_datasource::get_audio_datasource()
 		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_audio_datasource: decoder ds = 0x%x", (void*)dds);
 		if (dds == NULL) {
 			lib::logger::get_logger()->warn(gettext("%s: Ignoring audio, unsupported encoding"), m_url.get_url().c_str());
-			pkt_audio_datasource *tmp = m_audio_src;
+			pkt_datasource *tmp = m_audio_src;
 			m_audio_src = NULL;
 			m_lock.leave();
 			tmp->stop();

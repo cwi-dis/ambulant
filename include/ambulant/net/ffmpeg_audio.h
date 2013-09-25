@@ -53,7 +53,7 @@ class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
 class ffmpeg_audio_decoder_finder : public audio_decoder_finder {
   public:
 	~ffmpeg_audio_decoder_finder() {};
-	audio_datasource* new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& hint);
+	audio_datasource* new_audio_decoder(pkt_datasource *src, const audio_format_choices& hint);
 };
 
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
@@ -67,8 +67,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	static bool supported(const audio_format& fmt);
 	static bool supported(const net::url& url);
 
-	ffmpeg_decoder_datasource(const net::url& url, pkt_audio_datasource *src);
-	ffmpeg_decoder_datasource(pkt_audio_datasource *src);
+	ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *src);
+	ffmpeg_decoder_datasource(pkt_datasource *src);
 	~ffmpeg_decoder_datasource();
 
 
@@ -109,7 +109,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool m_con_owned;
 	audio_format m_fmt;
 	lib::event_processor *m_event_processor;
-	pkt_audio_datasource* m_src;
+	pkt_datasource* m_src;
 	timestamp_t m_elapsed;      // Timestamp of the very last sample in the buffer
 	bool m_is_audio_ds;
 

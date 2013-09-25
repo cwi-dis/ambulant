@@ -1483,23 +1483,23 @@ inline audio_datasource_factory *Py_WrapAs_audio_datasource_factory(PyObject *o)
 	return rv;
 }
 
-class pkt_audio_datasource_factory : public cpppybridge, public ambulant::net::pkt_audio_datasource_factory {
+class pkt_datasource_factory : public cpppybridge, public ambulant::net::pkt_datasource_factory {
 public:
-	pkt_audio_datasource_factory(PyObject *itself);
-	virtual ~pkt_audio_datasource_factory();
+	pkt_datasource_factory(PyObject *itself);
+	virtual ~pkt_datasource_factory();
 
-	ambulant::net::pkt_audio_datasource* new_pkt_audio_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end);
+	ambulant::net::pkt_datasource* new_pkt_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end);
   private:
-	PyObject *py_pkt_audio_datasource_factory;
+	PyObject *py_pkt_datasource_factory;
 
-	friend PyObject *pkt_audio_datasource_factoryObj_New(ambulant::net::pkt_audio_datasource_factory *itself);
+	friend PyObject *pkt_datasource_factoryObj_New(ambulant::net::pkt_datasource_factory *itself);
 };
-#define BGEN_BACK_SUPPORT_pkt_audio_datasource_factory
-inline pkt_audio_datasource_factory *Py_WrapAs_pkt_audio_datasource_factory(PyObject *o)
+#define BGEN_BACK_SUPPORT_pkt_datasource_factory
+inline pkt_datasource_factory *Py_WrapAs_pkt_datasource_factory(PyObject *o)
 {
-	pkt_audio_datasource_factory *rv = dynamic_cast<pkt_audio_datasource_factory*>(pycppbridge_getwrapper(o));
+	pkt_datasource_factory *rv = dynamic_cast<pkt_datasource_factory*>(pycppbridge_getwrapper(o));
 	if (rv) return rv;
-	rv = new pkt_audio_datasource_factory(o);
+	rv = new pkt_datasource_factory(o);
 	pycppbridge_setwrapper(o, rv);
 	return rv;
 }
@@ -1572,7 +1572,7 @@ public:
 	audio_decoder_finder(PyObject *itself);
 	virtual ~audio_decoder_finder();
 
-	ambulant::net::audio_datasource* new_audio_decoder(ambulant::net::pkt_audio_datasource* src, const ambulant::net::audio_format_choices& fmts);
+	ambulant::net::audio_datasource* new_audio_decoder(ambulant::net::pkt_datasource* src, const ambulant::net::audio_format_choices& fmts);
   private:
 	PyObject *py_audio_decoder_finder;
 

@@ -132,9 +132,9 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	}
 
 	// All seems well. Create the demux reader, the decoder and optionally the resampler.
-	pkt_audio_datasource *pds = demux_audio_datasource::new_demux_audio_datasource(url, thread);
+	pkt_datasource *pds = demux_datasource::new_demux_datasource(url, thread);
 	if (pds == NULL) {
-		AM_DBG lib::logger::get_logger()->debug("fdemux_audio_datasource_factory::new_audio_datasource: could not allocate ffmpeg_video_datasource");
+		AM_DBG lib::logger::get_logger()->debug("fdemux_datasource_factory::new_audio_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
 		return NULL;
 	}
@@ -175,7 +175,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 }
 
 audio_datasource*
-ffmpeg_audio_decoder_finder::new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& fmts)
+ffmpeg_audio_decoder_finder::new_audio_decoder(pkt_datasource *src, const audio_format_choices& fmts)
 {
 	if (src == NULL) return NULL;
 	audio_datasource *ds = NULL;
@@ -251,7 +251,7 @@ ffmpeg_decoder_datasource::supported(const net::url& url)
 	return true;
 }
 
-ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_audio_datasource *const src)
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *const src)
 :	m_con(NULL),
 	m_con_owned(false),
 	m_fmt(audio_format(0,0,0)),
@@ -269,7 +269,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_au
 		lib::logger::get_logger()->error(gettext("%s: audio decoder \"%s\" not supported"), url.get_url().c_str(), ext);
 }
 
-ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_audio_datasource *const src)
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_datasource *const src)
 :	m_con(NULL),
 	m_fmt(src->get_audio_format()),
 	m_event_processor(NULL),

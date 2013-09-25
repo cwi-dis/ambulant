@@ -35,22 +35,22 @@ namespace ambulant
 namespace net
 {
 
-class demux_audio_datasource:
-	virtual public pkt_audio_datasource,
+class demux_datasource:
+	virtual public pkt_datasource,
 	public demux_datasink,
 	virtual public lib::ref_counted_obj
 {
   public:
-	static demux_audio_datasource *new_demux_audio_datasource(
+	static demux_datasource *new_demux_datasource(
 		const net::url& url,
 		abstract_demux *thread);
 
-	demux_audio_datasource(
+	demux_datasource(
 		const net::url& url,
 		abstract_demux *thread,
 		int stream_index);
 
-	~demux_audio_datasource();
+	~demux_datasource();
 
 	void start(lib::event_processor *evp, lib::event *callback);
 	void stop();
@@ -81,7 +81,7 @@ class demux_audio_datasource:
 //	audio_format m_fmt;
 	bool m_src_end_of_file;
 	lib::event_processor *m_event_processor;
-	std::queue<datasource_packet> m_queue;
+	std::queue<datasource_packet> m_frames;
 	abstract_demux *m_thread;
 	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our callback to the client
@@ -90,7 +90,7 @@ class demux_audio_datasource:
 };
 
 class demux_video_datasource:
-	virtual public pkt_video_datasource,
+	virtual public pkt_datasource,
 	public demux_datasink,
 	virtual public lib::ref_counted_obj
 {
@@ -159,7 +159,7 @@ class demux_video_datasource:
 	abstract_demux *m_thread;
 	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our calllback to the client
-	pkt_audio_datasource* m_audio_src;
+	pkt_datasource* m_audio_src;
 	lib::critical_section m_lock;
 	//FILE *m_file;
 	long long int m_frame_nr;

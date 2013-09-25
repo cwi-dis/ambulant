@@ -81,7 +81,7 @@ class ffmpeg_video_decoder_datasource:
 	static bool supported(const video_format& fmt);
 
 	//ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
-	ffmpeg_video_decoder_datasource(pkt_video_datasource *src, video_format fmt, net::url url);
+	ffmpeg_video_decoder_datasource(pkt_datasource *src, video_format fmt, net::url url);
 
 	~ffmpeg_video_decoder_datasource();
 
@@ -124,7 +124,7 @@ class ffmpeg_video_decoder_datasource:
 	void _pop_top_frame();
 	void _need_fmt_uptodate();
 
-	pkt_video_datasource* m_src;
+	pkt_datasource* m_src;
     net::url m_url;
 	AVCodecContext *m_con;
 	struct SwsContext *m_img_convert_ctx;

@@ -159,7 +159,7 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 	return true;
 }
 
-ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(pkt_video_datasource* src, video_format fmt, net::url url)
+ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(pkt_datasource* src, video_format fmt, net::url url)
 :	m_src(src),
     m_url(url),
 	m_con(NULL),
@@ -487,7 +487,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 	bool did_generate_frame = false;
 
 	timestamp_t ipts = 0;
-	uint8_t *inbuf;
 	size_t sz;
 	got_pic = 0;
 
