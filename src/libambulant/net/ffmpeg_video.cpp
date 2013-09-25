@@ -509,17 +509,15 @@ ffmpeg_video_decoder_datasource::data_avail()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: sz=%d, ipts = %lld", sz, ipts);
 
 	if(sz == datasource_packet_flag_eof && !m_src->end_of_file() ) {
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: no data, not eof?");
-		// Attempt at bug fix for hanging video
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasrouce_packet_flag_eof, but not eof?");
 		goto packet_done;
 	}
 
-	// No easy error conditions, so let's allocate our frame.
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail called (0x%x) ", (void*) this);
 	if (m_con == NULL) {
         lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con==NULL, dropping packet");
         goto packet_done;
     }
+    
     {
         AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
 
@@ -528,7 +526,8 @@ ffmpeg_video_decoder_datasource::data_avail()
             // XXXJACK Should we pass dummy packets to flush the buffer?
             goto packet_done;
         } else if (dspacket.flag == datasource_packet_flag_flush) {
-            // XXXJACK flush codec
+            /*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: flush buffers");
+            avcodec_flush_buffers(m_con);
             goto packet_done;
         } else {
             assert(0);
