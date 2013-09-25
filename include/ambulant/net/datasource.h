@@ -316,12 +316,18 @@ class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
 /// Audio_datasource extends the datasource protocol with methods to obtain
 /// information on the way the audio data is encoded and methods to support
 /// temporal clipping of the audio.
-class audio_datasource_mixin {
+class av_datasource_mixin {
   public:
-	virtual ~audio_datasource_mixin() {};
+	virtual ~av_datasource_mixin() {};
 
-	/// Returns the native format of the audio data.
+	/// Returns the native format of the audio data. Audio-specific.
 	virtual audio_format& get_audio_format() = 0;
+
+	/// Return true if there is audio with this video. Video-specific.
+	virtual bool has_audio() { return false; }
+
+	/// Return corresponding audio datasource. Video-specific.
+	audio_datasource *get_audio_datasource() { return NULL; }
 
 	/// Tells the datasource to start reading data starting from time t.
 	/// Call only once, early in initialization.
@@ -360,18 +366,20 @@ class audio_datasource_mixin {
 };
 
 /// Full interface to an object that supplies audio data to a consumer.
-/// Simply inherits both datasource and audio_datasource_mixin.
-class audio_datasource : public datasource, public audio_datasource_mixin {
+/// Simply inherits both datasource and av_datasource_mixin.
+class audio_datasource : public datasource, public av_datasource_mixin {
   public:
 	virtual ~audio_datasource() {};
 };
 
 /// Full interface to an object that supplies packetized audio data to a consumer.
-/// Simply inherits both pkt_datasource and audio_datasource_mixin.
-class pkt_audio_datasource : public pkt_datasource, public audio_datasource_mixin {
+/// Simply inherits both pkt_datasource and av_datasource_mixin.
+class pkt_audio_datasource : public pkt_datasource, public av_datasource_mixin {
   public:
 	virtual ~pkt_audio_datasource() {};
 };
+
+typedef pkt_audio_datasource pkt_video_datasource;
 
 /// Implementation of audio_datasource that reads raw audio data from a datasource.
 class raw_audio_datasource:

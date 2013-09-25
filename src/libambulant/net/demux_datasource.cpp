@@ -528,7 +528,7 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 	m_lock.leave();
 }
 
-
+#if 0
 void
 demux_video_datasource::frame_processed_keepdata(timestamp_t pts, char *data)
 {
@@ -565,6 +565,7 @@ demux_video_datasource::frame_processed(timestamp_t pts)
 	m_old_frame.pkt = NULL;
 	m_lock.leave();
 }
+#endif
 
 bool
 demux_video_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag)
@@ -660,6 +661,7 @@ demux_video_datasource::get_clip_begin()
 	return	clip_begin;
 }
 
+#if 0
 char*
 demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep)
 {
@@ -684,7 +686,7 @@ demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, size_
 	m_lock.leave();
 	return rv;
 }
-
+#endif
 int
 demux_video_datasource::size() const
 {

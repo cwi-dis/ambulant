@@ -117,7 +117,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	}
 
 	// All seems well. Create the demux reader and the decoder.
-	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
+	demux_video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
 	if (!ds) {
 		lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_demux_video_datasource");
 		thread->cancel();
@@ -159,7 +159,7 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 	return true;
 }
 
-ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasource* src, video_format fmt, net::url url)
+ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(pkt_video_datasource* src, video_format fmt, net::url url)
 :	m_src(src),
     m_url(url),
 	m_con(NULL),
@@ -291,7 +291,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
 		assert(m_src);
-		m_src->start_frame(evp, e, 0);
+		m_src->start(evp, e);
 		m_start_input = false;
 	}
 	m_lock.leave();
@@ -317,7 +317,7 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
 		assert(m_src);
-		m_src->start_frame(evp, e, 0);
+		m_src->start(evp, e);
 		m_start_input = false;
 	}
 	m_lock.leave();
@@ -501,7 +501,9 @@ ffmpeg_video_decoder_datasource::data_avail()
 	m_start_input = true;
 
 	// Get the input data
-	inbuf = (uint8_t*) m_src->get_frame(0, &ipts, &sz);
+	datasource_packet dspacket = m_src->get_packet(); // xxxjack get_frame(0, &ipts, &sz);
+	ipts = dspacket.pts;
+	AVPacket *avpkt = dspacket.pkt;
 #ifdef LOGGER_VIDEOLATENCY
     lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 3-predecode %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
 #endif
@@ -522,13 +524,11 @@ ffmpeg_video_decoder_datasource::data_avail()
     {
         AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
 
-        AVPacket *avpkt = NULL;
-        if (sz == datasource_packet_flag_avpacket) {
-            avpkt = (AVPacket *)inbuf;
-        } else if (sz == datasource_packet_flag_eof) {
+		if (dspacket.flag == datasource_packet_flag_avpacket) {
+        } else if (dspacket.flag == datasource_packet_flag_eof) {
             // XXXJACK Should we pass dummy packets to flush the buffer?
             goto packet_done;
-        } else if (sz == datasource_packet_flag_flush) {
+        } else if (dspacket.flag == datasource_packet_flag_flush) {
             // XXXJACK flush codec
             goto packet_done;
         } else {
@@ -700,7 +700,6 @@ ffmpeg_video_decoder_datasource::data_avail()
     }
 
 packet_done:
-    m_src->frame_processed(0); // XXXJACK: Should pass ipts, for sanity check
 	// Now tell our client, if we have data available or are at end of file.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
 	if (m_frames.size() > MIN_VIDEO_FRAMES || m_src->end_of_file()) {
@@ -723,7 +722,7 @@ packet_done:
 	if (!m_src->end_of_file() && !_buffer_full()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
-		m_src->start_frame(m_event_processor, e, ipts);
+		m_src->start(m_event_processor, e);
 		m_start_input = false;
 	}
 

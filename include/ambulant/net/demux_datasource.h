@@ -90,7 +90,7 @@ class demux_audio_datasource:
 };
 
 class demux_video_datasource:
-	virtual public video_datasource,
+	virtual public pkt_video_datasource,
 	public demux_datasink,
 	virtual public lib::ref_counted_obj
 {
@@ -112,9 +112,12 @@ class demux_video_datasource:
 	void start_prefetch(lib::event_processor *evp){};
 	void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
 	void stop();
-	char* get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep);
-	void frame_processed_keepdata(timestamp_t timestamp, char *data);
-	void frame_processed(timestamp_t timestamp);
+	/// Return the next timestamped packet and discard it.
+	datasource_packet get_packet();
+	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
+//	char* get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep);
+//	void frame_processed_keepdata(timestamp_t timestamp, char *data);
+//	void frame_processed(timestamp_t timestamp);
 	bool push_data(timestamp_t pts, struct AVPacket *pkt, datasource_packet_flag flag);
 	bool end_of_file();
 	timestamp_t get_clip_end();
@@ -127,7 +130,10 @@ class demux_video_datasource:
 
 	bool has_audio();
 	audio_datasource* get_audio_datasource();
-
+	// Silly: need this method but don't implement it
+	net::audio_format& get_audio_format() { static net::audio_format fmt("this-is-video-not-audio"); return fmt; };
+	// Silly: need this method but don't implement it
+	timestamp_t get_elapsed() { return -1; }
 	char* get_read_ptr();
 	int size() const;
 
