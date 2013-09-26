@@ -124,7 +124,8 @@ class ffmpeg_video_decoder_datasource:
 	bool _buffer_full();
 	void _pop_top_frame();
 	void _need_fmt_uptodate();
-
+    void _forward_frame(timestamp_t pts, AVFrame *frame);
+        
 	demux_video_datasource* m_src;
     net::url m_url;
 	AVCodecContext *m_con;
