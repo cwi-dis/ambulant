@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/jack/src/vconect/Sandbox/jack/activemq/studioclient/pyamplugin_vclient/studio/studio9.smil"
+            argument = "/Users/jack/src/vconect/StudioVClient/pyamplugin_vclient/studio/studio9.smil"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -67,22 +67,27 @@
          <EnvironmentVariable
             key = "SESSION_ID"
             value = "session42"
-            isEnabled = "NO">
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "AMBULANT_PLUGIN_PATH"
+            value = "/Users/jack/src/vconect/StudioVClient"
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DYLD_FALLBACK_LIBRARY_PATH"
             value = "/Users/jack/packages/gstreamer/installed/lib:"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "VCONECT_CLIENTID"
             value = "client8b"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "VC_CAM_OVERRIDE"
             value = "videotestsrc"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"

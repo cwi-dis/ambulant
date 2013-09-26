@@ -508,8 +508,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 #endif
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: sz=%d, ipts = %lld", sz, ipts);
 
-	if(sz == datasource_packet_flag_eof && !m_src->end_of_file() ) {
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasrouce_packet_flag_eof, but not eof?");
+	if(dspacket.flag == datasource_packet_flag_eof && !m_src->end_of_file() ) {
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasource_packet_flag_eof, but not eof?");
 		goto packet_done;
 	}
 
@@ -522,6 +522,7 @@ ffmpeg_video_decoder_datasource::data_avail()
         AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
 
 		if (dspacket.flag == datasource_packet_flag_avpacket) {
+			;
         } else if (dspacket.flag == datasource_packet_flag_eof) {
             // XXXJACK Should we pass dummy packets to flush the buffer?
             goto packet_done;
