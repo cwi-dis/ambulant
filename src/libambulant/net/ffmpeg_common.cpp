@@ -406,7 +406,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 		// If the sink is currently busy (in run()) then
 		// run() will take care of disposal.
 		// signal EOF
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink: push eof and release sink");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink: push eof and release sink");
 		ds->push_data(0, 0, datasource_packet_flag_eof);
 		ds->release();
 	}
@@ -479,7 +479,7 @@ ffmpeg_demux::run()
 		if (ret < 0) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: eof encountered (%d), wait some time before continuing the while loop", ret);
 			if (!m_is_live && !eof_sent_to_clients) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
 				for (int i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 					if (m_sinks[i]) {
 						m_sinks[i]->push_data(0, 0, datasource_packet_flag_eof);
@@ -604,7 +604,7 @@ ffmpeg_demux::run()
 				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
 				{
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_demux::run: push eof and release sink (released while busy)");
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::run: push eof and release sink (released while busy)");
 					sink->push_data(0,0,datasource_packet_flag_eof);
 					sink->release();
 				}
@@ -615,7 +615,7 @@ ffmpeg_demux::run()
 		//AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
 		//av_free_packet(pkt);
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
 	int i;
 	m_lock.leave();
 	for (i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {

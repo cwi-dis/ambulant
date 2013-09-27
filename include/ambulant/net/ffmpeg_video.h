@@ -112,11 +112,13 @@ class ffmpeg_video_decoder_datasource:
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
-        void set_is_live (bool is_live) { m_src->set_is_live(is_live); m_is_live = is_live; }
-        bool get_is_live () { return m_is_live; }
-        
+	void set_is_live (bool is_live) { m_src->set_is_live(is_live); m_is_live = is_live; }
+	bool get_is_live () { return m_is_live; }
+
 
   private:
+	bool _should_fast_forward(timestamp_t ipts);
+	void _restart_queues();
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(video_format &fmt);
 	bool _end_of_file();
@@ -126,30 +128,31 @@ class ffmpeg_video_decoder_datasource:
 	void _need_fmt_uptodate();
     void _forward_frame(timestamp_t pts, AVFrame *frame);
         
-	demux_video_datasource* m_src;
-    net::url m_url;
-	AVCodecContext *m_con;
-	struct SwsContext *m_img_convert_ctx;
-
-	bool m_con_owned;	// True if we have to close/free m_con
-	video_format m_fmt;
 	lib::event_processor *m_event_processor;
-	sorted_frames  m_frames;
-	int m_size;		// NOTE: this assumes all decoded frames are the same size!
-	lib::event *m_client_callback;  // This is our calllback to the client
-	timestamp_t m_pts_last_frame;
-	timestamp_t m_oldest_timestamp_wanted;
-	timestamp_t m_video_clock;
-	int m_frame_count;
-	int m_dropped_count;
-	int m_dropped_count_before_decoding;
-	lib::critical_section m_lock;
-	timestamp_t m_elapsed;
-	bool m_start_input;		// True when m_src->start_frame() is needed
-    bool m_complete_frame_seen; // True whenever a real frame has been seen
-    bool m_is_live; // True for live streams
-	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
+	lib::event *m_client_callback;  // Saved callback to the client
 
+	demux_video_datasource* m_src;	// Our upstream packet source
+    net::url m_url;					// URL, for debugging/printing
+	AVCodecContext *m_con;			// ffmpeg decoder state
+	bool m_con_owned;				// True if we have to close/free m_con
+	struct SwsContext *m_img_convert_ctx;	// ffmpeg scaler state
+
+	sorted_frames m_frames;			// Decoded frames on their way to the receiver
+	timestamp_t m_oldest_timestamp_wanted;	// Drop frames older than this timestamp
+	timestamp_t m_video_clock;	// Helper to compute timestamps if they are missing
+	
+	bool m_start_input;				// True when m_src->start_frame() is needed
+    bool m_complete_frame_seen;		// True whenever a real frame has been seen
+    bool m_is_live;					// True for live streams
+
+	video_format m_fmt;				// Format of outgoing video data
+	int m_size;						// Size of outgoing video frame in bytes
+	pixel_order m_pixel_layout;		// Per-pixel format receiver wants.
+
+	int m_frame_count;				// Statistics
+	int m_dropped_count;			// Statistics
+
+	lib::critical_section m_lock;
     static lib::critical_section s_lock;
 };
 

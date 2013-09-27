@@ -79,7 +79,7 @@ video_renderer::video_renderer(
         }
     }
 #endif // LOGGER_VIDEOLATENCY
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer() (this = 0x%x): Constructor ", (void *) this);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer: (this = 0x%x): Constructor ", (void *) this);
 	net::url url = node->get_url("src");
 	_init_clip_begin_end();
 
@@ -105,10 +105,10 @@ video_renderer::video_renderer(
 		m_audio_ds = m_src->get_audio_datasource();
 
 		if (m_audio_ds) {
-			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: creating audio renderer !");
+			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::video_renderer: creating audio renderer !");
 			m_audio_renderer = factory->get_playable_factory()->new_aux_audio_playable(context, cookie, node, evp, (net::audio_datasource*) m_audio_ds);
             m_context->playable_started(m_audio_renderer, m_node, "aux");
-			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
+			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::video_renderer: audio renderer created(0x%x)!", (void*) m_audio_renderer);
             if (is_live) {
                 m_audio_ds->set_is_live(is_live);
             }
@@ -120,7 +120,7 @@ video_renderer::video_renderer(
 }
 
 video_renderer::~video_renderer() {
-	AM_DBG lib::logger::get_logger()->debug("~video_renderer(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::~video_renderer(0x%x)", (void*)this);
 	m_lock.enter();
 
 	if (m_dest) m_dest->renderer_done(this);
@@ -165,13 +165,13 @@ video_renderer::start (double where)
 	}
 
 	if (!m_src) {
-		lib::logger::get_logger()->trace("video_renderer.start: no datasource, skipping media item");
+		lib::logger::get_logger()->trace("video_renderer::start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
 		m_lock.leave();
 		return;
 	}
 	if (!m_dest) {
-		lib::logger::get_logger()->trace("video_renderer.start: no destination surface, skipping media item");
+		lib::logger::get_logger()->trace("video_renderer::start: no destination surface, skipping media item");
 		m_context->stopped(m_cookie, 0);
 		m_lock.leave();
 		return;
@@ -191,11 +191,11 @@ video_renderer::start (double where)
 
 	if (m_activated) {
 		// Renderer was already playing, possibly due to fill=continue or a late callback
-		lib::logger::get_logger()->trace("video_renderer.start(0x%x): already started", (void*)this);
+		lib::logger::get_logger()->trace("video_renderer::start(0x%x): already started", (void*)this);
 		m_post_stop_called = false;
 	} else {
 		lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
-		AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
+		AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start: where=%f this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
 		m_src->start_frame (m_event_processor, e, 0);
 		m_activated = true;
 		m_post_stop_called = false;
@@ -224,7 +224,7 @@ video_renderer::preroll(double when, double where, double how_much)
 		return;
 	}
 	if (!m_src) {
-		lib::logger::get_logger()->trace("video_renderer.preroll: no datasource, skipping media item");
+		lib::logger::get_logger()->trace("video_renderer::preroll: no datasource, skipping media item");
 		m_lock.leave();
 		return;
 	}
@@ -257,9 +257,9 @@ video_renderer::preroll(double when, double where, double how_much)
 		}
 	}
 
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::preroll(%f) seek to %lld", where, m_clip_begin);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::preroll: where=%f seek to %lld", where, m_clip_begin);
 
-	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::preroll(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
+	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::preroll: where=%f this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
 
 	m_src->start_prefetch (m_event_processor);
 	if (m_audio_renderer)
@@ -307,7 +307,7 @@ video_renderer::post_stop()
 		if (m_dest) m_dest->renderer_done(this);
 		m_dest = NULL;
 		if (m_audio_renderer) m_audio_renderer->post_stop();
-		lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL", m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
+		lib::logger::get_logger()->debug("video_renderer::post_stop: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL", m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
 	}
 	m_lock.leave();
 }
@@ -319,7 +319,7 @@ video_renderer::seek(double t)
 	m_lock.enter();
 	//assert(m_audio_renderer == NULL);
 	// XXXJACK: Should we seek the audio renderer too??
-	AM_DBG lib::logger::get_logger()->trace("video_renderer: seek(%f) curtime=%f", t, (double)m_timer->elapsed()/1000.0);
+	AM_DBG lib::logger::get_logger()->trace("video_renderer::seek(%f) curtime=%f", t, (double)m_timer->elapsed()/1000.0);
 	assert( t >= 0);
 	net::timestamp_t wtd_position = m_clip_begin+(net::timestamp_t)(t*1000000);
 	if (m_src) {
@@ -338,7 +338,7 @@ video_renderer::get_dur()
 	// video is the important one so we ask the video source
 	if (m_src) {
 		rv = m_src->get_dur();
-		AM_DBG lib::logger::get_logger()->trace("video_renderer: get_dur() duration = %f", rv.second);
+		AM_DBG lib::logger::get_logger()->trace("video_renderer::get_dur() duration = %f", rv.second);
 
 	}
 
@@ -364,7 +364,7 @@ video_renderer::_now()
 		rv = 0;
 	else
 		rv = (double)(elapsed - m_epoch) / 1000;
-	AM_DBG lib::logger::get_logger()->trace("video_renderer: now(0x%x): m_paused_epoch=%d, m_epoch=%d rv=%lf", this, m_paused_epoch,  m_epoch, rv);
+	AM_DBG lib::logger::get_logger()->trace("video_renderer::_now(0x%x): m_paused_epoch=%d, m_epoch=%d rv=%lf", this, m_paused_epoch,  m_epoch, rv);
 	return rv;
 }
 
@@ -376,12 +376,12 @@ video_renderer::_resync(lib::timer::signed_time_type drift)
 
 #if 0
 	// Disable this for now, until we have fixed clocks.
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::resync: drift=%dms", drift);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::_resync: drift=%dms", drift);
 	// We may be able to adjust the system clock with this drift. Let's try.
 	drift = m_timer->set_drift(drift);
 #endif
 
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::resync: residual drift=%dms", drift);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::_resync: residual drift=%dms", drift);
 	// Whatever residual drift there is we compensate for by changing our epoch.
 	m_epoch -= drift;
 }
@@ -390,7 +390,7 @@ void
 video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::pause() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::pause: this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 	// XXX if d==display_hide we should hide the content
 	if (m_activated && !m_is_paused) {
 		if (m_audio_renderer)
@@ -406,7 +406,7 @@ void
 video_renderer::resume()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::resume() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::resume: this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 	if (m_activated && m_is_paused) {
 		if (m_audio_renderer)
 			m_audio_renderer->resume();
@@ -457,7 +457,7 @@ video_renderer::data_avail()
     logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 6-predisplay %lld %lld %s", 0LL, frame_ts_micros, m_node->get_url("src").get_url().c_str());
 #endif
 
-	AM_DBG lib::logger::get_logger()->debug("data_avail(%s): now_micros = %lld, frame_ts_micros = %lld, %d bytes", m_node->get_sig().c_str(), now_micros, frame_ts_micros, size);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(%s): now_micros = %lld, frame_ts_micros = %lld, %d bytes", m_node->get_sig().c_str(), now_micros, frame_ts_micros, size);
 
 	if (buf == NULL) {
 		// This can only happen immedeately after a seek, or if we have read past end-of-file.
@@ -521,17 +521,18 @@ video_renderer::data_avail()
 	if (!buf) {
 		// No data: skip. Probably out-of-memory or something similar.
 		m_frame_missing++;
+		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame skipped, ts (%lld): buf=NULL)", frame_ts_micros);
 		m_src->frame_processed(frame_ts_micros);
 	} else
 	if (frame_ts_micros + frame_duration < m_clip_begin) {
 		// Frame from before begin-of-movie (funny comparison because of unsignedness). Skip silently, and schedule another callback asap.
-		AM_DBG lib::logger::get_logger()->debug("video_renderer: frame skipped, ts (%lld) < clip_begin(%lld)", frame_ts_micros, m_clip_begin);
+		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame skipped, ts (%lld) < clip_begin(%lld)", frame_ts_micros, m_clip_begin);
 		m_src->frame_processed(frame_ts_micros);
 	} else
 #ifdef DROP_LATE_FRAMES
 	if ( ! src->get_is_live()   && frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
 		// Frame is too late. Skip forward to now. Schedule another callback asap.
-		AM_DBG lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
+		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
 		m_frame_late++;
 		frame_ts_micros = now_micros;
 		m_src->frame_processed(frame_ts_micros);
@@ -578,7 +579,7 @@ video_renderer::data_avail()
                     char buffer[32];
                     snprintf(buffer, sizeof buffer, "%lld", frame_ts_micros);
                     sc->set_value(m_video_feedback_var, buffer);
-                    AM_DBG lib::logger::get_logger()->debug("video_renderer: set live video feedback %s to %s", m_video_feedback_var, buffer);
+                    AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: set live video feedback %s to %s", m_video_feedback_var, buffer);
                 }
             }
 
@@ -588,9 +589,16 @@ video_renderer::data_avail()
 		// of the next frame is expected to be.
 		frame_ts_micros += frame_duration;
 		if (frame_ts_micros < now_micros - frame_duration) {
-			// And if we're lagging more than one frame duration we also skip some
-			// frames.
-			frame_ts_micros = now_micros - frame_duration;
+			AM_DBG lib::logger::get_logger()->debug("video_render::data_avail: calling frame_processed(), frame_ts_micros (%lld) < now_micros (%lld) - frame_duration (%lld)", frame_ts_micros, now_micros, frame_duration);
+			//
+			// Jack is unsure about the !is_live here: if we remove that we seem to drop large stretches of frames.
+			// But putting it in would seem to break a/v sync....
+			// Maybe fast-forward not to now, but to (head of queue)-1?
+			// Maybe remove it altogether, and have the next _resync() bit handle it?
+			//
+			if ( !m_src->get_is_live()) {
+				frame_ts_micros = now_micros - frame_duration;
+			}
 			m_src->frame_processed(frame_ts_micros);
 		}
 	}
@@ -598,7 +606,7 @@ video_renderer::data_avail()
 	// If we are watching a live stream *and* there is a lot of frames in the buffer we speed up time.
 	if (m_src->get_is_live() && m_src->get_buffer_time() > frame_duration) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: resyncing (%lld us in input buffer)", m_src->get_buffer_time());
-		_resync(m_src->get_buffer_time() - frame_duration);
+		_resync((m_src->get_buffer_time() - frame_duration)/1000);
 	}
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %lld)", frame_ts_micros);
