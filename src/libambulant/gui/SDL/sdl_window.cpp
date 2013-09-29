@@ -24,16 +24,6 @@
 #define AM_DBG if(0)
 #endif
 
-#define __STDC_CONSTANT_MACROS //XXXX Grrr.. for ‘UINT64_C’ not declared
-extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libswscale/swscale.h"
-#ifndef AV_NUM_DATA_POINTERS
-// needed for older versions of ffmpeg (< 0.9)
-#define AV_NUM_DATA_POINTERS 4
-#endif// !  AV_NUM_DATA_POINTERS
-};
-
 #include "ambulant/lib/colors.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_window.h"
@@ -196,10 +186,6 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 	sdl_ambulant_window::s_lock.leave();
 	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=%p", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, sdl_C_callback_helper_queue_draw_area);
 #endif//JNK
-	//X as we don't have a SDL event loop yet, directly call redraw()
-	//X redraw(r);//XXXX !!!!!
-	//X SDL_Event* e = (SDL_Event*) malloc (sizeof SDL_Event);;
-	static int hack = 1;
 	SDL_Event e;
 	lib::rect* redraw_rect = (lib::rect*) malloc (sizeof(lib::rect));
 	*redraw_rect = r;
@@ -355,15 +341,6 @@ ambulant_sdl_window::get_sdl_ambulant_window()
 	return m_ambulant_window;
 }
 
-#ifdef JNK
-GdkSurface*
-ambulant_sdl_window::get_ambulant_surface()
-{
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_surface(%p) = %p",(void *)this,(void *)m_surface);
-	return m_surface;
-}
-#endif//JNK
-
 void
 ambulant_sdl_window::set_gui_player(gui_player* gpl)
 {
@@ -437,8 +414,6 @@ ambulant_sdl_window::reset_ambulant_surface(void)
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::reset_ambulant_surface(%p) m_oldsurface = %p",(void *)this,(void *)m_oldsurface);
 	if (m_oldsurface != NULL) m_surface = m_oldsurface;
 }
-#ifdef JNK
-#endif//JNK
 
 void
 ambulant_sdl_window::set_ambulant_surface(SDL_Surface* surf)
@@ -449,8 +424,6 @@ ambulant_sdl_window::set_ambulant_surface(SDL_Surface* surf)
 	if (surf != NULL) m_surface = surf;
 	m_lock.leave();
 }
-#ifdef JNK
-#endif//JNK
 
 void
 ambulant_sdl_window::delete_ambulant_surface()
@@ -492,7 +465,6 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 	m_sdl_renderer(NULL),
 	m_sdl_screen_renderer(NULL),
 	m_sdl_screen_surface(NULL),
-	m_sws_context(NULL),
 	m_evp(NULL),
 	m_screen_pixels(NULL)
 {
@@ -523,10 +495,6 @@ sdl_ambulant_window::~sdl_ambulant_window()
 	if (m_sdl_window != NULL) {
 		SDL_DestroyWindow(m_sdl_window);
 	}
-	if (m_sws_context != NULL) {
-		sws_freeContext(m_sws_context);
-	}
-	
 #ifdef JNK
 	if ( ! m_draw_area_tags.empty()) {
 		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
@@ -535,28 +503,6 @@ sdl_ambulant_window::~sdl_ambulant_window()
 		}
 	}
 #endif//JNK
-#ifdef JNK
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window(%p): m_sdl_window=%p s_windows=%d", (void*)this, m_sdl_window, sdl_ambulant_window::s_windows);
-	GObject* ancestor_window = G_OBJECT (SDL_WINDOW (sdl_window_get_ancestor(m_window, SDL_TYPE_WINDOW)));
-	if (g_signal_handler_is_connected (G_OBJECT (m_window), m_expose_event_handler_id))
-		g_signal_handler_disconnect(G_OBJECT (m_window), m_expose_event_handler_id);
-	if (g_signal_handler_is_connected (ancestor_window, m_motion_notify_handler_id))
-		g_signal_handler_disconnect(ancestor_window, m_motion_notify_handler_id);
-	if (g_signal_handler_is_connected (ancestor_window, m_button_release_handler_id))
-		g_signal_handler_disconnect(ancestor_window, m_button_release_handler_id);
-	if (g_signal_handler_is_connected (ancestor_window, m_key_release_handler_id))
-		g_signal_handler_disconnect(ancestor_window, m_key_release_handler_id);
-	if (m_sdl_window) {
-		m_sdl_window->set_ambulant_window(NULL);
-		m_sdl_window = NULL;
-	}
-	if (m_screenshot_data) {
-		g_free(m_screenshot_data);
-		m_screenshot_data = NULL;
-		m_screenshot_size = 0;
-	}
-#endif//JNK
-
 	sdl_ambulant_window::s_lock.leave();
 }
 
@@ -773,8 +719,6 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 #endif//JNK
 	}
 }
-#ifdef JNK
-#endif//JNK
 
 void
 sdl_ambulant_window::clear_sdl_surface (SDL_Surface* surface, SDL_Rect sdl_rect)
@@ -842,23 +786,50 @@ sdl_ambulant_window::delete_transition_surface()
 }
 
 int
-_copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha)
+_copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha, bool scale)
 {
 	int rv = 0;
 //	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): src=%p src_rect={%d,%d,%d,%d} dst=%p dst_rect={%d,%d,%d,%d} alpha=%u", src, src_rect?src_rect->x:0, src_rect?src_rect->y:0, src_rect?src_rect->w:0, src_rect?src_rect->h:0, dst,  dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	// Check requirements for SDL blitting
-	if (src != NULL && dst != NULL && src->format != NULL && dst->format != NULL) {
+	if (src == NULL || dst == NULL || src->format == NULL || dst->format == NULL) {
+		// Can't do anything
+		return rv;
+	}
+	bool dst_locked = false;
+	bool src_locked = false;
+	if (SDL_MUSTLOCK(dst)) {
+		rv = SDL_LockSurface(dst);
+		if (rv >= 0) {
+			dst_locked = true;
+		}
+	}
+	if (rv >= 0 && SDL_MUSTLOCK(src)) {
+		rv = SDL_LockSurface(src);
+		if (rv >= 0) {
+			src_locked = true;
+		}
+	}
+	if (rv >= 0) {
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
 		if (rv < 0) {
 			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
-			return rv;
 		}
-//		while (src->locked) SDL_UnlockSurface (src); //XXXX quick hack for SDL_Pange (I guess)
-		rv = SDL_BlitSurface(src, src_rect, dst, dst_rect);
+	}
+	if (rv >= 0) {
+		if (scale) {
+			rv = SDL_BlitScaled(src, src_rect, dst, dst_rect);
+		} else {
+			rv = SDL_BlitSurface(src, src_rect, dst, dst_rect);
+		}
 		if (rv < 0) {
-			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_BlitSurface", SDL_GetError());
-			return rv;
+			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());
 		}
+	}
+	if (src_locked) {
+		SDL_UnlockSurface(src);
+	}
+	if (dst_locked) {
+		SDL_UnlockSurface(dst);
 	}
 	return rv;
 }
@@ -867,10 +838,30 @@ int
 sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
-//	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
+		sdl_ambulant_window::s_lock.enter();
 		SDL_Surface* dst = get_sdl_surface();
-		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha);
+		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha, false);
+//DEBUG		dump_sdl_surface (src, "Asrc");
+//DEBUG		dump_sdl_surface (dst, "Bdst");
+		sdl_ambulant_window::s_lock.leave();
+	}
+	return rv;
+}
+
+int
+sdl_ambulant_window::copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
+{
+	int rv = 0;
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	if (src != NULL) {
+		sdl_ambulant_window::s_lock.enter();
+		SDL_Surface* dst = get_sdl_surface();
+		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha, true);
+//DEBUG		dump_sdl_surface (src, "Assc");
+//DEBUG		dump_sdl_surface (dst, "Bdsc");
+		sdl_ambulant_window::s_lock.leave();
 	}
 	return rv;
 }
@@ -1018,40 +1009,8 @@ bool sdl_ambulant_window::clear_overlay(){
 bool sdl_ambulant_window::set_screenshot(char **screenshot_data, size_t *screenshot_size){
 	return TRUE;
 }
-
 #endif//JNK
 
-SDL_Surface*
-sdl_ambulant_window::scale_pixels_to_SDL_Surface (void* pixel_data, lib::size size, lib::rect src_rect, lib::rect dst_rect, Uint32 amask, Uint32 rmask, Uint32 gmask, Uint32 bmask)
-{
-	int dst_width = dst_rect.w;
-	int dst_height = dst_rect.h;
-	int src_width = src_rect.w;
-	int src_height = src_rect.h;
-	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d", dst_width, dst_height, src_width, src_height);
-
-	SDL_Surface* surface = NULL;
-  
-	// prevent warnings: Forcing full internal H chroma due to odd output size
-	int flags = SWS_FAST_BILINEAR | SWS_FULL_CHR_H_INT;
-	m_sws_context = sws_getCachedContext(m_sws_context, src_width, src_height, SDL_SWS_PIX_FMT, dst_width, dst_height, SDL_SWS_PIX_FMT, flags, NULL, NULL, NULL);
-	uint8_t* pixels[AV_NUM_DATA_POINTERS];
-	int dst_stride[AV_NUM_DATA_POINTERS];
-	int src_stride[AV_NUM_DATA_POINTERS];
-	dst_stride[0] = dst_width*SDL_BPP;
-	src_stride[0] = size.w*SDL_BPP;
-	for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
-			pixels[i] = NULL;
-			dst_stride[i] = src_stride[i] = 0;
-	}
-	pixels[0] = (uint8_t*) malloc(dst_stride[0]*dst_height); 
-	int rv = sws_scale(m_sws_context,(const uint8_t* const*) &pixel_data, src_stride, 0, src_height, pixels, dst_stride);
-	AM_DBG { static int old_src, old_dst; if (old_src != src_width || old_dst != dst_width) { old_src = src_width; old_dst = dst_width; lib::logger::get_logger()->debug("ambulant_sdl_video::scale() src=%dx%d dst=%dx%d rv=%d src_stride=%d", src_width, src_height, dst_width, dst_height,rv,src_stride[0]); }}
-	dst_rect.h = dst_height = rv;
-	// convert to SDL
-	surface = SDL_CreateRGBSurfaceFrom(pixels[0], dst_width, dst_height, 32, dst_stride[0], rmask, gmask, bmask, amask);
-	return surface;
-}
 
 #endif//WITH_SDL2
 
