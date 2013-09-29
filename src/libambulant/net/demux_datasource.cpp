@@ -226,6 +226,9 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
 		m_lock.leave();
 		return false;
 	}
+#ifdef LOGGER_VIDEOLATENCY
+    lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 2-push %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
+#endif
 
 	datasource_packet qel(pts, pkt, flag);
 	m_frames.push(qel);

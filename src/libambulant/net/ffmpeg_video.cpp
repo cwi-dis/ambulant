@@ -60,6 +60,8 @@ using namespace net;
 
 typedef lib::no_arg_callback<ffmpeg_video_decoder_datasource> framedone_callback;
 
+const AVRational AMBULANT_TIMEBASE = {1, 1000000};
+
 video_datasource_factory *
 ambulant::net::get_ffmpeg_video_datasource_factory()
 {
@@ -588,7 +590,11 @@ ffmpeg_video_decoder_datasource::data_avail()
 	// video clock so we can compute future missing timestamps.
 	timestamp_t frame_delay = 0;
 
+#if 0
 	pts = ipts;
+#else
+    pts = av_rescale_q(frame->pts, m_con->time_base, AMBULANT_TIMEBASE);
+#endif
 	if (pts != 0) {
 		m_video_clock = pts;
 	} else {
@@ -598,7 +604,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	if (frame->repeat_pict)
 		frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 	m_video_clock += frame_delay;
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 	m_frame_count++;
 
 	// In some special cases we want to drop the frame here, after decoding.
