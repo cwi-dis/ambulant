@@ -66,12 +66,12 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "SESSION_ID"
-            value = "session42home"
+            value = "session42work"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "PYTHONPATH"
-            value = "/Users/jack/packages/gst-framework/installed/lib/python2.7/site-packages:"
+            value = "/Library/Frameworks/GStreamer.framework/Versions/1.0/lib/python2.7/site-packages:"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
@@ -81,7 +81,7 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DYLD_FALLBACK_LIBRARY_PATH"
-            value = "/Users/jack/packages/gst-framework/installed/lib:"
+            value = "/Library/Frameworks/GStreamer.framework/Versions/1.0/lib:"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable

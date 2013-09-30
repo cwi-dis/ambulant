@@ -187,7 +187,7 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(demux_video_dat
 {
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = %p)", (void*)this);
-
+	m_time_base = AMBULANT_TIMEBASE;
 	ffmpeg_init();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: Looking for %s(%p) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!_select_decoder(fmt))
@@ -396,7 +396,8 @@ ffmpeg_video_decoder_datasource::frameduration()
 {
 	if(m_fmt.frameduration <=0)
 		_need_fmt_uptodate();
-		
+
+#if 0
 	// frame rates > 100 fps are unlikely
 	// For mp4 H263 video, ffmpeg fills its time_base.den with 1000,
 	// resulting in frameduration == 1000 musec, which is wrong.
@@ -406,6 +407,7 @@ ffmpeg_video_decoder_datasource::frameduration()
 	
 	if(m_fmt.frameduration <= 9999)
 		m_fmt.frameduration = 33000;
+#endif
 	return m_fmt.frameduration;
 }
 void
@@ -559,9 +561,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 	got_pic = 0;
 	len = avcodec_decode_video2(m_con, frame, &got_pic, avpkt);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: gotpic = %d, ipts = %lld", got_pic, ipts);
-#ifdef LOGGER_VIDEOLATENCY
-	lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 4-decoded %lld %lld %s", 0LL, ipts, m_url.get_url().c_str());
-#endif
 
 	if (len < 0) {
 		lib::logger::get_logger()->trace(gettext("ffmpeg_video_decoder_datasource.data_avail: error decoding video packet (timestamp=%lld)"), ipts);
@@ -593,18 +592,21 @@ ffmpeg_video_decoder_datasource::data_avail()
 #if 0
 	pts = ipts;
 #else
-    pts = av_rescale_q(frame->pts, m_con->time_base, AMBULANT_TIMEBASE);
+    pts = av_rescale_q(frame->pkt_pts, m_time_base, AMBULANT_TIMEBASE);
 #endif
 	if (pts != 0) {
 		m_video_clock = pts;
 	} else {
 		pts = m_video_clock;
 	}
+#ifdef LOGGER_VIDEOLATENCY
+	lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 4-decoded %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
+#endif
 	frame_delay = m_fmt.frameduration;
 	if (frame->repeat_pict)
 		frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 	m_video_clock += frame_delay;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 	m_frame_count++;
 
 	// In some special cases we want to drop the frame here, after decoding.
@@ -873,6 +875,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 		m_con = enc;
 		m_con_owned = false;
+		m_time_base = m_con->time_base;
 
 		if (enc == NULL) {
 			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Parameters missing for %s(%p)", fmt.name.c_str(), fmt.parameters);

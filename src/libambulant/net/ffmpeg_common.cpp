@@ -152,7 +152,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_
 	m_video_fmt = video_format("ffmpeg");
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
-		m_video_fmt.parameters = (void *) m_con->streams[video_stream_nr()]->codec;
+		AVStream *stream = m_con->streams[video_stream_nr()];
+		AVCodecContext *codec = stream->codec;
+		m_video_fmt.parameters = (void *)codec;
+		// Make the timebases match, so we can correcty convert timestamps in the video_decoder
+		codec->time_base = stream->time_base;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): video_codec_name=%s", m_con->streams[video_stream_nr()]->codec->codec_name);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): No Video stream ?");
@@ -511,6 +515,10 @@ ffmpeg_demux::run()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: raw pts=%lld, dts=%lld", pkt->pts, pkt->dts);
 
 				pts = pkt->dts;
+				if (pts == (int64_t)AV_NOPTS_VALUE) {
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
+					pts = pkt->pts;
+				}
 #ifdef LOGGER_VIDEOLATENCY
                 {
                     timestamp_t pr_pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
@@ -518,51 +526,45 @@ ffmpeg_demux::run()
                     lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 0-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
                 }
 #endif
-				if (pts == (int64_t)AV_NOPTS_VALUE) {
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
-					pts = pkt->pts;
-				}
 				
-				if (!m_is_live) {
-					// 17-feb-2010 To fix the chopping audio playback in vobis/ogg
-					// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
-					// sometime, the pts and dts got by ffmpeg is not valid any more (which equal to AV_NOPTS_VALUE)
-					// and this kind of invalid value of pts and dts will last in the following packets for some
-					// small while. This invalid pts and dts will cause ffmpeg_decoder_datasource.data_avail dropping
-					// packets which should not be dropped. This kind of dropping will cause the chopping audio
-					// effect when playback vorbis in ogg. In this case, we use the latest valid pts as the current
-					// pts instead of the invalid AV_NOPTS_VALUE
+				// 17-feb-2010 To fix the chopping audio playback in vobis/ogg
+				// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
+				// sometime, the pts and dts got by ffmpeg is not valid any more (which equal to AV_NOPTS_VALUE)
+				// and this kind of invalid value of pts and dts will last in the following packets for some
+				// small while. This invalid pts and dts will cause ffmpeg_decoder_datasource.data_avail dropping
+				// packets which should not be dropped. This kind of dropping will cause the chopping audio
+				// effect when playback vorbis in ogg. In this case, we use the latest valid pts as the current
+				// pts instead of the invalid AV_NOPTS_VALUE
 
-					if (pts != (int64_t)AV_NOPTS_VALUE) {
-						pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+				if (pts != (int64_t)AV_NOPTS_VALUE) {
+					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 
-						if (pkt->stream_index == audio_streamnr) {
-							last_valid_audio_pts = pts;
-						}
-					} else {
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+					if (pkt->stream_index == audio_streamnr) {
+						last_valid_audio_pts = pts;
+					}
+				} else {
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
-						last_valid_audio_pts++;
-						pts = last_valid_audio_pts;
+					last_valid_audio_pts++;
+					pts = last_valid_audio_pts;
 
 #if RESYNC_TO_INITIAL_AUDIO_PTS
-						// We seem to be getting values with a non-zero epoch sometimes (?)
-						// Remember initial audio pts, and resync everything to that.
-						// Fixes bug #2046564.
-						if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
-							initial_audio_pts = pts;
-							// Bugfix to bugfix: need to take initial seek/clipbegin into account too
-							initial_audio_pts -= m_clip_begin;
-							initial_audio_pts_set = true;
-						}
-						pts -= initial_audio_pts;
-#else // RESYNC_TO_INITIAL_AUDIO_PTS
-						// If we don't resync to initial audio PTS we resync to start_time.
-						int64_t stream_start = m_con->start_time; // m_con->streams[audio_streamnr]->start_time;
-						if (stream_start != (int64_t)AV_NOPTS_VALUE) pts -= stream_start;
-						// assert(pts >= 0);
-#endif // RESYNC_TO_INITIAL_AUDIO_PTS
+					// We seem to be getting values with a non-zero epoch sometimes (?)
+					// Remember initial audio pts, and resync everything to that.
+					// Fixes bug #2046564.
+					if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
+						initial_audio_pts = pts;
+						// Bugfix to bugfix: need to take initial seek/clipbegin into account too
+						initial_audio_pts -= m_clip_begin;
+						initial_audio_pts_set = true;
 					}
+					pts -= initial_audio_pts;
+#else // RESYNC_TO_INITIAL_AUDIO_PTS
+					// If we don't resync to initial audio PTS we resync to start_time.
+					int64_t stream_start = m_con->start_time; // m_con->streams[audio_streamnr]->start_time;
+					if (stream_start != (int64_t)AV_NOPTS_VALUE) pts -= stream_start;
+					// assert(pts >= 0);
+#endif // RESYNC_TO_INITIAL_AUDIO_PTS
 				}
 			}
 			// We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if

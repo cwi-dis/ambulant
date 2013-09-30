@@ -1,4 +1,4 @@
-// This file is part of Ambulant Player, www.ambulantplayer.org.
+//// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
 // Copyright (C) 2003-2012 Stichting CWI, 
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
@@ -213,7 +213,7 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
 	// XXX timestamp is ignored, for now
 	m_lock.enter();
 	m_src_end_of_file = (flag == datasource_packet_flag_eof);
-	AM_DBG lib::logger::get_logger()->debug("demux_datasource.push_data: pts=%lld, pkt=%p, flag=%d", pts, pkt, flag);
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource.push_data: pts=%lld, pkt=%p, pkt->pts=%lld, flag=%d", pts, pkt, pkt?pkt->pts : -1, flag);
 	if ( !m_thread) {
 		// video stopped
 		AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): no demux thread, returning");

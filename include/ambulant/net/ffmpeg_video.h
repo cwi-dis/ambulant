@@ -140,6 +140,7 @@ class ffmpeg_video_decoder_datasource:
 	sorted_frames m_frames;			// Decoded frames on their way to the receiver
 	timestamp_t m_oldest_timestamp_wanted;	// Drop frames older than this timestamp
 	timestamp_t m_video_clock;	// Helper to compute timestamps if they are missing
+	AVRational m_time_base;		// Timebase for input PTS values.
 	
 	bool m_start_input;				// True when m_src->start_frame() is needed
     bool m_complete_frame_seen;		// True whenever a real frame has been seen
