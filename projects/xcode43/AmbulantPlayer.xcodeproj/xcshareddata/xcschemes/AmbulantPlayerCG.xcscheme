@@ -67,26 +67,31 @@
          <EnvironmentVariable
             key = "SESSION_ID"
             value = "session42"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "DYLD_FALLBACK_LIBRARY_PATH"
             value = "/Users/jack/packages/gstreamer/installed/lib:"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "VCONECT_CLIENTID"
             value = "client8b"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "VC_CAM_OVERRIDE"
             value = "videotestsrc"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"
             value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "AMBULANT_LOGFILE_LATENCY"
+            value = "/tmp/ambulant.latency.log"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

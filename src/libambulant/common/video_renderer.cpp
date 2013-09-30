@@ -22,6 +22,9 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/lib/profile.h"
 
+#include <iostream>
+#include <fstream>
+
 //#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -60,6 +63,22 @@ video_renderer::video_renderer(
 	m_frame_missing(0)
 {
 	m_lock.enter();
+#ifdef LOGGER_VIDEOLATENCY
+    static bool latency_logger_initialized = false;
+    if (!latency_logger_initialized) {
+        latency_logger_initialized = true;
+        lib::logger *latlogger = lib::logger::get_logger(LOGGER_VIDEOLATENCY);
+        char *latloggerfile = getenv("AMBULANT_LOGFILE_LATENCY");
+        if (latloggerfile) {
+            static std::ofstream ofstream;
+            ofstream.open(latloggerfile);
+            latlogger->set_std_ostream(ofstream);
+            latlogger->set_level(lib::logger::LEVEL_TRACE);
+        } else {
+            latlogger->set_level(lib::logger::LEVEL_FATAL);
+        }
+    }
+#endif // LOGGER_VIDEOLATENCY
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	net::url url = node->get_url("src");
 	_init_clip_begin_end();
@@ -434,6 +453,9 @@ video_renderer::data_avail()
 	net::timestamp_t now_micros = (net::timestamp_t)(_now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
+#ifdef LOGGER_VIDEOLATENCY
+    logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 6-predisplay %lld %lld %s", 0LL, frame_ts_micros, m_node->get_url("src").get_url().c_str());
+#endif
 
 	AM_DBG lib::logger::get_logger()->debug("data_avail(%s): now_micros = %lld, frame_ts_micros = %lld, %d bytes", m_node->get_sig().c_str(), now_micros, frame_ts_micros, size);
 
@@ -575,7 +597,7 @@ video_renderer::data_avail()
 
 	// If we are watching a live stream *and* there is a lot of frames in the buffer we speed up time.
 	if (m_src->get_is_live() && m_src->get_buffer_time() > frame_duration) {
-		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: resyncing (%lld us in input buffer)", m_src->get_buffer_time());
+		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::data_avail: resyncing (%lld us in input buffer)", m_src->get_buffer_time());
 		_resync(m_src->get_buffer_time() - frame_duration);
 	}
 

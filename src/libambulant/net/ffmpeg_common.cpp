@@ -59,6 +59,7 @@ ambulant::net::ffmpeg_init()
 #if 1
 	// Enable this line to get lots of ffmpeg debug output:
 	if (getenv("AMBULANT_FFMPEG_DEBUG")) av_log_set_level(AV_LOG_DEBUG);
+	if (getenv("AMBULANT_FFMPEG_QUIET")) av_log_set_level(AV_LOG_PANIC);
 #endif
 // avcodec_init() was useless since years, replaced by av_register_all().
 // After being marked deprecated for some time, it is now completely been from API.
@@ -534,6 +535,13 @@ ffmpeg_demux::run()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: raw pts=%lld, dts=%lld", pkt->pts, pkt->dts);
 
 				pts = pkt->dts;
+#ifdef LOGGER_VIDEOLATENCY
+                {
+                    timestamp_t pr_pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+                    timestamp_t pr_dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+                    lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 0-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
+                }
+#endif
 				if (pts == (int64_t)AV_NOPTS_VALUE) {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
 					pts = pkt->pts;
@@ -555,7 +563,7 @@ ffmpeg_demux::run()
 							last_valid_audio_pts = pts;
 						}
 					} else {
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+						/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
 						last_valid_audio_pts++;
 						pts = last_valid_audio_pts;
