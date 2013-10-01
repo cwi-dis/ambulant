@@ -275,6 +275,7 @@ demux_datasource::get_packet()
 {
 	datasource_packet tsp;
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("demux_datasource::get_packet: m_frames.size=%d, m_src_eof=%d", m_frames.size(), m_src_end_of_file);
 	if (m_frames.size() > 0) {
 		tsp = m_frames.front();
 		m_frames.pop();

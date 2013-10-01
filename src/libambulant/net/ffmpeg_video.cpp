@@ -500,9 +500,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 		return;
     }
 
-	// Now that we have gotten this callback we need to restart input at some point.
-	m_start_input = true;
-
 	// Get the input data
 	datasource_packet dspacket = m_src->get_packet(); // xxxjack get_frame(0, &ipts, &sz);
 	ipts = dspacket.pts;
@@ -515,6 +512,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 	if(dspacket.flag == datasource_packet_flag_eof) {
 		if (!m_src->end_of_file() ) {
 			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasource_packet_flag_eof, but not eof?");
+			// Unsure whether we have to restart input in this case...
+			m_start_input = true;
 		}
 		// XXXJACK Or should we pass dummy packets to flush the buffer?
 		_restart_queues();
@@ -522,11 +521,17 @@ ffmpeg_video_decoder_datasource::data_avail()
 		return;
 	}
 
+	// Now that we have gotten this callback we need to restart input at some point.
+	m_start_input = true;
     
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: start decoding (%p) ", m_con);
 
 	if (dspacket.flag == datasource_packet_flag_avpacket) {
-		;
+		if (avpkt == NULL) {
+			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: pkt=NULL for flag=avpacket");
+			m_lock.leave();
+			return;
+		}
 	} else if (dspacket.flag == datasource_packet_flag_flush) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: flush buffers");
 		avcodec_flush_buffers(m_con);
@@ -558,6 +563,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	}
 	
 	// Let's decode the packet, and see whether we get a frame back.
+	assert(avpkt);
 	got_pic = 0;
 	len = avcodec_decode_video2(m_con, frame, &got_pic, avpkt);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: gotpic = %d, ipts = %lld", got_pic, ipts);

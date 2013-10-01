@@ -57,51 +57,10 @@
             ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "/Users/jack/src/vconect/StudioVClient/pyamplugin_vclient/studio/studio9.smil"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "SESSION_ID"
-            value = "session42"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "PYTHONPATH"
-            value = "/Library/Frameworks/GStreamer.framework/Versions/1.0/lib/python2.7/site-packages:"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "AMBULANT_PLUGIN_PATH"
-            value = "/Users/jack/src/vconect/StudioVClient"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "DYLD_FALLBACK_LIBRARY_PATH"
-            value = "/Library/Frameworks/GStreamer.framework/Versions/1.0/lib:"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "VCONECT_CLIENTID"
-            value = "client8b"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "VC_CAM_OVERRIDE"
-            value = "videotestsrc"
-            isEnabled = "YES">
-         </EnvironmentVariable>
          <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"
             value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "AMBULANT_LOGFILE_LATENCY"
-            value = "/tmp/ambulant.latency.log"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
