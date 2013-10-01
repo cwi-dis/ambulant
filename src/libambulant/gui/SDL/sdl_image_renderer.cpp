@@ -57,10 +57,11 @@ gui::sdl::create_sdl_image_playable_factory(common::factories *factory, common::
 }
 
 sdl_image_renderer::~sdl_image_renderer() {
+	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::~sdl_image_renderer(%p), %s, m_image=%p", this, this->get_sig().c_str(), m_image);
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::~sdl_image_renderer(%p), %s", this, this->get_sig().c_str());
 	if (m_image != NULL) { 
 		SDL_FreeSurface(m_image);
+		m_image = NULL;
 	}
 	m_lock.leave();
 }
@@ -84,6 +85,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		SDL_RWops* rwops = SDL_RWFromMem (m_data, m_data_size);
 		assert (rwops != NULL);
 		m_image = IMG_Load_RW(rwops, 1);
+//		rwops->close (rwops);
 		if (m_image == NULL) {
 			logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): IMG_Load_RW failed. %s", this, this->get_sig().c_str());
 		} else {
@@ -92,12 +94,14 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			*new_pixel_format = *saw->get_sdl_surface()->format;
 			SDL_Surface* new_image = SDL_ConvertSurface (m_image, new_pixel_format, 0);
 			if (new_image != NULL && new_image != m_image) {
+				AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::redraw_body(%p), %s, SDL_FreeSurface(m_image=%p)", this, this->get_sig().c_str(), m_image);
 				SDL_FreeSurface (m_image);
 				m_image = new_image;
 			}
 			// enable alpha blending for this image
 //			asw->ambulant_sdl_window::dump_sdl_surface(m_image, "image");
 			SDL_SetSurfaceBlendMode(m_image, SDL_BLENDMODE_BLEND);
+			AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::redraw_body(%p), %s, m_image=%p", this, this->get_sig().c_str(), m_image);
 			m_image_loaded = true;
 		}
 	}
@@ -179,8 +183,11 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	if (alpha_chroma != 1.0) { //TBD
 	} else {
 	}
-	if (srcrect != dstrect) {
-		SDL_Surface* surface = SDL_CreateRGBSurface(0, srcrect.width(), srcrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
+	if (srcrect.size() != dstrect.size()) {
+		saw->copy_to_sdl_surface_scaled (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
+#ifdef JNK
+		/*
+		SDL_Surface* surface = SDL_CreateRGBSurface(0, dstrect.width(), dstrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
 		if (surface != NULL) {
 //			saw->dump_sdl_surface(m_image, "rimg");  // use this for debugging
 			int err = SDL_BlitScaled (m_image, NULL, surface, NULL);
@@ -192,6 +199,8 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			}
 			SDL_FreeSurface(surface);
 		}
+		*/
+#endif//JNK
 	} else {
 //		saw->dump_sdl_surface(m_image, "uimg");  // use this for debugging
 		saw->copy_to_sdl_surface (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);

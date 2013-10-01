@@ -22,6 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_WINDOW_H
 #define AMBULANT_GUI_SDL_WINDOW_H
 
+
 #include "ambulant/common/factory.h"
 #include "ambulant/common/recorder.h"
 #include "ambulant/common/gui_player.h"
@@ -177,12 +178,15 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	/// Helper: copy the surface 'src' to the current surface (using a blit operation)
 	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+	/// Helper: copy the surface 'src' to the current surface (using a scaled blit operation)
+	/// s.t. the area 'src_rect' from the SDL_Surface 'src' fits in the area 'dst_rect' of 'dst'
+	/// This function can be used when both 'src_rect' and 'dst_rect' are properly computed by
+	/// 'get_fit_rect' to implement the SMIL 3.0 'fit' semanics
+	int copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 //TBD	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
-
-
 	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id);
 
 	void set_evp (lib::event_processor* evp) { m_evp = evp; }
@@ -229,10 +233,6 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);
 //X	bool set_screenshot(char **screenshot_data, size_t *screenshot_size);
-	
-	SDL_Surface* scale_pixels_to_SDL_Surface (void* pixels, lib::size size, lib::rect src_rect, lib::rect dst_rect, Uint32 amask, Uint32 rmask, Uint32 gmask, Uint32 bmask);
-	SDL_Surface* scale_SDL_Surface (SDL_Surface* surf, lib::rect src_rect, lib::rect dst_rect)
-	{ return scale_pixels_to_SDL_Surface (surf->pixels, lib::size(surf->w, surf->h), src_rect, dst_rect, surf->format->Amask, surf->format->Rmask, surf->format->Gmask, surf->format->Bmask); }
 	// For the gui_screen implementation
 	void* m_screenshot_data;
 	long int m_screenshot_size;
@@ -255,7 +255,6 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Renderer* m_sdl_screen_renderer; // the "real" renderer, for SDL_Present()
 	lib::event_processor* m_evp;
 	uint8_t* m_screen_pixels;
-	struct SwsContext* m_sws_context;
 	// window counter (with s_lock protection) is used to assuere that the SdlWindow
 	// in drawing callback functions are still valid pointers at the time the callback
 	// is executed by the main thread */
