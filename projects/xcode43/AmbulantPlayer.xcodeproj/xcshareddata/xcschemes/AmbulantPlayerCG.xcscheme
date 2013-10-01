@@ -66,7 +66,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "SESSION_ID"
-            value = "session42work"
+            value = "session42"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
