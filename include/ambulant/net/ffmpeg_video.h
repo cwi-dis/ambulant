@@ -41,7 +41,7 @@ extern "C" {
 #include "libavformat/avformat.h"
 
 // See if we must use swscale, or can use the older method
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 59, 0)
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 35, 0)
 #error Cannot use ffmpeg older than release 1.0
 #endif
 
