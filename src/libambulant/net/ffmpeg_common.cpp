@@ -38,7 +38,7 @@
 const AVRational AMBULANT_TIMEBASE = {1, 1000000};
 
 // Update the minimal required MIN_AVFORMAT_BUILD whenever we use a newer libavformat.
-#define MIN_LIBAVFORMAT_BUILD AV_VERSION_INT(54, 29, 0)
+#define MIN_LIBAVFORMAT_BUILD AV_VERSION_INT(53, 21, 0)
 #if LIBAVFORMAT_BUILD < MIN_LIBAVFORMAT_BUILD
 #error Your ffmpeg is too old. Either download a newer one or remove this test in the sourcefile (at your own risk).
 #endif

@@ -26,8 +26,8 @@
 #include "ambulant/net/ffmpeg_factory.h"
 #include "ambulant/net/demux_datasource.h"
 
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(54, 59, 0)
-#error Ambulant needs at least version 54.59.0 of ffmpeg libavcodec
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 35, 0)
+#error Ambulant needs at least version 53.35.0 of ffmpeg libavcodec
 #endif
  
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
