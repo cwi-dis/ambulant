@@ -57,41 +57,10 @@
             ReferencedContainer = "container:AmbulantPlayer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "/Users/jack/src/vconect/Sandbox/jack/activemq/studioclient/pyamplugin_vclient/studio/studio9.smil"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "SESSION_ID"
-            value = "session42"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "DYLD_FALLBACK_LIBRARY_PATH"
-            value = "/Users/jack/packages/gstreamer/installed/lib:"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "VCONECT_CLIENTID"
-            value = "client8b"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "VC_CAM_OVERRIDE"
-            value = "videotestsrc"
-            isEnabled = "NO">
-         </EnvironmentVariable>
          <EnvironmentVariable
             key = "AMBULANT_LOGGER_NOWINDOW"
             value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "AMBULANT_LOGFILE_LATENCY"
-            value = "/tmp/ambulant.latency.log"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

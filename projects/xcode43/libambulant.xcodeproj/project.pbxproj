@@ -526,7 +526,6 @@
 		04791C711151943B0007DD71 /* ffmpeg_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_video.h; sourceTree = "<group>"; };
 		04791C721151943B0007DD71 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		04791C731151943B0007DD71 /* posix_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posix_datasource.h; sourceTree = "<group>"; };
-		04791C741151943B0007DD71 /* rtsp_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_datasource.h; sourceTree = "<group>"; };
 		04791C761151943B0007DD71 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
 		04791C771151943B0007DD71 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
 		04791C781151943B0007DD71 /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
@@ -1185,7 +1184,6 @@
 				04791C711151943B0007DD71 /* ffmpeg_video.h */,
 				04791C721151943B0007DD71 /* Makefile.am */,
 				04791C731151943B0007DD71 /* posix_datasource.h */,
-				04791C741151943B0007DD71 /* rtsp_datasource.h */,
 				04791C761151943B0007DD71 /* socket.h */,
 				04791C771151943B0007DD71 /* stdio_datasource.h */,
 				04791C781151943B0007DD71 /* url.h */,

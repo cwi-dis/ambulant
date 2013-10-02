@@ -1412,35 +1412,6 @@ inline datasource *Py_WrapAs_datasource(PyObject *o)
 	return rv;
 }
 
-class pkt_datasource : public cpppybridge, public ambulant::net::pkt_datasource {
-public:
-	pkt_datasource(PyObject *itself);
-	virtual ~pkt_datasource();
-
-	void start(ambulant::lib::event_processor* evp, ambulant::lib::event* callback);
-	void stop();
-	bool end_of_file();
-	long add_ref() { return 1; }
-	long release() { return 1;}
-	long get_ref_count() const { return 1; }
-	char *get_read_ptr() { abort(); return NULL; }
-	long get_bandwidth_usage_data(const char **resource) { return -1; }
-	ambulant::net::ts_packet_t get_ts_packet_t() { abort(); return ambulant::net::ts_packet_t(0, NULL, 0); }
-  private:
-	PyObject *py_pkt_datasource;
-
-	friend PyObject *pkt_datasourceObj_New(ambulant::net::pkt_datasource *itself);
-};
-#define BGEN_BACK_SUPPORT_pkt_datasource
-inline pkt_datasource *Py_WrapAs_pkt_datasource(PyObject *o)
-{
-	pkt_datasource *rv = dynamic_cast<pkt_datasource*>(pycppbridge_getwrapper(o));
-	if (rv) return rv;
-	rv = new pkt_datasource(o);
-	pycppbridge_setwrapper(o, rv);
-	return rv;
-}
-
 class raw_datasource_factory : public cpppybridge, public ambulant::net::raw_datasource_factory {
 public:
 	raw_datasource_factory(PyObject *itself);
@@ -1479,27 +1450,6 @@ inline audio_datasource_factory *Py_WrapAs_audio_datasource_factory(PyObject *o)
 	audio_datasource_factory *rv = dynamic_cast<audio_datasource_factory*>(pycppbridge_getwrapper(o));
 	if (rv) return rv;
 	rv = new audio_datasource_factory(o);
-	pycppbridge_setwrapper(o, rv);
-	return rv;
-}
-
-class pkt_audio_datasource_factory : public cpppybridge, public ambulant::net::pkt_audio_datasource_factory {
-public:
-	pkt_audio_datasource_factory(PyObject *itself);
-	virtual ~pkt_audio_datasource_factory();
-
-	ambulant::net::pkt_audio_datasource* new_pkt_audio_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end);
-  private:
-	PyObject *py_pkt_audio_datasource_factory;
-
-	friend PyObject *pkt_audio_datasource_factoryObj_New(ambulant::net::pkt_audio_datasource_factory *itself);
-};
-#define BGEN_BACK_SUPPORT_pkt_audio_datasource_factory
-inline pkt_audio_datasource_factory *Py_WrapAs_pkt_audio_datasource_factory(PyObject *o)
-{
-	pkt_audio_datasource_factory *rv = dynamic_cast<pkt_audio_datasource_factory*>(pycppbridge_getwrapper(o));
-	if (rv) return rv;
-	rv = new pkt_audio_datasource_factory(o);
 	pycppbridge_setwrapper(o, rv);
 	return rv;
 }
@@ -1563,27 +1513,6 @@ inline audio_filter_finder *Py_WrapAs_audio_filter_finder(PyObject *o)
 	audio_filter_finder *rv = dynamic_cast<audio_filter_finder*>(pycppbridge_getwrapper(o));
 	if (rv) return rv;
 	rv = new audio_filter_finder(o);
-	pycppbridge_setwrapper(o, rv);
-	return rv;
-}
-
-class audio_decoder_finder : public cpppybridge, public ambulant::net::audio_decoder_finder {
-public:
-	audio_decoder_finder(PyObject *itself);
-	virtual ~audio_decoder_finder();
-
-	ambulant::net::audio_datasource* new_audio_decoder(ambulant::net::pkt_audio_datasource* src, const ambulant::net::audio_format_choices& fmts);
-  private:
-	PyObject *py_audio_decoder_finder;
-
-	friend PyObject *audio_decoder_finderObj_New(ambulant::net::audio_decoder_finder *itself);
-};
-#define BGEN_BACK_SUPPORT_audio_decoder_finder
-inline audio_decoder_finder *Py_WrapAs_audio_decoder_finder(PyObject *o)
-{
-	audio_decoder_finder *rv = dynamic_cast<audio_decoder_finder*>(pycppbridge_getwrapper(o));
-	if (rv) return rv;
-	rv = new audio_decoder_finder(o);
 	pycppbridge_setwrapper(o, rv);
 	return rv;
 }

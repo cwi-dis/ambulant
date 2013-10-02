@@ -50,13 +50,9 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavutil/mathematics.h"
-#if LIBAVCODEC_VERSION_MAJOR > 52
-#define CodecType  AVMediaType
-#define CODEC_TYPE_UNKNOWN    AVMEDIA_TYPE_UNKNOWN
-#define CODEC_TYPE_VIDEO      AVMEDIA_TYPE_VIDEO
-#define CODEC_TYPE_AUDIO      AVMEDIA_TYPE_AUDIO
-#define MAX_STREAMS 20
-#endif//LIBAVCODEC_VERSION_MAJOR > 52
+
+#define AMBULANT_MAX_FFMPEG_STREAMS 20
+
 }
 
 namespace ambulant
@@ -111,8 +107,8 @@ class ffmpeg_demux : public abstract_demux {
   private:
 	audio_format m_audio_fmt;
 	video_format m_video_fmt;
-	demux_datasink *m_sinks[MAX_STREAMS];
-    long m_data_consumed[MAX_STREAMS];
+	demux_datasink *m_sinks[AMBULANT_MAX_FFMPEG_STREAMS];
+    long m_data_consumed[AMBULANT_MAX_FFMPEG_STREAMS];
     std::string m_bandwidth_resource;
 	demux_datasink *m_current_sink;
 	AVFormatContext *m_con;
@@ -124,9 +120,6 @@ class ffmpeg_demux : public abstract_demux {
 	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
 	bool m_is_live;		// True if this is a live stream
 };
-
-/// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.
-AVCodecContext *ffmpeg_alloc_partial_codec_context(bool video, const char *name);
 
 /// Helper routine: return a reference to a global lock (needed for ffmpeg serialization)
 lib::critical_section* ffmpeg_global_critical_section();
