@@ -45,7 +45,6 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.5
-UBUNTUVERSION=precise
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -73,13 +72,14 @@ CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
 
 DISTRIB_RELEASE=unknown
+DISTRIB_CODENAME=unknown
 . /etc/lsb-release
 DEBARCH=`dpkg-architecture -qDEB_HOST_ARCH`
 DESTINATION_DEBIAN=$DESTINATION/deb/
 DESTINATION_STAGING=dists
 RELPATH_SRC=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/source
 RELPATH_BIN=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/binary-$DEBARCH
-
+FULLAMBULANTVERSION=$AMBULANTVERSION$VERSIONSUFFIX~$DISTRIB_CODENAME
 echo
 echo ==========================================================
 echo Ambulant nightly build for Debian, $ARCH, $USER@`hostname`, `date`
@@ -129,7 +129,7 @@ sh autogen.sh
 case x$release in
 xno)
 cat > debian/changelog << xyzzy
-ambulant ($AMBULANTVERSION$VERSIONSUFFIX) $UBUNTUVERSION; urgency=low
+ambulant ($FULLAMBULANTVERSION) $DISTRIB_CODENAME; urgency=low
 
   * Nightly build, for testing only
 
@@ -167,7 +167,13 @@ rsync -r $DESTINATION_STAGING $DESTINATION_DEBIAN
 #
 # Upload to PPA
 #
-dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${AMBULANTVERSION}${VERSIONSUFFIX}_source.changes
+case x$UBUNTUPPA in
+x)
+	;;
+*)
+	dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${FULLAMBULANTVERSION}_source.changes
+	;;
+esac
 cd ..
 
 #
