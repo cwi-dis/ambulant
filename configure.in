@@ -548,7 +548,7 @@ test_sdl_video=true
 test_sdl_image=false
 test_sdl_pango=false
 
-AC_MSG_CHECKING(for sdl2 - Simple Direct Media layer - Video support)
+AC_MSG_CHECKING(for sdl-video - Simple Direct Media layer - Video support)
 AC_ARG_WITH(sdl-video,
 AS_HELP_STRING([--with-sdl-video], [Turn on/off SDL2 audio/video support]),
 [
@@ -571,7 +571,7 @@ if $test_sdl_video; then
 		test_sdl_audio=true   # have audio as well
 		with_frontend=true    # have AmbulantPlayer_sdl too
 	   	# need SDL2_image for images (.png,.gif,.jpg)
-		PKG_CHECK_MODULES(SDL2_image, [SDL2_image >= 1.2.13], test_sdl_image=true, test_sdl_image=false)
+		PKG_CHECK_MODULES(SDL2_image, [SDL2_image >= 2.0.0], test_sdl_image=true, test_sdl_image=false)
 		if test "x$test_sdl_image" = "xtrue" ; then
 			SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_image`"
 			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` -lpng12"
@@ -581,6 +581,13 @@ if $test_sdl_video; then
 		if test "x$test_sdl_pango" = "xtrue" ; then
 			SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL_Pango`"
 			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
+		else
+			# For static text we can make do with SDL_ttf
+			PKG_CHECK_MODULES(SDL2_ttf, [SDL2_ttf >= 2.0.0], test_sdl_ttf=true, test_sdl_ttf=false)
+			if test "x$test_sdl_ttf" = "xtrue" ; then
+				SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_ttf`"
+				SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_ttf`"
+			fi
 		fi
 	fi
 fi
@@ -588,6 +595,7 @@ AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl_audio = xtrue)
 AM_CONDITIONAL(WITH_SDL2, test x$test_sdl_video = xtrue)
+AM_CONDITIONAL(WITH_SDLPANGO, test x$test_sdl_pango = xtrue)
 AC_MSG_RESULT($test_sdl_audio)
 AC_MSG_RESULT($test_sdl_video)
 set +x
@@ -1096,6 +1104,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
+    Build with SDL2_ttf:			${test_sdl_ttf}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}

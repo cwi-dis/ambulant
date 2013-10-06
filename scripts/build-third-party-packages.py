@@ -386,6 +386,10 @@ third_party_packages={
         DebianTPP("python-dev"),
         DebianTPP("python-gtk2-dev"),
         DebianTPP("python-gobject-dev"),
+        # The following come from ppa:zoogie/sdl2-snapshots (as of 06-Oct-2013)
+        DebianTPP("libsdl2-dev"),
+        DebianTPP("libsdl2-image-dev"),
+        DebianTPP("libsdl2-ttf-dev"),
     ],
  
     'macosx' : [

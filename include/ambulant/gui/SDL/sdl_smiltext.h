@@ -22,19 +22,16 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#ifdef  WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDLPANGO)
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
 
-#define WITH_SDLPANGO // if not defined, SDL_ttf is used
-#ifdef  WITH_SDLPANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions we need to use
 #include <SDL_Pango.h>
-#endif//WITH_SDLPANGO
 
 namespace ambulant {
 
