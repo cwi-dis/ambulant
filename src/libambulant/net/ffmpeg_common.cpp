@@ -209,7 +209,8 @@ ffmpeg_demux::supported(const net::url& url)
 	// Setup struct to allow ffmpeg to determine whether it supports this
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
-	std::string url_str(url.get_url());
+	std::string url_str(url.get_document().get_url());
+    std::string url_query = url.get_query();
 	std::string ffmpeg_name = url_str;
 	if (url.is_local_file()) {
 		ffmpeg_name = url.get_file();
