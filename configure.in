@@ -596,6 +596,7 @@ AC_SUBST(SDL_LIBS)
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl_audio = xtrue)
 AM_CONDITIONAL(WITH_SDL2, test x$test_sdl_video = xtrue)
 AM_CONDITIONAL(WITH_SDLPANGO, test x$test_sdl_pango = xtrue)
+AC_SUBST(WITH_SDLPANGO)
 AC_MSG_RESULT($test_sdl_audio)
 AC_MSG_RESULT($test_sdl_video)
 set +x
