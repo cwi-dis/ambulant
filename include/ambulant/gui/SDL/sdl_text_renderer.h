@@ -43,8 +43,7 @@
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 
-#define WITH_SDLPANGO // if not defined, SDL_ttf is used
-
+// We prefer building with SDL_Pango, otherwise SDL_ttf is used.
 #ifdef  WITH_SDLPANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions in SDL_Pango we want

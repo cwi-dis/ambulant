@@ -23,7 +23,6 @@
 </data>
 -->
 <!-- Local playback, H264 video. Uncomment to enable. -->
-<!--
 <data>
   <av1>media-av.mp4</av1>
   <av2>media-av-copy.mp4</av2>
@@ -33,7 +32,6 @@
   <video1>media-video.mp4</video1>
   <video2>media-video-copy.mp4</video2>
 </data>
--->
 <!-- HTTP playback, MPEG-1 video. Uncomment to enable. -->
 <!--
 <data>
@@ -71,6 +69,7 @@
 </data>
   -->
 <!-- RTSP playback, H264 video. Uncomment to enable. -->
+<!--
 
 <data>
   <av1>rtsp://media2.cwi.nl/seamlessplayback/media-av.mp4</av1>
@@ -82,4 +81,4 @@
   <video2>rtsp://media2.cwi.nl/seamlessplayback/media-video-copy.mp4</video2>
 </data>
 
-  
+-->

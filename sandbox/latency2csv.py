@@ -48,7 +48,7 @@ class LatencyData:
     def genoutput(self, output):
         allstagenames = self.allstages.keys()
         allstagenames.sort()
-        output.write('url,pts,dts,%s\n' % ','.join(allstagenames))
+        output.write('url,pts,dts,%s\n' % ','.join(allstagenames + ['delta-T']))
         allkeys = self.data.keys()
         allkeys.sort()
         for url, pts in allkeys:
@@ -63,6 +63,9 @@ class LatencyData:
                     stagedata.append(str(perpts[stage]))
                 else:
                     stagedata.append('')
+            if allstagenames[0] in perpts and allstagenames[-1] in perpts:
+                deltaT = perpts[allstagenames[-1]] - perpts[allstagenames[0]]
+                stagedata.append(str(deltaT))
             output.write('"%s",%d,%s,%s\n' % (url, pts, dts, ','.join(stagedata)))
             del self.data[(url, pts)]
         assert not self.data

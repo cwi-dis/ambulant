@@ -118,7 +118,11 @@ if WITH_SDL2
 toolkit_sdl_libraries = libambulant_sdl.la
 libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(FFMPEG_LIBS) $(libambulant_core) 
 libambulant_sdl_la_DEPENDENCIES=libambulant.la
+if WITH_SDLPANGO
+sdlincludes = -DWITH_SDL2 -DWITH_SDLPANGO $(SDL_CFLAGS)
+else
 sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
+endif
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \
     gui/SDL/sdl_audio.cpp \
