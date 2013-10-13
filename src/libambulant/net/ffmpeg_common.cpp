@@ -80,17 +80,17 @@ ffmpeg_codec_id::instance()
 }
 
 void
-ffmpeg_codec_id::add_codec(const char* codec_name, CodecID id)
+ffmpeg_codec_id::add_codec(const char* codec_name, AVCodecID id)
 {
   std::string str(codec_name);
-  m_codec_id.insert(std::pair<std::string, CodecID>(str, id));
+  m_codec_id.insert(std::pair<std::string, AVCodecID>(str, id));
 }
 
-CodecID
+AVCodecID
 ffmpeg_codec_id::get_codec_id(const char* codec_name)
 {
 	std::string str(codec_name);
-	std::map<std::string, CodecID>::iterator i;
+	std::map<std::string, AVCodecID>::iterator i;
 	i = m_codec_id.find(str);
 	if (i != m_codec_id.end()) {
 		AM_DBG lib::logger::get_logger()->debug("get_codec_id(%s) -> %d", str.c_str(), i->second);
