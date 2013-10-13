@@ -51,6 +51,13 @@ extern "C" {
 #include "libavformat/avformat.h"
 #include "libavutil/mathematics.h"
 
+#if LIBAVCODEC_VERSION_MAJOR < 55
+typedef CodecID AVCodecID;
+#define av_frame_alloc() avcodec_alloc_frame()
+#define av_frame_get_channels(frame) (m_con->channels)
+#define av_frame_free(framep) av_freep(framep)
+#endif
+
 #define AMBULANT_MAX_FFMPEG_STREAMS 20
 
 }

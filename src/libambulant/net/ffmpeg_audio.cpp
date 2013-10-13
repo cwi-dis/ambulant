@@ -427,7 +427,7 @@ ffmpeg_decoder_datasource::data_avail()
         
         av_init_packet(&tmp_pkt);
         tmp_pkt.data = NULL;
-        tmp_pkt.size = NULL;
+        tmp_pkt.size = 0;
         
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_src->get_read_ptr() m_src=0x%x, this=0x%x", (void*) m_src, (void*) this);
 
@@ -548,7 +548,7 @@ ffmpeg_decoder_datasource::data_avail()
         } while (tmp_pkt.size > 0);
         
         // Free things we don't need any more.
-        av_frame_unref(outframe);
+        av_frame_free(&outframe);
 		if (real_pkt_ptr) {
             AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: free pkt=%p (data %p, size %d)\n", real_pkt_ptr, real_pkt_ptr->data, real_pkt_ptr->size);
 			av_free_packet(real_pkt_ptr);
