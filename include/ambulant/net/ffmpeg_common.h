@@ -51,6 +51,13 @@ extern "C" {
 #include "libavformat/avformat.h"
 #include "libavutil/mathematics.h"
 
+#if LIBAVCODEC_VERSION_MAJOR < 55
+typedef CodecID AVCodecID;
+#define av_frame_alloc() avcodec_alloc_frame()
+#define av_frame_get_channels(frame) (m_con->channels)
+#define av_frame_free(framep) av_freep(framep)
+#endif
+
 #define AMBULANT_MAX_FFMPEG_STREAMS 20
 
 }
@@ -68,12 +75,12 @@ class ffmpeg_codec_id {
 	static ffmpeg_codec_id* instance();
 	~ffmpeg_codec_id() {};
 
-	void add_codec(const char* codec_name, 	CodecID id);
-	CodecID get_codec_id(const char* codec_name);
+	void add_codec(const char* codec_name, 	AVCodecID id);
+	AVCodecID get_codec_id(const char* codec_name);
   private:
 	ffmpeg_codec_id();
 	static ffmpeg_codec_id* m_uniqueinstance;
-	std::map<std::string, CodecID> m_codec_id;
+	std::map<std::string, AVCodecID> m_codec_id;
 };
 
 class ffmpeg_demux : public abstract_demux {

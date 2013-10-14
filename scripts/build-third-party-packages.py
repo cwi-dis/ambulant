@@ -443,14 +443,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
-            url2="ffmpeg-1.0.tar.gz",
-            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.2.tar.gz",
+            url2="ffmpeg-2.0.2.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "rm -rf ffmpeg-1.0-universal && "
-                "mkdir ffmpeg-1.0-universal && "
-                "cd ffmpeg-1.0-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-1.0 all" % 
+                "rm -rf ffmpeg-2.0.2-universal && "
+                "mkdir ffmpeg-2.0.2-universal && "
+                "cd ffmpeg-2.0.2-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.0.2 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
             
