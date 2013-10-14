@@ -379,10 +379,6 @@ third_party_packages={
         DebianTPP("libxml2-dev"),
         DebianTPP("libltdl-dev"),
         DebianTPP("libsdl1.2-dev"),
-        DebianTPP("libavformat-dev"),
-        DebianTPP("libavcodec-dev"),
-        DebianTPP("libavutil-dev"),
-        DebianTPP("libswscale-dev"),
         DebianTPP("libxerces-c-dev"),
         DebianTPP("libexpat1-dev"),
         DebianTPP("python-dev"),
@@ -393,6 +389,12 @@ third_party_packages={
         DebianTPP("libsdl2-dev"),
         DebianTPP("libsdl2-image-dev"),
         DebianTPP("libsdl2-ttf-dev"),
+        # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
+        DebianTPP("libavformat-ffmpeg-dev"),
+        DebianTPP("libavcodec-ffmpeg-dev"),
+        DebianTPP("libavutil-ffmpeg-dev"),
+        DebianTPP("libswscale-ffmpeg-dev"),
+
     ],
  
     'macosx' : [

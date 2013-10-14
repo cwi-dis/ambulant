@@ -5,7 +5,8 @@ Maintainer: CWI Ambulant Team <ambulant@cwi.nl>
 Build-Depends: debhelper (>= 7), dh-autoreconf, automake, autoconf, autotools-dev, autopoint, gettext, 
  libgtk2.0-dev | libgdk-pixbuf2.0-dev, gconf2,
  libxml2-dev, libltdl-dev, 
- libsdl1.2-dev, libavformat-dev (>= 4:0.8-1~bpo60+1), libavcodec-dev (>= 4:0.8-1~bpo60+1), libswscale-dev (>= 4:0.8-1~bpo60+1), 
+ libsdl1.2-dev, 
+ libavformat-ffmpeg-dev, libavcodec-ffmpeg-dev, libswscale-ffmpeg-dev, 
  libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev, 
  libxerces-c-dev, libexpat1-dev, python-dev, python-gtk2-dev, python-gobject-dev,
  libsdl2-dev, libsdl2-image-dev, libsdl2-ttf-dev
@@ -15,7 +16,7 @@ Homepage: http://www.ambulantplayer.org
 Package: libambulant
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: libxerces-c | libexpat1, libxml2
+Suggests: libxerces-c | libexpat1, libxml2, libavcodec54-ffmpeg, libavformat54-ffmpeg, libswscale2-ffmpeg
 Description: Ambulant SMIL multimedia player - core engine
  SMIL 3.0 multimedia playback engine.
  .
@@ -65,7 +66,7 @@ Description: Ambulant SMIL multimedia player - common files
 Package: ambulant-gtk
 Architecture: any
 Depends: ${shlibs:Depends}, libambulant (= ${binary:Version}), ambulant-common, ${misc:Depends}
-Recommends: ambulant-plugins, libav-tools | ffmpeg
+Recommends: ambulant-plugins
 Provides: ambulantplayer
 Description: Ambulant SMIL multimedia player - GTK application
  SMIL 3.0 multimedia playback engine.
@@ -75,7 +76,7 @@ Description: Ambulant SMIL multimedia player - GTK application
 Package: ambulant-sdl
 Architecture: any
 Depends: ${shlibs:Depends}, libambulant (= ${binary:Version}), ambulant-common, ${misc:Depends}, libsdl2, libsdl2-image, libsdl2-ttf
-Recommends: ambulant-plugins, libav-tools | ffmpeg
+Recommends: ambulant-plugins
 Description: Ambulant SMIL multimedia player - SDL application
  SMIL 3.0 multimedia playback engine.
  .
