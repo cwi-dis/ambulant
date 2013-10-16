@@ -17,7 +17,7 @@
 # PLUS:
 #
 #  cd ambulant/third_party_packages
-#  python build-third-party-packages.py debian
+#  sudo python build-third-party-packages.py debian
 #
 # NOTE 2: the key used for signing (in debuild) must have no passphrase.
 # I think this can only be done with the gpg --edit-key command line
