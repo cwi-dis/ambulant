@@ -9,7 +9,15 @@
 #  postfix mailutils mercurial curl ssh devscripts chrpath
 #
 # PLUS: 
-#  everything listed in build-third-party-packages.py, section "debian"
+#
+#  sudo apt-add-repository ppa:zoogie/sdl2-snapshots
+#  sudo apt-add-repository ppa:samrog131/ppa
+#  sudo apt-cache update
+#
+# PLUS:
+#
+#  cd ambulant/third_party_packages
+#  python build-third-party-packages.py debian
 #
 # NOTE 2: the key used for signing (in debuild) must have no passphrase.
 # I think this can only be done with the gpg --edit-key command line
