@@ -37,7 +37,7 @@
 
 // Define the next to enable logging how video packets move through the
 // program, if AMBULANT_LOGFILE_LATENCY environment points to an output file.
-//#define LOGGER_VIDEOLATENCY "videolatency"
+#define LOGGER_VIDEOLATENCY "videolatency"
 
 namespace ambulant {
 
