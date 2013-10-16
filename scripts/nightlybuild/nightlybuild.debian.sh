@@ -12,7 +12,7 @@
 #
 #  sudo apt-add-repository ppa:zoogie/sdl2-snapshots
 #  sudo apt-add-repository ppa:samrog131/ppa
-#  sudo apt-cache update
+#  sudo apt-get update
 #
 # PLUS:
 #
