@@ -71,6 +71,7 @@ class demux_datasource:
     long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(m_stream_index, resource); }
     void set_is_live (bool is_live) { m_thread->set_is_live(is_live); }
     bool get_is_live () { return m_thread->get_is_live(); }
+    int size() const { return m_frames.size(); }
 
   protected:
 	bool _end_of_file();

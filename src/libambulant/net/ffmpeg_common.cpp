@@ -173,7 +173,7 @@ ffmpeg_demux::~ffmpeg_demux()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
-    ffmpeg_lock.enter();
+    ffmpeg_lock->enter();
 	if (m_con) {
 		if (m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS) {
 			unsigned int stream_index;
@@ -186,7 +186,7 @@ ffmpeg_demux::~ffmpeg_demux()
 		}
 		avformat_close_input(&m_con);
 	}
-    ffmpeg_lock.leave();
+    ffmpeg_lock->leave();
 	m_con = NULL;
 	m_lock.leave();
 }

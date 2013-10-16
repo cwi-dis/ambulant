@@ -626,7 +626,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 		_forward_frame(pts, frame);
 		
 	} else {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: drop frame ipts=%lld, before oldest_timestamp_wanted %lld", ipts, m_oldest_timestamp_wanted);
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: drop frame ipts=%lld, before oldest_timestamp_wanted %lld", ipts, m_oldest_timestamp_wanted);
 		m_dropped_count++;
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: done decoding (%p) ", m_con);
@@ -634,6 +634,15 @@ ffmpeg_video_decoder_datasource::data_avail()
 	av_free(frame);
 	av_free_packet(avpkt);
 
+    if (m_is_live) {
+        // Give a warning if there is too much data in the input or output queue
+        int inSize = m_src->size();
+        int outSize = size();
+        
+        if (inSize > 1 || outSize > 2) {
+            lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: backlog: %d packets before decoder, %d frames after decoder", inSize, outSize);
+        }
+    }
 	_restart_queues();
 	m_lock.leave();
 }
