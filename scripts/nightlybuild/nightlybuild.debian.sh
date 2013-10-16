@@ -6,7 +6,7 @@
 # NOTE: a number of things must be installed (and working) for this
 # script to run successfully:
 #
-#  postfix mailutils mercurial curl ssh devscripts chrpath
+#  postfix mailutils mercurial curl ssh devscripts chrpath dh-autoreconf autopoint
 #
 # PLUS: 
 #
