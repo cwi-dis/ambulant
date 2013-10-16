@@ -251,7 +251,10 @@ ffmpeg_demux::supported(const net::url& url)
 		}
 		return NULL;
 	}
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+	ffmpeg_lock->enter();	
 	err = avformat_find_stream_info(ic, NULL);
+	ffmpeg_lock->leave();
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
