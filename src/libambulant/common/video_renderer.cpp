@@ -70,11 +70,13 @@ video_renderer::video_renderer(
         lib::logger *latlogger = lib::logger::get_logger(LOGGER_VIDEOLATENCY);
         char *latloggerfile = getenv("AMBULANT_LOGFILE_LATENCY");
         if (latloggerfile) {
+        	lib::logger::get_logger()->debug("video_renderer: Enabled video latency logging to %s", latloggerfile);
             static std::ofstream ofstream;
             ofstream.open(latloggerfile);
             latlogger->set_std_ostream(ofstream);
             latlogger->set_level(lib::logger::LEVEL_TRACE);
         } else {
+			lib::logger::get_logger()->debug("video_renderer: Video latency logging disabled, use AMBULANT_LOGFILE_LATENCY to enable");
             latlogger->set_level(lib::logger::LEVEL_FATAL);
         }
     }
