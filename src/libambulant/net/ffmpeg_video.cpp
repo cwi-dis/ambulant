@@ -581,6 +581,20 @@ ffmpeg_video_decoder_datasource::data_avail()
 		m_con->skip_frame = AVDISCARD_DEFAULT;
 	}
 	
+	// For live streams we also skip frames if we have too much data in our input or output buffer.
+	// NOTE: this may not be a good idea if there is an audio stream attached to this video stream...
+    if (m_is_live) {
+        // Give a warning if there is too much data in the input or output queue
+        int inSize = m_src->size();
+        int outSize = size();
+        
+        if (inSize > 1 || outSize > 1) {
+            lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: backlog: %d packets before decoder, %d frames after decoder", inSize, outSize);
+            m_con->skip_frame = AVDISCARD_NONREF;
+        }
+    }
+
+	
 	// Let's decode the packet, and see whether we get a frame back.
 	assert(avpkt);
 	got_pic = 0;
@@ -653,15 +667,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 	av_free(frame);
 	av_free_packet(avpkt);
 
-    if (m_is_live) {
-        // Give a warning if there is too much data in the input or output queue
-        int inSize = m_src->size();
-        int outSize = size();
-        
-        if (inSize > 1 || outSize > 2) {
-            lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: backlog: %d packets before decoder, %d frames after decoder", inSize, outSize);
-        }
-    }
 	_restart_queues();
 	m_lock.leave();
 }
