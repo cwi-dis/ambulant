@@ -112,7 +112,7 @@ class ffmpeg_video_decoder_datasource:
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
     long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
-	void set_is_live (bool is_live) { m_src->set_is_live(is_live); m_is_live = is_live; }
+    void set_is_live (bool is_live);
 	bool get_is_live () { return m_is_live; }
     int size() const { return m_frames.size(); }
 

@@ -189,6 +189,11 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(demux_video_dat
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = %p)", (void*)this);
 	m_time_base = AMBULANT_TIMEBASE;
 	ffmpeg_init();
+    const std::string& frag = m_url.get_ref();
+    if (frag.find("is_live=1") != std::string::npos) {
+        /*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: is_live=1 specified on URL");
+        m_is_live = true;
+    }
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: Looking for %s(%p) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(%p) decoder"), fmt.name.c_str(), fmt.parameters);
@@ -201,6 +206,20 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 	stop();
 	if (m_img_convert_ctx) sws_freeContext(m_img_convert_ctx);
 	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: dropped %d of %d frames after decoding", m_dropped_count, m_frame_count);
+}
+
+void
+ffmpeg_video_decoder_datasource::set_is_live (bool is_live)
+{
+    m_lock.enter();
+    m_src->set_is_live(is_live);
+    m_is_live = is_live;
+    // XXXJACK: I think this is too late: the flag should be set before calling codec_open...
+    if (is_live && m_con) {
+        m_con->flags |= CODEC_FLAG_LOW_DELAY;
+        m_con->has_b_frames = 0;
+    }
+    m_lock.leave();
 }
 
 void
@@ -911,6 +930,10 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 			return false;
 		}
 		//m_con = avcodec_alloc_context();
+        if (m_is_live && m_con) {
+            m_con->flags |= CODEC_FLAG_LOW_DELAY;
+            m_con->has_b_frames = 0;
+        }
 
 		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 		ffmpeg_lock->enter();

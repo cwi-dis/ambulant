@@ -215,10 +215,11 @@ ffmpeg_demux::supported(const net::url& url)
 	std::string url_str(url.get_document().get_url());
     std::string url_query = url.get_query();
 	std::string ffmpeg_name = url_str;
+#if 0
 	if (url.is_local_file()) {
 		ffmpeg_name = url.get_file();
 	}
-
+#endif
 	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
