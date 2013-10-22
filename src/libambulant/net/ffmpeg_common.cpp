@@ -241,6 +241,7 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	if (is_live) {
 		av_dict_set(&options, "analyzeduration", "60000000", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+		av_dict_set(&options, "fifo_size", "2000000", 0);
 	}
     err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
 
