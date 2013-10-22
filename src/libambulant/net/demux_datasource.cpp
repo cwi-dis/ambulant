@@ -77,6 +77,9 @@ demux_datasource::demux_datasource(const net::url& url, abstract_demux *thread, 
 	m_client_callback(NULL),
     m_is_live(false),
     m_is_video(false)
+#ifdef XXXJACK_COMBINE_HACK
+    , m_saved_packet(NULL)
+#endif
 {
 	m_thread->add_datasink(this, stream_index);
 	m_current_time = m_thread->get_clip_begin();
@@ -212,6 +215,32 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
 {
 	// XXX timestamp is ignored, for now
 	m_lock.enter();
+#ifdef XXXJACK_COMBINE_HACK
+    // XXXJACK Note: this code is incorrect: non-data packets will overtake data packets.
+    if (1 /*m_is_live*/ && flag == datasource_packet_flag_avpacket) {
+        if (m_saved_packet && pkt->pts == m_saved_packet->pts && pkt->dts == m_saved_packet->dts) {
+            // combine
+            /*AM_DBG*/ lib::logger::get_logger()->debug("demux_datasource::push_data: %p: combine(pts=%lld, oldsize=%d, addedsize=%d)", (void*)this, pkt->pts, m_saved_packet->size, pkt->size);
+            int prev_size = m_saved_packet->size;
+            av_grow_packet(m_saved_packet, pkt->size);
+            memcpy(m_saved_packet->data + prev_size, pkt->data, pkt->size);
+            av_free_packet(pkt);
+            m_lock.leave();
+            return true;
+        } else {
+            // forward old packet, keep new packet
+            AVPacket *tmp = m_saved_packet;
+            m_saved_packet = pkt;
+            if (tmp == NULL) {
+                m_lock.leave();
+                return true;
+            }
+            pkt = tmp;
+            pts = pkt->pts;
+            /*AM_DBG*/ lib::logger::get_logger()->debug("demux_datasource::push_data: %p: forward(pts=%lld, size=%d)", (void*)this, pkt->pts, pkt->size);
+        }
+    }
+#endif
 	m_src_end_of_file = (flag == datasource_packet_flag_eof);
 	AM_DBG lib::logger::get_logger()->debug("demux_datasource.push_data: pts=%lld, pkt=%p, pkt->pts=%lld, flag=%d", pts, pkt, pkt?pkt->pts : -1, flag);
 	if ( !m_thread) {

@@ -28,6 +28,7 @@
 
 #include <queue>
 
+#undef XXXJACK_COMBINE_HACK
 
 namespace ambulant
 {
@@ -89,6 +90,9 @@ class demux_datasource:
     bool m_is_live;
     bool m_is_video;
     int m_max_packets_buffered;
+#ifdef XXXJACK_COMBINE_HACK
+    AVPacket *m_saved_packet;
+#endif
 	lib::critical_section m_lock;
 };
 

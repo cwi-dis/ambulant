@@ -360,7 +360,7 @@ void
 ffmpeg_video_decoder_datasource::frame_processed_keepdata(timestamp_t now, char *buf)
 {
 	m_lock.enter();
-	m_oldest_timestamp_wanted = now+1;
+	m_oldest_timestamp_wanted = now;
 
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource::frame_processed_keepdata: now=%lld, m_oldest_timestamp_wanted = %lld", now, m_oldest_timestamp_wanted);
 	assert(m_frames.size() > 0);
@@ -375,7 +375,7 @@ ffmpeg_video_decoder_datasource::frame_processed(timestamp_t now)
 {
 	m_lock.enter();
 
-	m_oldest_timestamp_wanted = now+1;
+	m_oldest_timestamp_wanted = now;
 
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource::frame_processed: now=%lld, m_oldest_timestamp_wanted = %lld", now, m_oldest_timestamp_wanted);
 
@@ -599,7 +599,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	assert(avpkt);
 	got_pic = 0;
 	len = avcodec_decode_video2(m_con, frame, &got_pic, avpkt);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: gotpic = %d, ipts = %lld", got_pic, ipts);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: gotpic = %d, ipts = %lld, packet_pts=%lld, packet_dts=%lld", got_pic, ipts, av_rescale_q(frame->pkt_pts, m_time_base, AMBULANT_TIMEBASE), av_rescale_q(frame->pkt_dts, m_time_base, AMBULANT_TIMEBASE));
 
 	if (len < 0) {
 		lib::logger::get_logger()->trace(gettext("ffmpeg_video_decoder_datasource.data_avail: error decoding video packet (timestamp=%lld)"), ipts);
