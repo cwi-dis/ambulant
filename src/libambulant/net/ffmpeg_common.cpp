@@ -598,6 +598,7 @@ ffmpeg_demux::run()
 				AVPacket *pkt_copy = (AVPacket *)malloc(sizeof(AVPacket));
 				*pkt_copy = *pkt;
 
+                sink->add_ref();
 				m_lock.leave();
 				accepted = sink->push_data((timestamp_t)pts, pkt_copy, datasource_packet_flag_avpacket);
                 AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pkt=%p (data %p, size %d)\n", pkt_copy, pkt_copy->data, pkt_copy->size);
@@ -609,6 +610,7 @@ ffmpeg_demux::run()
 					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
 				}
 				m_lock.enter();
+                sink->release();
 
 				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
