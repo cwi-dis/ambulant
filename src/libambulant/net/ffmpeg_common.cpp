@@ -610,15 +610,14 @@ ffmpeg_demux::run()
 					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
 				}
 				m_lock.enter();
-                sink->release();
 
 				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
 				{
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::run: push eof and release sink (released while busy)");
 					sink->push_data(0,0,datasource_packet_flag_eof);
-					sink->release();
 				}
+                sink->release();
 				m_current_sink = NULL;
 				sink = m_sinks[pkt->stream_index];
 			}
