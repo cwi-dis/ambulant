@@ -241,7 +241,12 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	if (is_live) {
 		av_dict_set(&options, "analyzeduration", "60000000", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+#if 0
 		av_dict_set(&options, "fifo_size", "2000000", 0);
+        av_dict_set(&options, "buffer_size", "2000000", 0);
+        av_dict_set(&options, "ts", "1", 0);
+        av_dict_set(&options, "fdebug", "1", 0);
+#endif
 	}
     err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
 
@@ -263,6 +268,12 @@ ffmpeg_demux::supported(const net::url& url)
 		}
 		return NULL;
 	}
+    // Check that all options were processed
+    AVDictionaryEntry *t = NULL;
+    while (t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) {
+        
+        lib::logger::get_logger()->trace("ffmpeg_demux::supported: Unsupported ffmpeg AVOption '%s'. (Programmer error?)", t->key);
+    }
 
 	AM_DBG av_dump_format(ic, 0, ffmpeg_name.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);

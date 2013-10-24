@@ -231,7 +231,9 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
             // forward old packet, keep new packet
             AVPacket *tmp = m_saved_packet;
             m_saved_packet = pkt;
-            if (tmp == NULL) {
+            /*AM_DBG*/ lib::logger::get_logger()->debug("demux_datasource::push_data: %p: save(pts=%lld, size=%d)", (void*)this, pkt->pts, pkt->size);
+            int ok = av_dup_packet(m_saved_packet);
+            if (tmp == NULL || ok < 0) {
                 m_lock.leave();
                 return true;
             }

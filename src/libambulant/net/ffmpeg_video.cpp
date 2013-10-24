@@ -594,7 +594,7 @@ ffmpeg_video_decoder_datasource::data_avail()
         }
     }
 
-	
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: pts=%lld, len=%d, flags=0x%x data[4,5]=0x%x 0x%x, side_data=%p:%d", avpkt->pts, avpkt->size, avpkt->flags, avpkt->data[4], avpkt->data[5], avpkt->side_data, avpkt->side_data_elems);
 	// Let's decode the packet, and see whether we get a frame back.
 	assert(avpkt);
 	got_pic = 0;
