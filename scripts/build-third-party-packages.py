@@ -189,6 +189,7 @@ class DebianTPP(CommonTPP):
 
     def __init__(self, name, ppa=None, releases=None):
         CommonTPP.__init__(self, name)
+        self.output = open("log.debian.txt", "a")
         self.ppa = ppa
         if ppa:
             assert ppa.startswith("ppa:")
@@ -208,7 +209,7 @@ class DebianTPP(CommonTPP):
         cur_release = os.popen("lsb_release -cs", "r").read().strip()
         ppaname = self.ppa[len("ppa:"):]
         ppaname = ppaname.replace('/', '-')
-        if not os.path.exists('/etc/apt/sources.list.d/%s.list'):
+        if not os.path.exists('/etc/apt/sources.list.d/%s-%s.list' % (ppaname, cur_release)):
             print '* Missing PPA %s' % self.ppa
             return False
         return True
