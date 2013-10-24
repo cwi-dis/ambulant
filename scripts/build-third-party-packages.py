@@ -190,7 +190,8 @@ class DebianTPP(CommonTPP):
     def __init__(self, name, ppa=None, releases=None):
         CommonTPP.__init__(self, name)
         self.ppa = ppa
-        assert ppa.startswith("ppa:")
+        if ppa:
+            assert ppa.startswith("ppa:")
         self.releases = releases
     
     def run(self):
