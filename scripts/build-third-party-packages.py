@@ -186,13 +186,32 @@ class TPP(CommonTPP):
 
 class DebianTPP(CommonTPP):
     PACKAGE_INSTALL_CMD = "apt-get -y install %s"
+
+    def __init__(self, name, ppa=None, releases=None):
+        CommonTPP.__init__(self, name)
+        self.ppa = ppa
+        assert ppa.startswith("ppa:")
+        self.releases = releases
     
     def run(self):
+        if not self._check_ppa():
+            return False
         return self._command(self.PACKAGE_INSTALL_CMD % self.name)
         
     def mirror(self):
         return True
     
+    def _check_ppa(self):
+        if not self.ppa:
+            return True
+        cur_release = os.popen("lsb_release -cs", "r").read().strip()
+        ppaname = self.ppa[len("ppa:"):]
+        ppaname = ppaname.replace('/', '-')
+        if not os.path.exists('/etc/apt/sources.list.d/%s.list'):
+            print '* Missing PPA %s' % self.ppa
+            return False
+        return True
+        
 class WinTPP(TPP):
 
     DEFAULT_BUILD_COMMAND=None
@@ -385,15 +404,17 @@ third_party_packages={
         DebianTPP("python-gtk2-dev"),
         DebianTPP("python-gobject-dev"),
         DebianTPP("libdispatch-dev"),
+        
         # The following come from ppa:zoogie/sdl2-snapshots (as of 06-Oct-2013)
-        DebianTPP("libsdl2-dev"),
-        DebianTPP("libsdl2-image-dev"),
-        DebianTPP("libsdl2-ttf-dev"),
+        DebianTPP("libsdl2-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        DebianTPP("libsdl2-image-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        
         # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
-        DebianTPP("libavformat-ffmpeg-dev"),
-        DebianTPP("libavcodec-ffmpeg-dev"),
-        DebianTPP("libavutil-ffmpeg-dev"),
-        DebianTPP("libswscale-ffmpeg-dev"),
+        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavutil-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libswscale-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
 
     ],
  
@@ -1165,7 +1186,7 @@ def main():
         if ok:
             print "+ ok:", pkg.name
         else:
-            print "+ failed:", pkg.name
+            print "* failed:", pkg.name
             allok = False
     if allok and final_package:
         print "+ processing FINAL package"
@@ -1173,7 +1194,7 @@ def main():
         if ok:
             print "+ ok: FINAL package"
         else:
-            print "+ failed: FINAL package"
+            print "* failed: FINAL package"
             allok = False
     elif final_package:
         print "+ skipped: FINAL package, due to earlier errors"
