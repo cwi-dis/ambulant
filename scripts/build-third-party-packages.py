@@ -768,7 +768,7 @@ third_party_packages={
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-               "cd SDL-2.0.0-* && "
+               "cd SDL-2.0.*-* && "
                 "%s --disable-mmx --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
