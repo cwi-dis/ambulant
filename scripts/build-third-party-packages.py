@@ -210,7 +210,7 @@ class DebianTPP(CommonTPP):
         ppaname = self.ppa[len("ppa:"):]
         ppaname = ppaname.replace('/', '-')
         if not os.path.exists('/etc/apt/sources.list.d/%s-%s.list' % (ppaname, cur_release)):
-            print '* Missing PPA %s' % self.ppa
+            print >>self.output, '* Missing PPA %s' % self.ppa
             return False
         return True
         
