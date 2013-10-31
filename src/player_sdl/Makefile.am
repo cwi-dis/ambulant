@@ -35,7 +35,7 @@ extra_ffmpeg_LDADD=
 endif
 
 if WITH_SDL2
-extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL2
+extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL2 -DWITH_SDLPANGO
 extra_sdl_LDADD=$(libambulant_sdl) $(FFMPEG_LIBS) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
