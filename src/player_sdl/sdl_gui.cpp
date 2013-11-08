@@ -697,6 +697,7 @@ sdl_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 		delete m_gui_player;
 
 	m_gui_player = new sdl_gui_player(this);
+	assert (m_gui_player);
 	return m_gui_player->is_open();
 }
 
@@ -831,6 +832,14 @@ main (int argc, char*argv[]) {
 // TBD begin code from gtk_logger
 	common::preferences* prefs = common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
+	if (logger == NULL) {
+		printf("Programmer error: could not create '%s' data stucture\n", "logger");
+		exit(-1);
+	}
+	if (prefs == NULL) {
+		logger->error("Programmer error: could not create '%s' data stucture", "preferences");
+		exit(-1);
+	}
 	// Connect logger to our message displayer and output processor
 	// logger->set_show_message(show_message);
 	// Tell the logger about the output level preference
@@ -838,52 +847,64 @@ main (int argc, char*argv[]) {
 	logger->set_level(level);
 // TBD end code from gtk_logger
 
+//X No inital window, logging on console
 	/* Setup surface */
-	sdl_gui *gui = new sdl_gui(argv[0], NULL);
+//X	sdl_gui *gui = new sdl_gui(argv[0], NULL);
 	// take log level from preferences
-//TBD	sdl_logger::set_sdl_logger_gui(gui);
-//TBD	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
-//TBD	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
-//TBD	// Print welcome banner
-//TBD	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
-//TBD	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);
+//X	sdl_logger::set_sdl_logger_gui(gui);
+//X	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
+//X	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
+//X	// Print welcome banner
+   	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);
 #if ENABLE_NLS
-//TBD	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+//X	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
 
 	bool exec_flag = true; // for make check
 
-	if (argc > 1) {
-		char last[6];
-		char* str = argv[argc-1];
-		// If the URL starts with "ambulant:" this is the trick-uri-scheme to
-		// open URLs in Ambulant from the browser. Remove the trick.
-		if (strncmp(str, "ambulant:", 9) == 0)
-			str += 9;
-		int len = strlen(str);
-		strcpy(last, &str[len-5]);
-		if (strcmp(last, ".smil") == 0
-			|| strcmp(&last[1], ".smi") == 0
-			|| strcmp(&last[1], ".sml") == 0)
-		{
-			if (gui->openSMILfile(str, 0, true) && exec_flag) {
-				gui->m_gui_player->play();
-			}
+	// establish the .smil document to play
+	char* document_url = NULL;
+
+//X no initial Welcome display
+//X	if (argc <= 1) {
+//X		if (prefs && ! prefs->m_welcome_seen) {
+//X			document_url = (char*) find_datafile(welcome_locations);
+//X			prefs->m_welcome_seen = true;
+//X		}
+//X		exec_flag = true;
+//X	} else {
+		if (argc == 2) {
+			document_url = argv[1];
 		}
-	} else {
-		preferences* prefs = preferences::get_preferences();
-		if ( ! prefs->m_welcome_seen) {
-			const char *welcome_doc = find_datafile(welcome_locations);
-			if (welcome_doc && gui->openSMILfile(welcome_doc, 0, true)) {
-				gui->m_gui_player->play();
-				prefs->m_welcome_seen = true;
-			}
-		}
-		exec_flag = true;
+//X	}
+	if (document_url == NULL) {
+		logger->error("Usage: %s <filename>|<url>", argv[0]);
+		exit(-1);
+	}    
+	// If the URL starts with "ambulant:" this is the trick-uri-scheme to
+	// open URLs in Ambulant from the browser (iOS). Remove the trick.
+	char last[6];
+	if (strncmp(document_url, "ambulant:", 9) == 0)
+		document_url += 9;
+
+	int len = strlen(document_url);
+	strcpy(last, &document_url[len-5]);
+	if (strcmp(last, ".smil") != 0
+		&& strcmp(&last[1], ".smi") != 0
+		& strcmp(&last[1], ".sml") != 0) {
+		logger->error("<filename> or <url> should end with '%s': '%s' or '%s'", ".smil", ".smi", ".sml");
+		exit(-1);
 	}
+	sdl_gui *gui = new sdl_gui(argv[0], strdup(document_url));
+	if (gui == NULL) {
+		logger->error("Programmer error: could not create '%s' data structure",  "gui_player");
+		exit(-1);
+	}
+	gui->m_gui_player->play();
 	gui->sdl_loop();
-//TBD	unix_prefs.save_preferences();
-//TBD	delete sdl_logger::get_sdl_logger();
+	prefs->save_preferences();
+	// delete logger; // logger will be deleted by loggers_manager called at exit()
 	gui->quit();
 	delete gui;
 

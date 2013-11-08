@@ -23,8 +23,8 @@
 #define __SDL_PLAYER_H__
 
 /*
- * sdl_gui_player.h -- sdl interface to gui_player: functions to drive the
- *		       the common SMIL document player
+ * sdl_gui_player.h -- sdl interface to ambulant
+ *		       functions to drive the common SMIL document player
  */
 
 #include <iostream>

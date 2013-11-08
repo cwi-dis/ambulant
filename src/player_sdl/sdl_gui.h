@@ -23,8 +23,9 @@
 #define __SDL_GUI_H__
 
 /* 
- * sdl_gui.h - SDL GUI for Ambulant
- *             intially only keyboard based
+ * sdl_gui.h - SDL GUI for Ambulant: interface to SDL2 and Linux
+ *             only keyboard based 
+ *
  *             in future could look like iAmbulant
  */
 
