@@ -50,7 +50,7 @@ endif
 extra_cflags=$(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags)
 extra_ldflags=$(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LIBINTL)
 all_ldflags=-L$$a $(extra_ldflags) $(LDFLAGS)
-all_cflags=$(extra_cflags) $(DEFS) $(CFLAGS)
+all_cflags=$(extra_cflags) $(DEFS) $(CFLAGS) $(CPPFLAGS)
 
 # These targets are magic for automake
 

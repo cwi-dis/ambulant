@@ -789,23 +789,29 @@ then
 	then
 		AC_MSG_ERROR("--with-python-plugin requires --with-python")
 		with_python_plugin=false
+	elif ${PYTHON}-config --prefix > /dev/null 2>&1; then
+		# If we have python-config for the selected python we use that to obtain
+		# the parameters we need
+		PYTHON_INCLUDES=`python-config --includes`
+		PYTHON_LIBS=`python-config --ldflags`
 	else
-	   PYTHON_INCLUDES=-I`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
-       # Trick to determine whether we're using a Mac framework build, in which
-       # case we need to specify the library differently.
-       case x$PYTHON_INCLUDES in
-       x-I/Library*)
-           PYTHON_LIBS="-framework Python" 
-           ;;
-       x-I/System/Library*)
-           PYTHON_LIBS="-F/System/Library/Frameworks -framework Python"
-           ;;
-       *)
-           pylibdir=`$PYTHON -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBPL")'`
-           pyversion=`$PYTHON -c 'import distutils.sysconfig ; print distutils.sysconfig.get_python_version()'`
-           PYTHON_LIBS="-L${libdir} -L${pylibdir} -lpython${pyversion}"
-           ;;
-       esac
+		# Otherwise we use the distutils commands		
+		PYTHON_INCLUDES=-I`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
+		# Trick to determine whether we're using a Mac framework build, in which
+		# case we need to specify the library differently.
+		case x$PYTHON_INCLUDES in
+		x-I/Library*)
+		   PYTHON_LIBS="-framework Python" 
+		   ;;
+		x-I/System/Library*)
+		   PYTHON_LIBS="-F/System/Library/Frameworks -framework Python"
+		   ;;
+		*)
+		   pylibdir=`$PYTHON -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBPL")'`
+		   pyversion=`$PYTHON -c 'import distutils.sysconfig ; print distutils.sysconfig.get_python_version()'`
+		   PYTHON_LIBS="-L${libdir} -L${pylibdir} -lpython${pyversion}"
+		   ;;
+		esac
 	fi
 fi
 
