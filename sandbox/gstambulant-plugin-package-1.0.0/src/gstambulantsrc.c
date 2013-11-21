@@ -128,6 +128,7 @@ static gboolean gst_ambulantsrc_start (GstBaseSrc * basesrc);
 static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc);
 static GstCaps* gst_ambulantsrc_get_caps (GstBaseSrc * bsrc, GstCaps* caps);
 //static gboolean gst_ambulantsrc_set_caps (GstBaseSrc * bsrc, GstCaps * caps);
+static gboolean gst_ambulantsrc_is_seekable (GstBaseSrc * bsrc);
 static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query);
 /* GstBaseSrc virtual methods we need to override */
 
@@ -178,6 +179,7 @@ static void gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 	gstbasesrc_class->stop = GST_DEBUG_FUNCPTR(gst_ambulantsrc_stop);
 	gstbasesrc_class->get_caps = GST_DEBUG_FUNCPTR(gst_ambulantsrc_get_caps);
 //	gstbasesrc_class->set_caps = GST_DEBUG_FUNCPTR(gst_ambulantsrc_set_caps); // disabled, SEGV
+	gstbasesrc_class->is_seekable = GST_DEBUG_FUNCPTR(gst_ambulantsrc_is_seekable);
 	gstbasesrc_class->query = GST_DEBUG_FUNCPTR(gst_ambulantsrc_query);
 	gstbasesrc_class->get_size = GST_DEBUG_FUNCPTR(gst_ambulantsrc_get_size);
 	gstbasesrc_class->get_times = GST_DEBUG_FUNCPTR(gst_ambulantsrc_get_times);
@@ -228,7 +230,7 @@ GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, 
 		frame->datapointer = g_malloc(datasize);
 		if (frame->datapointer == NULL) {
 			gst_ambulantsrc_delete_frame (frame);
-		return NULL;
+			return NULL;
 		}
 	} else {
 		frame->datapointer = data;
@@ -251,7 +253,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 {
 	GstAmbulantFrame* frame = NULL;
 	gulong timestamp = 0;
-	GST_LOG_OBJECT (asrc, "");
+	GST_LOG_OBJECT (asrc, "enter");
 
 	if (asrc == NULL) {
 		GST_ERROR_OBJECT(NULL, "asrc==NULL, should not happen");
@@ -319,7 +321,7 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 	if (asrc == NULL) {
 		return;
 	}
-	GST_LOG_OBJECT (asrc, "");
+	GST_LOG_OBJECT (asrc, "enter");
 
 	gboolean was_locked = asrc->locked;
 	if ( ! was_locked) {
@@ -354,7 +356,7 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 
 void gst_ambulantsrc_init_frame(GstAmbulantSrc* asrc)
 {
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "enter");
 
 	guint W = asrc->width, H = asrc->height;
 	glong datasize = W * H * 4;
@@ -379,7 +381,7 @@ void gst_ambulantsrc_init_frame(GstAmbulantSrc* asrc)
 static void
 gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 {
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "enter");
 
 	GstBaseSrc* bsrc = (GstBaseSrc*) asrc;
 
@@ -404,7 +406,7 @@ static void
 gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 {
 	if (asrc != NULL) {
-		GST_DEBUG_OBJECT (asrc, "");
+		GST_DEBUG_OBJECT (asrc, "enter");
 
 		GST_OBJECT_LOCK (asrc);
 		asrc->locked = TRUE;
@@ -416,7 +418,7 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 				g_queue_push_head (asrc->queue, frame);
 			}
 		}
-		if (asrc->queue != NULL) {
+		if (asrc->exit_requested && asrc->queue != NULL) {
 			g_queue_free_full (asrc->queue, (GDestroyNotify) gst_ambulantsrc_delete_frame);
 			asrc->queue = NULL;
 		}
@@ -457,7 +459,7 @@ gst_ambulantsrc_get_property (GObject * object, guint prop_id,
 			      GValue * value, GParamSpec * pspec)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (object);
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "enter");
 
 	switch (prop_id) {
 		case PROP_MIN_LATENCY:
@@ -485,7 +487,7 @@ static gboolean
 gst_ambulantsrc_start (GstBaseSrc * basesrc)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (basesrc);
-	GST_DEBUG_OBJECT (asrc, "");
+	GST_DEBUG_OBJECT (asrc, "enter");
 
 	gboolean rv = TRUE;
 	GST_OBJECT_LOCK (asrc);
@@ -498,7 +500,7 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 			rv = FALSE;
 		}
 		if (rv) {
-		  if (asrc->frame == NULL) {
+			if (asrc->frame == NULL) {
 				gst_ambulantsrc_init_frame (asrc); // should not happen
 			}
 			asrc->locked = FALSE;
@@ -565,6 +567,11 @@ static gboolean gst_ambulantsrc_set_caps (GstBaseSrc* bsrc, GstCaps * caps)
 }
 */
 
+static gboolean gst_ambulantsrc_is_seekable (GstBaseSrc * bsrc)
+{
+	return FALSE;
+}
+
 static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
@@ -629,23 +636,26 @@ static gboolean gst_ambulantsrc_query (GstBaseSrc * bsrc, GstQuery * query)
 static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, guint length, GstBuffer ** buffer)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC (bsrc);
-	GST_LOG_OBJECT (asrc, "");
+	GST_LOG_OBJECT (asrc, "enter");
 	
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 	
 	if (buffer == NULL) {
+		GST_LOG_OBJECT(asrc, "OK: buffer=%p",buffer);
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
 		return GST_FLOW_OK;
 	}
 	if (asrc->eos && (asrc->queue == NULL || g_queue_get_length(asrc->queue)) == 0) {
+		GST_LOG_OBJECT(asrc, "EOS: asrc->queue=%" G_GUINT32_FORMAT, asrc->queue ? asrc->queue->length : 0);
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
 		return GST_FLOW_EOS; // end of stream
 	}
 	gst_ambulantsrc_get_next_frame(asrc);
 	if (asrc->frame == NULL) {
+		GST_LOG_OBJECT(asrc, "EOS: asrc->frame=%p asrc->queue=%" G_GUINT32_FORMAT, asrc->queue,  asrc->queue ? asrc->queue->length : 0);
 		asrc->eos = TRUE;
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
@@ -653,12 +663,26 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 	}
 	GST_LOG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT " size=%" G_GUINT64_FORMAT " offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
 	GstBuffer* buf = asrc->frame->databuffer;
-	GST_BUFFER_DTS (buf) = asrc->frame->timestamp * 1000000; // millis to nanos
-	GST_BUFFER_PTS (buf) = GST_BUFFER_DTS (buf);
+	GstClockTime dts = GST_BUFFER_DTS (buf) = asrc->frame->timestamp * 1000000; // millis to nanos
+	GST_BUFFER_PTS (buf) = dts;
 	GST_BUFFER_DURATION (buf) = GST_CLOCK_TIME_NONE;
 	GST_BUFFER_OFFSET (buf) = offset;
 	gst_buffer_ref(buf);
 	*buffer = buf;
+
+	if (asrc->initial_frame) {
+		/* In "sniffing mode" when data buffers are produced with video images of
+		   specified  'width' and 'height'; then also monotonically increase 'timestamp'
+		   with a 'reasonable' value to mimic a real live source
+		*/
+		asrc->frame->timestamp += 500;
+		GST_OBJECT_UNLOCK (asrc);
+		/* Get rid of obnoxious error message
+		   GStreamer-CRITICAL **: gst_segment_to_running_time: assertion `segment->format == format' failed
+		*/
+		gst_base_src_new_seamless_segment ((GstBaseSrc*) asrc, dts, GST_CLOCK_TIME_NONE, dts);
+		GST_OBJECT_LOCK (asrc);
+	}
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
 	return GST_FLOW_OK;
@@ -682,7 +706,7 @@ static void gst_ambulantsrc_get_times (GstBaseSrc *src, GstBuffer *buffer,
 static gboolean gst_ambulantsrc_get_size (GstBaseSrc *src, guint64 *size)
 {
 	GstAmbulantSrc *asrc = GST_AMBULANTSRC(src);
-	GST_LOG_OBJECT (asrc, "");
+	GST_LOG_OBJECT (asrc, "enter");
 
 	return 0; // size of datafile undetermined
 }
