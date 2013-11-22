@@ -282,7 +282,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		goto done;
 	}
 	if (sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &timestamp, &datasize, &W, &H) != 5) {
-		GST_ERROR_OBJECT (asrc, "scanf failed while reading frame header");
+		GST_ERROR_OBJECT (asrc, "scanf failed while reading frame header\nInput was:%s", buf);
 		asrc->eos = TRUE;
 		goto done;
 	}	
