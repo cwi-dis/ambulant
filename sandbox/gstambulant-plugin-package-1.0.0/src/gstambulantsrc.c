@@ -281,8 +281,9 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		asrc->eos = TRUE;
 		goto done;
 	}
-	if (sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &timestamp, &datasize, &W, &H) != 5) {
-		GST_ERROR_OBJECT (asrc, "scanf failed while reading frame header\nInput was:%s", buf);
+	int err = sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &timestamp, &datasize, &W, &H);
+	if (err != 5) { // sscanf failed, garbage read ?
+		GST_ERROR_OBJECT (asrc, "sscanf returned %d  while reading frame header\nInput was:%s", err, buf);
 		asrc->eos = TRUE;
 		goto done;
 	}	
@@ -534,11 +535,13 @@ static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 	if (asrc->thread != NULL) {
 		asrc->exit_requested = TRUE;
 	}
+/* XXXX cleanup in thread 
 	if (asrc->queue != NULL) {
 		g_queue_free_full (asrc->queue, (GDestroyNotify) gst_ambulantsrc_delete_frame);
 		asrc->queue = NULL;
 	}
 	gst_ambulantsrc_delete_frame (asrc->frame);
+*/
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
 
