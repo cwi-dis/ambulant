@@ -4,7 +4,7 @@ export LD_LIBRARY_PATH=/usr/local/lib/lua/5.1/socket:/usr/local/lib/ginga:/usr/l
 export BROWSER=firefox
 
 echo AMBULANT_PLUGIN_PATH=$AMBULANT_PLUGIN_PATH
-AMBULANT_RECORDER_PIPE="cat - >recorder_output" AmbulantPlayer $srcdir/test1.smil &
+AMBULANT_RECORDER_PIPE="cat - >recorder_output" AmbulantPlayer_sdl $srcdir/test1.smil &
 pid=$!
 sleep 13
 kill -9 $pid
