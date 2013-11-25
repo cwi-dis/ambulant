@@ -65,6 +65,9 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
 #include "gstambulantsrc.h"
@@ -269,19 +272,40 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		GST_DEBUG_OBJECT(asrc, "eos already true, bailing out");
 		goto done;
 	}
-	char buf[81]; 
-	char type[5];
+	fd_set readfds;
+	int nfds = fileno(stdin)+1;
+	struct timeval timeout = { 0, 200000 }; // 200 millisec.
+	char buf[81];
 	buf[80] = 0;
 	guint W,H; 
 	gulong datasize;
 
-	// First read the 80-byte header.
+	// First wait for input available
+	gboolean input_available = FALSE;
+	while ( ! input_available && ! asrc->exit_requested && ! asrc->eos) {
+		FD_ZERO(&readfds);
+		FD_SET(fileno(stdin), &readfds);
+		int rv = select (nfds, &readfds, NULL, NULL, &timeout);
+		if (rv < 0) {
+			GST_ERROR_OBJECT (asrc, "select failed, errno- %d  while waiting for frames.", errno);
+			asrc->eos = TRUE;
+			goto done;
+		}
+		if (rv != 0) {
+			input_available = TRUE;
+		}
+	}
+	if ( asrc->exit_requested || asrc->eos) {
+		goto done;
+	}
+	// Then read the 80-byte header.
 	if (fread(buf,1,80,stdin) != 80) {
 		GST_DEBUG_OBJECT (asrc, "end-of-file reading frame header fd=%d", fileno(stdin));
 		asrc->eos = TRUE;
 		goto done;
 	}
-	int err = sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n%15c\n", type, &timestamp, &datasize, &W, &H);
+	char type[5];
+	int err = sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &timestamp, &datasize, &W, &H);
 	if (err != 5) { // sscanf failed, garbage read ?
 		GST_ERROR_OBJECT (asrc, "sscanf returned %d  while reading frame header\nInput was:%s", err, buf);
 		asrc->eos = TRUE;
@@ -425,7 +449,7 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 		}
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
-		GST_DEBUG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT " timestamp=%" G_GUINT32_FORMAT, asrc->eos, asrc->exit_requested);
+		GST_DEBUG_OBJECT (asrc, "return: eos=%" G_GUINT32_FORMAT " exit_requested=%d", asrc->eos, asrc->exit_requested);
 		g_thread_exit((gpointer) NULL);
 	}
 }
@@ -534,6 +558,11 @@ static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 //	}
 	if (asrc->thread != NULL) {
 		asrc->exit_requested = TRUE;
+		asrc->locked = FALSE;
+		GST_OBJECT_UNLOCK (asrc);
+		g_thread_join (asrc->thread);
+		GST_OBJECT_LOCK (asrc);
+		asrc->locked = TRUE;
 	}
 /* XXXX cleanup in thread 
 	if (asrc->queue != NULL) {
