@@ -281,7 +281,7 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 		asrc->eos = TRUE;
 		goto done;
 	}
-	int err = sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n", type, &timestamp, &datasize, &W, &H);
+	int err = sscanf(buf, "Type: %4s\nTime: %12lu\nSize: %9lu\nW: %5u\nH: %5u\n%15c\n", type, &timestamp, &datasize, &W, &H);
 	if (err != 5) { // sscanf failed, garbage read ?
 		GST_ERROR_OBJECT (asrc, "sscanf returned %d  while reading frame header\nInput was:%s", err, buf);
 		asrc->eos = TRUE;
