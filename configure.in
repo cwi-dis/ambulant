@@ -40,7 +40,8 @@ LTDL_INIT(convenience)
 AC_CONFIG_FILES([Makefile po/Makefile.in
 	src/Makefile 
 	src/npambulant/Makefile
-	src/libambulant/Makefile 
+	src/libambulant/Makefile
+	src/libambulant/pc-uninstalled/Makefile
 	src/player_gtk/Makefile
 	src/player_sdl/Makefile
 	src/player_macosx/Makefile
@@ -1084,6 +1085,7 @@ CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 AC_CONFIG_FILES([
 libambulant.pc
 ambulant.spec
+src/libambulant/pc-uninstalled/libambulant.pc
 ])
 AC_OUTPUT
 

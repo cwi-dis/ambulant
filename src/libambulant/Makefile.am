@@ -1,3 +1,4 @@
+SUBDIRS=pc-uninstalled
 ambulantlibdir=./.libs
 if WITH_AMBULANT_SHARED_LIB
 #
