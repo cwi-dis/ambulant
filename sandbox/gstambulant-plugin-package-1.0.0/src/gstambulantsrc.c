@@ -324,6 +324,13 @@ GstAmbulantFrame* gst_ambulantsrc_read_frame(GstAmbulantSrc* asrc)
 			goto done;
 		}
 	}
+	// timestamp correction
+	if (asrc->basetime == 0) {
+	  // first frame
+	  asrc->basetime = timestamp;
+	} else {
+	  timestamp -= asrc->basetime;
+	}
 	// Now read the frame data
 	frame = gst_ambulantsrc_new_frame (W, H, datasize, timestamp, NULL);
 	if (frame == NULL) return frame;
@@ -346,7 +353,7 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 	if (asrc == NULL) {
 		return;
 	}
-	GST_LOG_OBJECT (asrc, "enter");
+	GST_LOG_OBJECT (asrc, "queue.length=%d", asrc->queue ? g_queue_get_length (asrc->queue):-999);
 
 	gboolean was_locked = asrc->locked;
 	if ( ! was_locked) {
@@ -355,17 +362,15 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 	}
 	// while nothing has been read from <stdin>, stick to the initial frame
 	if (asrc->initial_frame) {
-		if (asrc->queue == NULL || g_queue_get_length (asrc->queue) > 0) {
+		if (asrc->queue != NULL && g_queue_get_length (asrc->queue) > 0) {
 			asrc->initial_frame = FALSE;
 		}
 	}
 	if ( ! asrc->initial_frame) {
-		if (asrc->queue == NULL || g_queue_get_length (asrc->queue) > 0) {
+		if (asrc->queue != NULL && g_queue_get_length (asrc->queue) > 0) {
 			gst_ambulantsrc_delete_frame (asrc->frame);
 			asrc->frame = NULL;
-			if (asrc->queue == NULL) {
-				asrc->frame = gst_ambulantsrc_read_frame (asrc);
-			} else {
+			if (asrc->queue != NULL) {
 				asrc->frame = g_queue_pop_tail (asrc->queue);
 			}
 			if (asrc->frame == NULL) {
@@ -418,6 +423,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	asrc->frame = NULL;
 	asrc->min_latency = DEFAULT_MIN_LATENCY;
 	asrc->max_latency = DEFAULT_MAX_LATENCY;
+	asrc->basetime = 0;
 	asrc->locked = FALSE;
 	gst_base_src_set_async (bsrc, TRUE);
 	gst_base_src_set_live (bsrc, TRUE);
@@ -442,6 +448,8 @@ gst_ambulantsrc_run (GstAmbulantSrc * asrc)
 			} else {
 				g_queue_push_head (asrc->queue, frame);
 			}
+			struct timespec sleeptime = { 0, 10000000 }, slept;
+			nanosleep (&sleeptime, &slept);
 		}
 		if (asrc->exit_requested && asrc->queue != NULL) {
 			g_queue_free_full (asrc->queue, (GDestroyNotify) gst_ambulantsrc_delete_frame);
@@ -518,27 +526,35 @@ gst_ambulantsrc_start (GstBaseSrc * basesrc)
 	GST_OBJECT_LOCK (asrc);
 	asrc->locked = TRUE;
 
-	if (asrc->width != 0 && asrc->height != 0 && asrc->thread == NULL) {
+	// Create reader queue
+	if (asrc->queue == NULL) {
 		asrc->queue = g_queue_new();
 		if (asrc->queue == NULL) {
 			asrc->eos = TRUE;
 			rv = FALSE;
 		}
-		if (rv) {
-			if (asrc->frame == NULL) {
-				gst_ambulantsrc_init_frame (asrc); // should not happen
-			}
-			asrc->locked = FALSE;
-			GST_OBJECT_UNLOCK (asrc);
-			GThread* thread = g_thread_new ("reader", (GThreadFunc) &gst_ambulantsrc_run, asrc);
-			GST_OBJECT_LOCK (asrc);
-			asrc->thread = thread;
-			asrc->locked = TRUE;
+	}
+	// Create reader thread
+	if (rv == TRUE && asrc->thread == NULL) {
+		asrc->locked = FALSE;
+		GST_OBJECT_UNLOCK (asrc);
+		GThread* thread = g_thread_new ("reader", (GThreadFunc) &gst_ambulantsrc_run, asrc);
+		GST_OBJECT_LOCK (asrc);
+		asrc->locked = TRUE;
+		if (thread == NULL) {
+			asrc->eos = TRUE;
+			rv = FALSE;
+		}
+		asrc->thread = thread;
 			// g_thread_new() aborts on failure
 			// XXXXX cond wait here until properly initialized
+		
+	}
+	// Create initial frame, if wanted
+	if (rv == TRUE && asrc->width != 0 && asrc->height != 0 && asrc->frame == NULL) {
+		if (asrc->frame == NULL) {
+			gst_ambulantsrc_init_frame (asrc);
 		}
-	} else if (asrc->frame == NULL) {
-		asrc->frame = gst_ambulantsrc_read_frame (asrc);
 	}
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
@@ -685,14 +701,6 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 		GST_OBJECT_UNLOCK (asrc);
 		return GST_FLOW_EOS; // end of stream
 	}
-	gst_ambulantsrc_get_next_frame(asrc);
-	if (asrc->frame == NULL) {
-		GST_LOG_OBJECT(asrc, "EOS: asrc->frame=%p asrc->queue=%" G_GUINT32_FORMAT, asrc->queue,  asrc->queue ? asrc->queue->length : 0);
-		asrc->eos = TRUE;
-		asrc->locked = FALSE;
-		GST_OBJECT_UNLOCK (asrc);
-		return GST_FLOW_EOS; // end of stream
-	}
 	GST_LOG_OBJECT(asrc, "Timestamp=%" G_GUINT64_FORMAT " size=%" G_GUINT64_FORMAT " offset=%" G_GUINT64_FORMAT, asrc->frame->timestamp, asrc->frame->datasize, offset);
 	GstBuffer* buf = asrc->frame->databuffer;
 	GstClockTime dts = GST_BUFFER_DTS (buf) = asrc->frame->timestamp * 1000000; // millis to nanos
@@ -707,13 +715,21 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 		   specified  'width' and 'height'; then also monotonically increase 'timestamp'
 		   with a 'reasonable' value to mimic a real live source
 		*/
-		asrc->frame->timestamp += 500;
+		asrc->frame->timestamp += 0;
 		GST_OBJECT_UNLOCK (asrc);
 		/* Get rid of obnoxious error message
 		   GStreamer-CRITICAL **: gst_segment_to_running_time: assertion `segment->format == format' failed
 		*/
 		gst_base_src_new_seamless_segment ((GstBaseSrc*) asrc, dts, GST_CLOCK_TIME_NONE, dts);
 		GST_OBJECT_LOCK (asrc);
+	}
+	gst_ambulantsrc_get_next_frame(asrc);
+	if (asrc->frame == NULL) {
+		GST_LOG_OBJECT(asrc, "EOS: asrc->frame=%p asrc->queue=%" G_GUINT32_FORMAT, asrc->queue,  asrc->queue ? asrc->queue->length : 0);
+		asrc->eos = TRUE;
+		asrc->locked = FALSE;
+		GST_OBJECT_UNLOCK (asrc);
+		return GST_FLOW_EOS; // end of stream
 	}
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
