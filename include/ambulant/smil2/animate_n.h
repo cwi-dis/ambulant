@@ -59,6 +59,7 @@ class animate_node : public time_node {
 
 	// Scheduler interface
 	virtual void prepare_interval();
+	virtual void get_values();
 
 	// Animation engine interface
 	const lib::node *get_animation_target() const { return m_aattrs->get_target();}
