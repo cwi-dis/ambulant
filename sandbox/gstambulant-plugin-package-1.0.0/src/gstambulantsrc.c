@@ -90,11 +90,13 @@ enum
 #define DEFAULT_MAX_LATENCY	((30 * GST_MSECOND) /GST_USECOND)
 #define DEFAULT_WIDTH		0 // undefined
 #define DEFAULT_HEIGHT		0 // undefined
+#define DEFAULT_IS_LIVE		TRUE // optimize throughput for live sources
 enum
 {
 	PROP_0,
 	PROP_MIN_LATENCY,
 	PROP_MAX_LATENCY,
+	PROP_IS_LIVE,
 	PROP_WIDTH,
 	PROP_HEIGHT
 };
@@ -176,6 +178,10 @@ static void gst_ambulantsrc_class_init (GstAmbulantSrcClass * klass)
 	g_object_class_install_property (gobject_class, PROP_MAX_LATENCY,
 	g_param_spec_int64 ("max-latency", "Maximum latency time", "Maximum latency in microseconds",
 			    1, G_MAXINT64, DEFAULT_MAX_LATENCY, G_PARAM_READWRITE));
+	g_object_class_install_property (gobject_class, PROP_IS_LIVE,
+					 g_param_spec_boolean ("is-live", "Indicate live stream",
+							       "Optimize for live data streams by dropping all frames except the last",
+							       DEFAULT_IS_LIVE, G_PARAM_READWRITE));
 
 	/* register functions pointers we want to override */
 	gstbasesrc_class->start = GST_DEBUG_FUNCPTR(gst_ambulantsrc_start);
@@ -221,7 +227,6 @@ void gst_ambulantsrc_delete_frame (GstAmbulantFrame* frame) {
 
 GstAmbulantFrame* gst_ambulantsrc_new_frame (guint W, guint H, gulong datasize, gulong timestamp, gpointer data)
 {
-//	if (W == 0 || H == 0 || datasize == 0) {
 	if (datasize == 0) {
 		return NULL;
 	}
@@ -371,7 +376,16 @@ void gst_ambulantsrc_get_next_frame (GstAmbulantSrc* asrc)
 			gst_ambulantsrc_delete_frame (asrc->frame);
 			asrc->frame = NULL;
 			if (asrc->queue != NULL) {
-				asrc->frame = g_queue_pop_tail (asrc->queue);
+		        	if (asrc->is_live) { // OLIO: Only Last In Out
+					asrc->frame = g_queue_pop_head (asrc->queue);
+					// Empty the queue
+					while (g_queue_get_length(asrc->queue) > 0) {
+						GstAmbulantFrame* frame = g_queue_pop_head (asrc->queue);
+						gst_ambulantsrc_delete_frame(frame);
+					}
+				} else { // FIFO
+					asrc->frame = g_queue_pop_tail (asrc->queue); 
+				}
 			}
 			if (asrc->frame == NULL) {
 				asrc->eos = TRUE;
@@ -420,6 +434,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	asrc->initial_frame = FALSE;
 	asrc->width = 0;
 	asrc->height = 0;
+	asrc->is_live = TRUE;
 	asrc->frame = NULL;
 	asrc->min_latency = DEFAULT_MIN_LATENCY;
 	asrc->max_latency = DEFAULT_MAX_LATENCY;
@@ -431,6 +446,7 @@ gst_ambulantsrc_init (GstAmbulantSrc * asrc)
 	asrc->caps = gst_static_pad_template_get_caps(&src_factory);
 	asrc->thread = NULL;
 	asrc->exit_requested = FALSE;
+//	setbuf (stdin, NULL); XXXX property
 }
 
 static void
@@ -481,6 +497,9 @@ static void gst_ambulantsrc_set_property (GObject * object, guint prop_id,
 		case PROP_HEIGHT:
 			asrc->height = g_value_get_uint (value);
 			break;
+		case PROP_IS_LIVE:
+			asrc->is_live = g_value_get_boolean (value);
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
@@ -506,6 +525,9 @@ gst_ambulantsrc_get_property (GObject * object, guint prop_id,
 			break;
 		case PROP_HEIGHT:
 			g_value_set_uint (value, asrc->height);
+			break;
+		case PROP_IS_LIVE:
+			g_value_set_uint (value, asrc->is_live);
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -585,8 +607,9 @@ static gboolean gst_ambulantsrc_stop (GstBaseSrc * basesrc)
 		g_queue_free_full (asrc->queue, (GDestroyNotify) gst_ambulantsrc_delete_frame);
 		asrc->queue = NULL;
 	}
-	gst_ambulantsrc_delete_frame (asrc->frame);
 */
+	gst_ambulantsrc_delete_frame (asrc->frame);
+	asrc->frame = NULL;
 	asrc->locked = FALSE;
 	GST_OBJECT_UNLOCK (asrc);
 

@@ -91,9 +91,11 @@ struct _GstAmbulantSrc
 	GstAmbulantFrame* frame;  // current frame
 	guint width, height;      // default: undefined; when one is set, the other also should be set
 	GstClockTime basetime;
-	                          // When both width and height are set, operation becomes threaded (asynchronous read)
 	gboolean initial_frame;   // default: false; true when both width,height are set:
 	                          // an initial white frame is used to fixate the capabilties
+	                          // When both width and height are set, operation becomes threaded (asynchronous read)
+	gboolean is_live;         // true when the 'is-live' property is selected, propagate only most recent frame
+				  // dropping all others. Otherwise, FIFO. Default: true
 
 	// Threading
 	gboolean locked;          // true when the inherited (GObject) mutex is locked
