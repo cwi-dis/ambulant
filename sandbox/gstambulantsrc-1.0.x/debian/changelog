@@ -1,0 +1,11 @@
+gstambulantsrc (1.0.2-1) unstable; urgency=low
+
+  * debian/control: moved from Depends to Build-Depends: pkg-config, libgstreamer1.0-dev, libgstreamer-plugins-base1.0-dev
+
+  * debian/control: added to Depends: pkg-config
+
+  * debian/control: added to Depends:  libgstreamer1.0-dev, libgstreamer-plugins-base1.0-dev
+
+  * Initial release (Closes: #1234)
+
+ -- Kees Blom <Kees.Blom@cwi.nl>  Fri, 20 Dec 2013 16:30:51 +0100
