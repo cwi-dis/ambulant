@@ -1,15 +1,14 @@
 #!/bin/sh
 #
-# Script to do a clean build of a full gstambulantsrc Debian packages
-# Ubuntu version
+# Script to do a clean build of a full gstambulantsrc Debian package for Ubuntu.
 #
 # Derived from: .../ambulant/scripts/nightlybiuild/nightlybuild.debian.sh
 #
 # NOTE: a number of things must be installed (and working) for this
-# script to run successfully:
+# script to run successfully, a.o:
 #
-#  postfix mailutils mercurial curl ssh devscripts chrpath dh-autoreconf autopoint
-#  gstreamer1.0 (and its plugins, tools etc.)
+#  postfix mailutils mercurial curl ssh devscripts chrpath debhelper pkg-config
+#  libgstreamer1.0-dev (and its plugins, tools etc.)
 #
 # NOTE 2: the key used for signing (in debuild) must have no passphrase.
 # I think this can only be done with the gpg --edit-key command line
@@ -18,7 +17,7 @@
 set -e
 set -x
 
-MODULE_VERSION=1.0.5
+MODULE_VERSION=1.0
 MODULE=gstambulantsrc
 BUILD_INDEX=1
 
@@ -67,7 +66,6 @@ DESTINATION_DEBIAN=$DESTINATION/deb/
 DESTINATION_WORKAREA=dists
 RELPATH_SRC=$DESTINATION_WORKAREA/$DISTRIB_RELEASE/$MODULE/source
 RELPATH_BIN=$DESTINATION_WORKAREA/$DISTRIB_RELEASE/$MODULE/binary-$DEBARCH
-FULLVERSION=$MODULE_VERSION-$BUILD_INDEX ##$VERSIONSUFFIX~$DISTRIB_CODENAME
 ## echo
 ## echo ==========================================================
 ## echo Ambulant nightly build for Debian, $ARCH, $USER@`hostname`, `date`
@@ -84,7 +82,10 @@ then
      echo "This script is intended to run from toplevel $MODULE"
      exit -1
 fi
-
+SOURCE_DIR=$PWD
+MICRO_VERSION=`cat debian/next_micro_version`
+MODULE_VERSION=$MODULE_VERSION.$MICRO_VERSION
+FULLVERSION=$MODULE_VERSION-$BUILD_INDEX ##$VERSIONSUFFIX~$DISTRIB_CODENAME
 # Update version in configure.ac to match this script
 sed -e "/AC_INIT/s/AC_INIT(\[$MODULE\],\[.*\])/AC_INIT([$MODULE],[$MODULE_VERSION])/"  configure.ac >  configure.ac.tmp; mv  configure.ac.tmp  configure.ac 
 
@@ -187,7 +188,10 @@ x)
 	;;
 esac
 cd ..
-
+# Increment micro version for next ppa build and remember
+cd $SOURCE_DIR
+let MICRO_VERSION=MICRO_VERSION+1
+echo $MICRO_VERSION > ./debian/next_micro_version
 #
 # Delete old installers, remember current
 #
