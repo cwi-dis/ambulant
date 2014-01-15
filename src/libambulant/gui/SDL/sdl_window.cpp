@@ -205,7 +205,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	m_lock.enter();
 	ambulant_sdl_window::s_num_events--;
 
-//	lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): redraw starts.", this);
+//	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): redraw starts.", this);
 	sdl_ambulant_window* saw = get_sdl_ambulant_window();
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
@@ -260,6 +260,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 //X	rect.h = r.height();
 	SDL_Renderer* renderer = saw->get_sdl_window_renderer();
 	SDL_Surface* surface = saw->get_sdl_surface();
+//	saw->dump_sdl_surface (surface, "redr");
 	SDL_Surface* screen_surface = surface;
 //X	SDL_BlitSurface(surface, &rect, screen_surface, &sdl_rect);
 	if (m_recorder && saw->get_evp()) {
@@ -514,7 +515,20 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	AM_DBG lib::logger::get_logger()->trace("sdl_gui::create_sdl_window_and_renderers(%p): m_window=(SDL_Window*)%p, window ID=%d", this, m_sdl_window, SDL_GetWindowID(m_sdl_window));
-	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+	int sdl_window_flags = 0;
+// Experimental environment variable SDL_WINDOW_FLAGS=<int> controls the flags given to SDL_CreateWindow
+	char* sdl_window_flags_env = getenv("SDL_WINDOW_FLAGS");
+	if (sdl_window_flags_env != NULL) {
+		sdl_window_flags = atoi (sdl_window_flags_env);
+		if (sdl_window_flags & SDL_WINDOW_OPENGL) {
+			SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24);
+			SDL_GL_SetAttribute (SDL_GL_STENCIL_SIZE, 8);
+			SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1);
+//			SDL_GL_SetAttribute (SDL_GL_SWAP_CONTROL, 0);
+			SDL_GL_SetSwapInterval(0);
+		}
+	}
+	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),sdl_window_flags); //XXXX consider SDL_CreateWindowFrom(XwinID) !
 	if (m_sdl_window == NULL) {
 		SDL_SetError("Out of memory");
 		err = -1;
