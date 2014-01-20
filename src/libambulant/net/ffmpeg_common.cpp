@@ -241,6 +241,7 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	if (is_live) {
 		av_dict_set(&options, "analyzeduration", "60000000", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+		av_dict_set(&options, "reorder_queue_size", "50", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
 #if 0
 		av_dict_set(&options, "fifo_size", "2000000", 0);
 		av_dict_set(&options, "buffer_size", "2000000", 0);
