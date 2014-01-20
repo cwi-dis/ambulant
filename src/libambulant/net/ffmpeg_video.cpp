@@ -587,11 +587,11 @@ ffmpeg_video_decoder_datasource::data_avail()
         // Give a warning if there is too much data in the input or output queue
         int inSize = m_src->size();
         int outSize = size();
-        
+/*        
         if (inSize > 1 || outSize > 1) {
             lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: backlog: %d packets before decoder, %d frames after decoder", inSize, outSize);
             m_con->skip_frame = AVDISCARD_NONREF;
-        }
+        } */
     }
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: pts=%lld, len=%d, flags=0x%x data[4,5]=0x%x 0x%x, side_data=%p:%d", avpkt->pts, avpkt->size, avpkt->flags, avpkt->data[4], avpkt->data[5], avpkt->side_data, avpkt->side_data_elems);

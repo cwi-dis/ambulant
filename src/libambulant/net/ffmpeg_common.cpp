@@ -213,8 +213,8 @@ ffmpeg_demux::supported(const net::url& url)
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
 	std::string url_str(url.get_document().get_url());
-    const std::string& frag = url.get_ref();
-    bool is_live = (frag.find("is_live=1") != std::string::npos);
+	const std::string& frag = url.get_ref();
+	bool is_live = (frag.find("is_live=1") != std::string::npos);
 	std::string ffmpeg_name = url_str;
 	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;
@@ -243,12 +243,12 @@ ffmpeg_demux::supported(const net::url& url)
 		av_dict_set(&options, "analyzeduration", "60000000", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
 #if 0
 		av_dict_set(&options, "fifo_size", "2000000", 0);
-        av_dict_set(&options, "buffer_size", "2000000", 0);
-        av_dict_set(&options, "ts", "1", 0);
-        av_dict_set(&options, "fdebug", "1", 0);
+		av_dict_set(&options, "buffer_size", "2000000", 0);
+		av_dict_set(&options, "ts", "1", 0);
+		av_dict_set(&options, "fdebug", "1", 0);
 #endif
 	}
-    err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
+	err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, options ? &options : NULL);
 
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
@@ -259,7 +259,7 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
 	ffmpeg_lock->enter();	
-	err = avformat_find_stream_info(ic, &options);
+	err = avformat_find_stream_info(ic,  options ? &options : NULL);
 	ffmpeg_lock->leave();
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
@@ -268,13 +268,12 @@ ffmpeg_demux::supported(const net::url& url)
 		}
 		return NULL;
 	}
-    // Check that all options were processed
-    AVDictionaryEntry *t = NULL;
-    while (t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) {
+	// Check that all options were processed
+	AVDictionaryEntry *t = NULL;
+	while (t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) {
         
-        lib::logger::get_logger()->trace("ffmpeg_demux::supported: Unsupported ffmpeg AVOption '%s'. (Programmer error?)", t->key);
-    }
-
+        	lib::logger::get_logger()->trace("ffmpeg_demux::supported: Unsupported ffmpeg AVOption '%s'. (Programmer error?)", t->key);
+	}
 	AM_DBG av_dump_format(ic, 0, ffmpeg_name.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
 	assert(ic);

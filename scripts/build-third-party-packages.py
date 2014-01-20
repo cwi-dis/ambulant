@@ -776,11 +776,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
-            url2="ffmpeg-1.0.tar.gz",
-            checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.2.tar.gz",
+            url2="ffmpeg-2.0.2.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "cd ffmpeg-1.0&& "
+                "cd ffmpeg-2.0.2&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
