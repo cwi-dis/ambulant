@@ -5,4 +5,4 @@ PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 20 3 * * * prlctl start Ubuntu-1204-32bit
 20 5 * * * prlctl start Ubuntu-1204-64bit
 20 7 * * * prlctl start Ubuntu-1304-32bit
-20 9 * * * prlctl start Ubuntu-1204-64bit
+20 9 * * * prlctl start Ubuntu-1304-64bit
