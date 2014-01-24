@@ -40,7 +40,7 @@
 #include "ambulant/gui/SDL/sdl_fill.h"
 #include "ambulant/gui/SDL/sdl_image_renderer.h"
 #include "ambulant/gui/SDL/sdl_smiltext.h"
-#include "ambulant/gui/SDL/sdl_text_renderer.h"
+//#include "ambulant/gui/SDL/sdl_text_renderer.h"
 #include "ambulant/gui/SDL/sdl_video.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/common/layout.h"
