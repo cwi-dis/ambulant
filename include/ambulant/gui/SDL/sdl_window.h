@@ -201,7 +201,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	// gui_screen implementation
 	void get_size(int *width, int *height) {} //TBD
-	bool get_screenshot(const char *type, char **out_data, size_t *out_size) {} //TBD
+	bool get_screenshot(const char *type, char **out_data, size_t *out_size) { return false; } //TBD
 
 	/// Transitions
 
