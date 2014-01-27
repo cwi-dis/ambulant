@@ -1034,3 +1034,53 @@
    fun:_ZN8ambulant6common13plugin_engineC1Ev
    obj:*
 }
+
+## Additions for python-plugin TBD
+{
+   Ambulant-python-plugin-1
+   Memcheck:Cond
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-2
+   Memcheck:Value8
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-3
+   Memcheck:Addr4
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-4
+   Memcheck:Param
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-5
+   Memcheck:Value8
+   fun:PyObject_Realloc
+   fun:*
+}
+{
+   Ambulant-python-plugin-6
+   Memcheck:Addr4
+   fun:PyObject_Realloc
+   fun:*
+}
+{
+   Ambulant-python-plugin-7
+   Memcheck:Cond
+   fun:PyObject_Realloc
+   fun:*
+}
+{
+   Ambulant-python-plugin-8
+   Memcheck:Param
+   fun:PyObject_Realloc
+   fun:*
+}
