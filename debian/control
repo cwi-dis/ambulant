@@ -8,13 +8,13 @@ Build-Depends: debhelper (>= 7), dh-autoreconf, automake, autoconf, autotools-de
  libdispatch-dev,
  libavformat-ffmpeg-dev, libavcodec-ffmpeg-dev, libswscale-ffmpeg-dev, 
  libxerces-c-dev, libexpat1-dev, python-dev, python-gtk2-dev, python-gobject-dev,
- libsdl2-dev, libsdl2-image-dev, libsdl2-ttf-dev
+ libsdl2-dev, libsdl2-image-dev
 Standards-Version: 3.9.1
 Homepage: http://www.ambulantplayer.org
 
 Package: libambulant
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsdl2, libsdl2-image, libsdl2-ttf, libdispatch0, libxerces-c | libexpat1
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsdl2, libsdl2-image, libdispatch0, libxerces-c | libexpat1
 Suggests: libxml2, libavcodec54-ffmpeg, libavformat54-ffmpeg, libswscale2-ffmpeg
 Description: Ambulant SMIL multimedia player - core engine
  SMIL 3.0 multimedia playback engine.
