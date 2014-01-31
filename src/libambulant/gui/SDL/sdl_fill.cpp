@@ -293,6 +293,7 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		err = SDL_SetRenderDrawColor (background_renderer, red, green, blue, opacity*255);
 		assert (err==0);
 //		err = SDL_RenderClear (background_renderer);
+		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw(%p) l,t,w,h=(%d,%d, %d,%d) rgba=(%d,%d,%d)", (void *)this, L,T,W,H,red,green,blue);
 		err = SDL_RenderFillRect (background_renderer, &sdl_dst_rect);
 		assert (err==0);
 		SDL_Rect sdl_src_rect = {0, 0, W, H};
