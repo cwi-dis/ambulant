@@ -22,7 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#if defined(WITH_SDL2) && defined(WITH_SDLPANGO)
+#if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"

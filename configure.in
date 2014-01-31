@@ -548,6 +548,7 @@ dnl ======================================================================
 test_sdl_video=true
 test_sdl_image=false
 test_sdl_pango=false
+test_sdl_ttf=false
 
 AC_MSG_CHECKING(for sdl-video - Simple Direct Media layer - Video support)
 AC_ARG_WITH(sdl-video,
@@ -596,7 +597,9 @@ AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl_audio = xtrue)
 AM_CONDITIONAL(WITH_SDL2, test x$test_sdl_video = xtrue)
-AM_CONDITIONAL(WITH_SDLPANGO, test x$test_sdl_pango = xtrue)
+AM_CONDITIONAL(WITH_SDL_IMGAGE, test x$test_sdl_image = xtrue)
+AM_CONDITIONAL(WITH_SDL_PANGO, test x$test_sdl_pango = xtrue)
+AM_CONDITIONAL(WITH_SDL_TTF, test x$test_sdl_ttf = xtrue)
 AC_SUBST(WITH_SDLPANGO)
 AC_MSG_RESULT($test_sdl_audio)
 AC_MSG_RESULT($test_sdl_video)
@@ -1113,7 +1116,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with SDL2_ttf:			${test_sdl_ttf}
+    Build with SDL2_ttf:	    ${test_sdl_ttf}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}
