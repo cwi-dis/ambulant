@@ -14,8 +14,8 @@ Homepage: http://www.ambulantplayer.org
 
 Package: libambulant
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsdl2-2.0, libsdl2-image-2.0, libdispatch0, libxerces-c | libexpat1
-Suggests: libxml2, libavcodec54-ffmpeg, libavformat54-ffmpeg, libswscale2-ffmpeg
+Depends: ${shlibs:Depends}, ${misc:Depends}, libdispatch0, libxerces-c | libexpat1
+Suggests: libxml2, libavcodec54-ffmpeg, libavformat54-ffmpeg, libswscale2-ffmpeg, libsdl2-2.0-0, libsdl2-image-2.0-0
 Description: Ambulant SMIL multimedia player - core engine
  SMIL 3.0 multimedia playback engine.
  .
