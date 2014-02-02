@@ -118,6 +118,6 @@ class sdl_smiltext_renderer :
 
 } // namespace ambulant
 
-#endif // WITH_SDL2
+#endif // defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 
 #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H

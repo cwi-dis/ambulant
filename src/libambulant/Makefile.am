@@ -122,12 +122,11 @@ libambulant_sdl_la_DEPENDENCIES=libambulant.la
 if WITH_SDL_PANGO
 sdlincludes = -DWITH_SDL2 -DWITH_SDL_PANGO $(SDL_CFLAGS)
 else
-sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
-endif
 if WITH_SDL_TTF
 sdlincludes = -DWITH_SDL2 -DWITH_SDL_TTF $(SDL_CFLAGS)
 else
 sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
+endif
 endif
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \

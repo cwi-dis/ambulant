@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#if defined(WITH_SDL2) && defined(WITH_SDLPANGO)
+#if defined(WITH_SDL2)
 
 //X #include "ambulant/gui/SDL/sdl_includes.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
@@ -27,6 +27,9 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
+#if ! defined(WITH_SDL_PANGO)
+#include "ambulant/gui/none/none_area.h"
+#endif// ! defined(WITH_SDL_PANGO)
 
 //#define AM_DBG if(1)
 #ifndef AM_DBG
@@ -50,13 +53,20 @@ create_sdl_smiltext_playable_factory(common::factories *factory, common::playabl
 {
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+#if defined(WITH_SDL_PANGO)
+#define SDL_SMILTEXT_RENDERER sdl_smiltext_renderer 
+#else// ! defined(WITH_SDL_PANGO)
+#define SDL_SMILTEXT_RENDERER none::none_area_renderer
+	lib::logger::get_logger()->trace("No %s renderer available", "smilText");
+#endif// ! defined(WITH_SDL_PANGO)
 	return new common::single_playable_factory<
-		sdl_smiltext_renderer,
+		SDL_SMILTEXT_RENDERER,
 		sdl_smiltext_playable_tag,
 		sdl_smiltext_playable_renderer_uri,
 		sdl_smiltext_playable_renderer_uri2,
 		sdl_smiltext_playable_renderer_uri2>(factory, mdp);
 }
+#if defined(WITH_SDL_PANGO)
 
 sdl_smiltext_renderer::sdl_smiltext_renderer(
 	playable_notification *context,
@@ -249,7 +259,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 		m_pango_layout = SDLPango_GetPangoLayout(m_sdl_pango_context);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
-#endif//SDL_PANGO
+#endif//defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 	if ( ! m_pango_attr_list)
 		m_pango_attr_list = pango_attr_list_new();
 #ifdef  TBD
@@ -814,8 +824,7 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	SDL_FreeSurface(sdl_surface);
 #endif// ! GDK_PANGO
 }
-#ifdef  TBD
-#endif//TBD
+#endif// defined(WITH_SDL_PANGO)
 
 } // namespace sdl
 
