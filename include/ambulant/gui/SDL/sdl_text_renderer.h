@@ -83,7 +83,7 @@ class sdl_text_renderer : public sdl_renderer<renderer_playable_dsall> {
 #if defined(WITH_SDL_TTF)
 	TTF_Font* m_ttf_font;       // font to be used for ttf rendering
 	int m_ttf_style;            // style to be used for ttf rendering
-#endif//defined(WITH_SDLPANGO)
+#endif//defined(WITH_SDL_TTF)
 	SDL_Surface* m_sdl_surface; // surface that was rendered from the text 
 };
 

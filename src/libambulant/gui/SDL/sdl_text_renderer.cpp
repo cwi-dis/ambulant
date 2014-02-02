@@ -52,6 +52,11 @@ gui::sdl::create_sdl_text_playable_factory(common::factories *factory, common::p
 {
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+#if defined(WITH_SDL_TTF)
+	TTF_Init();
+#elif ! defined(WITH_SDL_PANGO)
+	lib::logger::get_logger()->trace("No %s renderer available", "text");
+#endif// ! defined(WITH_SDL_PANGO)
 	return new common::single_playable_factory<
 		sdl_text_renderer,
 		sdl_text_playable_tag,
@@ -211,8 +216,8 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		m_sdl_surface = SDLPango_CreateSurfaceDraw (sdl_pango_context);
 		SDLPango_Draw(sdl_pango_context, m_sdl_surface, 0, 0);
 
-		Sdl_Pango_FreeContext (sdl_pango_context);
-#endif//defined(WITH_SDLPANGO)
+		SDLPango_FreeContext (sdl_pango_context);
+#endif//defined(WITH_SDL_PANGO)
 	} // m_text_storage != NULL && m_sdl_surface == NULL)
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
