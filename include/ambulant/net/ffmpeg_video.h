@@ -111,7 +111,7 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t get_buffer_time() { return m_frames.size() * frameduration(); };
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
-    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
+    long get_bandwidth_usage_data(const char **resource) { return m_src ? m_src->get_bandwidth_usage_data(resource)  : -1; }
     void set_is_live (bool is_live);
 	bool get_is_live () { return m_is_live; }
     int size() const { return m_frames.size(); }

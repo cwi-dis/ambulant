@@ -94,7 +94,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	timestamp_t get_elapsed();
 
-    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
+	long get_bandwidth_usage_data(const char **resource) { return m_src ? m_src->get_bandwidth_usage_data(resource) : -1; }
     void set_is_live (bool is_live) { m_src->set_is_live(is_live); }
     bool get_is_live () { return m_src->get_is_live(); }
 
