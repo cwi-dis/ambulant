@@ -241,8 +241,15 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	if (is_live) {
 		av_dict_set(&options, "analyzeduration", "60000000", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
-		av_dict_set(&options, "reorder_queue_size", "500", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+#if 1
+        char *optqs = getenv("VC_RTP_REORDER_QUEUE_SIZE");
+        if (optqs) {
+            av_dict_set(&options, "reorder_queue_size", optqs, 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+            lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): reorder_queue_size set to %s", url_str.c_str(), optqs);
+        }
+#endif
 #if 0
+		av_dict_set(&options, "reorder_queue_size", "500", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
 		av_dict_set(&options, "fifo_size", "2000000", 0);
 		av_dict_set(&options, "buffer_size", "2000000", 0);
 		av_dict_set(&options, "ts", "1", 0);
