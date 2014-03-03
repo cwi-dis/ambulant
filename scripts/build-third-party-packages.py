@@ -480,17 +480,30 @@ third_party_packages={
             ),
             
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
-            checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+            url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            # xxxjack removed  --disable-mmx --disable-video-x11-xinput
+            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-                "cd SDL-1.3.0-* && "
-                "./configure --prefix='%s' --disable-dependency-tracking "
-                    "CFLAGS='%s -framework ForceFeedback' "
-                    "LDFLAGS='%s -framework ForceFeedback' &&"
+               "cd SDL-2.0.*-* && "
+                "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' &&"
                 "make ${MAKEFLAGS} && "
-                "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
+                "make install &&"
+                "cd .." % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
+
+#         TPP("SDL",
+#             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+#             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+#             buildcmd=
+#                 "cd SDL-1.3.0-* && "
+#                 "./configure --prefix='%s' --disable-dependency-tracking "
+#                     "CFLAGS='%s -framework ForceFeedback' "
+#                     "LDFLAGS='%s -framework ForceFeedback' &&"
+#                 "make ${MAKEFLAGS} && "
+#                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
+#             ),
             
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",

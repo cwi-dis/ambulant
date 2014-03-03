@@ -201,9 +201,15 @@ sdl_gui_player::init_playable_factory()
 
 	AM_DBG m_logger->debug("sdl_gui_player: adding sdl playable factories");
 	pf->add_factory(create_sdl_fill_playable_factory(this, NULL));
+#ifdef WITH_SDL_IMAGE
 	pf->add_factory(create_sdl_image_playable_factory(this, NULL));
+#endif
+#ifdef WITH_SDL_PANGO
 	pf->add_factory(create_sdl_smiltext_playable_factory(this, NULL));
+#endif
+#if defined(WITH_SDL_PANGO) || defined(WITH_SDL_TTF)
 	pf->add_factory(create_sdl_text_playable_factory(this, NULL));
+#endif
 //TBD	pf->add_factory(create_sdl_video_playable_factory(this, NULL));
 
 //#ifdef WITH_SDL

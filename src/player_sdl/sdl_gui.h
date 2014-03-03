@@ -37,7 +37,9 @@
 //X #include "sdl_logger.h"
 
 #include "SDL.h"
+#ifdef WITH_SDL_IMAGE
 #include "SDL_image.h"
+#endif
 
 class sdl_gui_player;
 //X class sdl_settings;

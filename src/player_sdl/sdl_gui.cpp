@@ -806,10 +806,12 @@ main (int argc, char*argv[]) {
 		exit (-1);
 	}
 	int img_flags = 0; // XXXJACK: don't think we need these: IMG_INIT_JPG | IMG_INIT_PNG ; 
+#ifdef WITH_SDL_IMAGE
 	if (IMG_Init(img_flags) != img_flags) {
 		fprintf (stderr, "Ambulant: IMG_Init failed: %s\n", SDL_GetError());
 		exit (-2);
 	}
+#endif // WITH_SDL_IMAGE
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;
