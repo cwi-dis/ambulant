@@ -407,10 +407,11 @@ third_party_packages={
         DebianTPP("python-gobject-dev"),
         DebianTPP("libdispatch-dev"),
         
-        # The following come from ppa:zoogie/sdl2-snapshots (as of 06-Oct-2013)
-        DebianTPP("libsdl2-dev", ppa="ppa:zoogie/sdl2-snapshots"),
-        DebianTPP("libsdl2-image-dev", ppa="ppa:zoogie/sdl2-snapshots"),
-        DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        # The following come from ppa:zoogie/sdl2-snapshots (as of 06-Oct-2013).
+        # Unfortunately they don't work on 13.10...
+        #DebianTPP("libsdl2-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        #DebianTPP("libsdl2-image-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        #DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
         
         # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
         DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
