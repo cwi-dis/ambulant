@@ -3,4 +3,4 @@ MAILTO=jack@cwi.nl
 PATH=/home/jack/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 30 7 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.linux.sh 
 30 8 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.debian.sh 
-15 9 * * * ssh nightlybuilds@maunakea.cwi.ta2 prlctl stop Ubuntu-1204-32bit
+15 9 * * * ssh nightlybuilds@maunakea.cwi.ta2 prlctl stop Ubuntu-1310-32bit
