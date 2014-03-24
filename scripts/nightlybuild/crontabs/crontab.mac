@@ -5,3 +5,5 @@ PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 20 0 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.mac.sh
 20 2 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.iphone.sh
 20 6 * * * security default-keychain -s $HOME/Library/Keychains/login.keychain
+15 12 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.check.sh
+
