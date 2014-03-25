@@ -487,7 +487,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL-2.0.*-* && "
-                "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' &&"
+                "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' --disable-dependency-tracking &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
