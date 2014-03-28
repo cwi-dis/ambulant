@@ -575,8 +575,8 @@ if $test_sdl_video; then
 	   	# need SDL2_image for images (.png,.gif,.jpg)
 		PKG_CHECK_MODULES(SDL2_image, [SDL2_image >= 2.0.0], test_sdl_image=true, test_sdl_image=false)
 		if test "x$test_sdl_image" = "xtrue" ; then
-			SDL_CFLAGS="$SDL_CFLAGS  -DWITH_SDL_IMAGE `pkg-config --cflags SDL2_image`"
-			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` -lpng12"
+			SDL_CFLAGS="$SDL_CFLAGS  -DWITH_SDL_IMAGE `pkg-config --cflags SDL2_image`  `pkg-config --cflags libpng`"
+			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image` `pkg-config --libs libpng`"
 		fi		
 		# need SDL_Pango for smiltext layout
 		PKG_CHECK_MODULES(SDL_Pango, [SDL_Pango >= 0.1.3], test_sdl_pango=true, test_sdl_pango=false)
