@@ -1,6 +1,6 @@
 diff -r 357886e4778d include/ambulant/gui/SDL/sdl_smiltext.h
---- a/include/ambulant/gui/SDL/sdl_smiltext.h	Tue Feb 18 23:51:14 2014 +0100
-+++ b/include/ambulant/gui/SDL/sdl_smiltext.h	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/include/ambulant/gui/SDL/sdl_smiltext.h	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/include/ambulant/gui/SDL/sdl_smiltext.h	Fri Feb 28 16:58:48 2014 +0200
 @@ -22,16 +22,29 @@
  #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
  #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
@@ -74,8 +74,8 @@ diff -r 357886e4778d include/ambulant/gui/SDL/sdl_smiltext.h
  
  #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 diff -r 357886e4778d include/ambulant/lib/logger.h
---- a/include/ambulant/lib/logger.h	Tue Feb 18 23:51:14 2014 +0100
-+++ b/include/ambulant/lib/logger.h	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/include/ambulant/lib/logger.h	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/include/ambulant/lib/logger.h	Fri Feb 28 16:58:48 2014 +0200
 @@ -35,6 +35,18 @@
  #include "ambulant/lib/asb.h"
  #include "ambulant/lib/amstream.h"
@@ -105,8 +105,8 @@ diff -r 357886e4778d include/ambulant/lib/logger.h
  
  } // namespace lib
 diff -r 357886e4778d src/libambulant/gui/SDL/sdl_smiltext.cpp
---- a/src/libambulant/gui/SDL/sdl_smiltext.cpp	Tue Feb 18 23:51:14 2014 +0100
-+++ b/src/libambulant/gui/SDL/sdl_smiltext.cpp	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/src/libambulant/gui/SDL/sdl_smiltext.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/libambulant/gui/SDL/sdl_smiltext.cpp	Fri Feb 28 16:58:48 2014 +0200
 @@ -30,10 +30,13 @@
  #if ! defined(WITH_SDL_PANGO)
  #include "ambulant/gui/none/none_area.h"
@@ -441,8 +441,8 @@ diff -r 357886e4778d src/libambulant/gui/SDL/sdl_smiltext.cpp
  } // namespace sdl
  
 diff -r 357886e4778d src/libambulant/gui/SDL/sdl_text_renderer.cpp
---- a/src/libambulant/gui/SDL/sdl_text_renderer.cpp	Tue Feb 18 23:51:14 2014 +0100
-+++ b/src/libambulant/gui/SDL/sdl_text_renderer.cpp	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/src/libambulant/gui/SDL/sdl_text_renderer.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/libambulant/gui/SDL/sdl_text_renderer.cpp	Fri Feb 28 16:58:48 2014 +0200
 @@ -33,9 +33,15 @@
  
  #if defined(WITH_SDL_TTF)
@@ -481,8 +481,8 @@ diff -r 357886e4778d src/libambulant/gui/SDL/sdl_text_renderer.cpp
  #elif defined(WITH_SDL_PANGO)
  		// initialize the pango context, layout...
 diff -r 357886e4778d src/libambulant/lib/logger.cpp
---- a/src/libambulant/lib/logger.cpp	Tue Feb 18 23:51:14 2014 +0100
-+++ b/src/libambulant/lib/logger.cpp	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/src/libambulant/lib/logger.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/libambulant/lib/logger.cpp	Fri Feb 28 16:58:48 2014 +0200
 @@ -219,8 +219,12 @@
  
  void lib::logger::log_va_list(int level, const char *format, va_list args) {
@@ -497,8 +497,8 @@ diff -r 357886e4778d src/libambulant/lib/logger.cpp
  
  // Output format/hook
 diff -r 357886e4778d src/player_sdl/sdl_gui.cpp
---- a/src/player_sdl/sdl_gui.cpp	Tue Feb 18 23:51:14 2014 +0100
-+++ b/src/player_sdl/sdl_gui.cpp	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/src/player_sdl/sdl_gui.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/player_sdl/sdl_gui.cpp	Fri Feb 28 16:58:48 2014 +0200
 @@ -51,7 +51,6 @@
  #define AMBULANT_DATADIR "/usr/local/share/ambulant"
  #endif
@@ -600,8 +600,8 @@ diff -r 357886e4778d src/player_sdl/sdl_gui.cpp
  }
  
 diff -r 357886e4778d src/player_sdl/sdl_gui_player.cpp
---- a/src/player_sdl/sdl_gui_player.cpp	Tue Feb 18 23:51:14 2014 +0100
-+++ b/src/player_sdl/sdl_gui_player.cpp	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/src/player_sdl/sdl_gui_player.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/player_sdl/sdl_gui_player.cpp	Fri Feb 28 16:58:48 2014 +0200
 @@ -52,6 +52,7 @@
  
  #include "sdl_gui_player.h"
@@ -638,8 +638,8 @@ diff -r 357886e4778d src/player_sdl/sdl_gui_player.cpp
  		s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED);
  		if (s_renderer == NULL) {
 diff -r 357886e4778d src/player_sdl/sdl_gui_player.h
---- a/src/player_sdl/sdl_gui_player.h	Tue Feb 18 23:51:14 2014 +0100
-+++ b/src/player_sdl/sdl_gui_player.h	Fri Feb 28 16:58:48 2014 +0200
+--- a/ambulant/src/player_sdl/sdl_gui_player.h	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/player_sdl/sdl_gui_player.h	Fri Feb 28 16:58:48 2014 +0200
 @@ -104,7 +104,7 @@
  	ambulant::common::player* create_player(const char* filename);
  	bool user_event (const point &p, int what = 0);
