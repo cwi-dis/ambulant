@@ -38,9 +38,3 @@ public class AmbulantSDLPlayer extends SDLActivity {
 //		System.loadLibrary("testJNI");
 	}
 }
-//		System.loadLibrary("AmbulantSDLPlayer");
-//		System.loadLibrary("ambulant");
-
-//		System.loadLibrary("testJNI");
-	}
-}
