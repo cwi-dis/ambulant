@@ -30,12 +30,12 @@
 							<tool id="com.android.gcc.compiler.564064104" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
 								<option id="com.android.gcc.option.includePath.1425838428" superClass="com.android.gcc.option.includePath" valueType="includePath">
 									<listOptionValue builtIn="false" value="../jni/SDL/include"/>
+									<listOptionValue builtIn="false" value="/export/scratch2/kees/Eclipse/SDKs/android-ndk-r9d/sources/cxx-stl/system"/>
 								</option>
 								<inputType id="com.android.gcc.inputType.1088390692" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.android.toolchain.gcc.986652305.1353297107" name="Android.mk" rcbsApplicability="disable" resourcePath="jni/ambulant/Android.mk" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="jni"/>
 					</sourceEntries>
