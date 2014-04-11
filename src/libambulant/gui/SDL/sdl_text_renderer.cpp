@@ -33,9 +33,15 @@
 
 #if defined(WITH_SDL_TTF)
 #define FONT "Times 6"
+#ifndef ANDROID
 #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
 #define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
 #define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
+#else // ANDROID
+#define DEFAULT_FONT_FILE1 "/system/fonts/DroidSans.ttf"
+#define DEFAULT_FONT_FILE2 "/system/fonts/Roboto-Regular.ttf" 
+#define DEFAULT_FONT_FILE3 "/system/fonts/DroidSerif-Regular.ttf"
+#endif // ANDROID
 #endif// defined(WITH_SDL_TTF)
 
 #define DEFAULT_FONT_HEIGHT 16
@@ -136,7 +142,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			m_data_size);
 		m_text_storage[m_data_size] = '\0';
 	}
-	AM_DBG lib::logger::get_logger()->debug(
+	LOGI(
 		"sdl_text_renderer.redraw(%p):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
 		"font-family=(%s)",
@@ -168,7 +174,11 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
 		}
 		SDL_Color sdl_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
+#ifndef ANDROID
 		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, sdl_color);
+#else // ANDROID
+		m_sdl_surface = TTF_RenderText_Blended (m_ttf_font, m_text_storage, sdl_color);
+#endif // ANDROID
 		assert (m_sdl_surface);
 #elif defined(WITH_SDL_PANGO)
 		// initialize the pango context, layout...

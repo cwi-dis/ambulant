@@ -22,7 +22,6 @@
  *               intially keyboard based
  *               could look like iAmbulant
  */
-
 #include <pthread.h>
 #include <libgen.h>
 #include <stdlib.h>
@@ -30,7 +29,12 @@
 #include "sdl_gui.h"
 #include "sdl_gui_player.h"
 #include "unix_preferences.h"
+#include <malloc.h>
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL/Ambulant", __VA_ARGS__))
+#endif//__ANDROID__
 //X #include "sdl_logger.h"
 //X #include "sdl_renderer.h"
 
@@ -50,7 +54,6 @@
 #ifndef AMBULANT_DATADIR
 #define AMBULANT_DATADIR "/usr/local/share/ambulant"
 #endif
-
 
 const char *about_text =
 	"Ambulant SMIL 3.0 player.\n"
@@ -76,8 +79,7 @@ const char *helpfile_locations[] = {
 	AMBULANT_DATADIR "/AmbulantPlayerHelp/index.html",
 	NULL
 };
-
-
+/* XXX not used
 static const char *
 find_datafile(const char **locations)
 {
@@ -87,7 +89,7 @@ find_datafile(const char **locations)
 	}
 	return NULL;
 }
-
+*/
 sdl_gui::sdl_gui(const char* title, const char* initfile)
 :
 	m_programfilename(NULL),
@@ -151,9 +153,11 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 #endif//JNK
 	m_toplevelcontainer = m_documentcontainer = m_window;
 	m_gui_player = new sdl_gui_player(this);
-	m_arrow_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
-	m_hand_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_HAND);
-	SDL_SetCursor (m_arrow_cursor);
+#ifndef __ANDROID__
+//XXX	m_arrow_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+//XXX	m_hand_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_HAND);
+//XXX	SDL_SetCursor (m_arrow_cursor);
+#endif//#ifndef __ANDROID__
 }
 
 sdl_gui::~sdl_gui() {
@@ -167,7 +171,7 @@ sdl_gui::~sdl_gui() {
 //		SDL_FreeCursor (m_hand_cursor);
 	}
 	if (m_smilfilename != NULL) {
-		free((void*)m_smilfilename);
+//XXX		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
 	}
 #ifdef JNK
@@ -182,7 +186,7 @@ sdl_gui::~sdl_gui() {
 	}
 #endif//JNK
 	if (m_window != NULL) {
-		SDL_DestroyWindow(m_window);
+//XXX		SDL_DestroyWindow(m_window);
 	}
 #ifdef JNK
 	if (m_settings != NULL) {
@@ -798,18 +802,61 @@ sdl_gui::sdl_loop() {
 	}
 }
 
+#ifdef ANDROID
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL/Ambulant", __VA_ARGS__))
+#include <jni.h>
+extern "C" {
+  /* Called before SDL_main() to initialize JNI bindings in SDL library */
+  extern void SDL_Android_Init(JNIEnv* env, jclass cls);
+
+  /* Start up the SDL app */
+  void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jstring path)
+  {
+      /* This interface could expand with ABI negotiation, calbacks, etc. */
+	  LOGI("native_init start");
+      SDL_Android_Init(env, cls);
+
+	  LOGI("native_init start: calling SDL_SetMainReady()");
+      SDL_SetMainReady();
+
+      /* Run the application code! */
+      int status;
+      char *argv[3];
+      jboolean isCopy;
+      char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
+      argv[0] = SDL_strdup("AmbulantPlayer_SDL");
+//     argv[1] =	str_path;
+//    argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
+//    argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome.smil");
+//    argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
+      argv[1]= SDL_strdup("/sdcard/Download/smilText/NYC-sT.smil");
+//    argv[1]= SDL_strdup("/sdcard/Download/Fruits/Fruits-4s.smil");
+      LOGI("argv[1]=%s", argv[1]);
+      argv[2] = NULL;
+      status = SDL_main(2, argv);
+      env->ReleaseStringUTFChars(path, str_path);
+
+      /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
+      /* exit(status); */
+  }
+}
+#endif // ANDROID
+
 int
 main (int argc, char*argv[]) {
 
+//#ifndef ANDROID_MAIN
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {
 		fprintf (stderr, "Ambulant: SDL_Init failed: %s\n", SDL_GetError());
 		exit (-1);
 	}
 	int img_flags = 0; // XXXJACK: don't think we need these: IMG_INIT_JPG | IMG_INIT_PNG ; 
+#ifdef WITH_SDL_IMAGE
 	if (IMG_Init(img_flags) != img_flags) {
 		fprintf (stderr, "Ambulant: IMG_Init failed: %s\n", SDL_GetError());
 		exit (-2);
 	}
+#endif // WITH_SDL_IMAGE
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;
@@ -855,8 +902,10 @@ main (int argc, char*argv[]) {
 //X	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
 //X	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
 //X	// Print welcome banner
-   	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
-	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);
+//   	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+//	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);
+   	lib::logger::get_logger()->debug("Ambulant Player: compile time version %s, runtime version %s", AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug("Ambulant Player: built on %s for Unix/SDL", __DATE__);
 #if ENABLE_NLS
 //X	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
@@ -878,6 +927,10 @@ main (int argc, char*argv[]) {
 			document_url = argv[1];
 		}
 //X	}
+#ifdef ANDROID
+//    document_url="/mnt/sdcard/smil/Fruits-4shgb.smil";
+  LOGI("Document is %s", document_url);
+#endif // android
 	if (document_url == NULL) {
 		logger->error("Usage: %s <filename>|<url>", argv[0]);
 		exit(-1);
@@ -903,14 +956,39 @@ main (int argc, char*argv[]) {
 	}
 	gui->m_gui_player->play();
 	gui->sdl_loop();
+ #ifdef __ANDROID__
+//http://ambulantplayer.org/Demos/PanZoom/Fruits-4s.smil
+//	document_url=(char*)"/mnt/sdcard/smil/Fruits-4s.smil";
+//	document_url=(char*)"http://ambulantplayer.org/Demos/smilText/NYC-sT.smil";
+//	document_url=(char*)"http://ambulantplayer.org/Demos/PanZoom/Fruits-4s.smil";
+//	document_url=(char*)"http://ambulantplayer.org/Demos/VideoTests/VideoTests.smil";
+//	document_url=(char*)"http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil";
+//	document_url=(char*)"http://ambulantplayer.org/Demos/Flashlight/Flashlight-US.smil";
+//	document_url=(char*)"http://ambulantplayer.org/Demos/News/DanesV2-Desktop.smil";
+//	document_url=(char*)"http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil";
+//	document_url=(char*)"http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome-smiltext.smil";
+
+
+	LOGI("After SDL loop");
+#endif // android
 	prefs->save_preferences();
 	// delete logger; // logger will be deleted by loggers_manager called at exit()
 	gui->quit();
-	delete gui;
-
+  delete gui;
+#ifdef ANDROID
+  LOGI("Deleted gui");
+  gui = NULL;
+  
+#endif // ANDROID
 	SDL_Quit();
 
+#ifdef ANDROID
+  LOGI("SDL Quit done");
+  gui = NULL;
+  
+#endif // ANDROID
 	return exec_flag ? 0 : -1;
+//#endif//#ifndef  ANDROID_MAIN
 }
 
 #endif//WITH_SDL2

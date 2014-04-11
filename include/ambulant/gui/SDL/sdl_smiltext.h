@@ -22,16 +22,29 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
+#ifdef WITH_SDL2
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
 
+#ifdef WITH_SDL_PANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions we need to use
 #include <SDL_Pango.h>
+#elif defined (WITH_SDL_TTF) // WITH_SDL_PANGO
+#define FONT "Times 6"
+#ifndef ANDROID
+#define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
+#define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
+#define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
+#else // ANDROID
+#define DEFAULT_FONT_FILE1 "LiberationSans-Regular.ttf"
+#endif // ANDROID
+#define DEFAULT_FONT_HEIGHT 16
+#include "SDL_ttf.h"
+#endif // WITH_SDL_TTF
 
 namespace ambulant {
 
@@ -75,6 +88,7 @@ class sdl_smiltext_renderer :
 //TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
 	lib::timer::time_type m_epoch;
 
+#ifdef WITH_SDL_PANGO
 // pango specific stuff
 	void _sdl_set_color_attr(
 		PangoAttrList* pal, lib::color_t smiltext_color,
@@ -92,6 +106,24 @@ class sdl_smiltext_renderer :
 	PangoLayout* m_pango_layout;
 	PangoAttrList* m_bg_pango_attr_list;
 	PangoLayout* m_bg_layout;
+#elif defined (WITH_SDL_TTF) // WITH_SDL_PANGO
+  TTF_Font* m_ttf_font;
+  lib::color_t m_text_color;
+	int m_text_size;
+	const char* m_text_font;
+  int m_ttf_style;
+  void _sdl_smiltext_render_wrapped_ttf(
+    int L, 
+    int T, 
+    int W, 
+    int H, 
+    sdl_ambulant_window* saw,
+    const lib::point offset);
+  void _sdl_smiltext_render_text (
+    const char* text,
+    sdl_ambulant_window* saw, 
+    SDL_Rect *sdl_dst_rect);
+#endif
 
 	const color_t m_transparent; // needed for blending
 	const color_t m_alternative; // when m_transparent to be drawn
@@ -118,6 +150,6 @@ class sdl_smiltext_renderer :
 
 } // namespace ambulant
 
-#endif // defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
+#endif // defined(WITH_SDL2)
 
 #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H

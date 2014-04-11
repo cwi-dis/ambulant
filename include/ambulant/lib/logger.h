@@ -35,6 +35,18 @@
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/amstream.h"
 
+#ifdef ANDROID
+
+#include <android/log.h>
+
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL/Ambulant", __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "SDL/Ambulant", __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "SDL/Ambulant", __VA_ARGS__))
+#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, "SDL/Ambulant", __VA_ARGS__))
+#define LOGV(...) ((void)__android_log_print(ANDROID_LOG_VERBOSE, "SDL/Ambulant", __VA_ARGS__))
+
+#endif // ANDROID
+
 // Define the next to enable logging how video packets move through the
 // program, if AMBULANT_LOGFILE_LATENCY environment points to an output file.
 // #define LOGGER_VIDEOLATENCY "videolatency"
@@ -250,7 +262,7 @@ inline void logger::set_level(int level) {
 }
 
 inline bool logger::suppressed(int level) {
-	return level < m_level;
+	return false;
 }
 
 } // namespace lib

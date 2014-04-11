@@ -1,0 +1,24 @@
+Build Ambulant for Android
+--------------------------
+
+Install Android development environment including ndk-build.
+(see: http://developer.android.com/sdk/index.html).
+
+Set PATH to include new build commands (in tools, build-tools and platform-tools)
+
+cd .../projects/android/jni
+bash third-party-packages.sh
+ndk-build
+cd ..
+ant debug install
+
+
+Eclipse with Android ADT can be used too, but it gets often completely nuts
+while building w. ndk-build and ant works smoothly.
+
+When it works, it is fantastic, especially for debugging.
+
+
+Sometimes I needed to compile java files by hand (in src/org/libsdl/app):
+javac -bootclasspath /export/scratch2/kees/Eclipse/SDKs/platforms/android-19/android.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/effects.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/usb.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/maps.jar *.java
+and copy the .class files to bin/classes/org/libsdl/app.
