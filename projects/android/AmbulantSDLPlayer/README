@@ -1,3 +1,4 @@
+bg
 Build Ambulant for Android
 --------------------------
 
@@ -22,3 +23,18 @@ When it works, it is fantastic, especially for debugging.
 Sometimes I needed to compile java files by hand (in src/org/libsdl/app):
 javac -bootclasspath /export/scratch2/kees/Eclipse/SDKs/platforms/android-19/android.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/effects.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/usb.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/maps.jar *.java
 and copy the .class files to bin/classes/org/libsdl/app.
+
+
+When re-starting from scratch on Ubuntu-10.13-x86_64, I had to do (in addtition to the
+install instructions from the android developer website);
+sudo apt-get install libc6-i386
+sudo apt-get install lib32stdc++6 lib32gcc1 
+sudo apt-get install lib32z1
+
+In Eclipse->Help->Install New Software->Available Software Sites,
+add the following (assuming Eclipse version 'Juno' or 3.8):
+
+http://download.eclipse.org/releases/juno/
+http://download.eclipse.org/tools/cdt/releases/juno
+https://dl-ssl.google.com/android/eclipse/
+
