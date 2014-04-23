@@ -816,16 +816,17 @@ extern "C" {
 	  LOGI("native_init start");
       SDL_Android_Init(env, cls);
 
-	  LOGI("native_init start: calling SDL_SetMainReady()");
+	  LOGI("native_init: calling SDL_SetMainReady()");
       SDL_SetMainReady();
+	  LOGI("native_init: returned from SDL_SetMainReady()");
 
       /* Run the application code! */
       int status;
       char *argv[3];
       jboolean isCopy;
-      char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
+//    char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
       argv[0] = SDL_strdup("AmbulantPlayer_SDL");
-//     argv[1] =	str_path;
+//    argv[1] =	str_path;
 //    argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
 //    argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome.smil");
 //    argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
@@ -834,7 +835,7 @@ extern "C" {
       LOGI("argv[1]=%s", argv[1]);
       argv[2] = NULL;
       status = SDL_main(2, argv);
-      env->ReleaseStringUTFChars(path, str_path);
+//   env->ReleaseStringUTFChars(path, str_path);
 
       /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
       /* exit(status); */

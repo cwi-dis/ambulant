@@ -104,7 +104,7 @@ class sdl_gui_player :
 	ambulant::common::player* create_player(const char* filename);
 	bool user_event (const point &p, int what = 0);
 	// top level drawing window
-	void create_top_window ();
+	void create_top_window (const char* filename);
 	lib::point m_origin;
 	lib::size m_size;
 	lib::rect m_rect;

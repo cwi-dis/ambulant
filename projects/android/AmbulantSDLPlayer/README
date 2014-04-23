@@ -1,4 +1,4 @@
-bg
+
 Build Ambulant for Android
 --------------------------
 
@@ -19,6 +19,17 @@ while building w. ndk-build and ant works smoothly.
 
 When it works, it is fantastic, especially for debugging.
 
+- make sure you have in your PATH at earliest login time:
+  - android-sdk-linux/tools
+  - build-tools
+  - platform-tools
+  - tools
+  - android-ndk-r9d
+
+- set export=NDKROOT=<android-ndk-r9d>
+
+In Eclipse->Window->Preferences->Android_NDK, select proper NDK location
+
 
 Sometimes I needed to compile java files by hand (in src/org/libsdl/app):
 javac -bootclasspath /export/scratch2/kees/Eclipse/SDKs/platforms/android-19/android.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/effects.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/usb.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/maps.jar *.java
@@ -37,4 +48,10 @@ add the following (assuming Eclipse version 'Juno' or 3.8):
 http://download.eclipse.org/releases/juno/
 http://download.eclipse.org/tools/cdt/releases/juno
 https://dl-ssl.google.com/android/eclipse/
+
+Building with command line tools:
+
+ndk-build -j9 clean
+ndk-build -9
+ant debug install
 

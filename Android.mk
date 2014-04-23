@@ -1,3 +1,5 @@
+# This file is for temporary/experimental android builds.
+#
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -10,11 +12,11 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../expat/lib \
                     $(LOCAL_PATH)/include \
                     $(LOCAL_PATH)/$(SDL_PATH)/include \
                     $(LOCAL_PATH)/$(SDL_IMAGE_PATH)
-                     
+
 
 LOCAL_CPP_FEATURES := rtti exceptions
 
-LOCAL_CFLAGS := -DWITH_EXPAT -DWITH_SDL2 -DANDROID -DWITH_SDL_IMAGE -DWITH_SDL_TTF
+LOCAL_CFLAGS := -DWITH_EXPAT -DWITH_SDL2 -DANDROID -DWITH_SDL_IMAGE -DWITH_SDL_TTF  -fno-strict-aliasing 
 
 LOCAL_SHARED_LIBRARIES := ambulant SDL2 SDL2_image SDL2_ttf expat gnust_shared
 
@@ -96,6 +98,5 @@ LOCAL_SRC_FILES := src/libambulant/lib/gpaths.cpp \
 	src/player_sdl/sdl_gui.cpp \
 	src/player_sdl/sdl_gui_player.cpp \
 	src/player_sdl/unix_preferences.cpp
-		
 
 include $(BUILD_SHARED_LIBRARY)

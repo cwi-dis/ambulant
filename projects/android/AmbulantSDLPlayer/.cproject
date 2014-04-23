@@ -27,7 +27,7 @@
 					<folderInfo id="com.android.toolchain.gcc.986652305.1932998025" name="/" resourcePath="">
 						<toolChain id="com.android.toolchain.gcc.1879314001" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.896810133" isAbstract="false" superClass="com.android.targetPlatform"/>
-							<builder arguments="-j3 NDK_DEBUG=1" command="ndk-build" id="com.android.builder.391625993" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
+							<builder arguments="-j9 NDK_DEBUG=1" command="ndk-build" id="com.android.builder.391625993" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder">
 								<outputEntries>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="obj"/>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="libs"/>
@@ -46,7 +46,7 @@
 						<toolChain id="com.android.toolchain.gcc.1525683853" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc" unusedChildren="">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform" isAbstract="false" superClass="com.android.targetPlatform"/>
 							<tool id="com.android.gcc.compiler.692049760" name="Android GCC Compiler" superClass="com.android.gcc.compiler.564064104">
-								<option id="com.android.gcc.option.includePath.855372302" superClass="com.android.gcc.option.includePath" valueType="includePath"/>
+								<option id="com.android.gcc.option.includePath.855372302" superClass="com.android.gcc.option.includePath"/>
 								<inputType id="com.android.gcc.inputType.907096194" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
@@ -66,7 +66,7 @@
 					</folderInfo>
 					<fileInfo id="com.android.toolchain.gcc.986652305.370655317" name="sdl_gui.cpp" rcbsApplicability="disable" resourcePath="jni/ambulant/src/player_sdl/sdl_gui.cpp" toolsToInvoke="com.android.gcc.compiler.888188190.895993380">
 						<tool id="com.android.gcc.compiler.888188190.895993380" name="Android GCC Compiler" superClass="com.android.gcc.compiler.888188190">
-							<option id="com.android.gcc.option.includePath.2145402250" superClass="com.android.gcc.option.includePath" valueType="includePath"/>
+							<option id="com.android.gcc.option.includePath.2145402250" superClass="com.android.gcc.option.includePath"/>
 							<inputType id="com.android.gcc.inputType.2120693761" superClass="com.android.gcc.inputType"/>
 						</tool>
 					</fileInfo>
