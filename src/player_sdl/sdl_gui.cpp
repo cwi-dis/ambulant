@@ -35,7 +35,7 @@
 #include <android/log.h>
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL/Ambulant", __VA_ARGS__))
 #endif//__ANDROID__
-//X #include "sdl_logger.h"
+#include "sdl_logger.h"
 //X #include "sdl_renderer.h"
 
 #if  TBD
@@ -900,8 +900,8 @@ main (int argc, char*argv[]) {
 //X	sdl_gui *gui = new sdl_gui(argv[0], NULL);
 	// take log level from preferences
 //X	sdl_logger::set_sdl_logger_gui(gui);
-//X	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
-//X	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
+	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
+	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
 //X	// Print welcome banner
 //   	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 //	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);

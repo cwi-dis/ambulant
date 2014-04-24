@@ -77,11 +77,11 @@ AmbulantPlayer_sdl_SOURCES = \
 	sdl_gui.cpp \
 	sdl_gui_player.h \
 	sdl_gui.h \
+	sdl_logger.cpp \
+	sdl_logger.h \
 	unix_preferences.cpp \
 	unix_preferences.h
 
-##X	sdl_logger.cpp \
-##X	sdl_logger.h \
 ##X	sdl_mainloop.cpp \
 ##X	sdl_mainloop.h \
 ##X	sdl_settings.cpp \

@@ -95,6 +95,7 @@ LOCAL_SRC_FILES := src/libambulant/lib/gpaths.cpp \
 	src/libambulant/common/factory.cpp \
 	src/libambulant/common/video_renderer.cpp \
 	src/libambulant/common/smil_handler.cpp \
+	src/player_sdl/sdl_logger.cpp \
 	src/player_sdl/sdl_gui.cpp \
 	src/player_sdl/sdl_gui_player.cpp \
 	src/player_sdl/unix_preferences.cpp

@@ -142,7 +142,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			m_data_size);
 		m_text_storage[m_data_size] = '\0';
 	}
-	LOGI(
+	AM_DBG lib::logger::get_logger()->debug (
 		"sdl_text_renderer.redraw(%p):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
 		"font-family=(%s)",

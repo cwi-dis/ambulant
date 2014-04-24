@@ -219,12 +219,8 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
 	char buf[4096];
-#ifndef ANDROID
 	vsnprintf(buf, sizeof(buf), format, args);
 	log_cstr(level, buf);
-# else // ANDROID
-    LOGI (format, args);
-#endif // ANDROID
 }
 
 // Output format/hook
