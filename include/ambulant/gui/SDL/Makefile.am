@@ -6,7 +6,8 @@ library_include_HEADERS= \
 	sdl_gui.h \
 	sdl_image_renderer.h \
 	sdl_renderer.h \
-	sdl_smiltext.h \
+	sdl_pango_smiltext.h \
+	sdl_ttf_smiltext.h \
 	sdl_text_renderer.h \
 	sdl_transition.h \
 	sdl_video.h \

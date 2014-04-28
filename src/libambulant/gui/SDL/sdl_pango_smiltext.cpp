@@ -17,12 +17,12 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#if defined(WITH_SDL2)
+#if defined(WITH_SDL2) && !defined(WITH_SDL_TTF)
 
 //X #include "ambulant/gui/SDL/sdl_includes.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_renderer.h"
-#include "ambulant/gui/SDL/sdl_smiltext.h"
+#include "ambulant/gui/SDL/sdl_pango_smiltext.h"
 //X #include "ambulant/gui/SDL/sdl_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
@@ -30,13 +30,10 @@
 #if ! defined(WITH_SDL_PANGO)
 #include "ambulant/gui/none/none_area.h"
 #endif// ! defined(WITH_SDL_PANGO)
-#if defined(WITH_SDL_TTF)
-#include "SDL_ttf.h"
-#endif
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
-#define AM_DBG  if (0)
+#define AM_DBG if(0)
 #endif
 
 namespace ambulant {
@@ -56,12 +53,11 @@ create_sdl_smiltext_playable_factory(common::factories *factory, common::playabl
 {
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+#if defined(WITH_SDL_PANGO)
 #define SDL_SMILTEXT_RENDERER sdl_smiltext_renderer 
-#ifdef  WITH_SDL_TTF
-	TTF_Init();
-#endif // WITH_SDL_TTF
-#ifndef WITH_SDL_PANGO
-	lib::logger::get_logger()->trace("No full %s renderer available using SDL_Pango", "smilText");
+#else// ! defined(WITH_SDL_PANGO)
+#define SDL_SMILTEXT_RENDERER none::none_area_renderer
+	lib::logger::get_logger()->trace("No %s renderer available", "smilText");
 #endif// ! defined(WITH_SDL_PANGO)
 	return new common::single_playable_factory<
 		SDL_SMILTEXT_RENDERER,
@@ -70,6 +66,7 @@ create_sdl_smiltext_playable_factory(common::factories *factory, common::playabl
 		sdl_smiltext_playable_renderer_uri2,
 		sdl_smiltext_playable_renderer_uri2>(factory, mdp);
 }
+#if defined(WITH_SDL_PANGO)
 
 sdl_smiltext_renderer::sdl_smiltext_renderer(
 	playable_notification *context,
@@ -83,20 +80,13 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 	m_params(m_engine.get_params()),
 	m_epoch(0),
 // for SDL_Pango
-#ifdef WITH_SDL_PANGO
 	m_sdl_pango_context(NULL),
 	m_pango_attr_list(NULL),
 	m_pango_context(NULL),
 	m_pango_layout(NULL),
 	m_bg_pango_attr_list(NULL),
 	m_bg_layout(NULL),
-#endif//WITH_SDL_PANGO
-#ifdef  WITH_SDL_TTF
-	m_ttf_font (NULL),
-	m_text_size (DEFAULT_FONT_HEIGHT),
-	m_ttf_style (TTF_STYLE_NORMAL),
-	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this, true)),
-#endif//WITH_SDL_TTF
+
 	m_transparent(SDL_TRANSPARENT_COLOR),
 	m_alternative(SDL_ALTERNATIVE_COLOR),
 	m_alpha_media(1.0),
@@ -118,21 +108,12 @@ sdl_smiltext_renderer::sdl_smiltext_renderer(
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 #endif//TBD
-    m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size*1.1);
-	if (m_ttf_font == NULL) {
-  		AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE1, m_text_size*1.1, TTF_GetError());
-		return;
-	}
-	TTF_SetFontStyle(m_ttf_font, m_ttf_style);
-	TTF_SetFontOutline(m_ttf_font, 0);
-	TTF_SetFontKerning(m_ttf_font, 1);
-	TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
 }
 
 sdl_smiltext_renderer::~sdl_smiltext_renderer()
 {
 	m_engine.lock();
-#ifdef WITH_SDL_PANGO
+
 	if ( m_pango_attr_list != NULL) {
 		pango_attr_list_unref( m_pango_attr_list);
 		m_pango_attr_list = NULL;
@@ -153,43 +134,32 @@ sdl_smiltext_renderer::~sdl_smiltext_renderer()
 		g_object_unref(m_bg_layout);
 		m_bg_layout = NULL;
 	}
-#endif
 	m_engine.unlock();
 }
 
 void
 sdl_smiltext_renderer::start(double t)
 {
-  	m_lock.enter();
-
 	gui::sdl::sdl_renderer<common::renderer_playable>::start(t);
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 	m_motion_done = false;
-	m_layout_engine.start(t);
 	renderer_playable::start(t);
-	m_layout_engine.set_dest_rect(m_rect = m_dest->get_rect());
 	m_context->started(m_cookie);
-
-	m_lock.leave();
 }
 
 void
 sdl_smiltext_renderer::seek(double t)
 {
-	m_lock.enter();
 	m_engine.seek(t);
 	//renderer_playable::seek(t);
-	m_lock.leave();
 }
 
 bool
 sdl_smiltext_renderer::stop()
 {
-	m_lock.enter();
 	m_engine.stop();
 	renderer_playable::stop();
-	m_lock.leave();
 	m_context->stopped(m_cookie);
 	return true;
 }
@@ -197,9 +167,7 @@ sdl_smiltext_renderer::stop()
 void
 sdl_smiltext_renderer::marker_seen(const char *name)
 {
-	m_lock.enter();
 	m_context->marker_seen(m_cookie, name);
-	m_lock.leave();
 }
 
 
@@ -207,9 +175,6 @@ void
 sdl_smiltext_renderer::smiltext_changed()
 {
 	m_engine.lock();
-#ifdef WITH_SDL_TTF
-	m_layout_engine.smiltext_changed();
-#endif//WITH_SDL_TTF
 	if (m_engine.is_changed()) {
 		m_is_changed = true;
 	}
@@ -221,7 +186,6 @@ void
 sdl_smiltext_renderer::_sdl_smiltext_changed()
 {
 AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
-#ifdef WITH_SDL_PANGO
 #ifdef  GDK_PANGO
 	if ( ! m_pango_context) {
 		// initialize the pango context, layout...
@@ -309,7 +273,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 		m_bg_pango_attr_list = pango_attr_list_new();
 	}
 #endif//TBD
-#endif //WITH_SDL_PANGO
 	if (m_is_changed) {
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
@@ -320,7 +283,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 			i = m_engine.begin();
 			smil2::smiltext_align align = i->m_align;
 			if (align != m_align) {
-#ifdef WITH_SDL_PANGO
 				switch (align) {
 				default:
 				case smil2::sta_left:
@@ -345,7 +307,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 #endif//TBD
 					break;
 				}
-#endif // WITH_SDL_PANGO
 				m_align = align;
 			}
 			m_needs_conditional_space = false;
@@ -358,7 +319,7 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 		}
 		while (i != m_engine.end()) {
 			// Add the new characters
-			int start_index = m_text_storage.size();
+			gint start_index = m_text_storage.size();
 			switch (i->m_command) {
 			default:
 				assert(0);
@@ -417,25 +378,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 				break;
 			}
 			// Set font attributes
-#ifdef WITH_SDL_TTF
-      m_text_size = i->m_font_size;
-      m_text_font = i->m_font_families[0].c_str();
-      m_text_color = i->m_color == m_transparent ? m_alternative : i->m_color;
-      switch (i->m_font_style) {
-      case smil2::sts_reverse_oblique:
-      case smil2::sts_oblique:
-      case smil2::sts_italic:
-        m_ttf_style |= TTF_STYLE_ITALIC;
-        break;
-      default: break;
-      }
-      if (i->m_font_weight == smil2::stw_bold) {
-        m_ttf_style |= TTF_STYLE_BOLD;
-      }
-      //lib::logger::get_logger()->debug("Object %p : text size %.2f and font %s set for %s", this, m_text_size, m_text_font, m_text_storage.c_str());    
-#endif
-
-#ifdef WITH_SDL_PANGO
 			_sdl_set_font_attr(m_pango_attr_list,
 				i->m_font_families[0].c_str(),
 				i->m_font_style,
@@ -508,7 +450,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 				pango_layout_context_changed(m_bg_layout);
 			}
 #endif//TBD
-#endif //WITH_SDL_PANGO
 			i++;
 		}
 		m_engine.done();
@@ -521,25 +462,21 @@ AM_DBG	lib::logger::get_logger()->debug("sdl_smiltext_changed(%p), m_text_storag
 #ifdef  TBD
 #endif//TBD
 
-#if defined(WITH_SDL_PANGO)
 void
 sdl_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
-	m_engine.lock();
-	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	bool changed = m_is_changed;
-	if (m_is_changed) {
-		// compute the changes
-		_sdl_smiltext_changed();
-		m_is_changed = false;
-	}
 #ifdef  TBD
 #endif//TBD
 	PangoRectangle ink_rect;
 	PangoRectangle log_rect;
 
-	if (changed) {
+	m_engine.lock();
+	const rect &r = m_dest->get_rect();
+	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	if (m_is_changed) {
+		// compute the changes
+		_sdl_smiltext_changed();
+		m_is_changed = false;
 		// get the extents of the lines
 		pango_layout_set_width(m_pango_layout, m_wrap ? r.w*PANGO_SCALE : -1);
 #ifdef  TBD
@@ -655,34 +592,14 @@ sdl_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_context->stopped(m_cookie);
 	}
 	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw: logical_origin(%d,%d) log_rect(%d,%d) r(%d,%d)", m_origin.x, m_origin.y, m_log_rect.w, m_log_rect.h, r.w, r.h);
+
 	_sdl_smiltext_render(r, m_origin,(ambulant_sdl_window*)window);
 #ifdef  TBD
 #endif//TBD
 	m_engine.unlock();
 }
-#endif//WITH_SDL_PANGO
 
-#ifdef WITH_SDL_TTF
-void
-sdl_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
-	m_lock.enter();
-	m_window = (ambulant_sdl_window*) window;
 
-	lib::rect r = dirty;
-	
-	// Translate smiltext region dirty rect. to final viewport coordinates 
-	//lib::point pt = m_dest->get_global_topleft();
-	//r.translate(pt);
-		
-	m_layout_engine.redraw(r);
-	bool finished = m_layout_engine.is_finished();
-	m_lock.leave();
-	if (finished)
-		m_context->stopped(m_cookie);
-}
-#endif//WITH_SDL_TTF
-
-#ifdef WITH_SDL_PANGO
 // private methods
 void
 sdl_smiltext_renderer::_sdl_set_font_attr (PangoAttrList* pal,
@@ -755,274 +672,6 @@ sdl_smiltext_renderer::_sdl_set_color_attr(PangoAttrList* pal,
 #ifdef  TBD
 #endif//TBD
 
-#endif // WITH_SDL_PANGO
-
-#ifdef WITH_SDL_TTF
-
-smil2::smiltext_metrics
-sdl_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun)
-{
-	int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0;
-
-	if (strun.m_data.length() != 0) {
-//TBD		_sdl_smiltext_set_font (strun);
-		ascent	= TTF_FontAscent(m_ttf_font);
-		descent	= TTF_FontDescent(m_ttf_font);
-		line_spacing = TTF_FontLineSkip(m_ttf_font);
-		TTF_SizeText(m_ttf_font, strun.m_data.c_str(), &width, &height);
-	}
-	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing);
-}
-
-void
-sdl_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r)
-{
-
-	AM_DBG lib::logger::get_logger()->debug("sdl_render_smiltext(): command=%d data=%s color=0x%x bg_color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color,strun.m_bg_color);
-	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
-	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
-	const common::region_info *ri = m_dest->get_info();
-	if (ri) {
-		alpha_media = ri->get_mediaopacity();
-		alpha_media_bg = ri->get_mediabgopacity();
-#ifdef TBD
-		m_bgopacity = ri->get_bgopacity();
-		if (ri->is_chromakey_specified()) {
-			alpha_chroma = ri->get_chromakeyopacity();
-			lib::color_t chromakey = ri->get_chromakey();
-			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);   
-		}
-#endif//TBD
-	}
-#ifdef TBD
-	// prepare for blending
-	QPixmap* bg_pixmap = NULL;
-	QPixmap* tx_pixmap = NULL;
-#endif//TBD
-	lib::rect rct(r); // rct encloses leading blank and word
-	AM_DBG lib::logger::get_logger()->debug("sdl_render_smiltext(): data=%s r=L=%d,T=%d,W=%d,H=%d", strun.m_data.c_str(),r.x,r.y,r.w,r.h);
-	const lib::point p = m_dest->get_global_topleft();
-	int L = rct.left()+p.x,
-	    T = rct.top()+p.y,
-	    W = rct.width(),
-	    H = rct.height();
-
-	if (W == 0 || H == 0)
-		return; // cannot render anything
-	AM_DBG lib::logger::get_logger()->debug("sdl_render_smiltext():p=(%d,%d)  L=%d,T=%d,W=%d,H=%d",p.x,p.y,L,T,W,H);
-#ifdef TBD
-	if (m_blending) {
-		// create pixmaps for blending
-		if ( ! strun.m_bg_transparent) {
-			/*** optimization suggestion:
-			     maybe it is possible for blending to render
-			     everything in one extra pixmap, then first
-			     blend with text background color, next blend
-			     with text color, without creating bg_ pixmap
-			     and new_pixmap (i.e. directly on the screen)
-			     This should result in far less round trips to
-			     the X-server.
-			***/
-		        bg_pixmap = new QPixmap(W,H);
-			assert( bg_pixmap );
-			bg_pixmap->fill(strun.m_bg_color);
-		}
-		tx_pixmap = new QPixmap(W,H);
-		assert( tx_pixmap);
-		tx_pixmap->fill(m_sdl_transparent);
-		if ( ! m_blending)
-			alpha_media = alpha_chroma = 1.0;
-	}
-#endif//TBD
-//TBD	_sdl_smiltext_set_font(strun);
-#ifdef TBD
-	QPainter tx_paint, bg_paint;
-#endif//TBD
-	lib::color_t text_color = strun.m_color;
-	lib::color_t bg_color = strun.m_bg_color;
-	if (ri && ri->is_chromakey_specified()) {
-		if (color_t_in_range (text_color, chroma_low, chroma_high))
-			alpha_media = alpha_chroma;
-		if (color_t_in_range (bg_color, chroma_low, chroma_high))
-			alpha_media_bg = alpha_chroma;
-	}
-	SDL_Color sdl_color = {redc(text_color), greenc(text_color), bluec(text_color), 1};
-	SDL_Color sdl_bg_color= {redc(bg_color), greenc(bg_color), bluec(bg_color), 1 };
-	
-#ifdef TBD
-	if (m_blending) {
-		tx_paint.begin( tx_pixmap );
-		if ( ! strun.m_bg_transparent) {
-			tx_paint.setBackgroundMode(Qt::OpaqueMode);
-			tx_paint.setBackgroundColor(m_sdl_transparent);
-		}
-		if ( ! strun.m_transparent) {
-			tx_paint.setPen(sdl_color);
-		}
-		
-		if (bg_pixmap) {
-			bg_paint.begin( bg_pixmap );
-			bg_paint.setFont(m_font);
-			bg_paint.setBrush(sdl_bg_color);
-			bg_paint.setPen(Qt::NoPen);
-			bg_paint.drawRect(0,0,W,H);
-			bg_paint.setPen(sdl_color);
-			// Qt::AlignLeft|Qt::AlignTop
-			// Qt::AlignAuto
-			bg_paint.drawText(0,0,W,H, Qt::AlignAuto, strun.m_data);
-			bg_paint.flush();
-			bg_paint.end();
-		}
-	} else {
-		// if possible, paint directly into the final destination
-		tx_paint.begin( m_window->get_ambulant_pixmap() );
-	}	
-	tx_paint.setFont(m_font);
-	if ( ! strun.m_bg_transparent) {
-		tx_paint.setBrush(sdl_bg_color);
-		tx_paint.setPen(Qt::NoPen);
-		tx_paint.drawRect(L,T,W,H);
-	}
-	int flags = Qt::AlignAuto;
-	tx_paint.setPen(sdl_color);
-	if (m_blending)
-		tx_paint.drawText(0,0,W,H,flags, strun.m_data);
-	else {
-		tx_paint.drawText(L,T,W,H, flags, strun.m_data);
-	}
-	tx_paint.flush();
-	tx_paint.end();
-	
-	if (m_blending) {
-		QImage tx_image = tx_pixmap->convertToImage();
-		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
-		AM_DBG DUMPIMAGE(&screen_img, "sc");
-
-		AM_DBG DUMPIMAGE(&tx_image, "tx");
-
-		lib::rect rct0 (lib::point(0, 0), lib::size(W, H));
-
-		if (bg_pixmap) {
-			QImage bg_image = bg_pixmap->convertToImage();
-			AM_DBG DUMPIMAGE(&bg_image, "bg");
-			sdl_image_blend (screen_img, rct, bg_image, rct0, 
-					alpha_media_bg, 0.0,
-//XX					chroma_low, chroma_high);
-					bg_color, bg_color);
-			delete bg_pixmap;
-		}
-		sdl_image_blend (screen_img, rct, tx_image, rct0, 
-				alpha_media, 0.0,
-//XX				chroma_low, chroma_high);
-				text_color, text_color);
-		/*** see optimization suggestion above.
-		     also, it should not be necessary to copy
-		     the whole image, only the rect (L,T,W,H)
-		     is sufficient (copyBlt), blend it, then
-		     bitBlt() it back after blending.
-		***/
-		QPixmap new_pixmap(W,H);
-		new_pixmap.convertFromImage(screen_img);
-		AM_DBG DUMPPIXMAP(&new_pixmap, "nw");
-		bitBlt(m_window->get_ambulant_pixmap(), L, T,
-		       &new_pixmap, L, T, W, H);	
-		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "rs");
-		delete tx_pixmap;
-	}
-#endif//TBD
-	m_text_storage = strun.m_data.c_str();
-	m_text_color = text_color;
-	m_text_bg_color = bg_color;
-	SDL_Rect sdl_rect = { L, T, W, H};
-	SDL_Color sdl_text_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
-	SDL_Surface* text_surface = TTF_RenderText_Blended(m_ttf_font, strun.m_data.c_str(), sdl_text_color);
-	if (text_surface == NULL) {
-        AM_DBG lib::logger::get_logger()->error("%s(%p): Failed rendering %s: %s ",
-   					__PRETTY_FUNCTION__,this, strun.m_data.c_str(), TTF_GetError());
-	} else {
-		sdl_ambulant_window* saw = m_window->get_sdl_ambulant_window();
-		saw->copy_to_sdl_surface (text_surface, NULL, &sdl_rect, 255);
-		SDL_FreeSurface (text_surface);
-	}
-//X	_sdl_smiltext_render_wrapped_ttf( L, T, W, H, m_window->get_sdl_ambulant_window(), /*const lib::point offset*/ lib::point());
-}
-
-const lib::rect&
-sdl_smiltext_renderer::get_rect()
-{
-	return m_dest->get_rect();
-}
-
-void
-sdl_smiltext_renderer::smiltext_stopped() {
-	m_context->stopped(m_cookie);
-}
-
-void 
-sdl_smiltext_renderer::_sdl_smiltext_render_text (
-    const char* text,
-    sdl_ambulant_window* saw, 
-    SDL_Rect *sdl_dst_rect
-  )
-{
-  if (strcmp(text,"") == 0) // skip empty string
-	return;
-  SDL_Surface *text_surface;
-  SDL_Color color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
-  if (!(text_surface = TTF_RenderText_Blended(m_ttf_font, text,  color))) {
-        AM_DBG lib::logger::get_logger()->debug("_sdl_smiltext_render_wrapped_ttf(%p): Failed rendering %s ", this, text);
-  } else {
-    saw->copy_to_sdl_surface (text_surface, NULL, sdl_dst_rect, 255 );
-  }
-  if (text_surface) {
-    SDL_FreeSurface(text_surface);
-  }
-}
-void 
-sdl_smiltext_renderer::_sdl_smiltext_render_wrapped_ttf(
-    int L, 
-    int T, 
-    int W, 
-    int H, 
-    sdl_ambulant_window* saw,
-    const lib::point offset
-  )
-{
-  uint text_width = W - m_text_size;
-  int current_width = 0;
-  std::string temp( m_text_storage );
-  if (m_wrap) {
-    temp += " ";
-    int n = 0, p = 0, lines = 0;
-    
-    while ( n!= -1)
-    {
-      std::string strSub;
-      n = temp.find( " ", p + 1 );		// -- Find the next " "
-      TTF_SizeText(m_ttf_font, temp.substr(0,n).c_str(), &current_width,NULL);
-      if( n==-1 || current_width >= text_width ) {
-        strSub = temp.substr( 0, p );	// -- sets strSub to the of the current line
-        SDL_Rect sdl_dst_rect = {L-offset.x, T -offset.y + TTF_FontLineSkip(m_ttf_font) * lines++ , W, H};
-        _sdl_smiltext_render_text(strSub.c_str(), saw, &sdl_dst_rect);
-        if( n != -1 ){
-          temp = temp.substr( p+1, std::string::npos );
-        }
-        p = 0;
-      } else {
-        p = n;
-      }
-      
-    }
-  } else {
-     SDL_Rect sdl_dst_rect = {L-offset.x, T-offset.y, W, H};
-//     _sdl_smiltext_render_text(m_text_storage.c_str(), saw, &sdl_dst_rect);
-  }
-  
-}
-#endif
-
 void
 sdl_smiltext_renderer::_sdl_smiltext_render(
 	const lib::rect r, 
@@ -1033,14 +682,9 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	const lib::point p = m_dest->get_global_topleft();
 	const char* data = m_text_storage.c_str();
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
-	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
-  
+
 	AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_render(%p): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
-	if ( ! (
-#ifdef WITH_SDL_PANGO
-    m_pango_layout && 
-#endif // WITH_SDL_PANGO
-    window))
+	if ( ! (m_pango_layout && window))
 		return; // nothing to do
 
 	int L = r.left()+p.x,
@@ -1167,7 +811,7 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 			m_pango_layout);
 	}
 	g_object_unref (G_OBJECT (gc));
-#elif defined (WITH_SDL_PANGO)//GDK_PANGO
+#else //GDK_PANGO
 	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
 	SDL_Surface* sdl_surface = SDLPango_CreateSurfaceDraw (m_sdl_pango_context);
 	SDLPango_Draw(m_sdl_pango_context, sdl_surface, 0, 0);
@@ -1175,25 +819,12 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	L -= offset.x;
 	T -= offset.y;
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };	
+	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
 	saw->copy_to_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 	SDL_FreeSurface(sdl_surface);
 #endif// ! GDK_PANGO
-
-#ifdef WITH_SDL_TTF
-	if (m_ttf_font == NULL) {
-        m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size*1.1);
-		if (m_ttf_font == NULL) {
-			AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE1, m_text_size*1.1, TTF_GetError());
-			return;
-		}
-        TTF_SetFontStyle(m_ttf_font, m_ttf_style);
-		TTF_SetFontOutline(m_ttf_font, 0);
-		TTF_SetFontKerning(m_ttf_font, 1);
-		TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
-	}
-	_sdl_smiltext_render_wrapped_ttf (L, T, W, H, saw, offset);
-#endif // WITH_SDL_TTF
 }
+#endif// defined(WITH_SDL_PANGO)
 
 } // namespace sdl
 
@@ -1201,4 +832,4 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 
 } //namespace ambulant
 
-#endif//WITH_SDL2
+#endif // defined(WITH_SDL2) && !defined(WITH_SDL_TTF)

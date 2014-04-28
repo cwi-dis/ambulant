@@ -22,29 +22,16 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
 
-#ifdef WITH_SDL_PANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions we need to use
 #include <SDL_Pango.h>
-#elif defined (WITH_SDL_TTF) // WITH_SDL_PANGO
-#define FONT "Times 6"
-#ifndef ANDROID
-#define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
-#define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
-#define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
-#else // ANDROID
-#define DEFAULT_FONT_FILE1 "LiberationSans-Regular.ttf"
-#endif // ANDROID
-#define DEFAULT_FONT_HEIGHT 16
-#include "SDL_ttf.h"
-#endif // WITH_SDL_TTF
 
 namespace ambulant {
 
@@ -57,9 +44,6 @@ namespace sdl {
 
 class sdl_smiltext_renderer :
 	public sdl_renderer<renderer_playable>,
-#ifdef WITH_SDL_TTF
-	public smil2::smiltext_layout_provider,
-#endif // WITH_SDL_TTF
 	public smil2::smiltext_notification
 {
   public:
@@ -72,20 +56,14 @@ class sdl_smiltext_renderer :
 		common::playable_factory_machdep *mdp);
 	~sdl_smiltext_renderer();
 
+	void redraw_body(const rect &dirty, gui_window *window);
+
 	void start(double t);
 	void seek(double t);
 	bool stop();
 	// Callback from the engine
 	void smiltext_changed();
 	void marker_seen(const char *name);
-	void redraw_body(const rect &dirty, gui_window *window);
-#ifdef WITH_SDL_TTF
-	// smiltext_layout_provider called from smiltext_layout_engine
-	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& str);
-	void render_smiltext(const smil2::smiltext_run& str, const lib::rect& r);
-	void smiltext_stopped();
-	const lib::rect& get_rect();
-#endif//WITH_SDL_TTF
   private:
 	void _sdl_smiltext_changed();
 	void _sdl_smiltext_render(const lib::rect r, const lib::point offset,
@@ -97,7 +75,6 @@ class sdl_smiltext_renderer :
 //TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
 	lib::timer::time_type m_epoch;
 
-#ifdef WITH_SDL_PANGO
 // pango specific stuff
 	void _sdl_set_color_attr(
 		PangoAttrList* pal, lib::color_t smiltext_color,
@@ -115,27 +92,6 @@ class sdl_smiltext_renderer :
 	PangoLayout* m_pango_layout;
 	PangoAttrList* m_bg_pango_attr_list;
 	PangoLayout* m_bg_layout;
-#endif//WITH_SDL_PANGO
-#ifdef WITH_SDL_TTF
-	// ttf specific stuff
-	lib::rect m_rect;
-	TTF_Font* m_ttf_font;
-	lib::color_t m_text_color;
-	lib::color_t m_text_bg_color;
-	int m_text_size;
-	const char* m_text_font;
-	int m_ttf_style;
-	void _sdl_smiltext_render_wrapped_ttf(
-    int L, 
-    int T, 
-    int W, 
-    int H, 
-    sdl_ambulant_window* saw,
-    const lib::point offset);
-	void _sdl_smiltext_render_text (const char* text, sdl_ambulant_window* saw, SDL_Rect *sdl_dst_rect);
-	smil2::smiltext_layout_engine m_layout_engine;
-	ambulant_sdl_window* m_window;
-#endif//WITH_SDL_TTF
 
 	const color_t m_transparent; // needed for blending
 	const color_t m_alternative; // when m_transparent to be drawn
@@ -154,7 +110,6 @@ class sdl_smiltext_renderer :
 	lib::point m_start;
 	lib::point m_origin;
 	lib::rect  m_log_rect;
-	critical_section m_lock;
 };
 
 } // namespace sdl
@@ -163,6 +118,6 @@ class sdl_smiltext_renderer :
 
 } // namespace ambulant
 
-#endif // defined(WITH_SDL2)
+#endif // defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 
 #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H
