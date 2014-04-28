@@ -829,6 +829,19 @@ third_party_packages={
                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
+        TPP("SDL2_ttf", # SDL2 interface for FreeType2 glyph rendering system
+            url="https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz",
+            url2="SDL2_ttf-2.0.12.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0.12 SDL2_ttf",
+            buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
+                "cd SDL2_ttf-2.0.12 && "
+                "%s && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
+            ),
+
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
             url2="gettext-0.18.2.tar.gz",
