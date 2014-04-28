@@ -82,9 +82,14 @@ sdl_ttf_smiltext_renderer::sdl_ttf_smiltext_renderer(
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 #endif//TBD
-    m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size*1.1);
+	char* default_fontfile = (char*) DEFAULT_FONT_FILE1;
+	m_ttf_font = TTF_OpenFont(default_fontfile, m_text_size*1.1);
 	if (m_ttf_font == NULL) {
-  		AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE1, m_text_size*1.1, TTF_GetError());
+		default_fontfile = (char*)  DEFAULT_FONT_FILE2;
+		m_ttf_font = TTF_OpenFont(default_fontfile, m_text_size*1.1);
+	}
+	if (m_ttf_font == NULL) {
+  		AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", default_fontfile, m_text_size*1.1, TTF_GetError());
 		return;
 	}
 	TTF_SetFontStyle(m_ttf_font, m_ttf_style);
@@ -171,7 +176,7 @@ sdl_ttf_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun
 	int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
 
 	if (strun.m_data.length() != 0) {
-//TBD	_sdl_smiltext_set_font (strun);
+		_sdl_ttf_smiltext_set_font (strun);
 		ascent	= TTF_FontAscent(m_ttf_font);
 		descent	= TTF_FontDescent(m_ttf_font);
 		line_spacing = TTF_FontLineSkip(m_ttf_font);
@@ -356,9 +361,9 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 	}
 } // render_smiltext
 
-#ifdef TBD
 void
 sdl_ttf_smiltext_renderer::_sdl_ttf_smiltext_set_font(const smil2::smiltext_run& strun) {
+#ifdef TBD
 	const char *fontname = strun.m_font_families[0].c_str();
 	m_font = QFont(QApplication::font());
 	if (fontname) {
@@ -366,35 +371,35 @@ sdl_ttf_smiltext_renderer::_sdl_ttf_smiltext_set_font(const smil2::smiltext_run&
 	} else {
 	        m_font.setFamily(m_font.defaultFamily());
 	}
+#endif//TBD
+	int ttf_font_style = TTF_STYLE_NORMAL;
 	switch(strun.m_font_style) {
 		default:
 		case smil2::sts_normal:
 		// use default style
 			break;
 		case smil2::sts_italic:
-			m_font.setItalic(true);
+			ttf_font_style |= TTF_STYLE_ITALIC;
 			break;
 		case smil2::sts_oblique:
 		case smil2::sts_reverse_oblique:
 		// no (reverse) oblique fonts available in Sdl_Ttf 3.3
-			m_font.setItalic(true);
+			ttf_font_style |= TTF_STYLE_ITALIC;
 			break;
 	}
-	int weight = QFont::Normal;
 	switch(strun.m_font_weight) {
 		default:
 		case smil2::stw_normal:
 			break;
 		case smil2::stw_bold:
-		  weight = QFont::Bold;
+			ttf_font_style |= TTF_STYLE_BOLD;
 			break;
 	}
-	m_font.setWeight(weight);
-	m_font.setPixelSize(strun.m_font_size);
-	if (m_blending)
-		m_font.setStyleStrategy(QFont::NoAntialias);
+	TTF_SetFontStyle(m_ttf_font, ttf_font_style);
+//TBD	TTF_SetTextSize((strun.m_font_size);
+//TBD	if (m_blending)
+//TBD		m_font.setStyleStrategy(QFont::NoAntialias);
 } // _sdl_ttf_smiltext_set_font
-#endif//TBD
 
 void
 sdl_ttf_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
