@@ -54,7 +54,7 @@ LOCAL_SRC_FILES := src/libambulant/lib/gpaths.cpp \
 	src/libambulant/gui/none/none_video_renderer.cpp \
 	src/libambulant/gui/none/none_area.cpp \
 	src/libambulant/gui/SDL/sdl_audio.cpp \
-	src/libambulant/gui/SDL/sdl_smiltext.cpp \
+	src/libambulant/gui/SDL/sdl_ttf_smiltext.cpp \
     src/libambulant/gui/SDL/sdl_video.cpp \
 	src/libambulant/gui/SDL/sdl_text_renderer.cpp \
 	src/libambulant/gui/SDL/sdl_fill.cpp \
