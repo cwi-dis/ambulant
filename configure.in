@@ -6,7 +6,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.18.1])
 AM_INIT_AUTOMAKE
 # Is this better? m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
-AM_SILENT_RULES([yes])
+AM_SILENT_RULES([no])
 AM_PATH_PYTHON
 AMBULANT_VERSION=2.5
 
@@ -584,7 +584,7 @@ if $test_sdl_video; then
 			SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL_Pango`"
 			SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
 		else
-			# For static text we can make do with SDL_ttf
+			# Alternatively SDL2_ttf can be used instead of SDL_Pango
 			PKG_CHECK_MODULES(SDL2_ttf, [SDL2_ttf >= 2.0.0], test_sdl_ttf=true, test_sdl_ttf=false)
 			if test "x$test_sdl_ttf" = "xtrue" ; then
 				SDL_CFLAGS="$SDL_CFLAGS `pkg-config --cflags SDL2_ttf`"
@@ -1115,7 +1115,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with SDL2_ttf:	    ${test_sdl_ttf}
+    Build with SDL2_ttf:		    ${test_sdl_ttf}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}
