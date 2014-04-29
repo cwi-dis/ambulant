@@ -52,6 +52,9 @@
 #endif // ANDROID
 #define DEFAULT_FONT_HEIGHT 16
 #include "SDL_ttf.h"
+#define MIN_FONT_SIZE 8
+#define MAX_FONT_SIZE 20
+#define N_FONT_SIZES (MAX_FONT_SIZE-MIN_FONT_SIZE)
 
 namespace ambulant {
  
@@ -98,8 +101,11 @@ class sdl_ttf_smiltext_renderer :
 	void smiltext_changed(bool);
 
 	// internal helper functions
-	void _sdl_ttf_smiltext_set_font(const smil2::smiltext_run& run);
-
+	void _open_font(const char* font_filename, int pt_size, TTF_Font** fp);
+	void _open_font(int pt_size, TTF_Font** fp);
+	void _close_font(TTF_Font** fp);
+	void _set_font_style(const smil2::smiltext_run& run);
+	void _set_font_size (int font_size);
 	// instance variables
 //XX?	net::datasource_factory *m_df;
 	ambulant_sdl_window* m_window;
@@ -108,7 +114,9 @@ class sdl_ttf_smiltext_renderer :
 	// Sdl related variables
 	// ttf specific stuff
 	rect		m_rect;
-	TTF_Font*	m_ttf_font;
+	char*		m_ttf_font_filename;
+	TTF_Font*	m_ttf_fonts[N_FONT_SIZES]; // current font list, one for each size
+	TTF_Font*	m_ttf_font; // current font, one ot the above
 	color_t		m_text_color; //XX?
 	color_t		m_text_bg_color; //XX?
 	int			m_text_size;

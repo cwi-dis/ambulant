@@ -72,6 +72,8 @@ sdl_ttf_smiltext_renderer::sdl_ttf_smiltext_renderer(
 #endif//TBD
 	m_bgopacity(1.0),
 	m_blending(false),
+	m_ttf_font_filename(NULL),
+	m_ttf_font(NULL),
 	m_text_size (DEFAULT_FONT_HEIGHT),
 	m_ttf_style (TTF_STYLE_NORMAL),
 	sdl_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
@@ -82,25 +84,31 @@ sdl_ttf_smiltext_renderer::sdl_ttf_smiltext_renderer(
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 #endif//TBD
-	char* default_fontfile = (char*) DEFAULT_FONT_FILE1;
-	m_ttf_font = TTF_OpenFont(default_fontfile, m_text_size*1.1);
-	if (m_ttf_font == NULL) {
-		default_fontfile = (char*)  DEFAULT_FONT_FILE2;
-		m_ttf_font = TTF_OpenFont(default_fontfile, m_text_size*1.1);
+	for (int i = 0; i < N_FONT_SIZES; i++) {
+		m_ttf_fonts[i] = 0;
 	}
+	char* default_font_file = (char *) DEFAULT_FONT_FILE1;
+	_open_font(default_font_file, DEFAULT_FONT_HEIGHT, &m_ttf_font);
+#ifndef ANDROID
+	default_font_file = (char *) DEFAULT_FONT_FILE2;
 	if (m_ttf_font == NULL) {
-  		AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", default_fontfile, m_text_size*1.1, TTF_GetError());
+		_open_font(default_font_file, DEFAULT_FONT_HEIGHT, &m_ttf_font);
+	}
+#endif// ! ANDROID
+	if (m_ttf_font == NULL) {
+  		AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", default_font_file, m_text_size, TTF_GetError());
 		return;
 	}
-	TTF_SetFontStyle(m_ttf_font, m_ttf_style);
-	TTF_SetFontOutline(m_ttf_font, 0);
-	TTF_SetFontKerning(m_ttf_font, 1);
-	TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
+	m_text_size = 14;
+	m_ttf_fonts[m_text_size - MIN_FONT_SIZE] = m_ttf_font;
 } // sdl_ttf_smiltext_renderer
 
 sdl_ttf_smiltext_renderer::~sdl_ttf_smiltext_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~sdl_ttf_smiltext_renderer(0x%x)", this);
 	m_lock.enter();
+	for (int i = 0; i < N_FONT_SIZES; i++) {
+		_close_font(&m_ttf_fonts[i]);
+	}
 	TTF_Quit();
 	m_lock.leave();
 } // ~sdl_ttf_smiltext_renderer
@@ -176,13 +184,14 @@ sdl_ttf_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun
 	int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
 
 	if (strun.m_data.length() != 0) {
-		_sdl_ttf_smiltext_set_font (strun);
+		_set_font_style (strun);
 		ascent	= TTF_FontAscent(m_ttf_font);
 		descent	= TTF_FontDescent(m_ttf_font);
 		line_spacing = TTF_FontLineSkip(m_ttf_font);
 		TTF_SizeText(m_ttf_font, strun.m_data.c_str(), &width, &height);
 	}
-	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing);
+// SDL_ttf does not support multiline rendering (doc. TTF_FontHeight()), add 1px.
+	return smil2::smiltext_metrics(ascent, descent+1, height, width, line_spacing);
 }
 
 const lib::rect&
@@ -250,7 +259,6 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 		if ( ! m_blending)
 			alpha_media = alpha_chroma = 1.0;
 	}
-	_sdl_ttf_smiltext_set_font(strun);
 
 	QPainter tx_paint, bg_paint;
 #endif//TBD
@@ -264,6 +272,7 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 	}
 	SDL_Color sdl_ttf_color = {redc(text_color), greenc(text_color), bluec(text_color)};
 	SDL_Color sdl_ttf_bg_color = {redc(bg_color), greenc(bg_color), bluec(bg_color)};
+	_set_font_style(strun);
 
 #ifdef TBD	
 	if (m_blending) {
@@ -348,21 +357,46 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 #endif//TBD
 	m_text_color = text_color;
 	m_text_bg_color = bg_color;
-	SDL_Rect sdl_rect = { L, T, W, H};
+	SDL_Rect sdl_dst_rect = { L, T, W, H};
 	SDL_Color sdl_text_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
 	SDL_Surface* text_surface = TTF_RenderText_Blended(m_ttf_font, strun.m_data.c_str(), sdl_text_color);
 	if (text_surface == NULL) {
         AM_DBG lib::logger::get_logger()->error("%s(%p): Failed rendering %s: %s ",
    					__PRETTY_FUNCTION__,this, strun.m_data.c_str(), TTF_GetError());
 	} else {
+		Uint32 bg_alpha = 255; //  region_infoi->get_mediabgopacity();
 		sdl_ambulant_window* saw = m_window->get_sdl_ambulant_window();
-		saw->copy_to_sdl_surface (text_surface, NULL, &sdl_rect, 255);
+		SDL_Renderer* renderer = saw->get_sdl_renderer(); 
+		if (bg_color != 0) {
+			SDL_SetRenderDrawColor (renderer, redc(bg_color), greenc(bg_color), bluec(bg_color), bg_alpha);
+			SDL_RenderFillRect(renderer, &sdl_dst_rect);
+		}
+		saw->copy_to_sdl_surface (text_surface, NULL, &sdl_dst_rect, 255);
 		SDL_FreeSurface (text_surface);
 	}
 } // render_smiltext
 
+
 void
-sdl_ttf_smiltext_renderer::_sdl_ttf_smiltext_set_font(const smil2::smiltext_run& strun) {
+sdl_ttf_smiltext_renderer::_set_font_size(int font_size)
+{
+	if (m_text_size == font_size
+		|| font_size < MIN_FONT_SIZE || font_size > MAX_FONT_SIZE) {
+		return;
+	}
+	TTF_Font** ttfsp = &m_ttf_fonts [font_size - MIN_FONT_SIZE];
+	if (*ttfsp == NULL) {
+		_open_font (font_size, ttfsp);
+		if (*ttfsp == NULL) {
+			return;
+		}
+	}
+	m_ttf_font = *ttfsp;
+	m_text_size = font_size;
+}
+
+void
+sdl_ttf_smiltext_renderer::_set_font_style(const smil2::smiltext_run& strun) {
 #ifdef TBD
 	const char *fontname = strun.m_font_families[0].c_str();
 	m_font = QFont(QApplication::font());
@@ -372,6 +406,7 @@ sdl_ttf_smiltext_renderer::_sdl_ttf_smiltext_set_font(const smil2::smiltext_run&
 	        m_font.setFamily(m_font.defaultFamily());
 	}
 #endif//TBD
+	_set_font_size (strun.m_font_size);
 	int ttf_font_style = TTF_STYLE_NORMAL;
 	switch(strun.m_font_style) {
 		default:
@@ -396,10 +431,50 @@ sdl_ttf_smiltext_renderer::_sdl_ttf_smiltext_set_font(const smil2::smiltext_run&
 			break;
 	}
 	TTF_SetFontStyle(m_ttf_font, ttf_font_style);
-//TBD	TTF_SetTextSize((strun.m_font_size);
+//TBD	TTF_SetTextSize(m_ttf_font, strun.m_font_size);
 //TBD	if (m_blending)
 //TBD		m_font.setStyleStrategy(QFont::NoAntialias);
 } // _sdl_ttf_smiltext_set_font
+
+void
+sdl_ttf_smiltext_renderer::_open_font(const char* font_filename, int pt_size, TTF_Font** fp)
+{
+	assert(fp != NULL && font_filename != NULL && pt_size > 0); 
+	if (m_ttf_font_filename != NULL
+		&& strcmp(font_filename, m_ttf_font_filename) != 0) {
+		_close_font(fp);
+	}
+	TTF_Font* ttf = TTF_OpenFont(font_filename, pt_size);
+	if (ttf != NULL) {
+		m_ttf_font_filename = (char*) font_filename;
+		TTF_SetFontStyle(ttf, m_ttf_style);
+		TTF_SetFontOutline(ttf, 0);
+		TTF_SetFontKerning(ttf, 1);
+		TTF_SetFontHinting(ttf, (int)TTF_HINTING_NORMAL);
+	}
+	*fp = ttf;
+}
+
+void
+sdl_ttf_smiltext_renderer::_open_font(int pt_size, TTF_Font** fp)
+{
+	if (fp != NULL) {
+		_open_font (m_ttf_font_filename, pt_size, fp);
+	}
+}
+
+void
+sdl_ttf_smiltext_renderer::_close_font(TTF_Font** fp)
+{
+	if (fp == NULL || *fp == NULL) {
+		return;
+	}
+	TTF_CloseFont(*fp);
+	if (*fp == m_ttf_font) {
+		m_ttf_font = NULL;
+	}
+	*fp = NULL;
+}
 
 void
 sdl_ttf_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
