@@ -8,7 +8,7 @@ Install Android development environment including ndk-build.
 Set PATH to include new build commands (in tools, build-tools and platform-tools)
 
 cd .../projects/android/jni
-bash third-party-packages.sh
+bash prepare-ndk-build.sh
 ndk-build
 cd ..
 ant debug install
@@ -36,7 +36,7 @@ javac -bootclasspath /export/scratch2/kees/Eclipse/SDKs/platforms/android-19/and
 and copy the .class files to bin/classes/org/libsdl/app.
 
 
-When re-starting from scratch on Ubuntu-10.13-x86_64, I had to do (in addtition to the
+When re-starting from scratch on Ubuntu-13.10-x86_64, I had to do (in addtition to the
 install instructions from the android developer website);
 sudo apt-get install libc6-i386
 sudo apt-get install lib32stdc++6 lib32gcc1 

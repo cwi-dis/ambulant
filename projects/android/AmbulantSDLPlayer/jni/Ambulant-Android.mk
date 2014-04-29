@@ -1,1 +1,0 @@
-Ambulant-Android-shared.mk
