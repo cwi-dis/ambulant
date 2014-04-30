@@ -117,6 +117,7 @@ void linear_values_animation<F, T>::get_values()
 
 template <class F, class T>
 void linear_values_animation<F, T>::prepare_interval() {
+    m_values.clear();
 	get_values();
 	time_type dur = calc_dur();
 	time_type sfdur = dur;

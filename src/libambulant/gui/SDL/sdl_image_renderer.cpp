@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // TBD
+#if  defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_image_renderer.h"

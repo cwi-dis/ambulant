@@ -68,11 +68,13 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 
-// XXXX WRONG! This is the info for the region, not for the node!
-	const common::region_info *info = m_dest->get_info();
-	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: gui_window=0x%x info=0x%x",w,info);
+	const common::region_info *ri = m_dest->get_info();
+	AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body: gui_window=0x%x info=0x%x",w,ri);
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
+	//
+	// If the image is available but it hasn't been loaded yet: load it.
+	//
 	if (m_data && !m_image_loaded && m_data_size > 0) {
 		GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
 		AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): load data for %s", this, this->get_sig().c_str());
@@ -96,8 +98,11 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			g_object_unref(G_OBJECT (loader));
 		}
 	}
+	//
+	// If we don't have the image loaded: return. We'll be called again
+	// when it has been loaded.
+	//
 	if ( ! m_image_loaded) {
-		// Initially the image may not yet be loaded
 		m_lock.leave();
 		return;
 	}
@@ -146,13 +151,14 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		m_lock.leave();
 		return;
 	}
+	
 	srcrect = rect(size(0,0));
-
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+	dstrect.translate(m_dest->get_global_topleft());
+	
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
-	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
 		if (ri->is_chromakey_specified()) {
@@ -162,9 +168,10 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-	dstrect.translate(m_dest->get_global_topleft());
+	
 	// S_ for source image coordinates
 	// D_ for destination coordinates
+	// N_ for new (scaled) coordinates
 	int S_L = srcrect.left(),
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
@@ -174,20 +181,18 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
-
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-	
-	// scale image s.t. the viewbox specified fits in destination area:
-	// zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X
-	float	fact_W = (float)D_W/(float)S_W,
-		fact_H = (float)D_H/(float)S_H;
+	float fact_W = (float)D_W/(float)S_W;
+	float fact_H = (float)D_H/(float)S_H;
 	// N_ for new (scaled) image coordinates
 	int N_L = (int)roundf(S_L*fact_W),
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);
-	GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+	
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+	
+	GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
 	GdkPixbuf* new_image_pixbuf =  gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
 	g_object_unref(G_OBJECT(partial_pixbuf));
 	N_L = N_T = 0;
@@ -228,8 +233,8 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			D_W, D_H,
 			GDK_RGB_DITHER_NONE, 0, 0);
 	}
-	g_object_unref(G_OBJECT (new_image_pixbuf));
-	g_object_unref(G_OBJECT (gc));
+	g_object_unref(G_OBJECT(new_image_pixbuf));
+	g_object_unref(G_OBJECT(gc));
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }

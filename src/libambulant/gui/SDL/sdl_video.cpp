@@ -19,10 +19,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//X #ifdef  WITH_SDL2 
-//X #include "ambulant/gui/sdl/sdl_factory.h"
-//X #include "ambulant/gui/sdl/sdl_includes.h"
-//X #include "ambulant/gui/sdl/sdl_renderer.h"
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_video.h"
@@ -146,4 +143,4 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 	m_lock.leave();
 }
 
-//#endif//WITH_SDL2
+#endif // WITH_SDL2 && WITH_SDL_IMAGE
