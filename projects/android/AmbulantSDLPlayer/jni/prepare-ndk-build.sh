@@ -35,7 +35,7 @@ if [ ! -e ambulant ]
 then
 	mkdir -p ambulant
 	AMBULANT=`(cd ../../../..;echo $PWD)`
-	ln -s AmbulantToplevel-Android.mk ambulant/Android.mk
+	cp AmbulantToplevel-Android.mk ambulant/Android.mk
 	ln -s $AMBULANT/include ambulant
 	ln -s $AMBULANT/src ambulant
 fi
