@@ -191,7 +191,7 @@ sdl_ttf_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun
 		TTF_SizeText(m_ttf_font, strun.m_data.c_str(), &width, &height);
 	}
 // SDL_ttf does not support multiline rendering (doc. TTF_FontHeight()), add 1px.
-	return smil2::smiltext_metrics(ascent, descent+1, height, width, line_spacing);
+	return smil2::smiltext_metrics(ascent, abs(descent), height, width, line_spacing);
 }
 
 const lib::rect&
@@ -358,13 +358,13 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 	m_text_color = text_color;
 	m_text_bg_color = bg_color;
 	SDL_Rect sdl_dst_rect = { L, T, W, H};
-	SDL_Color sdl_text_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
+	SDL_Color sdl_text_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color), alpha_media*255};
 	SDL_Surface* text_surface = TTF_RenderText_Blended(m_ttf_font, strun.m_data.c_str(), sdl_text_color);
 	if (text_surface == NULL) {
         AM_DBG lib::logger::get_logger()->error("%s(%p): Failed rendering %s: %s ",
    					__PRETTY_FUNCTION__,this, strun.m_data.c_str(), TTF_GetError());
 	} else {
-		Uint32 bg_alpha = 255; //  region_infoi->get_mediabgopacity();
+		Uint32 bg_alpha = alpha_media_bg*255; //  from region_info;
 		sdl_ambulant_window* saw = m_window->get_sdl_ambulant_window();
 		SDL_Renderer* renderer = saw->get_sdl_renderer(); 
 		if (bg_color != 0) {
