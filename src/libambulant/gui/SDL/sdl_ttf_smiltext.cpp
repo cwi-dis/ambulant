@@ -371,7 +371,7 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 			SDL_SetRenderDrawColor (renderer, redc(bg_color), greenc(bg_color), bluec(bg_color), bg_alpha);
 			SDL_RenderFillRect(renderer, &sdl_dst_rect);
 		}
-		saw->copy_to_sdl_surface (text_surface, NULL, &sdl_dst_rect, 255);
+		saw->copy_to_sdl_surface (text_surface, NULL, &sdl_dst_rect, alpha_media*255);
 		SDL_FreeSurface (text_surface);
 	}
 } // render_smiltext
