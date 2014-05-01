@@ -23,6 +23,7 @@
  */
 
 #ifdef WITH_SDL2
+#include "ambulant/config/config.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 
 #include "ambulant/lib/document.h"

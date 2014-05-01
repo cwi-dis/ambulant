@@ -37,9 +37,9 @@
 #endif//__ANDROID__
 #include "sdl_logger.h"
 //X #include "sdl_renderer.h"
+#include "ambulant/config/config.h"
 
 #if  TBD
-#include "ambulant/config/config.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/version.h"
 #endif//TBD
