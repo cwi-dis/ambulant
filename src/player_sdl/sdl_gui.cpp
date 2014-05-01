@@ -29,7 +29,6 @@
 #include "sdl_gui.h"
 #include "sdl_gui_player.h"
 #include "unix_preferences.h"
-#include <malloc.h>
 
 #ifdef __ANDROID__
 #include <android/log.h>
