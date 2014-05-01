@@ -870,6 +870,52 @@ AC_SUBST(NPAMBULANT_INCLUDES)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
 
+dnl
+dnl Check for libxml2
+dnl
+test_libxml2=false
+libxml2_config=false
+AC_MSG_CHECKING(for libxml2 XML handling library)
+AC_ARG_WITH(libxml2,
+	AS_HELP_STRING([--with-libxml2], [Turn on/off use of libxml2 XML library]),
+	[
+		case "${withval}" in
+		yes)
+			test_libxml2=true
+			libxml2_config=true
+			;;
+		no)
+			;;
+		*)
+			LIBXML2_PREFIX=`cd ${withval} ; pwd`
+			LIBXML2_LIBS="-L$LIBXML2_PREFIX/lib -llibxml2"
+			LIBXML2_CFLAGS="-I$LIBXML2_PREFIX/include"
+			test_libxml2=true
+			;;
+		esac], 
+	[libxml2_config=true])
+
+if test $libxml2_config = true && xml2-config --version > /dev/null; then
+	LIBXML2_CFLAGS=`xml2-config --cflags`
+	LIBXML2_LIBS=`xml2-config --libs`
+	test_libxml2=true
+else
+	if test $libxml2_config = false; then
+	   	libxml2_warning="libxml2 not configured. State plugin will not be built."
+	else	libxml2_warning="command xml2-config not found. State plugin cannot be built."
+	fi
+	LIBXML2_CFLAGS=
+	LIBXML2_LIBS=
+fi
+
+if $test_libxml2; then
+	AC_DEFINE(WITH_LIBXML2, 1, [Define to enable libxml2 XML parser])
+fi
+AC_SUBST(LIBXML2_LIBS)
+AC_SUBST(LIBXML2_CFLAGS)
+AM_CONDITIONAL(WITH_LIBXML2, test x$test_libxml2 = xtrue)
+AC_MSG_RESULT($test_libxml2)
+
 #
 # Nowadays, we always build with linking to the shared Ambulant library.
 #
@@ -1110,12 +1156,13 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Use expat XML library:          ${test_expat}
     Use xerces XML library:         ${test_xerces}
     Enable Xerces as plugin:        ${xerces_plugin}
+    Use libxml2 XML library:        ${test_libxml2}
     Build with ffmpeg:              ${test_ffmpeg}
     Build with SDL audio:           ${test_sdl_audio}
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with SDL2_ttf:		    ${test_sdl_ttf}
+    Build with SDL2_ttf:	    ${test_sdl_ttf}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}
@@ -1137,6 +1184,7 @@ if test "x$with_frontend" = "xfalse"; then
 fi
 AC_MSG_RESULT([$ffmpeg_warning]);
 AC_MSG_RESULT([$expat_warning]);
+AC_MSG_RESULT([$libxml2_warning]);
 AC_MSG_RESULT([$python_warning]);
 AC_MSG_RESULT([$xml_parser_warning]);
 if test "x$test_ffmpeg_swscale" = "xtrue"; then
