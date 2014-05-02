@@ -115,7 +115,8 @@ class BuildChecker:
                 for url in urlsOK:
                     rv += "\t%s\n" % url
             rv += "\n"
-        self.lastGoodBuild[name] = vars["ydate"]
+        else:
+            self.lastGoodBuild[name] = vars["ydate"]
         return rv
     
     def load(self):
@@ -135,10 +136,17 @@ class BuildChecker:
         
     def check(self):
         self.load()
+        correct = ""
         rv = ""
         for platform, urls in URLS.items():
-            rv += self.checkPlatform(platform, urls)
+           platformMessage = self.checkPlatform(platform, urls)
+           if platformMessage:
+            rv += platformMessage
+        else:
+            correct += " " + platform
         self.save()
+        if correct:
+            rv = "Plaforms built correctly: " + correct + "\n\n" + rv
         return rv
     
 def main():
