@@ -139,11 +139,11 @@ class BuildChecker:
         correct = ""
         rv = ""
         for platform, urls in URLS.items():
-           platformMessage = self.checkPlatform(platform, urls)
-           if platformMessage:
-            rv += platformMessage
-        else:
-            correct += " " + platform
+            platformMessage = self.checkPlatform(platform, urls)
+            if platformMessage:
+                rv += platformMessage
+            else:
+                correct += " " + platform
         self.save()
         if correct:
             rv = "Plaforms built correctly: " + correct + "\n\n" + rv
