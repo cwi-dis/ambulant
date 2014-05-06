@@ -848,8 +848,8 @@ extern "C" {
 //		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/smilText/NYC-sT.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/PanZoom/Fruits-4s.smil");
-		argv[1]= SDL_strdup("/sdcard/Download/Birthday/HappyBirthday.smil");
-//		argv[1]= SDL_strdup("http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/Birthday/HappyBirthday.smil");
+		argv[1]= SDL_strdup("http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/News/DanesV2-Desktop.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Euros/EUROshow.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Flashlight/Flashlight/Flashlight-US.smil");
