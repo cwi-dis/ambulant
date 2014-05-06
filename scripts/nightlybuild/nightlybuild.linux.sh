@@ -62,7 +62,7 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=linux
-CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
+CONFIGOPTS="--with-sdl2 --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
 MAKEOPTS=
 DESTINATION_SRC=$DESTINATION/src
 DESTINATION_NPAMBULANT=$DESTINATION/linux-$ARCH-firefoxplugin
