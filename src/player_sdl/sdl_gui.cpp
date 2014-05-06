@@ -795,6 +795,20 @@ sdl_gui::sdl_loop() {
 			break;
 		case SDL_MOUSEWHEEL: // mouse wheel motion
 			break;
+#ifdef TBD
+		case SDL_FINGERDOWN: // finger pressed
+		case SDL_FINGERUP: // finger released
+			AM_DBG lib::logger::get_logger()->debug("%s %s: type=%d touchId=%d fingerId=%d, x=%f y=%f",__PRETTY_FUNCTION__, event.type == SDL_FINGERDOWN ? "SDL_FINGERDOWN":"SDL_FINGERUP", event.tfinger.type,  event.tfinger.touchId, event.tfinger.fingerId ,event.tfinger.x,event.tfinger.y);
+			if (m_gui_player != NULL && event.type == SDL_FINGERUP) { // finger released
+				SDL_Point p;
+				int w, h;
+				SDL_GetWindowSize(get_window(), &w, &h);
+				p.x = round(w*event.tfinger.x);
+				p.y = round(h*event.tfinger.y);
+				m_gui_player->user_event(p, 0);
+			}
+			break;
+#endif//TBD
 		default:
 			break;
 		}
@@ -805,40 +819,49 @@ sdl_gui::sdl_loop() {
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL/Ambulant", __VA_ARGS__))
 #include <jni.h>
 extern "C" {
-  /* Called before SDL_main() to initialize JNI bindings in SDL library */
-  extern void SDL_Android_Init(JNIEnv* env, jclass cls);
+	/* Called before SDL_main() to initialize JNI bindings in SDL library */
+	extern void SDL_Android_Init(JNIEnv* env, jclass cls);
 
-  /* Start up the SDL app */
-  void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jstring path)
-  {
-      /* This interface could expand with ABI negotiation, calbacks, etc. */
-	  LOGI("native_init start");
-      SDL_Android_Init(env, cls);
+	/* Start up the SDL app */
+	void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jstring path)
+	{
+		/* This interface could expand with ABI negotiation, calbacks, etc. */
+		LOGI("native_init start");
+		setenv ("SDL_WINDOW_FLAGS","1" /*SDL_WINDOW_FULLSCREEN*/, 1);
+//XX		setenv ("AMBULANT_FFMPEG_DEBUG","1", 1);
+//XX		setenv ("FFREPORT","/sdcard/ffreport", 1);
+		SDL_Android_Init(env, cls);
 
-	  LOGI("native_init: calling SDL_SetMainReady()");
-      SDL_SetMainReady();
-	  LOGI("native_init: returned from SDL_SetMainReady()");
-
-      /* Run the application code! */
-      int status;
-      char *argv[3];
-      jboolean isCopy;
-//    char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
-      argv[0] = SDL_strdup("AmbulantPlayer_SDL");
-//    argv[1] =	str_path;
-//    argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
-//    argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome.smil");
-//    argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
-      argv[1]= SDL_strdup("/sdcard/Download/smilText/NYC-sT.smil");
-//    argv[1]= SDL_strdup("/sdcard/Download/Fruits/Fruits-4s.smil");
-      LOGI("argv[1]=%s", argv[1]);
-      argv[2] = NULL;
-      status = SDL_main(2, argv);
+		LOGI("native_init: calling SDL_SetMainReady()");
+		SDL_SetMainReady();
+		LOGI("native_init: returned from SDL_SetMainReady()");
+		
+		/* Run the application code! */
+		int status;
+		char *argv[3];
+		jboolean isCopy;
+//		char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
+		argv[0] = SDL_strdup("AmbulantPlayer_SDL");
+//		argv[1] =	str_path;
+//		argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/smilText/NYC-sT.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/PanZoom/Fruits-4s.smil");
+		argv[1]= SDL_strdup("/sdcard/Download/Birthday/HappyBirthday.smil");
+//		argv[1]= SDL_strdup("http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/News/DanesV2-Desktop.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/Euros/EUROshow.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/Flashlight/Flashlight/Flashlight-US.smil");
+//		argv[1]= SDL_strdup("/sdcard/Download/VideoTests/VideoTests.smil");
+		LOGI("argv[1]=%s", argv[1]);
+		argv[2] = NULL;
+		status = SDL_main(2, argv);
 //   env->ReleaseStringUTFChars(path, str_path);
 
-      /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
-      /* exit(status); */
-  }
+	/* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
+	/* exit(status); */
+	}
 }
 #endif // ANDROID
 
@@ -955,6 +978,9 @@ main (int argc, char*argv[]) {
 		exit(-1);
 	}
 	gui->m_gui_player->play();
+#ifdef ANDROID
+	LOGI("Starting sdl_loop()");
+#endif // ANDROID
 	gui->sdl_loop();
  #ifdef __ANDROID__
 //http://ambulantplayer.org/Demos/PanZoom/Fruits-4s.smil
@@ -976,15 +1002,15 @@ main (int argc, char*argv[]) {
 	gui->quit();
   delete gui;
 #ifdef ANDROID
-  LOGI("Deleted gui");
-  gui = NULL;
+	LOGI("Deleted gui");
+	gui = NULL;
   
 #endif // ANDROID
 	SDL_Quit();
 
 #ifdef ANDROID
-  LOGI("SDL Quit done");
-  gui = NULL;
+	LOGI("SDL Quit done");
+	gui = NULL;
   
 #endif // ANDROID
 	return exec_flag ? 0 : -1;
