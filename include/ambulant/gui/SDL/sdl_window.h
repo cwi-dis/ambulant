@@ -184,7 +184,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// 'get_fit_rect' to implement the SMIL 3.0 'fit' semanics
 	int copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 //TBD	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
-
+	bool get_sdl_fullscreen () { return m_sdl_fullscreen; }
+	float get_sdl_scale () { return m_sdl_scale; }
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
 	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id);
@@ -236,6 +237,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// For the gui_screen implementation
 	void* m_screenshot_data;
 	long int m_screenshot_size;
+	SDL_Rect get_sdl_dst_rect() { return m_sdl_dst_rect; } //XX should be private
 
   private:
 	// Helper: create the actual SDL_Window*, foreground and background pixels, surfaces and renderers
@@ -253,6 +255,9 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// The screen_surface/renderer represent the actual pixels of the window
 	SDL_Surface*  m_sdl_screen_surface;
 	SDL_Renderer* m_sdl_screen_renderer; // the "real" renderer, for SDL_Present()
+	bool m_sdl_fullscreen;
+	SDL_Rect m_sdl_dst_rect;
+	float m_sdl_scale;
 	lib::event_processor* m_evp;
 	uint8_t* m_screen_pixels;
 	// window counter (with s_lock protection) is used to assuere that the SdlWindow
