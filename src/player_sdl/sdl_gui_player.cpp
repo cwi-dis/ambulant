@@ -294,7 +294,23 @@ sdl_gui_player::user_event(const point& p, int what) {
 bool
 sdl_gui_player::user_event(SDL_Point& p, int what) {
 	point am_p(p.x, p.y);
+	am_p = convert (am_p);
 	return user_event(am_p, what);
+}
+
+
+lib::point
+sdl_gui_player::convert (lib::point p) 
+{
+	lib::point q(p);
+	
+	if (m_sdl_ambulant_window->get_sdl_fullscreen()) {
+		SDL_Rect sr = m_sdl_ambulant_window->get_sdl_dst_rect();
+		float scale = m_sdl_ambulant_window->get_sdl_scale();
+		q.x = round((p.x - sr.x) / scale);
+		q.y = round((p.y - sr.y) / scale);
+	}
+	return q;
 }
 
 void
@@ -339,7 +355,7 @@ sdl_gui_player::player_done()
 //TBD		m_player->need_redraw();
 		return false;
 	}
-#endif
+#endif//0
 	return true;
 }
 
@@ -393,7 +409,7 @@ sdl_gui_player::player_start(gchar* document_name, bool start, bool old)
 		m_player = NULL;
 		m_frames.push(pf);
 	}
-#endif
+#endif//0
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", document_name);
 	m_player = create_player(document_name);

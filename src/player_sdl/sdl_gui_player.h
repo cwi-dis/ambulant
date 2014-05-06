@@ -91,6 +91,8 @@ class sdl_gui_player :
 	bool user_event (SDL_Point &p, int what = 0);
 //JNK	SDL_Renderer* get_renderer() { return m_gui->get_renderer(); }
 //JNK	SDL_Surface* get_surface() { return m_gui->get_surface(); }
+	// helper: convert a point in screen space to a point in ambulant space
+	lib::point convert (lib::point p);
   private:
 #if 0
 	// from dx_player
