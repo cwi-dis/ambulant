@@ -15,9 +15,9 @@ ant debug install
 
 
 Eclipse with Android ADT can be used too, but it gets often completely nuts
-while building w. ndk-build and ant works smoothly.
+while building with ndk-build and ant works smoothly.
 
-When it works, it is fantastic, especially for debugging.
+When it works, Eclipse is fantastic, especially for debugging.
 
 - make sure you have in your PATH at earliest login time:
   - android-sdk-linux/tools
@@ -33,7 +33,7 @@ In Eclipse->Window->Preferences->Android_NDK, select proper NDK location
 
 Sometimes I needed to compile java files by hand (in src/org/libsdl/app):
 javac -bootclasspath /export/scratch2/kees/Eclipse/SDKs/platforms/android-19/android.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/effects.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/usb.jar:/export/scratch2/kees/Eclipse/SDKs/add-ons/addon-google_apis_x86-google-19-1/libs/maps.jar *.java
-and copy the .class files to bin/classes/org/libsdl/app.
+and copy the resulting .class files to bin/classes/org/libsdl/app.
 
 
 When re-starting from scratch on Ubuntu-13.10-x86_64, I had to do (in addtition to the
@@ -55,3 +55,40 @@ ndk-build -j9 clean
 ndk-build -9
 ant debug install
 
+Run Ambulant on the device and use
+adb logcat
+to see error messages.
+
+Also, Ambulant logger writes on the device '/sdcard/ambulant.log',
+can be viewed with:
+
+adb shell
+cat /cdcard/ambulant.log
+
+
+State of the Android implementation.
+----------------------------------
+
+SDL_TTF is used for smilText rendering, almost all of smilText has
+been implemented and tested, except:
+textWritingMode (not tested)
+textDirection (not tested)
+textFontFamily (not tested, only 1 font availble for Android)
+
+ffmpeg-2.0.2 has been installed according to instructions found in:
+http://www.roman10.net/how-to-build-ffmpeg-with-ndk-r9/
+
+Be aware to the setting of the environment variables
+NDK=<android-ndk-r9c>, and
+NDK_MODULE_PATH=<android-ndk-r9c>/sources
+
+Other third party packages are download using the script:
+jni/prepare-ndk-build.sh
+
+Known bugs and limitations:
+
+AmbulatSDLPlayer stops when the Android screen is turened.
+There is no Quit or GoBack facilty
+Only compiled-in URLs can be played, there is no GUI.
+
+Kees Blom, May 6, 2014.
