@@ -31,7 +31,7 @@
             		<action android:name="android.intent.action.VIEW" />
            		<category android:name="android.intent.category.DEFAULT" />
 			<category android:name="android.intent.category.BROWSABLE" />
- 			<data android:scheme="*" android:host="*"/>
+ 			<data android:scheme="http" android:host="*"/>
  			<data android:mimeType="application/smil" />
  			<data android:mimeType="application/x-smil" />
  			<data android:mimeType="application/x-ambulant-smil" />

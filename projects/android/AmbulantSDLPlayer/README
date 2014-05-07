@@ -69,6 +69,10 @@ cat /cdcard/ambulant.log
 State of the Android implementation.
 ----------------------------------
 
+Although there is no GUI, besides compiled-in URLs also links to .smil files
+presented in Android Browser can be played, by tapping these links (e.g.
+those marked 'http' on http://ambulantplayer.org/Demos.shtml)
+
 SDL_TTF is used for smilText rendering, almost all of smilText has
 been implemented and tested, except:
 textWritingMode (not tested)
@@ -82,13 +86,12 @@ Be aware to the setting of the environment variables
 NDK=<android-ndk-r9c>, and
 NDK_MODULE_PATH=<android-ndk-r9c>/sources
 
-Other third party packages are download using the script:
+Other third party packages need to be downloaded using the script:
 jni/prepare-ndk-build.sh
 
 Known bugs and limitations:
 
-AmbulatSDLPlayer stops when the Android screen is turened.
+AmbulatSDLPlayer stops when the Android screen is turned.
 There is no Quit or GoBack facilty
-Only compiled-in URLs can be played, there is no GUI.
 
-Kees Blom, May 6, 2014.
+Kees Blom, May 7, 2014.

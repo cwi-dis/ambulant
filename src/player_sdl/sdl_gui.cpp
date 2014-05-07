@@ -890,7 +890,7 @@ extern "C" {
 	/* exit(status); */
 	}
 }//extern "C"
-endif // ANDROID
+#endif // ANDROID
 
 int
 main (int argc, char*argv[]) {
