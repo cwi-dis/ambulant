@@ -1,3 +1,4 @@
+SUBDIRS=pc-uninstalled
 ambulantlibdir=./.libs
 if WITH_AMBULANT_SHARED_LIB
 #
@@ -116,9 +117,17 @@ endif
 
 if WITH_SDL2
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core) 
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(FFMPEG_LIBS) $(libambulant_core) 
 libambulant_sdl_la_DEPENDENCIES=libambulant.la
+if WITH_SDL_PANGO
+sdlincludes = -DWITH_SDL2 -DWITH_SDL_PANGO $(SDL_CFLAGS)
+else
+if WITH_SDL_TTF
+sdlincludes = -DWITH_SDL2 -DWITH_SDL_TTF $(SDL_CFLAGS)
+else
 sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
+endif
+endif
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \
     gui/SDL/sdl_audio.cpp \

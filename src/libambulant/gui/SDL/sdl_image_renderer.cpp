@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // TBD
+#if  defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_image_renderer.h"
@@ -57,10 +57,11 @@ gui::sdl::create_sdl_image_playable_factory(common::factories *factory, common::
 }
 
 sdl_image_renderer::~sdl_image_renderer() {
+	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::~sdl_image_renderer(%p), %s, m_image=%p", this, this->get_sig().c_str(), m_image);
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::~sdl_image_renderer(0x%x), %s", this, this->get_sig().c_str());
 	if (m_image != NULL) { 
 		SDL_FreeSurface(m_image);
+		m_image = NULL;
 	}
 	m_lock.leave();
 }
@@ -71,33 +72,36 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	m_lock.enter();
 	const point p = m_dest->get_global_topleft();
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
+	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): m_image=%p, ltrb=(%d,%d,%d,%d), p=(%d,%d) sig=%s", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y,m_node->get_sig().c_str());
 
 // XXXX WRONG! This is the info for the region, not for the node!
 	const common::region_info *info = m_dest->get_info();
-	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body: gui_window=0x%x info=0x%x",w,info);
+	AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body: gui_window=%p info=%p",w,info);
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 
 	if (m_data && !m_image_loaded && m_data_size > 0) {
-		AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): load data for %s", this, this->get_sig().c_str());
+		AM_DBG logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): load data for %s", this, this->get_sig().c_str());
 		SDL_RWops* rwops = SDL_RWFromMem (m_data, m_data_size);
 		assert (rwops != NULL);
 		m_image = IMG_Load_RW(rwops, 1);
+//		rwops->close (rwops);
 		if (m_image == NULL) {
-			logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): IMG_Load_RW failed. %s", this, this->get_sig().c_str());
+			logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): IMG_Load_RW failed. %s", this, this->get_sig().c_str());
 		} else {
 			// convert the image to RGBA compatible format (necessary for blending)
 			SDL_PixelFormat* new_pixel_format = (SDL_PixelFormat*) malloc (sizeof(SDL_PixelFormat));
-			*new_pixel_format = *saw->get_SDL_Surface()->format;
+			*new_pixel_format = *saw->get_sdl_surface()->format;
 			SDL_Surface* new_image = SDL_ConvertSurface (m_image, new_pixel_format, 0);
 			if (new_image != NULL && new_image != m_image) {
+				AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::redraw_body(%p), %s, SDL_FreeSurface(m_image=%p)", this, this->get_sig().c_str(), m_image);
 				SDL_FreeSurface (m_image);
 				m_image = new_image;
 			}
 			// enable alpha blending for this image
 //			asw->ambulant_sdl_window::dump_sdl_surface(m_image, "image");
 			SDL_SetSurfaceBlendMode(m_image, SDL_BLENDMODE_BLEND);
+			AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::redraw_body(%p), %s, m_image=%p", this, this->get_sig().c_str(), m_image);
 			m_image_loaded = true;
 		}
 	}
@@ -116,6 +120,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// convoluted, it knows that the node and the region we're painting to are
 	// really the same node.
 	if (m_node->get_attribute("backgroundImage") && m_dest->is_tiled()) {
+		//TBD
 		AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw: drawing tiled image");
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
@@ -132,7 +137,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 				D_T = dstrect.top(),
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
-			AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
+			AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
 #ifdef JNK
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asw->get_ambulant_pixmap()));
 			gdk_pixbuf_render_to_drawable(
@@ -168,87 +173,40 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-	dstrect.translate(m_dest->get_global_topleft());
-	// S_ for source image coordinates
-	// D_ for destination coordinates
-	int S_L = srcrect.left(),
-		S_T = srcrect.top(),
-		S_W = srcrect.width(),
-		S_H = srcrect.height();
-	int D_L = dstrect.left(),
-		D_T = dstrect.top(),
-		D_W = dstrect.width(),
-		D_H = dstrect.height();
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
+	dstrect.translate(p);
+	if (srcrect.w == 0 || srcrect.h == 0 || dstrect.w == 0 || dstrect.h == 0) {
+		// either nothing to redraw from source or to destination)
+		return;
+	}
+	SDL_Rect sdl_srcrect = SDL_Rect_from_ambulant_rect (srcrect);
+	SDL_Rect sdl_dstrect = SDL_Rect_from_ambulant_rect (dstrect);
+	if (alpha_chroma != 1.0) { //TBD
+	} else {
+	}
+	if (srcrect.size() != dstrect.size()) {
+		saw->copy_to_sdl_surface_scaled (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
 #ifdef JNK
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asw->get_ambulant_pixmap()));
-#endif//JNK
-	
-	// scale image s.t. the viewbox specified fits in destination area:
-	// zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X
-	float	fact_W = (float)D_W/(float)S_W,
-		fact_H = (float)D_H/(float)S_H;
-	// N_ for new (scaled) image coordinates
-	int N_L = (int)roundf(S_L*fact_W),
-		N_T = (int)roundf(S_T*fact_H),
-		N_W = (int)roundf(width*fact_W),
-		N_H = (int)roundf(height*fact_H);
-#ifdef JNK
-	GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
-	GdkPixbuf* new_image_pixbuf =  gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
-	g_object_unref(G_OBJECT(partial_pixbuf));
-#endif//JNK
-	N_L = N_T = 0;
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
-	if (alpha_chroma != 1.0) {
-#ifdef JNK
-		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (
-			NULL,
-			asw->get_ambulant_pixmap(),
-			NULL,
-			D_L, D_T,
-			0, 0,
-			D_W, D_H);
-		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
-		gdk_pixbuf_blend (
-			screen_pixbuf,
-			rect0,
-			new_image_pixbuf,
-			rect0,
-			alpha_chroma,
-			alpha_media,
-			chroma_low,
-			chroma_high);
-		gdk_draw_pixbuf(GDK_DRAWABLE (
-			asw->get_ambulant_pixmap()),
-			gc,
-			screen_pixbuf,
-			N_L, N_T,
-			D_L, D_T,
-			D_W, D_H,
-			GDK_RGB_DITHER_NONE, 0, 0);
+		/*
+		SDL_Surface* surface = SDL_CreateRGBSurface(0, dstrect.width(), dstrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
+		if (surface != NULL) {
+//			saw->dump_sdl_surface(m_image, "rimg");  // use this for debugging
+			int err = SDL_BlitScaled (m_image, NULL, surface, NULL);
+			if (err < 0) {
+				lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): SDL_BlitScaled return %s", SDL_GetError());
+			} else {
+//				saw->dump_sdl_surface(surface, "simg");  // use this for debugging
+				saw->copy_to_sdl_surface (surface, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
+			}
+			SDL_FreeSurface(surface);
+		}
+		*/
 #endif//JNK
 	} else {
-#ifdef JNK
-		gdk_draw_pixbuf(
-			GDK_DRAWABLE(asw->get_ambulant_pixmap()),
-			gc,
-			new_image_pixbuf,
-			N_L, N_T,
-			D_L, D_T,
-			D_W, D_H,
-			GDK_RGB_DITHER_NONE, 0, 0);
-#endif//JNK
+//		saw->dump_sdl_surface(m_image, "uimg");  // use this for debugging
+		saw->copy_to_sdl_surface (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
 	}
-#ifdef JNK
-	g_object_unref(G_OBJECT (new_image_pixbuf));
-	g_object_unref(G_OBJECT (gc));
-#endif//JNK
-	SDL_Rect sdl_dst_rect = {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
-	saw->copy_to_sdl_surface (m_image, NULL, &sdl_dst_rect, 255 * alpha_media);
-
-	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(0x%x done.", this);
+//	saw->dump_sdl_surface(saw->get_sdl_surface(), "surf");  // use this for debugging
+	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p done.", this);
 	m_lock.leave();
 }
 

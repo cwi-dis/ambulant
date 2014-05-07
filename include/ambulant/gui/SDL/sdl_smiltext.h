@@ -22,19 +22,16 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#ifdef  WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
 
-#define WITH_SDLPANGO // if not defined, SDL_ttf is used
-#ifdef  WITH_SDLPANGO
 #include <pango-1.0/pango/pango.h>
 #define __PANGO_H__ // this reveals some useful functions we need to use
 #include <SDL_Pango.h>
-#endif//WITH_SDLPANGO
 
 namespace ambulant {
 
@@ -88,8 +85,8 @@ class sdl_smiltext_renderer :
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
 		unsigned int start_index, unsigned int end_index);
-	SDLPango_Context* m_sdl_pango_context;
 
+	SDLPango_Context* m_sdl_pango_context;
 	PangoAttrList* m_pango_attr_list;
 	PangoContext* m_pango_context;
 	PangoLayout* m_pango_layout;
@@ -121,6 +118,6 @@ class sdl_smiltext_renderer :
 
 } // namespace ambulant
 
-#endif // WITH_SDL2
+#endif // defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 
 #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H

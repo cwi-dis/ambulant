@@ -7,16 +7,17 @@
     <layout>
       <root-layout width="640" height="480" backgroundColor="black"/>
       <region xml:id="screen" left="0%" top="0" width="100%" height="100%" backgroundColor="yellow"/>
-      <region xml:id="brush" left="33%" top="33%" width="33%" height="33%" backgroundColor="blue"/>
+      <region xml:id="brush" left="0%" top="0%" width="100%" height="100%" backgroundColor="black" />
     </layout>
   </head>
   <body>
-    <seq>
-      <par dur="2" >
-        <brush region="brush" begin="1" color="green" />
-      </par>
-      <brush region="brush" dur="1" color="red" />
-      <brush region="brush" dur="1" color="yellow" />
+    <seq dur="12">
+      <!-- draw red, green, blue rectangles,1 sec. each -->
+      <brush region="brush" begin="2" dur="2" color="red" />
+      <brush region="brush" dur="2" color="#00ff00" />
+      <brush region="brush" dur="2" color="blue"/>
+      <brush region="brush" dur="2" color="white" />
+      <brush region="brush" dur="2" color="black" />
     </seq>
   </body>
 </smil>

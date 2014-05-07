@@ -88,6 +88,10 @@ OBJECTS=[
 	("playable_factory", "ambulant::common::playable_factory", None),
 	("global_playable_factory", "ambulant::common::global_playable_factory", "playable_factory"),
 	
+	"common/recorder.h",
+	("recorder", "ambulant::common::recorder", None),
+	("recorder_factory", "ambulant::common::recorder_factory", None),
+	
 	"common/renderer_select.h",
 	("renderer_select", "ambulant::common::renderer_select", None),
 	
@@ -117,14 +121,14 @@ OBJECTS=[
 	"net/datasource.h",
 #	("audio_format_choices", "ambulant::net::audio_format_choices", None),
 	("datasource", "ambulant::net::datasource", None), # XXX Refcounted
-	("pkt_datasource", "ambulant::net::pkt_datasource", None), # XXX Refcounted
+#	("pkt_datasource", "ambulant::net::pkt_datasource", None), # XXX Refcounted
 	("audio_datasource", "ambulant::net::audio_datasource", "datasource"), # XXX Refcounted
-	("pkt_audio_datasource", "ambulant::net::pkt_audio_datasource", "pkt_datasource"), # XXX Refcounted
+#	("pkt_datasource", "ambulant::net::pkt_datasource", "pkt_datasource"), # XXX Refcounted
 	("video_datasource", "ambulant::net::video_datasource", None), # XXX Refcounted
 	("datasource_factory", "ambulant::net::datasource_factory", None),
 	("raw_datasource_factory", "ambulant::net::raw_datasource_factory", None),
 	("audio_datasource_factory", "ambulant::net::audio_datasource_factory", None),
-	("pkt_audio_datasource_factory", "ambulant::net::pkt_audio_datasource_factory", None),
+	("pkt_datasource_factory", "ambulant::net::pkt_datasource_factory", None),
 	("video_datasource_factory", "ambulant::net::video_datasource_factory", None),
 	("audio_parser_finder", "ambulant::net::audio_parser_finder", None),
 	("audio_filter_finder", "ambulant::net::audio_filter_finder", None),

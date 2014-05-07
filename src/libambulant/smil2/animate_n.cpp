@@ -45,14 +45,20 @@ using namespace smil2;
 
 animate_node::animate_node(context_type *ctx, const node *n, animate_attrs *aattrs)
 :	time_node(ctx, n, tc_none, false),
-	m_aattrs(aattrs) {
+	m_aattrs(aattrs)
+{
+	get_values();
 }
 
 animate_node::~animate_node() {
 	delete m_aattrs;
 }
 
+void animate_node::get_values() {
+}
+
 void animate_node::prepare_interval() {
+	get_values();
 }
 
 void animate_node::read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
@@ -83,7 +89,7 @@ class linear_values_animation : public animate_node {
 	~linear_values_animation();
 
 	void prepare_interval();
-
+	void get_values();
   protected:
 	bool verify_key_times(std::vector<double>& keyTimes);
 
@@ -96,7 +102,6 @@ class linear_values_animation : public animate_node {
 template <class F, class T>
 linear_values_animation<F, T>::linear_values_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 :	animate_node(ctx, n, aattrs), m_animate_f(0)  {
-	m_aattrs->get_values(m_values);
 }
 
 template <class F, class T>
@@ -105,7 +110,15 @@ linear_values_animation<F, T>::~linear_values_animation() {
 }
 
 template <class F, class T>
+void linear_values_animation<F, T>::get_values()
+{
+	m_aattrs->get_values(m_values);
+}
+
+template <class F, class T>
 void linear_values_animation<F, T>::prepare_interval() {
+    m_values.clear();
+	get_values();
 	time_type dur = calc_dur();
 	time_type sfdur = dur;
 	const time_attrs* ta = get_time_attrs();
@@ -177,7 +190,7 @@ class underlying_to_animation : public animate_node {
 	~underlying_to_animation();
 
 	void prepare_interval();
-
+	void get_values();
   protected:
 	typedef underlying_to_f<T> F;
 	F m_simple_f;
@@ -188,9 +201,6 @@ class underlying_to_animation : public animate_node {
 template <class T>
 underlying_to_animation<T>::underlying_to_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 :	animate_node(ctx, n, aattrs), m_animate_f(0)  {
-	std::vector<T> v;
-	m_aattrs->get_values(v);
-	m_value = v[0];
 }
 
 template <class T>
@@ -199,7 +209,16 @@ underlying_to_animation<T>::~underlying_to_animation() {
 }
 
 template <class T>
+void underlying_to_animation<T>::get_values()
+{
+	std::vector<T> v;
+	m_aattrs->get_values(v);
+	m_value = v[0];
+}
+
+template <class T>
 void underlying_to_animation<T>::prepare_interval() {
+	get_values();
 	time_type dur = calc_dur();
 	time_type sfdur = dur;
 	const time_attrs* ta = get_time_attrs();
@@ -524,6 +543,7 @@ class soundalign_animation : public animate_node {
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const;
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const;
 	void apply_self_effect(animate_registers& regs) const;
+	void get_values();
   private:
 	std::vector<common::sound_alignment> m_values;
 };
@@ -532,12 +552,17 @@ class soundalign_animation : public animate_node {
 soundalign_animation::soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 :	animate_node(ctx, n, aattrs)
 {
-	m_aattrs->get_values(m_values);
 	assert(m_values.size() == 1);
 }
 
 soundalign_animation::~soundalign_animation()
 {
+}
+
+void
+soundalign_animation::get_values()
+{
+	m_aattrs->get_values(m_values);
 }
 
 void

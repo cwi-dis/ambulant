@@ -24,6 +24,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/net/datasource.h"
+#include "ambulant/net/demux_datasource.h"
 
 #include <queue>
 
@@ -40,8 +41,8 @@ extern "C" {
 #include "libavformat/avformat.h"
 
 // See if we must use swscale, or can use the older method
-#if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
-#error Cannot use ffmpeg older than release 0.5
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(53, 35, 0)
+#error Cannot use ffmpeg older than release 1.0
 #endif
 
 #ifdef WITH_FFMPEG_SWSCALE
@@ -81,7 +82,7 @@ class ffmpeg_video_decoder_datasource:
 	static bool supported(const video_format& fmt);
 
 	//ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
-	ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
+	ffmpeg_video_decoder_datasource(demux_video_datasource *src, video_format fmt, net::url url);
 
 	~ffmpeg_video_decoder_datasource();
 
@@ -110,12 +111,15 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t get_buffer_time() { return m_frames.size() * frameduration(); };
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
-    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
-        void set_is_live (bool is_live) { m_src->set_is_live(is_live); m_is_live = is_live; }
-        bool get_is_live () { return m_is_live; }
-        
+    long get_bandwidth_usage_data(const char **resource) { return m_src ? m_src->get_bandwidth_usage_data(resource)  : -1; }
+    void set_is_live (bool is_live);
+	bool get_is_live () { return m_is_live; }
+    int size() const { return m_frames.size(); }
+
 
   private:
+	bool _should_fast_forward(timestamp_t ipts);
+	void _restart_queues();
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(video_format &fmt);
 	bool _end_of_file();
@@ -123,38 +127,34 @@ class ffmpeg_video_decoder_datasource:
 	bool _buffer_full();
 	void _pop_top_frame();
 	void _need_fmt_uptodate();
-
-	video_datasource* m_src;
-	AVCodecContext *m_con;
-	struct SwsContext *m_img_convert_ctx;
-
-	bool m_con_owned;	// True if we have to close/free m_con
-	video_format m_fmt;
+    void _forward_frame(timestamp_t pts, AVFrame *frame);
+        
 	lib::event_processor *m_event_processor;
-	sorted_frames  m_frames;
-	int m_size;		// NOTE: this assumes all decoded frames are the same size!
-	lib::event *m_client_callback;  // This is our calllback to the client
-	timestamp_t m_pts_last_frame;
-	timestamp_t m_oldest_timestamp_wanted;
-	timestamp_t m_video_clock;
-	int m_frame_count;
-	int m_dropped_count;
-	int m_dropped_count_before_decoding;
-	lib::critical_section m_lock;
-	timestamp_t m_elapsed;
-	bool m_start_input;		// True when m_src->start_frame() is needed
-    bool m_complete_frame_seen; // True whenever a real frame has been seen
-    bool m_is_live; // True for live streams
-	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
-#ifdef WITH_EXPERIMENTAL_FRAME_DROP_STATISTICS
-	FILE* m_beforeDecodingDroppingFile;
-	FILE* m_afterDecodingDroppingFile;
-	FILE* m_noDroppingFile;
-	int m_possibility_dropping_nonref;
-	int m_dropped_count_temp;
-	int m_frame_count_temp;
-#endif
+	lib::event *m_client_callback;  // Saved callback to the client
 
+	demux_video_datasource* m_src;	// Our upstream packet source
+    net::url m_url;					// URL, for debugging/printing
+	AVCodecContext *m_con;			// ffmpeg decoder state
+	bool m_con_owned;				// True if we have to close/free m_con
+	struct SwsContext *m_img_convert_ctx;	// ffmpeg scaler state
+
+	sorted_frames m_frames;			// Decoded frames on their way to the receiver
+	timestamp_t m_oldest_timestamp_wanted;	// Drop frames older than this timestamp
+	timestamp_t m_video_clock;	// Helper to compute timestamps if they are missing
+	AVRational m_time_base;		// Timebase for input PTS values.
+	
+	bool m_start_input;				// True when m_src->start_frame() is needed
+    bool m_complete_frame_seen;		// True whenever a real frame has been seen
+    bool m_is_live;					// True for live streams
+
+	video_format m_fmt;				// Format of outgoing video data
+	int m_size;						// Size of outgoing video frame in bytes
+	pixel_order m_pixel_layout;		// Per-pixel format receiver wants.
+
+	int m_frame_count;				// Statistics
+	int m_dropped_count;			// Statistics
+
+	lib::critical_section m_lock;
     static lib::critical_section s_lock;
 };
 

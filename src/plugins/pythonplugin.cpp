@@ -241,6 +241,7 @@ void initialize(
 			Py_XDECREF(rv);
 		}
 #endif
+		lib::logger::get_logger()->trace("python_plugin: %s loaded", modname.c_str());
 		// Step 7 - Call the initialization method
 		PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&",
 			api_version,

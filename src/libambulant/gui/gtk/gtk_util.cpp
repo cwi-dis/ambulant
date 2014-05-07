@@ -53,7 +53,7 @@ gdk_pixbuf_blend (
 	guint	n_channels_dst = gdk_pixbuf_get_n_channels (dst);
 	guint	n_channels_src = gdk_pixbuf_get_n_channels (src);
 	assert (n_channels_dst >= 3 && n_channels_dst <= 4);
-	assert (n_channels_dst == n_channels_src);
+//	assert (n_channels_dst == n_channels_src);
 
 	gint	dst_L = dst_rc.x, dst_T = dst_rc.y;
 	guint	dst_W = dst_rc.w, dst_H = dst_rc.h;

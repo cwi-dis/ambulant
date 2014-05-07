@@ -34,6 +34,7 @@ library_include_HEADERS= \
 	thread.h \
 	textptr.h \
 	timer.h \
+	timer_sync.h \
 	transition_info.h \
 	tree_builder.h \
 	xerces_parser.h \

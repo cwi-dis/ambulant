@@ -83,7 +83,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), urlstr);
 		return;
 	}
-	lib::logger::get_logger()->debug(" creating smil2 player %s", prefs->repr().c_str());
+	AM_DBG lib::logger::get_logger()->debug(" creating smil2 player %s", prefs->repr().c_str());
 	m_player = common::create_smil2_player(m_doc, this, m_embedder);
 
 	m_player->set_focus_feedback(this);

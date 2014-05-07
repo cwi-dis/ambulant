@@ -37,6 +37,7 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 }
+#define WITH_AVCODEC_DECODE_AUDIO4 // enable experimental "port" to avcodec_decode_audio4()
 
 namespace ambulant
 {
@@ -53,7 +54,7 @@ class ffmpeg_audio_datasource_factory : public audio_datasource_factory {
 class ffmpeg_audio_decoder_finder : public audio_decoder_finder {
   public:
 	~ffmpeg_audio_decoder_finder() {};
-	audio_datasource* new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& hint);
+	audio_datasource* new_audio_decoder(pkt_datasource *src, const audio_format_choices& hint);
 };
 
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
@@ -67,8 +68,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	static bool supported(const audio_format& fmt);
 	static bool supported(const net::url& url);
 
-	ffmpeg_decoder_datasource(const net::url& url, pkt_audio_datasource *src);
-	ffmpeg_decoder_datasource(pkt_audio_datasource *src);
+	ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *src);
+	ffmpeg_decoder_datasource(pkt_datasource *src);
 	~ffmpeg_decoder_datasource();
 
 
@@ -93,7 +94,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	timestamp_t get_elapsed();
 
-    long get_bandwidth_usage_data(const char **resource) { return m_src->get_bandwidth_usage_data(resource); }
+	long get_bandwidth_usage_data(const char **resource) { return m_src ? m_src->get_bandwidth_usage_data(resource) : -1; }
     void set_is_live (bool is_live) { m_src->set_is_live(is_live); }
     bool get_is_live () { return m_src->get_is_live(); }
 
@@ -105,11 +106,15 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool _clip_end() const;
 	bool _end_of_file();
 	void _need_fmt_uptodate();
+#ifdef  WITH_AVCODEC_DECODE_AUDIO4
+	//  decode_audio_data_from_AVPacket: copy-paste avcodec_decode_audio3() from ffmpeg-1.0
+	int decode_audio_data_from_AVPacket(AVCodecContext* avctx, AVPacket* avpkt,  uint8_t* outbuf, int* outsize);
+#endif//WITH_AVCODEC_DECODE_AUDIO4
 	AVCodecContext *m_con;
 	bool m_con_owned;
 	audio_format m_fmt;
 	lib::event_processor *m_event_processor;
-	pkt_audio_datasource* m_src;
+	pkt_datasource* m_src;
 	timestamp_t m_elapsed;      // Timestamp of the very last sample in the buffer
 	bool m_is_audio_ds;
 

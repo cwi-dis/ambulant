@@ -92,6 +92,19 @@
    Ambulant-ffmpeg-11
    Helgrind:Race
    fun:mpegaudio_parse
+   fun:*
+}
+{
+   Ambulant-ffmpeg-12
+   Helgrind:Race
+   fun:ff_init_buffer_info
+   fun:*
+}
+{
+   Ambulant-ffmpeg-13
+   Helgrind:Race
+   fun:parse_packet
+   fun:*
 }
 
 # glib is OK
@@ -680,6 +693,18 @@
    obj:*
 }
 {
+   Ambulant-TBD-36
+   Helgrind:Race
+   fun:_ZN20event_processor_impl3runEv
+   fun:*
+}
+{
+   Ambulant-TBD-37
+   Helgrind:Race
+   fun:_ZNK8ambulant5smil29scheduler6lockedEv
+   fun:*
+}
+{
    Ambulant-exit-main
    Helgrind:Race
    obj:/usr/lib/libmcop.so.1.0.0
@@ -702,7 +727,7 @@
 #
 # X is OK
 {
-   Ambulant-Memcheck--X-1
+   Ambulant-Memcheck-X-1
    Memcheck:Param
    writev(vector[...])
    fun:writev
@@ -710,7 +735,7 @@
    fun:_X11TransWritev
 }
 {
-   Ambulant-Memcheck--X-2
+   Ambulant-Memcheck-X-2
    Memcheck:Param
    write(buf)
    obj:*
@@ -756,6 +781,12 @@
    fun:ioctl
    fun:snd_timer_stop
    obj:*
+}
+{
+   Ambulant-Helgrind-SDL-1
+   Helgrind:Race
+   fun:SDL_AudioLockDevice_Default
+   fun:*
 }
 ########### Ambulant-Leak-TBD ##############
 {
@@ -1033,4 +1064,119 @@
    fun:_ZN8ambulant6common13plugin_engine26collect_plugin_directoriesEv
    fun:_ZN8ambulant6common13plugin_engineC1Ev
    obj:*
+}
+{
+   Ambulant-Helgrind-Race-1
+   Helgrind:Race
+   fun:_ZNK8ambulant3lib18timer_control_impl7runningEv
+   fun:*
+}
+
+## Additions for python-plugin TBD
+{
+   Ambulant-python-plugin-1
+   Memcheck:Cond
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-2
+   Memcheck:Value8
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-3
+   Memcheck:Addr4
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-4
+   Memcheck:Param
+   fun:PyObject_Free
+   fun:*
+}
+{
+   Ambulant-python-plugin-5
+   Memcheck:Value8
+   fun:PyObject_Realloc
+   fun:*
+}
+{
+   Ambulant-python-plugin-6
+   Memcheck:Addr4
+   fun:PyObject_Realloc
+   fun:*
+}
+{
+   Ambulant-python-plugin-7
+   Memcheck:Cond
+   fun:PyObject_Realloc
+   fun:*
+}
+{
+   Ambulant-python-plugin-8
+   Memcheck:Param
+   fun:PyObject_Realloc
+   fun:*
+}
+## Added for 'helgrind'
+{
+   Ambulant-helgrind-1
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+   fun:*
+}
+{
+   Ambulant-helgrind-2
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+   fun:xcb_wait_for_reply
+   fun:*
+}
+{
+   Ambulant-helgrind-3
+   Helgrind:LockOrder
+   fun:pthread_mutex_lock
+   fun:*
+}
+# ignore pulseaudio
+{
+   Ambulant-helgrind-4
+   Helgrind:Race
+   fun:pa_once_begin
+   fun:*
+}
+{
+   Ambulant-helgrind-5
+   Helgrind:Race
+   fun:pa_thread_self
+   fun:*
+}
+{
+   Ambulant-helgrind-6
+   Helgrind:Race
+   obj:/usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-3.0.so
+   fun:*
+}
+{
+   Ambulant-helgrind-7
+   Helgrind:Race
+   fun:pa_tls_set
+   fun:*
+}
+{
+   Ambulant-helgrind-8
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   fun:*
+}
+{
+   Ambulant-helgrind-9
+   Helgrind:Misc
+   obj:/usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so
+   fun:*
 }

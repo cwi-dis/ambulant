@@ -43,7 +43,7 @@
 #endif//AM_DBG
 
 #if 0
-/*AM_DBG*/
+AM_DBG
 void dumpResponderChain(NSResponder *r) {
     std::string x = "";
     while (r) {

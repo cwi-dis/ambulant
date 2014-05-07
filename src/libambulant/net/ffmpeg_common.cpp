@@ -38,9 +38,9 @@
 const AVRational AMBULANT_TIMEBASE = {1, 1000000};
 
 // Update the minimal required MIN_AVFORMAT_BUILD whenever we use a newer libavformat.
-#define MIN_LIBAVFORMAT_BUILD ((51<<16)+(12<<8)+2)
+#define MIN_LIBAVFORMAT_BUILD AV_VERSION_INT(53, 21, 0)
 #if LIBAVFORMAT_BUILD < MIN_LIBAVFORMAT_BUILD
-//#error Your ffmpeg is too old. Either download a newer one or remove this test in the sourcefile (at your own risk).
+#error Your ffmpeg is too old. Either download a newer one or remove this test in the sourcefile (at your own risk).
 #endif
 
 using namespace ambulant;
@@ -56,17 +56,13 @@ ambulant::net::ffmpeg_init()
 {
 	static bool is_inited = false;
 	if (is_inited) return;
-#if 1
-	// Enable this line to get lots of ffmpeg debug output:
-	av_log_set_level(AV_LOG_DEBUG);
-#endif
-// avcodec_init() was useless since years, replaced by av_register_all().
-// After being marked deprecated for some time, it is now completely been from API.
+	// Set this environment variable to get lots of ffmpeg debug output:
+	if (getenv("AMBULANT_FFMPEG_DEBUG")) av_log_set_level(AV_LOG_DEBUG);
+	// Set this environment variable to get very little ffmpeg debug output:
+	if (getenv("AMBULANT_FFMPEG_QUIET")) av_log_set_level(AV_LOG_PANIC);
+
 	av_register_all();
-// Version number from https://lists.ffmpeg.org/pipermail/ffmpeg-cvslog/2011-November/043068.html
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53, 13, 0)
 	avformat_network_init();
-#endif
 	is_inited = true;
 }
 
@@ -84,17 +80,17 @@ ffmpeg_codec_id::instance()
 }
 
 void
-ffmpeg_codec_id::add_codec(const char* codec_name, CodecID id)
+ffmpeg_codec_id::add_codec(const char* codec_name, AVCodecID id)
 {
   std::string str(codec_name);
-  m_codec_id.insert(std::pair<std::string, CodecID>(str, id));
+  m_codec_id.insert(std::pair<std::string, AVCodecID>(str, id));
 }
 
-CodecID
+AVCodecID
 ffmpeg_codec_id::get_codec_id(const char* codec_name)
 {
 	std::string str(codec_name);
-	std::map<std::string, CodecID>::iterator i;
+	std::map<std::string, AVCodecID>::iterator i;
 	i = m_codec_id.find(str);
 	if (i != m_codec_id.end()) {
 		AM_DBG lib::logger::get_logger()->debug("get_codec_id(%s) -> %d", str.c_str(), i->second);
@@ -156,7 +152,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_
 	m_video_fmt = video_format("ffmpeg");
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
-		m_video_fmt.parameters = (void *) m_con->streams[video_stream_nr()]->codec;
+		AVStream *stream = m_con->streams[video_stream_nr()];
+		AVCodecContext *codec = stream->codec;
+		m_video_fmt.parameters = (void *)codec;
+		// Make the timebases match, so we can correcty convert timestamps in the video_decoder
+		codec->time_base = stream->time_base;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): video_codec_name=%s", m_con->streams[video_stream_nr()]->codec->codec_name);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): No Video stream ?");
@@ -172,23 +172,21 @@ ffmpeg_demux::~ffmpeg_demux()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+    ffmpeg_lock->enter();
 	if (m_con) {
-		if (m_con->nb_streams < MAX_STREAMS) {
+		if (m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS) {
 			unsigned int stream_index;
 			for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-				if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_AUDIO
-					|| m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
+				if (m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_AUDIO
+					|| m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 					avcodec_close(m_con->streams[stream_index]->codec);
 				}
 			}
 		}
-#if LIBAVFORMAT_VERSION_INT < 0x350400
-		av_close_input_file(m_con);
-		// Implies av_free(m_con);
-#else
 		avformat_close_input(&m_con);
-#endif
 	}
+    ffmpeg_lock->leave();
 	m_con = NULL;
 	m_lock.leave();
 }
@@ -214,12 +212,10 @@ ffmpeg_demux::supported(const net::url& url)
 	// Setup struct to allow ffmpeg to determine whether it supports this
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
-	std::string url_str(url.get_url());
+	std::string url_str(url.get_document().get_url());
+	const std::string& frag = url.get_ref();
+	bool is_live = (frag.find("is_live=1") != std::string::npos);
 	std::string ffmpeg_name = url_str;
-	if (url.is_local_file()) {
-		ffmpeg_name = url.get_file();
-	}
-
 	probe_data.filename = ffmpeg_name.c_str();
 	probe_data.buf = NULL;
 	probe_data.buf_size = 0;
@@ -237,46 +233,55 @@ ffmpeg_demux::supported(const net::url& url)
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), ffmpeg_name.c_str(), (void*)fmt);
 	AVFormatContext *ic = NULL;
 	int err;
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 2, 0)
-    err = av_open_input_file(&ic, ffmpeg_name.c_str(), fmt, 0, 0);
-#else
 	// Force rtsp-over-tcp, if that preference has been set.
 	common::preferences* prefs = common::preferences::get_preferences();
 	AVDictionary *options = 0;
 	if (prefs->m_prefer_rtsp_tcp) {
 		av_dict_set(&options, "rtsp_transport", "tcp", 0);
 	}
-    err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, &options);
+	if (is_live) {
+		av_dict_set(&options, "analyzeduration", "60000000", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+#if 1
+        char *optqs = getenv("VC_RTP_REORDER_QUEUE_SIZE");
+        if (optqs) {
+            av_dict_set(&options, "reorder_queue_size", optqs, 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+            lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): reorder_queue_size set to %s", url_str.c_str(), optqs);
+        }
 #endif
+#if 0
+		av_dict_set(&options, "reorder_queue_size", "500", 0); // Trying to get Vconect streams working: 5 seconds isn't enough to find the parameters.
+		av_dict_set(&options, "fifo_size", "2000000", 0);
+		av_dict_set(&options, "buffer_size", "2000000", 0);
+		av_dict_set(&options, "ts", "1", 0);
+		av_dict_set(&options, "fdebug", "1", 0);
+#endif
+	}
+	err = avformat_open_input(&ic, ffmpeg_name.c_str(), fmt, options ? &options : NULL);
 
 	if (err) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_open_input_file returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
-			av_close_input_file(ic);
-#else
 			avformat_close_input(&ic);
-#endif
 		}
 		return NULL;
 	}
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
-	err = av_find_stream_info(ic);
-#else
-	err = avformat_find_stream_info(ic, NULL);
-#endif
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+	ffmpeg_lock->enter();	
+	err = avformat_find_stream_info(ic,  options ? &options : NULL);
+	ffmpeg_lock->leave();
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) {
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 17, 0)
-			av_close_input_file(ic);
-#else
 			avformat_close_input(&ic);
-#endif
 		}
 		return NULL;
 	}
-
+	// Check that all options were processed
+	AVDictionaryEntry *t = NULL;
+	while (t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) {
+        
+        	lib::logger::get_logger()->trace("ffmpeg_demux::supported: Unsupported ffmpeg AVOption '%s'. (Programmer error?)", t->key);
+	}
 	AM_DBG av_dump_format(ic, 0, ffmpeg_name.c_str(), 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: rate=%d, channels=%d", ic->streams[0]->codec->sample_rate, ic->streams[0]->codec->channels);
 	assert(ic);
@@ -294,10 +299,10 @@ int
 ffmpeg_demux::audio_stream_nr()
 {
 	// Failure of this assert may be an c-compiler alignment problem
-	assert(m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS);
+	assert(m_con->nb_streams >= 0 && m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS);
 	unsigned int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_AUDIO)
+		if (m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
 			return stream_index;
 	}
 
@@ -308,10 +313,10 @@ int
 ffmpeg_demux::video_stream_nr()
 {
 	// Failure of this assert may be an c-compiler alignment problem
-	assert(m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS);
+	assert(m_con->nb_streams >= 0 && m_con->nb_streams < AMBULANT_MAX_FFMPEG_STREAMS);
 	unsigned int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
-		if (m_con->streams[stream_index]->codec->codec_type == CODEC_TYPE_VIDEO) {
+		if (m_con->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 			return stream_index;
 		}
 	}
@@ -364,7 +369,7 @@ void
 ffmpeg_demux::add_datasink(demux_datasink *parent, int stream_index)
 {
 	m_lock.enter();
-	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
+	assert(stream_index >= 0 && stream_index < AMBULANT_MAX_FFMPEG_STREAMS);
 	assert(m_sinks[stream_index] == 0);
 	m_sinks[stream_index] = parent;
 	parent->add_ref();
@@ -409,7 +414,7 @@ long
 ffmpeg_demux::get_bandwidth_usage_data(int stream_index, const char **resource)
 {
 	m_lock.enter();
-    assert(stream_index >= 0 && stream_index <= MAX_STREAMS);
+    assert(stream_index >= 0 && stream_index <= AMBULANT_MAX_FFMPEG_STREAMS);
     long rv = m_data_consumed[stream_index];
     m_data_consumed[stream_index] = 0;
     *resource = m_bandwidth_resource.c_str();
@@ -422,7 +427,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 {
 	demux_datasink* ds;
 	m_lock.enter();
-	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
+	assert(stream_index >= 0 && stream_index < AMBULANT_MAX_FFMPEG_STREAMS);
 	ds = m_sinks[stream_index];
 	m_sinks[stream_index] = 0;
 	if (ds) m_nstream--;
@@ -431,7 +436,8 @@ ffmpeg_demux::remove_datasink(int stream_index)
 		// If the sink is currently busy (in run()) then
 		// run() will take care of disposal.
 		// signal EOF
-		ds->push_data(0, 0, 0);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink: push eof and release sink");
+		ds->push_data(0, 0, datasource_packet_flag_eof);
 		ds->release();
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream);
@@ -463,7 +469,7 @@ ffmpeg_demux::run()
 	while (!exit_requested()) {
 		AVPacket pkt1, *pkt = &pkt1;
 
-		pkt->pts = 0;
+		av_init_packet(pkt);
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_clip_begin_changed) {
@@ -493,6 +499,7 @@ ffmpeg_demux::run()
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
 			m_clip_begin_changed = false;
+			// XXXJACK: Must push flush packet down all streams, so decoders can call avcodec_flush_buffers().
 		}
 		m_lock.leave();
 		int ret = av_read_frame(m_con, pkt);
@@ -503,9 +510,9 @@ ffmpeg_demux::run()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: eof encountered (%d), wait some time before continuing the while loop", ret);
 			if (!m_is_live && !eof_sent_to_clients) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
-				for (int i=0; i<MAX_STREAMS; i++) {
+				for (int i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 					if (m_sinks[i]) {
-						m_sinks[i]->push_data(0, 0, 0);
+						m_sinks[i]->push_data(0, 0, datasource_packet_flag_eof);
 					}
 				}
 				eof_sent_to_clients = true;
@@ -521,7 +528,7 @@ ffmpeg_demux::run()
 		pkt_nr++;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
-		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
+		assert(pkt->stream_index >= 0 && pkt->stream_index < AMBULANT_MAX_FFMPEG_STREAMS);
 		// Keep statistics
 		m_data_consumed[pkt->stream_index] += pkt->size;
 		
@@ -538,7 +545,14 @@ ffmpeg_demux::run()
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
 					pts = pkt->pts;
 				}
-
+#ifdef LOGGER_VIDEOLATENCY
+                {
+                    timestamp_t pr_pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+                    timestamp_t pr_dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+                    lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 0-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
+                }
+#endif
+				
 				// 17-feb-2010 To fix the chopping audio playback in vobis/ogg
 				// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
 				// sometime, the pts and dts got by ffmpeg is not valid any more (which equal to AV_NOPTS_VALUE)
@@ -600,58 +614,48 @@ ffmpeg_demux::run()
 				m_current_sink = sink;
 
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
+				AVPacket *pkt_copy = (AVPacket *)malloc(sizeof(AVPacket));
+				*pkt_copy = *pkt;
+
+                sink->add_ref();
 				m_lock.leave();
-				accepted = sink->push_data((timestamp_t)pts, pkt->data, (size_t)pkt->size);
-				if ( ! accepted) {
+				accepted = sink->push_data((timestamp_t)pts, pkt_copy, datasource_packet_flag_avpacket);
+                AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pkt=%p (data %p, size %d)\n", pkt_copy, pkt_copy->data, pkt_copy->size);
+				if ( !accepted) {
+					free(pkt_copy);
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 					// sleep 10 millisec, hardly noticeable
 					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
 				}
 				m_lock.enter();
+
 				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
 				{
-					sink->push_data(0,0,0);
-					sink->release();
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::run: push eof and release sink (released while busy)");
+					sink->push_data(0,0,datasource_packet_flag_eof);
 				}
+                sink->release();
 				m_current_sink = NULL;
 				sink = m_sinks[pkt->stream_index];
 			}
 		}
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
-		av_free_packet(pkt);
+		//AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
+		//av_free_packet(pkt);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
 	int i;
 	m_lock.leave();
-	for (i=0; i<MAX_STREAMS; i++) {
+	for (i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
 		if (m_sinks[i]) {
-			m_sinks[i]->push_data(0, 0, 0);
+			m_sinks[i]->push_data(0, 0, datasource_packet_flag_eof);
 			m_sinks[i]->release();
 			m_sinks[i] = NULL;
 		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
 	return 0;
-}
-
-AVCodecContext *
-ambulant::net::ffmpeg_alloc_partial_codec_context(bool video, const char *name)
-{
-	ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(53, 8, 0)
-	AVCodecContext *ffcontext = avcodec_alloc_context();
-#else
-	AVCodecContext *ffcontext = avcodec_alloc_context3(NULL);
-#endif
-	if (video) {
-		ffcontext->codec_type = CODEC_TYPE_VIDEO;
-	} else {
-		ffcontext->codec_type = CODEC_TYPE_AUDIO;
-	}
-	ffcontext->codec_id = codecid->get_codec_id(name);
-	return ffcontext;
 }
 
 lib::critical_section s_lock;

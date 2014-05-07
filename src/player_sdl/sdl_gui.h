@@ -23,8 +23,9 @@
 #define __SDL_GUI_H__
 
 /* 
- * sdl_gui.h - SDL GUI for Ambulant
- *             intially only keyboard based
+ * sdl_gui.h - SDL GUI for Ambulant: interface to SDL2 and Linux
+ *             only keyboard based 
+ *
  *             in future could look like iAmbulant
  */
 
@@ -36,7 +37,9 @@
 //X #include "sdl_logger.h"
 
 #include "SDL.h"
+#ifdef WITH_SDL_IMAGE
 #include "SDL_image.h"
+#endif
 
 class sdl_gui_player;
 //X class sdl_settings;
@@ -89,6 +92,8 @@ class sdl_gui {
 	SDL_Window* m_documentcontainer; // The drawable area
 	// SDL interface
 	SDL_Window* m_window;	// the top-level window, containing all visuals
+	SDL_Cursor* m_arrow_cursor;
+	SDL_Cursor* m_hand_cursor;
 /* JNK
 	SDL_Renderer* m_renderer;// its associated 2D rendering context
 	SDL_Surface* m_surface;	// a (software) pixel destination

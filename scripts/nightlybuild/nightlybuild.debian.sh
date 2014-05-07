@@ -5,27 +5,19 @@
 #
 # NOTE: a number of things must be installed (and working) for this
 # script to run successfully:
-#  devscripts
-#  mercurial
-#  chrpath
-#  autoconf
-#  automake
-#  libtool
-#  postfix
-#  mailutils
-#  curl
-#  ssh
-# libxml2-dev 
-# libqt3-mt-dev 
-# liblivemedia-dev 
-# libsdl1.2-dev 
-# libavformat-dev 
-# libavcodec-dev 
-# libswscale-dev 
-# libxerces-c-dev 
-# python-dev 
-# python-gtk2-dev 
-# python-gobject-dev
+#
+#  postfix mailutils mercurial curl ssh devscripts chrpath dh-autoreconf autopoint
+#
+# PLUS: 
+#
+#  sudo apt-add-repository ppa:zoogie/sdl2-snapshots
+#  sudo apt-add-repository ppa:samrog131/ppa
+#  sudo apt-get update
+#
+# PLUS:
+#
+#  cd ambulant/third_party_packages
+#  sudo python build-third-party-packages.py debian
 #
 # NOTE 2: the key used for signing (in debuild) must have no passphrase.
 # I think this can only be done with the gpg --edit-key command line
@@ -45,7 +37,6 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.5
-UBUNTUVERSION=precise
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -73,13 +64,14 @@ CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
 
 DISTRIB_RELEASE=unknown
+DISTRIB_CODENAME=unknown
 . /etc/lsb-release
 DEBARCH=`dpkg-architecture -qDEB_HOST_ARCH`
 DESTINATION_DEBIAN=$DESTINATION/deb/
 DESTINATION_STAGING=dists
 RELPATH_SRC=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/source
 RELPATH_BIN=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/binary-$DEBARCH
-
+FULLAMBULANTVERSION=$AMBULANTVERSION$VERSIONSUFFIX~$DISTRIB_CODENAME
 echo
 echo ==========================================================
 echo Ambulant nightly build for Debian, $ARCH, $USER@`hostname`, `date`
@@ -129,7 +121,7 @@ sh autogen.sh
 case x$release in
 xno)
 cat > debian/changelog << xyzzy
-ambulant ($AMBULANTVERSION$VERSIONSUFFIX) $UBUNTUVERSION; urgency=low
+ambulant ($FULLAMBULANTVERSION) $DISTRIB_CODENAME; urgency=low
 
   * Nightly build, for testing only
 
@@ -167,7 +159,13 @@ rsync -r $DESTINATION_STAGING $DESTINATION_DEBIAN
 #
 # Upload to PPA
 #
-dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${AMBULANTVERSION}${VERSIONSUFFIX}_source.changes
+case x$UBUNTUPPA in
+x)
+	;;
+*)
+	dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${FULLAMBULANTVERSION}_source.changes
+	;;
+esac
 cd ..
 
 #

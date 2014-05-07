@@ -95,7 +95,9 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 	m_toplevelcontainer(NULL),
 	m_guicontainer(NULL),
 	m_documentcontainer(NULL),
-	m_window(NULL)
+	m_window(NULL),
+	m_arrow_cursor(NULL),
+	m_hand_cursor(NULL)
 //JNK	m_renderer(NULL),
 //JNK	m_texture(NULL)
 //TBD	menubar(NULL),
@@ -149,12 +151,21 @@ sdl_gui::sdl_gui(const char* title, const char* initfile)
 #endif//JNK
 	m_toplevelcontainer = m_documentcontainer = m_window;
 	m_gui_player = new sdl_gui_player(this);
+	m_arrow_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_ARROW);
+	m_hand_cursor = SDL_CreateSystemCursor (SDL_SYSTEM_CURSOR_HAND);
+	SDL_SetCursor (m_arrow_cursor);
 }
 
 sdl_gui::~sdl_gui() {
 
 	// remove all dynamic data in reverse order as they are constructed
 	// m_programfilename - not dynamic
+	if (m_arrow_cursor != NULL) {
+//		SDL_FreeCursor (m_arrow_cursor);
+	}
+	if (m_hand_cursor != NULL) {
+//		SDL_FreeCursor (m_hand_cursor);
+	}
 	if (m_smilfilename != NULL) {
 		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
@@ -686,6 +697,7 @@ sdl_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 		delete m_gui_player;
 
 	m_gui_player = new sdl_gui_player(this);
+	assert (m_gui_player);
 	return m_gui_player->is_open();
 }
 
@@ -710,8 +722,6 @@ void
 sdl_gui::sdl_loop() {
 	bool busy = true;
 	SDL_Event event;
-	ambulant::gui::sdl::ambulant_sdl_window* asw;
-	ambulant::gui::sdl::sdl_ambulant_window* saw;
 
 	while (busy) {
 		if (SDL_WaitEvent(&event) == 0) {
@@ -725,25 +735,14 @@ sdl_gui::sdl_loop() {
 		case SDL_USEREVENT:
 			AM_DBG lib::logger::get_logger()->debug("%s SDL_USEREVENT: code=%d data1=0x%x data2=0x%x",__PRETTY_FUNCTION__, event.user.code,event.user.data1,event.user.data2);
 			if (event.user.code == 317107) {
-				asw = (ambulant::gui::sdl::ambulant_sdl_window*) event.user.data1;
-				lib::rect* redraw_rectp = (ambulant::lib::rect*) event.user.data2;
-				saw = asw == NULL ? NULL : asw->get_sdl_ambulant_window();
-				if (saw != NULL) {
-					SDL_Surface* surf = saw->get_SDL_Surface();
-					if (surf != NULL) {
-						SDL_Rect sdl_rect = {redraw_rectp->left(), redraw_rectp->top(), redraw_rectp->width(), redraw_rectp->height() };
-						bool ok = SDL_SetClipRect(saw->get_SDL_Surface(), &sdl_rect);
-						if ( ! ok) {
-							lib::logger::get_logger()->error("%s SDL_SetClipRect: %s",__PRETTY_FUNCTION__, SDL_GetError());
-						}
-						assert(ok);
-						asw->redraw(*redraw_rectp);
-					}
+				if (m_gui_player != NULL) {
+					m_gui_player->redraw(event.user.data1, event.user.data2);
 				}
-				free(redraw_rectp);
-			}
+ 			}
 			break;
 		case SDL_WINDOWEVENT:
+			ambulant::gui::sdl::ambulant_sdl_window* asw; //XX no refs to 'ambulant' 
+			ambulant::gui::sdl::sdl_ambulant_window* saw;
 			saw = ambulant::gui::sdl::sdl_ambulant_window::get_sdl_ambulant_window (event.window.windowID);
 			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
 			if (saw != NULL && (asw = saw->get_ambulant_sdl_window()) != NULL) {
@@ -753,7 +752,7 @@ sdl_gui::sdl_loop() {
 					saw->set_evp(player->get_evp()); // for timestamps
 					saw->get_ambulant_sdl_window()->set_gui_player (m_gui_player);
 				}
-				ambulant::lib::rect r;
+				ambulant::lib::rect r; //XX no refs to 'ambulant' 
 				switch ( event.window.event ) {
 				case  SDL_WINDOWEVENT_SHOWN:
 				case  SDL_WINDOWEVENT_EXPOSED:
@@ -766,6 +765,33 @@ sdl_gui::sdl_loop() {
 				}
 			}
 			break;
+		case SDL_MOUSEMOTION: // mouse moved
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_MOUSEMOTION: type=%d windowID=%d which=%d state=%d x=%d y=%d relx=%d rely=%d",__PRETTY_FUNCTION__, event.motion.type,  event.motion.windowID, event.motion.which, event.motion.state,event.motion.x,event.motion.y,event.motion.xrel,event.motion.yrel);
+			if (m_gui_player != NULL) {
+				SDL_Point p;
+				p.x = event.motion.x;
+				p.y = event.motion.y;
+				m_gui_player->before_mousemove(0);
+				m_gui_player->user_event(p, 1);
+				if (m_gui_player->after_mousemove()) {
+					SDL_SetCursor (m_hand_cursor);
+				} else {
+					SDL_SetCursor (m_arrow_cursor);
+				}	
+			}
+			break;
+		case SDL_MOUSEBUTTONDOWN: // mouse button pressed
+		case SDL_MOUSEBUTTONUP: // mouse button released
+			AM_DBG lib::logger::get_logger()->debug("%s %s: type=%d windowID=%d which=%d button=%d, state=%d, x=%d y=%d",__PRETTY_FUNCTION__, event.button.state ? "SDL_MOUSEBUTTONDOWN":"SDL_MOUSEBUTTONUP", event.button.type,  event.button.windowID, event.button.which, event.button.button, event.button.state ,event.button.x,event.button.y);
+			if (m_gui_player != NULL && event.button.state == 0) { // button released
+				SDL_Point p;
+				p.x = event.motion.x;
+				p.y = event.motion.y;
+				m_gui_player->user_event(p, 0);
+			}
+			break;
+		case SDL_MOUSEWHEEL: // mouse wheel motion
+			break;
 		default:
 			break;
 		}
@@ -775,9 +801,17 @@ sdl_gui::sdl_loop() {
 int
 main (int argc, char*argv[]) {
 
-	SDL_Init(SDL_INIT_EVERYTHING);
-	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP);
-
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {
+		fprintf (stderr, "Ambulant: SDL_Init failed: %s\n", SDL_GetError());
+		exit (-1);
+	}
+	int img_flags = 0; // XXXJACK: don't think we need these: IMG_INIT_JPG | IMG_INIT_PNG ; 
+#ifdef WITH_SDL_IMAGE
+	if (IMG_Init(img_flags) != img_flags) {
+		fprintf (stderr, "Ambulant: IMG_Init failed: %s\n", SDL_GetError());
+		exit (-2);
+	}
+#endif // WITH_SDL_IMAGE
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;
@@ -800,6 +834,14 @@ main (int argc, char*argv[]) {
 // TBD begin code from gtk_logger
 	common::preferences* prefs = common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
+	if (logger == NULL) {
+		printf("Programmer error: could not create '%s' data stucture\n", "logger");
+		exit(-1);
+	}
+	if (prefs == NULL) {
+		logger->error("Programmer error: could not create '%s' data stucture", "preferences");
+		exit(-1);
+	}
 	// Connect logger to our message displayer and output processor
 	// logger->set_show_message(show_message);
 	// Tell the logger about the output level preference
@@ -807,52 +849,64 @@ main (int argc, char*argv[]) {
 	logger->set_level(level);
 // TBD end code from gtk_logger
 
+//X No inital window, logging on console
 	/* Setup surface */
-	sdl_gui *gui = new sdl_gui(argv[0], NULL);
+//X	sdl_gui *gui = new sdl_gui(argv[0], NULL);
 	// take log level from preferences
-//TBD	sdl_logger::set_sdl_logger_gui(gui);
-//TBD	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
-//TBD	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
-//TBD	// Print welcome banner
-//TBD	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
-//TBD	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);
+//X	sdl_logger::set_sdl_logger_gui(gui);
+//X	sdl_logger* sdl_logger = sdl_logger::get_sdl_logger();
+//X	lib::logger::get_logger()->debug("Ambulant Player: now logging to a window");
+//X	// Print welcome banner
+   	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Unix/SDL"), __DATE__);
 #if ENABLE_NLS
-//TBD	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+//X	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
 
 	bool exec_flag = true; // for make check
 
-	if (argc > 1) {
-		char last[6];
-		char* str = argv[argc-1];
-		// If the URL starts with "ambulant:" this is the trick-uri-scheme to
-		// open URLs in Ambulant from the browser. Remove the trick.
-		if (strncmp(str, "ambulant:", 9) == 0)
-			str += 9;
-		int len = strlen(str);
-		strcpy(last, &str[len-5]);
-		if (strcmp(last, ".smil") == 0
-			|| strcmp(&last[1], ".smi") == 0
-			|| strcmp(&last[1], ".sml") == 0)
-		{
-			if (gui->openSMILfile(str, 0, true) && exec_flag) {
-				gui->m_gui_player->play();
-			}
+	// establish the .smil document to play
+	char* document_url = NULL;
+
+//X no initial Welcome display
+//X	if (argc <= 1) {
+//X		if (prefs && ! prefs->m_welcome_seen) {
+//X			document_url = (char*) find_datafile(welcome_locations);
+//X			prefs->m_welcome_seen = true;
+//X		}
+//X		exec_flag = true;
+//X	} else {
+		if (argc == 2) {
+			document_url = argv[1];
 		}
-	} else {
-		preferences* prefs = preferences::get_preferences();
-		if ( ! prefs->m_welcome_seen) {
-			const char *welcome_doc = find_datafile(welcome_locations);
-			if (welcome_doc && gui->openSMILfile(welcome_doc, 0, true)) {
-				gui->m_gui_player->play();
-				prefs->m_welcome_seen = true;
-			}
-		}
-		exec_flag = true;
+//X	}
+	if (document_url == NULL) {
+		logger->error("Usage: %s <filename>|<url>", argv[0]);
+		exit(-1);
+	}    
+	// If the URL starts with "ambulant:" this is the trick-uri-scheme to
+	// open URLs in Ambulant from the browser (iOS). Remove the trick.
+	char last[6];
+	if (strncmp(document_url, "ambulant:", 9) == 0)
+		document_url += 9;
+
+	int len = strlen(document_url);
+	strcpy(last, &document_url[len-5]);
+	if (strcmp(last, ".smil") != 0
+		&& strcmp(&last[1], ".smi") != 0
+		& strcmp(&last[1], ".sml") != 0) {
+		logger->error("<filename> or <url> should end with '%s': '%s' or '%s'", ".smil", ".smi", ".sml");
+		exit(-1);
 	}
+	sdl_gui *gui = new sdl_gui(argv[0], strdup(document_url));
+	if (gui == NULL) {
+		logger->error("Programmer error: could not create '%s' data structure",  "gui_player");
+		exit(-1);
+	}
+	gui->m_gui_player->play();
 	gui->sdl_loop();
-//TBD	unix_prefs.save_preferences();
-//TBD	delete sdl_logger::get_sdl_logger();
+	prefs->save_preferences();
+	// delete logger; // logger will be deleted by loggers_manager called at exit()
 	gui->quit();
 	delete gui;
 

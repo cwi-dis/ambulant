@@ -79,7 +79,6 @@ class sdl_fill_renderer : public renderer_playable {
 
 	bool m_is_showing;
 	lib::transition_info *m_intransition, *m_outtransition;
-	// TBD smil2::transition_engine *m_trans_engine;
 	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };

@@ -186,13 +186,34 @@ class TPP(CommonTPP):
 
 class DebianTPP(CommonTPP):
     PACKAGE_INSTALL_CMD = "apt-get -y install %s"
+
+    def __init__(self, name, ppa=None, releases=None):
+        CommonTPP.__init__(self, name)
+        self.output = open("log.debian.txt", "a")
+        self.ppa = ppa
+        if ppa:
+            assert ppa.startswith("ppa:")
+        self.releases = releases
     
     def run(self):
+        if not self._check_ppa():
+            return False
         return self._command(self.PACKAGE_INSTALL_CMD % self.name)
         
     def mirror(self):
         return True
     
+    def _check_ppa(self):
+        if not self.ppa:
+            return True
+        cur_release = os.popen("lsb_release -cs", "r").read().strip()
+        ppaname = self.ppa[len("ppa:"):]
+        ppaname = ppaname.replace('/', '-')
+        if not os.path.exists('/etc/apt/sources.list.d/%s-%s.list' % (ppaname, cur_release)):
+            print >>self.output, '* Missing PPA %s' % self.ppa
+            return False
+        return True
+        
 class WinTPP(TPP):
 
     DEFAULT_BUILD_COMMAND=None
@@ -370,22 +391,34 @@ third_party_packages={
     'debian' : [
         DebianTPP("automake"),
         DebianTPP("autoconf"),
+        DebianTPP("libtool"),
+        DebianTPP("gettext"),
         DebianTPP("autotools-dev"),
         DebianTPP("gettext"),
         DebianTPP("libgtk2.0-dev"),
         DebianTPP("libgdk-pixbuf2.0-dev"),
         DebianTPP("libxml2-dev"),
-        DebianTPP("liblivemedia-dev"),
         DebianTPP("libltdl-dev"),
         DebianTPP("libsdl1.2-dev"),
-        DebianTPP("libavformat-dev"),
-        DebianTPP("libavcodec-dev"),
-        DebianTPP("libswscale-dev"),
         DebianTPP("libxerces-c-dev"),
         DebianTPP("libexpat1-dev"),
         DebianTPP("python-dev"),
         DebianTPP("python-gtk2-dev"),
         DebianTPP("python-gobject-dev"),
+        DebianTPP("libdispatch-dev"),
+        
+        # The following come from ppa:zoogie/sdl2-snapshots (as of 06-Oct-2013).
+        # Unfortunately they don't work on 13.10...
+        #DebianTPP("libsdl2-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        #DebianTPP("libsdl2-image-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        #DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
+        
+        # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
+        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavutil-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libswscale-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+
     ],
  
     'macosx' : [
@@ -436,29 +469,42 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
-            url2="ffmpeg-1.0.tar.gz",
-            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.2.tar.gz",
+            url2="ffmpeg-2.0.2.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "rm -rf ffmpeg-1.0-universal && "
-                "mkdir ffmpeg-1.0-universal && "
-                "cd ffmpeg-1.0-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-1.0 all" % 
+                "rm -rf ffmpeg-2.0.2-universal && "
+                "mkdir ffmpeg-2.0.2-universal && "
+                "cd ffmpeg-2.0.2-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.0.2 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
             
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
-            checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+            url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
+            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+            # xxxjack removed  --disable-mmx --disable-video-x11-xinput
+            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-                "cd SDL-1.3.0-* && "
-                "./configure --prefix='%s' --disable-dependency-tracking "
-                    "CFLAGS='%s -framework ForceFeedback' "
-                    "LDFLAGS='%s -framework ForceFeedback' &&"
+               "cd SDL-2.0.*-* && "
+                "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' --disable-dependency-tracking &&"
                 "make ${MAKEFLAGS} && "
-                "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
+                "make install &&"
+                "cd .." % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
+
+#         TPP("SDL",
+#             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+#             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
+#             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+#             buildcmd=
+#                 "cd SDL-1.3.0-* && "
+#                 "./configure --prefix='%s' --disable-dependency-tracking "
+#                     "CFLAGS='%s -framework ForceFeedback' "
+#                     "LDFLAGS='%s -framework ForceFeedback' &&"
+#                 "make ${MAKEFLAGS} && "
+#                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
+#             ),
             
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",
@@ -744,11 +790,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
-            url2="ffmpeg-1.0.tar.gz",
-            checkcmd="pkg-config --atleast-version=53.24.2 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.2.tar.gz",
+            url2="ffmpeg-2.0.2.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "cd ffmpeg-1.0&& "
+                "cd ffmpeg-2.0.2&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
@@ -759,8 +805,8 @@ third_party_packages={
             # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-               "cd SDL-2.0.0-* && "
-                "%s --disable-video-x11-xinput &&"
+               "cd SDL-2.0.*-* && "
+                "%s --disable-mmx --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (LINUX_COMMON_CONFIGURE)
@@ -1156,7 +1202,7 @@ def main():
         if ok:
             print "+ ok:", pkg.name
         else:
-            print "+ failed:", pkg.name
+            print "* failed:", pkg.name
             allok = False
     if allok and final_package:
         print "+ processing FINAL package"
@@ -1164,7 +1210,7 @@ def main():
         if ok:
             print "+ ok: FINAL package"
         else:
-            print "+ failed: FINAL package"
+            print "* failed: FINAL package"
             allok = False
     elif final_package:
         print "+ skipped: FINAL package, due to earlier errors"

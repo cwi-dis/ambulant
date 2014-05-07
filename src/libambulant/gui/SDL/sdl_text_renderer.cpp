@@ -17,27 +17,27 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // TBD
+#if defined(WITH_SDL2)
 
-//#include "ambulant/gui/SDL/sdl_includes.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_text_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"
-
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
-#ifndef WITH_SDLPANGO
+#if defined(WITH_SDL_TTF)
 #define FONT "Times 6"
 #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
 #define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
 #define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
-#endif// ! WITH_SDLPANGO
+#endif// defined(WITH_SDL_TTF)
+
 #define DEFAULT_FONT_HEIGHT 16
 
 using namespace ambulant;
@@ -52,6 +52,11 @@ gui::sdl::create_sdl_text_playable_factory(common::factories *factory, common::p
 {
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+#if defined(WITH_SDL_TTF)
+	TTF_Init();
+#elif ! defined(WITH_SDL_PANGO)
+	lib::logger::get_logger()->trace("No %s renderer available", "text");
+#endif// ! defined(WITH_SDL_PANGO)
 	return new common::single_playable_factory<
 		sdl_text_renderer,
 		sdl_text_playable_tag,
@@ -70,18 +75,18 @@ sdl_text_renderer::sdl_text_renderer(
 :	sdl_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_text_storage(NULL),
 	m_text_color(0),
-	m_text_font(NULL),
 	m_text_size(DEFAULT_FONT_HEIGHT),
-#ifndef WITH_SDLPANGO
+	m_text_font(NULL),
+#if defined(WITH_SDL_TTF)
 	m_ttf_font(NULL),
 	m_ttf_style(TTF_STYLE_NORMAL),
-#endif// ! WITH_SDLPANGO
+#endif// defined(WITH_SDL_TTF)
 	m_sdl_surface(NULL)
 {
 	smil2::params *params = smil2::params::for_node(node);
-	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(0x%x) params=0x%x",this,params);
+	AM_DBG lib::logger::get_logger()->debug("sdl_text_renderer(%p) params=%p",this,params);
 	if (params) {
-#ifndef WITH_SDLPANGO
+#if defined(WITH_SDL_TTF)
 		int ttf_font_style = TTF_STYLE_NORMAL;
 		const char* font_style = params->get_str("font-style");
 		const char* font_weight = params->get_str("font-weight");
@@ -91,7 +96,7 @@ sdl_text_renderer::sdl_text_renderer(
 		if (font_weight != NULL && strcmp(font_weight, "bold") == 0) {
 			m_ttf_style |= TTF_STYLE_BOLD;
 		}
-#endif// ! WITH_SDLPANGO		 
+#endif//defined(WITH_SDL_TTF)
 		m_text_font = params->get_str("font-family");
 		m_text_color = params->get_color("color", 0);
 		m_text_size = params->get_float("font-size", DEFAULT_FONT_HEIGHT);
@@ -100,7 +105,7 @@ sdl_text_renderer::sdl_text_renderer(
 }
 
 sdl_text_renderer::~sdl_text_renderer() {
-	AM_DBG lib::logger::get_logger()->debug("~sdl_text_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~sdl_text_renderer(%p)", this);
 	m_lock.enter();
 	if (m_text_storage != NULL) {
 		free(m_text_storage);
@@ -113,12 +118,12 @@ sdl_text_renderer::~sdl_text_renderer() {
 void
 sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 // No m_lock needed, protected by base class
-#ifdef  WITH_SDLPANGO
+#if defined(WITH_SDL_PANGO)
 	PangoContext *context;
 	PangoLanguage *language;
 	PangoFontDescription *font_desc;
 	PangoLayout *layout;
-#endif//WITH_SDLPANGO
+#endif//defined(WITH_SDL_PANGO)
 	double alpha_media = 1.0;
 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) w;
 
@@ -132,7 +137,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		m_text_storage[m_data_size] = '\0';
 	}
 	AM_DBG lib::logger::get_logger()->debug(
-		"sdl_text_renderer.redraw(0x%x):"
+		"sdl_text_renderer.redraw(%p):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
 		"font-family=(%s)",
 		(void *)this, r.left(), r.top(), r.width(), r.height(),
@@ -144,7 +149,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 	    H = r.height();
 
 	if (m_text_storage != NULL && m_sdl_surface == NULL) {
-#ifndef  WITH_SDLPANGO
+#if defined(WITH_SDL_TTF)
 		if (m_ttf_font == NULL) { // Fedora 16
 			m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size);
 			if (m_ttf_font == NULL) { // Ubuntu 12.04
@@ -165,7 +170,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		SDL_Color sdl_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
 		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, sdl_color);
 		assert (m_sdl_surface);
-#else //WITH_SDLPANGO
+#elif defined(WITH_SDL_PANGO)
 		// initialize the pango context, layout...
 //X		context = gdk_pango_context_get();
 		SDLPango_Context* sdl_pango_context = SDLPango_CreateContext();
@@ -202,12 +207,6 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			color_matrix.m[2][1] = bluec(m_text_color);
 			color_matrix.m[3][1] = 255; // alpha pixel
 		}
-#ifdef  JNK	 
-		color_matrix.m[1][0] = 255; //green  foreground
-		color_matrix.m[3][0] = 255; //opaque foreground
-		color_matrix.m[2][0] = 255; //blue  background
-		color_matrix.m[3][0] = 255; //opaque background
-#endif//JNK
 		SDLPango_SetDefaultColor (sdl_pango_context, &color_matrix);               
 		// include the text
 //X		pango_layout_set_text (layout, m_text_storage, -1);
@@ -217,26 +216,12 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		m_sdl_surface = SDLPango_CreateSurfaceDraw (sdl_pango_context);
 		SDLPango_Draw(sdl_pango_context, m_sdl_surface, 0, 0);
 
-#ifndef WITH_SDLPANGO
-		// Foreground Color of the text
-		GdkColor sdl_color;
-		sdl_color.red = redc(m_text_color)*0x101;
-		sdl_color.blue = bluec(m_text_color)*0x101;
-		sdl_color.green = greenc(m_text_color)*0x101;
-		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asdlw->get_ambulant_pixmap()));
-		gdk_gc_set_rgb_fg_color (gc, &sdl_color);
-		gdk_draw_layout(GDK_DRAWABLE (asdlw->get_ambulant_pixmap()),gc , L, T, layout);
-		pango_font_description_free(font_desc);
-		g_object_unref (G_OBJECT (context));
-		g_object_unref(layout);
-		g_object_unref (G_OBJECT (gc));
-#endif// ! WITH_SDLPANGO
 		SDLPango_FreeContext (sdl_pango_context);
-#endif//WITH_SDLPANGO
+#endif//defined(WITH_SDL_PANGO)
 	} // m_text_storage != NULL && m_sdl_surface == NULL)
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
 	saw->copy_to_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 }
 
-#endif//WITH_SDL2
+#endif//defined(WITH_SDL2)

@@ -33,8 +33,8 @@ static colors_map html4_colors_map;
 bool is_color(const char *name) {
 	if (name[0] == '#') {
 		char *endp;
-		(void)strtol(name+1, &endp, 16);
-		return (*endp == '\0');
+		long int val = strtol(name+1, &endp, 16);
+		return (*endp == '\0' && val != LONG_MIN && val != LONG_MAX);
 	}
 	colors_map::const_iterator it = html4_colors_map.find(name);
 	return !(it == html4_colors_map.end());

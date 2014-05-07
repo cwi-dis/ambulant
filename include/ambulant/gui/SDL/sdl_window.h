@@ -22,6 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_WINDOW_H
 #define AMBULANT_GUI_SDL_WINDOW_H
 
+
 #include "ambulant/common/factory.h"
 #include "ambulant/common/recorder.h"
 #include "ambulant/common/gui_player.h"
@@ -122,6 +123,7 @@ class ambulant_sdl_window : public common::gui_window {
 //XX	SDL_Surface*  m_sdl_surface;
 	/// When the 'ambulant_recorder_plugin' (in sandbox) is installed, this renderer will feed it with screen grabs
 	common::recorder* m_recorder;
+	lib::critical_section m_lock;
 
   public:
 	SDL_Surface* m_tmpsurface;
@@ -150,14 +152,20 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get the actual SDL_Renderer for the window
 	SDL_Renderer* get_sdl_window_renderer() { return m_sdl_window_renderer; }
 
+	/// Helper: set the drawing SDL_Surface
+	void set_sdl_surface(SDL_Surface* s);
+
 	/// Helper: get the current SDL_Surface used for drawing
-	SDL_Surface* get_SDL_Surface() { return m_sdl_surface; }
+	SDL_Surface* get_sdl_surface() { return m_sdl_surface; }
+
+	/// Helper: delete the drawing SDL_Surface
+	void delete_sdl_surface();
 
 	/// Helper: get the SDL_Surface used during transitions, create if needed
 	SDL_Surface* get_transition_surface();
 
-	/// Helper: set the drawing SDL_Surface
-	void set_SDL_Surface(SDL_Surface* s) {  m_sdl_surface = s; }
+	/// Helper: delet the SDL_Surface used during transitions
+	void delete_transition_surface();
 
 	/// Helper: get the actual SDL_Surface of the screen 
 //	SDL_Surface* get_sdl_screen_surface() { return m_sdl_screen_surface; }
@@ -170,12 +178,15 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	/// Helper: copy the surface 'src' to the current surface (using a blit operation)
 	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
-//X	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+	/// Helper: copy the surface 'src' to the current surface (using a scaled blit operation)
+	/// s.t. the area 'src_rect' from the SDL_Surface 'src' fits in the area 'dst_rect' of 'dst'
+	/// This function can be used when both 'src_rect' and 'dst_rect' are properly computed by
+	/// 'get_fit_rect' to implement the SMIL 3.0 'fit' semanics
+	int copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+//TBD	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
-
-
 	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id);
 
 	void set_evp (lib::event_processor* evp) { m_evp = evp; }
@@ -190,7 +201,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	// gui_screen implementation
 	void get_size(int *width, int *height) {} //TBD
-	bool get_screenshot(const char *type, char **out_data, size_t *out_size) {} //TBD
+	bool get_screenshot(const char *type, char **out_data, size_t *out_size) { return false; } //TBD
 
 	/// Transitions
 
@@ -203,26 +214,25 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// SDL_Surface handling
 
 	/// Copy surface and pixels 
-	SDL_Surface* copy_SDL_Surface(SDL_Surface* surface);
+	SDL_Surface* copy_sdl_surface(SDL_Surface* surface);
 	/// Push a SDL_Surface on the transition surface stack
-	void push_SDL_Surface(SDL_Surface* s);
+	void push_sdl_surface(SDL_Surface* s);
 	/// Get the topmost SDL_Surface from the transition surface stack
-	SDL_Surface* top_SDL_Surface (void) { 
+	SDL_Surface* top_sdl_surface (void) { 
 		return m_transition_surfaces.empty() ? NULL : m_transition_surfaces.top();
 	}
 	/// Pop the topmost SDL_Surface from the transition surface stack and return it
-	SDL_Surface* pop_SDL_Surface (void) { 
-		SDL_Surface* s = top_SDL_Surface();
+	SDL_Surface* pop_sdl_surface (void) { 
+		SDL_Surface* s = top_sdl_surface();
 		if ( ! m_transition_surfaces.empty()) m_transition_surfaces.pop();
 		return s;
 	}
 	/// Clear the pixels of a SDL_Surface 
-	void clear_SDL_Surface (SDL_Surface* surface, SDL_Rect sdl_rect);
+	void clear_sdl_surface (SDL_Surface* surface, SDL_Rect sdl_rect);
 
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);
 //X	bool set_screenshot(char **screenshot_data, size_t *screenshot_size);
-
 	// For the gui_screen implementation
 	void* m_screenshot_data;
 	long int m_screenshot_size;
@@ -253,7 +263,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// sdl_ambulant_window maintains 2 mappings:
 	// - s_window_renderer_map: to find a SDL_Renderer* given a SDL_Window* (for drawing) 
 	// - s_id_sdl_ambulant_window_map: to find a sdl_ambulant_window* given a window_id
-	static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map; //XX is this really needed ????
+	//XX static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map; //XX is this really needed ????
 	static std::map<int, sdl_ambulant_window*> s_id_sdl_ambulant_window_map;
 
 	std::stack<SDL_Surface*> m_transition_surfaces;

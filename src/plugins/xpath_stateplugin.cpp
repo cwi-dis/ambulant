@@ -476,7 +476,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 void
 xpath_state_component::new_value(const char *ref, const char *where, const char *name, const char *expr)
 {
-	m_lock.leave();
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::new_value(ref=%s, where=%s, name=%s, expr=%s)",
 		ref, where, name, expr);
 	if (m_state == NULL || m_context == NULL) {
@@ -703,23 +703,19 @@ xpath_state_component::_node_content(const char *ref, bool url_encoded, std::str
 		xmlXPathObjectPtr refobj = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 		if (refobj == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: send: cannot evaluate ref=\"%s\"", ref);
-			m_lock.leave();
 			return false;
 		}
 		if (refobj->type != XPATH_NODESET) {
 			lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" is not a node-set", ref);
-			m_lock.leave();
 			return false;
 		}
 		xmlNodeSetPtr nodeset = refobj->nodesetval;
 		if (nodeset == NULL) {
 			lib::logger::get_logger()->trace("xpath_state_component: send: ref=\"%s\" does not refer to an existing item", ref);
-			m_lock.leave();
 			return false;
 		}
 		if (nodeset->nodeNr != 1) {
 			lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", ref, nodeset->nodeNr);
-			m_lock.leave();
 			return false;
 		}
 		// Finally set the value
@@ -798,6 +794,10 @@ xpath_state_component::want_state_change(const char *ref, common::state_change_c
 void
 xpath_state_component::_check_state_change(xmlNodePtr changed)
 {
+	typedef std::pair<common::state_change_callback*, std::string> todo;
+	typedef std::list<todo> todolisttype;
+	todolisttype todolist;
+	m_lock.enter();
 	std::vector<std::pair<std::string, common::state_change_callback* > >::iterator i;
 	AM_DBG lib::logger::get_logger()->debug("_check_state_change()");
 	for (i=m_state_change_callbacks.begin(); i != m_state_change_callbacks.end(); i++) {
@@ -819,12 +819,17 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 						AM_DBG lib::logger::get_logger()->debug("check_state_change: raising stateChange(%s)", ref.c_str());
 						common::state_change_callback *cb = (*i).second;
 						assert(cb);
-						cb->on_state_change(ref.c_str());
+						todolist.push_back(todo(cb, ref));
 						break;
 					}
 				}
 			}
 		}
+	}
+	m_lock.leave();
+	todolisttype::iterator t;
+	for(t=todolist.begin(); t != todolist.end(); t++) {
+		((*t).first)->on_state_change((*t).second.c_str());
 	}
 }
 

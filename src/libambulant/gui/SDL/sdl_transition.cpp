@@ -44,11 +44,11 @@ static void
 setup_transition(bool outtrans, ambulant_sdl_window *asw, SDL_Surface** old_surf, SDL_Surface** new_surf)
 {
 	if (outtrans) {
-		*old_surf = asw->get_sdl_ambulant_window()->top_SDL_Surface();
-		*new_surf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
+		*old_surf = asw->get_sdl_ambulant_window()->top_sdl_surface();
+		*new_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
 	} else {
-		*old_surf = asw->get_sdl_ambulant_window()->top_SDL_Surface();
-		*new_surf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
+		*old_surf = asw->get_sdl_ambulant_window()->top_sdl_surface();
+		*new_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
 	}
 #ifdef TBD
 #endif//TBD
@@ -77,8 +77,8 @@ sdl_transition_blitclass_fade::update()
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_SDL_Surface();
-	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_SDL_Surface();
+	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_sdl_surface();
 	const rect& const_newrect =	 m_dst->get_clipped_screen_rect();
 	lib::rect newrect = const_newrect;
 //	newrect.translate(m_dst->get_global_topleft());
@@ -87,7 +87,7 @@ sdl_transition_blitclass_fade::update()
 	double d_alpha = m_outtrans ? 1.0 - m_progress : m_progress;
 	Uint8 alpha = static_cast<Uint8>(round(255*d_alpha));
 
-	/*AM_DBG*/ logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) asw=0x%x, o_srf=0x%x,n_srf0x%x alpha=%u (L,T,W,H)=(%d,%d,%d,%d)", m_progress, asw, o_srf, n_srf, alpha,L,T,W,H);
+	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_fade::update(%f) asw=0x%x, o_srf=0x%x,n_srf0x%x alpha=%u (L,T,W,H)=(%d,%d,%d,%d)", m_progress, asw, o_srf, n_srf, alpha,L,T,W,H);
 	SDL_SetSurfaceAlphaMod(n_srf, alpha);
 	SDL_SetSurfaceBlendMode(n_srf, SDL_BLENDMODE_BLEND);
 	SDL_Rect sdl_rect = { L, T, W, H};
@@ -195,16 +195,16 @@ copy_rect (SDL_Surface* src, lib::rect src_rect,SDL_Surface* dst, lib::rect dst_
 void
 sdl_transition_blitclass_rect::update()
 {
-    AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect::update(%f)", m_progress);
+	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_rect::update(%f)", m_progress);
 	ambulant_sdl_window* asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_SDL_Surface();;
-	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_SDL_Surface();;
+	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_sdl_surface();
 	lib::rect dstrect_whole = get_final_rect (m_dst, m_dst->get_rect());
 	lib::rect newrect_whole = get_final_rect(m_dst, m_newrect);
 	if (m_outtrans) {
 		// create a temporary copy of the 'old' pixels
-		SDL_Surface* t_srf = saw->copy_SDL_Surface(o_srf);
+		SDL_Surface* t_srf = saw->copy_sdl_surface(o_srf);
 		// copy all 'new' pixels to the destination
 		copy_rect (n_srf, dstrect_whole, o_srf, dstrect_whole);
 		// copy the desired part of the 'new' pixels to the destination
@@ -222,8 +222,8 @@ sdl_transition_blitclass_r1r2r3r4::update()
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
 	ambulant_sdl_window *asw = (ambulant_sdl_window *)m_dst->get_gui_window();
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_SDL_Surface();;
-	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_SDL_Surface();;
+	SDL_Surface* n_srf = asw->get_sdl_ambulant_window()->get_sdl_surface();
+	SDL_Surface* o_srf = asw->get_sdl_ambulant_window()->top_sdl_surface();
 	if (o_srf == NULL || n_srf == NULL) {
 		return;
 	}

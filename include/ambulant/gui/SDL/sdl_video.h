@@ -33,7 +33,7 @@
 #include "ambulant/common/playable.h"
 
 #include "SDL.h"
-// Constants used to define bitmaps as used in ambulant, ffmpeg and SDPL2.
+// Constants used to define bitmaps as used in ambulant, ffmpeg and SDL2.
 // These constants should match.
 //
 // Note: preferably this information should be obtained dynamically 
@@ -97,10 +97,11 @@ class sdl_video_renderer :  public common::video_renderer  {
   protected:
 	void _push_frame(char* frame, size_t size);
 private:
+	void render_frame();
+
 	long int m_img_displayed;
 	char* m_data;
 	unsigned int m_datasize;
-	void render_frame();
 };
 
 

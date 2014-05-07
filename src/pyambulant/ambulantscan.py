@@ -31,6 +31,7 @@ def main():
         AMBULANT+ "common/layout.h",
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
+        AMBULANT+ "common/recorder.h",
         AMBULANT+ "common/region_info.h",
         AMBULANT+ "common/renderer_select.h",
         AMBULANT+ "common/state.h",
@@ -80,6 +81,8 @@ class MyScanner(CxxScanner):
             "create_gtk_window_factory",
             "single_playable_factory",
             "create_sdl_window_factory", # XXXX for now
+            "get_packet",
+            "datasource_packet",
            
         ]
 
@@ -96,6 +99,8 @@ class MyScanner(CxxScanner):
             "abstract_demux", #XXX
             "demux_datasink", #XXX
             "demux_datasink_ptr", #XXX
+            "video_datasource_mixin",
+            "pkt_datasource",
             "posix_datasource", # We want only the factory and (abstract) interface
             "posix_datasource_ptr", # Ditto
             "posix_datasource_factory", # Ditto
@@ -106,8 +111,10 @@ class MyScanner(CxxScanner):
             "filter_datasource_impl_ptr", # XXXX
             "raw_filter_finder", # XXXX
             "raw_filter_finder_ptr", # XXXX
-            "ts_packet_t", # XXXX Lazy: should do this one.
-            "audio_datasource_mixin", #  XXXX Multiple inheritance is difficult!
+            "datasource_packet",
+            "datasource_packet_ptr",
+            "pkt_datasource_ptr",
+            "av_datasource_mixin", #  XXXX Multiple inheritance is difficult!
             "Where_we_get_our", # Parser trips over a comment:-)
             "flag_event",  # Holds a reference to a bool, not useful for Python
             "flag_event_ptr",  # Holds a reference to a bool, not useful for Python
@@ -150,7 +157,6 @@ class MyScanner(CxxScanner):
             "event_processor_observer_ptr",
             "single_playable_factory",
             "single_playable_factory_ptr",
-            "recorder_factory_ptr", # XXX for now
             "sdl_window_factory_ptr", # XXX For now
             "sdl_window_factory",
             

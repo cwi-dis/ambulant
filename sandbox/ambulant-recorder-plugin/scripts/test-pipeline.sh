@@ -6,9 +6,9 @@ then
 fi
 if [ ! -e /dev/shm/pipe ] ; then mkfifo /dev/shm/pipe; fi
 killall -9 lt-test-launch 2>>/dev/null # hangs sometimes, blocking port 8554
-# killall -9 vlc cvlc mplayer AmbulantPlayer_sdl 2>>/dev/null
+killall -9 vlc cvlc mplayer AmbulantPlayer_sdl 2>>/dev/null
 sleep 1
-# cvlc v4l2:///dev/video0 --sout "#transcode{vcodec=h264,venc=x264{preset=veryfast,tune=zerolatency,no-cabac,bframes=0,fps=30,vbv-maxrate=5000,vbv-bufsize=200,slice-maxsize=1500},vb=0,scale=0,acodec=none}:rtp{sdp=rtsp://:5544/webcam},rtp-sap=no,standard-sap=no,ttl=1,keep" &
+cvlc v4l2:///dev/video0 --sout "#transcode{vcodec=h264,venc=x264{preset=veryfast,tune=zerolatency,no-cabac,bframes=0,fps=30,vbv-maxrate=5000,vbv-bufsize=200,slice-maxsize=1500},vb=0,scale=0,acodec=none}:rtp{sdp=rtsp://:5544/webcam},rtp-sap=no,standard-sap=no,ttl=1,keep" &
 # cvlc v4l2:///dev/video1 :sout="#transcode{vcodec=h264,vb=0,scale=0,acodec=none}:rtp{sdp=rtsp://:5544/webcam}" :no-sout-rtp-sap :no-sout-standard-sap :ttl=1 :sout-keep &
 sleep 1
 # cvlc rtsp://localhost:5544/webcam &

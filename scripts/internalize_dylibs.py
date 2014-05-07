@@ -52,6 +52,8 @@ class Internalizer:
 		self.instlibdir = None
 		self.staginglibdir = None
 		
+		self.errors_encountered = False
+		
 	def dstrelative(self, path):
 		if self.dstroot and os.path.isabs(path):
 			newpath = self.dstroot + path
@@ -78,14 +80,18 @@ class Internalizer:
 				self.add(name)
 
 	def add(self, src, copy=False):
+	    # See if we should copy from staging dir in stead of installdir
 		if self.instlibdir and os.path.commonprefix([src, self.instlibdir]) == self.instlibdir:
-			src = self.staginglibdir + src[len(self.instlibdir):]
+			better_src = self.staginglibdir + src[len(self.instlibdir):]
+			if os.path.exists(self.dstrelative(better_src)):
+			    src = better_src
 		while os.path.islink(self.dstrelative(src)):
 			src = os.path.realpath(self.dstrelative(src))
 		if src in self.todo or src in self.done:
 			return
 		if not os.path.exists(self.dstrelative(src)):
 			print '** file does not exist:', src
+			self.errors_encountered = True
 			self.work_done = True
 		if not self.is_loadable(self.dstrelative(src)):
 			return
@@ -94,6 +100,7 @@ class Internalizer:
 			dstname = os.path.basename(src)
 			if dstname in self.used:
 				print '** destname', dstname, 'in use'
+				# Is this an error? Unsure... self.errors_encountered = True
 				return
 			self.used[dstname] = True
 		else:
@@ -228,9 +235,13 @@ def main():
 	internalizer.add_standard()
 	internalizer.run()
 	
+	if internalizer.errors_encountered:
+	    print 'Errors encountered during internalization'
+	    sys.exit(1)
 	if check:
 		if internalizer.work_done:
 			sys.exit(1)
+		
 		
 if __name__ == '__main__':
 	main()

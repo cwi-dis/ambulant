@@ -112,6 +112,12 @@ extern int playable_factoryObj_Convert(PyObject *v, ambulant::common::playable_f
 extern PyObject *global_playable_factoryObj_New(ambulant::common::global_playable_factory* itself);
 extern int global_playable_factoryObj_Convert(PyObject *v, ambulant::common::global_playable_factory* *p_itself);
 
+extern PyObject *recorderObj_New(ambulant::common::recorder* itself);
+extern int recorderObj_Convert(PyObject *v, ambulant::common::recorder* *p_itself);
+
+extern PyObject *recorder_factoryObj_New(ambulant::common::recorder_factory* itself);
+extern int recorder_factoryObj_Convert(PyObject *v, ambulant::common::recorder_factory* *p_itself);
+
 extern PyObject *renderer_selectObj_New(ambulant::common::renderer_select* itself);
 extern int renderer_selectObj_Convert(PyObject *v, ambulant::common::renderer_select* *p_itself);
 
@@ -154,14 +160,8 @@ extern int none_window_factoryObj_Convert(PyObject *v, ambulant::gui::none::none
 extern PyObject *datasourceObj_New(ambulant::net::datasource* itself);
 extern int datasourceObj_Convert(PyObject *v, ambulant::net::datasource* *p_itself);
 
-extern PyObject *pkt_datasourceObj_New(ambulant::net::pkt_datasource* itself);
-extern int pkt_datasourceObj_Convert(PyObject *v, ambulant::net::pkt_datasource* *p_itself);
-
 extern PyObject *audio_datasourceObj_New(ambulant::net::audio_datasource* itself);
 extern int audio_datasourceObj_Convert(PyObject *v, ambulant::net::audio_datasource* *p_itself);
-
-extern PyObject *pkt_audio_datasourceObj_New(ambulant::net::pkt_audio_datasource* itself);
-extern int pkt_audio_datasourceObj_Convert(PyObject *v, ambulant::net::pkt_audio_datasource* *p_itself);
 
 extern PyObject *video_datasourceObj_New(ambulant::net::video_datasource* itself);
 extern int video_datasourceObj_Convert(PyObject *v, ambulant::net::video_datasource* *p_itself);
@@ -175,8 +175,8 @@ extern int raw_datasource_factoryObj_Convert(PyObject *v, ambulant::net::raw_dat
 extern PyObject *audio_datasource_factoryObj_New(ambulant::net::audio_datasource_factory* itself);
 extern int audio_datasource_factoryObj_Convert(PyObject *v, ambulant::net::audio_datasource_factory* *p_itself);
 
-extern PyObject *pkt_audio_datasource_factoryObj_New(ambulant::net::pkt_audio_datasource_factory* itself);
-extern int pkt_audio_datasource_factoryObj_Convert(PyObject *v, ambulant::net::pkt_audio_datasource_factory* *p_itself);
+extern PyObject *pkt_datasource_factoryObj_New(ambulant::net::pkt_datasource_factory* itself);
+extern int pkt_datasource_factoryObj_Convert(PyObject *v, ambulant::net::pkt_datasource_factory* *p_itself);
 
 extern PyObject *video_datasource_factoryObj_New(ambulant::net::video_datasource_factory* itself);
 extern int video_datasource_factoryObj_Convert(PyObject *v, ambulant::net::video_datasource_factory* *p_itself);

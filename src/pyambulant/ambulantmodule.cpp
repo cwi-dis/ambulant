@@ -25,6 +25,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/recorder.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
@@ -6338,6 +6339,19 @@ static PyObject *factoriesObj_get_state_component_factory(factoriesObject *_self
 	return _res;
 }
 
+static PyObject *factoriesObj_get_recorder_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::recorder_factory* _rv = _self->ob_itself->get_recorder_factory();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     recorder_factoryObj_New, _rv);
+	return _res;
+}
+
 static PyObject *factoriesObj_set_playable_factory(factoriesObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -6462,6 +6476,21 @@ static PyObject *factoriesObj_set_timer_sync_factory(factoriesObject *_self, PyO
 }
 #endif
 
+static PyObject *factoriesObj_set_recorder_factory(factoriesObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::recorder_factory* rf;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      recorder_factoryObj_Convert, &rf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_recorder_factory(rf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef factoriesObj_methods[] = {
 	{"init_factories", (PyCFunction)factoriesObj_init_factories, 1,
 	 PyDoc_STR("() -> None")},
@@ -6496,6 +6525,8 @@ static PyMethodDef factoriesObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::node_factory* _rv)")},
 	{"get_state_component_factory", (PyCFunction)factoriesObj_get_state_component_factory, 1,
 	 PyDoc_STR("() -> (ambulant::common::global_state_component_factory* _rv)")},
+	{"get_recorder_factory", (PyCFunction)factoriesObj_get_recorder_factory, 1,
+	 PyDoc_STR("() -> (ambulant::common::recorder_factory* _rv)")},
 	{"set_playable_factory", (PyCFunction)factoriesObj_set_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::global_playable_factory* pf) -> None")},
 	{"set_window_factory", (PyCFunction)factoriesObj_set_window_factory, 1,
@@ -6518,6 +6549,8 @@ static PyMethodDef factoriesObj_methods[] = {
 	{"set_timer_sync_factory", (PyCFunction)factoriesObj_set_timer_sync_factory, 1,
 	 PyDoc_STR("(ambulant::lib::timer_sync_factory* tsf) -> None")},
 #endif
+	{"set_recorder_factory", (PyCFunction)factoriesObj_set_recorder_factory, 1,
+	 PyDoc_STR("(ambulant::common::recorder_factory* rf) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -11260,6 +11293,394 @@ PyTypeObject global_playable_factory_Type = {
 /* ------------ End object type global_playable_factory ------------- */
 
 
+/* ---------------------- Object type recorder ---------------------- */
+
+extern PyTypeObject recorder_Type;
+
+inline bool recorderObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &recorder_Type);
+}
+
+typedef struct recorderObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::recorder* ob_itself;
+} recorderObject;
+
+PyObject *recorderObj_New(ambulant::common::recorder* itself)
+{
+	recorderObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder
+	recorder *encaps_itself = dynamic_cast<recorder *>(itself);
+	if (encaps_itself && encaps_itself->py_recorder)
+	{
+		Py_INCREF(encaps_itself->py_recorder);
+		return encaps_itself->py_recorder;
+	}
+#endif
+	it = PyObject_NEW(recorderObject, &recorder_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int recorderObj_Convert(PyObject *v, ambulant::common::recorder* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder
+	if (!recorderObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_recorder(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!recorderObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "recorder required");
+		return 0;
+	}
+	*p_itself = ((recorderObject *)v)->ob_itself;
+	return 1;
+}
+
+static void recorderObj_dealloc(recorderObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *recorderObj_new_video_data(recorderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char *data__in__;
+	size_t data__len__;
+	int data__in_len__;
+	ambulant::lib::timer::time_type documenttimestamp;
+	if (!PyArg_ParseTuple(_args, "s#l",
+	                      &data__in__, &data__in_len__,
+	                      &documenttimestamp))
+		return NULL;
+	data__len__ = data__in_len__;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->new_video_data(data__in__, data__len__,
+	                                 documenttimestamp);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *recorderObj_new_audio_data(recorderObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char *data__in__;
+	size_t data__len__;
+	int data__in_len__;
+	ambulant::lib::timer::time_type documenttimestamp;
+	if (!PyArg_ParseTuple(_args, "s#l",
+	                      &data__in__, &data__in_len__,
+	                      &documenttimestamp))
+		return NULL;
+	data__len__ = data__in_len__;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->new_audio_data(data__in__, data__len__,
+	                                 documenttimestamp);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef recorderObj_methods[] = {
+	{"new_video_data", (PyCFunction)recorderObj_new_video_data, 1,
+	 PyDoc_STR("(Buffer data, ambulant::lib::timer::time_type documenttimestamp) -> None")},
+	{"new_audio_data", (PyCFunction)recorderObj_new_audio_data, 1,
+	 PyDoc_STR("(Buffer data, ambulant::lib::timer::time_type documenttimestamp) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define recorderObj_getsetlist NULL
+
+
+static int recorderObj_compare(recorderObject *self, recorderObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define recorderObj_repr NULL
+
+static long recorderObj_hash(recorderObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int recorderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::recorder* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, recorderObj_Convert, &itself))
+	{
+		((recorderObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define recorderObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *recorderObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((recorderObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define recorderObj_tp_free PyObject_Del
+
+
+PyTypeObject recorder_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.recorder", /*tp_name*/
+	sizeof(recorderObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) recorderObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) recorderObj_compare, /*tp_compare*/
+	(reprfunc) recorderObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) recorderObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	recorderObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	recorderObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	recorderObj_tp_init, /* tp_init */
+	recorderObj_tp_alloc, /* tp_alloc */
+	recorderObj_tp_new, /* tp_new */
+	recorderObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type recorder -------------------- */
+
+
+/* ------------------ Object type recorder_factory ------------------ */
+
+extern PyTypeObject recorder_factory_Type;
+
+inline bool recorder_factoryObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &recorder_factory_Type);
+}
+
+typedef struct recorder_factoryObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::recorder_factory* ob_itself;
+} recorder_factoryObject;
+
+PyObject *recorder_factoryObj_New(ambulant::common::recorder_factory* itself)
+{
+	recorder_factoryObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder_factory
+	recorder_factory *encaps_itself = dynamic_cast<recorder_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_recorder_factory)
+	{
+		Py_INCREF(encaps_itself->py_recorder_factory);
+		return encaps_itself->py_recorder_factory;
+	}
+#endif
+	it = PyObject_NEW(recorder_factoryObject, &recorder_factory_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int recorder_factoryObj_Convert(PyObject *v, ambulant::common::recorder_factory* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_recorder_factory
+	if (!recorder_factoryObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_recorder_factory(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!recorder_factoryObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "recorder_factory required");
+		return 0;
+	}
+	*p_itself = ((recorder_factoryObject *)v)->ob_itself;
+	return 1;
+}
+
+static void recorder_factoryObj_dealloc(recorder_factoryObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *recorder_factoryObj_new_recorder(recorder_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::net::pixel_order pixel_order;
+	ambulant::lib::size window_size;
+	if (!PyArg_ParseTuple(_args, "lO&",
+	                      &pixel_order,
+	                      ambulant_size_Convert, &window_size))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::recorder* _rv = _self->ob_itself->new_recorder(pixel_order,
+	                                                                 window_size);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     recorderObj_New, _rv);
+	return _res;
+}
+
+static PyMethodDef recorder_factoryObj_methods[] = {
+	{"new_recorder", (PyCFunction)recorder_factoryObj_new_recorder, 1,
+	 PyDoc_STR("(ambulant::net::pixel_order pixel_order, ambulant::lib::size window_size) -> (ambulant::common::recorder* _rv)")},
+	{NULL, NULL, 0}
+};
+
+#define recorder_factoryObj_getsetlist NULL
+
+
+static int recorder_factoryObj_compare(recorder_factoryObject *self, recorder_factoryObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define recorder_factoryObj_repr NULL
+
+static long recorder_factoryObj_hash(recorder_factoryObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int recorder_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::recorder_factory* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, recorder_factoryObj_Convert, &itself))
+	{
+		((recorder_factoryObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define recorder_factoryObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *recorder_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((recorder_factoryObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define recorder_factoryObj_tp_free PyObject_Del
+
+
+PyTypeObject recorder_factory_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.recorder_factory", /*tp_name*/
+	sizeof(recorder_factoryObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) recorder_factoryObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) recorder_factoryObj_compare, /*tp_compare*/
+	(reprfunc) recorder_factoryObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) recorder_factoryObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	recorder_factoryObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	recorder_factoryObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	recorder_factoryObj_tp_init, /* tp_init */
+	recorder_factoryObj_tp_alloc, /* tp_alloc */
+	recorder_factoryObj_tp_new, /* tp_new */
+	recorder_factoryObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type recorder_factory ---------------- */
+
+
 /* ------------------ Object type renderer_select ------------------- */
 
 extern PyTypeObject renderer_select_Type;
@@ -15471,217 +15892,6 @@ PyTypeObject datasource_Type = {
 /* ------------------- End object type datasource ------------------- */
 
 
-/* ------------------- Object type pkt_datasource ------------------- */
-
-extern PyTypeObject pkt_datasource_Type;
-
-inline bool pkt_datasourceObj_Check(PyObject *x)
-{
-	return ((x)->ob_type == &pkt_datasource_Type);
-}
-
-typedef struct pkt_datasourceObject {
-	PyObject_HEAD
-	void *ob_dummy_wrapper; // Overlays bridge object storage
-	ambulant::net::pkt_datasource* ob_itself;
-} pkt_datasourceObject;
-
-PyObject *pkt_datasourceObj_New(ambulant::net::pkt_datasource* itself)
-{
-	pkt_datasourceObject *it;
-	if (itself == NULL)
-	{
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-#ifdef BGEN_BACK_SUPPORT_pkt_datasource
-	pkt_datasource *encaps_itself = dynamic_cast<pkt_datasource *>(itself);
-	if (encaps_itself && encaps_itself->py_pkt_datasource)
-	{
-		Py_INCREF(encaps_itself->py_pkt_datasource);
-		return encaps_itself->py_pkt_datasource;
-	}
-#endif
-	it = PyObject_NEW(pkt_datasourceObject, &pkt_datasource_Type);
-	if (it == NULL) return NULL;
-	/* XXXX Should we tp_init or tp_new our basetype? */
-	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
-	it->ob_itself = itself;
-	return (PyObject *)it;
-}
-
-int pkt_datasourceObj_Convert(PyObject *v, ambulant::net::pkt_datasource* *p_itself)
-{
-	if (v == Py_None)
-	{
-		*p_itself = NULL;
-		return 1;
-	}
-#ifdef BGEN_BACK_SUPPORT_pkt_datasource
-	if (!pkt_datasourceObj_Check(v))
-	{
-		*p_itself = Py_WrapAs_pkt_datasource(v);
-		if (*p_itself) return 1;
-	}
-#endif
-	if (!pkt_datasourceObj_Check(v))
-	{
-		PyErr_SetString(PyExc_TypeError, "pkt_datasource required");
-		return 0;
-	}
-	*p_itself = ((pkt_datasourceObject *)v)->ob_itself;
-	return 1;
-}
-
-static void pkt_datasourceObj_dealloc(pkt_datasourceObject *self)
-{
-	pycppbridge_Type.tp_dealloc((PyObject *)self);
-}
-
-static PyObject *pkt_datasourceObj_start(pkt_datasourceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::lib::event_processor* evp;
-	ambulant::lib::event* callback;
-	if (!PyArg_ParseTuple(_args, "O&O&",
-	                      event_processorObj_Convert, &evp,
-	                      eventObj_Convert, &callback))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->start(evp,
-	                        callback);
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyObject *pkt_datasourceObj_stop(pkt_datasourceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->stop();
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyObject *pkt_datasourceObj_end_of_file(pkt_datasourceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	bool _rv = _self->ob_itself->end_of_file();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     bool_New, _rv);
-	return _res;
-}
-
-static PyMethodDef pkt_datasourceObj_methods[] = {
-	{"start", (PyCFunction)pkt_datasourceObj_start, 1,
-	 PyDoc_STR("(ambulant::lib::event_processor* evp, ambulant::lib::event* callback) -> None")},
-	{"stop", (PyCFunction)pkt_datasourceObj_stop, 1,
-	 PyDoc_STR("() -> None")},
-	{"end_of_file", (PyCFunction)pkt_datasourceObj_end_of_file, 1,
-	 PyDoc_STR("() -> (bool _rv)")},
-	{NULL, NULL, 0}
-};
-
-#define pkt_datasourceObj_getsetlist NULL
-
-
-static int pkt_datasourceObj_compare(pkt_datasourceObject *self, pkt_datasourceObject *other)
-{
-	if ( self->ob_itself > other->ob_itself ) return 1;
-	if ( self->ob_itself < other->ob_itself ) return -1;
-	return 0;
-}
-
-#define pkt_datasourceObj_repr NULL
-
-static long pkt_datasourceObj_hash(pkt_datasourceObject *self)
-{
-	return (long)self->ob_itself;
-}
-static int pkt_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
-{
-	ambulant::net::pkt_datasource* itself;
-	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
-
-	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, pkt_datasourceObj_Convert, &itself))
-	{
-		((pkt_datasourceObject *)_self)->ob_itself = itself;
-		return 0;
-	}
-	return -1;
-}
-
-#define pkt_datasourceObj_tp_alloc PyType_GenericAlloc
-
-static PyObject *pkt_datasourceObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
-{
-	PyObject *_self;
-
-	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((pkt_datasourceObject *)_self)->ob_itself = NULL;
-	return _self;
-}
-
-#define pkt_datasourceObj_tp_free PyObject_Del
-
-
-PyTypeObject pkt_datasource_Type = {
-	PyObject_HEAD_INIT(NULL)
-	0, /*ob_size*/
-	"ambulant.pkt_datasource", /*tp_name*/
-	sizeof(pkt_datasourceObject), /*tp_basicsize*/
-	0, /*tp_itemsize*/
-	/* methods */
-	(destructor) pkt_datasourceObj_dealloc, /*tp_dealloc*/
-	0, /*tp_print*/
-	(getattrfunc)0, /*tp_getattr*/
-	(setattrfunc)0, /*tp_setattr*/
-	(cmpfunc) pkt_datasourceObj_compare, /*tp_compare*/
-	(reprfunc) pkt_datasourceObj_repr, /*tp_repr*/
-	(PyNumberMethods *)0, /* tp_as_number */
-	(PySequenceMethods *)0, /* tp_as_sequence */
-	(PyMappingMethods *)0, /* tp_as_mapping */
-	(hashfunc) pkt_datasourceObj_hash, /*tp_hash*/
-	0, /*tp_call*/
-	0, /*tp_str*/
-	PyObject_GenericGetAttr, /*tp_getattro*/
-	PyObject_GenericSetAttr, /*tp_setattro */
-	0, /*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
-	0, /*tp_doc*/
-	0, /*tp_traverse*/
-	0, /*tp_clear*/
-	0, /*tp_richcompare*/
-	0, /*tp_weaklistoffset*/
-	0, /*tp_iter*/
-	0, /*tp_iternext*/
-	pkt_datasourceObj_methods, /* tp_methods */
-	0, /*tp_members*/
-	pkt_datasourceObj_getsetlist, /*tp_getset*/
-	0, /*tp_base*/
-	0, /*tp_dict*/
-	0, /*tp_descr_get*/
-	0, /*tp_descr_set*/
-	0, /*tp_dictoffset*/
-	pkt_datasourceObj_tp_init, /* tp_init */
-	pkt_datasourceObj_tp_alloc, /* tp_alloc */
-	pkt_datasourceObj_tp_new, /* tp_new */
-	pkt_datasourceObj_tp_free, /* tp_free */
-};
-
-/* ----------------- End object type pkt_datasource ----------------- */
-
-
 /* ------------------ Object type audio_datasource ------------------ */
 
 extern PyTypeObject audio_datasource_Type;
@@ -15841,167 +16051,6 @@ PyTypeObject audio_datasource_Type = {
 };
 
 /* ---------------- End object type audio_datasource ---------------- */
-
-
-/* ---------------- Object type pkt_audio_datasource ---------------- */
-
-extern PyTypeObject pkt_audio_datasource_Type;
-
-inline bool pkt_audio_datasourceObj_Check(PyObject *x)
-{
-	return ((x)->ob_type == &pkt_audio_datasource_Type);
-}
-
-typedef struct pkt_audio_datasourceObject {
-	PyObject_HEAD
-	void *ob_dummy_wrapper; // Overlays bridge object storage
-	ambulant::net::pkt_audio_datasource* ob_itself;
-} pkt_audio_datasourceObject;
-
-PyObject *pkt_audio_datasourceObj_New(ambulant::net::pkt_audio_datasource* itself)
-{
-	pkt_audio_datasourceObject *it;
-	if (itself == NULL)
-	{
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-#ifdef BGEN_BACK_SUPPORT_pkt_audio_datasource
-	pkt_audio_datasource *encaps_itself = dynamic_cast<pkt_audio_datasource *>(itself);
-	if (encaps_itself && encaps_itself->py_pkt_audio_datasource)
-	{
-		Py_INCREF(encaps_itself->py_pkt_audio_datasource);
-		return encaps_itself->py_pkt_audio_datasource;
-	}
-#endif
-	it = PyObject_NEW(pkt_audio_datasourceObject, &pkt_audio_datasource_Type);
-	if (it == NULL) return NULL;
-	/* XXXX Should we tp_init or tp_new our basetype? */
-	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
-	it->ob_itself = itself;
-	return (PyObject *)it;
-}
-
-int pkt_audio_datasourceObj_Convert(PyObject *v, ambulant::net::pkt_audio_datasource* *p_itself)
-{
-	if (v == Py_None)
-	{
-		*p_itself = NULL;
-		return 1;
-	}
-#ifdef BGEN_BACK_SUPPORT_pkt_audio_datasource
-	if (!pkt_audio_datasourceObj_Check(v))
-	{
-		*p_itself = Py_WrapAs_pkt_audio_datasource(v);
-		if (*p_itself) return 1;
-	}
-#endif
-	if (!pkt_audio_datasourceObj_Check(v))
-	{
-		PyErr_SetString(PyExc_TypeError, "pkt_audio_datasource required");
-		return 0;
-	}
-	*p_itself = ((pkt_audio_datasourceObject *)v)->ob_itself;
-	return 1;
-}
-
-static void pkt_audio_datasourceObj_dealloc(pkt_audio_datasourceObject *self)
-{
-	pkt_datasource_Type.tp_dealloc((PyObject *)self);
-}
-
-static PyMethodDef pkt_audio_datasourceObj_methods[] = {
-	{NULL, NULL, 0}
-};
-
-#define pkt_audio_datasourceObj_getsetlist NULL
-
-
-static int pkt_audio_datasourceObj_compare(pkt_audio_datasourceObject *self, pkt_audio_datasourceObject *other)
-{
-	if ( self->ob_itself > other->ob_itself ) return 1;
-	if ( self->ob_itself < other->ob_itself ) return -1;
-	return 0;
-}
-
-#define pkt_audio_datasourceObj_repr NULL
-
-static long pkt_audio_datasourceObj_hash(pkt_audio_datasourceObject *self)
-{
-	return (long)self->ob_itself;
-}
-static int pkt_audio_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
-{
-	ambulant::net::pkt_audio_datasource* itself;
-	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
-
-	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, pkt_audio_datasourceObj_Convert, &itself))
-	{
-		((pkt_audio_datasourceObject *)_self)->ob_itself = itself;
-		return 0;
-	}
-	return -1;
-}
-
-#define pkt_audio_datasourceObj_tp_alloc PyType_GenericAlloc
-
-static PyObject *pkt_audio_datasourceObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
-{
-	PyObject *_self;
-
-	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((pkt_audio_datasourceObject *)_self)->ob_itself = NULL;
-	return _self;
-}
-
-#define pkt_audio_datasourceObj_tp_free PyObject_Del
-
-
-PyTypeObject pkt_audio_datasource_Type = {
-	PyObject_HEAD_INIT(NULL)
-	0, /*ob_size*/
-	"ambulant.pkt_audio_datasource", /*tp_name*/
-	sizeof(pkt_audio_datasourceObject), /*tp_basicsize*/
-	0, /*tp_itemsize*/
-	/* methods */
-	(destructor) pkt_audio_datasourceObj_dealloc, /*tp_dealloc*/
-	0, /*tp_print*/
-	(getattrfunc)0, /*tp_getattr*/
-	(setattrfunc)0, /*tp_setattr*/
-	(cmpfunc) pkt_audio_datasourceObj_compare, /*tp_compare*/
-	(reprfunc) pkt_audio_datasourceObj_repr, /*tp_repr*/
-	(PyNumberMethods *)0, /* tp_as_number */
-	(PySequenceMethods *)0, /* tp_as_sequence */
-	(PyMappingMethods *)0, /* tp_as_mapping */
-	(hashfunc) pkt_audio_datasourceObj_hash, /*tp_hash*/
-	0, /*tp_call*/
-	0, /*tp_str*/
-	PyObject_GenericGetAttr, /*tp_getattro*/
-	PyObject_GenericSetAttr, /*tp_setattro */
-	0, /*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
-	0, /*tp_doc*/
-	0, /*tp_traverse*/
-	0, /*tp_clear*/
-	0, /*tp_richcompare*/
-	0, /*tp_weaklistoffset*/
-	0, /*tp_iter*/
-	0, /*tp_iternext*/
-	pkt_audio_datasourceObj_methods, /* tp_methods */
-	0, /*tp_members*/
-	pkt_audio_datasourceObj_getsetlist, /*tp_getset*/
-	0, /*tp_base*/
-	0, /*tp_dict*/
-	0, /*tp_descr_get*/
-	0, /*tp_descr_set*/
-	0, /*tp_dictoffset*/
-	pkt_audio_datasourceObj_tp_init, /* tp_init */
-	pkt_audio_datasourceObj_tp_alloc, /* tp_alloc */
-	pkt_audio_datasourceObj_tp_new, /* tp_new */
-	pkt_audio_datasourceObj_tp_free, /* tp_free */
-};
-
-/* -------------- End object type pkt_audio_datasource -------------- */
 
 
 /* ------------------ Object type video_datasource ------------------ */
@@ -16890,38 +16939,38 @@ PyTypeObject audio_datasource_factory_Type = {
 /* ------------ End object type audio_datasource_factory ------------ */
 
 
-/* ------------ Object type pkt_audio_datasource_factory ------------ */
+/* --------------- Object type pkt_datasource_factory --------------- */
 
-extern PyTypeObject pkt_audio_datasource_factory_Type;
+extern PyTypeObject pkt_datasource_factory_Type;
 
-inline bool pkt_audio_datasource_factoryObj_Check(PyObject *x)
+inline bool pkt_datasource_factoryObj_Check(PyObject *x)
 {
-	return ((x)->ob_type == &pkt_audio_datasource_factory_Type);
+	return ((x)->ob_type == &pkt_datasource_factory_Type);
 }
 
-typedef struct pkt_audio_datasource_factoryObject {
+typedef struct pkt_datasource_factoryObject {
 	PyObject_HEAD
 	void *ob_dummy_wrapper; // Overlays bridge object storage
-	ambulant::net::pkt_audio_datasource_factory* ob_itself;
-} pkt_audio_datasource_factoryObject;
+	ambulant::net::pkt_datasource_factory* ob_itself;
+} pkt_datasource_factoryObject;
 
-PyObject *pkt_audio_datasource_factoryObj_New(ambulant::net::pkt_audio_datasource_factory* itself)
+PyObject *pkt_datasource_factoryObj_New(ambulant::net::pkt_datasource_factory* itself)
 {
-	pkt_audio_datasource_factoryObject *it;
+	pkt_datasource_factoryObject *it;
 	if (itself == NULL)
 	{
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
-#ifdef BGEN_BACK_SUPPORT_pkt_audio_datasource_factory
-	pkt_audio_datasource_factory *encaps_itself = dynamic_cast<pkt_audio_datasource_factory *>(itself);
-	if (encaps_itself && encaps_itself->py_pkt_audio_datasource_factory)
+#ifdef BGEN_BACK_SUPPORT_pkt_datasource_factory
+	pkt_datasource_factory *encaps_itself = dynamic_cast<pkt_datasource_factory *>(itself);
+	if (encaps_itself && encaps_itself->py_pkt_datasource_factory)
 	{
-		Py_INCREF(encaps_itself->py_pkt_audio_datasource_factory);
-		return encaps_itself->py_pkt_audio_datasource_factory;
+		Py_INCREF(encaps_itself->py_pkt_datasource_factory);
+		return encaps_itself->py_pkt_datasource_factory;
 	}
 #endif
-	it = PyObject_NEW(pkt_audio_datasource_factoryObject, &pkt_audio_datasource_factory_Type);
+	it = PyObject_NEW(pkt_datasource_factoryObject, &pkt_datasource_factory_Type);
 	if (it == NULL) return NULL;
 	/* XXXX Should we tp_init or tp_new our basetype? */
 	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
@@ -16929,124 +16978,98 @@ PyObject *pkt_audio_datasource_factoryObj_New(ambulant::net::pkt_audio_datasourc
 	return (PyObject *)it;
 }
 
-int pkt_audio_datasource_factoryObj_Convert(PyObject *v, ambulant::net::pkt_audio_datasource_factory* *p_itself)
+int pkt_datasource_factoryObj_Convert(PyObject *v, ambulant::net::pkt_datasource_factory* *p_itself)
 {
 	if (v == Py_None)
 	{
 		*p_itself = NULL;
 		return 1;
 	}
-#ifdef BGEN_BACK_SUPPORT_pkt_audio_datasource_factory
-	if (!pkt_audio_datasource_factoryObj_Check(v))
+#ifdef BGEN_BACK_SUPPORT_pkt_datasource_factory
+	if (!pkt_datasource_factoryObj_Check(v))
 	{
-		*p_itself = Py_WrapAs_pkt_audio_datasource_factory(v);
+		*p_itself = Py_WrapAs_pkt_datasource_factory(v);
 		if (*p_itself) return 1;
 	}
 #endif
-	if (!pkt_audio_datasource_factoryObj_Check(v))
+	if (!pkt_datasource_factoryObj_Check(v))
 	{
-		PyErr_SetString(PyExc_TypeError, "pkt_audio_datasource_factory required");
+		PyErr_SetString(PyExc_TypeError, "pkt_datasource_factory required");
 		return 0;
 	}
-	*p_itself = ((pkt_audio_datasource_factoryObject *)v)->ob_itself;
+	*p_itself = ((pkt_datasource_factoryObject *)v)->ob_itself;
 	return 1;
 }
 
-static void pkt_audio_datasource_factoryObj_dealloc(pkt_audio_datasource_factoryObject *self)
+static void pkt_datasource_factoryObj_dealloc(pkt_datasource_factoryObject *self)
 {
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
-static PyObject *pkt_audio_datasource_factoryObj_new_pkt_audio_datasource(pkt_audio_datasource_factoryObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::net::url url;
-	ambulant::net::audio_format_choices fmt;
-	ambulant::net::timestamp_t clip_begin;
-	ambulant::net::timestamp_t clip_end;
-	if (!PyArg_ParseTuple(_args, "O&O&LL",
-	                      ambulant_url_Convert, &url,
-	                      audio_format_choicesObj_Convert, &fmt,
-	                      &clip_begin,
-	                      &clip_end))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::net::pkt_audio_datasource* _rv = _self->ob_itself->new_pkt_audio_datasource(url,
-	                                                                                      fmt,
-	                                                                                      clip_begin,
-	                                                                                      clip_end);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     pkt_audio_datasourceObj_New, _rv);
-	return _res;
-}
-
-static PyMethodDef pkt_audio_datasource_factoryObj_methods[] = {
-	{"new_pkt_audio_datasource", (PyCFunction)pkt_audio_datasource_factoryObj_new_pkt_audio_datasource, 1,
-	 PyDoc_STR("(ambulant::net::url url, ambulant::net::audio_format_choices fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end) -> (ambulant::net::pkt_audio_datasource* _rv)")},
+static PyMethodDef pkt_datasource_factoryObj_methods[] = {
 	{NULL, NULL, 0}
 };
 
-#define pkt_audio_datasource_factoryObj_getsetlist NULL
+#define pkt_datasource_factoryObj_getsetlist NULL
 
 
-static int pkt_audio_datasource_factoryObj_compare(pkt_audio_datasource_factoryObject *self, pkt_audio_datasource_factoryObject *other)
+static int pkt_datasource_factoryObj_compare(pkt_datasource_factoryObject *self, pkt_datasource_factoryObject *other)
 {
 	if ( self->ob_itself > other->ob_itself ) return 1;
 	if ( self->ob_itself < other->ob_itself ) return -1;
 	return 0;
 }
 
-#define pkt_audio_datasource_factoryObj_repr NULL
+#define pkt_datasource_factoryObj_repr NULL
 
-static long pkt_audio_datasource_factoryObj_hash(pkt_audio_datasource_factoryObject *self)
+static long pkt_datasource_factoryObj_hash(pkt_datasource_factoryObject *self)
 {
 	return (long)self->ob_itself;
 }
-static int pkt_audio_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+static int pkt_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
-	ambulant::net::pkt_audio_datasource_factory* itself;
+	ambulant::net::pkt_datasource_factory* itself;
 	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
 
-	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, pkt_audio_datasource_factoryObj_Convert, &itself))
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, pkt_datasource_factoryObj_Convert, &itself))
 	{
-		((pkt_audio_datasource_factoryObject *)_self)->ob_itself = itself;
+		((pkt_datasource_factoryObject *)_self)->ob_itself = itself;
 		return 0;
 	}
 	return -1;
 }
 
-#define pkt_audio_datasource_factoryObj_tp_alloc PyType_GenericAlloc
+#define pkt_datasource_factoryObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *pkt_audio_datasource_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+static PyObject *pkt_datasource_factoryObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *_self;
 
 	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((pkt_audio_datasource_factoryObject *)_self)->ob_itself = NULL;
+	((pkt_datasource_factoryObject *)_self)->ob_itself = NULL;
 	return _self;
 }
 
-#define pkt_audio_datasource_factoryObj_tp_free PyObject_Del
+#define pkt_datasource_factoryObj_tp_free PyObject_Del
 
 
-PyTypeObject pkt_audio_datasource_factory_Type = {
+PyTypeObject pkt_datasource_factory_Type = {
 	PyObject_HEAD_INIT(NULL)
 	0, /*ob_size*/
-	"ambulant.pkt_audio_datasource_factory", /*tp_name*/
-	sizeof(pkt_audio_datasource_factoryObject), /*tp_basicsize*/
+	"ambulant.pkt_datasource_factory", /*tp_name*/
+	sizeof(pkt_datasource_factoryObject), /*tp_basicsize*/
 	0, /*tp_itemsize*/
 	/* methods */
-	(destructor) pkt_audio_datasource_factoryObj_dealloc, /*tp_dealloc*/
+	(destructor) pkt_datasource_factoryObj_dealloc, /*tp_dealloc*/
 	0, /*tp_print*/
 	(getattrfunc)0, /*tp_getattr*/
 	(setattrfunc)0, /*tp_setattr*/
-	(cmpfunc) pkt_audio_datasource_factoryObj_compare, /*tp_compare*/
-	(reprfunc) pkt_audio_datasource_factoryObj_repr, /*tp_repr*/
+	(cmpfunc) pkt_datasource_factoryObj_compare, /*tp_compare*/
+	(reprfunc) pkt_datasource_factoryObj_repr, /*tp_repr*/
 	(PyNumberMethods *)0, /* tp_as_number */
 	(PySequenceMethods *)0, /* tp_as_sequence */
 	(PyMappingMethods *)0, /* tp_as_mapping */
-	(hashfunc) pkt_audio_datasource_factoryObj_hash, /*tp_hash*/
+	(hashfunc) pkt_datasource_factoryObj_hash, /*tp_hash*/
 	0, /*tp_call*/
 	0, /*tp_str*/
 	PyObject_GenericGetAttr, /*tp_getattro*/
@@ -17060,21 +17083,21 @@ PyTypeObject pkt_audio_datasource_factory_Type = {
 	0, /*tp_weaklistoffset*/
 	0, /*tp_iter*/
 	0, /*tp_iternext*/
-	pkt_audio_datasource_factoryObj_methods, /* tp_methods */
+	pkt_datasource_factoryObj_methods, /* tp_methods */
 	0, /*tp_members*/
-	pkt_audio_datasource_factoryObj_getsetlist, /*tp_getset*/
+	pkt_datasource_factoryObj_getsetlist, /*tp_getset*/
 	0, /*tp_base*/
 	0, /*tp_dict*/
 	0, /*tp_descr_get*/
 	0, /*tp_descr_set*/
 	0, /*tp_dictoffset*/
-	pkt_audio_datasource_factoryObj_tp_init, /* tp_init */
-	pkt_audio_datasource_factoryObj_tp_alloc, /* tp_alloc */
-	pkt_audio_datasource_factoryObj_tp_new, /* tp_new */
-	pkt_audio_datasource_factoryObj_tp_free, /* tp_free */
+	pkt_datasource_factoryObj_tp_init, /* tp_init */
+	pkt_datasource_factoryObj_tp_alloc, /* tp_alloc */
+	pkt_datasource_factoryObj_tp_new, /* tp_new */
+	pkt_datasource_factoryObj_tp_free, /* tp_free */
 };
 
-/* ---------- End object type pkt_audio_datasource_factory ---------- */
+/* ------------- End object type pkt_datasource_factory ------------- */
 
 
 /* -------------- Object type video_datasource_factory -------------- */
@@ -17693,27 +17716,7 @@ static void audio_decoder_finderObj_dealloc(audio_decoder_finderObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
-static PyObject *audio_decoder_finderObj_new_audio_decoder(audio_decoder_finderObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::net::pkt_audio_datasource* src;
-	ambulant::net::audio_format_choices fmts;
-	if (!PyArg_ParseTuple(_args, "O&O&",
-	                      pkt_audio_datasourceObj_Convert, &src,
-	                      audio_format_choicesObj_Convert, &fmts))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::net::audio_datasource* _rv = _self->ob_itself->new_audio_decoder(src,
-	                                                                           fmts);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     audio_datasourceObj_New, _rv);
-	return _res;
-}
-
 static PyMethodDef audio_decoder_finderObj_methods[] = {
-	{"new_audio_decoder", (PyCFunction)audio_decoder_finderObj_new_audio_decoder, 1,
-	 PyDoc_STR("(ambulant::net::pkt_audio_datasource* src, ambulant::net::audio_format_choices fmts) -> (ambulant::net::audio_datasource* _rv)")},
 	{NULL, NULL, 0}
 };
 
@@ -19218,6 +19221,16 @@ void initambulant(void)
 	if (PyType_Ready(&global_playable_factory_Type) < 0) return;
 	Py_INCREF(&global_playable_factory_Type);
 	PyModule_AddObject(m, "global_playable_factory", (PyObject *)&global_playable_factory_Type);
+	recorder_Type.ob_type = &PyType_Type;
+	recorder_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&recorder_Type) < 0) return;
+	Py_INCREF(&recorder_Type);
+	PyModule_AddObject(m, "recorder", (PyObject *)&recorder_Type);
+	recorder_factory_Type.ob_type = &PyType_Type;
+	recorder_factory_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&recorder_factory_Type) < 0) return;
+	Py_INCREF(&recorder_factory_Type);
+	PyModule_AddObject(m, "recorder_factory", (PyObject *)&recorder_factory_Type);
 	renderer_select_Type.ob_type = &PyType_Type;
 	renderer_select_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&renderer_select_Type) < 0) return;
@@ -19288,21 +19301,11 @@ void initambulant(void)
 	if (PyType_Ready(&datasource_Type) < 0) return;
 	Py_INCREF(&datasource_Type);
 	PyModule_AddObject(m, "datasource", (PyObject *)&datasource_Type);
-	pkt_datasource_Type.ob_type = &PyType_Type;
-	pkt_datasource_Type.tp_base = &pycppbridge_Type;
-	if (PyType_Ready(&pkt_datasource_Type) < 0) return;
-	Py_INCREF(&pkt_datasource_Type);
-	PyModule_AddObject(m, "pkt_datasource", (PyObject *)&pkt_datasource_Type);
 	audio_datasource_Type.ob_type = &PyType_Type;
 	audio_datasource_Type.tp_base = &datasource_Type;
 	if (PyType_Ready(&audio_datasource_Type) < 0) return;
 	Py_INCREF(&audio_datasource_Type);
 	PyModule_AddObject(m, "audio_datasource", (PyObject *)&audio_datasource_Type);
-	pkt_audio_datasource_Type.ob_type = &PyType_Type;
-	pkt_audio_datasource_Type.tp_base = &pkt_datasource_Type;
-	if (PyType_Ready(&pkt_audio_datasource_Type) < 0) return;
-	Py_INCREF(&pkt_audio_datasource_Type);
-	PyModule_AddObject(m, "pkt_audio_datasource", (PyObject *)&pkt_audio_datasource_Type);
 	video_datasource_Type.ob_type = &PyType_Type;
 	video_datasource_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&video_datasource_Type) < 0) return;
@@ -19323,11 +19326,11 @@ void initambulant(void)
 	if (PyType_Ready(&audio_datasource_factory_Type) < 0) return;
 	Py_INCREF(&audio_datasource_factory_Type);
 	PyModule_AddObject(m, "audio_datasource_factory", (PyObject *)&audio_datasource_factory_Type);
-	pkt_audio_datasource_factory_Type.ob_type = &PyType_Type;
-	pkt_audio_datasource_factory_Type.tp_base = &pycppbridge_Type;
-	if (PyType_Ready(&pkt_audio_datasource_factory_Type) < 0) return;
-	Py_INCREF(&pkt_audio_datasource_factory_Type);
-	PyModule_AddObject(m, "pkt_audio_datasource_factory", (PyObject *)&pkt_audio_datasource_factory_Type);
+	pkt_datasource_factory_Type.ob_type = &PyType_Type;
+	pkt_datasource_factory_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&pkt_datasource_factory_Type) < 0) return;
+	Py_INCREF(&pkt_datasource_factory_Type);
+	PyModule_AddObject(m, "pkt_datasource_factory", (PyObject *)&pkt_datasource_factory_Type);
 	video_datasource_factory_Type.ob_type = &PyType_Type;
 	video_datasource_factory_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&video_datasource_factory_Type) < 0) return;

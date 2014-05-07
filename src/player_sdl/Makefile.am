@@ -36,7 +36,7 @@ endif
 
 if WITH_SDL2
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL2
-extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
+extra_sdl_LDADD=$(libambulant_sdl) $(FFMPEG_LIBS) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
@@ -81,11 +81,11 @@ AmbulantPlayer_sdl_SOURCES = \
 	unix_preferences.h
 
 ##X	sdl_logger.cpp \
-	sdl_logger.h \
-	sdl_mainloop.cpp \
-	sdl_mainloop.h \
-	sdl_settings.cpp \
-	sdl_settings.h
+##X	sdl_logger.h \
+##X	sdl_mainloop.cpp \
+##X	sdl_mainloop.h \
+##X	sdl_settings.cpp \
+##X	sdl_settings.h
 
 LDADD = $(libambulant_sdl) \
 	$(extra_expat_LDADD) \
@@ -117,25 +117,29 @@ AM_CPPFLAGS = \
 AM_CXXFLAGS=-fPIC
 
 install-exec-hook: install-data-local
-	cd $(DESTDIR)$(bindir) && \
-	$(LN_S) -f $(bin_PROGRAMS) AmbulantPlayer
+
+# Set this player as default AmbualntPlayer 
+#	cd $(DESTDIR)$(bindir) && \
+#	$(LN_S) -f $(bin_PROGRAMS) AmbulantPlayer
 
 check-ambulantplayer_sdl:
-	if test x$$DISPLAY = x; then \
-		echo Skipping tests, DISPLAY not set; \
-	else \
-		set -e; \
-		set +x; \
-		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
-		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
-		lib=/lib; \
-		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
-		export AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test; \
-		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
-		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
-		./AmbulantPlayer_sdl $(top_srcdir)/Extras/Welcome/Welcome.smil; \
-		if test -e AM_TEST-output.txt; then cat AM_TEST-output.txt; fi \
-	fi
+	echo "Test TBD"
+
+# 	if test x$$DISPLAY = x; then \
+# 		echo Skipping tests, DISPLAY not set; \
+# 	else \
+# 		set -e; \
+# 		set +x; \
+# 		pyv=`$(PYTHON) -V 2>&1 | sed -e 's/Python \([1-9].[1-9]\).*/\1/'`; \
+# 		pyp=`$(PYTHON) -c 'import sys; print sys.prefix'`; \
+# 		lib=/lib; \
+# 		if test `uname -p` = "x86_64"; then lib=/lib64; fi;\
+# 		export AMBULANT_PLUGIN_PATH=$(top_srcdir)/src/pyambulant/test; \
+# 		export PYTHONPATH=:$(top_srcdir)/src/pyambulant/build/lib.*; \
+# 		export LD_PRELOAD=$$pyp/$$lib/python$$pyv/config/libpython$$pyv.so; \
+# 		./AmbulantPlayer_sdl $(top_srcdir)/Extras/Welcome/Welcome.smil; \
+# 		if test -e AM_TEST-output.txt; then cat AM_TEST-output.txt; fi \
+# 	fi
 
 uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results

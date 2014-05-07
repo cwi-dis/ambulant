@@ -72,13 +72,16 @@ struct _GstAmbulantSrc
   GstBuffer* gstbuffer;
   gboolean silent;
   gboolean eos;
+  gboolean need_header;
 
   guint W, H;
   gulong datasize;
   gulong timestamp;
   gpointer databuffer;
-  gulong checksum;
 
+  // Caps
+  GstCaps* caps;
+  gboolean caps_complete;
   // Latency
   GstClockTime min_latency;
   GstClockTime max_latency;

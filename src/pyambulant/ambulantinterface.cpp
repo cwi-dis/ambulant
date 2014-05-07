@@ -3025,6 +3025,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_parser_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_parser_factory");
 		if (!PyObject_HasAttrString(itself, "get_node_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_node_factory");
 		if (!PyObject_HasAttrString(itself, "get_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_state_component_factory");
+		if (!PyObject_HasAttrString(itself, "get_recorder_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_recorder_factory");
 		if (!PyObject_HasAttrString(itself, "set_playable_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_playable_factory");
 		if (!PyObject_HasAttrString(itself, "set_window_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_window_factory");
 		if (!PyObject_HasAttrString(itself, "set_datasource_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_datasource_factory");
@@ -3033,6 +3034,7 @@ factories::factories(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "set_state_component_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_state_component_factory");
 		if (!PyObject_HasAttrString(itself, "get_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: get_timer_sync_factory");
 		if (!PyObject_HasAttrString(itself, "set_timer_sync_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_timer_sync_factory");
+		if (!PyObject_HasAttrString(itself, "set_recorder_factory")) PyErr_Warn(PyExc_Warning, "factories: missing attribute: set_recorder_factory");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -3336,6 +3338,30 @@ ambulant::common::global_state_component_factory* factories::get_state_component
 	return _rv;
 }
 
+ambulant::common::recorder_factory* factories::get_recorder_factory() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::recorder_factory* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "get_recorder_factory", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::get_recorder_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", recorder_factoryObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during factories::get_recorder_factory() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 void factories::set_playable_factory(ambulant::common::global_playable_factory* pf)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -3489,6 +3515,24 @@ void factories::set_timer_sync_factory(ambulant::lib::timer_sync_factory* tsf)
 	PyGILState_Release(_GILState);
 }
 #endif
+
+void factories::set_recorder_factory(ambulant::common::recorder_factory* rf)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rf = Py_BuildValue("O&", recorder_factoryObj_New, rf);
+
+	PyObject *py_rv = PyObject_CallMethod(py_factories, "set_recorder_factory", "(O)", py_rf);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during factories::set_recorder_factory() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_rf);
+
+	PyGILState_Release(_GILState);
+}
 
 /* ------------------------ Class gui_screen ------------------------ */
 
@@ -6386,6 +6430,135 @@ void global_playable_factory::preferred_renderer(const char* name)
 	PyGILState_Release(_GILState);
 }
 
+/* ------------------------- Class recorder ------------------------- */
+
+recorder::recorder(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_video_data")) PyErr_Warn(PyExc_Warning, "recorder: missing attribute: new_video_data");
+		if (!PyObject_HasAttrString(itself, "new_audio_data")) PyErr_Warn(PyExc_Warning, "recorder: missing attribute: new_audio_data");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_recorder = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+recorder::~recorder()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *itself = py_recorder;
+	py_recorder = NULL;
+	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
+	{
+		pycppbridge_setwrapper(itself, NULL);
+	}
+	Py_XDECREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+
+void recorder::new_video_data(const char *data__in__, size_t data__len__, ambulant::lib::timer::time_type documenttimestamp)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
+	PyObject *py_documenttimestamp = Py_BuildValue("l", documenttimestamp);
+
+	PyObject *py_rv = PyObject_CallMethod(py_recorder, "new_video_data", "(OO)", py_data, py_documenttimestamp);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during recorder::new_video_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_data);
+	Py_XDECREF(py_documenttimestamp);
+
+	PyGILState_Release(_GILState);
+}
+
+void recorder::new_audio_data(const char *data__in__, size_t data__len__, ambulant::lib::timer::time_type documenttimestamp)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
+	PyObject *py_documenttimestamp = Py_BuildValue("l", documenttimestamp);
+
+	PyObject *py_rv = PyObject_CallMethod(py_recorder, "new_audio_data", "(OO)", py_data, py_documenttimestamp);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during recorder::new_audio_data() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_data);
+	Py_XDECREF(py_documenttimestamp);
+
+	PyGILState_Release(_GILState);
+}
+
+/* --------------------- Class recorder_factory --------------------- */
+
+recorder_factory::recorder_factory(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "new_recorder")) PyErr_Warn(PyExc_Warning, "recorder_factory: missing attribute: new_recorder");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_recorder_factory = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+recorder_factory::~recorder_factory()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *itself = py_recorder_factory;
+	py_recorder_factory = NULL;
+	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
+	{
+		pycppbridge_setwrapper(itself, NULL);
+	}
+	Py_XDECREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+
+ambulant::common::recorder* recorder_factory::new_recorder(ambulant::net::pixel_order pixel_order, ambulant::lib::size window_size)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::recorder* _rv;
+	PyObject *py_pixel_order = Py_BuildValue("l", pixel_order);
+	PyObject *py_window_size = Py_BuildValue("O", ambulant_size_New(window_size));
+
+	PyObject *py_rv = PyObject_CallMethod(py_recorder_factory, "new_recorder", "(OO)", py_pixel_order, py_window_size);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during recorder_factory::new_recorder() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", recorderObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during recorder_factory::new_recorder() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_pixel_order);
+	Py_XDECREF(py_window_size);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ---------------------- Class focus_feedback ---------------------- */
 
 focus_feedback::focus_feedback(PyObject *itself)
@@ -9040,97 +9213,6 @@ void datasource::readdone(size_t len)
 	PyGILState_Release(_GILState);
 }
 
-/* ---------------------- Class pkt_datasource ---------------------- */
-
-pkt_datasource::pkt_datasource(PyObject *itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "pkt_datasource: missing attribute: start");
-		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "pkt_datasource: missing attribute: stop");
-		if (!PyObject_HasAttrString(itself, "end_of_file")) PyErr_Warn(PyExc_Warning, "pkt_datasource: missing attribute: end_of_file");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_pkt_datasource = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-pkt_datasource::~pkt_datasource()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_pkt_datasource;
-	py_pkt_datasource = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-
-void pkt_datasource::start(ambulant::lib::event_processor* evp, ambulant::lib::event* callback)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_evp = Py_BuildValue("O&", event_processorObj_New, evp);
-	PyObject *py_callback = Py_BuildValue("O&", eventObj_New, callback);
-
-	PyObject *py_rv = PyObject_CallMethod(py_pkt_datasource, "start", "(OO)", py_evp, py_callback);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during pkt_datasource::start() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_evp);
-	Py_XDECREF(py_callback);
-
-	PyGILState_Release(_GILState);
-}
-
-void pkt_datasource::stop()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_pkt_datasource, "stop", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during pkt_datasource::stop() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
-bool pkt_datasource::end_of_file()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_pkt_datasource, "end_of_file", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during pkt_datasource::end_of_file() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during pkt_datasource::end_of_file() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
 /* ------------------ Class raw_datasource_factory ------------------ */
 
 raw_datasource_factory::raw_datasource_factory(PyObject *itself)
@@ -9236,68 +9318,6 @@ ambulant::net::audio_datasource* audio_datasource_factory::new_audio_datasource(
 	if (py_rv && !PyArg_Parse(py_rv, "O&", audio_datasourceObj_Convert, &_rv))
 	{
 		PySys_WriteStderr("Python exception during audio_datasource_factory::new_audio_datasource() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_url);
-	Py_XDECREF(py_fmt);
-	Py_XDECREF(py_clip_begin);
-	Py_XDECREF(py_clip_end);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-/* --------------- Class pkt_audio_datasource_factory --------------- */
-
-pkt_audio_datasource_factory::pkt_audio_datasource_factory(PyObject *itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "new_pkt_audio_datasource")) PyErr_Warn(PyExc_Warning, "pkt_audio_datasource_factory: missing attribute: new_pkt_audio_datasource");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_pkt_audio_datasource_factory = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-pkt_audio_datasource_factory::~pkt_audio_datasource_factory()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_pkt_audio_datasource_factory;
-	py_pkt_audio_datasource_factory = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-
-ambulant::net::pkt_audio_datasource* pkt_audio_datasource_factory::new_pkt_audio_datasource(const ambulant::net::url& url, const ambulant::net::audio_format_choices& fmt, ambulant::net::timestamp_t clip_begin, ambulant::net::timestamp_t clip_end)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::net::pkt_audio_datasource* _rv;
-	PyObject *py_url = Py_BuildValue("O", ambulant_url_New(url));
-	PyObject *py_fmt = Py_BuildValue("O", audio_format_choicesObj_New(&fmt));
-	PyObject *py_clip_begin = Py_BuildValue("L", clip_begin);
-	PyObject *py_clip_end = Py_BuildValue("L", clip_end);
-
-	PyObject *py_rv = PyObject_CallMethod(py_pkt_audio_datasource_factory, "new_pkt_audio_datasource", "(OOOO)", py_url, py_fmt, py_clip_begin, py_clip_end);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during pkt_audio_datasource_factory::new_pkt_audio_datasource() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", pkt_audio_datasourceObj_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during pkt_audio_datasource_factory::new_pkt_audio_datasource() return:\n");
 		PyErr_Print();
 	}
 
@@ -9478,64 +9498,6 @@ ambulant::net::audio_datasource* audio_filter_finder::new_audio_filter(ambulant:
 	if (py_rv && !PyArg_Parse(py_rv, "O&", audio_datasourceObj_Convert, &_rv))
 	{
 		PySys_WriteStderr("Python exception during audio_filter_finder::new_audio_filter() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_src);
-	Py_XDECREF(py_fmts);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-/* ------------------- Class audio_decoder_finder ------------------- */
-
-audio_decoder_finder::audio_decoder_finder(PyObject *itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "new_audio_decoder")) PyErr_Warn(PyExc_Warning, "audio_decoder_finder: missing attribute: new_audio_decoder");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_audio_decoder_finder = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-audio_decoder_finder::~audio_decoder_finder()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *itself = py_audio_decoder_finder;
-	py_audio_decoder_finder = NULL;
-	if (pycppbridge_Check(itself) && pycppbridge_getwrapper(itself) == this)
-	{
-		pycppbridge_setwrapper(itself, NULL);
-	}
-	Py_XDECREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-
-ambulant::net::audio_datasource* audio_decoder_finder::new_audio_decoder(ambulant::net::pkt_audio_datasource* src, const ambulant::net::audio_format_choices& fmts)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::net::audio_datasource* _rv;
-	PyObject *py_src = Py_BuildValue("O&", pkt_audio_datasourceObj_New, src);
-	PyObject *py_fmts = Py_BuildValue("O", audio_format_choicesObj_New(&fmts));
-
-	PyObject *py_rv = PyObject_CallMethod(py_audio_decoder_finder, "new_audio_decoder", "(OO)", py_src, py_fmts);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during audio_decoder_finder::new_audio_decoder() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", audio_datasourceObj_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during audio_decoder_finder::new_audio_decoder() return:\n");
 		PyErr_Print();
 	}
 

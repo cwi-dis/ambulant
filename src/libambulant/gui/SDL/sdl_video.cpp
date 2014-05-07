@@ -19,11 +19,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//X #ifdef  WITH_SDL2 
-//X #include "ambulant/gui/sdl/sdl_factory.h"
-//X #include "ambulant/gui/sdl/sdl_includes.h"
-//X #include "ambulant/gui/sdl/sdl_renderer.h"
-#define __STDC_CONSTANT_MACROS //XXXX Grrr.. for ‘UINT64_C’ not declared
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
+
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_video.h"
 #include "ambulant/gui/SDL/sdl_window.h"
@@ -32,15 +29,6 @@
 #include <stdlib.h>
 #include "ambulant/common/playable.h"
 #include "ambulant/smil2/test_attrs.h"
-
-extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libswscale/swscale.h"
-#ifndef AV_NUM_DATA_POINTERS
-// needed for older versions of ffmpeg (< 0.9)
-#define AV_NUM_DATA_POINTERS 4
-#endif// !  AV_NUM_DATA_POINTERS
-};
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -66,15 +54,15 @@ sdl_video_renderer::sdl_video_renderer(
     // sdl_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
   	common::video_renderer(context, cookie, node, evp, factory, mdp),
 
+	m_img_displayed(0),
 	m_data(NULL),
-	m_datasize(0),
-   	m_img_displayed(0)
+	m_datasize(0)
 {
 	SDL_Init(SDL_INIT_VIDEO);
 }
 
 sdl_video_renderer::~sdl_video_renderer()
-{
+{	
 	m_lock.enter();
 	if (m_data)
 		free(m_data);
@@ -90,13 +78,12 @@ sdl_video_renderer::pixel_layout()
 void
 sdl_video_renderer::_push_frame(char* frame, size_t size)
 {
-	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer::_push_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer::_push_frame: frame=%p, size=%d, this=%p", (void*) frame, size, (void*) this);
 	if (m_data)
 		free(m_data);
 	m_data = frame;
 	m_datasize = size;
 }
-
 
 void
 //sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
@@ -106,67 +93,54 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 	//XXXX but as far as we know this has never happened
 	m_lock.enter();
 	if (m_data){
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(0x%x)",(void*) this);
-
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(%p)",(void*) this);
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
-		lib::rect dstrect_whole = r;
-		dstrect_whole.translate(p);
-		int L = dstrect_whole.left(),
-			T = dstrect_whole.top(),
-			W = dstrect_whole.width(),
-			H = dstrect_whole.height();
+		lib::rect dst_rect_whole = r;
 
+		dst_rect_whole.translate(p);
 		// XXXX WRONG! This is the info for the region, not for the node!
 		const common::region_info *info = m_dest->get_info();
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=0x%x", info);
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=%p", info);
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
-			// XXXX Fill with background color
-			lib::color_t bgcolor = info->get_bgcolor();
+				// XXXX Fill with background color TBD
+				lib::color_t bgcolor = info->get_bgcolor();
 		}
-		int width = m_size.w;
-		int height = m_size.h;
-		lib::rect srcrect = lib::rect(lib::point(0,0), lib::size(width, height)), dstrect;
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, width, height);
+		lib::rect src_rect; // lib::rect(lib::point(0,0), lib::size(width, height)), dst_rect;
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
-		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
-		dstrect.translate(p);
-		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
-		SDL_Renderer* renderer = asw->get_sdl_ambulant_window()->get_sdl_renderer();
-		SDL_Surface* surface = NULL;
-		static struct SwsContext* s_sws_ctx = NULL; //XXX member !
-		s_sws_ctx = sws_getCachedContext(s_sws_ctx, width, height, SDL_SWS_PIX_FMT, width, height, SDL_SWS_PIX_FMT, SWS_BICUBIC, NULL, NULL, NULL);
-		uint8_t* pixels[AV_NUM_DATA_POINTERS];
-		int pitch[AV_NUM_DATA_POINTERS];
-		int stride[AV_NUM_DATA_POINTERS];
-		pitch[0] = stride[0] = width*SDL_BPP;
-		for (int i = 1; i < AV_NUM_DATA_POINTERS; i++) {
-				pixels[i] = NULL;
-				pitch[i] = stride[i] = 0;
+		lib::rect dst_rect = m_dest->get_fit_rect(croprect, m_size, &src_rect, m_alignment);
+		if (src_rect.w == 0 || src_rect.h == 0 || dst_rect.w == 0 || dst_rect.h == 0) {
+				// either nothing to redraw from source or to destination)
+				return;
 		}
-		pixels[0] = (uint8_t*) malloc(stride[0]*height); 
-		int rv = sws_scale(s_sws_ctx,(const uint8_t* const*) &m_data, stride, 0, height, pixels, pitch);
-		Uint32 rmask, gmask, bmask, amask;
+		dst_rect.translate(p);
+		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
+		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+		SDL_Rect sdl_dst_rect = SDL_Rect_from_ambulant_rect(dst_rect);
+		SDL_Rect sdl_src_rect = SDL_Rect_from_ambulant_rect(src_rect);
 		// we use ARGB
+		Uint32 rmask, gmask, bmask, amask;
 		amask = 0xff000000;
 		rmask = 0x00ff0000;
 		gmask = 0x0000ff00;
-		bmask = 0x000000ff;
-
-		surface = SDL_CreateRGBSurfaceFrom(pixels[0], W, H, 32, pitch[0], rmask, gmask, bmask, amask);
+		bmask = 0x000000ff;     
 		
-		lib::rect* drp = &dstrect;
-		lib::rect* srp = &srcrect;
-		SDL_Rect sdl_src_rect = {srp->left(), srp->top(), srp->width(), srp->height()};
-		SDL_Rect sdl_dst_rect = {L,T,W,H};//{drp->left(), drp->top(), drp->width(), drp->height()};
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(0x%x) dst_sdl_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
-		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-		saw->copy_to_sdl_surface (surface, NULL, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+        int dst_width = dst_rect.w;
+		int dst_height = dst_rect.h;
+		int src_width = src_rect.w;
+		int src_height = src_rect.h;
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d",(void *)this, dst_width, dst_height, src_width, src_height);
+		SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(m_data, m_size.w, m_size.h, 32, m_size.w*SDL_BPP, rmask, gmask, bmask, amask);
+		if (src_rect.size() != dst_rect.size()) {
+				saw->copy_to_sdl_surface_scaled (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+		} else {
+				saw->copy_to_sdl_surface (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+		}
 		SDL_FreeSurface(surface);
-		free (pixels[0]);
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 	}
 	m_lock.leave();
 }
 
-//#endif//WITH_SDL2
+#endif // WITH_SDL2 && WITH_SDL_IMAGE

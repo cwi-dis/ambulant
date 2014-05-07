@@ -30,33 +30,29 @@ namespace ambulant {
 
 namespace common {
 
+/// API for recording audio/video in ambulant to produce 
+/// a file/stream of a SMIL presentation
 class recorder {
 public:
-	/// API for recording audio/video in ambulant to produce 
-	/// a file/stream of a SMIL presentation
-
-	/// Default constructor  
-  	recorder() {}
-
-	/// Construct a recorder to accept pixels of the given 'pixel_order' and 'window_size'
-	recorder (net::pixel_order pixel_order, lib::size window_size);
 	
 	/// Destructor
-	virtual ~recorder() = 0;
+	virtual ~recorder() {}
+	
 	/// Record new video data with timestamp (ms) in document time
-	virtual void new_video_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp) = 0;
+	virtual void new_video_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp) = 0;
 
 	/// Record new audio data  with timestamp (ms) in document time
-	virtual void new_audio_data (void* data, size_t datasize, lib::timer::time_type documenttimestamp) = 0;
+	virtual void new_audio_data (const char* data, size_t datasize, lib::timer::time_type documenttimestamp) = 0;
 };
 
-class recorder_factory {  /*TBD: not all details known yet*/
-public:
+class recorder_factory {
+
+ public:
 	/// recorder factory destructor
-	virtual ~recorder_factory() = 0;
+	virtual ~recorder_factory() {}
 	
 	/// return new recorder for the given 'pixel_order' and window size, or NULL if not supported
- 	virtual recorder* new_recorder(net::pixel_order, lib::size window_size) = 0;
+ 	virtual recorder* new_recorder(net::pixel_order pixel_order, lib::size window_size) = 0;
 };
 
 }; // namespace common

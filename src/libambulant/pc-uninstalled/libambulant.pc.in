@@ -1,0 +1,9 @@
+libdir=${pcfiledir}/../.libs
+includedir=@abs_top_srcdir@/include
+
+Name: ambulant
+Description: library that renders SMIL
+Version: @VERSION@
+Requires:
+Libs: -L${libdir} -lambulant 
+Cflags: -I${includedir} -I${includedir}/ambulant

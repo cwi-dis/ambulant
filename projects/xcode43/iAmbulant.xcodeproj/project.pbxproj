@@ -282,8 +282,8 @@
 		04B75D8912B80D1300161EB5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04B75D9212B80D1300161EB5 /* libambulantCG.dylib */,
-				04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */,
+				04B75D9212B80D1300161EB5 /* libambulant.dylib */,
+				04B75D9412B80D1300161EB5 /* libambulantStatic.a */,
 				04B75D9612B80D1300161EB5 /* libambulantIPhone.a */,
 			);
 			name = Products;
@@ -490,17 +490,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		04B75D9212B80D1300161EB5 /* libambulantCG.dylib */ = {
+		04B75D9212B80D1300161EB5 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulant.dylib;
 			remoteRef = 04B75D9112B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */ = {
+		04B75D9412B80D1300161EB5 /* libambulantStatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libambulantCGstatic.a;
+			path = libambulantStatic.a;
 			remoteRef = 04B75D9312B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -631,8 +631,6 @@
 			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -640,8 +638,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
-				PROVISIONING_PROFILE = "68C84755-FA62-4A8D-A458-32FF509DD26A";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -651,8 +647,6 @@
 			baseConfigurationReference = 04B75D6212B80C8300161EB5 /* ambulant-debug-iphone.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Centrum Wiskunde & Informatica";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Centrum Wiskunde & Informatica";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -662,8 +656,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
-				PROVISIONING_PROFILE = "68C84755-FA62-4A8D-A458-32FF509DD26A";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "68C84755-FA62-4A8D-A458-32FF509DD26A";
 			};
 			name = Debug;
 		};
@@ -708,8 +700,7 @@
 			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = armv7;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREFIX_HEADER = "";
@@ -718,7 +709,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
