@@ -43,9 +43,9 @@ endif
 
 # The libxml2 XPath SMIL 3.0 state plugin
 xpath_state_plugin = libamplugin_xpath_state.la
-xpath_state_includes = `xml2-config --cflags`
+xpath_state_includes = $(LIBXML2_CFLAGS)
 libamplugin_xpath_state_la_SOURCES = xpath_stateplugin.cpp
-libamplugin_xpath_state_la_LDFLAGS = -module `xml2-config --libs`
+libamplugin_xpath_state_la_LDFLAGS = -module $(LIBXML2_LIBS)
 libamplugin_xpath_state_la_LIBADD = $(libambulant_core)
 
 # The wekkit DOM implementation

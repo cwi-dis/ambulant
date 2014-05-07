@@ -15,7 +15,7 @@ TRYMIRROR=True
 # Before cutting a release, update this directory name, and run
 #   python build-third-party-packages.py -m
 # in the directory on the server.
-MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.3/"
+MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.5/"
 LIVE_MIRRORDATE="2012.02.29"
 SDL_MIRRORDATE="20120306"
 
@@ -841,6 +841,19 @@ third_party_packages={
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
+            ),
+
+        TPP("SDL2_ttf", # SDL2 interface for FreeType2 glyph rendering system
+            url="https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz",
+            url2="SDL2_ttf-2.0.12.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0.12 SDL2_ttf",
+            buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
+                "cd SDL2_ttf-2.0.12 && "
+                "%s && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % LINUX_COMMON_CONFIGURE
             ),
 
         TPP("gettext",

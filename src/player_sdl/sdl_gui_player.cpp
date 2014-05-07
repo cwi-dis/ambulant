@@ -23,6 +23,7 @@
  */
 
 #ifdef WITH_SDL2
+#include "ambulant/config/config.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 
 #include "ambulant/lib/document.h"
@@ -39,7 +40,8 @@
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_fill.h"
 #include "ambulant/gui/SDL/sdl_image_renderer.h"
-#include "ambulant/gui/SDL/sdl_smiltext.h"
+#include "ambulant/gui/SDL/sdl_pango_smiltext.h"
+#include "ambulant/gui/SDL/sdl_ttf_smiltext.h"
 //#include "ambulant/gui/SDL/sdl_text_renderer.h"
 #include "ambulant/gui/SDL/sdl_video.h"
 #include "ambulant/gui/SDL/sdl_window.h"
@@ -52,6 +54,7 @@
 
 #include "sdl_gui_player.h"
 #include "sdl_gui.h"
+#include <unistd.h>
 
 using namespace ambulant;
 using namespace gui::sdl;
@@ -109,7 +112,7 @@ sdl_gui_player::sdl_gui_player(sdl_gui* gui)
 	if (!m_doc) {
 		return;
 	}
-	create_top_window();
+	create_top_window(filename);
 	common::preferences *prefs = common::preferences::get_preferences();
 	m_logger->debug(" creating smil2 player %s", prefs->repr().c_str());
 	m_player = create_player(filename);
@@ -204,7 +207,7 @@ sdl_gui_player::init_playable_factory()
 #ifdef WITH_SDL_IMAGE
 	pf->add_factory(create_sdl_image_playable_factory(this, NULL));
 #endif
-#ifdef WITH_SDL_PANGO
+#if defined(WITH_SDL_PANGO) || defined(WITH_SDL_TTF)
 	pf->add_factory(create_sdl_smiltext_playable_factory(this, NULL));
 #endif
 #if defined(WITH_SDL_PANGO) || defined(WITH_SDL_TTF)
@@ -238,7 +241,7 @@ sdl_gui_player::init_window_factory()
 }
 
 void
-sdl_gui_player::create_top_window () {
+sdl_gui_player::create_top_window (const char *filename) {
 	m_size = get_window_factory()->get_default_size();
 	int width = m_size.w;
 	int height = m_size.h;
@@ -250,7 +253,7 @@ sdl_gui_player::create_top_window () {
 	static SDL_Texture* s_texture = NULL; //XXXX member !
 	static SDL_Window* s_window = NULL; //XXXX member, embed  !
 	if (s_texture == NULL) {
-		s_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+		s_window = SDL_CreateWindow(basename(filename), 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
 		assert (s_window);
 		s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED);
 		if (s_renderer == NULL) {
@@ -291,7 +294,23 @@ sdl_gui_player::user_event(const point& p, int what) {
 bool
 sdl_gui_player::user_event(SDL_Point& p, int what) {
 	point am_p(p.x, p.y);
+	am_p = convert (am_p);
 	return user_event(am_p, what);
+}
+
+
+lib::point
+sdl_gui_player::convert (lib::point p) 
+{
+	lib::point q(p);
+	
+	if (m_sdl_ambulant_window->get_sdl_fullscreen()) {
+		SDL_Rect sr = m_sdl_ambulant_window->get_sdl_dst_rect();
+		float scale = m_sdl_ambulant_window->get_sdl_scale();
+		q.x = round((p.x - sr.x) / scale);
+		q.y = round((p.y - sr.y) / scale);
+	}
+	return q;
 }
 
 void
@@ -336,7 +355,7 @@ sdl_gui_player::player_done()
 //TBD		m_player->need_redraw();
 		return false;
 	}
-#endif
+#endif//0
 	return true;
 }
 
@@ -390,7 +409,7 @@ sdl_gui_player::player_start(gchar* document_name, bool start, bool old)
 		m_player = NULL;
 		m_frames.push(pf);
 	}
-#endif
+#endif//0
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", document_name);
 	m_player = create_player(document_name);

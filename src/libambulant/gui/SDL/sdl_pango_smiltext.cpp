@@ -17,12 +17,12 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#if defined(WITH_SDL2)
+#if defined(WITH_SDL2) && !defined(WITH_SDL_TTF)
 
 //X #include "ambulant/gui/SDL/sdl_includes.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_renderer.h"
-#include "ambulant/gui/SDL/sdl_smiltext.h"
+#include "ambulant/gui/SDL/sdl_pango_smiltext.h"
 //X #include "ambulant/gui/SDL/sdl_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
@@ -832,4 +832,4 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 
 } //namespace ambulant
 
-#endif//WITH_SDL2
+#endif // defined(WITH_SDL2) && !defined(WITH_SDL_TTF)

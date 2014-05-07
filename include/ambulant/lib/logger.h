@@ -250,7 +250,7 @@ inline void logger::set_level(int level) {
 }
 
 inline bool logger::suppressed(int level) {
-	return level < m_level;
+	return false;
 }
 
 } // namespace lib

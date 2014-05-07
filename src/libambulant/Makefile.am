@@ -128,17 +128,18 @@ else
 sdlincludes = -DWITH_SDL2 $(SDL_CFLAGS)
 endif
 endif
-libambulant_sdl_la_SOURCES = \
-    gui/SDL/sdl.cpp \
-    gui/SDL/sdl_audio.cpp \
-    gui/SDL/sdl_factory.cpp \
-    gui/SDL/sdl_fill.cpp  \
-    gui/SDL/sdl_image_renderer.cpp  \
-    gui/SDL/sdl_renderer.cpp  \
-    gui/SDL/sdl_smiltext.cpp  \
-    gui/SDL/sdl_text_renderer.cpp  \
-    gui/SDL/sdl_transition.cpp \
-    gui/SDL/sdl_window.cpp  \
+libambulant_sdl_la_SOURCES =          \
+    gui/SDL/sdl.cpp                   \
+    gui/SDL/sdl_audio.cpp             \
+    gui/SDL/sdl_factory.cpp           \
+    gui/SDL/sdl_fill.cpp              \
+    gui/SDL/sdl_image_renderer.cpp    \
+    gui/SDL/sdl_renderer.cpp          \
+    gui/SDL/sdl_pango_smiltext.cpp    \
+    gui/SDL/sdl_ttf_smiltext.cpp      \
+    gui/SDL/sdl_text_renderer.cpp     \
+    gui/SDL/sdl_transition.cpp        \
+    gui/SDL/sdl_window.cpp            \
     gui/SDL/sdl_video.cpp
 
 #   gui/SDL/sdl_renderer.cpp 

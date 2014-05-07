@@ -8,7 +8,8 @@ src/libambulant/gui/d2/d2_player.cpp
 src/libambulant/gui/gtk/gtk_smiltext.cpp
 src/libambulant/gui/gtk/gtk_transition.cpp
 src/libambulant/gui/SDL/sdl_audio.cpp
-src/libambulant/gui/SDL/sdl_smiltext.cpp
+src/libambulant/gui/SDL/sdl_pango_smiltext.cpp
+src/libambulant/gui/SDL/sdl_ttf_smiltext.cpp
 src/libambulant/gui/SDL/sdl_transition.cpp
 src/libambulant/lib/document.cpp
 src/libambulant/lib/parselets.cpp

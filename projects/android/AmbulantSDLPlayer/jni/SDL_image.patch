@@ -1,0 +1,35 @@
+diff -r d3080be8ca02 Android.mk
+--- a/Android.mk	Tue Apr 01 20:20:56 2014 -0400
++++ b/Android.mk	Fri Apr 11 16:45:13 2014 +0200
+@@ -79,7 +79,6 @@
+         $(JPG_LIBRARY_PATH)/jfdctfst.c \
+         $(JPG_LIBRARY_PATH)/jfdctint.c \
+         $(JPG_LIBRARY_PATH)/jidctflt.c \
+-        $(JPG_LIBRARY_PATH)/jidctfst.S \
+         $(JPG_LIBRARY_PATH)/jidctint.c \
+         $(JPG_LIBRARY_PATH)/jquant1.c \
+         $(JPG_LIBRARY_PATH)/jquant2.c \
+diff -r d3080be8ca02 external/jpeg-9/Android.mk
+--- a/external/jpeg-9/Android.mk	Tue Apr 01 20:20:56 2014 -0400
++++ b/external/jpeg-9/Android.mk	Fri Apr 11 16:45:13 2014 +0200
+@@ -20,7 +20,7 @@
+ endif
+ 
+ # temp fix until we understand why this broke cnn.com
+-#ANDROID_JPEG_NO_ASSEMBLER := true
++ANDROID_JPEG_NO_ASSEMBLER := true
+ 
+ ifeq ($(strip $(ANDROID_JPEG_NO_ASSEMBLER)),true)
+ LOCAL_SRC_FILES += jidctint.c jidctfst.c
+diff -r d3080be8ca02 external/jpeg-9/jmorecfg.h
+--- a/external/jpeg-9/jmorecfg.h	Tue Apr 01 20:20:56 2014 -0400
++++ b/external/jpeg-9/jmorecfg.h	Fri Apr 11 16:45:13 2014 +0200
+@@ -289,7 +289,7 @@
+ /* Capability options common to encoder and decoder: */
+ 
+ #define DCT_ISLOW_SUPPORTED	/* slow but accurate integer algorithm */
+-#define DCT_IFAST_SUPPORTED	/* faster, less accurate integer method */
++//#define DCT_IFAST_SUPPORTED	/* faster, less accurate integer method */
+ #define DCT_FLOAT_SUPPORTED	/* floating-point: accurate, fast on fast HW */
+ 
+ /* Encoder capability options: */
