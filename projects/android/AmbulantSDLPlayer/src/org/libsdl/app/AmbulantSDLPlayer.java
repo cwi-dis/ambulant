@@ -2,6 +2,8 @@ package org.libsdl.app;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.content.Intent;
+import android.net.Uri;
 
 //import org.libsdl.app.*;
 
@@ -41,4 +43,18 @@ public class AmbulantSDLPlayer extends SDLActivity {
 
 //		System.loadLibrary("testJNI");
 	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.i("AmbulantSDLPlayer", "onCreate() start");  
+
+		Intent intent = getIntent();
+		Uri data = intent.getData();
+		if (data != null) {
+			Log.i("AmbulantSDLPlayer", "onCreate() data="+data);
+			AmbulantSDLPlayer.my_string = ""+data;
+		}
+	}
+	public static String my_string;
 }

@@ -822,6 +822,29 @@ extern "C" {
 	/* Called before SDL_main() to initialize JNI bindings in SDL library */
 	extern void SDL_Android_Init(JNIEnv* env, jclass cls);
 
+	// Helper: Return a public static string from a java class 
+	char* get_static_string_from_java_class (JNIEnv* jep, const char* class_name, const char* var_name, const char* signature) {
+		// signatures can be found by: javap -s <javaclass>.class
+		char* rv = NULL;
+		jclass classID = jep->FindClass(class_name);
+		LOGI("%s: class_name=%s var_name=%s signature=%s", "get_static_string_from_java_class", class_name, var_name, signature);
+		if (classID == NULL) return NULL;
+		jstring javastring = NULL;
+		jfieldID fieldID = jep->GetStaticFieldID(classID, var_name, signature);
+		if (fieldID != NULL) {
+			javastring = (jstring) jep->GetStaticObjectField (classID, fieldID);
+		} else LOGI("fieldID==NULL");
+		if (javastring != NULL) {
+			jboolean isCopy = JNI_FALSE;
+			rv = (char*) jep->GetStringUTFChars (javastring, &isCopy);
+			if (isCopy) jep->DeleteLocalRef((jobject)javastring);  //release
+		} else LOGI("javastring==NULL");
+
+		if (fieldID != NULL) { jep->DeleteLocalRef((jobject)fieldID); /*release*/ }
+		if (classID != NULL) { jep->DeleteLocalRef((jobject)classID);/*release*/ }
+		return rv;
+	}
+
 	/* Start up the SDL app */
 	void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jstring path)
 	{
@@ -843,18 +866,22 @@ extern "C" {
 //		char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
 		argv[0] = SDL_strdup("AmbulantPlayer_SDL");
 //		argv[1] =	str_path;
-//		argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
+		argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/smilText/NYC-sT.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/PanZoom/Fruits-4s.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Birthday/HappyBirthday.smil");
-		argv[1]= SDL_strdup("http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil");
+//		argv[1]= SDL_strdup("http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/News/DanesV2-Desktop.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Euros/EUROshow.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Flashlight/Flashlight/Flashlight-US.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/VideoTests/VideoTests.smil");
-		LOGI("argv[1]=%s", argv[1]);
+		char* url = get_static_string_from_java_class (env, "org.libsdl.app.AmbulantSDLPlayer", "my_string", "Ljava/lang/String;");
+		if (url != NULL) {
+			argv[1] = url;
+		}
+		LOGI("argv[1]=%s url=%s", argv[1], url == NULL ? "<null>":url);
 		argv[2] = NULL;
 		status = SDL_main(2, argv);
 //   env->ReleaseStringUTFChars(path, str_path);
@@ -862,8 +889,8 @@ extern "C" {
 	/* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
 	/* exit(status); */
 	}
-}
-#endif // ANDROID
+}//extern "C"
+endif // ANDROID
 
 int
 main (int argc, char*argv[]) {
