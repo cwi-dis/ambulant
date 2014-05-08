@@ -36,18 +36,22 @@
  			<data android:mimeType="application/x-smil" />
  			<data android:mimeType="application/x-ambulant-smil" />
 		</intent-filter>
-		<intent-filter>
-			<data android:scheme="file" android:mimeType="*/*"  android:pathPattern=".*\\.smil" android:host="*" />
-		</intent-filter>
     	</activity>      
    </application>
 
     <!-- Allow writing to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
 <!-- JNK?
+ 			<category android:name="android.intent.category.OPENABLE" />
 			<data android:scheme="file" />
 			<data android:mimeType="*/*" />
 			<data android:pathPattern=".*\\.smil" />
 			<data android:host="*" />
+			<data android:scheme="file" android:mimeType="*/*"  android:pathPattern=".*\\.smil" android:host="*" />
+		<intent-filter>
+            		<action android:name="android.intent.action.GET_CONTENT" />
+          		<category android:name="android.intent.category.DEFAULT" />
+			<data android:mimeType="*/*" />
+		</intent-filter>
  --> 
 </manifest>

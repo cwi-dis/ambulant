@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.KeyEvent;
 
 //import org.libsdl.app.*;
 
@@ -57,4 +58,36 @@ public class AmbulantSDLPlayer extends SDLActivity {
 		}
 	}
 	public static String my_string;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.i("AmbulantSDLPlayer", "onKeyDown() start keyCode = "+keyCode);  
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+        		moveTaskToBack(true);
+        		return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public void onBackPressed() {
+		// do somethineg here	
+		// Otherwise defer to system default behavior.
+		Log.i("AmbulantSDLPlayer", "onBackPressed() start");  
+		super.onBackPressed();
+	}
+	@Override
+	protected void onStart() {
+		super.onStart();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onStart() start");  
+	}
+	@Override
+	protected void onStop() {
+		super.onStop();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onStop() start");  
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onResume() start");  
+	}
 }
