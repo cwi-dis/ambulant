@@ -161,7 +161,7 @@
 		04A1E86312B57DF20060F97E /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04070309115263540094FB0B /* libexpat.dylib */; };
 		04A1E86412B57DF20060F97E /* libfaad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407030A115263540094FB0B /* libfaad.dylib */; };
 		04A1E86512B57DF20060F97E /* libintl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407030B115263540094FB0B /* libintl.dylib */; };
-		04A1E86612B57DF20060F97E /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407030C115263540094FB0B /* libSDL.dylib */; };
+		04A1E86612B57DF20060F97E /* libsdl2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407030C115263540094FB0B /* libsdl2.dylib */; };
 		04A1E86712B57DF20060F97E /* libswscale.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407030D115263540094FB0B /* libswscale.dylib */; };
 		04A1E86812B57DF20060F97E /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0407030E115263540094FB0B /* libxerces-c.dylib */; };
 		04A1E86F12B57DF20060F97E /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040703501152650C0094FB0B /* QTKit.framework */; };
@@ -353,7 +353,7 @@
 		04070309115263540094FB0B /* libexpat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libexpat.dylib; path = "../../build-3264/third_party_packages/installed/lib/libexpat.dylib"; sourceTree = SOURCE_ROOT; };
 		0407030A115263540094FB0B /* libfaad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfaad.dylib; path = "../../build-3264/third_party_packages/installed/lib/libfaad.dylib"; sourceTree = SOURCE_ROOT; };
 		0407030B115263540094FB0B /* libintl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libintl.dylib; path = "../../build-3264/third_party_packages/installed/lib/libintl.dylib"; sourceTree = SOURCE_ROOT; };
-		0407030C115263540094FB0B /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "../../build-3264/third_party_packages/installed/lib/libSDL.dylib"; sourceTree = SOURCE_ROOT; };
+		0407030C115263540094FB0B /* libsdl2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsdl2.dylib; path = "../../build-3264/third_party_packages/installed/lib/libSDL.dylib"; sourceTree = SOURCE_ROOT; };
 		0407030D115263540094FB0B /* libswscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.dylib; path = "../../build-3264/third_party_packages/installed/lib/libswscale.dylib"; sourceTree = SOURCE_ROOT; };
 		0407030E115263540094FB0B /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../build-3264/third_party_packages/installed/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
 		040703501152650C0094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
