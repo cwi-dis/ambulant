@@ -92,6 +92,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">libambulant_win32_D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libambulant_shwin32</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'">libambulant_win32</TargetName>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">
     <ClCompile>
