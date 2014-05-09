@@ -253,16 +253,11 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 #endif //WITH_SCREENSHOTS
 	DUMPSURFACE(m_surface, "top");
 #endif//JNK
-//X   	SDL_Rect rect;
-//X   	rect.x = r.left();
-//X	rect.y = r.top();
-//X	rect.w = r.width();
-//X	rect.h = r.height();
+	//XXXX code from here (and maybe more) should go to 'sdl_ambulant_window' ('sdl_ambulant_window' should handle 'ALL' SDL stuff)
 	SDL_Renderer* renderer = saw->get_sdl_window_renderer();
 	SDL_Surface* surface = saw->get_sdl_surface();
 //	saw->dump_sdl_surface (surface, "redr");
 	SDL_Surface* screen_surface = surface;
-//X	SDL_BlitSurface(surface, &rect, screen_surface, &sdl_rect);
 	if (m_recorder && saw->get_evp()) {
 		timestamp_t timestamp = saw->get_evp()->get_timer()->elapsed();
 		m_recorder->new_video_data((const char*) screen_surface->pixels, m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
@@ -272,7 +267,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	if (texture == NULL) {
 		return;
 	}
-	int err = SDL_RenderCopy(renderer, texture, NULL, NULL);	
+	SDL_Rect sdl_dst_rect =  saw->get_sdl_dst_rect();
+	int err = SDL_RenderCopy(renderer, texture, NULL, &sdl_dst_rect);	
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
@@ -466,10 +462,13 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 	m_sdl_renderer(NULL),
 	m_sdl_screen_renderer(NULL),
 	m_sdl_screen_surface(NULL),
+	m_sdl_fullscreen(false),
+	m_sdl_scale(1.0),
 	m_evp(NULL),
 	m_screen_pixels(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(%p): window=(SDL_Window*)%p", this, window);
+	m_sdl_dst_rect.x = m_sdl_dst_rect.y = m_sdl_dst_rect.w = m_sdl_dst_rect.h = 0;
 }
 
 sdl_ambulant_window::~sdl_ambulant_window()
@@ -521,14 +520,39 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	if (sdl_window_flags_env != NULL) {
 		sdl_window_flags = atoi (sdl_window_flags_env);
 		if (sdl_window_flags & SDL_WINDOW_OPENGL) {
-			SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24);
-			SDL_GL_SetAttribute (SDL_GL_STENCIL_SIZE, 8);
-			SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1);
-//			SDL_GL_SetAttribute (SDL_GL_SWAP_CONTROL, 0);
-			SDL_GL_SetSwapInterval(0);
+			if (SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24)
+			    || SDL_GL_SetAttribute (SDL_GL_STENCIL_SIZE, 8)
+			    || SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1)
+//			       SDL_GL_SetAttribute (SDL_GL_SWAP_CONTROL, 0)
+			    || SDL_GL_SetSwapInterval(0)
+			    ) {
+			  sdl_window_flags &= ~SDL_WINDOW_OPENGL;
+			  lib::logger::get_logger()->trace("%s() failed: %s -- continuing without SDL_WINDOW_OPENGL",
+							   "SDL_GL_SetAttribute",SDL_GetError());
+			}
 		}
 	}
-	m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),sdl_window_flags); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+	SDL_DisplayMode sdm;
+	err =SDL_GetDesktopDisplayMode(0, &sdm);
+	lib::logger::get_logger()->trace("%s, w=%d, h=%d", err == 0 ? "OK: " : SDL_GetError(), sdm.w, sdm.h);
+	lib::size sdl_screen_size = lib::size (sdm.w, sdm.h);
+	float xscale = float(sdl_screen_size.w) / r.width();
+	float yscale = float(sdl_screen_size.h) / r.height();
+	m_sdl_scale = xscale > yscale ? yscale : xscale;
+	if (sdl_window_flags & SDL_WINDOW_FULLSCREEN) {
+		m_sdl_dst_rect.w = r.width()*m_sdl_scale;
+		m_sdl_dst_rect.h = r.height()*m_sdl_scale;
+		m_sdl_dst_rect.x = (sdm.w - m_sdl_dst_rect.w)/2;
+		m_sdl_dst_rect.y = (sdm.h - m_sdl_dst_rect.h)/2;
+		m_sdl_window = SDL_CreateWindow(window_name, 0, 0 , sdl_screen_size.w, sdl_screen_size.h,sdl_window_flags);
+		m_sdl_fullscreen = true;
+	} else {
+		m_sdl_dst_rect.x = r.left();
+		m_sdl_dst_rect.y = r.top();
+		m_sdl_dst_rect.w = r.width();
+		m_sdl_dst_rect.h = r.height();
+		m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),sdl_window_flags);
+	}
 	if (m_sdl_window == NULL) {
 		SDL_SetError("Out of memory");
 		err = -1;
@@ -537,6 +561,8 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	assert (m_sdl_window);
+//XX	SDL_GLContext glcontext = SDL_GL_CreateContext(m_sdl_window);
+//XX	SDL_SetWindowFullscreen(m_sdl_window, SDL_WINDOW_RESIZABLE);
 	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
 	err = create_sdl_surface_and_pixels(&sdl_rect, &m_screen_pixels, &m_sdl_screen_surface, &m_sdl_screen_renderer);
 	if (err != 0) {
@@ -552,8 +578,8 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	if (m_sdl_window_renderer == NULL) {
 		m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
 		if (m_sdl_window_renderer == NULL) {
-			AM_DBG lib::logger::get_logger()->trace("sdl_ambulant_window.sdl_ambulant_window(%p): trying software renderer", this);
-			m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
+			lib::logger::get_logger()->trace("No accelerated renderer,software renderer fallback", this);
+			m_sdl_window_renderer = SDL_CreateRenderer(m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
 			if (m_sdl_window_renderer == NULL) {
 				lib::logger::get_logger()->warn("Cannot open: %s, error: %s for window %d", "SDL Createrenderer", SDL_GetError(), SDL_GetWindowID(m_sdl_window));
 				return -1;

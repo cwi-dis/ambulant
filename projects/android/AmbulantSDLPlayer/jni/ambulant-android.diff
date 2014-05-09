@@ -1,0 +1,651 @@
+diff -r 357886e4778d include/ambulant/gui/SDL/sdl_smiltext.h
+--- a/ambulant/include/ambulant/gui/SDL/sdl_smiltext.h	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/include/ambulant/gui/SDL/sdl_smiltext.h	Fri Feb 28 16:58:48 2014 +0200
+@@ -22,16 +22,29 @@
+ #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
+ #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
+ 
+-#if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
++#ifdef WITH_SDL2
+ 
+ #include "ambulant/gui/SDL/sdl_renderer.h"
+ #include "ambulant/gui/SDL/sdl_window.h"
+ #include "ambulant/lib/mtsync.h"
+ #include "ambulant/smil2/smiltext.h"
+ 
++#ifdef WITH_SDL_PANGO
+ #include <pango-1.0/pango/pango.h>
+ #define __PANGO_H__ // this reveals some useful functions we need to use
+ #include <SDL_Pango.h>
++#elif defined (WITH_SDL_TTF) // WITH_SDL_PANGO
++#define FONT "Times 6"
++#ifndef ANDROID
++#define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
++#define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
++#define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
++#else // ANDROID
++#define DEFAULT_FONT_FILE1 "LiberationSans-Regular.ttf"
++#endif // ANDROID
++#define DEFAULT_FONT_HEIGHT 16
++#include "SDL_ttf.h"
++#endif // WITH_SDL_TTF
+ 
+ namespace ambulant {
+ 
+@@ -75,6 +88,7 @@
+ //TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
+ 	lib::timer::time_type m_epoch;
+ 
++#ifdef WITH_SDL_PANGO
+ // pango specific stuff
+ 	void _sdl_set_color_attr(
+ 		PangoAttrList* pal, lib::color_t smiltext_color,
+@@ -92,6 +106,24 @@
+ 	PangoLayout* m_pango_layout;
+ 	PangoAttrList* m_bg_pango_attr_list;
+ 	PangoLayout* m_bg_layout;
++#elif defined (WITH_SDL_TTF) // WITH_SDL_PANGO
++  TTF_Font* m_ttf_font;
++  lib::color_t m_text_color;
++	int m_text_size;
++	const char* m_text_font;
++  int m_ttf_style;
++  void _sdl_smiltext_render_wrapped_ttf(
++    int L, 
++    int T, 
++    int W, 
++    int H, 
++    sdl_ambulant_window* saw,
++    const lib::point offset);
++  void _sdl_smiltext_render_text (
++    const char* text,
++    sdl_ambulant_window* saw, 
++    SDL_Rect *sdl_dst_rect);
++#endif
+ 
+ 	const color_t m_transparent; // needed for blending
+ 	const color_t m_alternative; // when m_transparent to be drawn
+@@ -118,6 +150,6 @@
+ 
+ } // namespace ambulant
+ 
+-#endif // defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
++#endif // defined(WITH_SDL2)
+ 
+ #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H
+diff -r 357886e4778d include/ambulant/lib/logger.h
+--- a/ambulant/include/ambulant/lib/logger.h	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/include/ambulant/lib/logger.h	Fri Feb 28 16:58:48 2014 +0200
+@@ -35,6 +35,18 @@
+ #include "ambulant/lib/asb.h"
+ #include "ambulant/lib/amstream.h"
+ 
++#ifdef ANDROID
++
++#include <android/log.h>
++
++#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL/Ambulant", __VA_ARGS__))
++#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "SDL/Ambulant", __VA_ARGS__))
++#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "SDL/Ambulant", __VA_ARGS__))
++#define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, "SDL/Ambulant", __VA_ARGS__))
++#define LOGV(...) ((void)__android_log_print(ANDROID_LOG_VERBOSE, "SDL/Ambulant", __VA_ARGS__))
++
++#endif // ANDROID
++
+ // Define the next to enable logging how video packets move through the
+ // program, if AMBULANT_LOGFILE_LATENCY environment points to an output file.
+ // #define LOGGER_VIDEOLATENCY "videolatency"
+@@ -250,7 +262,7 @@
+ }
+ 
+ inline bool logger::suppressed(int level) {
+-	return level < m_level;
++	return false;
+ }
+ 
+ } // namespace lib
+diff -r 357886e4778d src/libambulant/gui/SDL/sdl_smiltext.cpp
+--- a/ambulant/src/libambulant/gui/SDL/sdl_smiltext.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/libambulant/gui/SDL/sdl_smiltext.cpp	Fri Feb 28 16:58:48 2014 +0200
+@@ -30,10 +30,13 @@
+ #if ! defined(WITH_SDL_PANGO)
+ #include "ambulant/gui/none/none_area.h"
+ #endif// ! defined(WITH_SDL_PANGO)
++#if defined(WITH_SDL_TTF)
++#include "SDL_ttf.h"
++#endif
+ 
+ //#define AM_DBG if(1)
+ #ifndef AM_DBG
+-#define AM_DBG if(0)
++#define AM_DBG  if (0)
+ #endif
+ 
+ namespace ambulant {
+@@ -53,11 +56,12 @@
+ {
+ 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
+ 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+-#if defined(WITH_SDL_PANGO)
+ #define SDL_SMILTEXT_RENDERER sdl_smiltext_renderer 
+-#else// ! defined(WITH_SDL_PANGO)
+-#define SDL_SMILTEXT_RENDERER none::none_area_renderer
+-	lib::logger::get_logger()->trace("No %s renderer available", "smilText");
++#if defined(WITH_SDL_TTF)
++	TTF_Init();
++#endif // WITH_SDL_TTF
++#ifndef WITH_SDL_PANGO
++	lib::logger::get_logger()->trace("No full %s renderer available using SDL_Pango", "smilText");
+ #endif// ! defined(WITH_SDL_PANGO)
+ 	return new common::single_playable_factory<
+ 		SDL_SMILTEXT_RENDERER,
+@@ -66,7 +70,6 @@
+ 		sdl_smiltext_playable_renderer_uri2,
+ 		sdl_smiltext_playable_renderer_uri2>(factory, mdp);
+ }
+-#if defined(WITH_SDL_PANGO)
+ 
+ sdl_smiltext_renderer::sdl_smiltext_renderer(
+ 	playable_notification *context,
+@@ -80,13 +83,18 @@
+ 	m_params(m_engine.get_params()),
+ 	m_epoch(0),
+ // for SDL_Pango
++#ifdef WITH_SDL_PANGO
+ 	m_sdl_pango_context(NULL),
+ 	m_pango_attr_list(NULL),
+ 	m_pango_context(NULL),
+ 	m_pango_layout(NULL),
+ 	m_bg_pango_attr_list(NULL),
+ 	m_bg_layout(NULL),
+-
++#elif defined WITH_SDL_TTF// WITH_SDL_TTF
++  m_ttf_font (NULL),
++  m_text_size (DEFAULT_FONT_HEIGHT),
++  m_ttf_style (TTF_STYLE_NORMAL),
++#endif
+ 	m_transparent(SDL_TRANSPARENT_COLOR),
+ 	m_alternative(SDL_ALTERNATIVE_COLOR),
+ 	m_alpha_media(1.0),
+@@ -113,7 +121,7 @@
+ sdl_smiltext_renderer::~sdl_smiltext_renderer()
+ {
+ 	m_engine.lock();
+-
++#ifdef WITH_SDL_PANGO
+ 	if ( m_pango_attr_list != NULL) {
+ 		pango_attr_list_unref( m_pango_attr_list);
+ 		m_pango_attr_list = NULL;
+@@ -134,6 +142,7 @@
+ 		g_object_unref(m_bg_layout);
+ 		m_bg_layout = NULL;
+ 	}
++#endif
+ 	m_engine.unlock();
+ }
+ 
+@@ -186,6 +195,7 @@
+ sdl_smiltext_renderer::_sdl_smiltext_changed()
+ {
+ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
++#ifdef WITH_SDL_PANGO
+ #ifdef  GDK_PANGO
+ 	if ( ! m_pango_context) {
+ 		// initialize the pango context, layout...
+@@ -273,6 +283,7 @@
+ 		m_bg_pango_attr_list = pango_attr_list_new();
+ 	}
+ #endif//TBD
++#endif //WITH_SDL_PANGO
+ 	if (m_is_changed) {
+ 		lib::xml_string data;
+ 		smil2::smiltext_runs::const_iterator i;
+@@ -283,6 +294,7 @@
+ 			i = m_engine.begin();
+ 			smil2::smiltext_align align = i->m_align;
+ 			if (align != m_align) {
++#ifdef WITH_SDL_PANGO
+ 				switch (align) {
+ 				default:
+ 				case smil2::sta_left:
+@@ -307,6 +319,7 @@
+ #endif//TBD
+ 					break;
+ 				}
++#endif // WITH_SDL_PANGO
+ 				m_align = align;
+ 			}
+ 			m_needs_conditional_space = false;
+@@ -319,7 +332,7 @@
+ 		}
+ 		while (i != m_engine.end()) {
+ 			// Add the new characters
+-			gint start_index = m_text_storage.size();
++			int start_index = m_text_storage.size();
+ 			switch (i->m_command) {
+ 			default:
+ 				assert(0);
+@@ -378,6 +391,25 @@
+ 				break;
+ 			}
+ 			// Set font attributes
++#ifdef WITH_SDL_TTF
++      m_text_size = i->m_font_size;
++      m_text_font = i->m_font_families[0].c_str();
++      m_text_color = i->m_color == m_transparent ? m_alternative : i->m_color;
++      switch (i->m_font_style) {
++      case smil2::sts_reverse_oblique:
++      case smil2::sts_oblique:
++      case smil2::sts_italic:
++        m_ttf_style |= TTF_STYLE_ITALIC;
++        break;
++      default: break;
++      }
++      if (i->m_font_weight == smil2::stw_bold) {
++        m_ttf_style |= TTF_STYLE_BOLD;
++      }
++      //lib::logger::get_logger()->debug("Object %p : text size %.2f and font %s set for %s", this, m_text_size, m_text_font, m_text_storage.c_str());    
++#endif
++
++#ifdef WITH_SDL_PANGO
+ 			_sdl_set_font_attr(m_pango_attr_list,
+ 				i->m_font_families[0].c_str(),
+ 				i->m_font_style,
+@@ -450,6 +482,7 @@
+ 				pango_layout_context_changed(m_bg_layout);
+ 			}
+ #endif//TBD
++#endif //WITH_SDL_PANGO
+ 			i++;
+ 		}
+ 		m_engine.done();
+@@ -465,18 +498,23 @@
+ void
+ sdl_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
+ {
++  m_engine.lock();
++  const rect &r = m_dest->get_rect();
++	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
++  bool changed = m_is_changed;
++  if (m_is_changed) {
++		// compute the changes
++		_sdl_smiltext_changed();
++		m_is_changed = false;
++  }
++#if defined(WITH_SDL_PANGO)
++
+ #ifdef  TBD
+ #endif//TBD
+ 	PangoRectangle ink_rect;
+ 	PangoRectangle log_rect;
+ 
+-	m_engine.lock();
+-	const rect &r = m_dest->get_rect();
+-	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+-	if (m_is_changed) {
+-		// compute the changes
+-		_sdl_smiltext_changed();
+-		m_is_changed = false;
++	if (changed) {
+ 		// get the extents of the lines
+ 		pango_layout_set_width(m_pango_layout, m_wrap ? r.w*PANGO_SCALE : -1);
+ #ifdef  TBD
+@@ -497,6 +535,7 @@
+ #ifdef  TBD
+ #endif//TBD
+ 	}
++  #endif // WITH_SDL_PANGO
+ // Compute the shifted position of what we want to draw w.r.t. the visible origin
+ 	switch (m_params.m_mode) {
+ 	default:
+@@ -592,14 +631,13 @@
+ 		m_context->stopped(m_cookie);
+ 	}
+ 	AM_DBG logger::get_logger()->debug("sdl_smiltext_renderer.redraw: logical_origin(%d,%d) log_rect(%d,%d) r(%d,%d)", m_origin.x, m_origin.y, m_log_rect.w, m_log_rect.h, r.w, r.h);
+-
+ 	_sdl_smiltext_render(r, m_origin,(ambulant_sdl_window*)window);
+ #ifdef  TBD
+ #endif//TBD
+ 	m_engine.unlock();
+ }
+ 
+-
++#ifdef WITH_SDL_PANGO
+ // private methods
+ void
+ sdl_smiltext_renderer::_sdl_set_font_attr (PangoAttrList* pal,
+@@ -672,6 +710,71 @@
+ #ifdef  TBD
+ #endif//TBD
+ 
++#endif // WITH_SDL_PANGO
++
++#ifdef WITH_SDL_TTF
++
++void 
++sdl_smiltext_renderer::_sdl_smiltext_render_text (
++    const char* text,
++    sdl_ambulant_window* saw, 
++    SDL_Rect *sdl_dst_rect
++  )
++{
++  SDL_Surface *text_surface;
++  SDL_Color color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
++  if (!(text_surface = TTF_RenderText_Blended(m_ttf_font, text,  color))) {
++        AM_DBG lib::logger::get_logger()->debug("_sdl_smiltext_render_wrapped_ttf(%p): Failed rendering %s ", this, text);
++  } else {
++    saw->copy_to_sdl_surface (text_surface, NULL, sdl_dst_rect, 255 );
++  }
++  if (text_surface) {
++    SDL_FreeSurface(text_surface);
++  }
++}
++void 
++sdl_smiltext_renderer::_sdl_smiltext_render_wrapped_ttf(
++    int L, 
++    int T, 
++    int W, 
++    int H, 
++    sdl_ambulant_window* saw,
++    const lib::point offset
++  )
++{
++  uint text_width = W - m_text_size;
++  int current_width = 0;
++  std::string temp( m_text_storage );
++  if (m_wrap) {
++    temp += " ";
++    int n = 0, p = 0, lines = 0;
++    
++    while ( n!= -1)
++    {
++      std::string strSub;
++      n = temp.find( " ", p + 1 );		// -- Find the next " "
++      TTF_SizeText(m_ttf_font, temp.substr(0,n).c_str(), &current_width,NULL);
++      if( n==-1 || current_width >= text_width ) {
++        strSub = temp.substr( 0, p );	// -- sets strSub to the of the current line
++        SDL_Rect sdl_dst_rect = {L-offset.x, T -offset.y + TTF_FontLineSkip(m_ttf_font) * lines++ , W, H};
++        _sdl_smiltext_render_text(strSub.c_str(), saw, &sdl_dst_rect);
++        if( n != -1 ){
++          temp = temp.substr( p+1, std::string::npos );
++        }
++        p = 0;
++      } else {
++        p = n;
++      }
++      
++    }
++  } else {
++     SDL_Rect sdl_dst_rect = {L-offset.x, T-offset.y, W, H};
++     _sdl_smiltext_render_text(m_text_storage.c_str(), saw, &sdl_dst_rect);
++  }
++  
++}
++#endif
++
+ void
+ sdl_smiltext_renderer::_sdl_smiltext_render(
+ 	const lib::rect r, 
+@@ -682,9 +785,14 @@
+ 	const lib::point p = m_dest->get_global_topleft();
+ 	const char* data = m_text_storage.c_str();
+ 	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
+-
++  sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
++  
+ 	AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_render(%p): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
+-	if ( ! (m_pango_layout && window))
++	if ( ! (
++#ifdef WITH_SDL_PANGO
++    m_pango_layout && 
++#endif // WITH_SDL_PANGO
++    window))
+ 		return; // nothing to do
+ 
+ 	int L = r.left()+p.x,
+@@ -811,7 +919,7 @@
+ 			m_pango_layout);
+ 	}
+ 	g_object_unref (G_OBJECT (gc));
+-#else //GDK_PANGO
++#elif defined (WITH_SDL_PANGO)//GDK_PANGO
+ 	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
+ 	SDL_Surface* sdl_surface = SDLPango_CreateSurfaceDraw (m_sdl_pango_context);
+ 	SDLPango_Draw(m_sdl_pango_context, sdl_surface, 0, 0);
+@@ -819,12 +927,25 @@
+ 	L -= offset.x;
+ 	T -= offset.y;
+ 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };	
+-	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
+ 	saw->copy_to_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
+ 	SDL_FreeSurface(sdl_surface);
+ #endif// ! GDK_PANGO
++
++#ifdef WITH_SDL_TTF
++  if (m_ttf_font == NULL) { // Fedora 16
++    m_ttf_font = TTF_OpenFont(DEFAULT_FONT_FILE1, m_text_size*1.1);
++		if (m_ttf_font == NULL) {
++			AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", DEFAULT_FONT_FILE1, m_text_size*1.1, TTF_GetError());
++			return;
++		}
++    TTF_SetFontStyle(m_ttf_font, m_ttf_style);
++		TTF_SetFontOutline(m_ttf_font, 0);
++		TTF_SetFontKerning(m_ttf_font, 1);
++		TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
++  }
++  _sdl_smiltext_render_wrapped_ttf (L, T, W, H, saw, offset);
++#endif // WITH_SDL_TTF
+ }
+-#endif// defined(WITH_SDL_PANGO)
+ 
+ } // namespace sdl
+ 
+diff -r 357886e4778d src/libambulant/gui/SDL/sdl_text_renderer.cpp
+--- a/ambulant/src/libambulant/gui/SDL/sdl_text_renderer.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/libambulant/gui/SDL/sdl_text_renderer.cpp	Fri Feb 28 16:58:48 2014 +0200
+@@ -33,9 +33,15 @@
+ 
+ #if defined(WITH_SDL_TTF)
+ #define FONT "Times 6"
++#ifndef ANDROID
+ #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
+ #define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
+ #define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
++#else // ANDROID
++#define DEFAULT_FONT_FILE1 "/system/fonts/DroidSans.ttf"
++#define DEFAULT_FONT_FILE2 "/system/fonts/Roboto-Regular.ttf" 
++#define DEFAULT_FONT_FILE3 "/system/fonts/DroidSerif-Regular.ttf"
++#endif // ANDROID
+ #endif// defined(WITH_SDL_TTF)
+ 
+ #define DEFAULT_FONT_HEIGHT 16
+@@ -136,7 +142,7 @@
+ 			m_data_size);
+ 		m_text_storage[m_data_size] = '\0';
+ 	}
+-	AM_DBG lib::logger::get_logger()->debug(
++	LOGI(
+ 		"sdl_text_renderer.redraw(%p):"
+ 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
+ 		"font-family=(%s)",
+@@ -168,7 +174,11 @@
+ 			TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
+ 		}
+ 		SDL_Color sdl_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
++#ifndef ANDROID
+ 		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, sdl_color);
++#else // ANDROID
++		m_sdl_surface = TTF_RenderText_Blended (m_ttf_font, m_text_storage, sdl_color);
++#endif // ANDROID
+ 		assert (m_sdl_surface);
+ #elif defined(WITH_SDL_PANGO)
+ 		// initialize the pango context, layout...
+diff -r 357886e4778d src/libambulant/lib/logger.cpp
+--- a/ambulant/src/libambulant/lib/logger.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/libambulant/lib/logger.cpp	Fri Feb 28 16:58:48 2014 +0200
+@@ -219,8 +219,12 @@
+ 
+ void lib::logger::log_va_list(int level, const char *format, va_list args) {
+ 	char buf[4096];
++#ifndef ANDROID
+ 	vsnprintf(buf, sizeof(buf), format, args);
+ 	log_cstr(level, buf);
++# else // ANDROID
++    LOGI (format, args);
++#endif // ANDROID
+ }
+ 
+ // Output format/hook
+diff -r 357886e4778d src/player_sdl/sdl_gui.cpp
+--- a/ambulant/src/player_sdl/sdl_gui.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/player_sdl/sdl_gui.cpp	Fri Feb 28 16:58:48 2014 +0200
+@@ -51,7 +51,6 @@
+ #define AMBULANT_DATADIR "/usr/local/share/ambulant"
+ #endif
+ 
+-
+ const char *about_text =
+ 	"Ambulant SMIL 3.0 player.\n"
+ 	"Version: %s\n"
+@@ -798,9 +797,42 @@
+ 	}
+ }
+ 
++#ifdef ANDROID
++
++#include <jni.h>
++extern "C" {
++  /* Called before SDL_main() to initialize JNI bindings in SDL library */
++  extern void SDL_Android_Init(JNIEnv* env, jclass cls);
++
++  /* Start up the SDL app */
++  void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jstring path)
++  {
++      /* This interface could expand with ABI negotiation, calbacks, etc. */
++      SDL_Android_Init(env, cls);
++
++      SDL_SetMainReady();
++
++      /* Run the application code! */
++      int status;
++      char *argv[3];
++      jboolean isCopy;
++      const char *str_path = env->GetStringUTFChars(path, &isCopy);
++      argv[0] = SDL_strdup("AmbulantPlayer_SDL");
++      argv[1] = (char*)str_path;
++      argv[2] = NULL;
++      status = SDL_main(2, argv);
++      env->ReleaseStringUTFChars(path, str_path);
++
++      /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
++      /* exit(status); */
++  }
++}
++#endif // ANDROID
++
+ int
+ main (int argc, char*argv[]) {
+ 
++#ifndef ANDROID
+ 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {
+ 		fprintf (stderr, "Ambulant: SDL_Init failed: %s\n", SDL_GetError());
+ 		exit (-1);
+@@ -810,6 +842,8 @@
+ 		fprintf (stderr, "Ambulant: IMG_Init failed: %s\n", SDL_GetError());
+ 		exit (-2);
+ 	}
++#endif // ANDROID
++
+ #ifdef	ENABLE_NLS
+ 	// Load localisation database
+ 	bool private_locale = false;
+@@ -878,6 +912,10 @@
+ 			document_url = argv[1];
+ 		}
+ //X	}
++#ifdef ANDROID
++//    document_url="/mnt/sdcard/smil/Fruits-4shgb.smil";
++  LOGI("Document is %s", document_url);
++#endif // android
+ 	if (document_url == NULL) {
+ 		logger->error("Usage: %s <filename>|<url>", argv[0]);
+ 		exit(-1);
+@@ -903,13 +941,26 @@
+ 	}
+ 	gui->m_gui_player->play();
+ 	gui->sdl_loop();
++ #ifdef ANDROID
++//    document_url="/mnt/sdcard/smil/Fruits-4shgb.smil";
++  LOGI("After SDL loop");
++#endif // android
+ 	prefs->save_preferences();
+ 	// delete logger; // logger will be deleted by loggers_manager called at exit()
+ 	gui->quit();
+-	delete gui;
+-
++  delete gui;
++#ifdef ANDROID
++  LOGI("Deleted gui");
++  gui = NULL;
++  
++#endif // ANDROID
+ 	SDL_Quit();
+ 
++#ifdef ANDROID
++  LOGI("SDL Quit done");
++  gui = NULL;
++  
++#endif // ANDROID
+ 	return exec_flag ? 0 : -1;
+ }
+ 
+diff -r 357886e4778d src/player_sdl/sdl_gui_player.cpp
+--- a/ambulant/src/player_sdl/sdl_gui_player.cpp	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/player_sdl/sdl_gui_player.cpp	Fri Feb 28 16:58:48 2014 +0200
+@@ -52,6 +52,7 @@
+ 
+ #include "sdl_gui_player.h"
+ #include "sdl_gui.h"
++#include <unistd.h>
+ 
+ using namespace ambulant;
+ using namespace gui::sdl;
+@@ -109,7 +110,7 @@
+ 	if (!m_doc) {
+ 		return;
+ 	}
+-	create_top_window();
++	create_top_window(filename);
+ 	common::preferences *prefs = common::preferences::get_preferences();
+ 	m_logger->debug(" creating smil2 player %s", prefs->repr().c_str());
+ 	m_player = create_player(filename);
+@@ -232,7 +233,7 @@
+ }
+ 
+ void
+-sdl_gui_player::create_top_window () {
++sdl_gui_player::create_top_window (const char *filename) {
+ 	m_size = get_window_factory()->get_default_size();
+ 	int width = m_size.w;
+ 	int height = m_size.h;
+@@ -244,7 +245,7 @@
+ 	static SDL_Texture* s_texture = NULL; //XXXX member !
+ 	static SDL_Window* s_window = NULL; //XXXX member, embed  !
+ 	if (s_texture == NULL) {
+-		s_window = SDL_CreateWindow("SDL2 Video_Test", 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
++		s_window = SDL_CreateWindow(basename(filename), 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
+ 		assert (s_window);
+ 		s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED);
+ 		if (s_renderer == NULL) {
+diff -r 357886e4778d src/player_sdl/sdl_gui_player.h
+--- a/ambulant/src/player_sdl/sdl_gui_player.h	Tue Feb 18 23:51:14 2014 +0100
++++ b/ambulant/src/player_sdl/sdl_gui_player.h	Fri Feb 28 16:58:48 2014 +0200
+@@ -104,7 +104,7 @@
+ 	ambulant::common::player* create_player(const char* filename);
+ 	bool user_event (const point &p, int what = 0);
+ 	// top level drawing window
+-	void create_top_window ();
++	void create_top_window (const char* filename);
+ 	lib::point m_origin;
+ 	lib::size m_size;
+ 	lib::rect m_rect;

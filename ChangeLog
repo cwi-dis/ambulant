@@ -1,3 +1,14 @@
+2014-05-01  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* libltdl/m4/gettext.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/iconv.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/lib-ld.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/lib-link.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/lib-prefix.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/nls.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/po.m4: New file, from gettext-0.18.1.
+	* libltdl/m4/progtest.m4: New file, from gettext-0.18.1.
+
 2013-01-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added Piccoro
