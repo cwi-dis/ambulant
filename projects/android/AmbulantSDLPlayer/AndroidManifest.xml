@@ -27,7 +27,7 @@
             		<action android:name="android.intent.action.MAIN" />
             		<category android:name="android.intent.category.LAUNCHER" />
 		</intent-filter>
-    	    	<intent-filter> <!-- experimental - does not work -->
+    	    	<intent-filter> <!-- experimental - works with Browser, Google Chrome -->
             		<action android:name="android.intent.action.VIEW" />
            		<category android:name="android.intent.category.DEFAULT" />
 			<category android:name="android.intent.category.BROWSABLE" />
@@ -36,22 +36,24 @@
  			<data android:mimeType="application/x-smil" />
  			<data android:mimeType="application/x-ambulant-smil" />
 		</intent-filter>
+		<intent-filter> <!-- experimental - works with Total Commander File -->
+			<action android:name="android.intent.action.VIEW" />
+
+            		<category android:name="android.intent.category.DEFAULT" />
+            		<category android:name="android.intent.category.BROWSABLE" />
+
+	            	<data android:host="*" />
+        	    	<data android:scheme="file" />
+        	    	<data android:scheme="smb" />
+            		<data android:scheme="content" />
+			<data android:scheme="http" />
+			<data android:scheme="https" />
+			<data android:mimeType="*/*" />
+			<data android:pathPattern=".*\\.smil" />
+		</intent-filter>
     	</activity>      
    </application>
 
     <!-- Allow writing to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
-<!-- JNK?
- 			<category android:name="android.intent.category.OPENABLE" />
-			<data android:scheme="file" />
-			<data android:mimeType="*/*" />
-			<data android:pathPattern=".*\\.smil" />
-			<data android:host="*" />
-			<data android:scheme="file" android:mimeType="*/*"  android:pathPattern=".*\\.smil" android:host="*" />
-		<intent-filter>
-            		<action android:name="android.intent.action.GET_CONTENT" />
-          		<category android:name="android.intent.category.DEFAULT" />
-			<data android:mimeType="*/*" />
-		</intent-filter>
- --> 
 </manifest>
