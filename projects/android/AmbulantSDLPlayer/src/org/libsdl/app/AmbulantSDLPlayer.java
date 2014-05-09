@@ -67,7 +67,6 @@ public class AmbulantSDLPlayer extends SDLActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-
 	@Override
 	public void onBackPressed() {
 		// do somethineg here	
@@ -89,5 +88,11 @@ public class AmbulantSDLPlayer extends SDLActivity {
 	protected void onResume() {
 		super.onResume();  // Always call the superclass method first
 		Log.i("AmbulantSDLPlayer", "onResume() start");  
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onDestroy() start");  
+		System.exit(1);
 	}
 }

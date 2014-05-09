@@ -681,8 +681,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // So, we try to process them as DPAD or GAMEPAD events first, if that fails we try them as KEYBOARD
 	Log.i("SDL", "onKey keyCode="+keyCode);
 	if (keyCode == KeyEvent.KEYCODE_BACK) {
-	    return super.onKeyDown(keyCode, event);  //onBackPressed();
-	    //return true;
+	    return super.onKeyDown(keyCode, event);
         }
         if ( (event.getSource() & 0x00000401) != 0 || /* API 12: SOURCE_GAMEPAD */
                    (event.getSource() & InputDevice.SOURCE_DPAD) != 0 ) {
