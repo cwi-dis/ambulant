@@ -423,7 +423,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note by Jack: for npambulant INSTALL_PATH is set, but for the subprojects\n# it was set to /usr/local/lib\n#case x$INSTALL_PATH in\n#x) INSTALL_PATH=/usr/local/lib\n#esac\nSUB_INSTALL_PATH=/usr/local/lib\npython \"${AMBULANT_DIR}/scripts/internalize_dylibs.py\" -v -s \"${SUB_INSTALL_PATH}:${BUILT_PRODUCTS_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "# Note by Jack: for npambulant INSTALL_PATH is set, but for the subprojects\n# it was set to /usr/local/lib\ncase x$INSTALL_PATH in\nx) INSTALL_PATH=/usr/local/lib\nesac\npython \"${AMBULANT_DIR}/scripts/internalize_dylibs.py\" -v -s \"${INSTALL_PATH}:${BUILT_PRODUCTS_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
