@@ -444,7 +444,7 @@ sdl_ttf_smiltext_renderer::_open_font(const char* font_filename, int pt_size, TT
 		&& strcmp(font_filename, m_ttf_font_filename) != 0) {
 		_close_font(fp);
 	}
-	TTF_Font* ttf = TTF_OpenFont(font_filename, pt_size*1.4);
+	TTF_Font* ttf = TTF_OpenFont(font_filename, pt_size*1.3);
 	if (ttf != NULL) {
 		m_ttf_font_filename = (char*) font_filename;
 		TTF_SetFontStyle(ttf, m_ttf_style);
