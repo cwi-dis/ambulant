@@ -9,6 +9,7 @@ packages="
   autogen
   autoconf
   automake
+  dh-autoreconf
   libtool
   g++
   yasm
