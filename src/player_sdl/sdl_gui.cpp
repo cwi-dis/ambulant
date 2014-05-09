@@ -747,7 +747,7 @@ sdl_gui::sdl_loop() {
 			ambulant::gui::sdl::ambulant_sdl_window* asw; //XX no refs to 'ambulant' 
 			ambulant::gui::sdl::sdl_ambulant_window* saw;
 			saw = ambulant::gui::sdl::sdl_ambulant_window::get_sdl_ambulant_window (event.window.windowID);
-			/*AM_DBG*/ lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_WINDOWEVENT: type=%d windowID=%d code=%d data1=0x%x data2=0x%x saw=0x%x",__PRETTY_FUNCTION__, event.window.type, event.window.windowID, event.window.event,event.window.data1,event.window.data2, saw);
 			if (saw != NULL && (asw = saw->get_ambulant_sdl_window()) != NULL) {
 				common::player* player = m_gui_player->get_player();
 				if (player != NULL && saw->get_evp() == NULL) {
@@ -764,7 +764,7 @@ sdl_gui::sdl_loop() {
 					asw->redraw(r);
 					break;
 				case  SDL_WINDOWEVENT_MINIMIZED:
-					player->stop();
+					busy = false; // tmp. for android
 					break;
 				default:  
 					break;
@@ -772,7 +772,7 @@ sdl_gui::sdl_loop() {
 			}
 			break;
 		case SDL_MOUSEMOTION: // mouse moved
-			/*AM_DBG*/ lib::logger::get_logger()->debug("%s SDL_MOUSEMOTION: type=%d windowID=%d which=%d state=%d x=%d y=%d relx=%d rely=%d",__PRETTY_FUNCTION__, event.motion.type,  event.motion.windowID, event.motion.which, event.motion.state,event.motion.x,event.motion.y,event.motion.xrel,event.motion.yrel);
+			AM_DBG lib::logger::get_logger()->debug("%s SDL_MOUSEMOTION: type=%d windowID=%d which=%d state=%d x=%d y=%d relx=%d rely=%d",__PRETTY_FUNCTION__, event.motion.type,  event.motion.windowID, event.motion.which, event.motion.state,event.motion.x,event.motion.y,event.motion.xrel,event.motion.yrel);
 			if (m_gui_player != NULL) {
 				SDL_Point p;
 				p.x = event.motion.x;
@@ -788,7 +788,7 @@ sdl_gui::sdl_loop() {
 			break;
 		case SDL_MOUSEBUTTONDOWN: // mouse button pressed
 		case SDL_MOUSEBUTTONUP: // mouse button released
-		  /*AM_DBG*/ lib::logger::get_logger()->debug("%s %s: type=%d windowID=%d which=%d button=%d, state=%d, x=%d y=%d",__PRETTY_FUNCTION__, event.button.state ? "SDL_MOUSEBUTTONDOWN":"SDL_MOUSEBUTTONUP", event.button.type,  event.button.windowID, event.button.which, event.button.button, event.button.state ,event.button.x,event.button.y);
+			AM_DBG lib::logger::get_logger()->debug("%s %s: type=%d windowID=%d which=%d button=%d, state=%d, x=%d y=%d",__PRETTY_FUNCTION__, event.button.state ? "SDL_MOUSEBUTTONDOWN":"SDL_MOUSEBUTTONUP", event.button.type,  event.button.windowID, event.button.which, event.button.button, event.button.state ,event.button.x,event.button.y);
 			if (m_gui_player != NULL && event.button.state == 0) { // button released
 				SDL_Point p;
 				p.x = event.motion.x;
@@ -1034,14 +1034,11 @@ main (int argc, char*argv[]) {
 #ifdef ANDROID
 	LOGI("Deleted gui");
 	gui = NULL;
-  
 #endif // ANDROID
 	SDL_Quit();
-
 #ifdef ANDROID
 	LOGI("SDL Quit done");
 	gui = NULL;
-  
 #endif // ANDROID
 	return exec_flag ? 0 : -1;
 //#endif//#ifndef  ANDROID_MAIN
