@@ -9,6 +9,7 @@ packages="
   autogen
   autoconf
   automake
+  dh-autoreconf
   libtool
   g++
   yasm
@@ -21,7 +22,6 @@ packages="
   ssh
   libxt-dev
   libxext-dev
-  libsdl1.2-dev
 "
 debpackages="
   devscripts
