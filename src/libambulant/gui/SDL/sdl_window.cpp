@@ -536,15 +536,15 @@ sdl_ambulant_window::compute_sdl_dst_rect(int w, int h, SDL_Rect r)
 	m_sdl_dst_rect = r;
 	if (m_sdl_fullscreen && w == 0 && h == 0) {
 		int err = SDL_GetDesktopDisplayMode(0, &sdm);
-		lib::logger::get_logger()->trace("%s, w=%d, h=%d", err == 0 ? "Screen size " : SDL_GetError(), sdm.w, sdm.h);
+		if (err != 0) lib::logger::get_logger()->trace("%s: %s", __PRETTY_FUNCTION__, SDL_GetError());
 		sdl_screen_size = lib::size (sdm.w, sdm.h);
 	} else {
 		if (m_sdl_window != NULL) {
 			SDL_GetWindowSize(m_sdl_window, (int*) &sdl_screen_size.w, (int*) &sdl_screen_size.h);
 		}
 	}
-	lib::logger::get_logger()->debug("%s, %s=(%d,%d) r=(%d,%d, %d,%d)", "compute_sdl_dst_rect", "sdl_screen_size", 
-					 sdl_screen_size.w, sdl_screen_size.h, r.x, r.y, r.w, r.h);
+	AM_DBG lib::logger::get_logger()->debug("%s, %s=(%d,%d) r=(%d,%d, %d,%d)", "compute_sdl_dst_rect", "sdl_screen_size", 
+						sdl_screen_size.w, sdl_screen_size.h, r.x, r.y, r.w, r.h);
 
 	float xscale = float(sdl_screen_size.w) / r.w;
 	float yscale = float(sdl_screen_size.h) / r.h;
@@ -557,8 +557,8 @@ sdl_ambulant_window::compute_sdl_dst_rect(int w, int h, SDL_Rect r)
 	if (sdl_screen_size.h != m_sdl_dst_rect.h) {
 		m_sdl_dst_rect.y = (sdl_screen_size.h - m_sdl_dst_rect.h)/2;
 	}
-	lib::logger::get_logger()->debug("%s, %s=(%d,%d, %d,%d), m_sdl_scale=%f", "compute_sdl_dst_rect", "m_sdl_dst_rect",
-					 m_sdl_dst_rect.x, m_sdl_dst_rect.y, m_sdl_dst_rect.w, m_sdl_dst_rect.h, m_sdl_scale);
+	AM_DBG lib::logger::get_logger()->debug("%s, %s=(%d,%d, %d,%d), m_sdl_scale=%f", "compute_sdl_dst_rect", "m_sdl_dst_rect",
+						m_sdl_dst_rect.x, m_sdl_dst_rect.y, m_sdl_dst_rect.w, m_sdl_dst_rect.h, m_sdl_scale);
 	return m_sdl_dst_rect;
 } 
 

@@ -92,7 +92,7 @@ class sdl_gui_player :
 //JNK	SDL_Renderer* get_renderer() { return m_gui->get_renderer(); }
 //JNK	SDL_Surface* get_surface() { return m_gui->get_surface(); }
 	// helper: convert a point in screen space to a point in ambulant space
-	lib::point convert (lib::point p);
+	void resize_window (int w, int h);
   private:
 #if 0
 	// from dx_player

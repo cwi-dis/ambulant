@@ -763,9 +763,11 @@ sdl_gui::sdl_loop() {
 					r = asw->get_bounds();
 					asw->redraw(r);
 					break;
+				case  SDL_WINDOWEVENT_RESIZED:
+					m_gui_player->resize_window (event.window.data1,event.window.data2);
+					break;
 				case  SDL_WINDOWEVENT_MINIMIZED:
 					busy = false; // tmp. for android
-					break;
 				default:  
 					break;
 				}
