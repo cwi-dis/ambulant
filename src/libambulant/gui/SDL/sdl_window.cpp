@@ -462,13 +462,35 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 	m_sdl_renderer(NULL),
 	m_sdl_screen_renderer(NULL),
 	m_sdl_screen_surface(NULL),
+	m_sdl_window_flags(0),
 	m_sdl_fullscreen(false),
 	m_sdl_scale(1.0),
+	m_document_rect(SDL_Rect()),
 	m_evp(NULL),
 	m_screen_pixels(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(%p): window=(SDL_Window*)%p", this, window);
 	m_sdl_dst_rect.x = m_sdl_dst_rect.y = m_sdl_dst_rect.w = m_sdl_dst_rect.h = 0;
+// Environment variable SDL_WINDOW_FLAGS=<int> controls the flags given to SDL_CreateWindow
+	char* sdl_window_flags_env = getenv("SDL_WINDOW_FLAGS");
+	if (sdl_window_flags_env != NULL) {
+		m_sdl_window_flags = atoi (sdl_window_flags_env);
+		if (m_sdl_window_flags & SDL_WINDOW_OPENGL) {
+			if (SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24)
+			    || SDL_GL_SetAttribute (SDL_GL_STENCIL_SIZE, 8)
+			    || SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1)
+//			       SDL_GL_SetAttribute (SDL_GL_SWAP_CONTROL, 0)
+			    || SDL_GL_SetSwapInterval(0)
+			    ) {
+			  m_sdl_window_flags &= ~SDL_WINDOW_OPENGL;
+			  lib::logger::get_logger()->trace("%s() failed: %s -- continuing without SDL_WINDOW_OPENGL",
+							   "SDL_GL_SetAttribute",SDL_GetError());
+			}
+		}
+		if (m_sdl_window_flags & SDL_WINDOW_FULLSCREEN) {
+			m_sdl_fullscreen = true;
+		}
+	}
 }
 
 sdl_ambulant_window::~sdl_ambulant_window()
@@ -506,6 +528,40 @@ sdl_ambulant_window::~sdl_ambulant_window()
 	sdl_ambulant_window::s_lock.leave();
 }
 
+SDL_Rect
+sdl_ambulant_window::compute_sdl_dst_rect(int w, int h, SDL_Rect r)
+{
+	SDL_DisplayMode sdm;
+	lib::size sdl_screen_size = (w != 0 && h != 0) ? lib::size (w, h) : lib::size (r.w, r.h);
+	m_sdl_dst_rect = r;
+	if (m_sdl_fullscreen && w == 0 && h == 0) {
+		int err = SDL_GetDesktopDisplayMode(0, &sdm);
+		lib::logger::get_logger()->trace("%s, w=%d, h=%d", err == 0 ? "Screen size " : SDL_GetError(), sdm.w, sdm.h);
+		sdl_screen_size = lib::size (sdm.w, sdm.h);
+	} else {
+		if (m_sdl_window != NULL) {
+			SDL_GetWindowSize(m_sdl_window, (int*) &sdl_screen_size.w, (int*) &sdl_screen_size.h);
+		}
+	}
+	lib::logger::get_logger()->debug("%s, %s=(%d,%d) r=(%d,%d, %d,%d)", "compute_sdl_dst_rect", "sdl_screen_size", 
+					 sdl_screen_size.w, sdl_screen_size.h, r.x, r.y, r.w, r.h);
+
+	float xscale = float(sdl_screen_size.w) / r.w;
+	float yscale = float(sdl_screen_size.h) / r.h;
+	m_sdl_scale = xscale > yscale ? yscale : xscale;
+	m_sdl_dst_rect.w = r.w * m_sdl_scale;
+	m_sdl_dst_rect.h = r.h * m_sdl_scale;
+	if (sdl_screen_size.w != m_sdl_dst_rect.w) {
+		m_sdl_dst_rect.x = (sdl_screen_size.w - m_sdl_dst_rect.w)/2;
+	}
+	if (sdl_screen_size.h != m_sdl_dst_rect.h) {
+		m_sdl_dst_rect.y = (sdl_screen_size.h - m_sdl_dst_rect.h)/2;
+	}
+	lib::logger::get_logger()->debug("%s, %s=(%d,%d, %d,%d), m_sdl_scale=%f", "compute_sdl_dst_rect", "m_sdl_dst_rect",
+					 m_sdl_dst_rect.x, m_sdl_dst_rect.y, m_sdl_dst_rect.w, m_sdl_dst_rect.h, m_sdl_scale);
+	return m_sdl_dst_rect;
+} 
+
 int
 sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, lib::rect r)
 {
@@ -514,45 +570,8 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	AM_DBG lib::logger::get_logger()->trace("sdl_gui::create_sdl_window_and_renderers(%p): m_window=(SDL_Window*)%p, window ID=%d", this, m_sdl_window, SDL_GetWindowID(m_sdl_window));
-	int sdl_window_flags = 0;
-// Experimental environment variable SDL_WINDOW_FLAGS=<int> controls the flags given to SDL_CreateWindow
-	char* sdl_window_flags_env = getenv("SDL_WINDOW_FLAGS");
-	if (sdl_window_flags_env != NULL) {
-		sdl_window_flags = atoi (sdl_window_flags_env);
-		if (sdl_window_flags & SDL_WINDOW_OPENGL) {
-			if (SDL_GL_SetAttribute (SDL_GL_DEPTH_SIZE, 24)
-			    || SDL_GL_SetAttribute (SDL_GL_STENCIL_SIZE, 8)
-			    || SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER, 1)
-//			       SDL_GL_SetAttribute (SDL_GL_SWAP_CONTROL, 0)
-			    || SDL_GL_SetSwapInterval(0)
-			    ) {
-			  sdl_window_flags &= ~SDL_WINDOW_OPENGL;
-			  lib::logger::get_logger()->trace("%s() failed: %s -- continuing without SDL_WINDOW_OPENGL",
-							   "SDL_GL_SetAttribute",SDL_GetError());
-			}
-		}
-	}
-	SDL_DisplayMode sdm;
-	err =SDL_GetDesktopDisplayMode(0, &sdm);
-	lib::logger::get_logger()->trace("%s, w=%d, h=%d", err == 0 ? "OK: " : SDL_GetError(), sdm.w, sdm.h);
-	lib::size sdl_screen_size = lib::size (sdm.w, sdm.h);
-	float xscale = float(sdl_screen_size.w) / r.width();
-	float yscale = float(sdl_screen_size.h) / r.height();
-	m_sdl_scale = xscale > yscale ? yscale : xscale;
-	if (sdl_window_flags & SDL_WINDOW_FULLSCREEN) {
-		m_sdl_dst_rect.w = r.width()*m_sdl_scale;
-		m_sdl_dst_rect.h = r.height()*m_sdl_scale;
-		m_sdl_dst_rect.x = (sdm.w - m_sdl_dst_rect.w)/2;
-		m_sdl_dst_rect.y = (sdm.h - m_sdl_dst_rect.h)/2;
-		m_sdl_window = SDL_CreateWindow(window_name, 0, 0 , sdl_screen_size.w, sdl_screen_size.h,sdl_window_flags);
-		m_sdl_fullscreen = true;
-	} else {
-		m_sdl_dst_rect.x = r.left();
-		m_sdl_dst_rect.y = r.top();
-		m_sdl_dst_rect.w = r.width();
-		m_sdl_dst_rect.h = r.height();
-		m_sdl_window = SDL_CreateWindow(window_name, r.left(),r.top(),r.width(),r.height(),sdl_window_flags);
-	}
+	SDL_Rect sr = compute_sdl_dst_rect(0, 0, SDL_Rect_from_ambulant_rect(r));
+	m_sdl_window = SDL_CreateWindow(window_name, sr.x, sr.y, sr.w, sr.h, m_sdl_window_flags);
 	if (m_sdl_window == NULL) {
 		SDL_SetError("Out of memory");
 		err = -1;
@@ -561,6 +580,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	assert (m_sdl_window);
+	m_document_rect = SDL_Rect_from_ambulant_rect(r);
 //XX	SDL_GLContext glcontext = SDL_GL_CreateContext(m_sdl_window);
 //XX	SDL_SetWindowFullscreen(m_sdl_window, SDL_WINDOW_RESIZABLE);
 	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
@@ -640,6 +660,25 @@ sdl_ambulant_window::create_sdl_surface_and_pixels(SDL_Rect* r, uint8_t** pixels
 		err = SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_BLEND);
 	}
 	return err;
+}
+
+
+void
+sdl_ambulant_window::sdl_resize_window (int w, int h) 
+{
+	compute_sdl_dst_rect (w, h, m_document_rect);
+	m_ambulant_sdl_window->need_redraw(ambulant_rect_from_SDL_Rect(m_document_rect));
+}
+
+lib::point
+sdl_ambulant_window::transform (SDL_Point p) 
+{
+	lib::point q(p.x, p.y);
+	
+	SDL_Rect sr = get_sdl_dst_rect();
+	q.x = round((p.x - sr.x) / m_sdl_scale);
+	q.y = round((p.y - sr.y) / m_sdl_scale);
+	return q;
 }
 
 sdl_ambulant_window*
