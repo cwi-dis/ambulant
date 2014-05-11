@@ -122,7 +122,7 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	sdl_rect.h = r.height();
 	sdl_ambulant_window* saw = (sdl_ambulant_window*) m_parent_window;
 	ambulant_sdl_window* asw = saw->get_ambulant_sdl_window();
-//#define SDL2_Bug1513_Workaround
+#define SDL2_Bug1513_Workaround
 	// It appears when SDL is patched as described below, and this workarount code is enabled.
 	// although the Window is then sized properly, the drawables can be misformed.
 #ifdef  SDL2_Bug1513_Workaround
