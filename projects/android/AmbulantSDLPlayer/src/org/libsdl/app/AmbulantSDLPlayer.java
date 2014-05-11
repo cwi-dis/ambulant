@@ -3,6 +3,7 @@ package org.libsdl.app;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.view.KeyEvent;
 
@@ -81,8 +82,13 @@ public class AmbulantSDLPlayer extends SDLActivity {
 	}
 	@Override
 	protected void onStop() {
-		super.onStop();  // Always call the superclass method first
 		Log.i("AmbulantSDLPlayer", "onStop() start");  
+		super.onStop();
+	}
+	@Override
+	protected void onPause() {
+		Log.i("AmbulantSDLPlayer", "onPause() start");  
+		super.onPause();
 	}
 	@Override
 	protected void onResume() {
@@ -94,5 +100,16 @@ public class AmbulantSDLPlayer extends SDLActivity {
 		super.onDestroy();  // Always call the superclass method first
 		Log.i("AmbulantSDLPlayer", "onDestroy() start");  
 		System.exit(1);
+	}
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+
+		// Checks the orientation of the screen
+		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			Log.i("AmbulantSDLPlayer", " onConfigurationChanged() landscape");  
+		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+			Log.i("AmbulantSDLPlayer", " onConfigurationChanged() portrait");  
+		}
 	}
 }
