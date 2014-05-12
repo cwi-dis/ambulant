@@ -185,7 +185,6 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	int copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 //TBD	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
 	bool get_sdl_fullscreen () { return m_sdl_fullscreen; }
-	float get_sdl_scale () { return m_sdl_scale; }
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);
 	void dump_sdl_renderer (SDL_Renderer* renderer, SDL_Rect rect, const char* id);
@@ -237,13 +236,15 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// For the gui_screen implementation
 	void* m_screenshot_data;
 	long int m_screenshot_size;
+	lib::point transform (SDL_Point p); 
 	SDL_Rect get_sdl_dst_rect() { return m_sdl_dst_rect; } //XX should be private
-
+	// resize window to new size
+	void sdl_resize_window (int w, int h);
   private:
 	// Helper: create the actual SDL_Window*, foreground and background pixels, surfaces and renderers
 	int create_sdl_window_and_renderers(const char* window_name, lib::rect);
 	int create_sdl_surface_and_pixels(SDL_Rect*, uint8_t** pixels=NULL, SDL_Surface** surface=NULL, SDL_Renderer** renderer=NULL);
-	
+	SDL_Rect compute_sdl_dst_rect(int w, int h, SDL_Rect r);	
 	ambulant_sdl_window* m_ambulant_sdl_window;
 	// The actual SDL_Window*
 	SDL_Window*   m_sdl_window;
@@ -256,7 +257,9 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Surface*  m_sdl_screen_surface;
 	SDL_Renderer* m_sdl_screen_renderer; // the "real" renderer, for SDL_Present()
 	bool m_sdl_fullscreen;
+	SDL_Rect m_document_rect;
 	SDL_Rect m_sdl_dst_rect;
+	int m_sdl_window_flags;
 	float m_sdl_scale;
 	lib::event_processor* m_evp;
 	uint8_t* m_screen_pixels;

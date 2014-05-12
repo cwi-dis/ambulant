@@ -113,6 +113,14 @@ public class SDLActivity extends Activity {
     }
 
 
+	@Override
+	public void onBackPressed() {
+		// do somethineg here	
+		// Otherwise defer to system default behavior.
+		Log.i("SDL", "onBackPressed()");  
+		super.onBackPressed();
+	}
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -671,7 +679,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // Dispatch the different events depending on where they come from
         // Some SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
         // So, we try to process them as DPAD or GAMEPAD events first, if that fails we try them as KEYBOARD
-        
+	Log.i("SDL", "onKey keyCode="+keyCode);
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    return super.onKeyDown(keyCode, event);
+        }
         if ( (event.getSource() & 0x00000401) != 0 || /* API 12: SOURCE_GAMEPAD */
                    (event.getSource() & InputDevice.SOURCE_DPAD) != 0 ) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -697,7 +708,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 return true;
             }
         }
-        
         return false;
     }
 
@@ -711,6 +721,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int pointerFingerId;
         int i = -1;
         float x,y,p;
+	Log.i("SDL", "onTouch");
         
         switch(action) {
             case MotionEvent.ACTION_MOVE:

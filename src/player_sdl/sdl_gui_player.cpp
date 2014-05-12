@@ -174,9 +174,9 @@ sdl_gui_player::init_datasource_factory()
 void
 sdl_gui_player::redraw() {
 	if (m_sdl_ambulant_window != NULL) {
-		ambulant_sdl_window* sdl_window = m_sdl_ambulant_window->get_ambulant_sdl_window();
-		if (sdl_window != NULL) {
-			sdl_window->redraw(m_rect);
+		ambulant_sdl_window* asw = m_sdl_ambulant_window->get_ambulant_sdl_window();
+		if (asw != NULL) {
+			asw->redraw(asw->get_bounds());
 		}
 	}
 }
@@ -282,35 +282,19 @@ sdl_gui_player::init_parser_factory()
 #endif
 }
 
-bool
-sdl_gui_player::user_event(const point& p, int what) {
-	bool rv = false;
-	if (m_ambulant_sdl_window != NULL) {
-		rv = m_ambulant_sdl_window->user_event(p, what);
+void
+sdl_gui_player::resize_window(int w, int h) {
+	if (m_sdl_ambulant_window != NULL) {
+		m_sdl_ambulant_window->sdl_resize_window (w, h);
 	}
-	return rv;
 }
 
 bool
 sdl_gui_player::user_event(SDL_Point& p, int what) {
-	point am_p(p.x, p.y);
-	am_p = convert (am_p);
-	return user_event(am_p, what);
-}
-
-
-lib::point
-sdl_gui_player::convert (lib::point p) 
-{
-	lib::point q(p);
-	
-	if (m_sdl_ambulant_window->get_sdl_fullscreen()) {
-		SDL_Rect sr = m_sdl_ambulant_window->get_sdl_dst_rect();
-		float scale = m_sdl_ambulant_window->get_sdl_scale();
-		q.x = round((p.x - sr.x) / scale);
-		q.y = round((p.y - sr.y) / scale);
+	if (m_sdl_ambulant_window == NULL || m_ambulant_sdl_window == NULL) {
+		return false;
 	}
-	return q;
+	return m_ambulant_sdl_window->user_event(m_sdl_ambulant_window->transform(p), what);
 }
 
 void

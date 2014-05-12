@@ -3,7 +3,9 @@ package org.libsdl.app;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.view.KeyEvent;
 
 //import org.libsdl.app.*;
 
@@ -57,4 +59,57 @@ public class AmbulantSDLPlayer extends SDLActivity {
 		}
 	}
 	public static String my_string;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.i("AmbulantSDLPlayer", "onKeyDown() start keyCode = "+keyCode);  
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+        		moveTaskToBack(true);
+        		return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	@Override
+	public void onBackPressed() {
+		// do somethineg here	
+		// Otherwise defer to system default behavior.
+		Log.i("AmbulantSDLPlayer", "onBackPressed() start");  
+		super.onBackPressed();
+	}
+	@Override
+	protected void onStart() {
+		super.onStart();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onStart() start");  
+	}
+	@Override
+	protected void onStop() {
+		Log.i("AmbulantSDLPlayer", "onStop() start");  
+		super.onStop();
+	}
+	@Override
+	protected void onPause() {
+		Log.i("AmbulantSDLPlayer", "onPause() start");  
+		super.onPause();
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onResume() start");  
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onDestroy() start");  
+		System.exit(1);
+	}
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+
+		// Checks the orientation of the screen
+		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			Log.i("AmbulantSDLPlayer", " onConfigurationChanged() landscape");  
+		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+			Log.i("AmbulantSDLPlayer", " onConfigurationChanged() portrait");  
+		}
+	}
 }
