@@ -114,7 +114,7 @@ class demux_video_datasource:
 //	void set_pixel_layout(pixel_order l) { assert(l == pixel_unknown); }
 //	timestamp_t get_buffer_time() { return m_frames.size() * frameduration(); };
 
-	audio_format& get_audio_format() { assert(0); }
+	audio_format& get_audio_format() { assert(0); static audio_format a; return a;}
 	bool has_audio();
 	audio_datasource* get_audio_datasource();
 
