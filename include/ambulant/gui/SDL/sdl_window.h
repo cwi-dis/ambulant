@@ -227,8 +227,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 		if ( ! m_transition_surfaces.empty()) m_transition_surfaces.pop();
 		return s;
 	}
-	/// Clear the pixels of a SDL_Surface 
-	void clear_sdl_surface (SDL_Surface* surface, SDL_Rect sdl_rect);
+	/// Clear a rectangle of the pixels in the SDL_Surface and prepare for drawing after resize window
+	void clear_sdl_surface (lib::rect);
 
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);
@@ -240,6 +240,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Rect get_sdl_dst_rect() { return m_sdl_dst_rect; } //XX should be private
 	// resize window to new size
 	void sdl_resize_window (int w, int h);
+	void redraw(lib::rect r);
+	const char* get_screen_pixels();
   private:
 	// Helper: create the actual SDL_Window*, foreground and background pixels, surfaces and renderers
 	int create_sdl_window_and_renderers(const char* window_name, lib::rect);
@@ -276,6 +278,9 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	std::stack<SDL_Surface*> m_transition_surfaces;
 	int m_fullscreen_count;
+	bool m_need_window_resize;
+	int m_new_width;
+	int m_new_height;
 
 //X	SDL_Window* m_parent_window;
 //X	sdl_ambulant_window* m_parent_window;
