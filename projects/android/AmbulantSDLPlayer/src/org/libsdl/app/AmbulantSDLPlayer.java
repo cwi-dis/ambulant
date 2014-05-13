@@ -2,6 +2,7 @@ package org.libsdl.app;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -57,8 +58,10 @@ public class AmbulantSDLPlayer extends SDLActivity {
 			Log.i("AmbulantSDLPlayer", "onCreate() data="+data);
 			AmbulantSDLPlayer.my_string = ""+data;
 		}
+		AmbulantSDLPlayer.data_dir = getFilesDir().getAbsolutePath();
 	}
 	public static String my_string;
+	public static String data_dir;
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.i("AmbulantSDLPlayer", "onKeyDown() start keyCode = "+keyCode);  
