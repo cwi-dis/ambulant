@@ -871,7 +871,23 @@ extern "C" {
 //		char *str_path = (char*) env->GetStringUTFChars(path, &isCopy);
 		argv[0] = SDL_strdup("AmbulantPlayer_SDL");
 //		argv[1] =	str_path;
-		argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
+//		char cwd[512];
+//		getcwd(cwd, 512);
+//		LOGI("path=%s", cwd);
+		char* data_dir = "/sdcard/";//get_static_string_from_java_class (env, "org.libsdl.app.AmbulantSDLPlayer", "data_dir", "Ljava/lang/String;");
+		LOGI("data_dir = %s", data_dir);
+		char buf[512];
+		sprintf (buf,"%s/%s", data_dir, "AmbulantSDLPlayerInfo.smil");
+		argv[1]= SDL_strdup(buf);
+		system ("echo \"<smil> <body> <par dur=\\\"600\\\" >"
+			"<smilText begin=\\\"1\\\" textPlace=\\\"start\\\" textFontSize=\\\"medium\\\" textFontWeight=\\\"normal\\\" >"
+			"<span textPlace=\\\"center\\\" textFontSize=\\\"x-large\\\" textFontWeight=\\\"bold\\\" >AmbulantSDLPlayer</span>"
+			"<br/><br/>AmbulantSDLPlayer is a SMIL3.0 Player for Android.<br/>"
+			"It can be activated by tapping a downloaded SMIL file in a suitable File Manager (e.g. Total Commander) or by "
+			"tapping a link to a SMIL file in a Web Browser (e.g. Chrome), such as the links marked "
+			"'http' at www.ambulantplayer.org/Demos.<br/><br/>AmbulantSDLPlayer can be stopped by tapping the BackButton "
+			"(bottom middle left).<br/><br/>Enjoy !</smilText></par></body></smil>\" >/sdcard/AmbulantSDLPlayerInfo.smil");
+//		argv[1]= SDL_strdup("http://homepages.cwi.nl/~kees/ambulant/Welcome/Welcome.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/Welcome/Welcome-smiltext.smil");
 //		argv[1]= SDL_strdup("/sdcard/Download/smilText/NYC-sT.smil");
