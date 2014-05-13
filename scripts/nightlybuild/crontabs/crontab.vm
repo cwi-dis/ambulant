@@ -1,7 +1,7 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
-20 1 * * * prlctl start Win7-VS2010-Nightly
+20 0 * * * prlctl start Win7-VS2010-Nightly
 20 3 * * * prlctl start Ubuntu-1204-32bit
 20 5 * * * prlctl start Ubuntu-1204-64bit
 20 7 * * * prlctl start Ubuntu-1310-32bit
