@@ -49,29 +49,51 @@ http://download.eclipse.org/releases/juno/
 http://download.eclipse.org/tools/cdt/releases/juno
 https://dl-ssl.google.com/android/eclipse/
 
+In both cases, before building AmbulantSDLPlayer some external packages
+need to be available:
+
+1. ffmpeg-2.0.2 needs to be been installed according to instructions found in:
+   http://www.roman10.net/how-to-build-ffmpeg-with-ndk-r9/
+
+   Be aware to the setting of the environment variables
+   NDK=<android-ndk-r9c>, and
+   NDK_MODULE_PATH=<android-ndk-r9c>/sources
+
+2. Other third party packages need to be downloaded using the script:
+   jni/prepare-ndk-build.sh
+
 Building with command line tools:
 
-ndk-build -j9 clean
-ndk-build -9
-ant debug install
+-> ndk-build -j9 clean
+-> ndk-build -j9
+-> ant debug install
 
-Run Ambulant on the device and use
-adb logcat
+Run AmbulantSDLPlayer on the device (see below now) and use:
+-> adb logcat
 to see error messages.
 
-Also, Ambulant logger writes on the device '/sdcard/ambulant.log',
+Also, AmbulantSDLPlayer writes its own logs in: '/sdcard/ambulant.log',
 can be viewed with:
 
-adb shell
-cat /cdcard/ambulant.log
+-> adb shell
+--> cat /sdcard/ambulant.log
+
+Using  AmbulantSDLPlayer.
+-------------------------
+
+AmbulantSDLPlayer has no GUI, but can be started from any Internet Browser
+or some File Manager, by tapping a link representing a .smil file, e.g.
+those marked 'http' on http://ambulantplayer.org/Demos.shtml)
+
+Also, for downloaded files, the (free) File Browser 'Total Commander' can be used
+to start AmbulantSDLPlayer, by clicking any '.smil' file.
+
+When the orientation changes (portrait/landscape), AmbulantSDLPlayer adapts properly.
+When the 'BackButton' (left middle bottom icon) is tapped, AmbulantSDLPlayer stops.
 
 
 State of the Android implementation.
 ----------------------------------
-
-Although there is no GUI, besides compiled-in URLs also links to .smil files
-presented in Android Browser can be played, by tapping these links (e.g.
-those marked 'http' on http://ambulantplayer.org/Demos.shtml)
 
 SDL_TTF is used for smilText rendering, almost all of smilText has
 been implemented and tested, except:
@@ -79,19 +101,10 @@ textWritingMode (not tested)
 textDirection (not tested)
 textFontFamily (not tested, only 1 font availble for Android)
 
-ffmpeg-2.0.2 has been installed according to instructions found in:
-http://www.roman10.net/how-to-build-ffmpeg-with-ndk-r9/
-
-Be aware to the setting of the environment variables
-NDK=<android-ndk-r9c>, and
-NDK_MODULE_PATH=<android-ndk-r9c>/sources
-
-Other third party packages need to be downloaded using the script:
-jni/prepare-ndk-build.sh
-
 Known bugs and limitations:
 
-AmbulatSDLPlayer stops when the Android screen is turned.
-There is no Quit or GoBack facilty
+audio for .mp4 video is broken.
+When started from Web Browser, AmbulantSDLPlayer does not return to the Browser
+that started it.
 
-Kees Blom, May 7, 2014.
+Kees Blom, May 12, 2014.
