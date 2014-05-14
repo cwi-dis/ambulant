@@ -524,7 +524,7 @@ sdl_ambulant_window::redraw (lib::rect r)
 //	saw->dump_sdl_surface (surface, "redr");
 	SDL_Surface* screen_surface = get_sdl_surface();
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);		
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_rect=(SDL_Rect){%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_rect=(SDL_Rect){%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
 	if (texture == NULL) {
 		return;
 	}
@@ -732,9 +732,9 @@ sdl_ambulant_window::set_ambulant_sdl_window( ambulant_sdl_window* asw)
 void
 sdl_ambulant_window::startScreenTransition()
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::startScreenTransition()");
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::startScreenTransition()");
 	if (m_fullscreen_count)
-		logger::get_logger()->trace("%s:multiple Screen transitions in progress (m_fullscreen_count=%d)","ambulant_sdl_window::startScreenTransition()",m_fullscreen_count);
+		logger::get_logger()->trace("%s:multiple Screen transitions in progress (m_fullscreen_count=%d)","sdl_ambulant_window::startScreenTransition()",m_fullscreen_count);
 	m_fullscreen_count++;
 #ifdef JNK
 	if (m_fullscreen_old_surface) g_object_unref(G_OBJECT(m_fullscreen_old_surface));
@@ -746,7 +746,7 @@ sdl_ambulant_window::startScreenTransition()
 void
 sdl_ambulant_window::endScreenTransition()
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::endScreenTransition()");
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::endScreenTransition()");
 	assert(m_fullscreen_count > 0);
 	m_fullscreen_count--;
 }
@@ -754,7 +754,7 @@ sdl_ambulant_window::endScreenTransition()
 void
 sdl_ambulant_window::screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now)
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::screenTransitionStep()");
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::screenTransitionStep()");
 	assert(m_fullscreen_count > 0);
 #ifdef JNK
 	m_fullscreen_engine = engine;
@@ -765,7 +765,7 @@ sdl_ambulant_window::screenTransitionStep(smil2::transition_engine* engine, lib:
 void
 sdl_ambulant_window::_screenTransitionPreRedraw()
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPreRedraw()");
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPreRedraw()");
 	if (m_fullscreen_count == 0) return;
 	// XXX setup drawing to transition window
 }
@@ -773,7 +773,7 @@ sdl_ambulant_window::_screenTransitionPreRedraw()
 void
 sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw()");
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPostRedraw()");
 #ifdef JNK
 	if (m_fullscreen_count == 0 && m_fullscreen_old_surface == NULL) {
 		// Neither in fullscreen transition nor wrapping one up.
@@ -793,7 +793,7 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 	}
 #endif//JNK
 
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw: bitblit");
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPostRedraw: bitblit");
 #ifdef JNK
 	if (m_fullscreen_engine) {
 		// Do the transition step
@@ -810,7 +810,7 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 
 	if (m_fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::_screenTransitionPostRedraw: cleanup after transition done");
+		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPostRedraw: cleanup after transition done");
 #ifdef JNK
 		if (m_fullscreen_old_surface) g_object_unref(G_OBJECT(m_fullscreen_old_surface));
 		m_fullscreen_old_surface = NULL;
@@ -825,11 +825,11 @@ sdl_ambulant_window::clear_sdl_surface (lib::rect r)
 {
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect(r); 
 	SDL_Surface* sdl_surface = get_sdl_surface();
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear_SDL_Surface(%p) = %p, sdl_rect={%d,%d,%d,%d}", this, sdl_surface, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p) = %p, sdl_rect={%d,%d,%d,%d}", this, sdl_surface, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
 	// Fill with <brush> color
 	color_t color = lib::to_color(255, 255, 255);
 
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::clear(): clearing to %p", (long)color);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear(): clearing to %p", (long)color);
 	Uint32 sdl_color = SDL_MapRGBA(sdl_surface->format, redc(color), greenc(color), bluec(color), 255);
 	SDL_SetClipRect(sdl_surface, &sdl_rect);
 	SDL_FillRect(sdl_surface, &sdl_rect, sdl_color);
@@ -914,7 +914,7 @@ _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_R
 	if (rv >= 0) {
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
 		if (rv < 0) {
-			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
+			lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
 		}
 	}
 	if (rv >= 0) {
@@ -924,7 +924,7 @@ _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_R
 			rv = SDL_BlitSurface(src, src_rect, dst, dst_rect);
 		}
 		if (rv < 0) {
-			lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): error from %s: %s", scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());
+			lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());
 		}
 	}
 	if (src_locked) {
@@ -940,7 +940,7 @@ int
 sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
 		sdl_ambulant_window::s_lock.enter();
 		SDL_Surface* dst = get_sdl_surface();
@@ -956,7 +956,7 @@ int
 sdl_ambulant_window::copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
 		sdl_ambulant_window::s_lock.enter();
 		SDL_Surface* dst = get_sdl_surface();
