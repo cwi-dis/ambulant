@@ -459,7 +459,7 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(%p): window=(SDL_Window*)%p", this, window);
 	m_sdl_dst_rect.x = m_sdl_dst_rect.y = m_sdl_dst_rect.w = m_sdl_dst_rect.h = 0;
-// Environment variable SDL_WINDOW_FLAGS=<int> controls the flags given to SDL_CreateWindow
+	// Environment variable SDL_WINDOW_FLAGS=<int> controls the flags given to SDL_CreateWindow
 	char* sdl_window_flags_env = getenv("SDL_WINDOW_FLAGS");
 	if (sdl_window_flags_env != NULL) {
 		m_sdl_window_flags = atoi (sdl_window_flags_env);
@@ -519,16 +519,16 @@ sdl_ambulant_window::~sdl_ambulant_window()
 void
 sdl_ambulant_window::redraw (lib::rect r)
 {
-	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r);
+	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r); //XXX not used anymore
 	SDL_Renderer* renderer = get_sdl_window_renderer();
 //	saw->dump_sdl_surface (surface, "redr");
 	SDL_Surface* screen_surface = get_sdl_surface();
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);		
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_rect=(SDL_Rect){%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
+	SDL_Rect sdl_dst_rect =  get_sdl_dst_rect();
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_rect=(SDL_Rect){%d,%d,%d,%d}, sdl_dst_rect={%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_dst_rect.h, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 	if (texture == NULL) {
 		return;
 	}
-	SDL_Rect sdl_dst_rect =  get_sdl_dst_rect();
 	int err = SDL_RenderCopy(renderer, texture, NULL, &sdl_dst_rect);	
 	assert (err==0);
 	SDL_RenderPresent(renderer);
@@ -829,13 +829,14 @@ sdl_ambulant_window::clear_sdl_surface (lib::rect r)
 	// Fill with <brush> color
 	color_t color = lib::to_color(255, 255, 255);
 
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear(): clearing to %p", (long)color);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p): clearing to %p", this, (long)color);
 	Uint32 sdl_color = SDL_MapRGBA(sdl_surface->format, redc(color), greenc(color), bluec(color), 255);
 	SDL_SetClipRect(sdl_surface, &sdl_rect);
 	SDL_FillRect(sdl_surface, &sdl_rect, sdl_color);
 	if (m_need_window_resize) {
 		m_need_window_resize = false;
 		compute_sdl_dst_rect (m_new_width, m_new_height, m_document_rect);
+		SDL_RenderClear(get_sdl_window_renderer());
 	}
 }
 
@@ -940,7 +941,7 @@ int
 sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
 {
 	int rv = 0;
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+//	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	if (src != NULL) {
 		sdl_ambulant_window::s_lock.enter();
 		SDL_Surface* dst = get_sdl_surface();
