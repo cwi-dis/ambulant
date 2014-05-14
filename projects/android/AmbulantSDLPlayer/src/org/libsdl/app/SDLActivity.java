@@ -111,15 +111,19 @@ public class SDLActivity extends Activity {
         super.onResume();
         SDLActivity.handleResume();
     }
-
-
-	@Override
-	public void onBackPressed() {
+    @Override
+    protected void onRestart() {
+        Log.v("SDL", "onRestart()");
+        super.onRestart();
+//      SDLActivity.handleRestart();
+    }
+//	@Override
+//	public void onBackPressed() {
 		// do somethineg here	
 		// Otherwise defer to system default behavior.
-		Log.i("SDL", "onBackPressed()");  
-		super.onBackPressed();
-	}
+//		Log.i("SDL", "onBackPressed()");  
+//		super.onBackPressed();
+//	}
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {

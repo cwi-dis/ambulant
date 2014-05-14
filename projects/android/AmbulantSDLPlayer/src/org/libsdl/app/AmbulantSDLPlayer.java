@@ -71,13 +71,13 @@ public class AmbulantSDLPlayer extends SDLActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	@Override
-	public void onBackPressed() {
-		// do somethineg here	
+//	@Override
+//	public void onBackPressed() {
+		// do something here	
 		// Otherwise defer to system default behavior.
-		Log.i("AmbulantSDLPlayer", "onBackPressed() start");  
-		super.onBackPressed();
-	}
+//		Log.i("AmbulantSDLPlayer", "onBackPressed() start");  
+//		super.onBackPressed();
+//	}
 	@Override
 	protected void onStart() {
 		super.onStart();  // Always call the superclass method first
@@ -97,6 +97,11 @@ public class AmbulantSDLPlayer extends SDLActivity {
 	protected void onResume() {
 		super.onResume();  // Always call the superclass method first
 		Log.i("AmbulantSDLPlayer", "onResume() start");  
+	}
+	@Override
+	protected void onRestart() {
+		super.onRestart();  // Always call the superclass method first
+		Log.i("AmbulantSDLPlayer", "onRestart() start");  
 	}
 	@Override
 	protected void onDestroy() {
