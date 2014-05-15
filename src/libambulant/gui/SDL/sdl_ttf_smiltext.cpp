@@ -67,8 +67,8 @@ sdl_ttf_smiltext_renderer::sdl_ttf_smiltext_renderer(
 		common::playable_factory_machdep *mdp)
   :
 #ifdef TBD
-     m_sdl_ttf_transparent(redc(SDL_TTF_TRANSPARENT_COLOR),greenc(SDL_TTF_TRANSPARENT_COLOR),bluec( SDL_TTF_TRANSPARENT_COLOR)),
-        m_sdl_ttf_alternative(redc(SDL_TTF_ALTERNATIVE_COLOR),greenc(SDL_TTF_ALTERNATIVE_COLOR),bluec( SDL_TTF_ALTERNATIVE_COLOR)),
+	m_sdl_ttf_transparent(redc(SDL_TTF_TRANSPARENT_COLOR),greenc(SDL_TTF_TRANSPARENT_COLOR),bluec( SDL_TTF_TRANSPARENT_COLOR)),
+	m_sdl_ttf_alternative(redc(SDL_TTF_ALTERNATIVE_COLOR),greenc(SDL_TTF_ALTERNATIVE_COLOR),bluec( SDL_TTF_ALTERNATIVE_COLOR)),
 #endif//TBD
 	m_bgopacity(1.0),
 	m_blending(false),
@@ -99,7 +99,7 @@ sdl_ttf_smiltext_renderer::sdl_ttf_smiltext_renderer(
   		AM_DBG lib::logger::get_logger()->error("TTF_OpenFont(%s, %d): %s", default_font_file, m_text_size, TTF_GetError());
 		return;
 	}
-	m_text_size = 14;
+	m_text_size = 13;
 	m_ttf_fonts[m_text_size - MIN_FONT_SIZE] = m_ttf_font;
 } // sdl_ttf_smiltext_renderer
 
