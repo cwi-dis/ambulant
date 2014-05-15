@@ -26,13 +26,14 @@
 		 android:configChanges="orientation" >
     	    	<intent-filter>
             		<action android:name="android.intent.action.MAIN" />
+           		<category android:name="android.intent.category.DEFAULT" />
             		<category android:name="android.intent.category.LAUNCHER" />
 		</intent-filter>
     	    	<intent-filter> <!-- experimental - works with Browser, Google Chrome -->
             		<action android:name="android.intent.action.VIEW" />
            		<category android:name="android.intent.category.DEFAULT" />
 			<category android:name="android.intent.category.BROWSABLE" />
- 			<data android:scheme="http" android:host="*"/>
+ 			<data android:scheme="http" />
  			<data android:mimeType="application/smil" />
  			<data android:mimeType="application/x-smil" />
  			<data android:mimeType="application/x-ambulant-smil" />

@@ -66,7 +66,8 @@ public class AmbulantSDLPlayer extends SDLActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.i("AmbulantSDLPlayer", "onKeyDown() start keyCode = "+keyCode);  
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-        		moveTaskToBack(true);
+//        		moveTaskToBack(true);
+			finish();
         		return true;
 		}
 		return super.onKeyDown(keyCode, event);
