@@ -210,9 +210,12 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 //X	_screenTransitionPreRedraw();
-	saw->clear_sdl_surface(r);
-	
+	bool redraw_needed = saw->clear_sdl_surface(r);
 	m_lock.leave();
+	if (redraw_needed) {
+		need_redraw (r);
+		return;
+	}
 	m_handler->redraw(r, this);
 	m_lock.enter();
 #ifdef JNK
@@ -819,10 +822,11 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 	}
 }
 
-void
+bool
 sdl_ambulant_window::clear_sdl_surface (lib::rect r)
 // helper: clear the surface
 {
+	bool redraw_needed = false;
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect(r); 
 	SDL_Surface* sdl_surface = get_sdl_surface();
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p) = %p, sdl_rect={%d,%d,%d,%d}", this, sdl_surface, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
@@ -836,8 +840,13 @@ sdl_ambulant_window::clear_sdl_surface (lib::rect r)
 	if (m_need_window_resize) {
 		m_need_window_resize = false;
 		compute_sdl_dst_rect (m_new_width, m_new_height, m_document_rect);
-		SDL_RenderClear(get_sdl_window_renderer());
+		SDL_Renderer* sdl_window_renderer = get_sdl_window_renderer();
+		SDL_SetRenderDrawColor (sdl_window_renderer, 0, 0, 0, 255 /*alpha*/);
+		SDL_RenderClear(sdl_window_renderer);
+		SDL_RenderPresent(sdl_window_renderer);
+		redraw_needed = true;
 	}
+	return redraw_needed;
 }
 
 SDL_Surface*

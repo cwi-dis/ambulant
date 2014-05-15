@@ -874,7 +874,7 @@ extern "C" {
 //		char cwd[512];
 //		getcwd(cwd, 512);
 //		LOGI("path=%s", cwd);
-		char* data_dir = "/sdcard/";//get_static_string_from_java_class (env, "org.libsdl.app.AmbulantSDLPlayer", "data_dir", "Ljava/lang/String;");
+		const char* data_dir = "/sdcard/";//get_static_string_from_java_class (env, "org.libsdl.app.AmbulantSDLPlayer", "data_dir", "Ljava/lang/String;");
 		LOGI("data_dir = %s", data_dir);
 		char buf[512];
 		sprintf (buf,"%s/%s", data_dir, "AmbulantSDLPlayerInfo.smil");

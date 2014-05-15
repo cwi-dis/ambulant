@@ -228,7 +228,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 		return s;
 	}
 	/// Clear a rectangle of the pixels in the SDL_Surface and prepare for drawing after resize window
-	void clear_sdl_surface (lib::rect);
+	/// Returns true if another redraw mst be scheduled
+	bool clear_sdl_surface (lib::rect);
 
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);
