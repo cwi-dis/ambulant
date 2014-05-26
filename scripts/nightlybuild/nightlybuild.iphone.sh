@@ -24,7 +24,7 @@ esac
 AMBULANTVERSION=2.5
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
-DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
+DESTINATION=sen5@ambulantplayer.org:/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
