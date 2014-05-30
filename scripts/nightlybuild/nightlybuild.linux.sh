@@ -41,7 +41,8 @@ AMBULANTVERSION=2.5
 ARCH=`uname -m`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
-DESTINATION=sen5@ambulantplayer.org:/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
+DESTINATION_HOST=sen5@ambulantplayer.org
+DESTINATION_DIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
@@ -66,6 +67,11 @@ CONFIGOPTS="--with-sdl2 --with-gtk --with-xerces --with-xerces-plugin --with-npa
 MAKEOPTS=
 DESTINATION_SRC=$DESTINATION/src
 DESTINATION_NPAMBULANT=$DESTINATION/linux-$ARCH-firefoxplugin
+
+DESTINATION_SRC_DIR=$DESTINATION_DIR/src/
+DESTINATION_NPAMBULANT_DIR=$DESTINATION_DIR/linux-$ARCH-firefoxplugin/
+DESTINATION_SRC=$DESTINATION_HOST:$DESTINATION_SRC_DIR
+DESTINATION_NPAMBULANT=$DESTINATION_HOST:$DESTINATION_NPAMBULANT_DIR
 
 echo
 echo ==========================================================
@@ -93,7 +99,8 @@ cd $BUILDHOME
 rm -rf $BUILDDIR
 rm -rf $DESTDIR
 touch .empty
-echo If the following command fails you have no SSH key that matches the destination
+echo If the following commands fails you have no SSH key that matches the destination
+ssh $DESTINATION_HOST mkdir -p $DESTINATION_DIR
 scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
@@ -135,6 +142,7 @@ x)
 	mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
 	;;
 esac
+ssh $DESTINATION_HOST mkdir -p $DESTINATION_SRC_DIR
 scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 
 #
@@ -161,6 +169,7 @@ x)
 	mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
 	;;
 esac
+ssh $DESTINATION_HOST mkdir -p $DESTINATION_NPAMBULANT_DIR
 scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION_NPAMBULANT
 cd ../..
 #
