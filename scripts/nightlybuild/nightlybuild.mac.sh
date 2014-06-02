@@ -71,7 +71,7 @@ rm -rf $DESTDIR
 touch .empty
 
 echo If the following commands fails you have no SSH key that matches the destination
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DIR
 scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
@@ -140,7 +140,7 @@ cd ../..
 cd installers/sh-macos
 sh make-dmg-installer.sh -n 'Ambulant Web Plugin' -t npambulant-template.dmg -s "$BUILDHOME/$DESTDIR/Library/Internet Plug-ins/npambulant.plugin/." -d "npambulant.plugin/." -s npambulant-installer-README -d ./README -s ../../COPYING  -d ./COPYING
 mv "Ambulant Web Plugin.dmg" $PLUGINDMGNAME
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_PLUGIN_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_PLUGIN_DIR
 scp $PLUGINDMGNAME $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current

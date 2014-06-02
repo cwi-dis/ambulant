@@ -100,7 +100,7 @@ rm -rf $BUILDDIR
 rm -rf $DESTDIR
 touch .empty
 echo If the following commands fails you have no SSH key that matches the destination
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DIR
 scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
@@ -169,7 +169,7 @@ x)
 	mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
 	;;
 esac
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_NPAMBULANT_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_NPAMBULANT_DIR
 scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION_NPAMBULANT
 cd ../..
 #

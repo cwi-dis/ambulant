@@ -68,7 +68,7 @@ rm -rf $BUILDDIR
 rm -rf $DESTDIR
 touch .empty
 echo If the following commands fails you have no SSH key that matches the destination
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DIR
 scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
@@ -117,7 +117,7 @@ cd ../..
 # Create installer IPA file and upload
 #
 sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode43/build/Distribution-iphoneos/iAmbulant.app
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_IPHONE_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_IPHONE_DIR
 scp iAmbulant-$AMBULANTVERSION.$TODAY.ipa $DESTINATION_IPHONE
 #
 # Delete old installers, remember current
