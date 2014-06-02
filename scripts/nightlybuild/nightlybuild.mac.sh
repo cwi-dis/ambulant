@@ -115,7 +115,7 @@ cd .. # Back to source dir
 cd installers/sh-macos
 sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template.dmg -s "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app/." -d "Ambulant Player.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
 mv "Ambulant Player.dmg" $DMGNAME.dmg
-ssh $DESTINATION_HOST mkdir -p $DESTINATION_DESKTOP_DIR
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DESKTOP_DIR
 scp $DMGNAME.dmg $DESTINATION_DESKTOP
 cd ../..
 #
