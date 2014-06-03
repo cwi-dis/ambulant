@@ -43,6 +43,7 @@ HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION_HOST=sen5@ambulantplayer.org
 DESTINATION_DIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
+DESTINATION=$DESTINATION_HOST:$DESTINATION_DIR
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
