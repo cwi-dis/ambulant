@@ -191,7 +191,7 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(demux_video_dat
 	ffmpeg_init();
     const std::string& frag = m_url.get_ref();
     if (frag.find("is_live=1") != std::string::npos) {
-        /*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: is_live=1 specified on URL");
+        AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: is_live=1 specified on URL");
         m_is_live = true;
     }
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: Looking for %s(%p) decoder", fmt.name.c_str(), fmt.parameters);
