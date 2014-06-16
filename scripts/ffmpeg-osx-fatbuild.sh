@@ -19,7 +19,7 @@ PREFIX="--prefix=`cd ../installed ; pwd`"
 #
 # Set this to the global options you want to configure ffmpeg with.
 #
-AMBULANT_FFMPEG_DEBUG_FLAGS="--disable-stripping --disable-optimizations --enable-debug=1"
+# AMBULANT_FFMPEG_DEBUG_FLAGS="--disable-stripping --disable-optimizations --enable-debug=1"
 CONFIGOPTS="$PREFIX $AMBULANT_FFMPEG_DEBUG_FLAGS --disable-encoders --enable-runtime-cpudetect --enable-gpl --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-ffprobe --enable-static --enable-shared"
 #
 # If you want to build for a different MacOSX version than the current one
