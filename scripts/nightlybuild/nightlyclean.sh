@@ -1,6 +1,6 @@
 #!/bin/sh
 # Clean out old nightly builds on the ambulantplayer.org website.
-BUILDDIR=/var/www/AmbulantPlayerOrg/nightlybuilds
+BUILDDIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 set -e
 set -x
 cd $BUILDDIR

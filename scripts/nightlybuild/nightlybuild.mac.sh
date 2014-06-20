@@ -22,7 +22,8 @@ export MACOSX_DEPLOYMENT_TARGET=10.7
 export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
-DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
+DESTINATION_HOST=sen5@ambulantplayer.org
+DESTINATION_DIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 MAKEOPTS=-j2
 TODAY=`date +%Y%m%d`
@@ -33,12 +34,12 @@ x)
 	;;
 xrelease*)
 	TODAY=$TODAY-$BRANCH
-	DESTINATION=$DESTINATION/$BRANCH
+	DESTINATION_DIR=$DESTINATION_DIR/$BRANCH
 	VERSIONSUFFIX=
 	;;
 *)
 	TODAY=$TODAY-$BRANCH
-	DESTINATION=$DESTINATION/$BRANCH
+	DESTINATION_DIR=$DESTINATION_DIR/$BRANCH
 	VERSIONSUFFIX=.$TODAY
 esac
 BUILDDIR=ambulant-build-$TODAY
@@ -48,8 +49,11 @@ CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --w
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=$PLUGINNAME.dmg
-DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cg/
-DESTINATION_PLUGIN=$DESTINATION/mac-intel-firefoxplugin/
+DESTINATION=$DESTINATION_HOST:$DESTINATION_DIR
+DESTINATION_DESKTOP_DIR=$DESTINATION_DIR/mac-intel-desktop-cg/
+DESTINATION_PLUGIN_DIR=$DESTINATION_DIR/mac-intel-firefoxplugin/
+DESTINATION_DESKTOP=$DESTINATION_HOST:$DESTINATION_DESKTOP_DIR
+DESTINATION_PLUGIN=$DESTINATION_HOST:$DESTINATION_PLUGIN_DIR
 
 echo
 echo ==========================================================
@@ -65,7 +69,9 @@ cd $BUILDHOME
 rm -rf $BUILDDIR
 rm -rf $DESTDIR
 touch .empty
-echo If the following command fails you have no SSH key that matches the destination
+
+echo If the following commands fails you have no SSH key that matches the destination
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DIR
 scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
@@ -109,6 +115,7 @@ cd .. # Back to source dir
 cd installers/sh-macos
 sh make-dmg-installer.sh -n 'Ambulant Player' -t AmbulantPlayer-template.dmg -s "$BUILDHOME/$DESTDIR/Applications/Ambulant Player.app/." -d "Ambulant Player.app/." -s ../../README -d ./README -s ../../COPYING  -d ./COPYING -s ../../Extras/DemoPresentation/. -d DemoPresentation/.
 mv "Ambulant Player.dmg" $DMGNAME.dmg
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DESKTOP_DIR
 scp $DMGNAME.dmg $DESTINATION_DESKTOP
 cd ../..
 #
@@ -133,6 +140,7 @@ cd ../..
 cd installers/sh-macos
 sh make-dmg-installer.sh -n 'Ambulant Web Plugin' -t npambulant-template.dmg -s "$BUILDHOME/$DESTDIR/Library/Internet Plug-ins/npambulant.plugin/." -d "npambulant.plugin/." -s npambulant-installer-README -d ./README -s ../../COPYING  -d ./COPYING
 mv "Ambulant Web Plugin.dmg" $PLUGINDMGNAME
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_PLUGIN_DIR
 scp $PLUGINDMGNAME $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current

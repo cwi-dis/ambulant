@@ -24,7 +24,8 @@ esac
 AMBULANTVERSION=2.5
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
-DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
+DESTINATION_HOST=sen5@ambulantplayer.org
+DESTINATION_DIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
@@ -38,17 +39,19 @@ x)
 	;;
 xrelease*)
 	TODAY=$TODAY-$BRANCH
-	DESTINATION=$DESTINATION/$BRANCH
+	DESTINATION_DIR=$DESTINATION_DIR/$BRANCH
 	VERSIONSUFFIX=
 	;;
 *)
 	TODAY=$TODAY-$BRANCH
-	DESTINATION=$DESTINATION/$BRANCH
+	DESTINATION_DIR=$DESTINATION_DIR/$BRANCH
 	VERSIONSUFFIX=.$TODAY
 esac
 BUILDDIR=ambulant-iphone-build-$TODAY
 DESTDIR=ambulant-iphone-install-$TODAY
-DESTINATION_IPHONE=$DESTINATION/iphone/
+DESTINATION=$DESTINATION_HOST:$DESTINATION_DIR
+DESTINATION_IPHONE_DIR=$DESTINATION_DIR/iphone/
+DESTINATION_IPHONE=$DESTINATION_HOST:$DESTINATION_IPHONE_DIR
 
 echo
 echo ==========================================================
@@ -64,7 +67,8 @@ cd $BUILDHOME
 rm -rf $BUILDDIR
 rm -rf $DESTDIR
 touch .empty
-echo If the following command fails you have no SSH key that matches the destination
+echo If the following commands fails you have no SSH key that matches the destination
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_DIR
 scp .empty $DESTINATION/.empty
 
 ls -t | tail -n +6 | grep ambulant- | xargs chmod -R a+w .empty
@@ -113,6 +117,7 @@ cd ../..
 # Create installer IPA file and upload
 #
 sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa projects/xcode43/build/Distribution-iphoneos/iAmbulant.app
+ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_IPHONE_DIR
 scp iAmbulant-$AMBULANTVERSION.$TODAY.ipa $DESTINATION_IPHONE
 #
 # Delete old installers, remember current
