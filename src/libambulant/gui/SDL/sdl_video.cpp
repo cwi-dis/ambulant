@@ -43,6 +43,20 @@ extern const char sdl_video_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("Rende
 extern const char sdl_video_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererVideo");
 extern const char sdl_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererOpen");
 
+common::playable_factory *
+gui::sdl::create_sdl_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	return new common::single_playable_factory<
+		sdl_video_renderer,
+		sdl_video_playable_tag,
+		sdl_video_playable_renderer_uri,
+		sdl_video_playable_renderer_uri2,
+		sdl_video_playable_renderer_uri3>(factory, mdp);
+}
+
 sdl_video_renderer::sdl_video_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
@@ -50,9 +64,8 @@ sdl_video_renderer::sdl_video_renderer(
 	lib::event_processor *const evp,
 	common::factories *factory,
 	common::playable_factory_machdep *mdp)
-:	// No transitions yet
-    // sdl_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
-  	common::video_renderer(context, cookie, node, evp, factory, mdp),
+:
+    sdl_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
 
 	m_img_displayed(0),
 	m_data(NULL),
@@ -86,14 +99,14 @@ sdl_video_renderer::_push_frame(char* frame, size_t size)
 }
 
 void
-//sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
-sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
+sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
+//sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 {
 	//XXXX locking at this point may result in deadly embrace with internal lock,
 	//XXXX but as far as we know this has never happened
 	m_lock.enter();
 	if (m_data){
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw(%p)",(void*) this);
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p)",(void*) this);
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
 		lib::rect dst_rect_whole = r;
@@ -101,7 +114,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 		dst_rect_whole.translate(p);
 		// XXXX WRONG! This is the info for the region, not for the node!
 		const common::region_info *info = m_dest->get_info();
-		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw: info=%p", info);
+		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body: info=%p", info);
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
 				// XXXX Fill with background color TBD
@@ -138,7 +151,7 @@ sdl_video_renderer::redraw(const lib::rect &dirty, common::gui_window* w)
 				saw->copy_to_sdl_surface (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
 		}
 		SDL_FreeSurface(surface);
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw_body(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 	}
 	m_lock.leave();
 }

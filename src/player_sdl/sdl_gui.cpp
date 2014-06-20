@@ -733,6 +733,7 @@ sdl_gui::sdl_loop() {
 		}
 		switch (event.type) {
 		case SDL_QUIT:
+			lib::logger::get_logger()->trace("ambulant::sdl_gui::sdl_loop(0x%x): SDL_QUIT", this);
 			busy = false;
 			break;
 		case SDL_USEREVENT:

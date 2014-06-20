@@ -84,6 +84,8 @@ class ambulant_sdl_window : public common::gui_window {
 
 	lib::rect get_bounds() { return m_bounds; }
 
+	// resize window to new size
+	void resize_window (int w, int h);
 	/// Initialize a GDK cached cursortype
 //X	void set_gdk_cursor(GdkCursorType, GdkCursor*);
 
@@ -113,10 +115,6 @@ class ambulant_sdl_window : public common::gui_window {
 //X	SDL_Surface* m_fullscreen_old_surface;
 //X	smil2::transition_engine* m_fullscreen_engine;
 //X	lib::transition_info::time_type m_fullscreen_now;
-
-// The total number of SDL events at any moment is maintained in order to clear
-// the SDL Event Queue of pointers to this structure upon deletion
-	static long unsigned int s_num_events;
 	/// A renderer is used for drawing, contains all drawing attribute (like a grapohics context)
 //XX	SDL_Renderer* m_sdl_renderer;
 	/// A surface contains the actual pixels of the window
@@ -241,8 +239,10 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	SDL_Rect get_sdl_dst_rect() { return m_sdl_dst_rect; } //XX should be private
 	// resize window to new size
 	void sdl_resize_window (int w, int h);
+	void need_redraw(ambulant_sdl_window* asw, lib::rect r);
 	void redraw(lib::rect r);
 	const char* get_screen_pixels();
+	void remove_redraw_SDL_Events(ambulant_sdl_window* asw);
   private:
 	// Helper: create the actual SDL_Window*, foreground and background pixels, surfaces and renderers
 	int create_sdl_window_and_renderers(const char* window_name, lib::rect);
@@ -283,6 +283,9 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	int m_new_width;
 	int m_new_height;
 
+// The total number of SDL events at any moment is maintained in order to clear
+// the SDL Event Queue of pointers to this structure upon deletion
+	static long unsigned int s_num_events;
 //X	SDL_Window* m_parent_window;
 //X	sdl_ambulant_window* m_parent_window;
 //X	gulong m_expose_event_handler_id;

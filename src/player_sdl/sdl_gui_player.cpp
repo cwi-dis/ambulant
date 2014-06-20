@@ -213,7 +213,7 @@ sdl_gui_player::init_playable_factory()
 #if defined(WITH_SDL_PANGO) || defined(WITH_SDL_TTF)
 	pf->add_factory(create_sdl_text_playable_factory(this, NULL));
 #endif
-//TBD	pf->add_factory(create_sdl_video_playable_factory(this, NULL));
+	pf->add_factory(create_sdl_video_playable_factory(this, NULL));
 
 //#ifdef WITH_SDL
 	AM_DBG lib::logger::get_logger()->debug("sdl_gui_player: add factory for SDL");
@@ -284,8 +284,8 @@ sdl_gui_player::init_parser_factory()
 
 void
 sdl_gui_player::resize_window(int w, int h) {
-	if (m_sdl_ambulant_window != NULL) {
-		m_sdl_ambulant_window->sdl_resize_window (w, h);
+	if (m_ambulant_sdl_window != NULL) {
+		m_ambulant_sdl_window->resize_window (w, h);
 	}
 }
 

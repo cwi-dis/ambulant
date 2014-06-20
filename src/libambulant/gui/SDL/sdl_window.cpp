@@ -69,7 +69,6 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 //X	m_surface = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_sdl_window(%p)",(void *)this);
 }
-long unsigned int ambulant_sdl_window::s_num_events = 0;
 
 ambulant_sdl_window::~ambulant_sdl_window()
 {
@@ -78,41 +77,10 @@ ambulant_sdl_window::~ambulant_sdl_window()
 	// Note that we don't destroy the window, only sver the connection.
 	// the window itself is destroyed independently.
 	if (m_ambulant_window ) {
+		m_ambulant_window->remove_redraw_SDL_Events(this);
 		m_ambulant_window->set_ambulant_sdl_window(NULL);
 		m_ambulant_window = NULL;
 	}
-	if (ambulant_sdl_window::s_num_events == 0) {
-		m_lock.leave();
-		return;
-	}
-	// Remove any outstanding SDL_Events from the SDL Event Queue that contain 'this'
-	// but leave all others
-	SDL_Event* events = (SDL_Event*) malloc (ambulant_sdl_window::s_num_events*sizeof(SDL_Event)), * events_left =  (SDL_Event*) NULL;
-	if (events == NULL) {
-		m_lock.leave();
-		return;
-	}					      
-	int n_events_left = 0;
-	SDL_PeepEvents(events, ambulant_sdl_window::s_num_events, SDL_GETEVENT, SDL_USEREVENT, SDL_USEREVENT);
-	for (int i = 0; i < ambulant_sdl_window::s_num_events; i++) {
-		if (events[i].user.data1 != this) {
-			if (events_left == NULL) {
-				events_left =  (SDL_Event*) malloc (ambulant_sdl_window::s_num_events*sizeof(SDL_Event));
-				assert (events_left);
-			}
-			events_left[n_events_left++] = events[i];
-		}
-	}
-	if (events_left != NULL) {
-		// restore the events with type SDL_USEREVENT that not contain 'this'
-		// events of other types get higher priority because of this, but the
-		// other events of type SDL_USEREVENT will remain in order.  To fix this,
-		// use a different SDL_EventType >= SDL_USEREVENT for each object
-		SDL_PeepEvents(events_left, n_events_left, SDL_ADDEVENT, SDL_USEREVENT, SDL_USEREVENT);
-		free (events_left);
-	}
-	free (events);
-	ambulant_sdl_window::s_num_events = n_events_left;
 //X	if (m_surface != NULL) {
 //X		g_object_unref(G_OBJECT(m_surface));
 //X		m_surface = NULL;
@@ -186,16 +154,7 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 	sdl_ambulant_window::s_lock.leave();
 	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=%p", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, sdl_C_callback_helper_queue_draw_area);
 #endif//JNK
-	SDL_Event e;
-	lib::rect* redraw_rect = (lib::rect*) malloc (sizeof(lib::rect));
-	*redraw_rect = r;
-	e.user.code = 317107; // magic number
-	e.type = SDL_USEREVENT;
-	e.user.data1 = (void*) this;
-	e.user.data2 = (void*) redraw_rect;
-	SDL_PushEvent(&e);
-	ambulant_sdl_window::s_num_events++;
-	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(%p): SDL_PushEvent called r=(%d,%d,%d,%d) e={type=%d user.code=%d user.data1=%p user.data2=%p}", this,r.left(),r.top(),r.width(),r.height(), e.type, e.user.code, e.user.data1, e.user.data2);
+	m_ambulant_window->need_redraw(this, r);
 	m_lock.leave();
 }
 
@@ -203,7 +162,6 @@ void
 ambulant_sdl_window::redraw(const lib::rect &r)
 {
 	m_lock.enter();
-	ambulant_sdl_window::s_num_events--;
 
 //	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): redraw starts.", this);
 	sdl_ambulant_window* saw = get_sdl_ambulant_window();
@@ -213,7 +171,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	bool redraw_needed = saw->clear_sdl_surface(r);
 	m_lock.leave();
 	if (redraw_needed) {
-		need_redraw (r);
+		need_redraw (m_bounds);
 		return;
 	}
 	m_handler->redraw(r, this);
@@ -339,13 +297,22 @@ ambulant_sdl_window::set_gui_player(gui_player* gpl)
 		m_recorder = NULL;
 	}
 	m_lock.leave();
-
 }
 
 gui_player*
 ambulant_sdl_window::get_gui_player()
 {
 	return m_gui_player;
+}
+
+void
+ambulant_sdl_window::resize_window (int w, int h) 
+{
+	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::resize_window(%p): w=%d, h=%d", this, w, h);
+	m_lock.enter();
+	m_ambulant_window->sdl_resize_window (w, h);
+	m_lock.leave();
+	need_redraw(get_bounds());
 }
 
 #ifdef XXX
@@ -426,15 +393,9 @@ ambulant_sdl_window::delete_ambulant_surface()
 //
 // sdl_ambulant_window
 //
-//*** The following comment is inherited from gtk_factory and probably garbage
-// sdl_ambulant_window::s_windows is a counter to check for the liveliness of sdl_window during
-// execution of sdl*draw() functions by a callback function in the main thread
-// sdl_ambulant_window::s_lock is for the protection of the counter
-// TBD: a better approach would be to have s static protected std::vector<dirty_window>
-// to be updated when callbacks are scheduled and executed
-// and use these entries to remove any scheduled callbacks with
-// gboolean g_idle_remove_by_data (gpointer data); when the sdl_window is destroyed
-// then the ugly dependence on the parent window couls also be removed
+//
+//
+long unsigned int sdl_ambulant_window::s_num_events = 0;
 int sdl_ambulant_window::s_windows = 0;
 lib::critical_section sdl_ambulant_window::s_lock;
 std::map<int, sdl_ambulant_window*>  sdl_ambulant_window::s_id_sdl_ambulant_window_map;
@@ -520,13 +481,64 @@ sdl_ambulant_window::~sdl_ambulant_window()
 }
 
 void
+sdl_ambulant_window::remove_redraw_SDL_Events(ambulant_sdl_window* asw) 
+{
+	// Remove any outstanding SDL_Events from the SDL Event Queue that contain 'this'
+	// but leave all others
+	SDL_Event* events = (SDL_Event*) malloc (sdl_ambulant_window::s_num_events*sizeof(SDL_Event)), * events_left =  (SDL_Event*) NULL;
+	if (events == NULL) {
+		return;
+	}					      
+	int n_events_left = 0;
+	SDL_PeepEvents(events, sdl_ambulant_window::s_num_events, SDL_GETEVENT, SDL_USEREVENT, SDL_USEREVENT);
+	for (int i = 0; i < sdl_ambulant_window::s_num_events; i++) {
+		if (events[i].user.data1 != asw) {
+			if (events_left == NULL) {
+				events_left =  (SDL_Event*) malloc (sdl_ambulant_window::s_num_events*sizeof(SDL_Event));
+				assert (events_left);
+			}
+			events_left[n_events_left++] = events[i];
+		}
+	}
+	if (events_left != NULL) {
+		// restore the events with type SDL_USEREVENT that not contain 'this'
+		// events of other types get higher priority because of this, but the
+		// other events of type SDL_USEREVENT will remain in order.  To fix this,
+		// use a different SDL_EventType >= SDL_USEREVENT for each object
+		SDL_PeepEvents(events_left, n_events_left, SDL_ADDEVENT, SDL_USEREVENT, SDL_USEREVENT);
+		free (events_left);
+	}
+	free (events);
+	sdl_ambulant_window::s_num_events = n_events_left;
+}
+
+void
+sdl_ambulant_window::need_redraw (ambulant_sdl_window* asw, lib::rect r)
+{
+	SDL_Event e;
+	lib::rect* redraw_rect = (lib::rect*) malloc (sizeof(lib::rect));
+	*redraw_rect = r;
+	e.user.code = 317107; // magic number
+	e.type = SDL_USEREVENT;
+	e.user.data1 = (void*) asw;
+	e.user.data2 = (void*) redraw_rect;
+	SDL_PushEvent(&e);
+	sdl_ambulant_window::s_num_events++;
+//	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::need_redraw(%p): SDL_PushEvent called r=(%d,%d,%d,%d) e={type=%d user.code=%d user.data1=%p user.data2=%p}", this,r.left(),r.top(),r.width(),r.height(), e.type, e.user.code, e.user.data1, e.user.data2);
+}
+
+void
 sdl_ambulant_window::redraw (lib::rect r)
 {
+	sdl_ambulant_window::s_num_events--;
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r); //XXX not used anymore
 	SDL_Renderer* renderer = get_sdl_window_renderer();
+	SDL_RenderSetClipRect(renderer, NULL);
+	SDL_SetRenderDrawColor (renderer, 0, 0, 0, 255 /*alpha*/);
+	SDL_RenderClear(renderer);
 //	saw->dump_sdl_surface (surface, "redr");
 	SDL_Surface* screen_surface = get_sdl_surface();
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);		
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);	
 	SDL_Rect sdl_dst_rect =  get_sdl_dst_rect();
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_rect=(SDL_Rect){%d,%d,%d,%d}, sdl_dst_rect={%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_dst_rect.h, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 	if (texture == NULL) {
@@ -617,7 +629,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 
 	// The screen_renderer is special, it is the rendering context for the window pixels instead the surface pixels
 	if (m_sdl_window_renderer == NULL) {
-		m_sdl_window_renderer = SDL_CreateRenderer(/*asw->window()*/ m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
+		m_sdl_window_renderer = SDL_CreateRenderer(m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
 		if (m_sdl_window_renderer == NULL) {
 			lib::logger::get_logger()->trace("No accelerated renderer,software renderer fallback", this);
 			m_sdl_window_renderer = SDL_CreateRenderer(m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
@@ -686,11 +698,12 @@ sdl_ambulant_window::create_sdl_surface_and_pixels(SDL_Rect* r, uint8_t** pixels
 void
 sdl_ambulant_window::sdl_resize_window (int w, int h) 
 {
-	// called from sdl event loop, register values and do the actual resizing during next redraw
+	// called from sdl event loop, register values and schedule
+	// the actual resizing to be done during next redraw
 	m_new_width = w;
 	m_new_height = h;
 	m_need_window_resize = true;
-	m_ambulant_sdl_window->need_redraw(ambulant_rect_from_SDL_Rect(m_document_rect));
+	remove_redraw_SDL_Events(m_ambulant_sdl_window);
 }
 
 lib::point
@@ -824,27 +837,31 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 
 bool
 sdl_ambulant_window::clear_sdl_surface (lib::rect r)
-// helper: clear the surface
+// helper: on clear the surface
 {
 	bool redraw_needed = false;
-	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect(r); 
-	SDL_Surface* sdl_surface = get_sdl_surface();
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p) = %p, sdl_rect={%d,%d,%d,%d}", this, sdl_surface, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
-	// Fill with <brush> color
-	color_t color = lib::to_color(255, 255, 255);
-
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p): clearing to %p", this, (long)color);
-	Uint32 sdl_color = SDL_MapRGBA(sdl_surface->format, redc(color), greenc(color), bluec(color), 255);
-	SDL_SetClipRect(sdl_surface, &sdl_rect);
-	SDL_FillRect(sdl_surface, &sdl_rect, sdl_color);
 	if (m_need_window_resize) {
 		m_need_window_resize = false;
-		compute_sdl_dst_rect (m_new_width, m_new_height, m_document_rect);
 		SDL_Renderer* sdl_window_renderer = get_sdl_window_renderer();
+		SDL_RenderSetClipRect(sdl_window_renderer, NULL);
 		SDL_SetRenderDrawColor (sdl_window_renderer, 0, 0, 0, 255 /*alpha*/);
 		SDL_RenderClear(sdl_window_renderer);
 		SDL_RenderPresent(sdl_window_renderer);
+		remove_redraw_SDL_Events(m_ambulant_sdl_window);
+		SDL_Rect sdl_rect = compute_sdl_dst_rect (m_new_width, m_new_height, m_document_rect);
+		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p) sdl_window_renderer= %p, sdl_rect={%d,%d,%d,%d}", this, sdl_window_renderer, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
 		redraw_needed = true;
+	} else {
+		SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect(r); 
+		SDL_Surface* sdl_surface = get_sdl_surface();
+		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p) = %p, sdl_rect={%d,%d,%d,%d}", this, sdl_surface, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_rect.h);
+		// Fill with <brush> color
+		color_t color = lib::to_color(255, 255, 255);
+
+		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::clear_SDL_Surface(%p): clearing to %p", this, (long)color);
+		Uint32 sdl_color = SDL_MapRGBA(sdl_surface->format, redc(color), greenc(color), bluec(color), 255);
+		SDL_SetClipRect(sdl_surface, &sdl_rect);
+		SDL_FillRect(sdl_surface, &sdl_rect, sdl_color);
 	}
 	return redraw_needed;
 }
