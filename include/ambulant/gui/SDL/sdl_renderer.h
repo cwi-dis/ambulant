@@ -170,13 +170,13 @@ class sdl_renderer : public RP_Base {
   private:
 	sdl_transition_renderer *m_transition_renderer;
 };
-#endif//TBD
+//#endif//TBD
 } // namespace sdl
 
 } // namespace gui
 
 } // namespace ambulant
 
-//#endif // WITH_SDL2
+#endif // WITH_SDL2
 
 #endif  /*AMBULANT_GUI_SDL_SDL_RENDERER_H*/

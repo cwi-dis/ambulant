@@ -19,8 +19,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef AMBULANT_GUI_GTK_VIDEO_RENDERER_H
-#define AMBULANT_GUI_GTK_VIDEO_RENDERER_H
+#ifndef AMBULANT_GUI_SDL_VIDEO_RENDERER_H
+#define AMBULANT_GUI_SDL_VIDEO_RENDERER_H
+
+#ifdef WITH_SDL_IMAGE
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/video_renderer.h"
@@ -79,6 +81,7 @@ namespace gui {
 
 namespace sdl {
 
+
 class sdl_video_renderer : public sdl_renderer<common::video_renderer>  {
   public:
 	sdl_video_renderer(
@@ -112,5 +115,7 @@ private:
 } // namespace gui
 
 } // namespace ambulant
+
+#endif // WITH_SDL_IMAGE
 
 #endif // AMBULANT_GUI_SDL_VIDEO_RENDERER_H

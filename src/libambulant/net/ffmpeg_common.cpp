@@ -278,7 +278,7 @@ ffmpeg_demux::supported(const net::url& url)
 	}
 	// Check that all options were processed
 	AVDictionaryEntry *t = NULL;
-	while (t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX)) {
+	while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
         
         	lib::logger::get_logger()->trace("ffmpeg_demux::supported: Unsupported ffmpeg AVOption '%s'. (Programmer error?)", t->key);
 	}
