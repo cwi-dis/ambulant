@@ -10,12 +10,12 @@
 		04290BA0132EB6FD0015D7B7 /* ambulantinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 042ADAF61152DDDB009CA791 /* ambulantinterface.h */; };
 		04290BA1132EB6FD0015D7B7 /* ambulantmodule.h in Headers */ = {isa = PBXBuildFile; fileRef = 042ADAF81152DDDB009CA791 /* ambulantmodule.h */; };
 		04290BA2132EB6FD0015D7B7 /* ambulantutilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 042ADAFA1152DDDB009CA791 /* ambulantutilities.h */; };
-		04290BA5132EB6FD0015D7B7 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04428E2411577B150067C868 /* Python.framework */; };
 		04290BA7132EB6FD0015D7B7 /* pythonplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAB71152DB0A009CA791 /* pythonplugin.cpp */; };
 		04290BA8132EB6FD0015D7B7 /* ambulantinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF51152DDDB009CA791 /* ambulantinterface.cpp */; };
 		04290BA9132EB6FD0015D7B7 /* ambulantmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF71152DDDB009CA791 /* ambulantmodule.cpp */; };
 		04290BAA132EB6FD0015D7B7 /* ambulantutilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF91152DDDB009CA791 /* ambulantutilities.cpp */; };
 		04290BAF132EB7150015D7B7 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E967C12BA4D5B00399893 /* libambulant.dylib */; };
+		04AC013219578A4E00A89988 /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AC013119578A4E00A89988 /* libpython2.7.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,9 +71,9 @@
 		042ADAF81152DDDB009CA791 /* ambulantmodule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ambulantmodule.h; path = ../../src/pyambulant/ambulantmodule.h; sourceTree = SOURCE_ROOT; };
 		042ADAF91152DDDB009CA791 /* ambulantutilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ambulantutilities.cpp; path = ../../src/pyambulant/ambulantutilities.cpp; sourceTree = SOURCE_ROOT; };
 		042ADAFA1152DDDB009CA791 /* ambulantutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ambulantutilities.h; path = ../../src/pyambulant/ambulantutilities.h; sourceTree = SOURCE_ROOT; };
-		04428E2411577B150067C868 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = /System/Library/Frameworks/Python.framework; sourceTree = "<absolute>"; };
 		046B705716B1EA020049AA51 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
 		046B705816B1EA020049AA51 /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
+		04AC013119578A4E00A89988 /* libpython2.7.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.7.dylib; path = ../../../../../../System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config/libpython2.7.dylib; sourceTree = "<group>"; };
 		32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin_Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04290BA5132EB6FD0015D7B7 /* Python.framework in Frameworks */,
+				04AC013219578A4E00A89988 /* libpython2.7.dylib in Frameworks */,
 				04290BAF132EB7150015D7B7 /* libambulant.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,7 +157,7 @@
 		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				04428E2411577B150067C868 /* Python.framework */,
+				04AC013119578A4E00A89988 /* libpython2.7.dylib */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -315,6 +315,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
+				);
 				PRODUCT_NAME = "libamplugin_python(CG)";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) /System/Library/Frameworks/Python.framework/Headers";
 			};
@@ -330,6 +334,10 @@
 				EXECUTABLE_EXTENSION = so;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config",
+				);
 				PRODUCT_NAME = "libamplugin_python(CG)";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";

@@ -98,7 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				041E96C612BA4E0E00399893 /* libambulant.dylib */,
-				041E96C812BA4E0E00399893 /* libambulantCGstatic.a */,
+				041E96C812BA4E0E00399893 /* libambulantStatic.a */,
 				041E96CA12BA4E0E00399893 /* libambulantIPhone.a */,
 			);
 			name = Products;
@@ -220,7 +220,7 @@
 			remoteRef = 041E96C512BA4E0E00399893 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		041E96C812BA4E0E00399893 /* libambulantCGstatic.a */ = {
+		041E96C812BA4E0E00399893 /* libambulantStatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libambulantStatic.a;
@@ -265,10 +265,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"WITH_XERCES=1",
 					"$(inherited)",
@@ -285,8 +282,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = so;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = plugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"WITH_XERCES=1",
 					"$(inherited)",
