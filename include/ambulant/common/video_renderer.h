@@ -113,6 +113,7 @@ class video_renderer : public common::renderer_playable {
 	bool m_is_stalled;			// True if we emitted a stalled() feedback call
 	bool m_is_paused;
 	long int m_paused_epoch;
+	long int m_frame_received;
 	long int m_frame_displayed;
 	long int m_frame_duplicate;
 	long int m_frame_early;
