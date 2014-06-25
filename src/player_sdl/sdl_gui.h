@@ -28,13 +28,7 @@
  *
  *             in future could look like iAmbulant
  */
-
-//X #include "unix_preferences.h"
-//X #include <iostream>
-//X #include <fstream>
-
-//X #include "sdl_settings.h"
-//X #include "sdl_logger.h"
+// TBD: visual gui, file/url selection, preferences, error logger
 
 #include "SDL.h"
 #ifdef WITH_SDL_IMAGE
@@ -66,27 +60,13 @@ class sdl_gui {
 	void sdl_loop(); // the SDL Event loop in main thread
 
 	// major containers
-/* JNK
-	SDL_Surface* get_gui_container();
-	SDL_Surface* get_document_container();
-	SDL_Surface* get_toplevel_container();
-*/
 	SDL_Window* get_document_container();
 	// SDL interface
 	SDL_Window* get_window() { return m_window; }
-/* JNK
-	SDL_Renderer* get_renderer() { return m_renderer; }
-	SDL_Surface* get_surface() { return m_surface; }
-*/
 	sdl_gui_player* m_gui_player;
   private:
 	const char* m_programfilename;
 	const char* m_smilfilename;
-/* JNK
-	SDL_Surface* m_toplevelcontainer; // the actual top level window
-	SDL_Surface* m_guicontainer;	  // The container (menubar + documentcontainer)
-	SDL_Surface* m_documentcontainer; // The drawable area
-*/	
 	SDL_Window* m_toplevelcontainer; // the actual top level window
 	SDL_Window* m_guicontainer;	  // The container (menubar + documentcontainer)
 	SDL_Window* m_documentcontainer; // The drawable area
@@ -94,16 +74,11 @@ class sdl_gui {
 	SDL_Window* m_window;	// the top-level window, containing all visuals
 	SDL_Cursor* m_arrow_cursor;
 	SDL_Cursor* m_hand_cursor;
-/* JNK
-	SDL_Renderer* m_renderer;// its associated 2D rendering context
-	SDL_Surface* m_surface;	// a (software) pixel destination
-	SDL_Texture* m_texture;	// the (accelerated) hardware card
-*/
-#ifdef JNK // no visual gui, only Keyboard shortcuts 
+#ifdef  TBD // no visual gui, only Keyboard shortcuts 
 	sdl_settings* m_settings;
 	SDL_Surface* menubar;		 // The UI (menubar)
 	SdlActionGroup *m_actions;
-#endif//JNK
+#endif//TBD
 
 //#define	LOCK_MESSAGE
 #ifdef	LOCK_MESSAGE
@@ -111,43 +86,14 @@ class sdl_gui {
 	pthread_mutex_t m_lock_message;
 	pthread_t m_gui_thread;
 #endif/*LOCK_MESSAGE*/
-//X	bool m_pointinghand_cursor;
-//X	SdlFileChooser* m_file_chooser;
-//X	SdlFileChooser* m_settings_chooser;
-//X	SdlEntry* m_url_text_entry;
 	void fileError(const char* smilfilename);
 
 	void setDocument(const char* string);
   public:
-//X	void do_file_selected();
-//X	void do_url_selected();
-//X	void do_settings_selected();
 	void do_play();
 
-//X	void do_about();
-//X	void do_homepage();
-//X	void do_welcome();
-//X	void do_help();
-//X	void do_load_settings();
-//X	void do_logger_window();
-//X	void do_open();
-//X	void do_open_url();
 	void do_pause();
-//X	void do_player_done();
 	void quit();
-//X	void do_reload();
-//X	void do_settings_select();
 	void do_stop();
-
-//X	void do_resize(GdkEventConfigure *event);
-
-//X	void do_internal_message(sdl_message_event* e);
-
-//X	void unsetCursor();
-
-//X	void _update_menus();
-
-//X	GPlayer* main_loop;
-
 };
 #endif/*__SDL_GUI_H__*/
