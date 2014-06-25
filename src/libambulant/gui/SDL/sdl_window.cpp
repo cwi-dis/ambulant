@@ -18,6 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef  WITH_SDL2 // work in progress
+// TBD: fullscreen transitions, screenshots
 
 //#define AM_DBG if(1)
 #ifndef AM_DBG
@@ -47,26 +48,23 @@ ambulant_sdl_window::ambulant_sdl_window(const std::string &name,
 :	common::gui_window(region),
 	m_bounds(*bounds),
 	m_ambulant_window(NULL),
-//X	m_pixels(NULL),
-//X	m_surface(NULL),
-//X	m_oldsurface(NULL),
 	m_gui_player(NULL),
-//X	m_arrow_cursor(NULL),
-//X	m_hand1_cursor(NULL),
-//X	m_hand2_cursor(NULL),
-//X	m_fullscreen_prev_surface(NULL),
-//X	m_fullscreen_old_surface(NULL),
-//X	m_fullscreen_engine(NULL),
-//X	m_fullscreen_now(0),
-//X	m_sdl_surface(NULL),
-//X	m_sdl_renderer(NULL),
 	m_recorder(NULL)
-//X	m_fullscreen_count(0),
-//X	m_oldsurface(NULL),
-//X	m_tmpsurface(NULL),
-//X	m_window(NULL)
+//TBD	m_pixels(NULL),
+//TBD	m_surface(NULL),
+//TBD	m_oldsurface(NULL),
+//TBD	m_fullscreen_prev_surface(NULL),
+//TBD	m_fullscreen_old_surface(NULL),
+//TBD	m_fullscreen_engine(NULL),
+//TBD	m_fullscreen_now(0),
+//TBD	m_sdl_surface(NULL),
+//TBD	m_sdl_renderer(NULL),
+//TBD	m_fullscreen_count(0),
+//TBD	m_oldsurface(NULL),
+//TBD	m_tmpsurface(NULL),
+//TBD	m_window(NULL)
 {
-//X	m_surface = NULL;
+//TBD	m_surface = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::ambulant_sdl_window(%p)",(void *)this);
 }
 
@@ -100,30 +98,6 @@ ambulant_sdl_window::~ambulant_sdl_window()
 	m_lock.leave();
 	return;
 }
-#ifdef JNK
-void
-ambulant_sdl_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gdk_cursor)
-{
-	switch (gdk_cursor_type) {
-	case GDK_ARROW: m_arrow_cursor = gdk_cursor;
-	case GDK_HAND1: m_hand1_cursor = gdk_cursor;
-	case GDK_HAND2: m_hand2_cursor = gdk_cursor;
-	default:	return;
-	}
-
-}
-
-GdkCursor*
-ambulant_sdl_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
-{
-	switch (gdk_cursor_type) {
-	case GDK_ARROW: return m_arrow_cursor;
-	case GDK_HAND1: return m_hand1_cursor;
-	case GDK_HAND2: return m_hand2_cursor;
-	default:	return NULL;
-	}
-}
-#endif//JNK
 
 void
 ambulant_sdl_window::need_redraw(const lib::rect &r)
@@ -135,25 +109,6 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 		m_lock.leave();
 		return;
 	}
-#ifdef JNK
-	// we use the parent window for redraw in case this window has been deleted at the time
-	// the callback function is actually called (e.g. the user selects a different file)
-	SDL_Window* this_window = m_ambulant_window->get_sdl_window();
-	dirty_area_window* dirty = new dirty_area_window();
-	dirty->window = (sdl_ambulant_window*) sdl_window_get_parent(this_window);
-	dirty->area = r;
-	if ( ! sdl_window_translate_coordinates (this_window, dirty->window, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw(%p): sdl_window_translate_coordinates failed.", (void *)this);
-	}
-	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
-	dirty->ambulant_window = m_ambulant_window;
-	sdl_ambulant_window::s_lock.enter();
-//X	guint draw_area_tag = g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) sdl_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
-	dirty->tag = draw_area_tag;
-	dirty->ambulant_window->m_draw_area_tags.insert(draw_area_tag);
-	sdl_ambulant_window::s_lock.leave();
-	//AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=%p", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, sdl_C_callback_helper_queue_draw_area);
-#endif//JNK
 	m_ambulant_window->need_redraw(this, r);
 	m_lock.leave();
 }
@@ -167,7 +122,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	sdl_ambulant_window* saw = get_sdl_ambulant_window();
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
-//X	_screenTransitionPreRedraw();
+//TBD	screenTransitionPreRedraw();
 	bool redraw_needed = saw->clear_sdl_surface(r);
 	m_lock.leave();
 	if (redraw_needed) {
@@ -176,8 +131,8 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	}
 	m_handler->redraw(r, this);
 	m_lock.enter();
-#ifdef JNK
-//XXXX	if ( ! isEqualToPrevious(m_surface))
+#ifdef TBD
+//XX?	if ( ! isEqualToPrevious(m_surface))
 	_screenTransitionPostRedraw(r);
 	gdk_surface_bitblt(
 		m_ambulant_window->get_sdl_window()->window, r.left(), r.top(),
@@ -193,7 +148,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 		NULL,
 		m_ambulant_window->get_sdl_window()->window,
 		0, 0, 0, 0, 0, width, height);
-//	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
+	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
 	if (m_ambulant_window->m_screenshot_data) {
 		g_free(m_ambulant_window->m_screenshot_data);
 		m_ambulant_window->m_screenshot_data = NULL;
@@ -212,7 +167,7 @@ ambulant_sdl_window::redraw(const lib::rect &r)
 	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
 	DUMPSURFACE(m_surface, "top");
-#endif//JNK
+#endif//TBD
 	if (m_recorder && saw->get_evp()) {
 		timestamp_t timestamp = saw->get_evp()->get_timer()->elapsed();
 		m_recorder->new_video_data(saw->get_screen_pixels(), m_bounds.width()*m_bounds.height()*SDL_BPP, timestamp);
@@ -250,28 +205,6 @@ ambulant_sdl_window::set_ambulant_window(sdl_ambulant_window* sdlas)
 	//if (m_ambulant_window != NULL)
 	//	delete m_ambulant_window;
 	m_ambulant_window = sdlas;
-#ifdef JNK
-	if (sdlas != NULL) {
-		GdkColor color;
-		GdkColormap *cmap = gdk_colormap_get_system();
-		// color is white
-		gdk_color_parse("white", &color);
-
-		// in debugging mode, initialize with purple background
-		AM_DBG gdk_color_parse("Purple", &color);
-		gdk_colormap_alloc_color(cmap, &color, FALSE, TRUE);
-
-		// set the color in the window
-		sdl_window_modify_bg (SDL_WINDOW (sdlaw->get_sdl_window()), SDL_STATE_NORMAL, &color );
-
-		// Initialize m_surface
-		gint width; gint height;
-		sdl_window_get_size_request(SDL_WINDOW (sdlaw->get_sdl_window()), &width, &height);
-		m_surface = gdk_surface_new(sdlaw->get_sdl_window()->window, width, height, -1);
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::set_ambulant_window(%p); size (%i,%i)",(void *)sdlaw, width, height);
-		// User Interaction
-	}
-#endif//JNK
 	lib::rect r = m_bounds;
 	m_lock.leave();
 	need_redraw(r);
@@ -315,19 +248,13 @@ ambulant_sdl_window::resize_window (int w, int h)
 	need_redraw(get_bounds());
 }
 
-#ifdef XXX
+#ifdef TBD
 SDL_Surface*
 ambulant_sdl_window::new_ambulant_surface()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::new_ambulant_surface(%p)",(void *)m_surface);
 	if (m_surface != NULL) delete m_surface;
-#ifdef JNK
-	gint width; gint height;
-	gdk_drawable_get_size(GDK_DRAWABLE (m_surface), &width, &height);
-	m_surface = gdk_surface_new(m_surface, width, height, -1);
-#endif//JNK
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::new_ambulant_surface(%p)",(void *)m_surface);
 	return m_surface;
 	m_lock.leave();
 }
@@ -351,12 +278,6 @@ ambulant_sdl_window::get_ambulant_surface()
 SDL_Surface*
 ambulant_sdl_window::get_surface_from_screen(const lib::rect &r)
 {
-#ifdef JNK
-	SDL_Surface *rv = gdk_surface_new(m_ambulant_surface->get_sdl_surface()->window, r.width(), r.height(), -1);
-	gdk_surface_bitblt(rv, r.left(), r.top(), m_surface, r.left(), r.top(), r.width(), r.height());
-	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::get_surface_from_screen(%p) = %p",(void *)this,(void *)m_surface);
-	return rv;
-#endif//JNK
 	return NULL;
 }
 
@@ -382,13 +303,9 @@ ambulant_sdl_window::delete_ambulant_surface()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::delete_ambulant_surface(%p) m_surface = %p",(void *)this, (void *)m_surface);
-#ifdef JNK
-	delete m_surface;
-	m_surface = NULL;
-#endif//JNK
 	m_lock.leave();
 }
-#endif//XXX
+#endif//TBD
 
 //
 // sdl_ambulant_window
@@ -469,14 +386,6 @@ sdl_ambulant_window::~sdl_ambulant_window()
 	if (m_sdl_window != NULL) {
 		SDL_DestroyWindow(m_sdl_window);
 	}
-#ifdef JNK
-	if ( ! m_draw_area_tags.empty()) {
-		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
-			AM_DBG ambulant::lib::logger::get_logger()->debug("sdl_ambulant_window::~sdl_ambulant_window removing tag %d", (*it));
-			g_source_remove((*it));
-		}
-	}
-#endif//JNK
 	sdl_ambulant_window::s_lock.leave();
 }
 
@@ -752,11 +661,11 @@ sdl_ambulant_window::startScreenTransition()
 	if (m_fullscreen_count)
 		logger::get_logger()->trace("%s:multiple Screen transitions in progress (m_fullscreen_count=%d)","sdl_ambulant_window::startScreenTransition()",m_fullscreen_count);
 	m_fullscreen_count++;
-#ifdef JNK
+#ifdef TBD
 	if (m_fullscreen_old_surface) g_object_unref(G_OBJECT(m_fullscreen_old_surface));
 	m_fullscreen_old_surface = m_fullscreen_prev_surface;
 	m_fullscreen_prev_surface = NULL;
-#endif//JNK
+#endif//TBD
 }
 
 void
@@ -772,10 +681,10 @@ sdl_ambulant_window::screenTransitionStep(smil2::transition_engine* engine, lib:
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::screenTransitionStep()");
 	assert(m_fullscreen_count > 0);
-#ifdef JNK
+#ifdef TBD
 	m_fullscreen_engine = engine;
 	m_fullscreen_now = now;
-#endif//JNK
+#endif//TBD
 }
 
 void
@@ -790,7 +699,7 @@ void
 sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPostRedraw()");
-#ifdef JNK
+#ifdef TBD
 	if (m_fullscreen_count == 0 && m_fullscreen_old_surface == NULL) {
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
@@ -807,10 +716,10 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_old_surface = m_fullscreen_prev_surface;
 		m_fullscreen_prev_surface = NULL;
 	}
-#endif//JNK
+#endif//TBD
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPostRedraw: bitblit");
-#ifdef JNK
+#ifdef  TBD
 	if (m_fullscreen_engine) {
 		// Do the transition step
 		SDL_Surface<* new_src = get_ambulant_window();
@@ -822,16 +731,16 @@ sdl_ambulant_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_engine->step(m_fullscreen_now);
 		DUMPSURFACE(m_surface, "fres");
 	}
-#endif//JNK
+#endif//TBD
 
 	if (m_fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
 		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::_screenTransitionPostRedraw: cleanup after transition done");
-#ifdef JNK
+#ifdef TBD
 		if (m_fullscreen_old_surface) g_object_unref(G_OBJECT(m_fullscreen_old_surface));
 		m_fullscreen_old_surface = NULL;
 		m_fullscreen_engine = NULL;
-#endif//JNK
+#endif//TBD
 	}
 }
 
@@ -1041,7 +950,7 @@ sdl_ambulant_window::dump_sdl_renderer (SDL_Renderer* renderer, const SDL_Rect r
 	assert(err==0);
 }
 
-#ifdef JNK
+#ifdef TBD
 void
 sdl_ambulant_window::do_paint_event (GdkEventExpose *e) {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::paintEvent(%p): e=%p)", (void*) this, (void*) e);
@@ -1138,7 +1047,7 @@ bool sdl_ambulant_window::clear_overlay(){
 bool sdl_ambulant_window::set_screenshot(char **screenshot_data, size_t *screenshot_size){
 	return TRUE;
 }
-#endif//JNK
+#endif//TBD
 
 
 #endif//WITH_SDL2

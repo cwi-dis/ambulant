@@ -22,7 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_TRANSITION_H
 #define AMBULANT_GUI_SDL_SDL_TRANSITION_H
 
-#ifdef  WITH_SDL2 // TBD
+#ifdef  WITH_SDL2
 
 #include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"

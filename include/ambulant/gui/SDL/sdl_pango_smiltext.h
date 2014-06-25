@@ -23,6 +23,7 @@
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
 #if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
+//TBD: offscreen rendering
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_window.h"
