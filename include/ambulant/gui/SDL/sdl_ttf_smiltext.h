@@ -32,7 +32,7 @@
 #define AMBULANT_GUI_SDL_TTF_SMILTEXT_H
 
 #ifdef  WITH_SDL_TTF
-
+//TBD: font family impl., offscreen rendering
 #include "ambulant/config/config.h"
 #include <string>
 
@@ -41,7 +41,7 @@
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_window.h"
 
-//XX move to impl.
+//TBD move to impl.
 #define FONT "Times 6"
 #ifndef ANDROID
 #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
@@ -106,11 +106,11 @@ class sdl_ttf_smiltext_renderer :
 	void _close_font(TTF_Font** fp);
 	void _set_font_style(const smil2::smiltext_run& run);
 	void _set_font_size (int font_size);
+
 	// instance variables
-//XX?	net::datasource_factory *m_df;
 	ambulant_sdl_window* m_window;
 	smil2::smiltext_layout_engine m_layout_engine;
-//XX bool m_render_offscreen; // True if m_params does not allows rendering in-place
+//TBD bool m_render_offscreen; // True if m_params does not allows rendering in-place
 	// Sdl related variables
 	// ttf specific stuff
 	rect		m_rect;

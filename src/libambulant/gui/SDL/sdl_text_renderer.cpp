@@ -182,16 +182,11 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		assert (m_sdl_surface);
 #elif defined(WITH_SDL_PANGO)
 		// initialize the pango context, layout...
-//X		context = gdk_pango_context_get();
 		SDLPango_Context* sdl_pango_context = SDLPango_CreateContext();
 		context = *(PangoContext**) sdl_pango_context;
 		language = pango_language_get_default();
-//X		pango_context_set_language (context, language);
 		SDLPango_SetLanguage (sdl_pango_context, pango_language_to_string (language));
-//X		pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
 		SDLPango_SetBaseDirection (sdl_pango_context, SDLPANGO_DIRECTION_LTR);
-//X	We initialize the font as Sans 10
-//X		font_desc = pango_font_description_from_string ("sans 10");
 		font_desc = SDLPango_GetPangoFontDescription(sdl_pango_context);
 		// in case we have some specific font style and type
 		if (m_text_font) {
@@ -204,9 +199,8 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			double pango_font_size = m_text_size*PANGO_SCALE;
 			pango_font_description_set_absolute_size(font_desc, pango_font_size);
 		}
-//X		pango_context_set_font_description (context, font_desc);
 // no equivalent in SDLPango, hope it does so by itself
-//X		layout = pango_layout_new(context);
+//		layout = pango_layout_new(context);
 		layout = SDLPango_GetPangoLayout(sdl_pango_context);
 		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
 		SDLPango_Matrix color_matrix = *MATRIX_TRANSPARENT_BACK_BLACK_LETTER;
@@ -219,7 +213,6 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		}
 		SDLPango_SetDefaultColor (sdl_pango_context, &color_matrix);               
 		// include the text
-//X		pango_layout_set_text (layout, m_text_storage, -1);
 		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
 		pango_layout_set_width(layout, W*1000);
 		SDLPango_SetText (sdl_pango_context, m_text_storage, -1);//m_text_size);

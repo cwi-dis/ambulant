@@ -26,7 +26,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_RENDERER_H
 #define AMBULANT_GUI_SDL_SDL_RENDERER_H
 
-#ifdef  WITH_SDL2 // TBD
+#ifdef  WITH_SDL2
 
 #include "ambulant/common/factory.h"
 #include "ambulant/common/renderer_impl.h"
@@ -60,14 +60,13 @@ class sdl_window {
   static SDL_Window* s_sdl_window; 
 };
 
-//#ifdef TBD
-	// When blending is needed, one rarely used color is taken as
-	// transparent color for chromakeying. However should this
-	// color be needed anyway, an alternative undistinguishable
-	// color is taken to be drawn instead, to avoid the ugly bug
-	// of seeing absolutely nothing. This could happen e.g. during
-	// color animations resulting in occasional unreproduceable
-	// flicker.
+// When blending is needed, one rarely used color is taken as
+// transparent color for chromakeying. However should this
+// color be needed anyway, an alternative undistinguishable
+// color is taken to be drawn instead, to avoid the ugly bug
+// of seeing absolutely nothing. This could happen e.g. during
+// color animations resulting in occasional unreproduceable
+// flicker.
 //#define SDL_TRANSPARENT_COLOR to_color(0x0,0x1,0x0) // almost black
 #define SDL_TRANSPARENT_COLOR to_color(0x0,0x0,0xFF) // almost black
 #define SDL_ALTERNATIVE_COLOR to_color(0x0,0x0,0x1) // almost black too
@@ -170,7 +169,7 @@ class sdl_renderer : public RP_Base {
   private:
 	sdl_transition_renderer *m_transition_renderer;
 };
-//#endif//TBD
+
 } // namespace sdl
 
 } // namespace gui

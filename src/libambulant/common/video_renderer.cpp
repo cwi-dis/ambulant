@@ -52,6 +52,7 @@ video_renderer::video_renderer(
 	m_is_paused(false),
 	m_paused_epoch(0),
 	m_last_frame_timestamp(-1),
+	m_frame_received(0),
 	m_frame_displayed(0),
 	m_frame_duplicate(0),
 	m_frame_early(0),
@@ -242,6 +243,7 @@ video_renderer::preroll(double when, double where, double how_much)
 	// We need to initial these variables over here
 	m_paused_epoch = 0;
 	m_last_frame_timestamp = -1;
+	m_frame_received = 0;
 	m_frame_displayed = 0;
 	m_frame_duplicate = 0;
 	m_frame_early = 0;
@@ -310,7 +312,7 @@ video_renderer::post_stop()
 		m_dest = NULL;
 		if (m_audio_renderer) m_audio_renderer->post_stop();
 		if (m_src) m_src->stop();
-		lib::logger::get_logger()->debug("video_renderer::post_stop: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL for %s", m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing, m_node->get_url("src").get_url().c_str());
+		lib::logger::get_logger()->debug("video_renderer::post_stop: got %d frames, displayed %d, skipped %d dups, %d late, %d early, %d NULL for %s", m_frame_received, m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing, m_node->get_url("src").get_url().c_str());
 	}
 	m_lock.leave();
 }
@@ -521,6 +523,7 @@ video_renderer::data_avail()
 	// If we have a frame and it should be on-screen already we show it.
 	// If the frame's timestamp is still in the future we fall through, and schedule another
 	// callback at the time this frame is due.
+	m_frame_received++;
 	if (!buf) {
 		// No data: skip. Probably out-of-memory or something similar.
 		m_frame_missing++;
@@ -583,7 +586,7 @@ video_renderer::data_avail()
 #ifdef _MSC_VER
 #define snprintf _snprintf
 #endif
-                    snprintf(buffer, sizeof buffer, "%lld", frame_ts_micros);
+                    snprintf(buffer, sizeof buffer, "%lld, %lld, %lld", frame_ts_micros, m_frame_received, m_frame_displayed);
                     sc->set_value(m_video_feedback_var, buffer);
                     AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: set live video feedback %s to %s", m_video_feedback_var, buffer);
                 }

@@ -22,6 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_WINDOW_H
 #define AMBULANT_GUI_SDL_WINDOW_H
 
+// TBD: fullscreen transitions, screenshots
 
 #include "ambulant/common/factory.h"
 #include "ambulant/common/recorder.h"
@@ -86,46 +87,37 @@ class ambulant_sdl_window : public common::gui_window {
 
 	// resize window to new size
 	void resize_window (int w, int h);
-	/// Initialize a GDK cached cursortype
-//X	void set_gdk_cursor(GdkCursorType, GdkCursor*);
 
-	/// Return any of GDK cached cursortypes
-//X	GdkCursor* get_gdk_cursor(GdkCursorType);
-
-	// XXX These need to be documented...
-//XX	SDL_Surface* get_ambulant_surface(); //XX
-//XX	SDL_Surface* new_ambulant_surface(); //XX
-//XX	SDL_Surface* get_ambulant_window(); //XX
-//XX	SDL_Surface* get_ambulant_oldsurface(); //XX
-//XX	SDL_Surface* get_surface_from_screen(const lib::rect &r); //XX
-//XX	void reset_ambulant_surface(void); //XX
-//XX	void set_ambulant_surface(SDL_Surface* surf); //XX
-//XX	void delete_ambulant_surface();
+//TBD	These need to be documented...
+//TBD	SDL_Surface* get_ambulant_surface(); //XX
+//TBD	SDL_Surface* new_ambulant_surface(); //XX
+//TBD	SDL_Surface* get_ambulant_window(); //XX
+//TBD	SDL_Surface* get_ambulant_oldsurface(); //XX
+//TBD	SDL_Surface* get_surface_from_screen(const lib::rect &r); //XX
+//TBD	void reset_ambulant_surface(void); //XX
+//TBD	void set_ambulant_surface(SDL_Surface* surf); //XX
+//TBD	void delete_ambulant_surface();
   private:
 	lib::rect  m_bounds;
 	sdl_ambulant_window* m_ambulant_window;
-//XX	uint8_t* m_pixels;
-//XX	SDL_Surface* m_surface;
-//XX	SDL_Surface* m_oldsurface;
-	common::gui_player* m_gui_player;
-//X	GdkCursor* m_arrow_cursor;
-//X	GdkCursor* m_hand1_cursor;
-//X	GdkCursor* m_hand2_cursor;
-//X	SDL_Surface* m_fullscreen_prev_surface;
-//X	SDL_Surface* m_fullscreen_old_surface;
-//X	smil2::transition_engine* m_fullscreen_engine;
-//X	lib::transition_info::time_type m_fullscreen_now;
+//TBD	uint8_t* m_pixels;
+//TBD	SDL_Surface* m_surface;
+//TBD	SDL_Surface* m_oldsurface;
+//TBD	SDL_Surface* m_fullscreen_prev_surface;
+//TBD	SDL_Surface* m_fullscreen_old_surface;
+//TBD	smil2::transition_engine* m_fullscreen_engine;
+//TBD	lib::transition_info::time_type m_fullscreen_now;
 	/// A renderer is used for drawing, contains all drawing attribute (like a grapohics context)
-//XX	SDL_Renderer* m_sdl_renderer;
+//TBD	SDL_Renderer* m_sdl_renderer;
 	/// A surface contains the actual pixels of the window
-//XX	SDL_Surface*  m_sdl_surface;
+//TBD	SDL_Surface*  m_sdl_surface;
 	/// When the 'ambulant_recorder_plugin' (in sandbox) is installed, this renderer will feed it with screen grabs
+	common::gui_player* m_gui_player;
 	common::recorder* m_recorder;
 	lib::critical_section m_lock;
 
   public:
 	SDL_Surface* m_tmpsurface;
-//X	guint signal_redraw_id;
 };  // class ambulant_sdl_window
 
 /// sdl_ambulant_window is the SDL-counterpart of ambulant_sdl_window: it is the
@@ -135,9 +127,6 @@ class ambulant_sdl_window : public common::gui_window {
 class sdl_ambulant_window : public ambulant::common::gui_screen
 {
   public:
-//	sdl_ambulant_window(const std::string &name,
-//			   lib::rect* bounds,
-//			   SdlWindow* parent_window);
 	sdl_ambulant_window(SDL_Window* window);
 	~sdl_ambulant_window();
 
@@ -190,13 +179,6 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	void set_evp (lib::event_processor* evp) { m_evp = evp; }
 	lib::event_processor* get_evp() { return m_evp; }
 
-/// TBD: Event handling
-//X	void do_paint_event (GdkEventExpose * event);
-//X	void do_motion_notify_event(GdkEventMotion *event);
-//X	void do_button_release_event(GdkEventButton *event);
-//X	void do_key_release_event(GdkEventKey *event);
-//X	void mouseReleaseEvent(QMouseEvent* e);
-
 	// gui_screen implementation
 	void get_size(int *width, int *height) {} //TBD
 	bool get_screenshot(const char *type, char **out_data, size_t *out_size) { return false; } //TBD
@@ -231,7 +213,7 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 
 	/// return the corresponding sdl_ambulant_window* given its SDL windowID (used by SDL event loop)
 	static sdl_ambulant_window* get_sdl_ambulant_window  (Uint32 windowID);
-//X	bool set_screenshot(char **screenshot_data, size_t *screenshot_size);
+//TBD ?	bool set_screenshot(char **screenshot_data, size_t *screenshot_size);
 	// For the gui_screen implementation
 	void* m_screenshot_data;
 	long int m_screenshot_size;
@@ -274,7 +256,6 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	// sdl_ambulant_window maintains 2 mappings:
 	// - s_window_renderer_map: to find a SDL_Renderer* given a SDL_Window* (for drawing) 
 	// - s_id_sdl_ambulant_window_map: to find a sdl_ambulant_window* given a window_id
-	//XX static std::map<SDL_Window*, SDL_Renderer*> s_window_renderer_map; //XX is this really needed ????
 	static std::map<int, sdl_ambulant_window*> s_id_sdl_ambulant_window_map;
 
 	std::stack<SDL_Surface*> m_transition_surfaces;
@@ -286,12 +267,6 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 // The total number of SDL events at any moment is maintained in order to clear
 // the SDL Event Queue of pointers to this structure upon deletion
 	static long unsigned int s_num_events;
-//X	SDL_Window* m_parent_window;
-//X	sdl_ambulant_window* m_parent_window;
-//X	gulong m_expose_event_handler_id;
-//X	gulong m_motion_notify_handler_id;
-//X	gulong m_button_release_handler_id;
-//X	gulong m_key_release_handler_id;
 
 };  // class sdl_ambulant_window
 

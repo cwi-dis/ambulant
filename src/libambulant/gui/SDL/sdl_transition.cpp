@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // TBD
+#ifdef  WITH_SDL2 // TBD: rectlist, poly, polylist
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_transition.h"
@@ -50,15 +50,13 @@ setup_transition(bool outtrans, ambulant_sdl_window *asw, SDL_Surface** old_surf
 		*old_surf = asw->get_sdl_ambulant_window()->top_sdl_surface();
 		*new_surf = asw->get_sdl_ambulant_window()->get_sdl_surface();
 	}
-#ifdef TBD
-#endif//TBD
 }
 static void
 finalize_transition(bool outtrans, ambulant_sdl_window *asw,  common::surface *dest)
 {
 	if (outtrans) {
+#ifdef  TBD	// implement outtransitions
 		// copy the pixels in m_tmpsurface to the on-screen surface
-#ifdef  TBD
 		SDL_Surface* dest_surface = asw->get_sdl_ambulant_window()->get_ambulant_surface();
 		SDL_Surface* temp_surface = asw->get_sdl_ambulant_window()->get_ambulant_surface();
 		const lib::rect &r=	 dest->get_clipped_screen_rect();
@@ -272,7 +270,7 @@ sdl_transition_blitclass_rectlist::update()
 		SDL_Rect sdl_new =  SDL_Rect_from_ambulant_rect(r);
 		SDL_BlitSurface(n_srf, &sdl_new, o_srf, &sdl_new);
 	}
-#ifdef  JNK
+#ifdef  TBD	// implement rectlist::update()
 	GdkGC *gc = gdk_gc_new (o_srf);
 	GdkRegion* region = gdk_region_new();
 	std::vector< rect >::iterator newrect;
@@ -293,7 +291,7 @@ sdl_transition_blitclass_rectlist::update()
 	gdk_gc_set_clip_region(gc, region);
 	gdk_draw_surface(o_srf, gc, n_srf, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	g_object_unref (G_OBJECT (gc)); // clears region as well
-#endif//JNK
+#endif//TBD
 	finalize_transition(m_outtrans, asw, m_dst);
 }
 
@@ -309,7 +307,7 @@ sdl_transition_blitclass_poly::update()
 	if (n_points <= 2) { // cannot create polygon, maybe not yet implemented
 		return;
 	}
-#ifdef  JNK
+#ifdef  TBD	// implement poly_update()
 	GdkPoint* points = (GdkPoint*) malloc (n_points*sizeof(GdkPoint));
 	uint idx = 0;
 	std::vector<point>::iterator newpoint;
@@ -330,7 +328,7 @@ sdl_transition_blitclass_poly::update()
 	gdk_draw_surface(o_srf, gc, n_srf, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(region);
 	g_object_unref (G_OBJECT (gc));
-#endif//JNK
+#endif//TBD
 	finalize_transition(m_outtrans, asw, m_dst);
 }
 
@@ -343,7 +341,7 @@ sdl_transition_blitclass_polylist::update()
 	SDL_Surface *n_srf, *o_srf;
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
 	setup_transition(m_outtrans, asw, &o_srf, &n_srf);
-#ifdef  JNK
+#ifdef  TBD	// implement polylist::update()
 	GdkRegion* clip_region = gdk_region_new();
 	AM_DBG logger::get_logger()->debug("sdl_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
 	std::vector< std::vector<point> >::iterator partpolygon;
@@ -379,7 +377,7 @@ sdl_transition_blitclass_polylist::update()
 	gdk_draw_surface(o_srf, gc, n_srf, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(clip_region);
 	g_object_unref (G_OBJECT (gc));
-#endif//JNK
+#endif//TBD
 	finalize_transition(m_outtrans, asw, m_dst);
 }
 

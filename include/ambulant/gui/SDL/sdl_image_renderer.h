@@ -28,7 +28,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_IMAGE_RENDERER_H
 #define AMBULANT_GUI_SDL_SDL_IMAGE_RENDERER_H
 
-#ifdef  WITH_SDL2 // TBD
+#ifdef  WITH_SDL2
 
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"

@@ -501,6 +501,7 @@ ffmpeg_decoder_datasource::data_avail()
                     break;
                 }
                 forwarding_ptr = allocated_ptr;
+				assert(m_fmt.bits == av_get_bytes_per_sample((AVSampleFormat)outframe->format)*8);
                 _interleave_samples(forwarding_ptr, outframe->extended_data, av_frame_get_channels(outframe), outframe->nb_samples, av_get_bytes_per_sample((AVSampleFormat)outframe->format));
             } else {
                 forwarding_ptr = outframe->extended_data[0];

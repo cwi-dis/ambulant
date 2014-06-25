@@ -141,8 +141,6 @@ sdl_transition_renderer::redraw_pre(gui_window *window)
 	// redraw_body() will renderer the pixels where we want them.
 	if (m_trans_engine && !m_fullscreen) {
      		SDL_Surface* surf = saw->get_sdl_surface();
-//TBD		if (surf == NULL)
-//TBD			surf = saw->new_ambulant_surface();
 		if (surf != NULL) {			
 			// Push (and copy)  the background pixels
 			saw->push_sdl_surface (surf);

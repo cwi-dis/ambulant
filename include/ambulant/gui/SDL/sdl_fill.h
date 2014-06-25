@@ -26,7 +26,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_FILL_H
 #define AMBULANT_GUI_SDL_SDL_FILL_H
 
-#ifdef  WITH_SDL2 // TBD
+#ifdef  WITH_SDL2
 
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
