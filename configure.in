@@ -517,7 +517,7 @@ AC_SUBST(OBJCFLAGS)
 OBJC=$CC
 AC_SUBST(OBJC)
 
-dnl Test for SDL (audio only)
+dnl Test for SDL 1.X (audio only)
 dnl ======================================================================
 test_sdl_audio=true
 AC_MSG_CHECKING(for sdl - Simple Direct Media layer - Audio support)
@@ -529,8 +529,12 @@ AC_ARG_WITH(sdl,
 		fi
 	] )
 if $test_sdl_audio; then
-	# sdl-config will work for sdl 1.2.X
-	if sdl-config --version > /dev/null; then
+	# First check for sdl2
+	if sdl2-config --version > /dev/null; then
+		SDL_CFLAGS="`sdl2-config --cflags`"
+		SDL_LIBS=`sdl2-config --libs`
+	# sdl-config will work for sdl 1.2.X, 
+	elif sdl-config --version > /dev/null; then
 		SDL_CFLAGS=`sdl-config --cflags`
 		SDL_LIBS=`sdl-config --libs`
 	else

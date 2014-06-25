@@ -1,2 +1,3 @@
 AMBULANT_DIR = $(SRCROOT)/../..
 PATH = $(PATH):/usr/local/bin:/opt/local/bin
+MACOSX_DEPLOYMENT_TARGET=10.7

@@ -29,7 +29,8 @@ debpackages="
   postfix
   mailutils
   libxml2-dev 
-  libsdl1.2-dev 
+  libsdl2-dev 
+  libsdl2-image-dev 
   libavformat-dev 
   libavcodec-dev 
   libswscale-dev 
