@@ -18,12 +18,10 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #if defined(WITH_SDL2) && !defined(WITH_SDL_TTF)
-
-//X #include "ambulant/gui/SDL/sdl_includes.h"
+// TBD: media opacity, media background opacity, chroma keying, offscreen rendering
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_pango_smiltext.h"
-//X #include "ambulant/gui/SDL/sdl_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
@@ -152,7 +150,6 @@ void
 sdl_smiltext_renderer::seek(double t)
 {
 	m_engine.seek(t);
-	//renderer_playable::seek(t);
 }
 
 bool
@@ -186,51 +183,6 @@ void
 sdl_smiltext_renderer::_sdl_smiltext_changed()
 {
 AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
-#ifdef  GDK_PANGO
-	if ( ! m_pango_context) {
-		// initialize the pango context, layout...
-		m_pango_context = gdk_pango_context_get();
-		PangoLanguage* language = sdl_get_default_language();
-		pango_context_set_language (m_pango_context, language);
-		pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_LTR);
-		const common::region_info *ri = m_dest->get_info();
-		if (ri) {
-			m_alpha_media = ri->get_mediaopacity();
-			m_alpha_media_bg = ri->get_mediabgopacity();
-			m_alpha_chroma = ri->get_chromakeyopacity();
-			lib::color_t chromakey = ri->get_chromakey();
-			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			compute_chroma_range(chromakey, chromakeytolerance, &m_chroma_low, &m_chroma_high);
-		}
-#ifndef WITH_SDL_ANTI_ALIASING
-		if (m_alpha_media != 1.0 || m_alpha_media_bg != 1.0 || m_alpha_chroma != 1.0) {
-			cairo_font_options_t* cairo_font_options = cairo_font_options_create();
-			//
-			// anti-aliasing by pango/cairo is disabled
-			// when blending is necessary, because this
-			// sometimes results in ugly glyphs.
-			//
-			cairo_font_options_set_antialias (cairo_font_options, CAIRO_ANTIALIAS_NONE);
-			pango_cairo_context_set_font_options (m_pango_context, cairo_font_options);
-			cairo_font_options_destroy (cairo_font_options);
-		}
-#endif // WITH_SDL_ANTI_ALIASING
-		m_writing_mode = m_engine.begin()->m_writing_mode;
-		switch (m_writing_mode) {
-		default:
-		case smil2::stw_lr_tb:
-			pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_LTR);
-			break;
-		case smil2::stw_rl_tb:
-			pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_RTL);
-			break;
-		}
-	}
-	if ( ! m_pango_layout) {
-		m_pango_layout = pango_layout_new (m_pango_context);
-		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
-	}
-#else //SDL_PANGO
 	if (m_sdl_pango_context == NULL) {
 		// initialize the pango context, layout...
 		m_sdl_pango_context = SDLPango_CreateContext();
@@ -259,7 +211,6 @@ AM_DBG lib::logger::get_logger()->debug("sdl_smiltext_changed(%p)",this);
 		m_pango_layout = SDLPango_GetPangoLayout(m_sdl_pango_context);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
-#endif//defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
 	if ( ! m_pango_attr_list)
 		m_pango_attr_list = pango_attr_list_new();
 #ifdef  TBD
@@ -692,126 +643,6 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 		W = r.width(),
 		H = r.height();
 
-#ifdef  GDK_PANGO
-	GdkRectangle gdk_rectangle;
-	gdk_rectangle.x = L;
-	gdk_rectangle.y = T;
-	gdk_rectangle.width = W;
-	gdk_rectangle.height = H;
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
-	gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
-
-	// include the text
-	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
-	if (m_bg_layout) {
-		// blending
-		pango_layout_set_width(m_bg_layout, m_wrap ? W*PANGO_SCALE : -1);
-
-		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
-		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
-		GdkGC* text_gc = gdk_gc_new (GDK_DRAWABLE (text_pixmap));
-		GdkGC* bg_gc =	gdk_gc_new (GDK_DRAWABLE (bg_pixmap));
-		gdk_rectangle.x = gdk_rectangle.y = 0;
-		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
-		gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
-
-		GdkPixmap* pixmap = window->get_ambulant_pixmap();
-		int PW = -1, PH = -1;
-		if (pixmap != NULL)
-			gdk_drawable_get_size (pixmap, &PW, &PH);
-		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
-			g_object_unref (G_OBJECT (text_pixmap));
-			g_object_unref (G_OBJECT (bg_pixmap));
-			g_object_unref (G_OBJECT (text_gc));
-			g_object_unref (G_OBJECT (bg_gc));
-			g_object_unref (G_OBJECT (gc));
-			lib::logger::get_logger()->trace("smilText: gdk_pixbuf_get_from_drawable failed, pixmap.size()=(%d,%d), (L,T,W,H)=(%d,%d,%d,%d)", PW,PH,L,T,W,H);
-			lib::logger::get_logger()->error(gettext("Geometry error in smil document at %s"), m_node->get_sig().c_str());
-			return;
-		}
-		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, NULL, L, T, 0, 0, W, H);
-		GdkColor gdk_transparent;
-		gdk_transparent.red = redc(m_transparent)*0x101;
-		gdk_transparent.blue = bluec(m_transparent)*0x101;
-		gdk_transparent.green = greenc(m_transparent)*0x101;
-
-		gdk_gc_set_rgb_bg_color (bg_gc, &gdk_transparent);
-		gdk_gc_set_rgb_fg_color (bg_gc, &gdk_transparent);
-		gdk_gc_set_rgb_bg_color (text_gc, &gdk_transparent);
-		gdk_gc_set_rgb_fg_color (text_gc, &gdk_transparent);
-
-		// clear text_pixmap and bg_pixmap to transparent color
-		gdk_draw_rectangle (bg_pixmap, bg_gc, TRUE, 0, 0, W, H);
-		gdk_draw_rectangle (text_pixmap, text_gc, TRUE, 0, 0, W, H);
-
-		// draw m_bg_layout containing smilText runs with text in
-		// m_transparent color and background in required color
-		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap), bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
-		g_object_unref (G_OBJECT (bg_gc));
-//DBG	gdk_pixmap_dump(bg_pixmap, "bg");
-		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable(
-			NULL,
-			bg_pixmap,
-			NULL,
-			0,0,0,0,W,H);
-		lib::rect rc(lib::point(L,T),lib::size(W,H));
-		// blend the screen pixbuf with th background pixbuf
-		gdk_pixbuf_blend (
-			screen_pixbuf,
-			rc, bg_pixbuf,
-			rc,
-			m_alpha_chroma,
-			m_alpha_media_bg,
-			m_chroma_low,
-			m_chroma_high,
-			m_transparent);
-//DBG	gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
-
-		// draw m_pango_layout containing smilText runs with text in
-		// required colors and background in m_transparant color
-		gdk_draw_layout(GDK_DRAWABLE (text_pixmap), text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
-		g_object_unref (G_OBJECT (text_gc));
-//DBG	gdk_pixmap_dump(text_pixmap, "text");
-		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable(
-			NULL,
-			text_pixmap,
-			NULL,
-			0,0,0,0,W,H);
-		gdk_pixbuf_blend (
-			screen_pixbuf,
-			rc,
-			text_pixbuf,
-			rc,
-			m_alpha_chroma,
-			m_alpha_media,
-			m_chroma_low,
-			m_chroma_high,
-			m_transparent);
-		// draw the blended pixbuf on the screen
-		gdk_draw_pixbuf(
-			window->get_ambulant_pixmap(),
-			gc,
-			screen_pixbuf,
-			0, 0,
-			L, T, W, H,
-			GDK_RGB_DITHER_NONE,
-			0, 0);
-//DBG	gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
-		g_object_unref (G_OBJECT (text_pixbuf));
-		g_object_unref (G_OBJECT (bg_pixbuf));
-		g_object_unref (G_OBJECT (screen_pixbuf));
-		g_object_unref (G_OBJECT (bg_pixmap));
-		g_object_unref (G_OBJECT (text_pixmap));
-	} else {
-		gdk_draw_layout(
-			GDK_DRAWABLE (window->get_ambulant_pixmap()),
-			gc,
-			L-offset.x,
-			T-offset.y,
-			m_pango_layout);
-	}
-	g_object_unref (G_OBJECT (gc));
-#else //GDK_PANGO
 	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
 	SDL_Surface* sdl_surface = SDLPango_CreateSurfaceDraw (m_sdl_pango_context);
 	SDLPango_Draw(m_sdl_pango_context, sdl_surface, 0, 0);
@@ -822,7 +653,6 @@ sdl_smiltext_renderer::_sdl_smiltext_render(
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
 	saw->copy_to_sdl_surface (sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 	SDL_FreeSurface(sdl_surface);
-#endif// ! GDK_PANGO
 }
 #endif// defined(WITH_SDL_PANGO)
 

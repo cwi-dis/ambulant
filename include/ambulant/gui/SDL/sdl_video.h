@@ -94,10 +94,7 @@ class sdl_video_renderer : public sdl_renderer<common::video_renderer>  {
 
 	~sdl_video_renderer();
 	net::pixel_order pixel_layout();
-//	void redraw(const lib::rect &r, common::gui_window* w);
 	void redraw_body(const lib::rect &r, common::gui_window* w);
-//	void set_intransition(const lib::transition_info* info) {}
-//	void start_outtransition(const lib::transition_info* info) {}
 
   protected:
 	void _push_frame(char* frame, size_t size);

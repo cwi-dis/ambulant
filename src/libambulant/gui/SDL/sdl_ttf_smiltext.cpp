@@ -21,6 +21,7 @@
  * @$Id: sdl_ttf_smiltext.cpp,v 1.28.4.3 2010/04/09 12:54:46 keesblom Exp $ 
  */
 #ifdef  WITH_SDL_TTF
+// TBD: media opacity, media background opacity, chroma keying, font family selection, offscreen rendering
 #include "ambulant/gui/SDL/sdl_ttf_smiltext.h"
 
 #include "ambulant/common/region_info.h"
