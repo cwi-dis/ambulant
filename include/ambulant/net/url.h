@@ -41,10 +41,10 @@ namespace net {
 class AMBULANTAPI url {
 
 	// String type used by this impplementation
-	typedef std::basic_string<char> string;
+	typedef std::string string;
 
 	// Size type
-	typedef std::basic_string<char>::size_type size_type;
+	typedef std::string::size_type size_type;
 
 	// Short type representing a protocol port.
 	typedef unsigned short short_type;

@@ -769,7 +769,6 @@
 		93DEE59B14475D5400091472 /* ffmpeg_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_video.h; sourceTree = "<group>"; };
 		93DEE59F14475D5500091472 /* posix_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = posix_datasource.h; sourceTree = "<group>"; };
 		93DEE5A014475D5500091472 /* rtsp_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_datasource.h; sourceTree = "<group>"; };
-		93DEE5A114475D5500091472 /* rtsp_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtsp_factory.h; sourceTree = "<group>"; };
 		93DEE5A214475D5500091472 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
 		93DEE5A314475D5500091472 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
 		93DEE5A414475D5500091472 /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
@@ -804,7 +803,7 @@
 				04A1E86312B57DF20060F97E /* libexpat.dylib in Frameworks */,
 				04A1E86412B57DF20060F97E /* libfaad.dylib in Frameworks */,
 				04A1E86512B57DF20060F97E /* libintl.dylib in Frameworks */,
-				04A1E86612B57DF20060F97E /* libSDL2.dylib in Frameworks */,
+				04A1E86612B57DF20060F97E /* libsdl2.dylib in Frameworks */,
 				04A1E86712B57DF20060F97E /* libswscale.dylib in Frameworks */,
 				04A1E86812B57DF20060F97E /* libxerces-c.dylib in Frameworks */,
 				04A1E86F12B57DF20060F97E /* QTKit.framework in Frameworks */,
@@ -852,7 +851,7 @@
 				04070309115263540094FB0B /* libexpat.dylib */,
 				0407030A115263540094FB0B /* libfaad.dylib */,
 				0407030B115263540094FB0B /* libintl.dylib */,
-				0407030C115263540094FB0B /* libSDL2.dylib */,
+				0407030C115263540094FB0B /* libsdl2.dylib */,
 				0407030D115263540094FB0B /* libswscale.dylib */,
 				0407030E115263540094FB0B /* libxerces-c.dylib */,
 			);
@@ -1644,7 +1643,6 @@
 				93DEE59B14475D5400091472 /* ffmpeg_video.h */,
 				93DEE59F14475D5500091472 /* posix_datasource.h */,
 				93DEE5A014475D5500091472 /* rtsp_datasource.h */,
-				93DEE5A114475D5500091472 /* rtsp_factory.h */,
 				93DEE5A214475D5500091472 /* socket.h */,
 				93DEE5A314475D5500091472 /* stdio_datasource.h */,
 				93DEE5A414475D5500091472 /* url.h */,
@@ -2300,7 +2298,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				PATH = "$(PATH):/usr/local/bin:";
 			};
@@ -2314,7 +2311,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

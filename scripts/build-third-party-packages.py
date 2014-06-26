@@ -422,14 +422,15 @@ third_party_packages={
     ],
  
     'macosx' : [
-        TPP("libltdl", # Workaround/hack for missing libltdl on 10.8
+        TPP("libltdl", # Workaround/hack for missing libltdl on 10.8 and later
             checkcmd="test -f ../libltdl/.libs/libltdlc.a",
             buildcmd=
                 "rm -rf ../libltdl &&"
                 "mkdir ../libltdl &&"
                 "cd ../libltdl &&"
-                "%s/libltdl/configure CFLAGS='%s' --disable-dependency-tracking &&"
-                "make" % (AMBULANT_DIR, MAC106_COMMON_CFLAGS)
+                "%s/libltdl/%s --enable-ltdl-install --disable-dependency-tracking &&"
+                "make &&"
+                "make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
             ),
 
         TPP("expat", 

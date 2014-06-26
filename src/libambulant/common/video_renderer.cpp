@@ -586,7 +586,7 @@ video_renderer::data_avail()
 #ifdef _MSC_VER
 #define snprintf _snprintf
 #endif
-                    snprintf(buffer, sizeof buffer, "%lld, %lld, %lld", frame_ts_micros, m_frame_received, m_frame_displayed);
+                    snprintf(buffer, sizeof buffer, "\"%lld, %ld, %ld\"", frame_ts_micros, m_frame_received, m_frame_displayed);
                     sc->set_value(m_video_feedback_var, buffer);
                     AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: set live video feedback %s to %s", m_video_feedback_var, buffer);
                 }
