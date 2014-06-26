@@ -786,8 +786,15 @@ xpath_state_component::want_state_change(const char *ref, common::state_change_c
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::want_state_change(%s)", ref);
-	std::pair<std::string, common::state_change_callback*> item(ref, cb);
-	m_state_change_callbacks.push_back(item);
+	// Test it is actually a nodeset
+	m_context->node = xmlDocGetRootElement(m_state);
+	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+	if (result == NULL || result->type != XPATH_NODESET) {
+		lib::logger::get_logger()->trace("xpath_state: want_state_change: expression %s is not a nodeset", ref);
+	} else {
+		std::pair<std::string, common::state_change_callback*> item(ref, cb);
+		m_state_change_callbacks.push_back(item);
+	}
 	m_lock.leave();
 }
 
@@ -807,7 +814,7 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 		xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref.c_str(), m_context);
 		AM_DBG lib::logger::get_logger()->debug("... result=0x%x, type=%d", result, result?result->type:0);
 		if (result == NULL || result->type != XPATH_NODESET) {
-			lib::logger::get_logger()->trace("xpath_state: stateChange: expression %s is not a nodeset", ref.c_str());
+			/* nothing*/;
 		}
 		if (result != NULL && result->type == XPATH_NODESET) {
 			xmlNodeSetPtr nodeset = result->nodesetval;
