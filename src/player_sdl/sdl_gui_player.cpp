@@ -120,7 +120,7 @@ sdl_gui_player::sdl_gui_player(sdl_gui* gui)
 
 sdl_gui_player::~sdl_gui_player()
 {
-//TBD	AM_DBG m_logger->debug("sdl_gui_player::~sdl_gui_player() m_player=0x%x", m_player);
+	AM_DBG m_logger->debug("sdl_gui_player::~sdl_gui_player() m_player=0x%x", m_player);
 //	delete m_gui_screen;
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
@@ -136,7 +136,6 @@ sdl_gui_player::~sdl_gui_player()
 		delete m_doc;
 		m_doc = NULL;
 	}
-//	delete m_window_factory;
 }
 
 void
@@ -248,27 +247,6 @@ sdl_gui_player::create_top_window (const char *filename) {
 	m_origin = lib::point(0,0);
 	m_rect = lib::rect(m_origin, m_size);
 	AM_DBG lib::logger::get_logger()->debug("sdl_gui_player::create_top_window(0x%x): width = %d, height = %d",(void *)this, width, height);
-#ifdef JNK
-	static SDL_Renderer* s_renderer = NULL; //XXXX member !
-	static SDL_Texture* s_texture = NULL; //XXXX member !
-	static SDL_Window* s_window = NULL; //XXXX member, embed  !
-	if (s_texture == NULL) {
-		s_window = SDL_CreateWindow(basename(filename), 0,0,width,height,0); //XXXX consider SDL_CreateWindowFrom(XwinID) !
-		assert (s_window);
-		s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED);
-		if (s_renderer == NULL) {
-			AM_DBG lib::logger::get_logger()->trace("sdl_video_renderer.redraw(0x%x): trying software renderer", this);
-			s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_SOFTWARE);
-			if (s_renderer == NULL) {
-				lib::logger::get_logger()->warn("Cannot open: %s", "SDL video renderer");
-				return;
-			}
-		}
-		assert(s_renderer);
-		s_texture = SDL_CreateTexture(s_renderer, SDL_PIXELFORMAT, SDL_TEXTUREACCESS_STREAMING, width, height);
-	}
-	assert(s_texture);
-#endif//JNK
 }
 
 void
@@ -304,131 +282,5 @@ sdl_gui_player::show_file(const net::url &url)
 }
 
 
-#ifdef JNK
-
-ambulant::common::player*
-sdl_gui_player::create_player(const char* filename) {
-	ambulant::common::player* player;
-	player = create_smil2_player(m_doc, this, get_embedder());
-
-	player->initialize();
-
-	return player;
-}
-
-void
-sdl_gui_player::done(common::player *p)
-{
-	AM_DBG m_logger->debug("sdl_gui_player: implementing: done()");
-	//m_gui->player_done();
-}
-
-bool
-sdl_gui_player::player_done()
-  // return true when the last player is done
-{
-	AM_DBG m_logger->debug("sdl_gui_player: implementing: player_done");
-#if 0
-	if(!m_frames.empty()) {
-		frame *pf = m_frames.top();
-		m_frames.pop();
-		m_gui = pf->windows;
-		m_player = pf->player;
-		delete pf;
-		m_player->resume();
-//TBD		m_player->need_redraw();
-		return false;
-	}
-#endif//0
-	return true;
-}
-
-void
-sdl_gui_player::close(common::player *p)
-{
-	AM_DBG m_logger->trace("sdl_gui_player: implementing: close document");
-	stop();
-}
-
-void
-sdl_gui_player::open(net::url newdoc, bool start, common::player *old)
-{
-	AM_DBG m_logger->trace("sdl_gui_player::open \"%s\"",newdoc.get_url().c_str());
-	// Parse the provided URL.
-	m_doc = create_document(newdoc);
-	if(!m_doc) {
-		m_logger->error(gettext("%s: Cannot build DOM tree"),
-				newdoc.get_url().c_str());
-		return;
-	}
-	// send msg to gui thread
-	std::string msg("");
-	msg += start ? "S-" : "	 ";
-	msg += old	 ? "O-" : "	 ";
-	msg += newdoc.get_url();
-	m_gui->internal_message(sdl_logger::CUSTOM_NEW_DOCUMENT,
-				strdup(msg.c_str()));
-}
-
-void
-sdl_gui_player::player_start(gchar* document_name, bool start, bool old)
-{
-	AM_DBG m_logger->debug("player_start(%s,%d,%d)",document_name,start,old); //m_logger->debug("player_start(%s,%d,%d)",document_name.ascii(),start,old);
-	if (old) {
-		m_player->stop();
-		delete m_player;
-		m_player = create_player(document_name);
-		if (start)
-			m_player->start();
-		return;
-	}
-#if 0
-	if(m_player) {
-	// Push the old frame on the stack
-		m_player->pause();
-		frame *pf = new frame();
-		pf->windows = m_gui;
-		pf->player = m_player;
-//TBD		m_gui->erase();
-		m_player = NULL;
-		m_frames.push(pf);
-	}
-#endif//0
-	// Create a player instance
-	AM_DBG m_logger->debug("Creating player instance for: %s", document_name);
-	m_player = create_player(document_name);
-	if(start) {
-		m_player->start();
-	}
-}
-
-/*
-char* sdl_gui_player::convert_data_to_image(const guchar* data, gsize size){
-	GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
-	char* filename = 0;
-	GError *error = NULL;
-	GdkPixbuf *pixbuf;
-	if (gdk_pixbuf_loader_write(loader, (const guchar*) data, (gsize) size, 0))
-	{
-		pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
-	}else{
-		g_message("Could not get Loader working\n");
-		return NULL;
-	}
-	if (!pixbuf) {
-		g_message ("Could not create the pixbuf\n");
-		return NULL;
-	}
-	filename = "mytest.jpeg";
-	gdk_pixbuf_save (pixbuf, filename, "jpeg", &error, "quality", "100", NULL);
-	return filename;
-}
-*/
-
-ambulant::common::gui_screen*
-sdl_gui_player::get_gui_screen(){
-	return m_sdl_ambulant_window;
-}
-#endif//JNK
 
 #endif//WITH_SDL2

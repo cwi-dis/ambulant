@@ -126,7 +126,7 @@ sdl_logger::log(const char *logstring) {
 		fprintf(m_log_FILE, "%s", logstring);
 	}
 #ifdef ANDROID
-    LOGI ("%s", logstring);
+	LOGI ("%s", logstring);
 #endif // ANDROID
 }
 

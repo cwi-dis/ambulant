@@ -2,7 +2,7 @@ dnl required version of autoconf
 AC_PREREQ([2.53])
 
 dnl TODO: fill in your package name and package version here
-AC_INIT([gstambulantsrc],[1.0.7])
+AC_INIT([gstambulantsrc],[1.0.8])
 dnl XXX AC_CONFIG_MACRO_DIR([m4]
 
 dnl required versions of gstreamer and plugins-base

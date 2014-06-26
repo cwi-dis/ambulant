@@ -79,30 +79,14 @@ class sdl_gui_player :
 
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p) {} //TBD
-//TBD	void done(common::player *p);
 	void open(net::url newdoc, bool start, common::player *old=NULL) {} //TBD
-//TBD	bool player_done();
-//TBD	void player_start(char* document_name, bool start, bool old);
-//TBD	ambulant::common::gui_screen *get_gui_screen();
-//	char* convert_data_to_image(const guchar* m_data, gsize size);
 	void redraw();
 	void redraw(void* /*ambulant_sdl_window* */, void* /*ambulant::lib::rect* */);
 	SDL_Window* get_window() { return m_gui->get_window(); }
 	bool user_event (SDL_Point &p, int what = 0);
-//JNK	SDL_Renderer* get_renderer() { return m_gui->get_renderer(); }
-//JNK	SDL_Surface* get_surface() { return m_gui->get_surface(); }
 	// helper: convert a point in screen space to a point in ambulant space
 	void resize_window (int w, int h);
   private:
-#if 0
-	// from dx_player
-	// The frames stack
-	struct frame {
-		sdl_gui* windows;
-		ambulant::common::player* player;
-	};
-	std::stack<frame*> m_frames;
-#endif
 	ambulant::common::player* create_player(const char* filename);
 	bool user_event (const point &p, int what = 0);
 	// top level drawing window
