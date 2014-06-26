@@ -107,6 +107,7 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	m_lock.enter();
 	if (m_data){
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p)",(void*) this);
+		_frame_was_displayed();
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
 		lib::rect dst_rect_whole = r;

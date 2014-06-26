@@ -104,6 +104,8 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Ren
 	assert(rt);
 	if (rt == NULL)
 		return;
+
+	_frame_was_displayed();
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
 

@@ -95,6 +95,8 @@ class video_renderer : public common::renderer_playable {
 	/// eventually free()ing frame. This method is protected because it shares
 	/// the m_lock mutex.
 	virtual void _push_frame(char* frame, size_t size) = 0;
+	// Signal back from the renderer that it has actually displayed a frame
+	void _frame_was_displayed();
 
   protected:
 	lib::size m_size;		///< (width, height) of the video data.
@@ -113,12 +115,13 @@ class video_renderer : public common::renderer_playable {
 	bool m_is_stalled;			// True if we emitted a stalled() feedback call
 	bool m_is_paused;
 	long int m_paused_epoch;
-	long int m_frame_received;
-	long int m_frame_displayed;
-	long int m_frame_duplicate;
-	long int m_frame_early;
-	long int m_frame_late;
-	long int m_frame_missing;
+	long int m_frame_received;	// Number of frames received from the decoder
+	long int m_frame_duplicate;	// Number of frames with a duplicate timestamp
+	long int m_frame_early;		// Number of frames that were too early
+	long int m_frame_late;		// Number of frames that were too late
+	long int m_frame_missing;	// Number of frames that were missing (?)
+	long int m_frame_displayed;	// Number of frames actually displayed (in the redraw callback)
+	net::timestamp_t m_last_frame_displayed_timestamp;	// Timestamp of last frame actually displayed
 	net::timestamp_t m_previous_clip_position;
 #ifdef WITH_LIVE_VIDEO_FEEDBACK
     const char *m_video_feedback_var;

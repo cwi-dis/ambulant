@@ -54,6 +54,7 @@ video_renderer::video_renderer(
 	m_last_frame_timestamp(-1),
 	m_frame_received(0),
 	m_frame_displayed(0),
+	m_last_frame_displayed_timestamp(0),
 	m_frame_duplicate(0),
 	m_frame_early(0),
 	m_frame_late(0),
@@ -536,7 +537,7 @@ video_renderer::data_avail()
 		m_src->frame_processed(frame_ts_micros);
 	} else
 #ifdef DROP_LATE_FRAMES
-	if ( ! src->get_is_live()   && frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
+	if ( /*! src->get_is_live()   && */frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
 		// Frame is too late. Skip forward to now. Schedule another callback asap.
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
 		m_frame_late++;
@@ -549,7 +550,7 @@ video_renderer::data_avail()
 		// Frame is too early. Do nothing, just schedule a new event at the correct time and we will get this same frame again.
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame early, ts=%lld, now=%lld, dur=%lld)",frame_ts_micros, now_micros, frame_duration);
 		m_frame_early++;
-	} else if ( ! m_src->get_is_live()  && frame_ts_micros <= m_last_frame_timestamp) {
+	} else if ( /*! m_src->get_is_live()  &&*/ frame_ts_micros <= m_last_frame_timestamp) {
 		// This frame, or a later one, has been displayed already. Skip.
 		// We always print this message, as it could potentially denote a bug in the decoder (which should
 		// have dropped frames that are earlier than a frame already displayed).
@@ -572,7 +573,6 @@ video_renderer::data_avail()
 		assert(w);
 		w->redraw_now();
 		m_last_frame_timestamp = frame_ts_micros;
-		m_frame_displayed++;
 
 #ifdef WITH_LIVE_VIDEO_FEEDBACK
         if (m_video_feedback_var) {
@@ -627,6 +627,15 @@ video_renderer::data_avail()
 	m_lock.leave();
 }
 
+void
+video_renderer::_frame_was_displayed()
+{
+	if (m_last_frame_displayed_timestamp != m_last_frame_timestamp) {
+		m_last_frame_displayed_timestamp = m_last_frame_timestamp;
+		m_frame_displayed++;
+	}
+
+}
 void
 video_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {

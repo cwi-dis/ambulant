@@ -141,6 +141,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		m_lock.leave();
 		return;
 	}
+	_frame_was_displayed();
 	const lib::point p = m_dest->get_global_topleft();
 	const lib::rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): m_data=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);

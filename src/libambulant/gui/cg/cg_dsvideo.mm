@@ -153,6 +153,7 @@ void
 cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
+	_frame_was_displayed();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
