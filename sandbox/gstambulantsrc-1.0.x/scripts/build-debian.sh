@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Script to do a clean build of a full gstambulantsrc Debian package for Ubuntu.
 #
