@@ -17,17 +17,21 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//#include "ambulant/gui/sdl/sdl_includes.h"
-//#include "ambulant/gui/sdl/sdl_renderer.h"
-#include "ambulant/gui/SDL/sdl_factory.h"
-#include "ambulant/gui/SDL/sdl_fill.h"
-#include "ambulant/gui/SDL/sdl_window.h"
-//#include "ambulant/gui/sdl/sdl_transition.h"
-//#include "ambulant/gui/sdl/sdl_image_renderer.h"
-//#include "ambulant/gui/sdl/sdl_text_renderer.h"
+#ifdef  WITH_SDL2 // TBD
+
+#include "ambulant/common/factory.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/common/layout.h"
+#include "ambulant/common/renderer_impl.h"
+#include "ambulant/common/region_info.h"
+#include "ambulant/smil2/transition.h"
+#include "ambulant/gui/none/none_gui.h"
 #include "ambulant/smil2/test_attrs.h"
 
-#ifdef  WITH_SDL2 // TBD
+#include "ambulant/gui/SDL/sdl_renderer.h"
+
+#include "ambulant/gui/SDL/sdl_window.h"
+#include "ambulant/gui/SDL/sdl_fill.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -41,7 +45,6 @@ extern const char sdl_fill_playable_tag[] = "brush";
 extern const char sdl_fill_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererSdl");
 extern const char sdl_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererFill");
 
-/*JNK? */
 common::playable_factory *
 ambulant::gui::sdl::create_sdl_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
@@ -59,145 +62,9 @@ sdl_fill_renderer::~sdl_fill_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("~sdl_fill_renderer(%p)", (void *)this);
-	m_intransition = NULL;
-	m_outtransition = NULL;
-//TBD	if (m_trans_engine) delete m_trans_engine;
-	m_trans_engine = NULL;
- 
+	SDL_FreeSurface(m_surface);
 	m_lock.leave();
 }
-
-void
-sdl_fill_renderer::start(double where)
-{
-	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.start(%p)", (void *)this);
-	if (m_is_showing) {
-		logger::get_logger()->trace("sdl_fill_renderer.start(%p): already started", (void*)this);
-		m_lock.leave();
-		return;
-	}
-	m_is_showing = true;
-	if (!m_dest) {
-		logger::get_logger()->trace("sdl_fill_renderer.start(%p): no surface", (void *)this);
-		return;
-	}
-	if (m_intransition) {
-//		m_trans_engine = sdl_transition_engine(m_dest, false, m_intransition);
-//		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
-	}
-	m_dest->show(this);
-	assert(m_context);
-	m_context->started(m_cookie);
-	m_context->stopped(m_cookie);
-	m_lock.leave();
-}
-
-void
-sdl_fill_renderer::start_outtransition(lib::transition_info *info)
-{
-	m_lock.enter();
-	m_outtransition = info;
-	if (m_outtransition) {
-		// XXX Schedule beginning of out transition
-		//lib::event *ev = new transition_callback(this, &transition_outbegin);
-		//m_event_processor->add_event(ev, XXXX);
-	}
-	m_lock.leave();
-}
-
-bool
-sdl_fill_renderer::stop()
-{
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.stop(%p)", (void *)this);
-	if (!m_is_showing) {
-		logger::get_logger()->trace("sdl_fill_renderer.stop(%p): already stopped", (void*)this);
-	} else {
-		m_is_showing = false;
-		if (m_dest) m_dest->renderer_done(this);
-		m_dest = NULL;
-	}
-	assert(m_context);
-	m_context->stopped(m_cookie);
-	m_lock.leave();
-	return true;
-}
-
-void
-sdl_fill_renderer::redraw(const rect &dirty, gui_window *window)
-{
-
-	m_lock.enter();
-	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw(%p, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
-	ambulant_sdl_window* asdlw = (ambulant_sdl_window*) window;
-	SDL_Surface* surf = NULL;
-//X GdkPixmap *surf = NULL;
-	if (m_trans_engine && m_trans_engine->is_done()) {
-		delete m_trans_engine;
-		m_trans_engine = NULL;
-	}
-	// See whether we're in a transition
-	if (m_trans_engine) {
-/*TBD
-		GdkPixmap *qpm = asdlw->get_ambulant_pixmap();
-		surf = asdlw->get_ambulant_surface();
-		if (surf == NULL)
-			surf = asdlw->new_ambulant_surface();
-		if (surf != NULL) {
-			asdlw->set_ambulant_surface(surf);
-			// Copy the background pixels
-			rect dstrect = r;
-			dstrect.translate(m_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("sdl_fill.redraw: bitBlt to=%p (%d,%d) from=%p (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-//			bitBlt(surf, dstrect.left(),dstrect.top(),
-//				qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
-//			bitBlt(surf, dstrect.left(), dstrect.top(),
-//				qpm,  dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-			AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw: drawing to transition surface");
-		}
-TBD*/
-	}
-
-	redraw_body(dirty, window);
-
-/*TBD
-	if (surf != NULL) {
-		asdlw->reset_ambulant_surface();
-	}
-	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw: drawing to view");
-		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef no_arg_callback<sdl_fill_renderer>transition_callback;
-		event *ev = new transition_callback(this, &sdl_fill_renderer::transition_step);
-		transition_info::time_type delay = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
-//		delay = 500;
-		AM_DBG logger::get_logger()->debug("sdl_fill_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, ep_low);
-	}
-TBD*/
-	m_lock.leave();
-}
-
-
-void
-sdl_fill_renderer::transition_step()
-{
-	if (m_dest) m_dest->need_redraw();
-}
-
-bool
-sdl_fill_renderer::user_event(const point &where, int what)
-{
-	if (!user_event_sensitive(where)) return false;
-	if (what == user_event_click) m_context->clicked(m_cookie, 0);
-	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
-	else assert(0);
-	return true;
-}
-
 
 void
 sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
@@ -210,10 +77,6 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	lib::rect r = m_dest->get_rect();
 	ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 	sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
-	SDL_Renderer* renderer =  saw != NULL ? saw->get_sdl_renderer() : NULL;
-	if (renderer == NULL) {
-		return;
-	}
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
@@ -221,6 +84,16 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 		T = dstrect_whole.top(),
 		W = dstrect_whole.width(),
 		H = dstrect_whole.height();
+	if (m_surface == NULL || m_W != W || m_H != H) {
+		if (m_surface != NULL) {
+			SDL_FreeSurface (m_surface);
+			m_W = W;
+			m_H = H;
+		}
+		// from http://wiki.libsdl.org/: using the default masks for the depth
+		m_surface = SDL_CreateRGBSurface(0,W,H,32,0,0,0,0);
+		assert(m_surface != NULL);
+	}
 	// Fill with  color
 	const char *color_attr = m_node->get_attribute("color");
 	if (!color_attr) {
@@ -234,20 +107,18 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	Uint8 bgalpha = info ? info->get_bgopacity()* 255 : 255;
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to %p", (long)color);
 	SDL_Rect sdl_dst_rect = {L, T, W, H};
-	// Set and draw the background color for the region
-	err = SDL_SetRenderDrawColor (renderer, redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha);
+	SDL_Color sdl_bgcolor = {redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha};
+	// Draw the background for the region
+	err = SDL_FillRect (m_surface, &sdl_dst_rect, SDL_MapRGBA(m_surface->format, sdl_bgcolor.r, sdl_bgcolor.g, sdl_bgcolor.b, sdl_bgcolor.a));
 	assert (err==0);
-	err = SDL_RenderFillRect (renderer, &sdl_dst_rect);
-	assert (err==0);
-	// Set and draw the  foreground color for the region
-	err = SDL_SetRenderDrawColor (renderer, redc(color), greenc(color), bluec(color), alpha);
-	assert (err==0);
-	err = SDL_RenderFillRect (renderer, &sdl_dst_rect);
+	// Draw the foreground for the region
+	SDL_Color sdl_fgcolor = {redc(color), greenc(color), bluec(color), alpha};
+	err = SDL_FillRect (m_surface, &sdl_dst_rect, SDL_MapRGBA(m_surface->format, sdl_fgcolor.r, sdl_fgcolor.g, sdl_fgcolor.b, sdl_fgcolor.a));
 	assert (err==0);
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(%p, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 	SDL_Rect sdl_src_rect = {0, 0, W, H};
-//TBD	err = asw->copy_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
-//	assert (err==0);
+	err = saw->copy_to_sdl_surface_scaled (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
+	assert (err==0);
 }
 
 sdl_background_renderer::~sdl_background_renderer()

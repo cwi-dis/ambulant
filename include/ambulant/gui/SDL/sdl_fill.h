@@ -26,7 +26,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_FILL_H
 #define AMBULANT_GUI_SDL_SDL_FILL_H
 
-#ifdef  WITH_SDL2
+//#ifdef  WITH_SDL2
 
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
@@ -35,7 +35,7 @@
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/smil2/transition.h"
-//#include "sdl_renderer.h"
+#include "sdl_renderer.h"
 #include "SDL.h"
 
 namespace ambulant {
@@ -46,7 +46,10 @@ namespace gui {
 
 namespace sdl {
 
-class sdl_fill_renderer : public renderer_playable {
+common::playable_factory *
+create_sdl_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
+  class sdl_fill_renderer : public sdl_renderer<renderer_playable> {
   public:
 	sdl_fill_renderer(
 		common::playable_notification *context,
@@ -55,31 +58,31 @@ class sdl_fill_renderer : public renderer_playable {
 		lib::event_processor *const evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
-	:	renderer_playable(context, cookie, node, evp, factory, mdp),
-		m_is_showing(false),
-		m_intransition(NULL),
-		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
+	  :	sdl_renderer<renderer_playable>(context, cookie, node, evp, factory, mdp), 
+	m_surface(NULL),
+	m_W(0),
+	m_H(0)
+	{};
 	~sdl_fill_renderer();
 
-	//	void freeze() {}
-	void start(double where);
-	bool stop();
+//	void freeze() {}
+//	void start(double where);
+//	bool stop();
 	void seek(double t) {}
 
-	void set_intransition(lib::transition_info *info) { m_intransition = info; }
-	void start_outtransition(lib::transition_info *info);
-	bool user_event(const point &where, int what = 0);
-	void redraw(const rect &dirty, gui_window *window);
+//	void set_intransition(lib::transition_info *info) { m_intransition = info; }
+//	void start_outtransition(lib::transition_info *info);
+//	bool user_event(const point &where, int what = 0);
+//	void redraw(const rect &dirty, gui_window *window);
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
-	void set_intransition(const lib::transition_info *info) {};
-	void start_outtransition(const lib::transition_info *info) {};
   private:
-	void transition_step();
+//	void transition_step();
 
-	bool m_is_showing;
-	lib::transition_info *m_intransition, *m_outtransition;
-	smil2::transition_engine *m_trans_engine;
+//	bool m_is_showing;
+//	lib::transition_info *m_intransition, *m_outtransition;
+//	smil2::transition_engine *m_trans_engine;
+	SDL_Surface* m_surface;
+	int m_W, m_H;
 	critical_section m_lock;
 };
 
@@ -100,6 +103,6 @@ class sdl_background_renderer : public common::background_renderer {
 
 } // namespace ambulant
 
-#endif // WITH_SDL2
+//#endif // WITH_SDL2
 
 #endif  /*AMBULANT_GUI_SDL_SDL_FILL_H*/
