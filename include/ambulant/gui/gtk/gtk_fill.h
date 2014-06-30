@@ -39,7 +39,7 @@ namespace gui {
 
 namespace gtk {
 
-class gtk_fill_renderer : public  renderer_playable {
+class gtk_fill_renderer : public gtk_renderer<renderer_playable> {
   public:
 	gtk_fill_renderer(
 		common::playable_notification *context,
@@ -48,32 +48,13 @@ class gtk_fill_renderer : public  renderer_playable {
 		lib::event_processor *const evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
-	:	renderer_playable(context, cookie, node, evp, factory, mdp),
-		m_is_showing(false),
-		m_intransition(NULL),
-		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
+	  :       gtk_renderer<renderer_playable>(context, cookie, node, evp, factory, mdp) {};
 
 	~gtk_fill_renderer();
 
-	//	void freeze() {}
-	void start(double where);
-	bool stop();
 	void seek(double t) {}
-
-	void set_intransition(lib::transition_info *info) { m_intransition = info; }
-	void start_outtransition(lib::transition_info *info);
-	bool user_event(const point &where, int what = 0);
-	void redraw(const rect &dirty, gui_window *window);
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
-	void set_intransition(const lib::transition_info *info) {};
-	void start_outtransition(const lib::transition_info *info) {};
   private:
-	void transition_step();
-
-	bool m_is_showing;
-	lib::transition_info *m_intransition, *m_outtransition;
-	smil2::transition_engine *m_trans_engine;
 	critical_section m_lock;
 };
 
