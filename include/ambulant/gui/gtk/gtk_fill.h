@@ -51,8 +51,6 @@ class gtk_fill_renderer : public gtk_renderer<renderer_playable> {
 	  :       gtk_renderer<renderer_playable>(context, cookie, node, evp, factory, mdp) {};
 	void seek(double t) {}
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
-  private:
-	critical_section m_lock;
 };
 
 class gtk_background_renderer : public common::background_renderer {
