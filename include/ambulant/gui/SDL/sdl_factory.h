@@ -1,4 +1,3 @@
-
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *

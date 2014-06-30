@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // TBD: rectlist, poly, polylist
+#ifdef  WITH_SDL_IMAGE // TBD: rectlist, poly, polylist
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
 #include "ambulant/gui/SDL/sdl_transition.h"
@@ -520,4 +520,4 @@ sdl_transition_engine(common::surface *dst, bool is_outtrans, const transition_i
 
 } //namespace ambulant
 
-#endif//WITH_SDL2
+#endif//WITH_SDL_IMAGE
