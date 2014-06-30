@@ -65,22 +65,10 @@ create_sdl_fill_playable_factory(common::factories *factory, common::playable_fa
 	{};
 	~sdl_fill_renderer();
 
-//	void freeze() {}
-//	void start(double where);
-//	bool stop();
-	void seek(double t) {}
+	void seek(double t) {} // ignore seek()
 
-//	void set_intransition(lib::transition_info *info) { m_intransition = info; }
-//	void start_outtransition(lib::transition_info *info);
-//	bool user_event(const point &where, int what = 0);
-//	void redraw(const rect &dirty, gui_window *window);
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
   private:
-//	void transition_step();
-
-//	bool m_is_showing;
-//	lib::transition_info *m_intransition, *m_outtransition;
-//	smil2::transition_engine *m_trans_engine;
 	SDL_Surface* m_surface;
 	int m_W, m_H;
 	critical_section m_lock;

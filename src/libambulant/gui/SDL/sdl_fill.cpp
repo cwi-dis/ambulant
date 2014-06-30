@@ -203,7 +203,6 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		}
 TBD*/
 	}
-/*TBD*/
 }
 
 void sdl_background_renderer::highlight(gui_window *window)
