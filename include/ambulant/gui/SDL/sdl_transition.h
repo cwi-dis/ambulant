@@ -22,7 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_TRANSITION_H
 #define AMBULANT_GUI_SDL_SDL_TRANSITION_H
 
-#ifdef  WITH_SDL2
+#ifdef  WITH_SDL_IMAGE
 
 #include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"
@@ -242,6 +242,6 @@ smil2::transition_engine *sdl_transition_engine(
 
 } // namespace ambulant
 
-#endif // WITH_SDL2
+#endif // WITH_SDL_IMAGE
 
 #endif // AMBULANT_GUI_SDL_SDL_TRANSITION_H

@@ -28,7 +28,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_IMAGE_RENDERER_H
 #define AMBULANT_GUI_SDL_SDL_IMAGE_RENDERER_H
 
-#ifdef  WITH_SDL2
+#ifdef  WITH_SDL_IMAGE
 
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"
@@ -80,6 +80,6 @@ class sdl_image_renderer : public sdl_renderer<renderer_playable_dsall> {
 
 } // namespace ambulant
 
-#endif // WITH_SDL2
+#endif // WITH_SDL_IMAGE
 
 #endif/*AMBULANT_GUI_SDL_SDL_IMAGE_RENDERER_H*/

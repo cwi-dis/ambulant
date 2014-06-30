@@ -26,7 +26,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_FILL_H
 #define AMBULANT_GUI_SDL_SDL_FILL_H
 
-//#ifdef  WITH_SDL2
+#ifdef  WITH_SDL_IMAGE
 
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
@@ -91,6 +91,6 @@ class sdl_background_renderer : public common::background_renderer {
 
 } // namespace ambulant
 
-//#endif // WITH_SDL2
+#endif // WITH_SDL_IMAGE
 
 #endif  /*AMBULANT_GUI_SDL_SDL_FILL_H*/

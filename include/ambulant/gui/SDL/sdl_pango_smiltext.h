@@ -22,7 +22,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 #define AMBULANT_GUI_SDL_SDL_SMILTEXT_H
 
-#if defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
+#if defined(WITH_SDL_IMAGE) && defined(WITH_SDL_PANGO)
 //TBD: offscreen rendering
 
 #include "ambulant/gui/SDL/sdl_renderer.h"
@@ -119,6 +119,6 @@ class sdl_smiltext_renderer :
 
 } // namespace ambulant
 
-#endif // defined(WITH_SDL2) && defined(WITH_SDL_PANGO)
+#endif // defined(WITH_SDL_IMAGE) && defined(WITH_SDL_PANGO)
 
 #endif // AMBULANT_GUI_SDL_SDL_SMILTEXT_H

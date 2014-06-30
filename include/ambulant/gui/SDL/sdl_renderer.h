@@ -26,7 +26,7 @@
 #ifndef AMBULANT_GUI_SDL_SDL_RENDERER_H
 #define AMBULANT_GUI_SDL_SDL_RENDERER_H
 
-#ifdef  WITH_SDL2
+#ifdef  WITH_SDL_IMAGE
 
 #include "ambulant/common/factory.h"
 #include "ambulant/common/renderer_impl.h"
@@ -176,6 +176,6 @@ class sdl_renderer : public RP_Base {
 
 } // namespace ambulant
 
-#endif // WITH_SDL2
+#endif // WITH_SDL_IMAGE
 
 #endif  /*AMBULANT_GUI_SDL_SDL_RENDERER_H*/

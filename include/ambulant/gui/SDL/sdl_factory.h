@@ -56,14 +56,14 @@ AMBULANTAPI common::playable_factory *create_sdl_playable_factory(common::factor
 // Create sdl_ambulant_window inside sdl_parent_window, call create_sdl_window_factory.
 AMBULANTAPI common::window_factory *create_sdl_window_factory(void* sdl_parent_window, common::gui_player* gpl);
 //X AMBULANTAPI common::window_factory *create_sdl_window_factory(sdl_ambulant_window* sdl_window, common::gui_player* gpl);
-#ifdef WITH_SDL2
+#ifdef WITH_SDL_IMAGE
 // Playable factories
 AMBULANTAPI common::playable_factory *create_sdl_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_sdl_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_sdl_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_sdl_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 AMBULANTAPI common::playable_factory *create_sdl_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-#endif//WITH_SDL2
+#endif//WITH_SDL_IMAGE
 
 } // end namespace sdl
 } // end namespace gui
