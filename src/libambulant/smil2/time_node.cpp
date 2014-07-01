@@ -690,7 +690,7 @@ void time_node::activate(qtime_type timestamp) {
 
 	}
 
-	AM_DBG m_logger->debug("%s.start(%ld) ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(),  sd_offset(), sd_offset(),
+	/*AM_DBG*/ if(has_debug()) m_logger->debug("%s.start(%ld) ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 
@@ -948,13 +948,13 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			// If we are not active we schedule our own begin
 			qtime_type timestamp(sync_node(), m_interval.begin);
 			time_type doctime = timestamp.to_doc();
-			AM_DBG m_logger->debug("get_pending_events(0x%x %s): schedule begin for %d", this, get_sig().c_str(), doctime());
+			/*AM_DBG*/ if(has_debug()) m_logger->debug("get_pending_events(0x%x %s): schedule begin for %d", this, get_sig().c_str(), doctime());
 			events[doctime].push_back(this);
 		} else if(m_interval.end.is_definite()) {
 			// If we are active and our end is known we schedule our own end
 			qtime_type timestamp(sync_node(), get_interval_end());
 			time_type doctime = timestamp.to_doc();
-			AM_DBG m_logger->debug("get_pending_events(0x%x %s): schedule end for %d", this, get_sig().c_str(), doctime());
+			/*AM_DBG*/ if(has_debug()) m_logger->debug("get_pending_events(0x%x %s): schedule end for %d", this, get_sig().c_str(), doctime());
 			events[doctime].push_back(this);
 
 			bool repeats = m_attrs.specified_rdur() || m_attrs.specified_rcount();
@@ -974,7 +974,7 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 		// begin/end times.
 		qtime_type timestamp = m_update_event.second;
 		time_type doctime = timestamp.to_doc();
-		AM_DBG m_logger->debug("get_pending_events(0x%x %s): schedule update_event for %d", this, get_sig().c_str(), doctime());
+		/*AM_DBG*/ if(has_debug()) m_logger->debug("get_pending_events(0x%x %s): schedule update_event for %d", this, get_sig().c_str(), doctime());
 		events[doctime].push_back(this);
 	}
 
@@ -1000,7 +1000,7 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 }
 
 void time_node::exec(qtime_type timestamp) {
-	AM_DBG m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
+	/*AM_DBG*/ if (has_debug("2")) m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
 	if(!is_alive()) {
 		// check for transOut
 		return;
@@ -1047,6 +1047,8 @@ void time_node::exec(qtime_type timestamp) {
 
 	// Check for the EOI event
 	if(end_cond(timestamp)) {
+        /*AM_DBG*/ if (has_debug("2"))
+            m_logger->debug("%s: end_cond() is true", get_sig().c_str());
 		// This node should go postactive
 		time_type reftime;
 		if(m_interval.end.is_definite()) reftime = m_interval.end;
@@ -1477,7 +1479,7 @@ void time_node::fill(qtime_type timestamp) {
 // or when the next is activated.
 void time_node::remove(qtime_type timestamp) {
 	if(!m_needs_remove) return;
-	AM_DBG m_logger->debug("%s.stop() ST:%ld, PT:%ld, DT:%ld",
+	/*AM_DBG*/ if(has_debug()) m_logger->debug("%s.stop() ST:%ld, PT:%ld, DT:%ld",
         get_sig().c_str(),
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(),
@@ -1854,7 +1856,7 @@ void time_node::raise_state_change(std::pair<qtime_type, std::string> statearg) 
 	std::string statevar = statearg.second;
 	timestamp.to_ancestor(sync_node());
 	// ??timestamp.to_node
-	AM_DBG m_logger->debug("%s.raise_state_change_event(%s) ST:%ld, PT:%ld, DT:%ld",
+	/*AM_DBG*/ m_logger->debug("%s.raise_state_change_event(%s) ST:%ld, PT:%ld, DT:%ld",
         get_sig().c_str(),
 		statevar.c_str(),
 		timestamp.as_time_value_down_to(this),
@@ -1964,6 +1966,7 @@ void time_node::kill_blockers(qtime_type timestamp, time_node *oproot) {
 // The function resets all the state variables of this class
 // To simplify verfication all variables defined by the class def are copied here.
 void time_node::reset() {
+    /*AM_DBG*/ if (has_debug()) m_logger->debug("time_node::reset(%s)", get_sig().c_str());
 	///////////////////////////
 	// 1. Reset visuals
 
