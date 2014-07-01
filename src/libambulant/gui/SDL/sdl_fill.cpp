@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // TBD
+#ifdef  WITH_SDL_IMAGE
 
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"
@@ -227,4 +227,4 @@ sdl_background_renderer::keep_as_background()
 TBD*/
 }
 
-#endif//WITH_SDL2
+#endif//WITH_SDL_IMAGE

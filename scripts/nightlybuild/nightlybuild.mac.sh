@@ -45,9 +45,7 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=macosx$MACOSX_DEPLOYMENT_TARGET
-#### Temporary workaround
-####CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin --with-included-ltdl --with-sdl2"
-CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin --with-included-ltdl --with-sdl2 --without-sdl-video"
+CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python=/usr/bin/python --with-python-plugin --with-included-ltdl --with-sdl2"
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINNAME=npambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=$PLUGINNAME.dmg

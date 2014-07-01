@@ -51,13 +51,6 @@ gui::gtk::create_gtk_fill_playable_factory(common::factories *factory, common::p
 		gtk_fill_playable_renderer_uri2>(factory, mdp);
 }
 
-gtk_fill_renderer::~gtk_fill_renderer()
-{
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("~gtk_fill_renderer(0x%x)", (void *)this);
-	m_lock.leave();
-}
-
 void
 gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
 

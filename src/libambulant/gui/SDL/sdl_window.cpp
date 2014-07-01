@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef  WITH_SDL2 // work in progress
+#ifdef  WITH_SDL_IMAGE// work in progress
 // TBD: fullscreen transitions, screenshots
 
 //#define AM_DBG if(1)

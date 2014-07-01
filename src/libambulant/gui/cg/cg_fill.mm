@@ -59,28 +59,7 @@ cg_fill_renderer::~cg_fill_renderer()
 	AM_DBG lib::logger::get_logger()->debug("~cg_fill_renderer(0x%x)", (void *)this);
 	m_lock.leave();
 }
-
-void
-cg_fill_renderer::start(double where)
-{
-	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("cg_fill_renderer.start(0x%x)", (void *)this);
-	if (m_activated) {
-		logger::get_logger()->trace("cg_fill_renderer.start(0x%x): already started", (void*)this);
-		m_lock.leave();
-		return;
-	}
-	m_activated = true;
-	if (!m_dest) {
-		logger::get_logger()->trace("cg_fill_renderer.start(0x%x): no surface", (void *)this);
-		return;
-	}
-	m_dest->show(this);
-	m_context->started(m_cookie);
-	m_context->stopped(m_cookie);
-	m_lock.leave();
-}
-
+   
 void
 cg_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 {

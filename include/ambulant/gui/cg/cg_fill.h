@@ -47,8 +47,6 @@ class cg_fill_renderer : public cg_renderer<renderer_playable> {
 	:	cg_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp) {};
 	~cg_fill_renderer();
 
-//	void freeze() {}
-	void start(double where);
 	void seek(double t) {}
 
 	void redraw_body(const rect &dirty, gui_window *window);
