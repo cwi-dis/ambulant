@@ -285,13 +285,14 @@ void active_state::enter(qtime_type timestamp) {
 
 void active_state::sync_update(qtime_type timestamp) {
 	// Update end, consider restart semantics
-	AM_DBG logger::get_logger()->debug("%s.active_state::sync_update() at ST:%ld PT:%ld, DT:%ld",
+	/*AM_DBG*/ if (m_self->has_debug()) logger::get_logger()->debug("%s.active_state::sync_update() at ST:%ld PT:%ld, DT:%ld",
 		m_self->get_sig().c_str(),
 		timestamp.as_time_value_down_to(m_self),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 
-
+	/*AM_DBG*/ if (m_self->has_debug("2"))
+		logger::get_logger()->debug("active_state::sync update: this is the one!");
 	time_type end = m_self->calc_current_interval_end();
 	if(end != m_interval.end) {
 		m_self->update_interval_end(timestamp, end);
@@ -319,6 +320,19 @@ void active_state::sync_update(qtime_type timestamp) {
 			//m_self->sync_update(timestamp);
 #endif
 		}
+#if 1
+		else {
+			// Code added by Jack on 20140701, because it is probably involved with
+			// the bug that vconect layout changes can happen only once. This
+			// is because the second time an event-based begin condition is raised
+			// m_rad isn't cleared.
+			/*AM_DBG*/ logger::get_logger()->debug("%s.active_state::sync_update() no valid interval, should we reset? at ST:%ld PT:%ld, DT:%ld",
+				m_self->get_sig().c_str(),
+				timestamp.as_time_value_down_to(m_self),
+				timestamp.second(),
+				timestamp.as_doc_time_value());
+		}
+#endif
 	}
 }
 

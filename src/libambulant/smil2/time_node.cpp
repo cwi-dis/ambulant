@@ -427,7 +427,7 @@ void time_node::set_state(time_state_type state, qtime_type timestamp, time_node
 	// reset in between. It may still be in fill mode, though, so we should do
 	// part of the reset work.
 	if (m_state->ident() == ts_postactive && state == ts_active) {
-		AM_DBG m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active",
+		AM_DBG m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active, inserting reset",
 			m_node->get_sig().c_str());
 		remove(timestamp);
 	}
@@ -693,7 +693,8 @@ void time_node::activate(qtime_type timestamp) {
 	/*AM_DBG*/ if(has_debug()) m_logger->debug("%s.start(%ld) ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
-
+	/*AM_DBG*/ if(has_debug("2"))
+		m_logger->debug("activate: this is the one!");
 	// Adjust timer
 	if(m_timer) {
 		m_timer->set_time(ad_offset());
@@ -946,9 +947,12 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 	if(m_interval.is_valid()) {
 		if(!is_active()) {
 			// If we are not active we schedule our own begin
+			/*AM_DBG*/ if(has_debug("3"))
+				m_logger->debug("get_pending_events: this is the one we want");
 			qtime_type timestamp(sync_node(), m_interval.begin);
 			time_type doctime = timestamp.to_doc();
 			/*AM_DBG*/ if(has_debug()) m_logger->debug("get_pending_events(0x%x %s): schedule begin for %d", this, get_sig().c_str(), doctime());
+
 			events[doctime].push_back(this);
 		} else if(m_interval.end.is_definite()) {
 			// If we are active and our end is known we schedule our own end
