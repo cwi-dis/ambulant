@@ -35,7 +35,8 @@ debian and linux:
 	- build-third-party-packages debian
 	- test a normal ambulant build
 	- Test nightly build (both linux and debian)
-	- Get mail to work (XXX how?)
+	- Get mail to work. You have to edit /etc/postfix/main.cf and possibly
+	  /etc/mailname. Compare with an ubuntu that is known to work.
 	- Create correct crontab
 
 mac and iphone:
