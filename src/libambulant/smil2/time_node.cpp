@@ -28,7 +28,12 @@
 
 #include "ambulant/lib/logger.h"
 
+// Use this to enable debug prints for everything:
 //#define AM_DBG if(1)
+
+// Use this to enable debug prints for all SMIL elements that have a _debug="..." attribute:
+//#define if (has_debug())
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -419,7 +424,7 @@ time_node::calc_next_interval(interval_type prev) {
 // timestamp: "scheduled now" in parent simple time
 // This is the state change hook for this node.
 void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
-	AM_DBG if (has_debug()) m_logger->debug("set_state(%s) %s -> %s", get_sig().c_str(), time_state_str(m_state->ident()), time_state_str(state));
+	AM_DBG m_logger->debug("set_state(%s) %s -> %s", get_sig().c_str(), time_state_str(m_state->ident()), time_state_str(state));
 	if(m_state->ident() == state) return;
 
 	// Stopgap bug fix by Jack: while seeking to a destination node,
@@ -427,7 +432,7 @@ void time_node::set_state(time_state_type state, qtime_type timestamp, time_node
 	// reset in between. It may still be in fill mode, though, so we should do
 	// part of the reset work.
 	if (m_state->ident() == ts_postactive && state == ts_active) {
-		AM_DBG m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active",
+		AM_DBG m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active, inserting reset",
 			m_node->get_sig().c_str());
 		remove(timestamp);
 	}
@@ -528,11 +533,22 @@ void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
 // param timestamp: "now" in parent simple time
 void time_node::set_interval(qtime_type timestamp, const interval_type& i) {
 	AM_DBG m_logger->debug("%s.set_current_interval(): %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
-
 	// verify the assumptions made in the following code
 	assert(timestamp.first == sync_node());
 	assert(m_state->ident() == ts_proactive || m_state->ident() == ts_postactive);
 	assert(is_root() || up()->m_state->ident() == ts_active);
+#if 1
+    // This code added by Jack, 03-Jun-2014, who is - as usual - unsure about scheduler mods.
+    // The proplem to be solved is that a second run of an element with event-based
+    if (m_rad() || m_pad()) {
+        // This node has repeat-timing left over from a previous interval.
+        // Clear it.
+        m_logger->debug("%s.set_interval(%s): clearing old repeat-duration (m_rad=%ld, m_pad=%ld)", get_sig().c_str(), ::repr(i).c_str(), m_rad(), m_pad());
+        m_rad = 0;
+        m_pad = 0;
+        m_precounter = 0;
+    }
+#endif
 	if(!can_set_interval(timestamp, i)) {
 		raise_update_event(timestamp);
 		return;
@@ -586,7 +602,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 		time_node *prev = previous();
 		if(prev && prev->is_active()) {
 			// wait
-			AM_DBG m_logger->debug("%s attempt to set_current_interval() but prev active: %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
+			AM_DBG m_logger->debug("time_node: %s attempt to set_current_interval() but prev active: %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 			return false;
 		}
 	}
@@ -602,7 +618,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 				std::string astate;
 				if(atn->paused()) astate = "paused";
 				else if(atn->deferred()) astate = "deferred";
-				m_logger->debug("%s attempt to set_current_interval() but an ancestor is %s: %s (DT=%ld)",
+				m_logger->debug("time_node: %s attempt to set_current_interval() but an ancestor is %s: %s (DT=%ld)",
 					get_sig().c_str(), astate.c_str(),
 					::repr(i).c_str(), timestamp.as_doc_time_value());
 			}
@@ -693,7 +709,6 @@ void time_node::activate(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s.start(%ld) ST:%ld, PT:%ld, DT:%ld", get_sig().c_str(),  sd_offset(), sd_offset(),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
-
 	// Adjust timer
 	if(m_timer) {
 		m_timer->set_time(ad_offset());
@@ -948,7 +963,8 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 			// If we are not active we schedule our own begin
 			qtime_type timestamp(sync_node(), m_interval.begin);
 			time_type doctime = timestamp.to_doc();
-			AM_DBG m_logger->debug("get_pending_events(0x%x %s): schedule begin for %d", this, get_sig().c_str(), doctime());
+			AM_DBG m_logger->debug("get_pending_events(0x%x %s): schedule begin for %d (selftime %d)", this, get_sig().c_str(), doctime(), m_interval.begin());
+
 			events[doctime].push_back(this);
 		} else if(m_interval.end.is_definite()) {
 			// If we are active and our end is known we schedule our own end
@@ -1076,7 +1092,7 @@ void time_node::exec(qtime_type timestamp) {
 #endif
 
 	// Check for the EOSD event
-	AM_DBG if (has_debug()) m_logger->debug("%s checking for end-of-sd (cdur=%ld)", get_sig().c_str(), m_last_cdur());
+	AM_DBG m_logger->debug("%s checking for end-of-sd (cdur=%ld)", get_sig().c_str(), m_last_cdur());
 	if(m_last_cdur.is_definite() && m_last_cdur() != 0 && timestamp.as_time_value_down_to(this) >= m_last_cdur())
 		on_eosd(timestamp);
 }
@@ -1964,6 +1980,7 @@ void time_node::kill_blockers(qtime_type timestamp, time_node *oproot) {
 // The function resets all the state variables of this class
 // To simplify verfication all variables defined by the class def are copied here.
 void time_node::reset() {
+    AM_DBG m_logger->debug("time_node::reset(%s)", get_sig().c_str());
 	///////////////////////////
 	// 1. Reset visuals
 

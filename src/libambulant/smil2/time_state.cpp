@@ -260,6 +260,7 @@ void active_state::enter(qtime_type timestamp) {
 
 	// The timestamp in parent simple time
 	// Children should convert it to their parent
+    AM_DBG lib::logger::get_logger()->debug("%s::active_state::enter: resetting children", m_self->get_sig().c_str());
 	m_self->reset_children(timestamp, m_self);
 
 	// Prepare children playables without recursion
@@ -291,7 +292,6 @@ void active_state::sync_update(qtime_type timestamp) {
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 
-
 	time_type end = m_self->calc_current_interval_end();
 	if(end != m_interval.end) {
 		m_self->update_interval_end(timestamp, end);
@@ -312,6 +312,8 @@ void active_state::sync_update(qtime_type timestamp) {
 			// The original code here is completely different from what happens in
 			// postactive/preactive. Try to run the original code by getting our
 			// time_node to do sync_update recursively.
+            // Note by Jack (5-Jul-2014): the fix to clear m_rad and such
+            // in set_interval may obviate the needfor this hack. Unsure...h
 			m_self->sync_update(timestamp);
 #else
 			m_self->set_begin_event_inst(timestamp.second);
