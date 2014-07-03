@@ -260,6 +260,7 @@ void active_state::enter(qtime_type timestamp) {
 
 	// The timestamp in parent simple time
 	// Children should convert it to their parent
+    AM_DBG lib::logger::get_logger()->debug("%s::active_state::enter: resetting children", m_self->get_sig().c_str());
 	m_self->reset_children(timestamp, m_self);
 
 	// Prepare children playables without recursion
@@ -285,14 +286,12 @@ void active_state::enter(qtime_type timestamp) {
 
 void active_state::sync_update(qtime_type timestamp) {
 	// Update end, consider restart semantics
-	/*AM_DBG*/ if (m_self->has_debug()) logger::get_logger()->debug("%s.active_state::sync_update() at ST:%ld PT:%ld, DT:%ld",
+	AM_DBG logger::get_logger()->debug("%s.active_state::sync_update() at ST:%ld PT:%ld, DT:%ld",
 		m_self->get_sig().c_str(),
 		timestamp.as_time_value_down_to(m_self),
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 
-	/*AM_DBG*/ if (m_self->has_debug("2"))
-		logger::get_logger()->debug("active_state::sync update: this is the one!");
 	time_type end = m_self->calc_current_interval_end();
 	if(end != m_interval.end) {
 		m_self->update_interval_end(timestamp, end);
@@ -313,6 +312,8 @@ void active_state::sync_update(qtime_type timestamp) {
 			// The original code here is completely different from what happens in
 			// postactive/preactive. Try to run the original code by getting our
 			// time_node to do sync_update recursively.
+            // Note by Jack (5-Jul-2014): the fix to clear m_rad and such
+            // in set_interval may obviate the needfor this hack. Unsure...h
 			m_self->sync_update(timestamp);
 #else
 			m_self->set_begin_event_inst(timestamp.second);
@@ -320,19 +321,6 @@ void active_state::sync_update(qtime_type timestamp) {
 			//m_self->sync_update(timestamp);
 #endif
 		}
-#if 1
-		else {
-			// Code added by Jack on 20140701, because it is probably involved with
-			// the bug that vconect layout changes can happen only once. This
-			// is because the second time an event-based begin condition is raised
-			// m_rad isn't cleared.
-			/*AM_DBG*/ logger::get_logger()->debug("%s.active_state::sync_update() no valid interval, should we reset? at ST:%ld PT:%ld, DT:%ld",
-				m_self->get_sig().c_str(),
-				timestamp.as_time_value_down_to(m_self),
-				timestamp.second(),
-				timestamp.as_doc_time_value());
-		}
-#endif
 	}
 }
 
