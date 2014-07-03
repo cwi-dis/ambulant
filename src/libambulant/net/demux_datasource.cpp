@@ -220,7 +220,7 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
     if (1 /*m_is_live*/ && flag == datasource_packet_flag_avpacket) {
         if (m_saved_packet && pkt->pts == m_saved_packet->pts && pkt->dts == m_saved_packet->dts) {
             // combine
-            /*AM_DBG*/ lib::logger::get_logger()->debug("demux_datasource::push_data: %p: combine(pts=%lld, oldsize=%d, addedsize=%d)", (void*)this, pkt->pts, m_saved_packet->size, pkt->size);
+            AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data: %p: combine(pts=%lld, oldsize=%d, addedsize=%d)", (void*)this, pkt->pts, m_saved_packet->size, pkt->size);
             int prev_size = m_saved_packet->size;
             av_grow_packet(m_saved_packet, pkt->size);
             memcpy(m_saved_packet->data + prev_size, pkt->data, pkt->size);
@@ -231,7 +231,7 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
             // forward old packet, keep new packet
             AVPacket *tmp = m_saved_packet;
             m_saved_packet = pkt;
-            /*AM_DBG*/ lib::logger::get_logger()->debug("demux_datasource::push_data: %p: save(pts=%lld, size=%d)", (void*)this, pkt->pts, pkt->size);
+            AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data: %p: save(pts=%lld, size=%d)", (void*)this, pkt->pts, pkt->size);
             int ok = av_dup_packet(m_saved_packet);
             if (tmp == NULL || ok < 0) {
                 m_lock.leave();
@@ -239,7 +239,7 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
             }
             pkt = tmp;
             pts = pkt->pts;
-            /*AM_DBG*/ lib::logger::get_logger()->debug("demux_datasource::push_data: %p: forward(pts=%lld, size=%d)", (void*)this, pkt->pts, pkt->size);
+            AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data: %p: forward(pts=%lld, size=%d)", (void*)this, pkt->pts, pkt->size);
         }
     }
 #endif

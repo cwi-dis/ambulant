@@ -602,7 +602,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 		time_node *prev = previous();
 		if(prev && prev->is_active()) {
 			// wait
-			/*AM_DBG*/ m_logger->debug("time_node: %s attempt to set_current_interval() but prev active: %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
+			AM_DBG m_logger->debug("time_node: %s attempt to set_current_interval() but prev active: %s (DT=%ld)", get_sig().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 			return false;
 		}
 	}
@@ -614,7 +614,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 	for(;it!=path.rend();it++) {
 		const time_node *atn = (*it);
 		if(atn->paused() || atn->deferred()) {
-			/*AM_DBG*/ {
+			AM_DBG {
 				std::string astate;
 				if(atn->paused()) astate = "paused";
 				else if(atn->deferred()) astate = "deferred";
