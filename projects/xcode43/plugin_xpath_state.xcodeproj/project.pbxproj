@@ -45,8 +45,6 @@
 
 /* Begin PBXFileReference section */
 		041E96B812BA4DF100399893 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
-		041E96B912BA4DF100399893 /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
-		041E96BA12BA4DF100399893 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		042AD92C1152C916009CA791 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
 		042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xpath_stateplugin.cpp; path = ../../src/plugins/xpath_stateplugin.cpp; sourceTree = SOURCE_ROOT; };
 		0441E7C51343132C0025FCF9 /* libamplugin_xpath_state(CG).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_xpath_state(CG).so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,8 +130,6 @@
 				0441E7CC1343139B0025FCF9 /* ambulant-mac.xcconfig */,
 				0441E7CD1343139B0025FCF9 /* ambulant-release-cg.xcconfig */,
 				041E96B812BA4DF100399893 /* ambulant-common.xcconfig */,
-				041E96B912BA4DF100399893 /* ambulant-debug.xcconfig */,
-				041E96BA12BA4DF100399893 /* ambulant-release.xcconfig */,
 			);
 			name = "Configuration Files";
 			sourceTree = "<group>";
