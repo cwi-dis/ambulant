@@ -200,7 +200,7 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
         CGContextConcatCTM(myContext, matrix);
 		matrix = CGContextGetCTM(myContext);
         CGContextSetAlpha(myContext, (CGFloat)alfa);
-		CGContextDrawImage (myContext, cg_dstrect, cropped_image); // ignoring alfa, for now
+		CGContextDrawImage (myContext, cg_dstrect, cropped_image);
 		CGContextRestoreGState(myContext);
 		// XXX	release cropped_image
 #ifdef LOGGER_VIDEOLATENCY

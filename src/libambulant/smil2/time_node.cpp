@@ -32,7 +32,7 @@
 //#define AM_DBG if(1)
 
 // Use this to enable debug prints for all SMIL elements that have a _debug="..." attribute:
-//#define if (has_debug())
+//#define AM_DBG if (has_debug())
 
 #ifndef AM_DBG
 #define AM_DBG if(0)

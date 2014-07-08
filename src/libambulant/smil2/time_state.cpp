@@ -23,6 +23,7 @@
 #include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG if(1)
+//#define AM_DBG if(m_self->has_debug())
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -246,7 +247,9 @@ void active_state::enter(qtime_type timestamp) {
 	if (expr) {
 		common::state_component *sc = n->get_context()->get_state();
 		if (sc) {
-			if (!sc->bool_expression(expr)) {
+            bool shouldplay = sc->bool_expression(expr);
+            AM_DBG lib::logger::get_logger()->debug("%s::active_state::enter: expr=%d", m_self->get_sig().c_str(), (int)shouldplay);
+			if (!shouldplay) {
 				/* expr is false: skip the node */
 				m_self->set_state(ts_postactive, timestamp, m_self);
 				return;

@@ -231,14 +231,11 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Setup drawing parameters and draw
 	//
     CGContextSaveGState(myContext);
-	if (alfa != 1.0) {
-		CGContextSetAlpha(myContext, alfa);
-	}
 	
 	if (m_cglayer) {
 		// Draw the pre-rendered image in cglayer. First setup the destination parameters.
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
-		AM_DBG logger::get_logger()->debug("cg_image::redraw(0x%x), clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+		AM_DBG logger::get_logger()->debug("cg_image::redraw(0x%x) via cglayer, clip 0x%x (%d %d) -> (%d, %d, %d, %d) alpha %f", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h, alfa);
 		
 		dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
@@ -260,22 +257,29 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
 		fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
 		CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw(0x%x): draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
-			this, CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
+		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw(0x%x, %s): draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f) alpha %f",
+			this, m_node->get_sig().c_str(), CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
 			CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
-			x_scale, y_scale);
+			x_scale, y_scale, alfa);
 
+        if (alfa != 1.0) {
+            CGContextSetAlpha(myContext, alfa);
+        }
 		CGContextDrawLayerInRect(myContext, cg_fullsrcrect, m_cglayer);
 	} else {
 		// No prerendering done so we render direct. This should only
 		// happen if the pixels can be deposited as-is.
-        CGImage *imageToDraw = m_image;
+ 		AM_DBG logger::get_logger()->debug("cg_image::redraw(0x%x) direct, alpha %f", this, m_dest, alfa);
+       CGImage *imageToDraw = m_image;
 		assert(dstrect.size() == srcrect.size());
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG
         // We need to mirror the image, because CGImage uses bottom-left coordinates.
 		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
         CGContextConcatCTM(myContext, matrix);
 		matrix = CGContextGetCTM(myContext);
+        if (alfa != 1.0) {
+            CGContextSetAlpha(myContext, alfa);
+        }
 		CGContextDrawImage(myContext, cg_dstrect, imageToDraw);
 	}
 
