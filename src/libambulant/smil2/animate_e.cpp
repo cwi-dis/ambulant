@@ -28,6 +28,7 @@
 
 #include "ambulant/lib/logger.h"
 
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -102,7 +103,12 @@ void animation_engine::_stopped(animate_node *animator) {
 	AM_DBG lib::logger::get_logger()->debug("animation_engine: %s stopped targeting %s attr=%s", animator->dom_node()->get_sig().c_str(), target->get_sig().c_str(), aattr.c_str());
 	node_animators_t& na = m_animators[target];
 	attribute_animators_t& aa = na[aattr];
+    int old_size = aa.size();
 	aa.remove(animator);
+    if (aa.size() == old_size) {
+        /*AM_DBG*/ lib::logger::get_logger()->debug("animation_engine::stopped(%s): not in animations for %s attr=%s",animator->dom_node()->get_sig().c_str(), target->get_sig().c_str(), aattr.c_str());
+        return;
+    }
 	m_counter--;
 	AM_DBG lib::logger::get_logger()->debug("animation_engine: %d active animations left", m_counter);
 	if(aa.empty()) {
