@@ -595,7 +595,7 @@ if test "x$test_sdl2" = "xtrue"; then
 		SDL_LIBS=`sdl2-config --libs`
 	else
 		test_sdl1=true
-		test_sdl2 = false
+		test_sdl2=false
 	fi   	
 fi
 if test "x$test_sdl1" = "xtrue"; then
@@ -615,9 +615,9 @@ fi
 if test $on_linux; then # found through 'AC_CANONICAL_HOST'
 	if test "x$test_sdl2"  = "xtrue"; then
 	   	# want these as well
-	   	test_sdl_image=true;
-	   	test_sdl_video=true;
-	   	test_sdl_pango=true;
+	   	test_sdl_image=true
+	   	test_sdl_video=true
+	   	test_sdl_pango=true
 		with_frontend=true    # have AmbulantPlayer_sdl too
 	fi
 fi
@@ -628,6 +628,9 @@ fi
 if test "x$test_sdl_image" = "xtrue"; then
 	SDL_CFLAGS="$SDL_CFLAGS  -DWITH_SDL_IMAGE `pkg-config --cflags SDL2_image`  `pkg-config --cflags libpng`"
 	SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL2_image`"
+else
+	# If we don't have image support we can't do video either
+	test_sdl_video=false
 fi
 if test "x$test_sdl_pango" = "xtrue"; then
 	# need SDL_Pango for smiltext layout
@@ -652,7 +655,7 @@ AM_CONDITIONAL(WITH_SDL, test x$test_sdl_audio = xtrue)
 AM_CONDITIONAL(WITH_SDL1, test x$test_sdl1 = xtrue)
 AM_CONDITIONAL(WITH_SDL2, test x$test_sdl2 = xtrue)
 AM_CONDITIONAL(WITH_SDL_AUDIO, test x$test_sdl_audio = xtrue)
-AM_CONDITIONAL(WITH_SDL_VIDEO, test x$test_sdl_image = xtrue)
+AM_CONDITIONAL(WITH_SDL_VIDEO, test x$test_sdl_video = xtrue)
 AM_CONDITIONAL(WITH_SDL_IMAGE, test x$test_sdl_image = xtrue)
 AM_CONDITIONAL(WITH_SDL_PANGO, test x$test_sdl_pango = xtrue)
 AM_CONDITIONAL(WITH_SDL_TTF, test x$test_sdl_ttf = xtrue)
