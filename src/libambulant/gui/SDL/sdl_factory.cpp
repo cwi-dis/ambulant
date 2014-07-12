@@ -147,8 +147,11 @@ common::bgrenderer *
 sdl_window_factory::new_background_renderer(const common::region_info *src)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_window_factory::new_background_renderer(0x%x): src=0x%x", (void*) this, src);
+#ifdef WITH_SDL_IMAGE
 	return new ambulant::gui::sdl::sdl_background_renderer(src);
-//X	return NULL;
+#else
+	return NULL;
+#endif // WITH_SDL_IMAGE
 }
 
 #ifdef JNK
