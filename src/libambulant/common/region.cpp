@@ -179,13 +179,7 @@ surface_impl::renderer_done(gui_events *cur)
 		m_parent->del_subregion(z, this);
 	}
 
-	//xxxbo 2012-01-24
-	// comment out the following line will remmove the flash between two video clips for MyVideos.
-	// However, the disadvantage is the last frame of the whole playlist will freeze in stead of 
-	// redraw to the background. 
-#if 0
 	need_redraw(m_inner_bounds);
-#endif //xxxbo end
 	if (m_renderers.size() == 0) background_render_changed();
 }
 
