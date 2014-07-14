@@ -837,7 +837,7 @@ third_party_packages={
                 "unset PKG_CONFIG_LIBDIR &&"
                 "cd SDL_Pango-0.1.2 && "
                 "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-API-Changes.patch && " 
-                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && echo 'AC_DEFUN([AM_PATH_SDL])' > acinclude.m4 && autoreconf && libtoolize && " 
+                "patch -p1 < %s/third_party_packages/SDL_Pango-0.1.2-SDL2-Changes.patch && echo 'AC_DEFUN([AM_PATH_SDL])' > acinclude.m4 && autoreconf -i && libtoolize && " 
                 "which sdl2-config >/dev/null && %s --with-sdl2 && "
                 "make ${MAKEFLAGS} && "
                 "make install &&"
