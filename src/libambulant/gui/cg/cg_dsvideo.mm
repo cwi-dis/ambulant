@@ -186,15 +186,20 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 		CGRect cg_dstrect = CGRectFromAmbulantRect(dstrect);
 		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
-		// XXX Crop the image, if needed.
-		CGImageRef cropped_image = m_image;
+
+		CGImageRef cropped_image = m_image; // No need to crop: the clipping does the trick.
 		CGContextRef myContext = [view getCGContext];
 		double alfa = 1.0;
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
 		AM_DBG lib::logger::get_logger()->debug("0x%x: drawImage(0x%x, %f)", this, cropped_image, alfa);
 		CGContextSaveGState(myContext);
-		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG
+
+		// We need to clip, also taking parent region clipping into account:
+		rect clipRect = m_dest->get_clipped_screen_rect();
+		CGRect cgClipRect = CGRectFromAmbulantRect(clipRect);
+		CGContextClipToRect(myContext, cgClipRect);
+
         // We need to mirror the image, because CGImage uses bottom-left coordinates.
 		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
         CGContextConcatCTM(myContext, matrix);
