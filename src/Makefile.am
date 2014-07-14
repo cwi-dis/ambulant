@@ -6,7 +6,7 @@ build_player_gtk=player_gtk
 else
 build_player_gtk=
 endif
-if WITH_SDL2
+if WITH_SDL_FRONTEND
 build_player_sdl=player_sdl
 else
 build_player_sdl=

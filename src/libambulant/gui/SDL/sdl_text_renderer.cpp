@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#if defined(WITH_SDL2)
+#if defined(WITH_SDL_IMAGE)
 
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_renderer.h"
@@ -227,4 +227,4 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 	saw->copy_to_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 }
 
-#endif//defined(WITH_SDL2)
+#endif//defined(WITH_SDL_IMAGE)

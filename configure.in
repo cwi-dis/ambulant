@@ -18,22 +18,22 @@ AMBULANT_VERSION=2.5
 AC_CANONICAL_HOST
 # Check for which host we are on and setup a few things
 # specifically based on the host
-on_bsd=false;
-on_linux=false;
-on_macos=false;
+on_bsd=false
+on_linux=false
+on_macos=false
 
 case $host_os in
   darwin* )
         # Do something specific for mac
-	on_macos=true;
+		on_macos=true
         ;;
   linux*)
-	on_linux=true;
+		on_linux=true
         # Do something specific for linux
         ;;
    *BSD*)
         # Do something specific for BSD
-	on_bsd=true;
+		on_bsd=true
         ;;
     *)
         #Default Case
@@ -569,6 +569,7 @@ test_sdl_video=false
 test_sdl_image=false
 test_sdl_pango=false
 test_sdl_ttf=false
+with_sdl_frontend=false
 SDL_CFLAGS=
 SDL_LIBS=
 
@@ -612,12 +613,13 @@ if test "x$test_sdl2" = "xtrue" -o  "x$test_sdl1" = "xtrue"; then
    	test_sdl_audio=true
 fi
 
-if test $on_linux; then # found through 'AC_CANONICAL_HOST'
+if test "x$on_linux" = "xtrue"; then # found through 'AC_CANONICAL_HOST'
 	if test "x$test_sdl2"  = "xtrue"; then
 	   	# want these as well
 	   	test_sdl_image=true
 	   	test_sdl_video=true
 	   	test_sdl_pango=true
+	   	with_sdl_frontend=true
 		with_frontend=true    # have AmbulantPlayer_sdl too
 	fi
 fi
@@ -659,6 +661,7 @@ AM_CONDITIONAL(WITH_SDL_VIDEO, test x$test_sdl_video = xtrue)
 AM_CONDITIONAL(WITH_SDL_IMAGE, test x$test_sdl_image = xtrue)
 AM_CONDITIONAL(WITH_SDL_PANGO, test x$test_sdl_pango = xtrue)
 AM_CONDITIONAL(WITH_SDL_TTF, test x$test_sdl_ttf = xtrue)
+AM_CONDITIONAL(WITH_SDL_FRONTEND, test x$with_sdl_frontend = xtrue)
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 
@@ -1227,7 +1230,8 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with SDL2_ttf:	    ${test_sdl_ttf}
+    Build with SDL2_ttf:    	${test_sdl_ttf}
+    Build SDL frontend:		${with_sdl_frontend}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}
