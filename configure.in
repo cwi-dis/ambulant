@@ -750,6 +750,7 @@ if $test_ffmpeg; then
 	PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 49.7.0], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
+	PKG_CHECK_MODULES(LIBSWRESAMPLE, [libswresample >= 0.18.100], , test_ffmpeg=false)
 	PKG_CHECK_EXISTS([libswscale >= 0.7.1], test_ffmpeg_swscale=true ,test_ffmpeg_swscale=false)
 	if $test_ffmpeg_swscale; then
 		PKG_CHECK_MODULES(LIBSWSCALE, [libswscale >= 0.7.1], test_ffmpeg_swscale=true, test_ffmpeg_swscale=false)
@@ -760,8 +761,8 @@ if $test_ffmpeg; then
 		LIBSWSCALE_CFLAGS=""
 		LIBSWSCALE_LIBS=""
 	fi
-	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS} ${LIBSWSCALE_CFLAGS}"
-	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS} ${LIBSWSCALE_LIBS}"
+	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS} ${LIBSWRESAMPLE_CFLAGS} ${LIBSWSCALE_CFLAGS}"
+	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS} ${LIBSWRESAMPLE_CFLAGS} ${LIBSWSCALE_LIBS}"
 fi
 AC_SUBST(FFMPEG_CFLAGS)
 AC_SUBST(FFMPEG_LIBS)
