@@ -87,6 +87,7 @@
 		044E012B13D9A8E400E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		044E012C13D9A8E500E6A628 /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044E012713D9A81300E6A628 /* event_processor.cpp */; };
 		0478D7DE16C2825200975833 /* timer_sync.h in Headers */ = {isa = PBXBuildFile; fileRef = 0478D7DD16C2825200975833 /* timer_sync.h */; };
+		0483821719755D2B001953D8 /* libswresample.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0483821619755D2B001953D8 /* libswresample.dylib */; };
 		04A1E80B12B57DF20060F97E /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
 		04A1E80C12B57DF20060F97E /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		04A1E80D12B57DF20060F97E /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
@@ -645,6 +646,7 @@
 		04791D2D115194C10007DD71 /* timegraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timegraph.cpp; sourceTree = "<group>"; };
 		04791D2E115194C10007DD71 /* trace_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trace_player.cpp; sourceTree = "<group>"; };
 		04791D2F115194C10007DD71 /* transition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transition.cpp; sourceTree = "<group>"; };
+		0483821619755D2B001953D8 /* libswresample.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; name = libswresample.dylib; path = "../../build-3264/third_party_packages/installed/lib/libswresample.dylib"; sourceTree = SOURCE_ROOT; };
 		049DCA07138A8DE90023DFBC /* d2_basicvideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_basicvideo.cpp; path = d2/d2_basicvideo.cpp; sourceTree = "<group>"; };
 		049DCA08138A8DE90023DFBC /* d2_d2video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_d2video.cpp; path = d2/d2_d2video.cpp; sourceTree = "<group>"; };
 		049DCA09138A8DE90023DFBC /* d2_dshowsink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = d2_dshowsink.cpp; path = d2/d2_dshowsink.cpp; sourceTree = "<group>"; };
@@ -764,6 +766,7 @@
 				04A1E86F12B57DF20060F97E /* QTKit.framework in Frameworks */,
 				04A1E87012B57DF20060F97E /* WebKit.framework in Frameworks */,
 				04A1E87112B57DF20060F97E /* libltdl.a in Frameworks */,
+				0483821719755D2B001953D8 /* libswresample.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,6 +805,7 @@
 				04070306115263540094FB0B /* libavcodec.dylib */,
 				04070307115263540094FB0B /* libavformat.dylib */,
 				04070308115263540094FB0B /* libavutil.dylib */,
+				0483821619755D2B001953D8 /* libswresample.dylib */,
 				040707151152847A0094FB0B /* libltdl.a */,
 				04070309115263540094FB0B /* libexpat.dylib */,
 				0407030A115263540094FB0B /* libfaad.dylib */,
@@ -2095,6 +2099,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
 				INSTALL_PATH = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jack/src/ambulant/build-3264/third_party_packages/installed/lib",
+				);
 				PRODUCT_NAME = libambulant;
 			};
 			name = Debug;
@@ -2112,6 +2120,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jack/src/ambulant/build-3264/third_party_packages/installed/lib",
+				);
 				PRODUCT_NAME = libambulant;
 			};
 			name = Release;

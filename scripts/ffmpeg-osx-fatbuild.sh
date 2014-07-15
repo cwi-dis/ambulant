@@ -113,6 +113,7 @@ if $mkdirs; then
     mkdir libavutil
     mkdir libavdevice
     mkdir libswscale
+    mkdir libswresample
 else
     echo $0: skipping mkdirs
 fi
@@ -124,6 +125,7 @@ if $mklinks; then
     ( cd libavutil ; ln -s $srcdir/libavutil/*.h .)
     ( cd libavdevice ; ln -s $srcdir/libavdevice/*.h .)
     ( cd libswscale ; ln -s $srcdir/libswscale/*.h .)
+    ( cd libswresample ; ln -s $srcdir/libswresample/*.h .)
 else
     echo $0: skipping mklinks
 fi
@@ -205,11 +207,13 @@ if $merge; then
         libavutil/libavutil.a \
         libavutil/libavutil.dylib \
         libswscale/libswscale.a \
-        libswscale/libswscale.dylib
+        libswscale/libswscale.dylib \
+        libswresample/libswresample.a \
+        libswresample/libswresample.dylib
     do
         lipo -create -output $i build-*/$i
     done
-    for i in avformat avutil avcodec swscale; do
+    for i in avformat avutil avcodec swscale swresample; do
     	cp build-$ANY_RANDOM_ARCH/lib$i/*.pc lib$i/
     done
     if [ -f build-$ANY_RANDOM_ARCH/libavutil/avconfig.h ]; then

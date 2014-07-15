@@ -26,6 +26,8 @@
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/datasource.h"
 
+#define WITH_SWRESAMPLE 1
+
 // Needed for avcodec.h:
 #ifndef INT64_C
 #define INT64_C(x) x ## LL
@@ -36,6 +38,9 @@
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
+#ifdef WITH_SWRESAMPLE
+#include "libswresample/swresample.h"
+#endif
 }
 #define WITH_AVCODEC_DECODE_AUDIO4 // enable experimental "port" to avcodec_decode_audio4()
 
@@ -112,6 +117,9 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 #endif//WITH_AVCODEC_DECODE_AUDIO4
 	AVCodecContext *m_con;
 	bool m_con_owned;
+#ifdef WITH_SWRESAMPLE
+	SwrContext *m_swr_con;
+#endif
 	audio_format m_fmt;
 	lib::event_processor *m_event_processor;
 	pkt_datasource* m_src;

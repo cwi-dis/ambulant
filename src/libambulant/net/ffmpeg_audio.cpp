@@ -264,6 +264,9 @@ ffmpeg_decoder_datasource::supported(const net::url& url)
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *const src)
 :	m_con(NULL),
 	m_con_owned(false),
+#ifdef WITH_SWRESAMPLE
+	m_swr_con(NULL),
+#endif
 	m_fmt(audio_format(0,0,0)),
 	m_event_processor(NULL),
 	m_src(src),
@@ -281,6 +284,10 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_da
 
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_datasource *const src)
 :	m_con(NULL),
+	m_con_owned(false),
+#ifdef WITH_SWRESAMPLE
+	m_swr_con(NULL),
+#endif
 	m_fmt(src->get_audio_format()),
 	m_event_processor(NULL),
 	m_src(src),
@@ -315,6 +322,11 @@ ffmpeg_decoder_datasource::stop()
 		av_free(m_con);
 	}
 	m_con = NULL;
+#ifdef WITH_SWRESAMPLE
+	if (m_swr_con) {
+		swr_free(&m_swr_con);
+	}
+#endif
 	if (m_src) {
 		m_src->stop();
 		long rem = m_src->release();
@@ -493,6 +505,55 @@ ffmpeg_decoder_datasource::data_avail()
             uint8_t *forwarding_ptr = NULL;
             size_t decoded_size = av_samples_get_buffer_size(NULL, av_frame_get_channels(outframe), outframe->nb_samples, (AVSampleFormat)outframe->format, 1);
 
+#ifdef WITH_SWRESAMPLE
+			bool usableAsIs = (m_con->sample_fmt == AV_SAMPLE_FMT_S16);
+			if (usableAsIs) {
+				// 16 bit signed integers, interleaved. Our code understands this, pass through as-is.
+				forwarding_ptr = outframe->extended_data[0];
+			} else {
+				// Anything else needs to be converted. Note that this code actually means
+				// that this code could actually do the work of resample_datasource as well.
+				// To be fixed later.
+				if (m_swr_con == NULL) {
+					int64_t wanted_layout = av_get_default_channel_layout(av_frame_get_channels(outframe));
+					m_swr_con = swr_alloc_set_opts(NULL,
+						wanted_layout, AV_SAMPLE_FMT_S16, outframe->sample_rate,
+						outframe->channel_layout, m_con->sample_fmt, outframe->sample_rate,
+						0, NULL);
+
+					if (m_swr_con == NULL || swr_init(m_swr_con) < 0) {
+						lib::logger::get_logger()->error("ffmpeg_decoder_datasource.data_avail: cannot allocate SwrContext for conversion");
+						break;
+					}
+				}
+
+				decoded_size = av_samples_get_buffer_size(NULL, av_frame_get_channels(outframe), outframe->nb_samples, AV_SAMPLE_FMT_S16, 1);
+				allocated_ptr = (uint8_t *)malloc(decoded_size);
+                if (allocated_ptr == NULL) {
+                    lib::logger::get_logger()->error("ffmpeg_decoder_datasource.data_avail: alloc failed for intermediate buffer");
+                    break;
+                }
+				forwarding_ptr = allocated_ptr;
+
+				const uint8_t **inBuf = (const uint8_t **)outframe->extended_data;
+				uint8_t **outBuf = &allocated_ptr;
+				int convLen = swr_convert(m_swr_con, outBuf, outframe->nb_samples, inBuf, outframe->nb_samples);
+				if (convLen < 0) {
+					lib::logger::get_logger()->error("fmpeg_decoder_datasource.data_avail: swr_convert failed");
+					break;
+				}
+
+				if (convLen != outframe->nb_samples) {
+					// Say this only once...
+					lib::logger::get_logger()->trace("fmpeg_decoder_datasource.data_avail: swr_convert returned %d bytes in stead of %d", convLen, decoded_size);
+					static bool errorShown = false;
+					if (!errorShown)
+						lib::logger::get_logger()->error("fmpeg_decoder_datasource.data_avail: swr_convert returned %d bytes in stead of %d", convLen, decoded_size);
+					errorShown = true;
+					break;
+				}
+			}
+#else
             if (av_sample_fmt_is_planar(m_con->sample_fmt) && m_con->channels > 1) {
                 // Data needs to be interleaved
                 allocated_ptr = (uint8_t *)malloc(decoded_size);
@@ -506,6 +567,7 @@ ffmpeg_decoder_datasource::data_avail()
             } else {
                 forwarding_ptr = outframe->extended_data[0];
             }
+#endif
 
             // Next we need to worry about whether this data is before our clip-begin, or
             // maybe our clip-begin falls inside this buffer.
