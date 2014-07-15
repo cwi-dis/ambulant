@@ -418,6 +418,7 @@ third_party_packages={
         DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libavutil-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libswscale-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libswresample-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
 
     ],
  
