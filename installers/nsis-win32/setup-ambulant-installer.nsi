@@ -103,6 +103,7 @@ Section "Core Components" CoreSection
   File "..\..\bin\win32\avformat-54.dll"
   File "..\..\bin\win32\avutil-51.dll"
   File "..\..\bin\win32\swscale-2.dll"
+  File "..\..\bin\win32\swresample-0.dll"
   File "..\..\bin\win32\SDL.dll"
 !else
   File "..\..\bin\win32\AmbulantPlayer.exe"
@@ -317,6 +318,7 @@ Section Uninstall
   Delete "$INSTDIR\avformat-54.dll"
   Delete "$INSTDIR\avutil-51.dll"
   Delete "$INSTDIR\swscale-2.dll"
+  Delete "$INSTDIR\swresample-0.dll"
   Delete "$INSTDIR\SDL.dll"
 
   RMDir /r "$INSTDIR\Extras"
