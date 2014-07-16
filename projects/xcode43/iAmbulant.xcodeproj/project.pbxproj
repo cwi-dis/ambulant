@@ -25,6 +25,7 @@
 		0475634813CC97E900E8F3C8 /* AmbulantHelp-images in Resources */ = {isa = PBXBuildFile; fileRef = 0475633813CC97E900E8F3C8 /* AmbulantHelp-images */; };
 		0483912212BEC681002260A6 /* ITunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 0483912112BEC681002260A6 /* ITunesArtwork */; };
 		048503E3133B5BF4006CE724 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 048503E2133B5BF4006CE724 /* Icon-72.png */; };
+		0488BB6819769972001E85F5 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0488BB6719769972001E85F5 /* libswresample.a */; };
 		04B304F713D855C4004FCB54 /* DefaultPoster.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B304F613D855C4004FCB54 /* DefaultPoster.png */; };
 		04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CEC12B80B9800161EB5 /* EditViewController.mm */; };
 		04B75CFE12B80B9800161EB5 /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF012B80B9800161EB5 /* PresentationViewController.mm */; };
@@ -133,6 +134,7 @@
 		0475633813CC97E900E8F3C8 /* AmbulantHelp-images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "AmbulantHelp-images"; path = "../../src/player_iphone/Resources/AmbulantHelp-images"; sourceTree = SOURCE_ROOT; };
 		0483912112BEC681002260A6 /* ITunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = ITunesArtwork; path = ../../src/player_iphone/Resources/ITunesArtwork; sourceTree = SOURCE_ROOT; };
 		048503E2133B5BF4006CE724 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../src/player_iphone/Resources/Icon-72.png"; sourceTree = SOURCE_ROOT; };
+		0488BB6719769972001E85F5 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = "../../build-iOS-Device/third_party_packages/installed/lib/libswresample.a"; sourceTree = SOURCE_ROOT; };
 		04B304F613D855C4004FCB54 /* DefaultPoster.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = DefaultPoster.png; path = ../../src/player_iphone/Resources/DefaultPoster.png; sourceTree = SOURCE_ROOT; };
 		04B75CEC12B80B9800161EB5 /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EditViewController.mm; path = ../../src/player_iphone/Classes/EditViewController.mm; sourceTree = SOURCE_ROOT; };
 		04B75CED12B80B9800161EB5 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditViewController.h; path = ../../src/player_iphone/Classes/EditViewController.h; sourceTree = SOURCE_ROOT; };
@@ -238,6 +240,7 @@
 				9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */,
 				04CDFFBB13D8DEE100485C7A /* MessageUI.framework in Frameworks */,
 				9325368813D9FE680084A658 /* SystemConfiguration.framework in Frameworks */,
+				0488BB6819769972001E85F5 /* libswresample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +304,7 @@
 				041E950A12B81D1000399893 /* libmp4ff.a */,
 				041E950B12B81D1000399893 /* libSDL.a */,
 				041E950C12B81D1000399893 /* libswscale.a */,
+				0488BB6719769972001E85F5 /* libswresample.a */,
 				041E950D12B81D1000399893 /* libxml2.a */,
 			);
 			name = third_party_packages;
@@ -637,6 +641,10 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-iOS-Device/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -655,6 +663,10 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-iOS-Device/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = iAmbulant;
 			};
 			name = Debug;
@@ -670,6 +682,10 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-iOS-Device/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};
