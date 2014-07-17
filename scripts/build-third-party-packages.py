@@ -471,14 +471,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-2.0.2.tar.gz",
-            url2="ffmpeg-2.0.2.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.5.tar.gz",
+            url2="ffmpeg-2.0.5.tar.gz",
             checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "rm -rf ffmpeg-2.0.2-universal && "
-                "mkdir ffmpeg-2.0.2-universal && "
-                "cd ffmpeg-2.0.2-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.0.2 all" % 
+                "rm -rf ffmpeg-2.0.5-universal && "
+                "mkdir ffmpeg-2.0.5-universal && "
+                "cd ffmpeg-2.0.5-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.0.5 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
             
@@ -792,11 +792,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-2.0.2.tar.gz",
-            url2="ffmpeg-2.0.2.tar.gz",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.5.tar.gz",
+            url2="ffmpeg-2.0.5.tar.gz",
             checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "cd ffmpeg-2.0.2&& "
+                "cd ffmpeg-2.0.5&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
