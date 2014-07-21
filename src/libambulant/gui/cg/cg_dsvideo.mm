@@ -181,13 +181,16 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		// Now find both source and destination area for the bitblit.
 		CGSize cg_srcsize = CGSizeMake(m_size.w, m_size.h);
 		rect srcrect = rect(size(0, 0));
-		rect dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
+        rect croprect = m_dest->get_crop_rect(m_size);
+		rect dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
 
 		CGRect cg_dstrect = CGRectFromAmbulantRect(dstrect);
+		CGRect cg_srcrect = CGRectFromAmbulantRect(srcrect);
 		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 
-		CGImageRef cropped_image = m_image; // No need to crop: the clipping does the trick.
+//		CGImageRef cropped_image = m_image; // No need to crop: the clipping does the trick.
+        CGImageRef cropped_image = CGImageCreateWithImageInRect(m_image, cg_srcrect);
 		CGContextRef myContext = [view getCGContext];
 		double alfa = 1.0;
 		const common::region_info *ri = m_dest->get_info();
@@ -203,11 +206,29 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
         // We need to mirror the image, because CGImage uses bottom-left coordinates.
 		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
         CGContextConcatCTM(myContext, matrix);
-		matrix = CGContextGetCTM(myContext);
+
+        // Apply proper scaling
+		float x_scale = (float)dstrect.width() / (float)srcrect.width();
+		float y_scale = (float)dstrect.height() / (float)srcrect.height();
+		matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
+		CGContextConcatCTM(myContext, matrix);
+        
+		// Next we do offset. This is a bit tricky, as our srcrect uses topleft-based coordinates and
+		// CG uses cartesian.
+		lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
+		fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
+		CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
+		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw(0x%x, %s): draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f) alpha %f",
+                                           this, m_node->get_sig().c_str(),
+                                           CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect),
+                                           CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
+                                           CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect),
+                                           CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
+                                           x_scale, y_scale, alfa);
         CGContextSetAlpha(myContext, (CGFloat)alfa);
 		CGContextDrawImage (myContext, cg_dstrect, cropped_image);
 		CGContextRestoreGState(myContext);
-		// XXX	release cropped_image
+		CFRelease(cropped_image);
 #ifdef LOGGER_VIDEOLATENCY
         logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 7-display %lld %lld %s", 0LL, m_last_frame_timestamp, m_node->get_url("src").get_url().c_str());
 #endif
