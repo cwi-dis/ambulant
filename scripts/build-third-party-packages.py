@@ -473,7 +473,7 @@ third_party_packages={
         TPP("ffmpeg",
             url="http://ffmpeg.org/releases/ffmpeg-2.2.5.tar.gz",
             url2="ffmpeg-2.2.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
+            checkcmd="pkg-config --atleast-version=55.33.100 libavformat",
             buildcmd=
                 "rm -rf ffmpeg-2.2.5-universal && "
                 "mkdir ffmpeg-2.2.5-universal && "
@@ -794,7 +794,7 @@ third_party_packages={
         TPP("ffmpeg",
             url="http://ffmpeg.org/releases/ffmpeg-2.2.5.tar.gz",
             url2="ffmpeg-2.2.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
+            checkcmd="pkg-config --atleast-version=55.33.100 libavformat",
             buildcmd=
                 "cd ffmpeg-2.2.5&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
