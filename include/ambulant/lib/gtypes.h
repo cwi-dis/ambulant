@@ -255,39 +255,51 @@ class basic_rect {
 	void operator-=(basic_point<T> p) {	///< operator
 		translate(-p);
 	}
-
+    
 	/// Intersect this rectangle by another rectangle o.
 	void operator&=(const basic_rect<T, S>& o) {
 		// set to intersection
-		// xxx: handle empty rect
-		int x1 = lmax(x, o.x);
-		int x2 = lmin(x + w, o.x + o.w);
-		if(x2 < x1) w = 0;
-		else w = x2 - x1;
-		x = x1;
-
-		int y1 = lmax(y, o.y);
-		int y2 = lmin(y + h, o.y + o.h);
-		if(y2 < y1) h = 0;
-		else h = y2 - y1;
-		y = y1;
+		if (empty ()  || o.empty()) {
+			// handle empty rects
+			x = y = h = w = 0;
+		} else {
+			int x1 = lmax(x, o.x);
+			int x2 = lmin(x + w, o.x + o.w);
+			if(x2 < x1) w = 0;
+			else w = x2 - x1;
+			x = x1;
+			
+			int y1 = lmax(y, o.y);
+			int y2 = lmin(y + h, o.y + o.h);
+			if(y2 < y1) h = 0;
+			else h = y2 - y1;
+			y = y1;
+		}
 	}
-
+    
 	/// Set this rectangle to a rectangle that also incorporates rectangle o.
 	void operator|=(const basic_rect<T, S>& o) {
 		// set to union
-		// xxx: handle empty rect
-		int x1 = lmin(x, o.x);
-		int x2 = lmax(x+w, o.x + o.w);
-		w = x2 - x1;
-		x = x1;
-		
-		int y1 = lmin(y, o.y);
-		int y2 = lmax(y+h, o.y + o.h);
-		h = y2 - y1;
-		y = y1;
+		// handle empty rects
+		if (o.empty()) return;
+		if (empty()) {
+		  	x = o.x;
+			y = o.y;
+			w = o.w;
+			h = o.h;
+		} else {
+			int x1 = lmin(x, o.x);
+			int x2 = lmax(x+w, o.x + o.w);
+			w = x2 - x1;
+			x = x1;
+            
+			int y1 = lmin(y, o.y);
+			int y2 = lmax(y+h, o.y + o.h);
+			h = y2 - y1;
+			y = y1;
+		}
 	}
-	
+    
 	/// Intersect two rectangles.
 	basic_rect<T, S> operator&(const basic_rect<T, S>& r) const {
 		// return intersection
