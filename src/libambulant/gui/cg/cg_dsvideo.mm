@@ -199,7 +199,7 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		CGContextSaveGState(myContext);
 
 		// We need to clip, also taking parent region clipping into account:
-		rect clipRect = m_dest->get_clipped_screen_rect();
+		rect clipRect = m_dest->get_clipped_screen_rect() & dstrect;
 		CGRect cgClipRect = CGRectFromAmbulantRect(clipRect);
 		CGContextClipToRect(myContext, cgClipRect);
 
@@ -212,19 +212,6 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		float y_scale = (float)dstrect.height() / (float)srcrect.height();
 		matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
 		CGContextConcatCTM(myContext, matrix);
-        
-		// Next we do offset. This is a bit tricky, as our srcrect uses topleft-based coordinates and
-		// CG uses cartesian.
-		lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
-		fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
-		CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw(0x%x, %s): draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f) alpha %f",
-                                           this, m_node->get_sig().c_str(),
-                                           CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect),
-                                           CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
-                                           CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect),
-                                           CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
-                                           x_scale, y_scale, alfa);
         CGContextSetAlpha(myContext, (CGFloat)alfa);
 		CGContextDrawImage (myContext, cg_dstrect, cropped_image);
 		CGContextRestoreGState(myContext);
