@@ -207,11 +207,14 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
         CGContextConcatCTM(myContext, matrix);
 
-        // Apply proper scaling
-		float x_scale = (float)dstrect.width() / (float)srcrect.width();
-		float y_scale = (float)dstrect.height() / (float)srcrect.height();
-		matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
-		CGContextConcatCTM(myContext, matrix);
+// scaling is done automatically by CGContextDrawImage
+//XXXX this is only correct for the fit="fill" case, probably need to convert to
+//XXXX CGLayer as cg_image_renderer does to support all cases properly
+//        // Apply proper scaling
+//		float x_scale = 1;//(float)dstrect.width() / (float)srcrect.width();/
+//		float y_scale = 1;//(float)dstrect.height() / (float)srcrect.height();
+//		matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
+//		CGContextConcatCTM(myContext, matrix);
         CGContextSetAlpha(myContext, (CGFloat)alfa);
 		CGContextDrawImage (myContext, cg_dstrect, cropped_image);
 		CGContextRestoreGState(myContext);
