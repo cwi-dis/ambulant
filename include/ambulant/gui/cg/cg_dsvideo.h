@@ -54,7 +54,9 @@ class cg_dsvideo_renderer :
   protected:
 	void _push_frame(char* frame, size_t size);
   private:
-	CGImageRef m_image;
+    CGLayerRef create_cglayer_from_cgimage(CGImageRef cgimage);
+    
+    CGImageRef m_image;
 	critical_section m_lock;
 };
 
