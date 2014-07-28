@@ -130,7 +130,7 @@ AM_CXXFLAGS=-fPIC
 install-exec-hook: install-data-local
 	cd $(DESTDIR)$(bindir) && \
 	$(LN_S) -f $(bin_PROGRAMS) AmbulantPlayer
-	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/ambulant.schemas
+	if test x`which gconftool-2` != x ; then GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/ambulant.schemas; fi
 ##	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
