@@ -564,7 +564,7 @@ dnl ======================================================================
 # Prefer sdl2
 test_sdl=false
 test_sdl1=false
-test_sdl2=true
+test_sdl2=false
 test_sdl_audio=false
 test_sdl_video=false
 test_sdl_image=false
@@ -573,6 +573,10 @@ test_sdl_ttf=false
 with_sdl_frontend=false
 SDL_CFLAGS=
 SDL_LIBS=
+
+if test "x$on_linux" = "xtrue"; then
+   test_sdl2=true # use SDL2 ny default on linux, if possible
+fi
 
 AC_MSG_CHECKING(for sdl2 - Simple Direct Media layer - Audio/Video support)
 AC_ARG_WITH(sdl2,
