@@ -153,7 +153,7 @@ CGLayerRef
 cg_dsvideo_renderer::create_cglayer_from_cgimage(CGImageRef cgimage)
 {
     // If we don't have an image we cannot do anything
-    if (cgimage == NULL) return false;
+    if (cgimage == NULL) return NULL;
  
     const common::region_info *ri = m_dest->get_info();
     const rect &r = m_dest->get_rect();
@@ -175,13 +175,14 @@ cg_dsvideo_renderer::create_cglayer_from_cgimage(CGImageRef cgimage)
                 bluef(chromakey)-bluef(tolerance), bluef(chromakey)+bluef(tolerance),
                 0.0, 0.0
             };
-            CGImageRef new_image = CGImageCreateWithMaskingColors(m_image, components);
-            CGImageRelease(m_image);
-            m_image = new_image;
+            CGImageRef new_image = CGImageCreateWithMaskingColors(cgimage, components);
+            if (new_image == NULL) {
+                return NULL;
+            }
+            CGImageRelease(cgimage);
+            cgimage = new_image;
         }
     }
-    assert(m_image);
-        
     AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer._prepare_image: create cglayer");
         
     // Create the layer, initially with the same parameters as the current context.
@@ -194,7 +195,7 @@ cg_dsvideo_renderer::create_cglayer_from_cgimage(CGImageRef cgimage)
     myContext = CGLayerGetContext(cglayer);
     assert(myContext);
     CGContextDrawImage(myContext, layer_rect, cgimage);
-        
+    CFRelease (cgimage);
     return cglayer;
 }
 
@@ -265,13 +266,17 @@ cg_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
         // scaling is done automatically by CGContextDrawLayerInRect/CGContextDrawImage
         if (need_cglayer) {
             CGLayerRef cglayer = create_cglayer_from_cgimage (cropped_image);
-            CGContextDrawLayerInRect(myContext, cg_dstrect, cglayer);
-            CFRelease (cglayer);
+            if (cglayer != NULL) {
+                CGContextDrawLayerInRect(myContext, cg_dstrect, cglayer);
+                CFRelease (cglayer);                
+            } else {
+                lib::logger::get_logger()->trace("cg_dsvideo_renderer.redraw_body: could not create a CGLayer object for CGImage %p", cropped_image);
+            }
         } else {
             CGContextDrawImage (myContext, cg_dstrect, cropped_image);
+            CFRelease(cropped_image);
         }
         CGContextRestoreGState(myContext);
-        CFRelease(cropped_image);
 #ifdef LOGGER_VIDEOLATENCY
         logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 7-display %lld %lld %s", 0LL, m_last_frame_timestamp, m_node->get_url("src").get_url().c_str());
 #endif
