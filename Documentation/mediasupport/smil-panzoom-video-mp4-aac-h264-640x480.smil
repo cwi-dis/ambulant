@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
+                      "http://www.w3.org/2008/SMIL30/SMIL30Language.dtd">
+<smil xmlns="http://www.w3.org/ns/SMIL">
+  <head>
+    <layout>
+      <root-layout xml:id="root-layout" width="1280" height="1000" backgroundColor="gray" />
+      <region xml:id="exact-fit" left="0" top="0" width="640" height="480" backgroundColor="red"  />
+      <region xml:id="too-wide" left="0" top="480" width="960" height="480" backgroundColor="green" />
+      <region xml:id="too-narrow" left="960" top="480" width="320" height="480" backgroundColor="blue"/>
+      <region xml:id="too-low" left="640" top="0" width="640" height="240" backgroundColor="yellow" />
+      <region xml:id="too-big" left="0" top="0" width="1280" height="960" backgroundColor="transparent" />
+      <region xml:id="too-high" left="0" top="0" width="640" height="960" backgroundColor="transparent" />
+      <region xml:id="info" left="0" top="960" width="1280" height="40" backgroundColor="white"
+      	      textAlign="center" textFontSize="x-large" /> 
+    </layout>
+  </head>
+  <body>
+    <seq>
+      <par>
+        <prefetch src="media/video-mp4-aac-h264-640x480.mp4" dur="48" />
+        <video region="exact-fit" src="media/video-mp4-aac-h264-640x480.mp4" fit="hidden" />
+        <video region="too-wide" src="media/video-mp4-aac-h264-640x480.mp4" fit="hidden" />
+        <video region="too-narrow" src="media/video-mp4-aac-h264-640x480.mp4" fit="hidden" />
+        <video region="too-low" src="media/video-mp4-aac-h264-640x480.mp4" fit="hidden" />
+        <video region="too-big" begin="16" src="media/video-mp4-aac-h264-640x480.mp4" fit="hidden" backgroundColor="fuchsia" />
+        <video region="too-high" begin="32" src="media/video-mp4-aac-h264-640x480.mp4" fit="hidden" backgroundColor="orange" />
+	<smilText region="info"> fit="hidden" (default) </smilText>
+      </par>
+      <par>
+        <prefetch src="media/video-mp4-aac-h264-640x480.mp4" />
+        <video region="exact-fit" src="media/video-mp4-aac-h264-640x480.mp4" fit="meet" />
+        <video region="too-wide" src="media/video-mp4-aac-h264-640x480.mp4" fit="meet" />
+        <video region="too-narrow" src="media/video-mp4-aac-h264-640x480.mp4" fit="meet" />
+        <video region="too-low" src="media/video-mp4-aac-h264-640x480.mp4" fit="meet" />
+        <video region="too-big" begin="16" src="media/video-mp4-aac-h264-640x480.mp4" fit="meet" backgroundColor="fuchsia"
+/>
+        <video region="too-high" begin="32" src="media/video-mp4-aac-h264-640x480.mp4" fit="meet" backgroundColor="orange" />
+	<smilText region="info"> fit="meet" </smilText>
+      </par>
+      <par>
+        <prefetch src="media/video-mp4-aac-h264-640x480.mp4" />
+        <video region="exact-fit" src="media/video-mp4-aac-h264-640x480.mp4" fit="meetBest" />
+        <video region="too-wide" src="media/video-mp4-aac-h264-640x480.mp4" fit="meetBest" />
+        <video region="too-narrow" src="media/video-mp4-aac-h264-640x480.mp4" fit="meetBest" />
+        <video region="too-low" src="media/video-mp4-aac-h264-640x480.mp4" fit="meetBest" />
+        <video region="too-big" begin="16" src="media/video-mp4-aac-h264-640x480.mp4" fit="meetBest" backgroundColor="fuchsia" />
+        <video region="too-high" begin="32" src="media/video-mp4-aac-h264-640x480.mp4" fit="meetBest" backgroundColor="orange" />
+	<smilText region="info"> fit="meetBest" </smilText>
+      </par>
+      <par>
+        <prefetch src="media/video-mp4-aac-h264-640x480.mp4" />
+        <video region="exact-fit" src="media/video-mp4-aac-h264-640x480.mp4" fit="slice" />
+        <video region="too-wide" src="media/video-mp4-aac-h264-640x480.mp4" fit="slice" />
+        <video region="too-narrow" src="media/video-mp4-aac-h264-640x480.mp4" fit="slice" />
+        <video region="too-low" src="media/video-mp4-aac-h264-640x480.mp4" fit="slice" />
+        <video region="too-big" begin="16" src="media/video-mp4-aac-h264-640x480.mp4" fit="slice" backgroundColor="fuchsia" />
+        <video region="too-high" begin="32" src="media/video-mp4-aac-h264-640x480.mp4" fit="slice" backgroundColor="orange" />
+	<smilText region="info"> fit="slice" </smilText>
+      </par>
+      <par>
+        <prefetch src="media/video-mp4-aac-h264-640x480.mp4" />
+        <video region="exact-fit" src="media/video-mp4-aac-h264-640x480.mp4" fit="fill" />
+        <video region="too-wide" src="media/video-mp4-aac-h264-640x480.mp4" fit="fill" />
+        <video region="too-narrow" src="media/video-mp4-aac-h264-640x480.mp4" fit="fill" />
+        <video region="too-low" src="media/video-mp4-aac-h264-640x480.mp4" fit="fill" />
+        <video region="too-big" begin="16" src="media/video-mp4-aac-h264-640x480.mp4" fit="fill" backgroundColor="fuchsia" />
+        <video region="too-high" begin="32" src="media/video-mp4-aac-h264-640x480.mp4" fit="fill" backgroundColor="orange" />
+	<smilText region="info"> fit="fill" </smilText>
+      </par>
+    </seq>
+  </body>
+</smil>
