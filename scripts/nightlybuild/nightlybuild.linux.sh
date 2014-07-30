@@ -63,7 +63,7 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=linux
-CONFIGOPTS="--with-sdl2 --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
+CONFIGOPTS="--with-sdl2 --with-gtk --with-xerces --with-xerces-plugin --with-npambulant CFLAGS=-fPIC CXXFLAGS=-fPIC"
 MAKEOPTS=
 
 DESTINATION=$DESTINATION_HOST:$DESTINATION_DIR
