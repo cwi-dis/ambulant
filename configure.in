@@ -755,7 +755,7 @@ if $test_ffmpeg; then
 	PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 49.7.0], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
-	PKG_CHECK_MODULES(LIBSWRESAMPLE, [libswresample >= 0.18.100], , test_ffmpeg=false)
+	PKG_CHECK_MODULES(LIBSWRESAMPLE, [libswresample >= 0.17.102], , test_ffmpeg=false)
 	PKG_CHECK_EXISTS([libswscale >= 0.7.1], test_ffmpeg_swscale=true ,test_ffmpeg_swscale=false)
 	if $test_ffmpeg_swscale; then
 		PKG_CHECK_MODULES(LIBSWSCALE, [libswscale >= 0.7.1], test_ffmpeg_swscale=true, test_ffmpeg_swscale=false)

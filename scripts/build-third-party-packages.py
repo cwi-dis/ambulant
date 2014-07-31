@@ -272,7 +272,7 @@ MAC104_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s' CC=gcc-4.0 CXX=g+
 #
 # Common flags for MacOSX 10.6
 #
-MAC106_COMMON_CFLAGS="" #-arch i386 -arch x86_64"
+MAC106_COMMON_CFLAGS="-arch i386 -arch x86_64"
 MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS)
 
 #
@@ -471,14 +471,14 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-2.2.5.tar.gz",
-            url2="ffmpeg-2.2.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=55.33.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.5.tar.gz",
+            url2="ffmpeg-2.0.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.100 libavformat",
             buildcmd=
-                "rm -rf ffmpeg-2.2.5-universal && "
-                "mkdir ffmpeg-2.2.5-universal && "
-                "cd ffmpeg-2.2.5-universal && "
-                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.2.5 all" % 
+                "rm -rf ffmpeg-2.0.5-universal && "
+                "mkdir ffmpeg-2.0.5-universal && "
+                "cd ffmpeg-2.0.5-universal && "
+                "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.0.5 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
             
@@ -836,11 +836,11 @@ third_party_packages={
             ),
 
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-2.2.5.tar.gz",
-            url2="ffmpeg-2.2.5.tar.gz",
-            checkcmd="pkg-config --atleast-version=55.33.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.0.5.tar.gz",
+            url2="ffmpeg-2.0.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.100 libavformat",
             buildcmd=
-                "cd ffmpeg-2.2.5&& "
+                "cd ffmpeg-2.0.5&& "
                 "%s --enable-gpl --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
@@ -960,13 +960,13 @@ third_party_packages={
             ),
 
         WinTPP("ffmpeg-bin",
-            url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-2.2.3-win32-shared.7z",
+            url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-2.0.2-win32-shared.7z",
                ## checkcmd="if not exist ffmpeg-%s-git-%s-win32-shared\\bin\\avformat-53.dll exit 1" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
             # No build needed
             ),
 
         WinTPP("ffmpeg-dev",
-            url="http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-2.2.3-win32-dev.7z",
+            url="http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-2.0.2-win32-dev.7z",
                ## checkcmd="if not exist ffmpeg-%s-git-%s-win32-dev\\lib\\avformat.lib exit 1" % (FFMPEG_WIN_GIT_DATE, FFMPEG_WIN_GIT_ID),
             # No build needed
             ),

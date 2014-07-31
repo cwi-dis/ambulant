@@ -59,7 +59,7 @@ const char*
 NPP_GetMIMEDescription(void)
 {
 	const char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
-	LOG("mimetypes=",mimetypes);
+	LOG("mimetypes=%s",mimetypes);
 	return mimetypes;
 }
 #endif//XP_UNIX
@@ -68,13 +68,13 @@ npambulant * s_npambulant = NULL;
 
 NPError NPP_Initialize(void)
 {
-	LOG("\n");
+	LOG("");
 	return NPERR_NO_ERROR;
 }
 
 void NPP_Shutdown(void)
 {
-	LOG("");
+	LOG(" ");
 }
 
 // here the plugin creates an instance of our npambulant object which
