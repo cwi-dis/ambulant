@@ -34,16 +34,17 @@ if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%D.lib %AMB_HOME%\
 if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%_%xerces_minor%D.dll %AMB_HOME%\bin\win32\xerces-c_%xerces_major%_%xerces_minor%D.dll
 
 REM ffmpeg
-copy %ffmpeg_bin_dir%\bin\avcodec-55.dll %AMB_HOME%\bin\win32\
-copy %ffmpeg_bin_dir%\bin\avformat-55.dll %AMB_HOME%\bin\win32\
-copy %ffmpeg_bin_dir%\bin\avutil-52.dll %AMB_HOME%\bin\win32\
+copy %ffmpeg_bin_dir%\bin\avcodec-54.dll %AMB_HOME%\bin\win32\
+copy %ffmpeg_bin_dir%\bin\avformat-54.dll %AMB_HOME%\bin\win32\
+copy %ffmpeg_bin_dir%\bin\avutil-51.dll %AMB_HOME%\bin\win32\
 copy %ffmpeg_bin_dir%\bin\swscale-2.dll %AMB_HOME%\bin\win32\swscale-2.dll
-copy %ffmpeg_bin_dir%\bin\swrescale-0.dll %AMB_HOME%\bin\win32\swrescale-0.dll
+copy %ffmpeg_bin_dir%\bin\swresample-0.dll %AMB_HOME%\bin\win32\swresample-0.dll
 copy %ffmpeg_dev_dir%\lib\avcodec.lib %AMB_HOME%\lib\win32\avcodec.lib
 copy %ffmpeg_dev_dir%\lib\avformat.lib %AMB_HOME%\lib\win32\avformat.lib
 copy %ffmpeg_dev_dir%\lib\avutil.lib %AMB_HOME%\lib\win32\avutil.lib
 copy %ffmpeg_dev_dir%\lib\swscale.lib %AMB_HOME%\lib\win32\swscale.lib
-copy %ffmpeg_dev_dir%\lib\swrescale.lib %AMB_HOME%\lib\win32\swrescale.lib
+copy %ffmpeg_dev_dir%\lib\swresample.lib %AMB_HOME%\lib\win32\swresample.lib
+
 REM sdl
 if exist %sdl_dir%\lib copy %sdl_dir%\lib\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
 if exist %sdl_dir%\lib copy %sdl_dir%\lib\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
