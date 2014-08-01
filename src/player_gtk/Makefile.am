@@ -96,7 +96,7 @@ AmbulantPlayer_gtk_SOURCES = \
 	unix_preferences.cpp \
 	unix_preferences.h
 
-LDADD = $(libambulant_gtk) \
+AmbulantPlayer_gtk_LDADD = $(libambulant_gtk) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_gstreamer_LDADD) \
