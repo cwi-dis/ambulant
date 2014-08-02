@@ -15,20 +15,19 @@ AMBULANT_VERSION=2.5
 # Platform specific setup
 #
 #############################
-#AC_CANONICAL_HOST
+AC_CANONICAL_HOST
 # Check for which host we are on and setup a few things
 # specifically based on the host
-host_os=`uname -s`
 on_bsd=false
 on_linux=false
 on_macosx=false
 
 case $host_os in
-  Darwin* | darwin*)
+  darwin*)
         # Do something specific for mac
 		on_macosx=true
         ;;
-  Linux* | linux*)
+  linux*)
 		on_linux=true
         # Do something specific for linux
         ;;
@@ -618,7 +617,7 @@ if test "x$test_sdl2" = "xtrue" -o  "x$test_sdl1" = "xtrue"; then
    	test_sdl_audio=true
 fi
 
-if test "x$on_linux" = "xtrue" -o "x$on_macosx" = "xtrue"; then # found through 'uname -s' i.o. 'AC_CANONICAL_HOST'
+if test "x$on_linux" = "xtrue"; then # found through 'AC_CANONICAL_HOST'
 	if test "x$test_sdl2"  = "xtrue"; then
 	   	# want these as well
 	   	test_sdl_image=true
@@ -646,7 +645,7 @@ fi
 if test "x$test_sdl_pango" = "xtrue" ; then
 	SDL_CFLAGS="$SDL_CFLAGS -DWITH_SDL_PANGO `pkg-config --cflags SDL_Pango`"
 	SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
-else
+elif  test "x$test_sdl2"  = "xtrue"; then 
 	# Alternatively SDL2_ttf can be used instead of SDL_Pango
 	test_sdl_ttf=true
 fi
