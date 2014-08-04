@@ -481,20 +481,7 @@ third_party_packages={
                 "sh %s/scripts/ffmpeg-osx-fatbuild.sh %s/ffmpeg-2.0.2 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
-            
-        TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
-            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
-            # xxxjack removed  --disable-mmx --disable-video-x11-xinput
-            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
-            buildcmd=
-               "cd SDL-2.0.*-* && "
-                "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' --disable-dependency-tracking &&"
-                "make ${MAKEFLAGS} && "
-                "make install &&"
-                "cd .." % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
-            ),
-
+                
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
             url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
@@ -502,11 +489,24 @@ third_party_packages={
             buildcmd=
                 "cd SDL-1.3.0-* && "
                 "./configure --prefix='%s' --disable-dependency-tracking "
-                    "CFLAGS='%s -framework ForceFeedback' "
-                    "LDFLAGS='%s -framework ForceFeedback' &&"
+                "CFLAGS='%s -framework ForceFeedback' "
+                "LDFLAGS='%s -framework ForceFeedback' &&"
                 "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
+#
+#          TPP("SDL",
+#              url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
+#              # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
+#              # xxxjack removed  --disable-mmx --disable-video-x11-xinput
+#              checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
+#              buildcmd=
+#                 "cd SDL-2.0.*-* && "
+#                  "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' --disable-dependency-tracking &&"
+#                  "make ${MAKEFLAGS} && "
+#                  "make install &&"
+#                  "cd .." % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
+#              ),
           
 #        TPP("SDL_image",
 # mercurial version needed for compatibilty with SDL2
