@@ -575,6 +575,8 @@ SDL_LIBS=
 
 if test "x$on_linux" = "xtrue"; then
    test_sdl2=true # use SDL2 ny default on linux, if possible
+elif test "x$on_macosx" = "xtrue"; then
+   test_sdl1=true # use SDL1 ny default on macosx, if possible
 fi
 
 AC_MSG_CHECKING(for sdl2 - Simple Direct Media layer - Audio/Video support)
