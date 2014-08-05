@@ -38,7 +38,7 @@
 // XXXJACK: we should get rid of these, analoguous to what cocoa_dsvideo does:
 // Get the information dynamically.
 #if 1
-#define MY_PIXEL_LAYOUT net::pixel_argb
+#define MY_PIXEL_LAYOUT net::pixel_abgr
 #define MY_HASALPHA TRUE
 #define MY_BPP 4
 #endif
@@ -107,25 +107,9 @@ gtk_video_renderer::_push_frame(char* frame, size_t size)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer::_push_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
-	// XXXJACK: don't reallocate if the size is the same!
 	if (m_data)
 		free(m_data);
-	m_data = (char*) malloc(size);
-
-	// This is needed to convert the colors to GTK+
-	// XXXJACK need to check whether we can get RGBA in stead of BGRA data from video_renderer, to save a copy.
-	for(int i=0;i < size;i=i+4) {
-		m_data[i] = frame[i+2];		/*R Red*/
-		m_data[i+1] = frame[i+1];	/*G GREEN*/
-		m_data[i+2] = frame[i];		/*B BLUE*/
-		m_data[i+3] = frame[i+3];	/*	A ALPHA*/
-	}
-	free(frame);
-//	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.push_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
-// XXXJACK: need_redraw() will be called by video_renderer.
-//	m_dest->need_redraw();
-//	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.push_frame: need_redraw called");
-
+	m_data = frame;
 }
 
 
