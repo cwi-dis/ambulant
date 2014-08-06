@@ -440,6 +440,7 @@ void
 sdl_ambulant_window::redraw (lib::rect r)
 {
 	sdl_ambulant_window::s_num_events--;
+#ifndef USE_SDL_TEXTURE
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r); //XXX not used anymore
 	SDL_Renderer* renderer = get_sdl_window_renderer();
 	SDL_RenderSetClipRect(renderer, NULL);
@@ -457,6 +458,11 @@ sdl_ambulant_window::redraw (lib::rect r)
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
+#else//USE_SDL_TEXTURE
+	// this works just like SDL_Flip in SDL 1.3 (from: SDL_GetWindowSurface wiki)
+	SDL_UpdateWindowSurface(get_sdl_window());
+#endif//USE_SDL_TEXTURE
+	
 }
 
 const char*
