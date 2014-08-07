@@ -336,7 +336,8 @@ sdl_ambulant_window::sdl_ambulant_window(SDL_Window* window)
 	m_screen_pixels(NULL),
 	m_need_window_resize(false),
 	m_new_width(0),
-	m_new_height(0)
+	m_new_height(0),
+	m_window_pixel_format(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window.sdl_ambulant_window(%p): window=(SDL_Window*)%p", this, window);
 	m_sdl_dst_rect.x = m_sdl_dst_rect.y = m_sdl_dst_rect.w = m_sdl_dst_rect.h = 0;
@@ -440,6 +441,7 @@ void
 sdl_ambulant_window::redraw (lib::rect r)
 {
 	sdl_ambulant_window::s_num_events--;
+#ifndef USE_SDL_TEXTURE
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r); //XXX not used anymore
 	SDL_Renderer* renderer = get_sdl_window_renderer();
 	SDL_RenderSetClipRect(renderer, NULL);
@@ -457,6 +459,11 @@ sdl_ambulant_window::redraw (lib::rect r)
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
+#else//USE_SDL_TEXTURE
+	// this works just like SDL_Flip in SDL 1.3 (from: SDL_GetWindowSurface wiki)
+	SDL_UpdateWindowSurface(get_sdl_window());
+#endif//USE_SDL_TEXTURE
+	
 }
 
 const char*
@@ -531,6 +538,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	m_sdl_surface = m_sdl_screen_surface;
+	m_window_pixel_format = m_sdl_screen_surface->format;
 
 	// Everything OK, register the window for use by SDL_Loop in the embedder (it should have one)
 	sdl_ambulant_window::s_lock.enter();

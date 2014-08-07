@@ -100,10 +100,11 @@ class sdl_video_renderer : public sdl_renderer<common::video_renderer>  {
 	void _push_frame(char* frame, size_t size);
 private:
 	void render_frame();
-
+	net::pixel_order get_pixel_order_from_SDL_PixelFormat (SDL_PixelFormat*);
 	long int m_img_displayed;
 	char* m_data;
 	unsigned int m_datasize;
+	net::pixel_order m_pixel_order;
 };
 
 

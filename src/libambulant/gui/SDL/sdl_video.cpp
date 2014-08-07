@@ -69,7 +69,9 @@ sdl_video_renderer::sdl_video_renderer(
 
 	m_img_displayed(0),
 	m_data(NULL),
-	m_datasize(0)
+	m_datasize(0),
+	m_pixel_order(net::pixel_unknown)
+
 {
 	SDL_Init(SDL_INIT_VIDEO);
 }
@@ -85,7 +87,45 @@ sdl_video_renderer::~sdl_video_renderer()
 net::pixel_order
 sdl_video_renderer::pixel_layout()
 {
-	return SDL_PIXEL_LAYOUT;
+	if (m_pixel_order == net::pixel_unknown) {
+		ambulant_sdl_window* asw = (ambulant_sdl_window*)  m_dest->get_gui_window();
+		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+		m_pixel_order = get_pixel_order_from_SDL_PixelFormat (saw->get_window_pixel_format());
+	}
+	return m_pixel_order;
+}
+
+net::pixel_order
+sdl_video_renderer::get_pixel_order_from_SDL_PixelFormat (SDL_PixelFormat* sdl_pf) {
+	net::pixel_order rv = net::pixel_unknown;
+	if (sdl_pf != NULL) {
+		Uint32 sdl_window_pixel_format = sdl_pf->format;
+		switch (sdl_window_pixel_format) {
+		case  SDL_PIXELFORMAT_RGBA8888:
+		case  SDL_PIXELFORMAT_RGBX8888:
+			rv =  net::pixel_rgba;
+			break;
+		case  SDL_PIXELFORMAT_BGRA8888:
+		case  SDL_PIXELFORMAT_BGRX8888:
+			rv = net::pixel_bgra;
+			break;
+		case  SDL_PIXELFORMAT_ARGB8888:
+		case  SDL_PIXELFORMAT_RGB888:
+			rv = net::pixel_argb;
+			break;
+		case  SDL_PIXELFORMAT_ABGR8888:
+		case  SDL_PIXELFORMAT_BGR888:
+			rv = net::pixel_abgr;
+			break;
+		case  SDL_PIXELFORMAT_RGB24:
+			rv = net::pixel_rgb;
+			break;
+		case  SDL_PIXELFORMAT_BGR24:
+			rv = net::pixel_bgr;
+			break;
+		}
+	}
+	return rv;
 }
 
 void
@@ -107,6 +147,9 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	m_lock.enter();
 	if (m_data){
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p)",(void*) this);
+		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
+		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+
 		_frame_was_displayed();
 		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
@@ -118,19 +161,17 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body: info=%p", info);
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
-				// XXXX Fill with background color TBD
-				lib::color_t bgcolor = info->get_bgcolor();
+			// XXXX Fill with background color TBD
+			lib::color_t bgcolor = info->get_bgcolor();
 		}
 		lib::rect src_rect; // lib::rect(lib::point(0,0), lib::size(width, height)), dst_rect;
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		lib::rect dst_rect = m_dest->get_fit_rect(croprect, m_size, &src_rect, m_alignment);
 		if (src_rect.w == 0 || src_rect.h == 0 || dst_rect.w == 0 || dst_rect.h == 0) {
-				// either nothing to redraw from source or to destination)
-				return;
+			// either nothing to redraw from source or to destination)
+			return;
 		}
 		dst_rect.translate(p);
-		ambulant_sdl_window* asw = (ambulant_sdl_window*) w;
-		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 		SDL_Rect sdl_dst_rect = SDL_Rect_from_ambulant_rect(dst_rect);
 		SDL_Rect sdl_src_rect = SDL_Rect_from_ambulant_rect(src_rect);
 		// we use ARGB
@@ -147,9 +188,9 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d",(void *)this, dst_width, dst_height, src_width, src_height);
 		SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(m_data, m_size.w, m_size.h, 32, m_size.w*SDL_BPP, rmask, gmask, bmask, amask);
 		if (src_rect.size() != dst_rect.size()) {
-				saw->copy_to_sdl_surface_scaled (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+			saw->copy_to_sdl_surface_scaled (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
 		} else {
-				saw->copy_to_sdl_surface (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+			saw->copy_to_sdl_surface (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
 		}
 		SDL_FreeSurface(surface);
 		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw_body(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);

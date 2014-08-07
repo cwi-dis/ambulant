@@ -90,8 +90,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): IMG_Load_RW failed. %s", this, this->get_sig().c_str());
 		} else {
 			// convert the image to RGBA compatible format (necessary for blending)
-			SDL_PixelFormat* new_pixel_format = (SDL_PixelFormat*) malloc (sizeof(SDL_PixelFormat));
-			*new_pixel_format = *saw->get_sdl_surface()->format;
+			SDL_PixelFormat* new_pixel_format = saw->get_window_pixel_format();
 			SDL_Surface* new_image = SDL_ConvertSurface (m_image, new_pixel_format, 0);
 			if (new_image != NULL && new_image != m_image) {
 				AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer::redraw_body(%p), %s, SDL_FreeSurface(m_image=%p)", this, this->get_sig().c_str(), m_image);

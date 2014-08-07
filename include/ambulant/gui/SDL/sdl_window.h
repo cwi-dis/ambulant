@@ -183,6 +183,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	void get_size(int *width, int *height) {} //TBD
 	bool get_screenshot(const char *type, char **out_data, size_t *out_size) { return false; } //TBD
 
+	SDL_PixelFormat* get_window_pixel_format () { return m_window_pixel_format; }
+
 	/// Transitions
 
 	void startScreenTransition();
@@ -263,6 +265,8 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	bool m_need_window_resize;
 	int m_new_width;
 	int m_new_height;
+	
+	SDL_PixelFormat* m_window_pixel_format;
 
 // The total number of SDL events at any moment is maintained in order to clear
 // the SDL Event Queue of pointers to this structure upon deletion
