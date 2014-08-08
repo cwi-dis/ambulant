@@ -745,6 +745,22 @@ ffmpeg_video_decoder_datasource::_forward_frame(timestamp_t pts, AVFrame *frame)
             dst_pic_fmt = PIX_FMT_BGR32;
             bpp = 4;
             break;
+        case pixel_rgbx:
+            dst_pic_fmt = AV_PIX_FMT_NE(RGB0, 0BGR);
+            bpp = 4;
+            break;
+        case pixel_bgrx:
+            dst_pic_fmt = AV_PIX_FMT_NE(BGR0, 0RGB);
+            bpp = 4;
+            break;
+        case pixel_xrgb:
+            dst_pic_fmt = PIX_FMT_0RGB32;
+            bpp = 4;
+            break;
+        case pixel_xbgr:
+            dst_pic_fmt = PIX_FMT_0BGR32;
+            bpp = 4;
+            break;
         case pixel_rgb:
             dst_pic_fmt = PIX_FMT_RGB24;
             bpp = 3;

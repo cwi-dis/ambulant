@@ -102,20 +102,28 @@ sdl_video_renderer::get_pixel_order_from_SDL_PixelFormat (SDL_PixelFormat* sdl_p
 		Uint32 sdl_window_pixel_format = sdl_pf->format;
 		switch (sdl_window_pixel_format) {
 		case  SDL_PIXELFORMAT_RGBA8888:
-		case  SDL_PIXELFORMAT_RGBX8888:
 			rv =  net::pixel_rgba;
 			break;
+		case  SDL_PIXELFORMAT_RGBX8888:
+			rv =  net::pixel_rgbx;
+			break;
 		case  SDL_PIXELFORMAT_BGRA8888:
+			rv = net::pixel_bgrx;
+			break;
 		case  SDL_PIXELFORMAT_BGRX8888:
 			rv = net::pixel_bgra;
 			break;
 		case  SDL_PIXELFORMAT_ARGB8888:
-		case  SDL_PIXELFORMAT_RGB888:
 			rv = net::pixel_argb;
 			break;
+		case  SDL_PIXELFORMAT_RGB888:
+			rv = net::pixel_xrgb;
+			break;
 		case  SDL_PIXELFORMAT_ABGR8888:
-		case  SDL_PIXELFORMAT_BGR888:
 			rv = net::pixel_abgr;
+			break;
+		case  SDL_PIXELFORMAT_BGR888:
+			rv = net::pixel_xbgr;
 			break;
 		case  SDL_PIXELFORMAT_RGB24:
 			rv = net::pixel_rgb;

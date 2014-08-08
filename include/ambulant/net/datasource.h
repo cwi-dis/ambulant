@@ -114,6 +114,10 @@ enum pixel_order {
 	pixel_rgba,		///< (msb)R G B A(lsb), in host order
 	pixel_argb,		///< (msb)A R G B(lsb), in host order
 	pixel_bgra,		///< (msb)B G R A(lsb), in host order
+	pixel_xbgr,		///< (msb)X B G R(lsb), in host order
+	pixel_rgbx,		///< (msb)R G B X(lsb), in host order
+	pixel_xrgb,		///< (msb)X R G B(lsb), in host order
+	pixel_bgrx,		///< (msb)B G R A(lsb), in host order
 	pixel_abgr,		///< (msb)A B G R(lsb), in host order
 	pixel_rgb,		///< R G B (in byte order).
 	pixel_bgr		///< B G R (in byte order).

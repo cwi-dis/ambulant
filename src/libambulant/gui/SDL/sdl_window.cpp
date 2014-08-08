@@ -463,7 +463,6 @@ sdl_ambulant_window::redraw (lib::rect r)
 	// this works just like SDL_Flip in SDL 1.3 (from: SDL_GetWindowSurface wiki)
 	SDL_UpdateWindowSurface(get_sdl_window());
 #endif//USE_SDL_TEXTURE
-	
 }
 
 const char*
