@@ -137,10 +137,12 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 	// First find our whole area to be cleared to background color
 		ambulant_sdl_window* asw = (ambulant_sdl_window*) window;
 		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+#ifdef WITH_SDL_TEXTURE
 		SDL_Renderer* background_renderer =  saw != NULL ? saw->get_sdl_renderer() : NULL;
 		if (background_renderer == NULL) {
 			return;
 		}
+#endif//WITH_SDL_TEXTURE
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
@@ -152,22 +154,25 @@ sdl_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw: clearing to %x, asw=%p local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)asw,L,T,W,H);
 
 		Uint8 red = redc(bgcolor), green = greenc(bgcolor), blue = bluec(bgcolor);
-//TMP		if (background_renderer == NULL) { // TMP disable SDL_Renderer* caching
-			background_renderer = saw->get_sdl_renderer();
-			if (background_renderer == NULL) {
-				return;
-			}
-//TMP  	}
 		// Set and draw the background color for the region
 		SDL_Rect sdl_dst_rect = {L, T, W, H};
 		int err = 0;
+#ifdef WITH_SDL_TEXTURE
 		err = SDL_SetRenderDrawColor (background_renderer, red, green, blue, opacity*255);
 		assert (err==0);
 //		err = SDL_RenderClear (background_renderer);
 		AM_DBG lib::logger::get_logger()->debug("sdl_background_renderer::redraw(%p) l,t,w,h=(%d,%d, %d,%d) rgba=(%d,%d,%d)", (void *)this, L,T,W,H,red,green,blue);
 		err = SDL_RenderFillRect (background_renderer, &sdl_dst_rect);
+#else//WITH_SDL_TEXTURE
+		if (bgcolor != m_bgcolor || m_map == 0) {
+			m_bgcolor = bgcolor;
+			m_sdl_color = SDL_Color_from_ambulant_color(bgcolor);
+			m_map = SDL_MapRGBA (saw->get_sdl_surface()->format, m_sdl_color.r, m_sdl_color.g, m_sdl_color.b, m_sdl_color.a);
+		}
+		err = SDL_FillRect (saw->get_sdl_surface(), &sdl_dst_rect, m_map);
+#endif//WITH_SDL_TEXTURE
 		assert (err==0);
-		SDL_Rect sdl_src_rect = {0, 0, W, H};
+//		SDL_Rect sdl_src_rect = {0, 0, W, H};
 //TBD?		err = asw->copy_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
 //		assert (err==0);
 /*TBD*

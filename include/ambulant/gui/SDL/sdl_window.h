@@ -28,6 +28,7 @@
 #include "ambulant/common/recorder.h"
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/lib/colors.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/smil2/transition.h"
 
@@ -50,7 +51,15 @@ inline SDL_Rect SDL_Rect_from_ambulant_rect (const lib::rect& r) {
 	return rv;
 }
 inline ambulant::lib::rect ambulant_rect_from_SDL_Rect (const SDL_Rect& r) {
-  return lib::rect(lib::point(r.x, r.y), lib::size(r.w, r.h));
+	return lib::rect(lib::point(r.x, r.y), lib::size(r.w, r.h));
+}
+inline SDL_Color SDL_Color_from_ambulant_color(ambulant::lib::color_t ac) {
+  SDL_Color sc = {ambulant::lib::redc(ac), ambulant::lib::greenc(ac), ambulant::lib::bluec(ac), 255};
+	return sc;
+}
+inline ambulant::lib::color_t ambulant_color_from_SDL_Color (SDL_Color sc) {
+	ambulant::lib::color_t ac = ambulant::lib::to_color (sc.r*sc.a/255, sc.g*sc.a/255, sc.b*sc.a/255);
+	return ac;
 }
 
 class sdl_ambulant_window;

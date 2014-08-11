@@ -36,6 +36,7 @@
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/smil2/transition.h"
 #include "sdl_renderer.h"
+#include "sdl_window.h"
 #include "SDL.h"
 
 namespace ambulant {
@@ -77,12 +78,24 @@ create_sdl_fill_playable_factory(common::factories *factory, common::playable_fa
 class sdl_background_renderer : public common::background_renderer {
   public:
 	sdl_background_renderer(const common::region_info *src)
-	  :	common::background_renderer(src) {}
+	  :	common::background_renderer(src),
+#ifndef WITH_SDL_TEXTURE
+	m_bgcolor(lib::to_color("black")),
+	m_sdl_color(SDL_Color_from_ambulant_color(m_bgcolor)),
+	m_map(0)
+#endif//! WITH_SDL_TEXTURE
+	{};
 	~sdl_background_renderer();
 
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void highlight(gui_window *window);
 	void keep_as_background();
+#ifndef WITH_SDL_TEXTURE
+  private:
+	lib::color_t m_bgcolor;
+	SDL_Color m_sdl_color;
+	Uint32 m_map;
+#endif//! WITH_SDL_TEXTURE
 };
 
 } // namespace sdl
