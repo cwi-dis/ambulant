@@ -273,6 +273,12 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	static long unsigned int s_num_events;
 
 };  // class sdl_ambulant_window
+// TMP: Experimental optimization: use the screen SDL_PixelFormat in renderers
+#define WITH_DYNAMIC_PIXEL_LAYOUT
+// TMP: Experimental optimization: turn off WITH_SDL_TEXTURE to update the screen;
+// this is equivalent to SDL_Flip in SDLL 1.x and seems SDL to select faster blit functions  
+//#define WITH_SDL_TEXTURE
+
 
 } // namespace sdl
 
@@ -281,3 +287,4 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 } // namespace ambulant
 
 #endif//AMBULANT_GUI_SDL_WINDOW_H
+

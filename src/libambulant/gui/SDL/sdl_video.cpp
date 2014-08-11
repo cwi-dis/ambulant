@@ -87,12 +87,16 @@ sdl_video_renderer::~sdl_video_renderer()
 net::pixel_order
 sdl_video_renderer::pixel_layout()
 {
+#ifdef WITH_DYNAMIC_PIXEL_LAYOUT
 	if (m_pixel_order == net::pixel_unknown) {
 		ambulant_sdl_window* asw = (ambulant_sdl_window*)  m_dest->get_gui_window();
 		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 		m_pixel_order = get_pixel_order_from_SDL_PixelFormat (saw->get_window_pixel_format());
 	}
 	return m_pixel_order;
+#else //WITH_DYNAMIC_PIXEL_LAYOUT
+	return SDL_PIXEL_LAYOUT;
+#endif//WITH_DYNAMIC_PIXEL_LAYOUT
 }
 
 net::pixel_order

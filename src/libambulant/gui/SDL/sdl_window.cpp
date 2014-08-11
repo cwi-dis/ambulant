@@ -310,8 +310,6 @@ ambulant_sdl_window::delete_ambulant_surface()
 //
 // sdl_ambulant_window
 //
-//
-//
 long unsigned int sdl_ambulant_window::s_num_events = 0;
 int sdl_ambulant_window::s_windows = 0;
 lib::critical_section sdl_ambulant_window::s_lock;
@@ -441,7 +439,7 @@ void
 sdl_ambulant_window::redraw (lib::rect r)
 {
 	sdl_ambulant_window::s_num_events--;
-#ifndef USE_SDL_TEXTURE
+#ifdef  WITH_SDL_TEXTURE
 	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r); //XXX not used anymore
 	SDL_Renderer* renderer = get_sdl_window_renderer();
 	SDL_RenderSetClipRect(renderer, NULL);
@@ -459,10 +457,10 @@ sdl_ambulant_window::redraw (lib::rect r)
 	assert (err==0);
 	SDL_RenderPresent(renderer);
 	SDL_DestroyTexture(texture);
-#else//USE_SDL_TEXTURE
+#else// WITH_SDL_TEXTURE
 	// this works just like SDL_Flip in SDL 1.3 (from: SDL_GetWindowSurface wiki)
 	SDL_UpdateWindowSurface(get_sdl_window());
-#endif//USE_SDL_TEXTURE
+#endif//WITH_SDL_TEXTURE
 }
 
 const char*
@@ -532,7 +530,14 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 //XX	SDL_GLContext glcontext = SDL_GL_CreateContext(m_sdl_window);
 //XX	SDL_SetWindowFullscreen(m_sdl_window, SDL_WINDOW_RESIZABLE);
 	SDL_Rect sdl_rect = { r.left(),r.top(),r.width(),r.height() };
+#ifdef  WITH_SDL_TEXTURE
 	err = create_sdl_surface_and_pixels(&sdl_rect, &m_screen_pixels, &m_sdl_screen_surface, &m_sdl_screen_renderer);
+#else //WITH_SDL_TEXTURE
+	m_sdl_screen_surface = SDL_GetWindowSurface (m_sdl_window);
+	if (m_sdl_screen_surface == NULL) {
+		err = -1;
+	}
+#endif//WITH_SDL_TEXTURE
 	if (err != 0) {
 		return err;
 	}
@@ -544,17 +549,20 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 	sdl_ambulant_window::s_windows++;
 
 	// The screen_renderer is special, it is the rendering context for the window pixels instead the surface pixels
+#ifdef  WITH_SDL_TEXTURE
 	if (m_sdl_window_renderer == NULL) {
 		m_sdl_window_renderer = SDL_CreateRenderer(m_sdl_window, -1, SDL_RENDERER_ACCELERATED);
 		if (m_sdl_window_renderer == NULL) {
 			lib::logger::get_logger()->trace("No accelerated renderer,software renderer fallback", this);
 			m_sdl_window_renderer = SDL_CreateRenderer(m_sdl_window, -1, SDL_RENDERER_SOFTWARE);
 			if (m_sdl_window_renderer == NULL) {
-				lib::logger::get_logger()->warn("Cannot open: %s, error: %s for window %d", "SDL Createrenderer", SDL_GetError(), SDL_GetWindowID(m_sdl_window));
+				sdl_ambulant_window::s_lock.leave();
+				lib::logger::get_logger()->warn("Cannot open: %s, error: %s for window %d", "SDL CreateRenderer", SDL_GetError(), SDL_GetWindowID(m_sdl_window));
 				return -1;
 			}
 		}
 	}
+#endif//WITH_SDL_TEXTURE
 	m_sdl_renderer = m_sdl_screen_renderer; //TMP
 	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
 	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
