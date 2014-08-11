@@ -497,7 +497,6 @@ third_party_packages={
 #
 #          TPP("SDL",
 #              url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
-#              # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
 #              # xxxjack removed  --disable-mmx --disable-video-x11-xinput
 #              checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
 #              buildcmd=
@@ -848,11 +847,10 @@ third_party_packages={
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
-            # patch takes care of SDL bug #1513 http://bugzilla.libsdl.org/buglist.cgi?quicksearch=SDL_SetWindowSize
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL-2.0.*-* && "
-                "%s --disable-mmx --disable-video-x11-xinput &&"
+                "%s --disable-video-x11-xinput &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % (LINUX_COMMON_CONFIGURE)

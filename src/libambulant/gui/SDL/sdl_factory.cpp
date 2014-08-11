@@ -122,24 +122,6 @@ sdl_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	sdl_rect.h = r.height();
 	sdl_ambulant_window* saw = (sdl_ambulant_window*) m_parent_window;
 	ambulant_sdl_window* asw = saw->get_ambulant_sdl_window();
-#define SDL2_Bug1513_Workaround
-	// It appears when SDL is patched as described below, and this workarount code is enabled.
-	// although the Window is then sized properly, the drawables can be misformed.
-#ifdef  SDL2_Bug1513_Workaround
-	// due to bug #1513 in SDL2, the following function does not work.
-	// However, it has some (erroneous) effect when changing the window position as well.
-	// It is even possible to get the right effect when SDL_x11Window.c is patched
-	// as in third_party_packages/SDL-bug-1513.patch
-	SDL_SetWindowSize(saw->get_sdl_window(), sdl_rect.w, sdl_rect.h);
-	int win_x, win_y;
-	// The following lines do work around the first part of SDL2 bug #1513:
-	// they make the new window size effective. The window must be moved to
-	// a different position, otherwise SetWindowPosition is a no-op/
-	SDL_GetWindowPosition(saw->get_sdl_window(), &win_x, &win_y);
-	SDL_SetWindowPosition(saw->get_sdl_window(), win_x+100, win_y+100);
-	SDL_SetWindowPosition(saw->get_sdl_window(), win_x, win_y);
-	// end of workaround for bug #1513 in SDL2
-#endif//SDL2_Bug1513_Workaround
 	return asdlw;
 }
 
