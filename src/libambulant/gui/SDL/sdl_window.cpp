@@ -114,10 +114,10 @@ ambulant_sdl_window::need_redraw(const lib::rect &r)
 }
 
 void
-ambulant_sdl_window::redraw(const lib::rect &r)
+ambulant_sdl_window::redraw(const lib::rect &dummy)
 {
 	m_lock.enter();
-
+	lib::rect r = m_bounds;
 //	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::redraw(%p): redraw starts.", this);
 	sdl_ambulant_window* saw = get_sdl_ambulant_window();
 
@@ -440,7 +440,6 @@ sdl_ambulant_window::redraw (lib::rect r)
 {
 	sdl_ambulant_window::s_num_events--;
 #ifdef  WITH_SDL_TEXTURE
-	SDL_Rect sdl_rect = SDL_Rect_from_ambulant_rect (r); //XXX not used anymore
 	SDL_Renderer* renderer = get_sdl_window_renderer();
 	SDL_RenderSetClipRect(renderer, NULL);
 	SDL_SetRenderDrawColor (renderer, 0, 0, 0, 255 /*alpha*/);
@@ -449,7 +448,7 @@ sdl_ambulant_window::redraw (lib::rect r)
 	SDL_Surface* screen_surface = get_sdl_surface();
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, screen_surface);	
 	SDL_Rect sdl_dst_rect =  get_sdl_dst_rect();
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_rect=(SDL_Rect){%d,%d,%d,%d}, sdl_dst_rect={%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_rect.x, sdl_rect.y, sdl_rect.w, sdl_dst_rect.h, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::redraw(%p) screen_surface=(SDL_Surface*)%p, renderer=(SDL_Renderer*)%p, texture=(SDL_Texture*)%p, sdl_dst_rect={%d,%d,%d,%d}", this, screen_surface, renderer, texture, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
 	if (texture == NULL) {
 		return;
 	}
@@ -562,8 +561,8 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 			}
 		}
 	}
-#endif//WITH_SDL_TEXTURE
 	m_sdl_renderer = m_sdl_screen_renderer; //TMP
+#endif//WITH_SDL_TEXTURE
 	Uint32 win_ID = SDL_GetWindowID (m_sdl_window);
 	sdl_ambulant_window::s_id_sdl_ambulant_window_map[(int)win_ID] = this;
 	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::create_sdl_window_and_renderers::(%p): m_sdl_surface=(SDL_Surface*)%p m_sdl_renderer=(SDL_Renderer*)%p win_ID=%u sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]=%p", this, m_sdl_surface, m_sdl_renderer, win_ID, sdl_ambulant_window::s_id_sdl_ambulant_window_map[win_ID]);
