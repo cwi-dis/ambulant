@@ -78,9 +78,9 @@ create_sdl_fill_playable_factory(common::factories *factory, common::playable_fa
 class sdl_background_renderer : public common::background_renderer {
   public:
 	sdl_background_renderer(const common::region_info *src)
-	  :	common::background_renderer(src),
+	  :	common::background_renderer(src)
 #ifndef WITH_SDL_TEXTURE
-	m_bgcolor(lib::to_color("black")),
+      , m_bgcolor(lib::to_color("black")),
 	m_sdl_color(SDL_Color_from_ambulant_color(m_bgcolor)),
 	m_map(0)
 #endif//! WITH_SDL_TEXTURE

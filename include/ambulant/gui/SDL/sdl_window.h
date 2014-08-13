@@ -284,8 +284,13 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 };  // class sdl_ambulant_window
 // TMP: Experimental optimization: use the screen SDL_PixelFormat in renderers
 #define WITH_DYNAMIC_PIXEL_LAYOUT
-// TMP: Experimental optimization: turn off WITH_SDL_TEXTURE to update the screen;
-// this is equivalent to SDL_Flip in SDLL 1.x and seems SDL to select faster blit functions  
+// TMP: Experimental optimization: turn on WITH_SDL_TEXTURE to update
+// the screen using SDL_Renderer and SDL_texture
+// this is the way to work with SDL-2.x since when properly used more work can
+// offloaded from CPUs to graphics cards.
+// We currently turn this off and use SDL-2.x in a way equivalent SDL-1.x
+// because it seems SDL than select faster blit functions, apparently because
+// we don't have learned yet how to use SDL-2.x properly 
 //#define WITH_SDL_TEXTURE
 
 

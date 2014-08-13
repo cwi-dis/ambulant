@@ -70,8 +70,19 @@ sdl_video_renderer::sdl_video_renderer(
 	m_img_displayed(0),
 	m_data(NULL),
 	m_datasize(0),
-	m_pixel_order(net::pixel_unknown)
-
+	m_pixel_order(net::pixel_unknown),
+	m_data_surface(NULL),
+	m_Rmask(0),
+	m_Gmask(0),
+	m_Bmask(0),
+	m_Amask(0),
+#ifdef WITH_DYNAMIC_PIXEL_LAYOUT
+	m_bits_per_pixel(0),
+	m_bytes_per_pixel(0)
+#else //WITH_DYNAMIC_PIXEL_LAYOUT
+	m_bits_per_pixel(32),
+	m_bytes_per_pixel(SDL_BPP)
+#endif//WITH_DYNAMIC_PIXEL_LAYOUT
 {
 	SDL_Init(SDL_INIT_VIDEO);
 }
@@ -91,6 +102,7 @@ sdl_video_renderer::pixel_layout()
 	if (m_pixel_order == net::pixel_unknown) {
 		ambulant_sdl_window* asw = (ambulant_sdl_window*)  m_dest->get_gui_window();
 		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
+
 		m_pixel_order = get_pixel_order_from_SDL_PixelFormat (saw->get_window_pixel_format());
 	}
 	return m_pixel_order;
@@ -100,41 +112,59 @@ sdl_video_renderer::pixel_layout()
 }
 
 net::pixel_order
-sdl_video_renderer::get_pixel_order_from_SDL_PixelFormat (SDL_PixelFormat* sdl_pf) {
+sdl_video_renderer::get_pixel_order_from_SDL_PixelFormat (SDL_PixelFormat* sdl_pf)
+{
 	net::pixel_order rv = net::pixel_unknown;
 	if (sdl_pf != NULL) {
-		Uint32 sdl_window_pixel_format = sdl_pf->format;
+		Uint32 sdl_window_pixel_format = sdl_pf->format, Rmask, Gmask, Bmask, Amask;
+
 		switch (sdl_window_pixel_format) {
 		case  SDL_PIXELFORMAT_RGBA8888:
 			rv =  net::pixel_rgba;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_RGBX8888:
 			rv =  net::pixel_rgbx;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_BGRA8888:
 			rv = net::pixel_bgrx;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_BGRX8888:
 			rv = net::pixel_bgra;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_ARGB8888:
 			rv = net::pixel_argb;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_RGB888:
 			rv = net::pixel_xrgb;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_ABGR8888:
 			rv = net::pixel_abgr;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_BGR888:
 			rv = net::pixel_xbgr;
+			m_bytes_per_pixel = 4;
 			break;
 		case  SDL_PIXELFORMAT_RGB24:
 			rv = net::pixel_rgb;
+			m_bytes_per_pixel = 3;
 			break;
 		case  SDL_PIXELFORMAT_BGR24:
 			rv = net::pixel_bgr;
+			m_bytes_per_pixel = 3;
 			break;
+		}
+		// Find parameters for callling SDL_CreateRGBSurface() later, when we have data
+		bool ok = SDL_PixelFormatEnumToMasks(sdl_pf->format, &m_bits_per_pixel, &m_Rmask, &m_Gmask, &m_Bmask, &m_Amask);
+		if ( ! ok) {
+			lib::logger::get_logger()->trace ("%s: %s failed, error: %s",__PRETTY_FUNCTION__, "SDL_PixelFormatEnumToMasks", SDL_GetError());
+			return rv;
 		}
 	}
 	return rv;
@@ -198,14 +228,43 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		int src_width = src_rect.w;
 		int src_height = src_rect.h;
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body(%p): dst_width=%d, dst_height=%d, src_width=%d, src_height=%d",(void *)this, dst_width, dst_height, src_width, src_height);
-		SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(m_data, m_size.w, m_size.h, 32, m_size.w*SDL_BPP, rmask, gmask, bmask, amask);
-		if (src_rect.size() != dst_rect.size()) {
-			saw->copy_to_sdl_surface_scaled (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
-		} else {
-			saw->copy_to_sdl_surface (surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+		bool sdl_surface_created = false;
+		if (m_data_surface != NULL && (m_size.w != m_data_surface->w  || m_size.h != m_data_surface->h)) {
+			// source size changed
+			SDL_FreeSurface (m_data_surface);
+			m_data_surface = NULL;
 		}
-		SDL_FreeSurface(surface);
-		AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw_body(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+		if (m_data_surface == NULL) {
+			//XXXX is this correct ? should it rounded up on word boundary ?
+			int pitch = m_size.w*m_bytes_per_pixel;
+			m_data_surface = SDL_CreateRGBSurfaceFrom(m_data, m_size.w, m_size.h, m_bits_per_pixel, pitch, m_Rmask, m_Gmask, m_Bmask, m_Amask);
+			if (m_data_surface != NULL) {
+				m_data_surface->format->format &= ~0xFF;
+				m_data_surface->format->format |= m_bytes_per_pixel;
+				lib::logger::get_logger()->trace ("%s: m_data_surface.format=%s", __PRETTY_FUNCTION__, SDL_GetPixelFormatName(m_data_surface->format->format));
+				sdl_surface_created = true;
+			} else {
+				lib::logger::get_logger()->trace ("%s: %s failed, error: %s",__PRETTY_FUNCTION__, "SDL_CreateRGBSurfaceFrom", SDL_GetError());
+			}
+		} else {
+			m_data_surface->pixels = m_data;
+			m_data_surface->w = m_size.w;
+			m_data_surface->h = m_size.h;
+		}
+		if (m_data_surface != NULL) {
+			if (src_rect.size() != dst_rect.size()) {
+				saw->copy_to_sdl_surface_scaled (m_data_surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+			} else {
+				saw->copy_to_sdl_surface (m_data_surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
+			}
+#ifndef WITH_DYNAMIC_PIXEL_LAYOUT
+			if (sdl_surface_created) {
+				SDL_FreeSurface(m_data_surface);
+				m_data_surface = NULL;
+			}
+#endif// ! WITH_DYNAMIC_PIXEL_LAYOUT
+			AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw_body(%p) sdl_dst_rect={%d,%d,%d,%d}", this, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h);
+		}
 	}
 	m_lock.leave();
 }

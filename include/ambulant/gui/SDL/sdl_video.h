@@ -105,6 +105,9 @@ private:
 	char* m_data;
 	unsigned int m_datasize;
 	net::pixel_order m_pixel_order;
+	SDL_Surface* m_data_surface; // video frame pixel data
+	Uint32 m_Rmask, m_Gmask, m_Bmask, m_Amask;
+	int m_bits_per_pixel, m_bytes_per_pixel;
 };
 
 

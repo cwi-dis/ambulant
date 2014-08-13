@@ -541,6 +541,7 @@ sdl_ambulant_window::create_sdl_window_and_renderers(const char* window_name, li
 		return err;
 	}
 	m_sdl_surface = m_sdl_screen_surface;
+	lib::logger::get_logger()->trace ("%s: m_sdl_screen_surface.format=%s", __PRETTY_FUNCTION__, SDL_GetPixelFormatName(m_sdl_screen_surface->format->format));
 	m_window_pixel_format = m_sdl_screen_surface->format;
 
 	// Everything OK, register the window for use by SDL_Loop in the embedder (it should have one)
@@ -610,6 +611,8 @@ sdl_ambulant_window::create_sdl_surface_and_pixels(SDL_Rect* r, uint8_t** pixels
 			return err;
 		}
 	}
+	lib::logger::get_logger()->trace ("%s: *surface->format=%s", __PRETTY_FUNCTION__, SDL_GetPixelFormatName((*surface)->format->format));
+
 	if (renderer != NULL) {
 		*renderer = SDL_CreateSoftwareRenderer(*surface);
 		// enable alpha blending
