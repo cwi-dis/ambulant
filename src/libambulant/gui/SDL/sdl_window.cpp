@@ -872,7 +872,7 @@ _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_R
 	}
 	if (rv >= 0) {
 		if (src->format->format != dst->format->format) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): srcformat=%s dstformat=%s", SDL_GetPixelFormatName(src->format->format), SDL_GetPixelFormatName(dst->format->format));
+			AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): srcformat=%s dstformat=%s", SDL_GetPixelFormatName(src->format->format), SDL_GetPixelFormatName(dst->format->format));
 		}
 		if (scale) {
 			rv = SDL_BlitScaled(src, src_rect, dst, dst_rect);
