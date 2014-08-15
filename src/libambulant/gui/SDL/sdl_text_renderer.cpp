@@ -221,6 +221,8 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 
 		SDLPango_FreeContext (sdl_pango_context);
 #endif//defined(WITH_SDL_PANGO)
+		// optimize for blitting om following redraw() with the same content
+		m_sdl_surface = SDL_ConvertSurface(m_sdl_surface, asdlw->get_sdl_ambulant_window()->get_sdl_surface()->format, 0);
 	} // m_text_storage != NULL && m_sdl_surface == NULL)
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
