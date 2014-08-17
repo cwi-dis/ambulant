@@ -162,9 +162,10 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		return;
 	}
 	srcrect = rect(size(0,0));
-
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+	dstrect.translate(m_dest->get_global_topleft());
+
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
 	const common::region_info *ri = m_dest->get_info();
@@ -182,6 +183,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		// either nothing to redraw from source or to destination)
 		return;
 	}
+	
 	SDL_Rect sdl_srcrect = SDL_Rect_from_ambulant_rect (srcrect);
 	SDL_Rect sdl_dstrect = SDL_Rect_from_ambulant_rect (dstrect);
 	if (alpha_chroma != 1.0) { //TBD
@@ -189,22 +191,6 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	}
 	if (srcrect.size() != dstrect.size()) {
 		saw->copy_to_sdl_surface_scaled (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
-#ifdef JNK
-		/*
-		SDL_Surface* surface = SDL_CreateRGBSurface(0, dstrect.width(), dstrect.height(), 32, m_image->format->Rmask, m_image->format->Gmask, m_image->format->Bmask, m_image->format->Amask);
-		if (surface != NULL) {
-//			saw->dump_sdl_surface(m_image, "rimg");  // use this for debugging
-			int err = SDL_BlitScaled (m_image, NULL, surface, NULL);
-			if (err < 0) {
-				lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): SDL_BlitScaled return %s", SDL_GetError());
-			} else {
-//				saw->dump_sdl_surface(surface, "simg");  // use this for debugging
-				saw->copy_to_sdl_surface (surface, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
-			}
-			SDL_FreeSurface(surface);
-		}
-		*/
-#endif//JNK
 	} else {
 //		saw->dump_sdl_surface(m_image, "uimg");  // use this for debugging
 		saw->copy_to_sdl_surface (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);

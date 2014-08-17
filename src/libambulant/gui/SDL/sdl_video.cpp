@@ -213,7 +213,7 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			// either nothing to redraw from source or to destination)
 			return;
 		}
-		dst_rect.translate(p);
+		dst_rect.translate(m_dest->get_global_topleft());
 		SDL_Rect sdl_dst_rect = SDL_Rect_from_ambulant_rect(dst_rect);
 		SDL_Rect sdl_src_rect = SDL_Rect_from_ambulant_rect(src_rect);
 		// we use ARGB
