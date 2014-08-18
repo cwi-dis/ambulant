@@ -142,7 +142,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
 			AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
-#ifdef JNK
+#ifdef TBD // tiled bg
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (asw->get_ambulant_pixmap()));
 			gdk_pixbuf_render_to_drawable(
 				m_image,
@@ -156,7 +156,7 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 				0);
 			gdk_pixbuf_unref (m_image);
 			g_object_unref (G_OBJECT (gc));
-#endif//JNK
+#endif//TBD
 		}
 		m_lock.leave();
 		return;
@@ -178,23 +178,21 @@ sdl_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
-	dstrect.translate(p);
 	if (srcrect.w == 0 || srcrect.h == 0 || dstrect.w == 0 || dstrect.h == 0) {
 		// either nothing to redraw from source or to destination)
 		return;
 	}
-	
+	lib::rect clip_rect = dirty;
+	clip_rect.translate(m_dest->get_global_topleft());
 	SDL_Rect sdl_srcrect = SDL_Rect_from_ambulant_rect (srcrect);
 	SDL_Rect sdl_dstrect = SDL_Rect_from_ambulant_rect (dstrect);
-	if (alpha_chroma != 1.0) { //TBD
+	SDL_Rect sdl_cliprect = SDL_Rect_from_ambulant_rect (clip_rect);
+	
+	if (alpha_chroma != 1.0) { //TBD chroma keying
 	} else {
 	}
-	if (srcrect.size() != dstrect.size()) {
-		saw->copy_to_sdl_surface_scaled (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
-	} else {
 //		saw->dump_sdl_surface(m_image, "uimg");  // use this for debugging
-		saw->copy_to_sdl_surface (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media);
-	}
+	saw->copy_to_sdl_surface (m_image, &sdl_srcrect, &sdl_dstrect, 255 * alpha_media, &sdl_cliprect);
 //	saw->dump_sdl_surface(saw->get_sdl_surface(), "surf");  // use this for debugging
 	AM_DBG lib::logger::get_logger()->debug("sdl_image_renderer.redraw_body(%p done.", this);
 	m_lock.leave();

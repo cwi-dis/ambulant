@@ -172,14 +172,13 @@ class sdl_ambulant_window : public ambulant::common::gui_screen
 	/// Helper: get our counterpart gui_window.
 	ambulant_sdl_window* get_ambulant_sdl_window() { return m_ambulant_sdl_window; } 
 
-	/// Helper: copy the surface 'src' to the current surface (using a blit operation)
-	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+	/// Helper: copy and scale the surface 'src' to the current surface (using a blit operation)
+	int copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha, SDL_Rect* clip_rect = NULL);
 	/// Helper: copy the surface 'src' to the current surface (using a scaled blit operation)
 	/// s.t. the area 'src_rect' from the SDL_Surface 'src' fits in the area 'dst_rect' of 'dst'
 	/// This function can be used when both 'src_rect' and 'dst_rect' are properly computed by
 	/// 'get_fit_rect' to implement the SMIL 3.0 'fit' semanics
-	int copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
-//TBD	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha);
+//TBD	int copy_to_sdl_screen_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha); // do i need this one ?
 	bool get_sdl_fullscreen () { return m_sdl_fullscreen; }
 	/// Debug aids
 	void dump_sdl_surface (SDL_Surface* surf, const char* id);

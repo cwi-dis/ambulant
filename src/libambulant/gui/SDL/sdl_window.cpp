@@ -841,17 +841,28 @@ sdl_ambulant_window::delete_transition_surface()
 }
 
 int
-_copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha, bool scale)
+  _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha, SDL_Rect* clip_rect)
 {
 	int rv = 0;
 //	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): src=%p src_rect={%d,%d,%d,%d} dst=%p dst_rect={%d,%d,%d,%d} alpha=%u", src, src_rect?src_rect->x:0, src_rect?src_rect->y:0, src_rect?src_rect->w:0, src_rect?src_rect->h:0, dst,  dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
 	// Check requirements for SDL blitting
+	return rv;
+}
+
+int
+sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha, SDL_Rect* clip_rect)
+{
+	int rv = 0;
+	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
+	SDL_Surface* dst = get_sdl_surface();
 	if (src == NULL || dst == NULL || src->format == NULL || dst->format == NULL) {
 		// Can't do anything
 		return rv;
 	}
+	sdl_ambulant_window::s_lock.enter();
 	bool dst_locked = false;
 	bool src_locked = false;
+	bool must_scale = false;
 	if (SDL_MUSTLOCK(dst)) {
 		rv = SDL_LockSurface(dst);
 		if (rv >= 0) {
@@ -864,24 +875,71 @@ _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_R
 			src_locked = true;
 		}
 	}
+	if (src_rect->w != dst_rect->w || src_rect->h != dst_rect->h) {
+		must_scale = true;
+	}
+	SDL_Rect sdl_old_clip_rect;
+	if (clip_rect != NULL) {
+		SDL_GetClipRect(dst, &sdl_old_clip_rect);
+		SDL_SetClipRect(dst, clip_rect);
+	}
 	if (rv >= 0) {
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
 		if (rv < 0) {
 			lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", "SDL_SetSurfaceAlphaMod", SDL_GetError());
 		}
 	}
+	if (src->format->format != dst->format->format) {
+		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): srcformat=%s dstformat=%s", SDL_GetPixelFormatName(src->format->format), SDL_GetPixelFormatName(dst->format->format));
+	}
+	SDL_Surface* tmp_surface = NULL, *dst_surface = dst, *src_surface = src;
+	void* pixels = NULL;
+	SDL_Rect tmp_rect = *src_rect;
 	if (rv >= 0) {
-		if (src->format->format != dst->format->format) {
-			AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): srcformat=%s dstformat=%s", SDL_GetPixelFormatName(src->format->format), SDL_GetPixelFormatName(dst->format->format));
+		if (must_scale) {
+			if (dst_rect->w > dst->w || dst_rect->h > dst->h) {
+				// must create large enough surface for scaled blit
+				tmp_surface = SDL_CreateRGBSurface (0, dst_rect->w, dst_rect->h, 32, 0, 0, 0, 0); 
+				if (tmp_surface != NULL) {
+					pixels = malloc (dst_rect->w*dst_rect->h*4);
+					SDL_FreeFormat (tmp_surface->format);
+					tmp_surface->format = dst->format;
+					dst->format->refcount++;
+				}
+				if (tmp_surface == NULL || pixels == NULL) {
+		    			rv = SDL_SetError("Out of memory");
+				} else {
+					src_surface = dst_surface = tmp_surface;
+					float h_scale = (float) dst_rect->h / (float) src_rect->h;
+					float w_scale = (float) dst_rect->w / (float) src_rect->w;
+					tmp_rect.x = (int) roundf(src_rect->x*w_scale);
+					tmp_rect.y = (int) roundf(src_rect->y*h_scale);
+					tmp_rect.w = (int) roundf(src_rect->w*w_scale);
+					tmp_rect.h = (int) roundf(src_rect->h*h_scale);
+				}
+			}
 		}
-		if (scale) {
-			rv = SDL_BlitScaled(src, src_rect, dst, dst_rect);
-		} else {
-			rv = SDL_BlitSurface(src, src_rect, dst, dst_rect);
-		}
-		if (rv < 0) {
-			lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());
-		}
+	}
+	if (rv >= 0 && must_scale) {
+		dump_sdl_surface (src, "src");
+		rv = SDL_BlitScaled(src, src_rect, dst_surface, dst_rect);
+		dump_sdl_surface (dst_surface, tmp_surface ? "tmp" : "dst");
+	}
+	if (rv >= 0 && ! (must_scale && tmp_surface == NULL)) {
+		rv = SDL_BlitSurface(src_surface, &tmp_rect, dst, dst_rect);
+		dump_sdl_surface (dst, "dst");
+	}
+	if (rv < 0) {
+		lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", must_scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());
+	}
+	if (pixels != NULL) {
+	    free (pixels);
+	}
+	if (tmp_surface != NULL) {
+		SDL_FreeSurface (tmp_surface);
+	}
+	if (clip_rect != NULL) {
+		SDL_SetClipRect(dst, &sdl_old_clip_rect);
 	}
 	if (src_locked) {
 		SDL_UnlockSurface(src);
@@ -889,38 +947,7 @@ _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_R
 	if (dst_locked) {
 		SDL_UnlockSurface(dst);
 	}
-	return rv;
-}
-
-int
-sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
-{
-	int rv = 0;
-//	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
-	if (src != NULL) {
-		sdl_ambulant_window::s_lock.enter();
-		SDL_Surface* dst = get_sdl_surface();
-		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha, false);
-//DEBUG		dump_sdl_surface (src, "Asrc");
-//DEBUG		dump_sdl_surface (dst, "Bdst");
-		sdl_ambulant_window::s_lock.leave();
-	}
-	return rv;
-}
-
-int
-sdl_ambulant_window::copy_to_sdl_surface_scaled (SDL_Surface* src, SDL_Rect* src_rect, SDL_Rect* dst_rect, Uint8 alpha)
-{
-	int rv = 0;
-	AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_to_sdl_surface(): dst_rect={%d,%d %d,%d} alpha=%u", dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
-	if (src != NULL) {
-		sdl_ambulant_window::s_lock.enter();
-		SDL_Surface* dst = get_sdl_surface();
-		rv = _copy_sdl_surface (src, src_rect, dst, dst_rect, alpha, true);
-//DEBUG		dump_sdl_surface (src, "Assc");
-//DEBUG		dump_sdl_surface (dst, "Bdsc");
-		sdl_ambulant_window::s_lock.leave();
-	}
+	sdl_ambulant_window::s_lock.leave();
 	return rv;
 }
 

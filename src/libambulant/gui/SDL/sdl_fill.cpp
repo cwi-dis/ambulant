@@ -117,7 +117,7 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	assert (err==0);
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(%p, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 	SDL_Rect sdl_src_rect = {0, 0, W, H};
-	err = saw->copy_to_sdl_surface_scaled (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
+	err = saw->copy_to_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
 	assert (err==0);
 }
 

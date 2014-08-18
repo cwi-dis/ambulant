@@ -193,11 +193,12 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		sdl_ambulant_window* saw = asw->get_sdl_ambulant_window();
 
 		_frame_was_displayed();
-		const lib::point p = m_dest->get_global_topleft();
 		const lib::rect &r = m_dest->get_rect();
 		lib::rect dst_rect_whole = r;
-
-		dst_rect_whole.translate(p);
+		lib::rect clip_rect = dirty;
+		const lib::point p = m_dest->get_global_topleft();
+		clip_rect.translate(p);
+		
 		// XXXX WRONG! This is the info for the region, not for the node!
 		const common::region_info *info = m_dest->get_info();
 		AM_DBG lib::logger::get_logger()->debug("sdl_video_renderer.redraw_body: info=%p", info);
@@ -209,13 +210,14 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		lib::rect src_rect; // lib::rect(lib::point(0,0), lib::size(width, height)), dst_rect;
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		lib::rect dst_rect = m_dest->get_fit_rect(croprect, m_size, &src_rect, m_alignment);
+		dst_rect.translate(p);
 		if (src_rect.w == 0 || src_rect.h == 0 || dst_rect.w == 0 || dst_rect.h == 0) {
 			// either nothing to redraw from source or to destination)
 			return;
 		}
-		dst_rect.translate(m_dest->get_global_topleft());
 		SDL_Rect sdl_dst_rect = SDL_Rect_from_ambulant_rect(dst_rect);
 		SDL_Rect sdl_src_rect = SDL_Rect_from_ambulant_rect(src_rect);
+		SDL_Rect sdl_clip_rect = SDL_Rect_from_ambulant_rect(clip_rect);
 		// we use ARGB
 		Uint32 rmask, gmask, bmask, amask;
 		amask = 0xff000000;
@@ -235,7 +237,7 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			m_data_surface = NULL;
 		}
 		if (m_data_surface == NULL) {
-			//XXXX is this correct ? should it rounded up on word boundary ?
+			//XXXX is this correct ? should it be rounded up on word boundary ?
 			int pitch = m_size.w*m_bytes_per_pixel;
 			m_data_surface = SDL_CreateRGBSurfaceFrom(m_data, m_size.w, m_size.h, m_bits_per_pixel, pitch, m_Rmask, m_Gmask, m_Bmask, m_Amask);
 			if (m_data_surface != NULL) {
@@ -252,11 +254,7 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			m_data_surface->h = m_size.h;
 		}
 		if (m_data_surface != NULL) {
-			if (src_rect.size() != dst_rect.size()) {
-				saw->copy_to_sdl_surface_scaled (m_data_surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
-			} else {
-				saw->copy_to_sdl_surface (m_data_surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0));
-			}
+			saw->copy_to_sdl_surface (m_data_surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0), &sdl_clip_rect);
 #ifndef WITH_DYNAMIC_PIXEL_LAYOUT
 			if (sdl_surface_created) {
 				SDL_FreeSurface(m_data_surface);
