@@ -921,13 +921,13 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 		}
 	}
 	if (rv >= 0 && must_scale) {
-		dump_sdl_surface (src, "src");
+//		dump_sdl_surface (src, "src");
 		rv = SDL_BlitScaled(src, src_rect, dst_surface, dst_rect);
-		dump_sdl_surface (dst_surface, tmp_surface ? "tmp" : "dst");
+//		dump_sdl_surface (dst_surface, tmp_surface ? "tmp" : "dst");
 	}
 	if (rv >= 0 && ! (must_scale && tmp_surface == NULL)) {
 		rv = SDL_BlitSurface(src_surface, &tmp_rect, dst, dst_rect);
-		dump_sdl_surface (dst, "dst");
+//		dump_sdl_surface (dst, "dst");
 	}
 	if (rv < 0) {
 		lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", must_scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());

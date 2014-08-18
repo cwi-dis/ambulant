@@ -191,6 +191,7 @@ sdl_gui::sdl_loop() {
 			if (event.user.code == 317107) {
 				if (m_gui_player != NULL) {
 					m_gui_player->redraw(event.user.data1, event.user.data2);
+					free (event.user.data2); // malloc'd by need_redraw()
 				}
  			}
 			break;
