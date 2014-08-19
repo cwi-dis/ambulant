@@ -440,34 +440,44 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	}
 	xmlChar *result_str = xmlXPathCastToString(result);
 	xmlXPathFreeObject(result);
+    result = NULL;
 	// Now compute the node-set expression and check that it begets a single node
 	m_context->node = xmlDocGetRootElement(m_state);
 	result = xmlXPathEvalExpression(BAD_CAST var, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate var=\"%s\"", var);
+        xmlFree(result_str);
 		m_lock.leave();
 		return;
 	}
 	if (result->type != XPATH_NODESET) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" is not a node-set", var);
+        xmlXPathFreeObject(result);
+        xmlFree(result_str);
 		m_lock.leave();
 		return;
 	}
 	xmlNodeSetPtr nodeset = result->nodesetval;
 	if (nodeset == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" does not refer to an existing item", var);
+        xmlXPathFreeObject(result);
+        xmlFree(result_str);
 		m_lock.leave();
 		return;
 	}
 	if (nodeset->nodeNr != 1) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", var, nodeset->nodeNr);
+        xmlXPathFreeObject(result);
+        xmlFree(result_str);
 		m_lock.leave();
 		return;
 	}
 	// Finally set the value
 	xmlNodePtr nodeptr = *nodeset->nodeTab;
 	xmlNodeSetContent(nodeptr, result_str);
+    xmlXPathFreeObject(result);
 	xmlFree(result_str);
+    
     // XXXJACK: this looks dangerous, but otherwise we get deadlocks...
 	m_lock.leave();
 	_check_state_change(nodeptr);
@@ -795,6 +805,7 @@ xpath_state_component::want_state_change(const char *ref, common::state_change_c
 		std::pair<std::string, common::state_change_callback*> item(ref, cb);
 		m_state_change_callbacks.push_back(item);
 	}
+    xmlXPathFreeObject(result);
 	m_lock.leave();
 }
 
@@ -832,6 +843,7 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 				}
 			}
 		}
+        xmlXPathFreeObject(result);
 	}
 	m_lock.leave();
 	todolisttype::iterator t;
