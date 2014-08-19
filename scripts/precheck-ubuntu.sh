@@ -34,6 +34,7 @@ debpackages="
   libavformat-dev 
   libavcodec-dev 
   libswscale-dev 
+  libswresample-dev 
   libxerces-c-dev 
   python-dev 
   python-gtk2-dev 
