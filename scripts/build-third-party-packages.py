@@ -497,10 +497,9 @@ third_party_packages={
 
         TPP("SDL",
             url="https://www.libsdl.org/release/SDL2-2.0.3.tar.gz",
-            # xxxjack removed  --disable-mmx --disable-video-x11-xinput
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-               "cd SDL-2.0.*-* && "
+               "cd SDL2-2.* && "
                "./configure --prefix='%s' CFLAGS='%s' LDFLAGS='%s' --disable-dependency-tracking &&"
                "make ${MAKEFLAGS} && "
                "make install &&"
