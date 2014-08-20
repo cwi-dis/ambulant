@@ -496,7 +496,7 @@ third_party_packages={
 #             ),
 
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-2.0.tar.gz",
+            url="https://www.libsdl.org/release/SDL2-2.0.3.tar.gz",
             # xxxjack removed  --disable-mmx --disable-video-x11-xinput
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
