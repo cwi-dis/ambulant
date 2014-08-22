@@ -338,7 +338,7 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
 	dirty->ambulant_widget = m_ambulant_widget;
 	gtk_ambulant_widget::s_lock.enter();
-	guint draw_area_tag = g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
+	guint draw_area_tag = g_timeout_add_full(G_PRIORITY_DEFAULT, 1, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
 	dirty->tag = draw_area_tag;
 	dirty->ambulant_widget->m_draw_area_tags.insert(draw_area_tag);
 	gtk_ambulant_widget::s_lock.leave();
