@@ -219,7 +219,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	GdkPixbuf* new_image_pixbuf = NULL;
 	if (S_L != 0 || S_T != 0 || S_W != D_W || S_H != D_H) {
 		GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
-		gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
+		new_image_pixbuf = gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
 		g_object_unref(G_OBJECT(partial_pixbuf));
 	}
 	N_L = N_T = 0;
