@@ -216,12 +216,9 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 
 #if 1
-	GdkPixbuf* new_image_pixbuf = NULL;
-	if (S_L != 0 || S_T != 0 || S_W != D_W || S_H != D_H) {
-		GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
-		new_image_pixbuf = gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
-		g_object_unref(G_OBJECT(partial_pixbuf));
-	}
+	GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
+	GdkPixbuf* new_image_pixbuf =  gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
+	g_object_unref(G_OBJECT(partial_pixbuf));
 	N_L = N_T = 0;
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
@@ -236,7 +233,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		gdk_pixbuf_blend (
 			screen_pixbuf,
 			rect0,
-			new_image_pixbuf == NULL ? m_image : new_image_pixbuf,
+			new_image_pixbuf,
 			rect0,
 			alpha_chroma,
 			alpha_media,
@@ -254,15 +251,13 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		gdk_draw_pixbuf(
 			GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
 			gc,
-			new_image_pixbuf == NULL ? m_image : new_image_pixbuf,
+			new_image_pixbuf,
 			N_L, N_T,
 			D_L, D_T,
 			D_W, D_H,
 			GDK_RGB_DITHER_NONE, 0, 0);
 	}
-	if (new_image_pixbuf != NULL) {
-		g_object_unref(G_OBJECT (new_image_pixbuf));
-	}
+	g_object_unref(G_OBJECT (new_image_pixbuf));
 #else
 	// Old (non-alpha) code, left here for reference and possible performance comparisons, for now.
 	GdkPixbuf* scaled_image_pixbuf = NULL;
