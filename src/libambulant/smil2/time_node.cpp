@@ -721,7 +721,10 @@ void time_node::activate(qtime_type timestamp) {
 		else if(is_statecommand()) {
 			start_statecommand(sd_offset);
 			// State commands finish immediately, make it so.
-			assert(m_state->ident() == ts_active);
+			if (m_state->ident() != ts_active) {
+				m_logger->debug("time_node::activate: get_sig=%s m_state=%s != ts_active ! Continuing anyway..", get_sig().c_str(), time_state_str(m_state->ident()));
+				return;
+			}
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
 		}
