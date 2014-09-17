@@ -313,7 +313,6 @@ video_renderer::post_stop()
 		m_dest = NULL;
 		if (m_audio_renderer) m_audio_renderer->post_stop();
 		if (m_src) m_src->stop();
-        m_src = NULL;
 		lib::logger::get_logger()->debug("video_renderer::post_stop: got %d frames, displayed %d, skipped %d dups, %d late, %d early, %d NULL for %s", m_frame_received, m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing, m_node->get_url("src").get_url().c_str());
 	}
 	m_lock.leave();
@@ -429,13 +428,6 @@ void
 video_renderer::data_avail()
 {
 	m_lock.enter();
-    if (m_src) {
-        // Get bandwidth usage data
-        const char *resource;
-        long bw_amount = m_src->get_bandwidth_usage_data(&resource);
-        if (bw_amount >= 0) 
-            m_context->playable_resource(this, resource, bw_amount);
-    }
     
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail(this = 0x%x):", (void *) this);
 	if (m_post_stop_called || !m_activated || !m_src) {
@@ -444,6 +436,13 @@ video_renderer::data_avail()
 		m_lock.leave();
 		return;
 	}
+
+	// Get bandwidth usage data
+	const char *resource;
+	long bw_amount = m_src->get_bandwidth_usage_data(&resource);
+	if (bw_amount >= 0) 
+		m_context->playable_resource(this, resource, bw_amount);
+
 	if (m_is_stalled) {
 		m_is_stalled = false;
 		m_context->playable_unstalled(this);
