@@ -26,7 +26,7 @@ URLS={
         "http://ambulantplayer.org/nightlybuilds/default/iphone/iAmbulant-2.5.%(ydate)s-default.ipa",
     ],
 
-    'ubuntu-14.04-source' : [
+    'Ubuntu-14.04-source' : [
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty.dsc",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty.tar.gz",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty_amd64.build",
@@ -34,7 +34,7 @@ URLS={
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty_source.changes",
     ],
     
-    'ubuntu-14.04-amd64' : [
+    'Ubuntu-14.04-amd64' : [
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant-common_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant-gtk_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant-plugins-dev_2.5.%(ydate)s%%7Etrusty_amd64.deb",
@@ -46,7 +46,7 @@ URLS={
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty.dsc",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty_amd64.changes",
     ],
-    'ubuntu-14.04-i386' : [
+    'Ubuntu-14.04-i386' : [
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-i386/debian-%(ydate)s/ambulant-common_2.5.%(ydate)s%%7Etrusty_i386.deb",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-i386/debian-%(ydate)s/ambulant-gtk_2.5.%(ydate)s%%7Etrusty_i386.deb",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-i386/debian-%(ydate)s/ambulant-plugins-dev_2.5.%(ydate)s%%7Etrusty_i386.deb",
@@ -59,8 +59,8 @@ URLS={
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-i386/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty_i386.changes",
     ],
     
-    'ubuntu-14.04-amd64-PPA' : [
-         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-common_2.5.%(ydate)s%%7Etrusty_amd64.deb",
+    'Ubuntu-14.04-amd64-PPA' : [
+        "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-common_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-gtk_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-plugins-dev_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-plugins_2.5.%(ydate)s%%7Etrusty_amd64.deb",
@@ -70,7 +70,7 @@ URLS={
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/libambulant-dev_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant_2.5.%(ydate)s%%7Etrusty.dsc",
     ],
-    'ubuntu-14.04-i386-PPA' : [
+    'Ubuntu-14.04-i386-PPA' : [
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-common_2.5.%(ydate)s%%7Etrusty_i386.deb",
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-gtk_2.5.%(ydate)s%%7Etrusty_i386.deb",
         "http://ppa.launchpad.net/ambulant/ambulant-nightly/ubuntu/pool/main/a/ambulant/ambulant-plugins-dev_2.5.%(ydate)s%%7Etrusty_i386.deb",
