@@ -43,7 +43,7 @@ rem
 
 rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
-rem Win7 Jack: TODAY=%date%
+rem LogLocation=%TODAY%/win32
 
 rem
 rem Other settable parameters

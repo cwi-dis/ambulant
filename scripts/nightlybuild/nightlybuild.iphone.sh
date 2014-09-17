@@ -56,6 +56,7 @@ DESTINATION_IPHONE=$DESTINATION_HOST:$DESTINATION_IPHONE_DIR
 echo
 echo ==========================================================
 echo Ambulant nightly build for MacOSX, $USER@`hostname`, `date`
+echo LogLocation=$TODAY/iphone
 echo ==========================================================
 echo
 

@@ -58,6 +58,7 @@ DESTINATION_PLUGIN=$DESTINATION_HOST:$DESTINATION_PLUGIN_DIR
 echo
 echo ==========================================================
 echo Ambulant nightly build for MacOSX, $USER@`hostname`, `date`
+echo LogLocation=$TODAY/mac
 echo ==========================================================
 echo
 
