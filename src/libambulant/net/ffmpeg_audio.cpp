@@ -453,7 +453,7 @@ ffmpeg_decoder_datasource::data_avail()
 			if (audio_packet.flag == datasource_packet_flag_avpacket) {
 				real_pkt_ptr = audio_packet.pkt;
 				if (real_pkt_ptr == NULL) {
-					lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: pkt=NULL for pts=%lld", audio_packet.pts);
+					lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: pkt=NULL for flag=datasource_packet_flag_avpacket, pts=%lld", audio_packet.pts);
 					m_lock.leave();
 					return;
 				}

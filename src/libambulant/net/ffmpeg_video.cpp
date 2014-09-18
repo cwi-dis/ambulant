@@ -547,7 +547,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 	if (dspacket.flag == datasource_packet_flag_avpacket) {
 		if (avpkt == NULL) {
-			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: pkt=NULL for flag=avpacket");
+			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: pkt=NULL for flag=datasource_packet_flag_avpacket, pts=%lld", ipts);
 			m_lock.leave();
 			return;
 		}
@@ -555,6 +555,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: flush buffers");
 		avcodec_flush_buffers(m_con);
 		_restart_queues();
+		m_lock.leave();
+		return;
+	} else if (dspacket.flag == datasource_packet_flag_nodata) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: flag=datasource_packet_flag_nodata");
 		m_lock.leave();
 		return;
 	} else {
@@ -581,18 +585,18 @@ ffmpeg_video_decoder_datasource::data_avail()
 		m_con->skip_frame = AVDISCARD_DEFAULT;
 	}
 	
+#if 0
 	// For live streams we also skip frames if we have too much data in our input or output buffer.
 	// NOTE: this may not be a good idea if there is an audio stream attached to this video stream...
     if (m_is_live) {
         // Give a warning if there is too much data in the input or output queue
         int inSize = m_src->size();
         int outSize = size();
-/*        
         if (inSize > 1 || outSize > 1) {
             lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: backlog: %d packets before decoder, %d frames after decoder", inSize, outSize);
             m_con->skip_frame = AVDISCARD_NONREF;
-        } */
     }
+#endif
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: pts=%lld, len=%d, flags=0x%x data[4,5]=0x%x 0x%x, side_data=%p:%d", avpkt->pts, avpkt->size, avpkt->flags, avpkt->data[4], avpkt->data[5], avpkt->side_data, avpkt->side_data_elems);
 	// Let's decode the packet, and see whether we get a frame back.
@@ -659,7 +663,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 		_forward_frame(pts, frame);
 		
 	} else {
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: drop frame ipts=%lld, before oldest_timestamp_wanted %lld", ipts, m_oldest_timestamp_wanted);
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: drop frame ipts=%lld, pts=%lld before oldest_timestamp_wanted %lld", ipts, pts, m_oldest_timestamp_wanted);
 		m_dropped_count++;
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: done decoding (%p) ", m_con);

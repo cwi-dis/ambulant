@@ -228,6 +228,7 @@ class AMBULANTAPI audio_format_choices {
 
 /// Helper struct: a packet plus its timestamp plus a flag.
 enum datasource_packet_flag {
+	datasource_packet_flag_nodata,
 	datasource_packet_flag_eof,
 	datasource_packet_flag_flush,
 	datasource_packet_flag_avpacket
@@ -238,7 +239,7 @@ class datasource_packet {
 	datasource_packet()
 	:	pts(0),
 		pkt(NULL),
-        flag(datasource_packet_flag_avpacket)
+        flag(datasource_packet_flag_nodata)
     {};
 	datasource_packet(timestamp_t _pts, struct AVPacket *_pkt, datasource_packet_flag _flag)
 	:	pts(_pts),
