@@ -443,8 +443,13 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 
 	if (m_fmt.frameduration <= 0) {
 		// And convert the timestamp
+#if 0
 		// XXXJACK: Bad code. Use av_rescale_q with correct timebases.
 		timestamp_t framedur = (timestamp_t) round(m_con->time_base.num *1000000.0 / (double) m_con->time_base.den) ;
+#else
+		// XXXJACK, better, but still not good. Why do we have to use the number "1000"?
+		timestamp_t framedur = (timestamp_t) av_rescale_q(1000, m_con->time_base, AMBULANT_TIMEBASE);
+#endif
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate: frameduration = %lld, %d %d", framedur, m_con->time_base.num, m_con->time_base.den);
 		m_fmt.frameduration = framedur;
 	}
