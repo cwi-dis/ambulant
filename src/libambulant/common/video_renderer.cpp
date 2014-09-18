@@ -312,7 +312,6 @@ video_renderer::post_stop()
 		if (m_dest) m_dest->renderer_done(this);
 		m_dest = NULL;
 		if (m_audio_renderer) m_audio_renderer->post_stop();
-		if (m_src) m_src->stop();
 		lib::logger::get_logger()->debug("video_renderer::post_stop: got %d frames, displayed %d, skipped %d dups, %d late, %d early, %d NULL for %s", m_frame_received, m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing, m_node->get_url("src").get_url().c_str());
 	}
 	m_lock.leave();
