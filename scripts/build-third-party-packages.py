@@ -414,11 +414,11 @@ third_party_packages={
         #DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
         
         # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
-        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libavutil-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libswscale-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libswresample-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
 
     ],
  
