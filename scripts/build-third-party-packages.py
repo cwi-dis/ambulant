@@ -284,7 +284,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 
 IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
 if not IOS_VERSION:
-    IOS_VERSION = '5.1'
+    IOS_VERSION = '7.1'
     
 IOS_SDK=os.environ.get('SDKROOT', None)
 if not IOS_SDK:
@@ -300,6 +300,10 @@ IOS_VERSION_TO_PARAMETERS = {
         'simarch' : '-arch i386',
         },
     '6.0' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
+        },
+    '7.1' : {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
         },
