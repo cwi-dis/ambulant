@@ -40,6 +40,13 @@ debian and linux:
 	- Create correct crontab
 
 mac and iphone:
+	Another Parallels VM running OSX 10.8 currently, on maunakea. User nightlybuilds.
+	To prepare a new VM (for example a new OSX release):
+	- Create Parallels VM from recovery partition. Sign in to appstore/icloud
+	  using Jack's account (jackjansen@mac.com).
+	
+	
+mac and iphone (old):
 	Jack's workstation, user nightlybuilds. Has especially crafter keychain file.
 	NOTE: the key used for signing must be accessible without password,
 	otherwise you will get an error when running from cron during code-signing.
