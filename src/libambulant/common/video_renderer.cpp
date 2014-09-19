@@ -312,7 +312,6 @@ video_renderer::post_stop()
 		if (m_dest) m_dest->renderer_done(this);
 		m_dest = NULL;
 		if (m_audio_renderer) m_audio_renderer->post_stop();
-		if (m_src) m_src->stop();
 		lib::logger::get_logger()->debug("video_renderer::post_stop: got %d frames, displayed %d, skipped %d dups, %d late, %d early, %d NULL for %s", m_frame_received, m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing, m_node->get_url("src").get_url().c_str());
 	}
 	m_lock.leave();
@@ -519,7 +518,7 @@ video_renderer::data_avail()
 	}
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: buf=0x%x, size=%d, ts=%d, now=%d", (void *) buf, size, (int)frame_ts_micros, (int)now_micros);
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: framenum=%d, frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", m_frame_received, frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);
 
 	// If we have a frame and it should be on-screen already we show it.
 	// If the frame's timestamp is still in the future we fall through, and schedule another

@@ -40,6 +40,23 @@ debian and linux:
 	- Create correct crontab
 
 mac and iphone:
+	Another Parallels VM running OSX 10.8 currently, on maunakea. User nightlybuilds.
+	To prepare a new VM (for example a new OSX release):
+	- Create Parallels VM from recovery partition. Sign in to appstore/icloud
+	  using Jack's account (jackjansen@mac.com).
+	- Install convenience tools such as TextWrangler and its commandline tools
+	- Install XCode
+	- install command line tools
+	- install Mercurial
+	- run (or inspect) scripts/precheck-mac
+	- Install certificates from ambulant-private/certificates/xcode
+	- run ambulant autogen.sh
+	- try building third-party-packages
+	- try building ambulant
+	- try running nightlybuild scripts (mac and iphone)
+	- add crontab
+	
+mac and iphone (old):
 	Jack's workstation, user nightlybuilds. Has especially crafter keychain file.
 	NOTE: the key used for signing must be accessible without password,
 	otherwise you will get an error when running from cron during code-signing.

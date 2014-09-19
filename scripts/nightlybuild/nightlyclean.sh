@@ -1,6 +1,14 @@
 #!/bin/sh
 # Clean out old nightly builds on the ambulantplayer.org website.
 BUILDDIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
+TODAY=`date +%Y%m%d`
+echo
+echo ==========================================================
+echo Ambulant nightly clean, $USER@`hostname`, `date`
+echo LogLocation=$TODAY/clean
+echo ==========================================================
+echo
+
 set -e
 set -x
 cd $BUILDDIR
