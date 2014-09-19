@@ -284,7 +284,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 
 IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
 if not IOS_VERSION:
-    IOS_VERSION = '5.1'
+    IOS_VERSION = '7.1'
     
 IOS_SDK=os.environ.get('SDKROOT', None)
 if not IOS_SDK:
@@ -300,6 +300,10 @@ IOS_VERSION_TO_PARAMETERS = {
         'simarch' : '-arch i386',
         },
     '6.0' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
+        },
+    '7.1' : {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
         },
@@ -414,11 +418,11 @@ third_party_packages={
         #DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
         
         # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
-        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libavutil-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libswscale-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
         DebianTPP("libswresample-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
 
     ],
  
