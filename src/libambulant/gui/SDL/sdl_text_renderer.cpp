@@ -174,11 +174,7 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 			TTF_SetFontHinting(m_ttf_font, (int)TTF_HINTING_NORMAL);
 		}
 		SDL_Color sdl_color = {redc(m_text_color),greenc(m_text_color),bluec(m_text_color)};
-#ifndef ANDROID
-		m_sdl_surface = TTF_RenderText_Solid (m_ttf_font, m_text_storage, sdl_color);
-#else // ANDROID
-		m_sdl_surface = TTF_RenderText_Blended (m_ttf_font, m_text_storage, sdl_color);
-#endif // ANDROID
+		m_sdl_surface = TTF_RenderText_Blended_Wrapped (m_ttf_font, m_text_storage, sdl_color, W);
 		assert (m_sdl_surface);
 #elif defined(WITH_SDL_PANGO)
 		// initialize the pango context, layout...
@@ -225,8 +221,9 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		m_sdl_surface = SDL_ConvertSurface(m_sdl_surface, asdlw->get_sdl_ambulant_window()->get_sdl_surface()->format, 0);
 	} // m_text_storage != NULL && m_sdl_surface == NULL)
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
+	SDL_Rect sdl_src_rect = {0,0,W,H};
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
-	saw->copy_to_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
+	saw->copy_to_sdl_surface (m_sdl_surface, &sdl_src_rect, &sdl_dst_rect, 255 * alpha_media);
 }
 
 #endif//defined(WITH_SDL_IMAGE)

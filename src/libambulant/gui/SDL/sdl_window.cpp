@@ -875,7 +875,15 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 			src_locked = true;
 		}
 	}
-	if (src_rect->w != dst_rect->w || src_rect->h != dst_rect->h) {
+	SDL_Rect sdl_src_rect;
+	if (src_rect == NULL) {
+		sdl_src_rect.x = sdl_src_rect.w = 0;
+		sdl_src_rect.w = src->w;
+		sdl_src_rect.h = src->h;
+	} else {
+		sdl_src_rect = *src_rect;
+	}
+	if (sdl_src_rect.w != dst_rect->w || sdl_src_rect.h != dst_rect->h) {
 		must_scale = true;
 	}
 	SDL_Rect sdl_old_clip_rect;
@@ -894,7 +902,7 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	}
 	SDL_Surface* tmp_surface = NULL, *dst_surface = dst, *src_surface = src;
 	void* pixels = NULL;
-	SDL_Rect tmp_rect = *src_rect;
+	SDL_Rect tmp_rect = sdl_src_rect;
 	if (rv >= 0) {
 		if (must_scale) {
 			if (dst_rect->w > dst->w || dst_rect->h > dst->h) {
@@ -910,19 +918,19 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 		    			rv = SDL_SetError("Out of memory");
 				} else {
 					src_surface = dst_surface = tmp_surface;
-					float h_scale = (float) dst_rect->h / (float) src_rect->h;
-					float w_scale = (float) dst_rect->w / (float) src_rect->w;
-					tmp_rect.x = (int) roundf(src_rect->x*w_scale);
-					tmp_rect.y = (int) roundf(src_rect->y*h_scale);
-					tmp_rect.w = (int) roundf(src_rect->w*w_scale);
-					tmp_rect.h = (int) roundf(src_rect->h*h_scale);
+					float h_scale = (float) dst_rect->h / (float) sdl_src_rect.h;
+					float w_scale = (float) dst_rect->w / (float) sdl_src_rect.w;
+					tmp_rect.x = (int) roundf(sdl_src_rect.x*w_scale);
+					tmp_rect.y = (int) roundf(sdl_src_rect.y*h_scale);
+					tmp_rect.w = (int) roundf(sdl_src_rect.w*w_scale);
+					tmp_rect.h = (int) roundf(sdl_src_rect.h*h_scale);
 				}
 			}
 		}
 	}
 	if (rv >= 0 && must_scale) {
 //		dump_sdl_surface (src, "src");
-		rv = SDL_BlitScaled(src, src_rect, dst_surface, dst_rect);
+		rv = SDL_BlitScaled(src, &sdl_src_rect, dst_surface, dst_rect);
 //		dump_sdl_surface (dst_surface, tmp_surface ? "tmp" : "dst");
 	}
 	if (rv >= 0 && ! (must_scale && tmp_surface == NULL)) {
