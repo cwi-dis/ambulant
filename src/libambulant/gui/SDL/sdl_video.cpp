@@ -207,7 +207,7 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			// XXXX Fill with background color TBD
 			lib::color_t bgcolor = info->get_bgcolor();
 		}
-		lib::rect src_rect; // lib::rect(lib::point(0,0), lib::size(width, height)), dst_rect;
+		lib::rect src_rect = lib::rect(lib::size(0,0));
 		lib::rect croprect = m_dest->get_crop_rect(m_size);
 		lib::rect dst_rect = m_dest->get_fit_rect(croprect, m_size, &src_rect, m_alignment);
 		dst_rect.translate(p);
@@ -248,13 +248,13 @@ sdl_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			} else {
 				lib::logger::get_logger()->trace ("%s: %s failed, error: %s",__PRETTY_FUNCTION__, "SDL_CreateRGBSurfaceFrom", SDL_GetError());
 			}
-		} else {
+		}			
+		if (m_data_surface != NULL) {
 			m_data_surface->pixels = m_data;
 			m_data_surface->w = m_size.w;
 			m_data_surface->h = m_size.h;
-		}
-		if (m_data_surface != NULL) {
 			saw->copy_to_sdl_surface (m_data_surface, &sdl_src_rect, &sdl_dst_rect, 255 * (info?info->get_mediaopacity():1.0), &sdl_clip_rect);
+			AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_video::redraw_body(%p) sdl_src_rect={%d,%d,%d,%d},  sdl_dst_rect={%d,%d,%d,%d}, sdl_clip_rect={%d,%d,%d,%d}, croprect={%d,%d,%d,%d}", this, sdl_src_rect.x, sdl_src_rect.y, sdl_src_rect.w, sdl_src_rect.h, sdl_dst_rect.x, sdl_dst_rect.y, sdl_dst_rect.w, sdl_dst_rect.h, sdl_clip_rect.x, sdl_clip_rect.y, sdl_clip_rect.w, sdl_clip_rect.h, croprect.top(), croprect.left(), croprect.width(), croprect.height());
 #ifndef WITH_DYNAMIC_PIXEL_LAYOUT
 			if (sdl_surface_created) {
 				SDL_FreeSurface(m_data_surface);

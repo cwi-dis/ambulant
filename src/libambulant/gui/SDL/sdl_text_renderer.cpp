@@ -33,15 +33,19 @@
 
 #if defined(WITH_SDL_TTF)
 #define FONT "Times 6"
-#ifndef ANDROID
-#define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
-#define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
-#define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
-#else // ANDROID
+#if defined(AMBULANT_PLATFORM_MACOS)
+#define DEFAULT_FONT_FILE1 "/Library/Fonts/Arial.ttf"
+#define DEFAULT_FONT_FILE2 "/Library/Fonts/Times New Roman.ttf"
+#define DEFAULT_FONT_FILE3 "/Library/Fonts/Courier New.ttf"
+#elif  ANDROID
 #define DEFAULT_FONT_FILE1 "/system/fonts/DroidSans.ttf"
 #define DEFAULT_FONT_FILE2 "/system/fonts/Roboto-Regular.ttf" 
 #define DEFAULT_FONT_FILE3 "/system/fonts/DroidSerif-Regular.ttf"
-#endif // ANDROID
+#else // assume 'normal' AMBULANT_PLATFORM_LINUX
+#define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
+#define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
+#define DEFAULT_FONT_FILE3 "/usr/local/etc/ginga/files/font/vera.ttf"
+#endif //  AMBULANT_PLATFORM_XXX
 #endif// defined(WITH_SDL_TTF)
 
 #define DEFAULT_FONT_HEIGHT 16
@@ -225,7 +229,9 @@ sdl_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		m_sdl_surface = SDL_ConvertSurface(m_sdl_surface, asdlw->get_sdl_ambulant_window()->get_sdl_surface()->format, 0);
 	} // m_text_storage != NULL && m_sdl_surface == NULL)
 	SDL_Rect sdl_dst_rect = {L,T,W,H}; //X {dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height() };
+	SDL_Rect sdl_src_rect = {0,0, m_sdl_surface->w, m_sdl_surface->h};
 	sdl_ambulant_window* saw = asdlw->get_sdl_ambulant_window();
+     	saw->dump_sdl_surface (m_sdl_surface, "txt");
 	saw->copy_to_sdl_surface (m_sdl_surface, NULL, &sdl_dst_rect, 255 * alpha_media);
 }
 
