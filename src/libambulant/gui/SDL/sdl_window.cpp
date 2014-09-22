@@ -841,7 +841,7 @@ sdl_ambulant_window::delete_transition_surface()
 }
 
 int
-_copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha, SDL_Rect* clip_rect)
+  _copy_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, SDL_Surface* dst, SDL_Rect* dst_rect, Uint8 alpha, SDL_Rect* clip_rect)
 {
 	int rv = 0;
 //	AM_DBG lib::logger::get_logger()->debug("ambulant_sdl_window::copy_sdl_surface(): src=%p src_rect={%d,%d,%d,%d} dst=%p dst_rect={%d,%d,%d,%d} alpha=%u", src, src_rect?src_rect->x:0, src_rect?src_rect->y:0, src_rect?src_rect->w:0, src_rect?src_rect->h:0, dst,  dst_rect->x, dst_rect->y, dst_rect->w, dst_rect->h, alpha);
@@ -863,12 +863,6 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	bool dst_locked = false;
 	bool src_locked = false;
 	bool must_scale = false;
-	SDL_Rect sr, dr = *dst_rect, cr = clip_rect != NULL ? *clip_rect : SDL_Rect_from_ambulant_rect(m_ambulant_sdl_window->get_bounds());
-	if (src_rect == NULL) {
-		sr = SDL_Rect_from_ambulant_rect(m_ambulant_sdl_window->get_bounds());
-	} else {
-		sr = *src_rect;
-	}
 	if (SDL_MUSTLOCK(dst)) {
 		rv = SDL_LockSurface(dst);
 		if (rv >= 0) {
@@ -881,8 +875,21 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 			src_locked = true;
 		}
 	}
-	if (sr.w != dr.w || sr.h != dr.h) {
+	SDL_Rect sdl_src_rect;
+	if (src_rect == NULL) {
+		sdl_src_rect.x = sdl_src_rect.w = 0;
+		sdl_src_rect.w = src->w;
+		sdl_src_rect.h = src->h;
+	} else {
+		sdl_src_rect = *src_rect;
+	}
+	if (sdl_src_rect.w != dst_rect->w || sdl_src_rect.h != dst_rect->h) {
 		must_scale = true;
+	}
+	SDL_Rect sdl_old_clip_rect;
+	if (clip_rect != NULL) {
+		SDL_GetClipRect(dst, &sdl_old_clip_rect);
+		SDL_SetClipRect(dst, clip_rect);
 	}
 	if (rv >= 0) {
 		rv = SDL_SetSurfaceAlphaMod (src, alpha);
@@ -893,27 +900,54 @@ sdl_ambulant_window::copy_to_sdl_surface (SDL_Surface* src, SDL_Rect* src_rect, 
 	if (src->format->format != dst->format->format) {
 		AM_DBG lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): srcformat=%s dstformat=%s", SDL_GetPixelFormatName(src->format->format), SDL_GetPixelFormatName(dst->format->format));
 	}
-	SDL_Rect fsr, fdr, tsr; // final, temporary source/destination rect
-	float scale_x = float(dr.w) /sr.w;
-	float scale_y = float(dr.h) /sr.h;
-	tsr.x = roundf((cr.x - dr.x) / scale_x);
-	tsr.y = roundf((cr.y - dr.y) / scale_y);
-	tsr.w = roundf(cr.w / scale_x);
-	tsr.h = roundf(cr.h / scale_y);
-	SDL_IntersectRect (&sr, &tsr, &fsr);
-	SDL_IntersectRect (&dr, &cr, &fdr);
-	if (rv >= 0 && sr.w > 0 && sr.h > 0 && dr.w > 0 && dr.h > 0) {
+	SDL_Surface* tmp_surface = NULL, *dst_surface = dst, *src_surface = src;
+	void* pixels = NULL;
+	SDL_Rect tmp_rect = sdl_src_rect;
+	if (rv >= 0) {
 		if (must_scale) {
-//			dump_sdl_surface (src, "src");
-			rv = SDL_BlitScaled(src, &fsr, dst, &fdr);
-//			dump_sdl_surface (dst_surface, tmp_surface ? "tmp" : "dst");
-		} else {
-			rv = SDL_BlitSurface(src, &fsr, dst, &fdr);
-//			dump_sdl_surface (dst, "dst");
+			if (dst_rect->w > dst->w || dst_rect->h > dst->h) {
+				// must create large enough surface for scaled blit
+				tmp_surface = SDL_CreateRGBSurface (0, dst_rect->w, dst_rect->h, 32, 0, 0, 0, 0); 
+				if (tmp_surface != NULL) {
+					pixels = malloc (dst_rect->w*dst_rect->h*4);
+					SDL_FreeFormat (tmp_surface->format);
+					tmp_surface->format = dst->format;
+					dst->format->refcount++;
+				}
+				if (tmp_surface == NULL || pixels == NULL) {
+		    			rv = SDL_SetError("Out of memory");
+				} else {
+					src_surface = dst_surface = tmp_surface;
+					float h_scale = (float) dst_rect->h / (float) sdl_src_rect.h;
+					float w_scale = (float) dst_rect->w / (float) sdl_src_rect.w;
+					tmp_rect.x = (int) roundf(sdl_src_rect.x*w_scale);
+					tmp_rect.y = (int) roundf(sdl_src_rect.y*h_scale);
+					tmp_rect.w = (int) roundf(sdl_src_rect.w*w_scale);
+					tmp_rect.h = (int) roundf(sdl_src_rect.h*h_scale);
+				}
+			}
 		}
+	}
+	if (rv >= 0 && must_scale) {
+//		dump_sdl_surface (src, "src");
+		rv = SDL_BlitScaled(src, &sdl_src_rect, dst_surface, dst_rect);
+//		dump_sdl_surface (dst_surface, tmp_surface ? "tmp" : "dst");
+	}
+	if (rv >= 0 && ! (must_scale && tmp_surface == NULL)) {
+		rv = SDL_BlitSurface(src_surface, &tmp_rect, dst, dst_rect);
+//		dump_sdl_surface (dst, "dst");
 	}
 	if (rv < 0) {
 		lib::logger::get_logger()->debug("sdl_ambulant_window::copy_sdl_surface(): error from %s: %s", must_scale ? "SDL_BlitScaled" :"SDL_BlitSurface", SDL_GetError());
+	}
+	if (pixels != NULL) {
+	    free (pixels);
+	}
+	if (tmp_surface != NULL) {
+		SDL_FreeSurface (tmp_surface);
+	}
+	if (clip_rect != NULL) {
+		SDL_SetClipRect(dst, &sdl_old_clip_rect);
 	}
 	if (src_locked) {
 		SDL_UnlockSurface(src);
