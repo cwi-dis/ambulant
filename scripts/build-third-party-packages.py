@@ -519,7 +519,7 @@ third_party_packages={
                 "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
                 "cd SDL_image && sh autogen.sh && "
                 "mkdir -p build && cd build && "
-                "SDL_CONFIG=`pwd`/../../installed/bin/sdl2-config .%s --disable-dependency-tracking &&"
+                "SDL_CONFIG=`pwd`/../../installed/bin/sdl2-config .%s --disable-dependency-tracking --disable-webp &&"
                 "make ${MAKEFLAGS} && "
                 "make install &&"
                 "cd .." % MAC106_COMMON_CONFIGURE
