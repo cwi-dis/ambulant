@@ -37,8 +37,8 @@
 		0418D25412DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
 		0418D25512DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
 		0418D25612DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
-		04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */; };
+		04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */; };
 		0471A09613AAADE2000E2F17 /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 0471A09513AAADE2000E2F17 /* Background_iPhone.png */; };
 		04A1E97B12B585D80060F97E /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
 		04A1E97C12B585D80060F97E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
@@ -58,7 +58,7 @@
 		04A1E99512B585D80060F97E /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070423115266770094FB0B /* mypreferences.mm */; };
 		04A1E99612B585D80060F97E /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
 		04A1E99712B585D80060F97E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
-		04C655E713CB30E40008DF3B /* libamplugin_xpath_state(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		04C655E713CB30E40008DF3B /* libamplugin_xpath_state(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */; };
 		04CE00CD132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04CE00CE132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
@@ -477,7 +477,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "AmbulantPlayer" */;
 			compatibilityVersion = "Xcode 3.2";
