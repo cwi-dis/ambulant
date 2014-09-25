@@ -1680,7 +1680,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0600;
 			};
 			buildConfigurationList = 1DEB918108733D990010E9CD /* Build configuration list for PBXProject "libambulant" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2132,6 +2132,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2167,6 +2168,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
