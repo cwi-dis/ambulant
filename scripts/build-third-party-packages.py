@@ -541,6 +541,19 @@ third_party_packages={
 #                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
 #             ),
 
+        TPP("FreeType2", # SDL2 interface for FreeType2 glyph rendering system needed for SDL2_ttf
+            url="http://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz",
+#           url2="freetype-2.5.3.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0 freetype",
+            buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
+                "cd freetype-2.* && "
+                "%s --disable-dependency-tracking && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % MAC106_COMMON_CONFIGURE
+            ),
+
         TPP("SDL2_ttf", # SDL2 interface for FreeType2 glyph rendering system
             url="https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz",
 #           url2="SDL2_ttf-2.0.12.tar.gz",
