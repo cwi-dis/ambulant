@@ -656,7 +656,7 @@ fi
 if test "x$test_sdl_pango" = "xtrue" ; then
 	SDL_CFLAGS="$SDL_CFLAGS -DWITH_SDL_PANGO `pkg-config --cflags SDL_Pango`"
 	SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
-elif  test "x$test_sdl2"  = "xtrue"; then 
+elif  test "x$test_sdl2_player"  = "xtrue"; then 
 	# Alternatively SDL2_ttf can be used instead of SDL_Pango
 	test_sdl_ttf=true
 fi
