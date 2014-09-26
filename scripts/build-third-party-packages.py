@@ -284,7 +284,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 
 IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
 if not IOS_VERSION:
-    IOS_VERSION = '7.1'
+    IOS_VERSION = '8.0'
     
 IOS_SDK=os.environ.get('SDKROOT', None)
 if not IOS_SDK:
@@ -295,6 +295,10 @@ if not IOSSIM_SDK:
     IOSSIM_SDK= "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % IOS_VERSION
     
 IOS_VERSION_TO_PARAMETERS = {
+    '' : {
+        'arch' : '',
+        'simarch' : '',
+        },
     '5.1' : {
         'arch' : '-arch armv7',
         'simarch' : '-arch i386',
@@ -304,6 +308,10 @@ IOS_VERSION_TO_PARAMETERS = {
         'simarch' : '-arch i386',
         },
     '7.1' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
+        },
+    '8.0' : {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
         },
@@ -622,30 +630,22 @@ third_party_packages={
             ),
             
         TPP("ffmpeg",
-            url="http://ffmpeg.org/releases/ffmpeg-1.0.tar.gz",
-            url2="ffmpeg-1.0.tar.gz",
-            checkcmd="pkg-config --atleast-version=54.29.100 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-2.4.1.tar.gz",
+            url2="ffmpeg-2.4.1.tar.gz",
+            checkcmd="pkg-config --atleast-version=55.12.0 libavformat",
             buildcmd=
-                "cd ffmpeg-1.0 && "
+                "cd ffmpeg-2.4.1 && "
                 "./configure "
                 "    --enable-cross-compile "
                 "    --arch=%(arch)s "
                 "    --target-os=darwin "
-                "    --sysroot=%(sdk)s "
-				"    --cpu=cortex-a8 "
-                "    --as='gas-preprocessor.pl %(cc)s' "
-                "    --cc=%(cc)s "
-                "    --extra-cflags='-isysroot %(sdk)s -I%(installed)s/include' "
-				"    --extra-ldflags='-isysroot %(sdk)s -L%(installed)s/lib' "
-                "    --prefix=../installed/ "
-                "    --enable-gpl  "
-                "    --disable-mmx "
-                "    --disable-asm "
-				"    --disable-ffmpeg "
-				"    --disable-ffserver "
-				"    --disable-ffplay "
-				"    --disable-ffprobe "
-				"    --disable-neon "
+                "    --cc='xcrun -sdk iphoneos cc'"
+                "    --extra-cflags='-arch %(arch)s -I%(installed)s/include' "
+				"    --extra-ldflags='-arch %(arch)s -L%(installed)s/lib' "
+                "    --prefix=%(installed)s "
+                "    --enable-gpl "
+                "    --enable-pic "
+				"    --disable-programs "
 				"    --disable-doc "
 				"&&"
                 "make ${MAKEFLAGS} &&"
@@ -655,7 +655,6 @@ third_party_packages={
                         arch="armv7",
                         sdk=IOS_SDK,
                         installed=COMMON_INSTALLDIR,
-                        cc="arm-apple-darwin10-llvm-gcc-4.2"
                     )
             ),
 
@@ -1109,7 +1108,7 @@ def checkenv_iphone(target):
         rv = False
         
     # Make sure we have IPHONEOS_DEPLOYMENT_TARGET set
-    if not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
+    if not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET') and IOS_VERSION:
         os.environ['IPHONEOS_DEPLOYMENT_TARGET'] = IOS_VERSION
         print '+ IPHONEOS_DEPLOYMENT_TARGET set to %s for %s development' % (IOS_VERSION, target)
 
