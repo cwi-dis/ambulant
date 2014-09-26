@@ -43,6 +43,11 @@
 
 //TBD move to impl.
 #define FONT "Times 6"
+#ifdef AMBULANT_PLATFORM_MACOS
+#define DEFAULT_FONT_FILE1 "/Library/Fonts/Arial.ttf"
+#define DEFAULT_FONT_FILE2 "/Library/Fonts/Times New Roman.ttf"
+#define DEFAULT_FONT_FILE3 "/Library/Fonts/Courier New.ttf"
+#else // assume AMBULANT_PLATFORM_LINUX
 #ifndef ANDROID
 #define DEFAULT_FONT_FILE1 "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
 #define DEFAULT_FONT_FILE2 "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf" 
@@ -50,6 +55,7 @@
 #else // ANDROID
 #define DEFAULT_FONT_FILE1 "LiberationSans-Regular.ttf"
 #endif // ANDROID
+#endif // AMBULANT_PLATFORM_XXX
 #define DEFAULT_FONT_HEIGHT 16
 #include "SDL_ttf.h"
 #define MIN_FONT_SIZE 8

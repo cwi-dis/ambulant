@@ -184,7 +184,7 @@ smil2::smiltext_metrics
 sdl_ttf_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun) {
 	int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
 
-	if (strun.m_data.length() != 0) {
+	if (strun.m_data.length() != 0 && m_ttf_font != NULL) {
 		_set_font_style (strun);
 		ascent	= TTF_FontAscent(m_ttf_font);
 		descent	= TTF_FontDescent(m_ttf_font);
@@ -204,6 +204,9 @@ void
 sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r) {
 
 	AM_DBG lib::logger::get_logger()->debug("sdl_ttf_smiltext_render(): command=%d data=%s color=0x%x bg_color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color,strun.m_bg_color);
+	if (m_ttf_font == NULL) {
+		return;
+	}
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
 	const common::region_info *ri = m_dest->get_info();
@@ -372,7 +375,11 @@ sdl_ttf_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, con
 			SDL_SetRenderDrawColor (renderer, redc(bg_color), greenc(bg_color), bluec(bg_color), bg_alpha);
 			SDL_RenderFillRect(renderer, &sdl_dst_rect);
 		}
-		saw->copy_to_sdl_surface (text_surface, NULL, &sdl_dst_rect, alpha_media*255);
+		SDL_Rect sdl_src_rect = { 0, 0, text_surface->w, text_surface->h };
+//		lib::rect clip_rect = rct & m_window->get_bounds();
+//		SDL_Rect sdl_clip_rect =  SDL_Rect_from_ambulant_rect(clip_rect);
+//		saw->dump_sdl_surface (text_surface, "txt");
+		saw->copy_to_sdl_surface (text_surface, &sdl_src_rect, &sdl_dst_rect, alpha_media*255); //, &sdl_clip_rect);
 		SDL_FreeSurface (text_surface);
 	}
 } // render_smiltext
