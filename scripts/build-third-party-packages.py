@@ -337,10 +337,10 @@ IPHONE_SIMULATOR_COMMON_CONFIGURE=("./configure " +
     " --disable-shared " +
     " CFLAGS=\"%s\" " % IPHONE_SIMULATOR_COMMON_CFLAGS +
     " LDFLAGS=\"%s\" " % IPHONE_SIMULATOR_COMMON_CFLAGS +
-    " CC='xcrun -sdk iphonesimulator cc'" +
-    " CPP='xcrun -sdk iphonesimulator cc -E -arch armv7" +
-    " CXX='xcrun -sdk iphonesimulator cc'" +
-    " CXXCPP='xcrun -sdk iphonesimulator cc -E -arch armv7"
+    " CC='xcrun -sdk iphonesimulator cc' " +
+    " CPP='xcrun -sdk iphonesimulator cc -E -arch i386' " +
+    " CXX='xcrun -sdk iphonesimulator cc' " +
+    " CXXCPP='xcrun -sdk iphonesimulator cc -E -arch i386' "
     )
 #IPHONE_SIMULATOR_COMMON_CONFIGURE="CFLAGS=\"%s\" && ./configure --prefix='%s'  CC=llvm-gcc CXX=llvm-g++ CFLAGS=\"$CFLAGS\" CXXFLAGS=\"$CFLAGS\"  LDFLAGS=\"$CFLAGS\" " % (IPHONE_SIMULATOR_COMMON_CFLAGS, COMMON_INSTALLDIR)
 
