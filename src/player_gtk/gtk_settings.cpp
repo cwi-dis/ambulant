@@ -72,7 +72,11 @@ gtk_settings::gtk_settings() {
 	m_dialog = GTK_DIALOG (gtk_dialog_new_with_buttons
 	("AmbulantPlayer", NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL));
 
+#ifdef WITH_GTK3
+//	gtk_window_set_position(GTK_WIDGET (m_dialog), GTK_WIN_POS_CENTER);
+#else
 	gtk_widget_set_uposition (GTK_WIDGET (m_dialog), 160, 120);
+#endif//WITH_GTK3
 
 	// Settings frame
 	m_settings_fr = GTK_FRAME (gtk_frame_new(gettext("Preferences")));
@@ -94,13 +98,23 @@ gtk_settings::gtk_settings() {
 	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_lb), FALSE, FALSE, 0);
 
 	n_entries = G_N_ELEMENTS(loglevels);
-
+#ifdef WITH_GTK3
+	m_loglevel_co =  GTK_COMBO_BOX_TEXT(gtk_combo_box_text_new());
+#else
 	m_loglevel_co = GTK_COMBO_BOX(gtk_combo_box_new_text());
+#endif//WITH_GTK3
 	for (int i=0; i<n_entries;i++){
-		gtk_combo_box_insert_text(GTK_COMBO_BOX (m_loglevel_co),
-		i,loglevels[i]);
+#ifdef WITH_GTK3
+		gtk_combo_box_text_insert_text(m_loglevel_co, i, loglevels[i]);
+#else
+		gtk_combo_box_insert_text(m_loglevel_co, i, loglevels[i]);
+#endif//WITH_GTK3
 	}
+#ifdef WITH_GTK3
+	gtk_combo_box_set_active( GTK_COMBO_BOX(m_loglevel_co), m_preferences->m_log_level);
+#else
 	gtk_combo_box_set_active(m_loglevel_co, m_preferences->m_log_level);
+#endif//WITH_GTK3
 	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_co), TRUE, TRUE, 0);
 
 	// This part takes care of the XML parsers...
@@ -112,14 +126,25 @@ gtk_settings::gtk_settings() {
 
 	n_entries = G_N_ELEMENTS(parsers);
 
-	m_parser_co = GTK_COMBO_BOX(gtk_combo_box_new_text());
+#ifdef WITH_GTK3
+	m_parser_co = GTK_COMBO_BOX_TEXT(gtk_combo_box_text_new());
+#else
+	m_parser_co = GTK_COMBO_BOX(gtk_combo_box_text_new());
+#endif//WITH_GTK3
 	for (int i=0; i<n_entries;i++){
-		gtk_combo_box_insert_text(GTK_COMBO_BOX (m_parser_co),
-		i,parsers[i]);
+#ifdef WITH_GTK3
+		gtk_combo_box_text_insert_text(m_parser_co, i, parsers[i]);
+#else
+		gtk_combo_box_insert_text(m_parser_co, i, parsers[i]);
+#endif//WITH_GTK3
 	}
 	const char* id	= m_preferences->m_parser_id.c_str();
 	int id_nr = index_in_string_array(id, parsers);
+#ifdef WITH_GTK3
+	gtk_combo_box_set_active( GTK_COMBO_BOX(m_parser_co), id_nr);
+#else
 	gtk_combo_box_set_active(m_parser_co, id_nr);
+#endif//WITH_GTK3
 	gtk_box_pack_start (GTK_BOX (m_parser_hb), GTK_WIDGET (m_parser_co), TRUE, TRUE, 0);
 
 	// Xerces Options
@@ -145,14 +170,25 @@ gtk_settings::gtk_settings() {
 
 	n_entries = G_N_ELEMENTS(val_schemes);
 
-	m_validation_co = GTK_COMBO_BOX(gtk_combo_box_new_text());
+#ifdef WITH_GTK3
+	m_validation_co = GTK_COMBO_BOX_TEXT(gtk_combo_box_text_new());
+#else
+	m_validation_co = GTK_COMBO_BOX(gtk_combo_box_text_new());
+#endif//WITH_GTK3
 	for (int i=0; i<n_entries;i++){
-		gtk_combo_box_insert_text(GTK_COMBO_BOX (m_validation_co),
-		i,val_schemes[i]);
+#ifdef WITH_GTK3
+		gtk_combo_box_text_insert_text(m_validation_co, i, val_schemes[i]);
+#else
+		gtk_combo_box_insert_text(m_validation_co, i, val_schemes[i]);
+#endif//WITH_GTK3
 
 	}
 	const char* scheme = m_preferences->m_validation_scheme.c_str();
+#ifdef WITH_GTK3
+	gtk_combo_box_set_active( GTK_COMBO_BOX(m_validation_co), index_in_string_array(scheme, val_schemes));
+#else
 	gtk_combo_box_set_active(m_validation_co, index_in_string_array(scheme, val_schemes));
+#endif//WITH_GTK3
 	gtk_box_pack_start (GTK_BOX (m_validation_hb), GTK_WIDGET (m_validation_co), TRUE, FALSE, 0);
 
 	// Radio Buttons: using Schema Vs. DTD
@@ -191,7 +227,11 @@ gtk_settings::gtk_settings() {
 
 	// Plugin Directory Text Entry
 	m_plugins_dir_te = GTK_ENTRY (gtk_entry_new());
-	gtk_entry_set_editable(m_plugins_dir_te, true);
+#ifdef WITH_GTK3
+	gtk_editable_set_editable((GtkEditable*)m_plugins_dir_te, true);
+#else
+	gtk_entry_set_editable(m_plugins_dir_te, true);			
+#endif//WITH_GTK3
 	gtk_entry_set_text(m_plugins_dir_te, m_preferences->m_plugin_path.c_str());
 	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_plugins_dir_te), FALSE, FALSE, 0);
 
@@ -205,20 +245,34 @@ gtk_settings::settings_ok() {
 	unix_preferences* m_preferences = (unix_preferences*)
 		common::preferences::get_preferences();
 
+#ifdef WITH_GTK3
+	int current_log_level = gtk_combo_box_get_active (GTK_COMBO_BOX (m_loglevel_co));
+#else
 	int current_log_level = gtk_combo_box_get_active (m_loglevel_co);
+#endif//WITH_GTK3
 	if (m_preferences->m_log_level != current_log_level) {
 		m_preferences->m_log_level = current_log_level;
 		lib::logger::get_logger()->set_level(current_log_level);
 	}
+#ifdef WITH_GTK3
+	m_preferences->m_log_level  = gtk_combo_box_get_active (GTK_COMBO_BOX (m_loglevel_co));
+
+	m_preferences->m_parser_id = parsers[gtk_combo_box_get_active(GTK_COMBO_BOX (m_parser_co))];
+#else
 	m_preferences->m_log_level  = gtk_combo_box_get_active (m_loglevel_co);
 
 	m_preferences->m_parser_id = parsers[gtk_combo_box_get_active(m_parser_co)];
+#endif//WITH_GTK3
 
 	if (m_namespace_cb) {
 		m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
 	}
 
+#ifdef WITH_GTK3
+	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(GTK_COMBO_BOX(m_validation_co))];
+#else
 	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(m_validation_co)];
+#endif//WITH_GTK3
 
 	if (m_dtd_rb){
 		m_preferences->m_do_schema = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_schema_rb));

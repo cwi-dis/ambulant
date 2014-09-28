@@ -53,6 +53,9 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 // Enable by adding -DWITH_DUMPIMAGES to CXXFLAGS on the ./configure line
 // #define	WITH_DUMPIMAGES
 #ifdef	WITH_DUMPIMAGES
+#ifdef WITH_GTK3
+#define DUMPPIXBUF(gdkpixbuf, id)  gdk_pixbuf_dump(gdkpixbuf, id)
+#endif//WITH_GTK3
 #define DUMPPIXMAP(gdkpixmap, id)  gdk_pixmap_dump(gdkpixmap, id)
 // dump a pixmap or pixbuf on a file named 'nnnnid' where nnnn is a
 // generated 4-digit number from 0000-9999 and id is parameter
@@ -63,6 +66,9 @@ gdk_pixmap_dump(GdkPixmap* gpm, std::string id);
 int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string id);
 #else
+#ifdef WITH_GTK3
+#define DUMPPIXBUF(gdkpixbuf, id)
+#endif//WITH_GTK3
 #define DUMPPIXMAP(gdkpixmap, id)
 #endif//WITH_DUMPIMAGES
 

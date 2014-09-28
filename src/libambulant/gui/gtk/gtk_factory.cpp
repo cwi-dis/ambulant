@@ -171,9 +171,19 @@ void gui::gtk::gdk_pixmap_bitblt(
 	GdkPixmap* src, int src_x, int src_y,
 	int width, int height)
 {
+	/*AM_DBG*/lib::logger::get_logger()->debug("gdk_pixmap_bitblt() s=(%d,%d),d=(%d,%d),wh=(%d,%d))", src_x, src_y, dst_x, dst_y, width, height);
+#ifdef WITH_GTK3
+	cairo_t *cr = gdk_cairo_create (GDK_DRAWABLE(dst));
+	cairo_rectangle(cr, dst_x, dst_y, width, height);
+	cairo_clip (cr);
+	gdk_cairo_set_source_pixmap (cr, src, dst_x, dst_y);
+	cairo_paint (cr);
+	cairo_destroy (cr);
+#else
 	GdkGC *gc = gdk_gc_new (dst);
 	gdk_draw_pixmap(GDK_DRAWABLE(dst), gc, GDK_DRAWABLE(src), src_x, src_y, dst_x, dst_y, width, height);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 };
 
 
@@ -359,12 +369,17 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		m_ambulant_widget->get_gtk_widget()->window, r.left(), r.top(),
 		m_pixmap, r.left(), r.top(),
 		r.width(), r.height());
+	DUMPPIXMAP(m_pixmap, "pxmp");
 #ifdef WITH_SCREENSHOTS
 	GError *error = NULL;
 	gint width; gint height;
 
+#ifdef WITH_GTK3
+	width = gdk_window_get_width (m_ambulant_widget->get_gtk_widget()->window);
+	height = gdk_window_get_height(m_ambulant_widget->get_gtk_widget()->window);
+#else
 	gdk_drawable_get_size(m_ambulant_widget->get_gtk_widget()->window, &width, &height);
-
+#endif//WITH_GTK3
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(
 		NULL,
 		m_ambulant_widget->get_gtk_widget()->window,
@@ -385,9 +400,9 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
 	}
+	DUMPPIXBUF(pixbuf, "pxbf");
 	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
-	DUMPPIXMAP(m_pixmap, "top");
 }
 
 void
@@ -478,10 +493,17 @@ GdkPixmap*
 ambulant_gtk_window::new_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
-	if (m_surface != NULL) delete m_surface;
+	if (m_surface != NULL) {
+		delete m_surface;
+		m_surface = NULL;
+	}
+#ifdef WITH_GTK3
+	// TBD
+#else
 	gint width; gint height;
 	gdk_drawable_get_size(GDK_DRAWABLE (m_pixmap), &width, &height);
 	m_surface = gdk_pixmap_new(m_pixmap, width, height, -1);
+#endif// WITH_GTK3
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
 	return m_surface;
 }
@@ -583,8 +605,9 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		// Take a snapshot of the screen and return.
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: screen snapshot");
 		if (m_fullscreen_prev_pixmap) g_object_unref(G_OBJECT(m_fullscreen_prev_pixmap));
+
 		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
-		DUMPPIXMAP(m_fullscreen_prev_pixmap, "snap");
+//		DUMPPIXMAP(m_fullscreen_prev_pixmap, "snap");
 		return;
 	}
 	if (m_fullscreen_old_pixmap == NULL) {
@@ -632,11 +655,15 @@ ambulant_gtk_window::clear()
 	bgc.red = redc(color)*0x101;
 	bgc.blue = bluec(color)*0x101;
 	bgc.green = greenc(color)*0x101;
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
 	gdk_gc_set_rgb_fg_color (gc, &bgc);
 	gdk_draw_rectangle (GDK_DRAWABLE (m_pixmap), gc, TRUE,
 		m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 }
 
 
@@ -677,7 +704,12 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 	gtk_widget_add_events(GTK_WIDGET (ancestor_widget),
 		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 	// widget needs focus for receiving key press/release events
+	
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GTK_WIDGET_SET_FLAGS(ancestor_widget, GTK_CAN_FOCUS);
+#endif//WITH_GTK3
 	gtk_widget_grab_focus(GTK_WIDGET(ancestor_widget));
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets++;
@@ -806,7 +838,10 @@ gtk_ambulant_widget::do_key_release_event(GdkEventKey *e) {
 }
 
 void gtk_ambulant_widget::get_size(int *width, int *height){
+#if 0
 	gdk_drawable_get_size(m_widget->window, width, height);
+#else
+#endif
 }
 
 bool gtk_ambulant_widget::get_screenshot(const char *type, char **out_data, size_t *out_size){

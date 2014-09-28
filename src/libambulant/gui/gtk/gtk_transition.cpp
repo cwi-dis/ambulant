@@ -24,16 +24,10 @@
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/logger.h"
 
-#include <gtk-2.0/gdk/gdkx.h>
-#if 1
-// This is needed on Ubuntu 10.10, but maybe the old pathnames are still needed
-// on another platform? If so, we need to find a define to trigger on.
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
-#else
-#include <gtk-2.0/gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk-2.0/gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
-#endif
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -74,9 +68,13 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		GdkPixmap* temp_pixmap = agw->get_ambulant_surface();
 		const lib::rect &r=	 dest->get_clipped_screen_rect();
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_pixmap=0x%x: temp_pixmap=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_pixmap, temp_pixmap,r.left(),r.top(),r.width(), r.height());
+#ifdef WITH_GTK3
+	// TBD
+#else
 		GdkGC *gc = gdk_gc_new (dest_pixmap);
 		gdk_draw_pixmap(dest_pixmap, gc, temp_pixmap, r.left(),r.top(),r.left(),r.top(),r.width(), r.height());
 		g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	}
 }
 
@@ -97,9 +95,13 @@ gtk_transition_blitclass_fade::update()
 	int alpha = static_cast<int>(round(255*m_progress));
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
 	gdk_pixbuf_composite(new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	g_object_unref (G_OBJECT (new_pixbuf));
 	g_object_unref (G_OBJECT (old_pixbuf));
 	finalize_transition(m_outtrans, agw, m_dst);
@@ -119,9 +121,13 @@ gtk_transition_blitclass_rect::update()
 	int L = newrect_whole.left(),  T = newrect_whole.top(),
 		W = newrect_whole.width(), H = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rect: opm=0x%x, npm=0x%x, (L,T,W,H)=(%d,%d,%d,%d)",opm,npm,L,T,W,H);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixmap(opm, gc,  npm, L, T, L, T, W, H);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	finalize_transition(m_outtrans, agw, m_dst);
 }
 
@@ -165,10 +171,14 @@ gtk_transition_blitclass_r1r2r3r4::update()
 		Wnewdst = newdstrect_whole.width(),
 		Hnewdst = newdstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_r1r2r3r4: (Lnewdst,Tnewdst,Wnewdst,Hnewdst)=(%d,%d,%d,%d)",Lnewdst,Tnewdst,Wnewdst,Hnewdst);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixmap(opm, gc, opm, Loldsrc, Toldsrc, Lolddst, Tolddst, Woldsrc, Hnewsrc);
 	gdk_draw_pixmap(opm, gc, npm, Lnewsrc, Tnewsrc, Lnewdst, Tnewdst, Wnewsrc, Hnewsrc);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	finalize_transition(m_outtrans, agw, m_dst);
 }
 
@@ -184,7 +194,11 @@ gtk_transition_blitclass_rectlist::update()
 	int Ldst = dstrect_whole.left(), Tdst = dstrect_whole.top(),
 		Wdst = dstrect_whole.width(), Hdst = dstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (opm);
+#endif//WITH_GTK3
 	GdkRegion* region = gdk_region_new();
 	std::vector< rect >::iterator newrect;
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
@@ -201,9 +215,13 @@ gtk_transition_blitclass_rectlist::update()
 		AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",L,T,W,H);
 		gdk_region_union_with_rect(region, &rectangle);
 	}
+#ifdef WITH_GTK3
+	// TBD
+#else
 	gdk_gc_set_clip_region(gc, region);
 	gdk_draw_pixmap(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	g_object_unref (G_OBJECT (gc)); // clears region as well
+#endif//WITH_GTK3
 	finalize_transition(m_outtrans, agw, m_dst);
 }
 
@@ -229,17 +247,30 @@ gtk_transition_blitclass_poly::update()
 		points[idx].y = p.y;
 		idx++;
 	}
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkRegion* region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
+#endif//WITH_GTK3
 	free(points);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_gc_set_clip_region(gc, region);
+#endif//WITH_GTK3
+
 	const rect& newrect_whole =	 m_dst->get_clipped_screen_rect();
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
 		Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	gdk_draw_pixmap(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(region);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	finalize_transition(m_outtrans, agw, m_dst);
 }
 
@@ -271,10 +302,18 @@ gtk_transition_blitclass_polylist::update()
 			idx++;
 			AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
 		}
+#ifdef WITH_GTK3
+	// TBD
+#else
 		GdkRegion* next_region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
+#endif//WITH_GTK3
 		free(points);
+#ifdef WITH_GTK3
+	// TBD
+#else
 		gdk_region_union (clip_region, next_region);
 		gdk_region_destroy(next_region);
+#endif//WITH_GTK3
 	}
 	rect newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(dst_global_topleft);
@@ -282,11 +321,15 @@ gtk_transition_blitclass_polylist::update()
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
 		Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_gc_set_clip_region(gc, clip_region);
 	gdk_draw_pixmap(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(clip_region);
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	finalize_transition(m_outtrans, agw, m_dst);
 }
 

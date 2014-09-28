@@ -28,7 +28,7 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/common/gui_player.h"
-#include "gtk_includes.h"
+
 #include "gtk_fill.h"
 #include <gtk/gtk.h>
 

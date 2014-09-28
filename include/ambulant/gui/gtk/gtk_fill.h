@@ -32,6 +32,9 @@
 #include "ambulant/gui/none/none_gui.h"
 #include "gtk_renderer.h"
 #include <gtk/gtk.h>
+#ifdef WITH_GTK3
+#include <gdk/gdk.h>
+#endif//WITH_GTK3
 
 namespace ambulant {
 

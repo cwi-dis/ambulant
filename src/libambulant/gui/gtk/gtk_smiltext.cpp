@@ -615,8 +615,12 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 	gdk_rectangle.y = T;
 	gdk_rectangle.width = W;
 	gdk_rectangle.height = H;
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
 	gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
+#endif//WITH_GTK3
 
 	// include the text
 	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
@@ -626,22 +630,34 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 
 		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
 		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
+#ifdef WITH_GTK3
+	// TBD
+#else
 		GdkGC* text_gc = gdk_gc_new (GDK_DRAWABLE (text_pixmap));
 		GdkGC* bg_gc =	gdk_gc_new (GDK_DRAWABLE (bg_pixmap));
 		gdk_rectangle.x = gdk_rectangle.y = 0;
 		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
 		gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
+#endif//WITH_GTK3
 
 		GdkPixmap* pixmap = window->get_ambulant_pixmap();
 		int PW = -1, PH = -1;
+#ifdef WITH_GTK3
+	// TBD
+#else
 		if (pixmap != NULL)
 			gdk_drawable_get_size (pixmap, &PW, &PH);
+#endif//WITH_GTK3
 		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
 			g_object_unref (G_OBJECT (text_pixmap));
 			g_object_unref (G_OBJECT (bg_pixmap));
+#ifdef WITH_GTK3
+	// TBD
+#else
 			g_object_unref (G_OBJECT (text_gc));
 			g_object_unref (G_OBJECT (bg_gc));
 			g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 			lib::logger::get_logger()->trace("smilText: gdk_pixbuf_get_from_drawable failed, pixmap.size()=(%d,%d), (L,T,W,H)=(%d,%d,%d,%d)", PW,PH,L,T,W,H);
 			lib::logger::get_logger()->error(gettext("Geometry error in smil document at %s"), m_node->get_sig().c_str());
 			return;
@@ -651,7 +667,9 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		gdk_transparent.red = redc(m_transparent)*0x101;
 		gdk_transparent.blue = bluec(m_transparent)*0x101;
 		gdk_transparent.green = greenc(m_transparent)*0x101;
-
+#ifdef WITH_GTK3
+	// TBD
+#else
 		gdk_gc_set_rgb_bg_color (bg_gc, &gdk_transparent);
 		gdk_gc_set_rgb_fg_color (bg_gc, &gdk_transparent);
 		gdk_gc_set_rgb_bg_color (text_gc, &gdk_transparent);
@@ -665,6 +683,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		// m_transparent color and background in required color
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap), bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
+#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable(
 			NULL,
@@ -686,8 +705,12 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 
 		// draw m_pango_layout containing smilText runs with text in
 		// required colors and background in m_transparant color
+#ifdef WITH_GTK3
+	// TBD
+#else
 		gdk_draw_layout(GDK_DRAWABLE (text_pixmap), text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
 		g_object_unref (G_OBJECT (text_gc));
+#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump(text_pixmap, "text");
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable(
 			NULL,
@@ -704,6 +727,10 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 			m_chroma_low,
 			m_chroma_high,
 			m_transparent);
+
+#ifdef WITH_GTK3
+	// TBD
+#else
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(
 			window->get_ambulant_pixmap(),
@@ -713,6 +740,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 			L, T, W, H,
 			GDK_RGB_DITHER_NONE,
 			0, 0);
+#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
@@ -720,14 +748,22 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		g_object_unref (G_OBJECT (bg_pixmap));
 		g_object_unref (G_OBJECT (text_pixmap));
 	} else {
+#ifdef WITH_GTK3
+	// TBD
+#else
 		gdk_draw_layout(
 			GDK_DRAWABLE (window->get_ambulant_pixmap()),
 			gc,
 			L-offset.x,
 			T-offset.y,
 			m_pango_layout);
+#endif//WITH_GTK3
 	}
+#ifdef WITH_GTK3
+	// TBD
+#else
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 }
 
 } // namespace gtk

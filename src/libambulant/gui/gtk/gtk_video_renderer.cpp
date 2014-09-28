@@ -134,7 +134,9 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw: info=0x%x", ri);
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
-#if 0
+#ifdef WITH_GTK3
+	// TBD
+#else
 	// Jack thinks this isn't needed... Done by the background draw method...
 	// background drawing
 	if (ri && (ri->get_bgopacity() > 0.5)) {
@@ -158,7 +160,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 		g_object_unref (G_OBJECT (gc));
 	}
-#endif
+#endif//WITH_GTK3
 
 	//
 	// Convert to a gdk_pixbuf
@@ -213,7 +215,11 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		N_H = (int)roundf(height*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
 
+#ifdef WITH_GTK3
+	// TBD
+#else
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+#endif//WITH_GTK3
 
 #if 1
 	GdkPixbuf* new_image_pixbuf = NULL;
@@ -242,6 +248,9 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			alpha_media,
 			chroma_low,
 			chroma_high);
+#ifdef WITH_GTK3
+	// TBD
+#else
 		gdk_draw_pixbuf(GDK_DRAWABLE (
 			agtkw->get_ambulant_pixmap()),
 			gc,
@@ -250,7 +259,11 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			D_L, D_T,
 			D_W, D_H,
 			GDK_RGB_DITHER_NONE, 0, 0);
+#endif//WITH_GTK3
 	} else {
+#ifdef WITH_GTK3
+	// TBD
+#else
 		gdk_draw_pixbuf(
 			GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
 			gc,
@@ -259,11 +272,12 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			D_L, D_T,
 			D_W, D_H,
 			GDK_RGB_DITHER_NONE, 0, 0);
+#endif//WITH_GTK3
 	}
 	if (new_image_pixbuf != NULL) {
 		g_object_unref(G_OBJECT (new_image_pixbuf));
 	}
-#else
+#else // #if 1
 	// Old (non-alpha) code, left here for reference and possible performance comparisons, for now.
 	GdkPixbuf* scaled_image_pixbuf = NULL;
 	if (S_W != D_W || S_H != D_H) {
@@ -278,7 +292,11 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	g_object_unref (G_OBJECT (scaled_image_pixbuf));
 	m_image = NULL;
 #endif
+#ifdef WITH_GTK3
+	// TBD
+#else
 	g_object_unref (G_OBJECT (gc));
+#endif//WITH_GTK3
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }

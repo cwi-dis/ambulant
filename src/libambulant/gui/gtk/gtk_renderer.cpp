@@ -17,7 +17,12 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "ambulant/gui/gtk/gtk_includes.h"
+#ifdef WITH_GTK3
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+#endif//WITH_GTK3
+
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
 
@@ -139,10 +144,18 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 			rect dstrect = r;
 			dstrect.translate(m_transition_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+#ifdef WITH_GTK3
+			cairo_t* cr = gdk_cairo_create(surf);
+			gdk_cairo_set_source_pixmap(cr, gpm, dstrect.left(), dstrect.top());
+			cairo_paint(cr);
+			cairo_destroy(cr);
+#else
 			GdkGC *gc = gdk_gc_new (surf);
 			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
 					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
 			g_object_unref (G_OBJECT (gc));
+
+#endif//WITH_GTK3
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
 			agw->set_ambulant_surface(surf);
 		}

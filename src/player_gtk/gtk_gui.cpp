@@ -25,6 +25,10 @@
 #include <libgen.h>
 #include <stdlib.h>
 #include <fcntl.h>
+
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 #include "gtk_gui.h"
 #include "gtk_mainloop.h"
 #include "gtk_logger.h"
@@ -322,11 +326,19 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
 
 	/* Initialization of the signals */
+#ifdef WITH_GTK3
+	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 0, NULL);
+
+	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
+
+	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
+#else
 	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, g_cclosure_marshal_VOID__VOID,GTK_TYPE_NONE, 0, NULL);
 
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER_POINTER_POINTER,GTK_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
 
-	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER, GTK_TYPE_NONE, 1, G_TYPE_POINTER);
+	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
+#endif//WITH_GTK3
 
 	// Signal connections
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
@@ -520,7 +532,7 @@ gtk_gui::do_help() {
 void
 gtk_gui::do_logger_window() {
 	GtkWindow* logger_window =	gtk_logger::get_gtk_logger()->get_logger_window();
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (logger_window))) {
+	if (gtk_widget_get_visible (GTK_WIDGET (logger_window))) {
 		gtk_widget_hide(GTK_WIDGET (logger_window));
 	} else {
 		gtk_widget_show(GTK_WIDGET (logger_window));
@@ -661,7 +673,12 @@ gtk_gui::do_open_url() {
 	gtk_widget_show(GTK_WIDGET (label));
 
 	m_url_text_entry = GTK_ENTRY (gtk_entry_new());
+#ifdef WITH_GTK3
+	gtk_editable_set_editable((GtkEditable*) m_url_text_entry, true);
+#else
 	gtk_entry_set_editable(m_url_text_entry, true);
+#endif//WITH_GTK3
+
 	gtk_entry_set_text(m_url_text_entry,"http://www");
 	gtk_widget_show(GTK_WIDGET (m_url_text_entry));
 
