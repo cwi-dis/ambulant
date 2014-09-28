@@ -779,24 +779,14 @@ third_party_packages={
             ),
 
         TPP("SDL",
-            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            url2="SDL-1.3-%s.tar.gz"%SDL_MIRRORDATE,
-            checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
+            url="http://www.libsdl.org/release/SDL2-2.0.3.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
-                "cd SDL-1.3.0-*  && "
-                "(cd src/video/uikit; patch -p1 -N -r - < $AMBULANT_DIR/third_party_packages/SDL-uikitviewcontroller.patch) && "
-                "./configure --prefix=%(installed)s --without-video --disable-dependency-tracking --disable-video-cocoa --disable-video-x11 --disable-video-opengl --disable-haptic --disable-diskaudio --host=`uname -m`-darwin &&"                
-                "cd Xcode-iOS/SDL  && "
-                "xcodebuild -target libSDL -sdk %(sdk)s -configuration Debug ARCHS=%(arch)s && "
-                "mkdir -p %(installed)s/include/SDL && "
-                "cp ../../include/* %(installed)s/include/SDL && "
-                "cp ./build/Debug-iphonesimulator/usr/local/include/* %(installed)s/include/SDL && "
-                "mkdir -p %(installed)s/include/lib && "
-                "cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % 
-                    dict(arch="i386",
-                        sdk=IOSSIM_SDK,
-                        installed=COMMON_INSTALLDIR,
-                    )
+               "cd SDL2-2.* && "
+               "%s --disable-video-opengl --disable-dependency-tracking &&"
+               "make ${MAKEFLAGS} && "
+               "make install &&"
+               "cd .." % (IPHONE_SIMULATOR_COMMON_CONFIGURE)
             ),
 
         TPP("libxml2",

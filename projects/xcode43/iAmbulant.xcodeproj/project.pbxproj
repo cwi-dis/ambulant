@@ -17,7 +17,7 @@
 		041E951212B81D1000399893 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950812B81D1000399893 /* libexpat.a */; };
 		041E951312B81D1000399893 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950912B81D1000399893 /* libfaad.a */; };
 		041E951412B81D1000399893 /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950A12B81D1000399893 /* libmp4ff.a */; };
-		041E951512B81D1000399893 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950B12B81D1000399893 /* libSDL.a */; };
+		041E951512B81D1000399893 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950B12B81D1000399893 /* libSDL2.a */; };
 		041E951612B81D1000399893 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950C12B81D1000399893 /* libswscale.a */; };
 		041E951712B81D1000399893 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950D12B81D1000399893 /* libxml2.a */; };
 		044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */; };
@@ -61,6 +61,8 @@
 		04CDFF5813D8CCF700485C7A /* Bookmarks.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF5613D8CCF700485C7A /* Bookmarks.png */; };
 		04CDFF5913D8CCF700485C7A /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF5713D8CCF700485C7A /* Share.png */; };
 		04CDFFBB13D8DEE100485C7A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04CDFFBA13D8DEE100485C7A /* MessageUI.framework */; };
+		04F14ADB19D7555100F5688A /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F14ADA19D7555100F5688A /* libswresample.a */; };
+		04F14AE019D75AD300F5688A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F14ADF19D75AD300F5688A /* libiconv.dylib */; };
 		9325368813D9FE680084A658 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9325368713D9FE680084A658 /* SystemConfiguration.framework */; };
 		9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9352AC13131D0E6F00D0192D /* CoreFoundation.framework */; };
 		93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */; };
@@ -125,7 +127,7 @@
 		041E950812B81D1000399893 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../build-iOS/third_party_packages/installed/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
 		041E950912B81D1000399893 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = "../../build-iOS/third_party_packages/installed/lib/libfaad.a"; sourceTree = SOURCE_ROOT; };
 		041E950A12B81D1000399893 /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
-		041E950B12B81D1000399893 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = "../../build-iOS/third_party_packages/installed/lib/libSDL.a"; sourceTree = SOURCE_ROOT; };
+		041E950B12B81D1000399893 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2.a; path = "../../build-iOS/third_party_packages/installed/lib/libSDL2.a"; sourceTree = SOURCE_ROOT; };
 		041E950C12B81D1000399893 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
 		041E950D12B81D1000399893 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "../../src/player_iphone/Resources/MainWindow-iPad.xib"; sourceTree = SOURCE_ROOT; };
@@ -186,6 +188,8 @@
 		04CDFF5613D8CCF700485C7A /* Bookmarks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bookmarks.png; path = ../../src/player_iphone/Resources/Bookmarks.png; sourceTree = SOURCE_ROOT; };
 		04CDFF5713D8CCF700485C7A /* Share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Share.png; path = ../../src/player_iphone/Resources/Share.png; sourceTree = SOURCE_ROOT; };
 		04CDFFBA13D8DEE100485C7A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		04F14ADA19D7555100F5688A /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = "../../build-iOS/third_party_packages/installed/lib/libswresample.a"; sourceTree = "<group>"; };
+		04F14ADF19D75AD300F5688A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
 		1D6058910D05DD3D006BFB54 /* iAmbulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iAmbulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32CA4F630368D1EE00C91783 /* iAmbulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iAmbulant_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iAmbulant-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iAmbulant-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -213,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */,
+				04F14ADB19D7555100F5688A /* libswresample.a in Frameworks */,
 				041E950E12B81D1000399893 /* libavcodec.a in Frameworks */,
 				041E950F12B81D1000399893 /* libavdevice.a in Frameworks */,
 				041E951012B81D1000399893 /* libavformat.a in Frameworks */,
@@ -220,11 +225,12 @@
 				041E951212B81D1000399893 /* libexpat.a in Frameworks */,
 				041E951312B81D1000399893 /* libfaad.a in Frameworks */,
 				041E951412B81D1000399893 /* libmp4ff.a in Frameworks */,
-				041E951512B81D1000399893 /* libSDL.a in Frameworks */,
+				041E951512B81D1000399893 /* libSDL2.a in Frameworks */,
 				041E951612B81D1000399893 /* libswscale.a in Frameworks */,
 				041E951712B81D1000399893 /* libxml2.a in Frameworks */,
 				93E20B2412D2225B00D99F74 /* libbz2.dylib in Frameworks */,
 				93E20B2612D2225B00D99F74 /* libz.dylib in Frameworks */,
+				04F14AE019D75AD300F5688A /* libiconv.dylib in Frameworks */,
 				93E20B2812D2228800D99F74 /* AudioToolbox.framework in Frameworks */,
 				93E20B2A12D2228800D99F74 /* CoreGraphics.framework in Frameworks */,
 				93E20B2C12D2228800D99F74 /* CoreText.framework in Frameworks */,
@@ -299,7 +305,8 @@
 				041E950812B81D1000399893 /* libexpat.a */,
 				041E950912B81D1000399893 /* libfaad.a */,
 				041E950A12B81D1000399893 /* libmp4ff.a */,
-				041E950B12B81D1000399893 /* libSDL.a */,
+				041E950B12B81D1000399893 /* libSDL2.a */,
+				04F14ADA19D7555100F5688A /* libswresample.a */,
 				041E950C12B81D1000399893 /* libswscale.a */,
 				041E950D12B81D1000399893 /* libxml2.a */,
 			);
@@ -413,6 +420,7 @@
 				93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */,
 				93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */,
 				93E20B2312D2225B00D99F74 /* libbz2.dylib */,
+				04F14ADF19D75AD300F5688A /* libiconv.dylib */,
 				93E20B2512D2225B00D99F74 /* libz.dylib */,
 				93E20B2712D2228800D99F74 /* AudioToolbox.framework */,
 				93E20B2912D2228800D99F74 /* CoreGraphics.framework */,
@@ -637,6 +645,11 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
+				);
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -655,6 +668,11 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
+				);
 				PRODUCT_NAME = iAmbulant;
 			};
 			name = Debug;
@@ -670,6 +688,11 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib",
+					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
+				);
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};
