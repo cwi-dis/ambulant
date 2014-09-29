@@ -136,7 +136,7 @@ gdk_pixbuf_dump(GdkPixbuf* gpb, std::string filename) {
 	if (gpb) {
 		char buf[5];
 		static int i;
-		sprintf(buf,"%04d",i++);
+		sprintf(buf,"%%%04d",i++);
 		if (i == 10000) i = 0;
 		std::string newfile = buf + std::string(filename) +".png";
 		GError* error = NULL;

@@ -171,13 +171,12 @@ void gui::gtk::gdk_pixmap_bitblt(
 	GdkPixmap* src, int src_x, int src_y,
 	int width, int height)
 {
-	/*AM_DBG*/lib::logger::get_logger()->debug("gdk_pixmap_bitblt() s=(%d,%d),d=(%d,%d),wh=(%d,%d))", src_x, src_y, dst_x, dst_y, width, height);
+	AM_DBG lib::logger::get_logger()->debug("gdk_pixmap_bitblt() s=(%d,%d),d=(%d,%d),wh=(%d,%d))", src_x, src_y, dst_x, dst_y, width, height);
 #ifdef WITH_GTK3
 	cairo_t *cr = gdk_cairo_create (GDK_DRAWABLE(dst));
 	cairo_rectangle(cr, dst_x, dst_y, width, height);
-	cairo_clip (cr);
-	gdk_cairo_set_source_pixmap (cr, src, dst_x, dst_y);
-	cairo_paint (cr);
+	gdk_cairo_set_source_pixmap (cr, src, 0,0);
+	cairo_fill (cr);
 	cairo_destroy (cr);
 #else
 	GdkGC *gc = gdk_gc_new (dst);

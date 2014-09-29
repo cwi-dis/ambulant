@@ -86,7 +86,7 @@ gtk_text_renderer::~gtk_text_renderer() {
 }
 
 void
-gtk_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
+gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 // No m_lock needed, protected by base class
 	PangoContext *context;
 	PangoLanguage *language;
@@ -106,14 +106,18 @@ gtk_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		"gtk_text_renderer.redraw(0x%x):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
 		"font-family=(%s)",
-		(void *)this, r.left(), r.top(), r.width(), r.height(),
+		(void *)this, dirty.left(), dirty.top(), dirty.width(), dirty.height(),
 		m_text_storage == NULL ? "(null)": (const char*) m_text_storage,
 		p.x, p.y, m_text_font == NULL ? "(null)": (const char*) m_text_font);
 	if (m_text_storage) {
-		int L = r.left()+p.x,
-			T = r.top()+p.y,
-			W = r.width(),
-			H = r.height();
+	  	const lib::rect &r = m_dest->get_rect();
+		lib::rect dstrect_whole = r;
+		dstrect_whole.translate(m_dest->get_global_topleft());
+
+		int	L = dstrect_whole.left(),
+			T = dstrect_whole.top(),
+			W = dstrect_whole.width(),
+			H = dstrect_whole.height();
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
 		// initialize the pango context, layout...

@@ -112,9 +112,9 @@ gtk_logger::gtk_logger()
 		GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(GTK_WIDGET (m_logger_window), 560, 240);
 #ifdef WITH_GTK3
-	gtk_widget_set_uposition(GTK_WIDGET (m_logger_window), 50, 50);
-#else
 	gtk_window_set_position(m_logger_window, GTK_WIN_POS_CENTER);
+#else
+	gtk_widget_set_uposition(GTK_WIDGET (m_logger_window), 50, 50);
 #endif//WITH_GTK3
 	gtk_container_add (GTK_CONTAINER (m_logger_window), sw);
 	gtk_widget_show(GTK_WIDGET (sw));
