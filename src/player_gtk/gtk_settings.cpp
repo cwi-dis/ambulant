@@ -80,7 +80,7 @@ gtk_settings::gtk_settings() {
 
 	// Settings frame
 	m_settings_fr = GTK_FRAME (gtk_frame_new(gettext("Preferences")));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_settings_fr));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(m_dialog))), GTK_WIDGET (m_settings_fr));
 
 	// HBox to include: loglevel, XML parsers.plugins | Xerces Options
 	GtkHBox *m_settings_hb = GTK_HBOX (gtk_hbox_new(true, 10));

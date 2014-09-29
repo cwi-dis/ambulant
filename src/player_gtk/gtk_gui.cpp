@@ -682,8 +682,8 @@ gtk_gui::do_open_url() {
 	gtk_entry_set_text(m_url_text_entry,"http://www");
 	gtk_widget_show(GTK_WIDGET (m_url_text_entry));
 
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(url_dialog)->vbox), GTK_WIDGET (label));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(url_dialog)->vbox), GTK_WIDGET (m_url_text_entry));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(url_dialog))), GTK_WIDGET (label));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(url_dialog))), GTK_WIDGET (m_url_text_entry));
 
 	gint result = gtk_dialog_run (GTK_DIALOG (url_dialog));
 	if (result == GTK_RESPONSE_ACCEPT) {

@@ -133,7 +133,7 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 		a_gtkw != NULL;
 		a_gtkw = gtk_widget_get_parent (a_gtkw))
 	{
-		if (s_gdkw == a_gtkw->window) {
+	        if (s_gdkw == gtk_widget_get_window (a_gtkw)) {
 			/* found corresponding GdkWindow in GtkWidget stack */
 			/* translate if necessary */
 			if (a_gtkw != d_gtkw
@@ -365,7 +365,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
 	_screenTransitionPostRedraw(r);
 	gdk_pixmap_bitblt(
-		m_ambulant_widget->get_gtk_widget()->window, r.left(), r.top(),
+		gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()), r.left(), r.top(),
 		m_pixmap, r.left(), r.top(),
 		r.width(), r.height());
 	DUMPPIXMAP(m_pixmap, "pxmp");
@@ -374,14 +374,14 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	gint width; gint height;
 
 #ifdef WITH_GTK3
-	width = gdk_window_get_width (m_ambulant_widget->get_gtk_widget()->window);
-	height = gdk_window_get_height(m_ambulant_widget->get_gtk_widget()->window);
+	width = gdk_window_get_width (gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
+	height = gdk_window_get_height(gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
 #else
 	gdk_drawable_get_size(m_ambulant_widget->get_gtk_widget()->window, &width, &height);
 #endif//WITH_GTK3
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(
 		NULL,
-		m_ambulant_widget->get_gtk_widget()->window,
+		gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()),
 		0, 0, 0, 0, 0, width, height);
 //	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
 	if (m_ambulant_widget->m_screenshot_data) {
@@ -450,7 +450,7 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 		// Initialize m_pixmap
 		gint width; gint height;
 		gtk_widget_get_size_request(GTK_WIDGET (gtkaw->get_gtk_widget()), &width, &height);
-		m_pixmap = gdk_pixmap_new(gtkaw->get_gtk_widget()->window, width, height, -1);
+		m_pixmap = gdk_pixmap_new(gtk_widget_get_window (gtkaw->get_gtk_widget()), width, height, -1);
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_widget(0x%x); size (%i,%i)",(void *)gtkaw, width, height);
 		// User Interaction
 	}
@@ -526,7 +526,7 @@ ambulant_gtk_window::get_ambulant_surface()
 GdkPixmap*
 ambulant_gtk_window::get_pixmap_from_screen(const lib::rect &r)
 {
-	GdkPixmap *rv = gdk_pixmap_new(m_ambulant_widget->get_gtk_widget()->window, r.width(), r.height(), -1);
+	GdkPixmap *rv = gdk_pixmap_new(gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()), r.width(), r.height(), -1);
 	gdk_pixmap_bitblt(rv, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_pixmap_from_screen(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
 	return rv;
@@ -806,7 +806,7 @@ gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 		? m_gtk_window->get_gdk_cursor(GDK_ARROW)
 		: m_gtk_window->get_gdk_cursor(GDK_HAND1);
 	if (cursor)
-		gdk_window_set_cursor (m_widget->window, cursor);
+		gdk_window_set_cursor (gtk_widget_get_window (m_widget), cursor);
 }
 
 void
@@ -838,8 +838,8 @@ gtk_ambulant_widget::do_key_release_event(GdkEventKey *e) {
 
 void gtk_ambulant_widget::get_size(int *width, int *height){
 #ifdef WITH_GTK3
-	*width = gdk_window_get_width (m_widget->window);
-	*height = gdk_window_get_height(m_widget->window);
+	*width = gdk_window_get_width (gtk_widget_get_window (m_widget));
+	*height = gdk_window_get_height(gtk_widget_get_window (m_widget));
 
 #else
 	gdk_drawable_get_size(m_widget->window, width, height);
