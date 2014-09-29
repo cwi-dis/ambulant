@@ -651,7 +651,6 @@
 					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
 				);
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -675,7 +674,6 @@
 					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
 				);
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos6.0;
 			};
 			name = Debug;
 		};
@@ -696,7 +694,6 @@
 					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
 				);
 				PRODUCT_NAME = iAmbulant;
-				SDKROOT = iphoneos6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

@@ -2034,7 +2034,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B6C12B79C8900161EB5 /* ambulant-debug-iphone.xcconfig */;
 			buildSettings = {
-				ARCHS = armv7;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_MODEL_TUNING = G5;
@@ -2056,7 +2055,6 @@
 				);
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
-				SDKROOT = iphoneos6.0;
 			};
 			name = Debug;
 		};
@@ -2064,7 +2062,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75B7112B79C8900161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
-				ARCHS = armv7;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2082,7 +2079,6 @@
 				);
 				PATH = "$(PATH):/usr/local/bin:/Developer/usr/bin";
 				PRODUCT_NAME = ambulantIPhone;
-				SDKROOT = iphoneos6.0;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};

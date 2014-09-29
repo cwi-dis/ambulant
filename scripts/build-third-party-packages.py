@@ -284,7 +284,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 
 IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
 if not IOS_VERSION:
-    IOS_VERSION = '6.0'
+    IOS_VERSION = '8.0'
     
 IOS_SDK=os.environ.get('SDKROOT', None)
 if not IOS_SDK:
