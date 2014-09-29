@@ -198,11 +198,11 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// TBD
 #else
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+#endif//WITH_GTK3
 	
 	GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
 	GdkPixbuf* new_image_pixbuf =  gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
 	g_object_unref(G_OBJECT(partial_pixbuf));
-#endif//WITH_GTK3
 	N_L = N_T = 0;
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
@@ -238,7 +238,10 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	} else {
 
 #ifdef WITH_GTK3
-			// TBD
+		cairo_t* cr = gdk_cairo_create(agtkw->get_ambulant_pixmap());
+		gdk_cairo_set_source_pixbuf(cr, new_image_pixbuf, dstrect.left(), dstrect.top());
+		cairo_paint(cr);
+		cairo_destroy(cr);
 #else
 		gdk_draw_pixbuf(
 			GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
