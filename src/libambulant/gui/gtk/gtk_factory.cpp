@@ -837,10 +837,13 @@ gtk_ambulant_widget::do_key_release_event(GdkEventKey *e) {
 }
 
 void gtk_ambulant_widget::get_size(int *width, int *height){
-#if 0
-	gdk_drawable_get_size(m_widget->window, width, height);
+#ifdef WITH_GTK3
+	*width = gdk_window_get_width (m_widget->window);
+	*height = gdk_window_get_height(m_widget->window);
+
 #else
-#endif
+	gdk_drawable_get_size(m_widget->window, width, height);
+#endif//WITH_GTK3
 }
 
 bool gtk_ambulant_widget::get_screenshot(const char *type, char **out_data, size_t *out_size){

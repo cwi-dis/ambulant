@@ -26,6 +26,8 @@
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
 
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 //#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -624,6 +626,12 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 
 	// include the text
 	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
+#ifdef WITH_GTK3
+	if (m_bg_layout) { //temporarily turned off
+		g_object_unref(m_bg_layout);
+		m_bg_layout = NULL;
+	}
+#endif//WITH_GTK3
 	if (m_bg_layout) {
 		// blending
 		pango_layout_set_width(m_bg_layout, m_wrap ? W*PANGO_SCALE : -1);
@@ -643,7 +651,9 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		GdkPixmap* pixmap = window->get_ambulant_pixmap();
 		int PW = -1, PH = -1;
 #ifdef WITH_GTK3
-	// TBD
+		if (pixmap != NULL)
+			gdk_pixmap_get_size (pixmap, &PW, &PH);
+//		window->get_ambulant_widget()->get_size(&PW, &PH);
 #else
 		if (pixmap != NULL)
 			gdk_drawable_get_size (pixmap, &PW, &PH);
@@ -749,7 +759,25 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		g_object_unref (G_OBJECT (text_pixmap));
 	} else {
 #ifdef WITH_GTK3
-	// TBD
+//		GtkStyleContext *context;
+//		GtkStateFlags flags;
+//		GdkRGBA rgba;
+		GdkColor gfcr; //TMP
+		cairo_t *cr = gdk_cairo_create (GDK_DRAWABLE (window->get_ambulant_pixmap()));
+//		gdk_cairo_set_source_color (cr, &gfcr); //TMP
+		/* clip */
+//		gdk_cairo_rectangle (cr, &area);
+		cairo_rectangle (cr, L, T, W, H);
+		cairo_clip (cr);
+		/* set the correct source color */
+//		context = gtk_widget_get_style_context (widget));
+//		state = gtk_widget_get_state_flags (widget);
+//		gtk_style_context_get_color (context, state, &rgba);
+//		gdk_cairo_set_source_rgba (cr, &rgba);
+		/* draw the text */
+		cairo_move_to (cr, L-offset.x, T-offset.y);
+		pango_cairo_show_layout (cr, m_pango_layout);
+		cairo_destroy (cr);
 #else
 		gdk_draw_layout(
 			GDK_DRAWABLE (window->get_ambulant_pixmap()),
