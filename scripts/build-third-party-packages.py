@@ -282,7 +282,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # IPHONEOS_DEPLOYMENT_TARGET and SDKROOT.
 # If these are missing we try to infer them.
 
-IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
+IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', '')
 IOS_SDK=os.environ.get('SDKROOT', None)
 IOSSIM_SDK=IOS_SDK
 
