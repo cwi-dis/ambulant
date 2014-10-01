@@ -43,7 +43,7 @@
 #include "ambulant/version.h"
 #endif
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -115,7 +115,11 @@ const char *helpfile_locations[] = {
 	NULL
 };
 
+#ifdef WITH_GTK3
+		// TBD
+#else
 static GdkPixmap *pixmap = NULL;
+#endif//WITH_GTK3
 
 // callbacks for C++
 /* File */
@@ -321,9 +325,13 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 //	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	deprecated
 	gtk_window_set_position(GTK_WINDOW (m_toplevelcontainer), GTK_WIN_POS_MOUSE);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	// Callback for the resize events
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+#ifdef WITH_GTK3
+//	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "draw", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+#else
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+#endif//WITH_GTK3
 
 	/* Initialization of the signals */
 #ifdef WITH_GTK3
@@ -341,11 +349,11 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 #endif//WITH_GTK3
 
 	// Signal connections
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-internal-message",	G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-internal-message",	G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
 
 	/* VBox (m_guicontainer) to place the Menu bar in the correct place */
 	m_guicontainer = gtk_vbox_new(FALSE, 0);
@@ -652,7 +660,7 @@ gtk_gui::do_load_settings() {
 		"clicked",
 		G_CALLBACK (gtk_widget_hide),
 		m_settings_selector);
-	g_signal_connect_swapped (GTK_OBJECT ((m_settings_selector)->ok_button),"clicked", G_CALLBACK (gtk_C_callback_settings_selected),(void*) this);
+	g_signal_connect_swapped (G_OBJECT ((m_settings_selector)->ok_button),"clicked", G_CALLBACK (gtk_C_callback_settings_selected),(void*) this);
 */
 }
 
@@ -718,12 +726,12 @@ gtk_gui::do_player_done() {
 void
 gtk_gui::need_redraw (const void* r, void* w, const void* pt) {
 
-	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_need_redraw_id, 0, r, w, pt);
+	g_signal_emit(G_OBJECT (m_toplevelcontainer), signal_need_redraw_id, 0, r, w, pt);
 }
 
 void
 gtk_gui::player_done() {
-	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_player_done_id, 0);
+	g_signal_emit(G_OBJECT (m_toplevelcontainer), signal_player_done_id, 0);
 }
 
 void
@@ -899,7 +907,7 @@ gtk_gui::internal_message(int level, char* msg) {
 
 	int msg_id = level+gtk_logger::CUSTOM_OFFSET;
 	gtk_message_event* event = new gtk_message_event(msg_id, msg);
-	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_internal_message_id, 0, event);
+	g_signal_emit(G_OBJECT (m_toplevelcontainer), signal_internal_message_id, 0, event);
 
 #ifdef	LOCK_MESSAGE
 	if (level >= ambulant::lib::logger::LEVEL_WARN

@@ -101,7 +101,7 @@ gtk_logger::gtk_logger()
 	gtk_window_set_title (m_logger_window, "Ambulant-logger");
 	gtk_window_set_resizable (m_logger_window, false);
 #ifdef WITH_GTK3
-	g_signal_connect (GTK_OBJECT (m_logger_window), "delete-event",G_CALLBACK (gtk_widget_hide), GTK_WIDGET (m_logger_window));
+	g_signal_connect (G_OBJECT (m_logger_window), "delete-event",G_CALLBACK (gtk_widget_hide), GTK_WIDGET (m_logger_window));
 #else
 	gtk_signal_connect (GTK_OBJECT (m_logger_window), "delete-event",G_CALLBACK (gtk_widget_hide), GTK_WIDGET (m_logger_window));
 #endif//WITH_GTK3

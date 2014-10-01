@@ -231,6 +231,9 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	N_L = N_T = 0;
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
+#ifdef WITH_GTK3
+	// TBD
+#else
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (
 			NULL,
 			agtkw->get_ambulant_pixmap(),
@@ -248,9 +251,6 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			alpha_media,
 			chroma_low,
 			chroma_high);
-#ifdef WITH_GTK3
-	// TBD
-#else
 		gdk_draw_pixbuf(GDK_DRAWABLE (
 			agtkw->get_ambulant_pixmap()),
 			gc,
@@ -262,7 +262,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 #endif//WITH_GTK3
 	} else {
 #ifdef WITH_GTK3
-		cairo_t* cr = gdk_cairo_create(agtkw->get_ambulant_pixmap());
+		cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
 		gdk_cairo_set_source_pixbuf(cr, new_image_pixbuf == NULL ? m_image : new_image_pixbuf, dstrect.left(), dstrect.top());
 		cairo_paint(cr);
 		cairo_destroy(cr);

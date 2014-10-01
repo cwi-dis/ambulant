@@ -636,34 +636,36 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		// blending
 		pango_layout_set_width(m_bg_layout, m_wrap ? W*PANGO_SCALE : -1);
 
-		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
-		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
 #ifdef WITH_GTK3
 	// TBD
+		cairo_surface_t* pixmap = window->get_ambulant_pixmap();
 #else
+		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
+		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
 		GdkGC* text_gc = gdk_gc_new (GDK_DRAWABLE (text_pixmap));
 		GdkGC* bg_gc =	gdk_gc_new (GDK_DRAWABLE (bg_pixmap));
 		gdk_rectangle.x = gdk_rectangle.y = 0;
 		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
 		gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
-#endif//WITH_GTK3
-
 		GdkPixmap* pixmap = window->get_ambulant_pixmap();
+#endif//WITH_GTK3
 		int PW = -1, PH = -1;
 #ifdef WITH_GTK3
-		if (pixmap != NULL)
-			gdk_pixmap_get_size (pixmap, &PW, &PH);
+		if (pixmap != NULL) {
+			PW = cairo_image_surface_get_width (pixmap);
+			PH = cairo_image_surface_get_height (pixmap);
+		}
 //		window->get_ambulant_widget()->get_size(&PW, &PH);
 #else
 		if (pixmap != NULL)
 			gdk_drawable_get_size (pixmap, &PW, &PH);
 #endif//WITH_GTK3
 		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
-			g_object_unref (G_OBJECT (text_pixmap));
-			g_object_unref (G_OBJECT (bg_pixmap));
 #ifdef WITH_GTK3
 	// TBD
 #else
+			g_object_unref (G_OBJECT (text_pixmap));
+			g_object_unref (G_OBJECT (bg_pixmap));
 			g_object_unref (G_OBJECT (text_gc));
 			g_object_unref (G_OBJECT (bg_gc));
 			g_object_unref (G_OBJECT (gc));
@@ -672,14 +674,14 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 			lib::logger::get_logger()->error(gettext("Geometry error in smil document at %s"), m_node->get_sig().c_str());
 			return;
 		}
+#ifdef WITH_GTK3
+	// TBD
+#else
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, NULL, L, T, 0, 0, W, H);
 		GdkColor gdk_transparent;
 		gdk_transparent.red = redc(m_transparent)*0x101;
 		gdk_transparent.blue = bluec(m_transparent)*0x101;
 		gdk_transparent.green = greenc(m_transparent)*0x101;
-#ifdef WITH_GTK3
-	// TBD
-#else
 		gdk_gc_set_rgb_bg_color (bg_gc, &gdk_transparent);
 		gdk_gc_set_rgb_fg_color (bg_gc, &gdk_transparent);
 		gdk_gc_set_rgb_bg_color (text_gc, &gdk_transparent);
@@ -693,7 +695,6 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		// m_transparent color and background in required color
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap), bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
-#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable(
 			NULL,
@@ -711,6 +712,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 			m_chroma_low,
 			m_chroma_high,
 			m_transparent);
+#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 
 		// draw m_pango_layout containing smilText runs with text in
@@ -720,7 +722,6 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 #else
 		gdk_draw_layout(GDK_DRAWABLE (text_pixmap), text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
 		g_object_unref (G_OBJECT (text_gc));
-#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump(text_pixmap, "text");
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable(
 			NULL,
@@ -737,6 +738,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 			m_chroma_low,
 			m_chroma_high,
 			m_transparent);
+#endif//WITH_GTK3
 
 #ifdef WITH_GTK3
 	// TBD
@@ -750,20 +752,20 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 			L, T, W, H,
 			GDK_RGB_DITHER_NONE,
 			0, 0);
-#endif//WITH_GTK3
 //DBG	gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
 		g_object_unref (G_OBJECT (screen_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixmap));
 		g_object_unref (G_OBJECT (text_pixmap));
+#endif//WITH_GTK3
 	} else {
 #ifdef WITH_GTK3
 //		GtkStyleContext *context;
 //		GtkStateFlags flags;
 //		GdkRGBA rgba;
 		GdkColor gfcr; //TMP
-		cairo_t *cr = gdk_cairo_create (GDK_DRAWABLE (window->get_ambulant_pixmap()));
+		cairo_t *cr = cairo_create (window->get_ambulant_pixmap());
 //		gdk_cairo_set_source_color (cr, &gfcr); //TMP
 		/* clip */
 //		gdk_cairo_rectangle (cr, &area);

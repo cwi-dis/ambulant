@@ -26,15 +26,14 @@
 #ifndef AMBULANT_GUI_GTK_GTK_FILL_H
 #define AMBULANT_GUI_GTK_GTK_FILL_H
 
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "gtk_renderer.h"
-#include <gtk/gtk.h>
-#ifdef WITH_GTK3
-#include <gdk/gdk.h>
-#endif//WITH_GTK3
 
 namespace ambulant {
 
@@ -60,13 +59,21 @@ class gtk_background_renderer : public common::background_renderer {
   public:
 	gtk_background_renderer(const common::region_info *src)
 	:	common::background_renderer(src),
+#ifdef WITH_GTK3
+		m_background_surface(NULL) {}
+#else
 		m_background_pixmap(NULL) {}
+#endif//WITH_GTK3};
 
 	void redraw(const lib::rect &dirty, common::gui_window *windo);
 	void highlight(gui_window *window);
 	void keep_as_background();
   private:
+#ifdef WITH_GTK3
+	cairo_surface_t* m_background_surface;
+#else
 	GdkPixmap *m_background_pixmap;
+#endif//WITH_GTK3};
 };
 
 } // namespace gtk

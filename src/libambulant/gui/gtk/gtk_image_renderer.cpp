@@ -206,6 +206,10 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	N_L = N_T = 0;
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
+		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
+#ifdef WITH_GTK3
+			// TBD
+#else
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (
 			NULL,
 			agtkw->get_ambulant_pixmap(),
@@ -213,10 +217,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			D_L, D_T,
 			0, 0,
 			D_W, D_H);
-		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
-#ifdef WITH_GTK3
-			// TBD
-#else
 		gdk_pixbuf_blend (
 			screen_pixbuf,
 			rect0,
@@ -238,7 +238,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	} else {
 
 #ifdef WITH_GTK3
-		cairo_t* cr = gdk_cairo_create(agtkw->get_ambulant_pixmap());
+		cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
 		gdk_cairo_set_source_pixbuf(cr, new_image_pixbuf, dstrect.left(), dstrect.top());
 		cairo_paint(cr);
 		cairo_destroy(cr);

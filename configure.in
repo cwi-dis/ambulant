@@ -699,9 +699,11 @@ AC_ARG_WITH(gtk,
 		  fi
      ])
 if test "x$test_gtk" = "xtrue"; then
+#	PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
 	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
 	if test $test_gtk = false; then
-	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
+#		AC_MSG_WARN([gtk+-3.0 or gthread-2.0 not found, or too old])
+		AC_MSG_WARN([gtk+-2.0 or gthread-2.0 not found, or too old])
 	else
 		with_frontend=true
 	fi

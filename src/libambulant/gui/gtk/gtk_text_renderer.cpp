@@ -154,7 +154,7 @@ gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 		gtk_color.blue = bluec(m_text_color)*0x101;
 		gtk_color.green = greenc(m_text_color)*0x101;
 #ifdef WITH_GTK3
-		cairo_t* cr = gdk_cairo_create(agtkw->get_ambulant_pixmap());
+		cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
 //		gdk_cairo_set_source_color (cr, &bgc);
 		cairo_move_to (cr, L, T);
 		pango_cairo_show_layout (cr, layout);

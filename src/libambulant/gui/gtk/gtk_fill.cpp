@@ -75,17 +75,26 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	color_t color = lib::to_color(color_attr);
 	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
+#ifdef WITH_GTK3
+	cairo_surface_t* pm = agtkw->get_ambulant_surface();
+	GdkRGBA bgc;
+	bgc.red = redc(color)*0x101;
+	bgc.blue = bluec(color)*0x101;
+	bgc.green = greenc(color)*0x101;
+	bgc.alpha = 1.0;
+#else
 	GdkColor bgc;
 	bgc.red = redc(color)*0x101;
 	bgc.blue = bluec(color)*0x101;
 	bgc.green = greenc(color)*0x101;
 	GdkPixmap* pm = agtkw->get_ambulant_surface();
+#endif//WITH_GTK3
 	if (pm == NULL) {
 		pm = agtkw->get_ambulant_pixmap();
 	}
 #ifdef WITH_GTK3
-	cairo_t* cr = gdk_cairo_create(agtkw->get_ambulant_pixmap());
-	gdk_cairo_set_source_color (cr, &bgc);
+	cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
+	gdk_cairo_set_source_rgba (cr, &bgc);
 	cairo_rectangle (cr, L, T, W, H);
 	cairo_fill(cr);
 	cairo_destroy(cr);
@@ -118,14 +127,19 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: clearing to %x, agtkw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)agtkw,L,T,W,H);
+#ifdef WITH_GTK3
+		GdkRGBA bgc;
+		bgc.alpha = 1.0;
+#else
 		GdkColor bgc;
+#endif//WITH_GTK3
 		bgc.red = redc(bgcolor)*0x101;
 		bgc.blue = bluec(bgcolor)*0x101;
 		bgc.green = greenc(bgcolor)*0x101;
 		if (opacity == 1.0) {
 #ifdef WITH_GTK3
-			cairo_t* cr = gdk_cairo_create(agtkw->get_ambulant_pixmap());
-			gdk_cairo_set_source_color (cr, &bgc);
+			cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
+			gdk_cairo_set_source_rgba (cr, &bgc);
 			cairo_rectangle (cr, L, T, W, H);
 			cairo_fill(cr);
 			cairo_destroy(cr);
@@ -141,12 +155,24 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			// 2. Create a new pixmap and draw a coloured rectangle on it
 			// 3. Blend these 2 pixmaps together by getting their pixbufs
 			// 4. Draw the resulting pixbuf to become the new on-screen image
-			GdkPixmap* opm = agtkw->get_ambulant_pixmap();
 			gint width; gint height;
+#ifdef WITH_GTK3
+			cairo_surface_t* opm = agtkw->get_ambulant_pixmap();
+			width = cairo_image_surface_get_width (opm);
+			height = cairo_image_surface_get_height (opm);
+			cairo_content_t content_type = cairo_surface_get_content (opm);
+			cairo_surface_t* npm = cairo_surface_create_similar (opm, content_type, width, height);
+//			gdk_pixmap_get_size(GDK_DRAWABLE (opm), &width, &height);
+//			cairo_surface_t* npm = gdk_pixmap_new(opm, width, height, -1);
+			GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_surface (opm, L, T, width, height);
+			GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_surface (npm, L, T, width, height);
+#else
+			GdkPixmap* opm = agtkw->get_ambulant_pixmap();
 			gdk_pixmap_get_size(GDK_DRAWABLE (opm), &width, &height);
 			GdkPixmap* npm = gdk_pixmap_new(opm, width, height, -1);
 			GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
 			GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
+#endif//WITH_GTK3
 #ifdef WITH_GTK3
 			// TBD
 #else
@@ -164,7 +190,11 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 #endif//WITH_GTK3
 		}
 		//gtk_widget_modify_bg (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), GTK_STATE_NORMAL, &bgc );
+#ifdef WITH_GTK3
+		if (m_background_surface) {
+#else
 		if (m_background_pixmap) {
+#endif//WITH_GTK3
 			AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: drawing pixmap");
 		//	paint.drawPixmap(L, T, *m_background_pixmap);
 		}
@@ -183,10 +213,18 @@ gtk_background_renderer::keep_as_background()
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) m_dst->get_gui_window();
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
+#ifdef WITH_GTK3
+	if (m_background_surface) {
+		cairo_surface_destroy ( m_background_surface);
+		m_background_surface = NULL;
+	}
+	m_background_surface = agtkw->get_pixmap_from_screen(dstrect_whole);
+#else
 	if (m_background_pixmap) {
 		delete m_background_pixmap;
 		m_background_pixmap = NULL;
 	}
 	m_background_pixmap = agtkw->get_pixmap_from_screen(dstrect_whole);
+#endif//WITH_GTK3
 //XXXX	dumpPixmap(m_background_pixmap, "/tmp/keepbg");
 }

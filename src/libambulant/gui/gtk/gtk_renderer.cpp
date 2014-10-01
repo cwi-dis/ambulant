@@ -132,10 +132,18 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
 	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_pixmap());
 
+#ifdef WITH_GTK3
+	cairo_surface_t* surf = NULL;
+#else
 	GdkPixmap* surf = NULL;
+#endif//WITH_GTK3
 	// See whether we're in a transition
 	if (m_trans_engine && !m_fullscreen) {
+#ifdef WITH_GTK3
+		cairo_surface_t* gpm = agw->get_ambulant_pixmap();
+#else
 		GdkPixmap* gpm = agw->get_ambulant_pixmap();
+#endif//WITH_GTK3
 		surf = agw->get_ambulant_surface();
 		if (surf == NULL)
 			surf = agw->new_ambulant_surface();
@@ -145,8 +153,8 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 			dstrect.translate(m_transition_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 #ifdef WITH_GTK3
-			cairo_t* cr = gdk_cairo_create(surf);
-			gdk_cairo_set_source_pixmap(cr, gpm, dstrect.left(), dstrect.top());
+			cairo_t* cr = cairo_create(surf);
+			cairo_set_source_surface(cr, gpm, dstrect.left(), dstrect.top());
 			cairo_paint(cr);
 			cairo_destroy(cr);
 #else
@@ -170,7 +178,11 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
+#ifdef WITH_GTK3
+	cairo_surface_t* surf = agw->get_ambulant_surface();
+#else
 	GdkPixmap* surf = agw->get_ambulant_surface();
+#endif//WITH_GTK3
 
 	if (surf != NULL) {
 		agw->reset_ambulant_surface();

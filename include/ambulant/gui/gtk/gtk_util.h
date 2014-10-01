@@ -26,6 +26,8 @@
 #include "ambulant/gui/gtk/gtk_renderer.h"
 
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 namespace ambulant {
 
 namespace gui {
@@ -61,7 +63,11 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 // generated 4-digit number from 0000-9999 and id is parameter
 // return the 4-digit number for identfication purposes 
 int
+#ifdef WITH_GTK3
+gdk_pixmap_dump(cairo_surface_t* gpm, std::string id);
+#else
 gdk_pixmap_dump(GdkPixmap* gpm, std::string id);
+#endif//WITH_DUMPIMAGES
 
 int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string id);

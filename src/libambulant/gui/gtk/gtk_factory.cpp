@@ -17,13 +17,12 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 #include "ambulant/gui/gtk/gtk_factory.h"
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
 #ifdef	WITH_GTK_HTML_WIDGET
 #include "ambulant/gui/gtk/gtk_html_renderer.h"
@@ -94,12 +93,21 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 }
 
 
+#ifdef WITH_GTK3
+extern "C" {
+void gtk_C_callback_do_draw_event(void *userdata, cairo_t *cr, GtkWidget *widget)
+{
+	((gtk_ambulant_widget*) userdata)->do_draw_event(widget, cr);
+}
+}
+#else
 extern "C" {
 void gtk_C_callback_do_paint_event(void *userdata, GdkEventExpose *event, GtkWidget *widget)
 {
 	((gtk_ambulant_widget*) userdata)->do_paint_event(event);
 }
 }
+#endif//WITH_GTK3
 
 extern "C" {
 void gtk_C_callback_do_motion_notify_event(void *userdata, GdkEventMotion *event, GtkWidget *widget)
@@ -166,19 +174,26 @@ void gtk_C_callback_do_key_release_event(void *userdata, GdkEventKey *event, Gtk
 }
 }//extern "C"
 
+#ifdef WITH_GTK3
+void gui::gtk::cairo_surface_bitblt(
+	cairo_surface_t* dst, int dst_x, int dst_y,
+	cairo_surface_t* src, int src_x, int src_y,
+#else
 void gui::gtk::gdk_pixmap_bitblt(
 	GdkPixmap* dst, int dst_x, int dst_y,
 	GdkPixmap* src, int src_x, int src_y,
+#endif//WITH_GTK3
 	int width, int height)
 {
-	AM_DBG lib::logger::get_logger()->debug("gdk_pixmap_bitblt() s=(%d,%d),d=(%d,%d),wh=(%d,%d))", src_x, src_y, dst_x, dst_y, width, height);
 #ifdef WITH_GTK3
-	cairo_t *cr = gdk_cairo_create (GDK_DRAWABLE(dst));
+	AM_DBG lib::logger::get_logger()->debug("cairo_surface_t() s=(%d,%d),d=(%d,%d),wh=(%d,%d))", src_x, src_y, dst_x, dst_y, width, height);
+	cairo_t *cr = cairo_create (dst);
 	cairo_rectangle(cr, dst_x, dst_y, width, height);
-	gdk_cairo_set_source_pixmap (cr, src, 0,0);
+	cairo_set_source_surface (cr, src, 0,0);
 	cairo_fill (cr);
 	cairo_destroy (cr);
 #else
+	AM_DBG lib::logger::get_logger()->debug("gdk_pixmap_bitblt() s=(%d,%d),d=(%d,%d),wh=(%d,%d))", src_x, src_y, dst_x, dst_y, width, height);
 	GdkGC *gc = gdk_gc_new (dst);
 	gdk_draw_pixmap(GDK_DRAWABLE(dst), gc, GDK_DRAWABLE(src), src_x, src_y, dst_x, dst_y, width, height);
 	g_object_unref (G_OBJECT (gc));
@@ -202,9 +217,15 @@ gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, comm
 
 gtk_window_factory::~gtk_window_factory( )
 {
+#ifdef WITH_GTK3
+	g_object_unref(m_arrow_cursor);
+	g_object_unref(m_hand1_cursor);
+	g_object_unref(m_hand2_cursor);
+#else
 	gdk_cursor_unref(m_arrow_cursor);
 	gdk_cursor_unref(m_hand1_cursor);
 	gdk_cursor_unref(m_hand2_cursor);
+#endif//WITH_GTK3
 }
 
 common::gui_window *
@@ -213,7 +234,6 @@ gtk_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	lib::rect r (m_p, bounds);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, &r, region);
-
 
 	// We don't create this widget anymore MainLoop does it!!
 	gtk_widget_set_size_request(m_parent_widget->get_gtk_widget(), r.right(), r.bottom());
@@ -258,6 +278,9 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	m_bounds(*bounds),
 	m_ambulant_widget(NULL),
 	m_gui_player(NULL),
+#ifdef WITH_GTK3
+	m_target_surface(NULL),
+#endif//WITH_GTK3
 	m_oldpixmap(NULL),
 	m_tmppixmap(NULL),
 	m_arrow_cursor(NULL),
@@ -287,9 +310,19 @@ ambulant_gtk_window::~ambulant_gtk_window()
 		m_ambulant_widget = NULL;
 	}
 	if (m_pixmap != NULL) {
+#ifdef WITH_GTK3
+		cairo_surface_destroy(m_pixmap);
+#else
 		g_object_unref(G_OBJECT(m_pixmap));
+#endif//WITH_GTK3
 		m_pixmap = NULL;
 	}
+#ifdef WITH_GTK3
+	if (m_target_surface != NULL) {
+		cairo_surface_destroy(m_target_surface);
+	}
+#else	  
+#endif//WITH_GTK3
 /** m_oldpixmap not to be deleted, it points to either m_pixmap or m_tmppixmap
 	if (m_oldpixmap != NULL) {
 		g_object_unref(G_OBJECT(m_oldpixmap));
@@ -364,10 +397,16 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	m_handler->redraw(r, this);
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
 	_screenTransitionPostRedraw(r);
+#ifdef WITH_GTK3
+	cairo_surface_bitblt(
+		m_target_surface, r.left(), r.top(), 
+		m_pixmap, r.left(), r.top(), r.width(), r.height());
+#else
 	gdk_pixmap_bitblt(
 		gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()), r.left(), r.top(),
 		m_pixmap, r.left(), r.top(),
 		r.width(), r.height());
+#endif//WITH_GTK3
 	DUMPPIXMAP(m_pixmap, "pxmp");
 #ifdef WITH_SCREENSHOTS
 	GError *error = NULL;
@@ -376,13 +415,17 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 #ifdef WITH_GTK3
 	width = gdk_window_get_width (gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
 	height = gdk_window_get_height(gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
+	cairo_surface_t* surf = get_target_surface();
+	guint W = cairo_image_surface_get_width (surf);
+	guint H = cairo_image_surface_get_height (surf);
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface (surf, 0, 0, W, H);
 #else
 	gdk_drawable_get_size(m_ambulant_widget->get_gtk_widget()->window, &width, &height);
-#endif//WITH_GTK3
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(
 		NULL,
 		gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()),
 		0, 0, 0, 0, 0, width, height);
+#endif//WITH_GTK3
 //	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
 	if (m_ambulant_widget->m_screenshot_data) {
 		g_free(m_ambulant_widget->m_screenshot_data);
@@ -432,6 +475,18 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 	//if (m_ambulant_widget != NULL)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = gtkaw;
+#ifdef WITH_GTK3
+	// TBD
+	GtkWidget* gtk_widget = gtkaw->get_gtk_widget();
+	m_pixmap = gdk_window_create_similar_surface (gtk_widget_get_window (gtk_widget),
+				      CAIRO_CONTENT_COLOR,
+				      gtk_widget_get_allocated_width (gtk_widget),
+				      gtk_widget_get_allocated_height (gtk_widget));
+
+	/* Initialize the surface to white */
+	clear ();
+
+#else
 	GdkColor color;
 	GdkColormap *cmap = gdk_colormap_get_system();
 
@@ -454,12 +509,13 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_widget(0x%x); size (%i,%i)",(void *)gtkaw, width, height);
 		// User Interaction
 	}
-//	}else{
-//		gtk_widget_hide(GTK_WIDGET (gtkaw->get_gtk_widget()));
-//		gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
-//		gtk_container_remove(GTK_CONTAINER (gtkaw->get_gtk_widget()->parent), GTK_WIDGET (gtkaw->get_gtk_widget()));
-//		free(gtkaw->get_gtk_widget());
-//	}
+#endif//WITH_GTK3
+//X	}else{
+//X		gtk_widget_hide(GTK_WIDGET (gtkaw->get_gtk_widget()));
+//X		gtk_box_pack_start (GTK_BOX (parent_widget), GTK_WIDGET (m_widget), TRUE, TRUE, 0);
+//X		gtk_container_remove(GTK_CONTAINER (gtkaw->get_gtk_widget()->parent), GTK_WIDGET (gtkaw->get_gtk_widget()));
+//X		free(gtkaw->get_gtk_widget());
+//X	}
 }
 
 gtk_ambulant_widget*
@@ -469,7 +525,12 @@ ambulant_gtk_window::get_ambulant_widget()
 	return m_ambulant_widget;
 }
 
+#ifdef WITH_GTK3
+	// TBD
+cairo_surface_t*
+#else
 GdkPixmap*
+#endif//WITH_GTK3
 ambulant_gtk_window::get_ambulant_pixmap()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::ambulant_pixmap(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
@@ -488,26 +549,35 @@ ambulant_gtk_window::get_gui_player()
 	return m_gui_player;
 }
 
+
+#ifdef WITH_GTK3
+cairo_surface_t*
+#else
 GdkPixmap*
+#endif// WITH_GTK3
 ambulant_gtk_window::new_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	if (m_surface != NULL) {
 		delete m_surface;
 		m_surface = NULL;
 	}
-#ifdef WITH_GTK3
-	// TBD
-#else
 	gint width; gint height;
 	gdk_drawable_get_size(GDK_DRAWABLE (m_pixmap), &width, &height);
 	m_surface = gdk_pixmap_new(m_pixmap, width, height, -1);
-#endif// WITH_GTK3
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
+#endif// WITH_GTK3
 	return m_surface;
 }
 
+#ifdef WITH_GTK3
+cairo_surface_t*
+#else
 GdkPixmap*
+#endif//WITH_GTK3
 ambulant_gtk_window::get_ambulant_oldpixmap()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
@@ -516,18 +586,31 @@ ambulant_gtk_window::get_ambulant_oldpixmap()
 	return m_oldpixmap;
 }
 
+#ifdef WITH_GTK3
+cairo_surface_t*
+#else
 GdkPixmap*
+#endif//WITH_GTK3
 ambulant_gtk_window::get_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_ambulant_surface(0x%x) = 0x%x",(void *)this,(void *)m_surface);
 	return m_surface;
 }
 
+#ifdef WITH_GTK3
+cairo_surface_t*
+#else
 GdkPixmap*
+#endif//WITH_GTK3
 ambulant_gtk_window::get_pixmap_from_screen(const lib::rect &r)
 {
-	GdkPixmap *rv = gdk_pixmap_new(gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()), r.width(), r.height(), -1);
+#ifdef WITH_GTK3
+	// TBD
+	cairo_surface_t* rv = NULL;
+#else
+	GdkPixmap *rv = gdk_pixmap_new(m_ambulant_widget->get_gtk_widget()->window, r.width(), r.height(), -1);
 	gdk_pixmap_bitblt(rv, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
+#endif//WITH_GTK3
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_pixmap_from_screen(0x%x) = 0x%x",(void *)this,(void *)m_pixmap);
 	return rv;
 }
@@ -540,7 +623,11 @@ ambulant_gtk_window::reset_ambulant_surface(void)
 }
 
 void
+#ifdef WITH_GTK3
+ambulant_gtk_window::set_ambulant_surface(cairo_surface_t* surf)
+#else
 ambulant_gtk_window::set_ambulant_surface(GdkPixmap* surf)
+#endif//WITH_GTK3
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_surface(0x%x) surf = 0x%x",(void *)this,(void *)surf);
 	m_oldpixmap = m_pixmap;
@@ -551,7 +638,11 @@ void
 ambulant_gtk_window::delete_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::delete_ambulant_surface(0x%x) m_surface = 0x%x",(void *)this, (void *)m_surface);
+#ifdef WITH_GTK3
+	// TBD
+#else
 	delete m_surface;
+#endif//WITH_GTK3
 	m_surface = NULL;
 }
 
@@ -620,10 +711,16 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: bitblit");
 	if (m_fullscreen_engine) {
 		// Do the transition step
+#ifdef WITH_GTK3
+		cairo_surface_t* new_src = get_ambulant_surface();
+		// TBD
+#else
 		GdkPixmap* new_src = get_ambulant_surface();
 		if ( ! new_src) new_src = new_ambulant_surface();
 		gdk_pixmap_bitblt(m_surface, 0, 0, m_pixmap, r.left(), r.top(), r.width(), r.height());
 		gdk_pixmap_bitblt(m_pixmap, 0, 0, m_fullscreen_old_pixmap, r.left(), r.top(), r.width(), r.height());
+#endif//WITH_GTK3
+
 		DUMPPIXMAP(new_src, "fnew");
 		DUMPPIXMAP(m_pixmap, "fold");
 		m_fullscreen_engine->step(m_fullscreen_now);
@@ -650,12 +747,26 @@ ambulant_gtk_window::clear()
 	}
 	color_t color = lib::to_color(255, 255, 255);
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::clear(): clearing to 0x%x", (long)color);
+#ifdef WITH_GTK3
+	GdkRGBA bgc;
+	bgc.alpha = 1.0;
+#else
 	GdkColor bgc;
+#endif//WITH_GTK3
 	bgc.red = redc(color)*0x101;
-	bgc.blue = bluec(color)*0x101;
-	bgc.green = greenc(color)*0x101;
+	bgc.blue = 0;//bluec(color)*0x101;
+	bgc.green = 0;//greenc(color)*0x101;
 #ifdef WITH_GTK3
 	// TBD
+	cairo_t *cr;
+
+	cr = cairo_create (m_pixmap);
+  
+	cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, bgc.alpha);
+	cairo_paint (cr);
+
+	cairo_destroy (cr);
+
 #else
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
 	gdk_gc_set_rgb_fg_color (gc, &bgc);
@@ -691,8 +802,14 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) s_widgets=%d",
 		(void *)this,
 		(void*) widget, gtk_ambulant_widget::s_widgets);
+	
+#ifdef WITH_GTK3
+	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget),
+		"draw", G_CALLBACK (gtk_C_callback_do_draw_event), (void*) this);
+#else
 	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget),
 		"expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
+#endif//WITH_GTK3
 	m_motion_notify_handler_id = g_signal_connect_swapped (ancestor_widget,
 		"motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
 	m_button_release_handler_id = g_signal_connect_swapped (ancestor_widget,
@@ -770,7 +887,32 @@ gtk_ambulant_widget::get_gtk_widget()
 	return m_widget;
 }
 
-void gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
+#ifdef WITH_GTK3
+void
+gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::draw_event(%p): widget=%p cr=%p", this, widget, cr);
+	if (cr == NULL || cairo_status(cr) != CAIRO_STATUS_SUCCESS) {
+		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%p): wrong cairo status %s", (void*) this, cr == NULL ? "<null> ": cairo_status_to_string (cairo_status(cr)));
+	}
+	cairo_surface_t* target_surface = cairo_get_target (cr);
+
+	guint W = gtk_widget_get_allocated_width (widget);
+	guint H = gtk_widget_get_allocated_height (widget);
+//	int W = cairo_image_surface_get_width (target_surface);
+//	int H = cairo_image_surface_get_height (target_surface);
+	lib::rect r = lib::rect(lib::point(0,0), lib::size(W, H));
+	if (m_gtk_window == NULL) {
+		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%x):  m_gtk_window==NULL",
+			(void*) this);
+		return;
+	}
+	m_gtk_window->set_target_surface (target_surface);
+	m_gtk_window->redraw(r);
+}
+
+#else
+void
+gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::paintEvent(0x%x): e=0x%x)", (void*) this, (void*) e);
 	lib::rect r = lib::rect(
 		lib::point(e->area.x, e->area.y),
@@ -782,6 +924,7 @@ void gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
 	}
 	m_gtk_window->redraw(r);
 }
+#endif//WITH_GTK3
 
 void
 gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
