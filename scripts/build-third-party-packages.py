@@ -283,16 +283,16 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # If these are missing we try to infer them.
 
 IOS_VERSION=os.environ.get('IPHONEOS_DEPLOYMENT_TARGET', None)
-if not IOS_VERSION:
-    IOS_VERSION = '8.0'
-    
 IOS_SDK=os.environ.get('SDKROOT', None)
-if not IOS_SDK:
-    IOS_SDK= "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk" % IOS_VERSION
+IOSSIM_SDK=IOS_SDK
 
-IOSSIM_SDK=os.environ.get('SDKROOT', None)
-if not IOSSIM_SDK:
+if IOS_SDK and not IOS_VERSION:
+    IOS_VERSION = IOS_SDK[-7:-4]
+    print '*Warning: Assuming IOS_VERSION=%s, from IOS_SDK=%s' % (IOS_VERSION, IOS_SDK)
+if IOS_VERSION and not IOS_SDK:
+    IOS_SDK= "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk" % IOS_VERSION
     IOSSIM_SDK= "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % IOS_VERSION
+    
     
 IOS_VERSION_TO_PARAMETERS = {
     '' : {
