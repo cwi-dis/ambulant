@@ -685,8 +685,8 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL2-2.* && "
-               "(cd SDL2-2.*/include ; cp SDL_config_iphoneos.h SDL_config.h) &&"
                "%s --disable-dependency-tracking &&"
+               "(cd include ; cp SDL_config_iphoneos.h SDL_config.h) &&"
                "make ${MAKEFLAGS} && "
                "make install &&"
                "cd .." % (IPHONE_DEVICE_COMMON_CONFIGURE)

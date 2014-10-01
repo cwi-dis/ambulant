@@ -66,6 +66,9 @@
 		04CDFF5813D8CCF700485C7A /* Bookmarks.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF5613D8CCF700485C7A /* Bookmarks.png */; };
 		04CDFF5913D8CCF700485C7A /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF5713D8CCF700485C7A /* Share.png */; };
 		04CDFFBB13D8DEE100485C7A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04CDFFBA13D8DEE100485C7A /* MessageUI.framework */; };
+		04D9F3A119DBFC8F00076061 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2312D2225B00D99F74 /* libbz2.dylib */; };
+		04D9F3A219DBFC8F00076061 /* libiconv.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F14ADF19D75AD300F5688A /* libiconv.2.dylib */; };
+		04D9F3A319DBFC8F00076061 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2512D2225B00D99F74 /* libz.dylib */; };
 		9325368813D9FE680084A658 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9325368713D9FE680084A658 /* SystemConfiguration.framework */; };
 		9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9352AC13131D0E6F00D0192D /* CoreFoundation.framework */; };
 		93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */; };
@@ -236,6 +239,7 @@
 				042D5A4C19D99423007A2146 /* libavdevice.a in Frameworks */,
 				042D5A5819D99423007A2146 /* libswresample.a in Frameworks */,
 				93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */,
+				04D9F3A119DBFC8F00076061 /* libbz2.dylib in Frameworks */,
 				042D5A5419D99423007A2146 /* libpostproc.a in Frameworks */,
 				93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */,
 				9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */,
@@ -243,11 +247,13 @@
 				042D5A4E19D99423007A2146 /* libavformat.a in Frameworks */,
 				042D5A4F19D99423007A2146 /* libavutil.a in Frameworks */,
 				9325368813D9FE680084A658 /* SystemConfiguration.framework in Frameworks */,
+				04D9F3A219DBFC8F00076061 /* libiconv.2.dylib in Frameworks */,
 				042D5A5619D99423007A2146 /* libSDL2.a in Frameworks */,
 				042D5A5319D99423007A2146 /* libmp4ff.a in Frameworks */,
 				042D5A4D19D99423007A2146 /* libavfilter.a in Frameworks */,
 				042D5A5A19D99423007A2146 /* libxml2.a in Frameworks */,
 				042D5A5519D99423007A2146 /* libSDL2_test.a in Frameworks */,
+				04D9F3A319DBFC8F00076061 /* libz.dylib in Frameworks */,
 				042D5A5119D99423007A2146 /* libfaad.a in Frameworks */,
 				042D5A5219D99423007A2146 /* libltdl.a in Frameworks */,
 			);
