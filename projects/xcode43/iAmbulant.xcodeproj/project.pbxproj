@@ -10,16 +10,21 @@
 		0409070C12CB9375007B9D84 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D4212B80C2A00161EB5 /* Welcome.smil */; };
 		041E94CC12B816EE00399893 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 041E94CB12B816EE00399893 /* Entitlements.plist */; };
 		041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75D9612B80D1300161EB5 /* libambulantIPhone.a */; };
-		041E950E12B81D1000399893 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950412B81D1000399893 /* libavcodec.a */; };
-		041E950F12B81D1000399893 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950512B81D1000399893 /* libavdevice.a */; };
-		041E951012B81D1000399893 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950612B81D1000399893 /* libavformat.a */; };
-		041E951112B81D1000399893 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950712B81D1000399893 /* libavutil.a */; };
-		041E951212B81D1000399893 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950812B81D1000399893 /* libexpat.a */; };
-		041E951312B81D1000399893 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950912B81D1000399893 /* libfaad.a */; };
-		041E951412B81D1000399893 /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950A12B81D1000399893 /* libmp4ff.a */; };
-		041E951512B81D1000399893 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950B12B81D1000399893 /* libSDL2.a */; };
-		041E951612B81D1000399893 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950C12B81D1000399893 /* libswscale.a */; };
-		041E951712B81D1000399893 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950D12B81D1000399893 /* libxml2.a */; };
+		042D5A4B19D99423007A2146 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A3B19D99423007A2146 /* libavcodec.a */; };
+		042D5A4C19D99423007A2146 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A3C19D99423007A2146 /* libavdevice.a */; };
+		042D5A4D19D99423007A2146 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A3D19D99423007A2146 /* libavfilter.a */; };
+		042D5A4E19D99423007A2146 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A3E19D99423007A2146 /* libavformat.a */; };
+		042D5A4F19D99423007A2146 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A3F19D99423007A2146 /* libavutil.a */; };
+		042D5A5019D99423007A2146 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4019D99423007A2146 /* libexpat.a */; };
+		042D5A5119D99423007A2146 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4119D99423007A2146 /* libfaad.a */; };
+		042D5A5219D99423007A2146 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4219D99423007A2146 /* libltdl.a */; };
+		042D5A5319D99423007A2146 /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4319D99423007A2146 /* libmp4ff.a */; };
+		042D5A5419D99423007A2146 /* libpostproc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4419D99423007A2146 /* libpostproc.a */; };
+		042D5A5519D99423007A2146 /* libSDL2_test.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4519D99423007A2146 /* libSDL2_test.a */; };
+		042D5A5619D99423007A2146 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4619D99423007A2146 /* libSDL2.a */; };
+		042D5A5819D99423007A2146 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4819D99423007A2146 /* libswresample.a */; };
+		042D5A5919D99423007A2146 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4919D99423007A2146 /* libswscale.a */; };
+		042D5A5A19D99423007A2146 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 042D5A4A19D99423007A2146 /* libxml2.a */; };
 		044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */; };
 		0473F42D12C10289004F23C4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0473F42C12C10289004F23C4 /* Default.png */; };
 		0475634813CC97E900E8F3C8 /* AmbulantHelp-images in Resources */ = {isa = PBXBuildFile; fileRef = 0475633813CC97E900E8F3C8 /* AmbulantHelp-images */; };
@@ -61,14 +66,10 @@
 		04CDFF5813D8CCF700485C7A /* Bookmarks.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF5613D8CCF700485C7A /* Bookmarks.png */; };
 		04CDFF5913D8CCF700485C7A /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDFF5713D8CCF700485C7A /* Share.png */; };
 		04CDFFBB13D8DEE100485C7A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04CDFFBA13D8DEE100485C7A /* MessageUI.framework */; };
-		04F14ADB19D7555100F5688A /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F14ADA19D7555100F5688A /* libswresample.a */; };
-		04F14AE019D75AD300F5688A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F14ADF19D75AD300F5688A /* libiconv.dylib */; };
 		9325368813D9FE680084A658 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9325368713D9FE680084A658 /* SystemConfiguration.framework */; };
 		9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9352AC13131D0E6F00D0192D /* CoreFoundation.framework */; };
 		93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */; };
 		93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */; };
-		93E20B2412D2225B00D99F74 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2312D2225B00D99F74 /* libbz2.dylib */; };
-		93E20B2612D2225B00D99F74 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2512D2225B00D99F74 /* libz.dylib */; };
 		93E20B2812D2228800D99F74 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2712D2228800D99F74 /* AudioToolbox.framework */; };
 		93E20B2A12D2228800D99F74 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2912D2228800D99F74 /* CoreGraphics.framework */; };
 		93E20B2C12D2228800D99F74 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2B12D2228800D99F74 /* CoreText.framework */; };
@@ -120,16 +121,21 @@
 
 /* Begin PBXFileReference section */
 		041E94CB12B816EE00399893 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Entitlements.plist; path = ../../src/player_iphone/Entitlements.plist; sourceTree = SOURCE_ROOT; };
-		041E950412B81D1000399893 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
-		041E950512B81D1000399893 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
-		041E950612B81D1000399893 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
-		041E950712B81D1000399893 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../build-iOS/third_party_packages/installed/lib/libavutil.a"; sourceTree = SOURCE_ROOT; };
-		041E950812B81D1000399893 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../build-iOS/third_party_packages/installed/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
-		041E950912B81D1000399893 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = "../../build-iOS/third_party_packages/installed/lib/libfaad.a"; sourceTree = SOURCE_ROOT; };
-		041E950A12B81D1000399893 /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
-		041E950B12B81D1000399893 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2.a; path = "../../build-iOS/third_party_packages/installed/lib/libSDL2.a"; sourceTree = SOURCE_ROOT; };
-		041E950C12B81D1000399893 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
-		041E950D12B81D1000399893 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
+		042D5A3B19D99423007A2146 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = third_party_packages/installed/lib/libavcodec.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A3C19D99423007A2146 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = third_party_packages/installed/lib/libavdevice.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A3D19D99423007A2146 /* libavfilter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavfilter.a; path = third_party_packages/installed/lib/libavfilter.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A3E19D99423007A2146 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = third_party_packages/installed/lib/libavformat.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A3F19D99423007A2146 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = third_party_packages/installed/lib/libavutil.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4019D99423007A2146 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = third_party_packages/installed/lib/libexpat.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4119D99423007A2146 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = third_party_packages/installed/lib/libfaad.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4219D99423007A2146 /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = third_party_packages/installed/lib/libltdl.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4319D99423007A2146 /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = third_party_packages/installed/lib/libmp4ff.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4419D99423007A2146 /* libpostproc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpostproc.a; path = third_party_packages/installed/lib/libpostproc.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4519D99423007A2146 /* libSDL2_test.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2_test.a; path = third_party_packages/installed/lib/libSDL2_test.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4619D99423007A2146 /* libSDL2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL2.a; path = third_party_packages/installed/lib/libSDL2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4819D99423007A2146 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = third_party_packages/installed/lib/libswresample.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4919D99423007A2146 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = third_party_packages/installed/lib/libswscale.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		042D5A4A19D99423007A2146 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = third_party_packages/installed/lib/libxml2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "../../src/player_iphone/Resources/MainWindow-iPad.xib"; sourceTree = SOURCE_ROOT; };
 		0473F42C12C10289004F23C4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../src/player_iphone/Resources/Default.png; sourceTree = SOURCE_ROOT; };
 		0475633813CC97E900E8F3C8 /* AmbulantHelp-images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "AmbulantHelp-images"; path = "../../src/player_iphone/Resources/AmbulantHelp-images"; sourceTree = SOURCE_ROOT; };
@@ -188,8 +194,7 @@
 		04CDFF5613D8CCF700485C7A /* Bookmarks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bookmarks.png; path = ../../src/player_iphone/Resources/Bookmarks.png; sourceTree = SOURCE_ROOT; };
 		04CDFF5713D8CCF700485C7A /* Share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Share.png; path = ../../src/player_iphone/Resources/Share.png; sourceTree = SOURCE_ROOT; };
 		04CDFFBA13D8DEE100485C7A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		04F14ADA19D7555100F5688A /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = "../../build-iOS/third_party_packages/installed/lib/libswresample.a"; sourceTree = "<group>"; };
-		04F14ADF19D75AD300F5688A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
+		04F14ADF19D75AD300F5688A /* libiconv.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.dylib; path = usr/lib/libiconv.2.dylib; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* iAmbulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iAmbulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32CA4F630368D1EE00C91783 /* iAmbulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iAmbulant_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iAmbulant-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iAmbulant-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -217,33 +222,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */,
-				04F14ADB19D7555100F5688A /* libswresample.a in Frameworks */,
-				041E950E12B81D1000399893 /* libavcodec.a in Frameworks */,
-				041E950F12B81D1000399893 /* libavdevice.a in Frameworks */,
-				041E951012B81D1000399893 /* libavformat.a in Frameworks */,
-				041E951112B81D1000399893 /* libavutil.a in Frameworks */,
-				041E951212B81D1000399893 /* libexpat.a in Frameworks */,
-				041E951312B81D1000399893 /* libfaad.a in Frameworks */,
-				041E951412B81D1000399893 /* libmp4ff.a in Frameworks */,
-				041E951512B81D1000399893 /* libSDL2.a in Frameworks */,
-				041E951612B81D1000399893 /* libswscale.a in Frameworks */,
-				041E951712B81D1000399893 /* libxml2.a in Frameworks */,
-				93E20B2412D2225B00D99F74 /* libbz2.dylib in Frameworks */,
-				93E20B2612D2225B00D99F74 /* libz.dylib in Frameworks */,
-				04F14AE019D75AD300F5688A /* libiconv.dylib in Frameworks */,
 				93E20B2812D2228800D99F74 /* AudioToolbox.framework in Frameworks */,
+				042D5A5919D99423007A2146 /* libswscale.a in Frameworks */,
+				042D5A4B19D99423007A2146 /* libavcodec.a in Frameworks */,
 				93E20B2A12D2228800D99F74 /* CoreGraphics.framework in Frameworks */,
 				93E20B2C12D2228800D99F74 /* CoreText.framework in Frameworks */,
 				93E20B2E12D2228800D99F74 /* Foundation.framework in Frameworks */,
+				042D5A5019D99423007A2146 /* libexpat.a in Frameworks */,
 				93E20B3012D2228800D99F74 /* ImageIO.framework in Frameworks */,
 				93E20B3212D2228800D99F74 /* QuartzCore.framework in Frameworks */,
 				93E20B3412D2228800D99F74 /* UIKit.framework in Frameworks */,
 				93E20B4412D2229600D99F74 /* OpenGLES.framework in Frameworks */,
+				042D5A4C19D99423007A2146 /* libavdevice.a in Frameworks */,
+				042D5A5819D99423007A2146 /* libswresample.a in Frameworks */,
 				93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */,
+				042D5A5419D99423007A2146 /* libpostproc.a in Frameworks */,
 				93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */,
 				9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */,
 				04CDFFBB13D8DEE100485C7A /* MessageUI.framework in Frameworks */,
+				042D5A4E19D99423007A2146 /* libavformat.a in Frameworks */,
+				042D5A4F19D99423007A2146 /* libavutil.a in Frameworks */,
 				9325368813D9FE680084A658 /* SystemConfiguration.framework in Frameworks */,
+				042D5A5619D99423007A2146 /* libSDL2.a in Frameworks */,
+				042D5A5319D99423007A2146 /* libmp4ff.a in Frameworks */,
+				042D5A4D19D99423007A2146 /* libavfilter.a in Frameworks */,
+				042D5A5A19D99423007A2146 /* libxml2.a in Frameworks */,
+				042D5A5519D99423007A2146 /* libSDL2_test.a in Frameworks */,
+				042D5A5119D99423007A2146 /* libfaad.a in Frameworks */,
+				042D5A5219D99423007A2146 /* libltdl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,17 +304,21 @@
 		04B75DA512B80E5E00161EB5 /* third_party_packages */ = {
 			isa = PBXGroup;
 			children = (
-				041E950412B81D1000399893 /* libavcodec.a */,
-				041E950512B81D1000399893 /* libavdevice.a */,
-				041E950612B81D1000399893 /* libavformat.a */,
-				041E950712B81D1000399893 /* libavutil.a */,
-				041E950812B81D1000399893 /* libexpat.a */,
-				041E950912B81D1000399893 /* libfaad.a */,
-				041E950A12B81D1000399893 /* libmp4ff.a */,
-				041E950B12B81D1000399893 /* libSDL2.a */,
-				04F14ADA19D7555100F5688A /* libswresample.a */,
-				041E950C12B81D1000399893 /* libswscale.a */,
-				041E950D12B81D1000399893 /* libxml2.a */,
+				042D5A3B19D99423007A2146 /* libavcodec.a */,
+				042D5A3C19D99423007A2146 /* libavdevice.a */,
+				042D5A3D19D99423007A2146 /* libavfilter.a */,
+				042D5A3E19D99423007A2146 /* libavformat.a */,
+				042D5A3F19D99423007A2146 /* libavutil.a */,
+				042D5A4019D99423007A2146 /* libexpat.a */,
+				042D5A4119D99423007A2146 /* libfaad.a */,
+				042D5A4219D99423007A2146 /* libltdl.a */,
+				042D5A4319D99423007A2146 /* libmp4ff.a */,
+				042D5A4419D99423007A2146 /* libpostproc.a */,
+				042D5A4519D99423007A2146 /* libSDL2_test.a */,
+				042D5A4619D99423007A2146 /* libSDL2.a */,
+				042D5A4819D99423007A2146 /* libswresample.a */,
+				042D5A4919D99423007A2146 /* libswscale.a */,
+				042D5A4A19D99423007A2146 /* libxml2.a */,
 			);
 			name = third_party_packages;
 			sourceTree = "<group>";
@@ -420,7 +430,7 @@
 				93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */,
 				93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */,
 				93E20B2312D2225B00D99F74 /* libbz2.dylib */,
-				04F14ADF19D75AD300F5688A /* libiconv.dylib */,
+				04F14ADF19D75AD300F5688A /* libiconv.2.dylib */,
 				93E20B2512D2225B00D99F74 /* libz.dylib */,
 				93E20B2712D2228800D99F74 /* AudioToolbox.framework */,
 				93E20B2912D2228800D99F74 /* CoreGraphics.framework */,
@@ -645,11 +655,7 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -668,11 +674,7 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = iAmbulant;
 			};
 			name = Debug;
@@ -688,11 +690,7 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib",
-					"$(DEVELOPER_DIR)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};

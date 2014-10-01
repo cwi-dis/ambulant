@@ -685,6 +685,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL2-2.* && "
+               "(cd SDL2-2.*/include ; cp SDL_config_iphoneos.h SDL_config.h) &&"
                "%s --disable-dependency-tracking &&"
                "make ${MAKEFLAGS} && "
                "make install &&"
@@ -783,7 +784,8 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 sdl2",
             buildcmd=
                "cd SDL2-2.* && "
-               "%s --disable-video-opengl --disable-dependency-tracking &&"
+               "%s --disable-video-opengl --disable-audio --disable-joystick --disable-video-opengles --disable-dependency-tracking &&"
+               "(cd include ; cp SDL_config_iphoneos.h SDL_config.h) &&"
                "make ${MAKEFLAGS} && "
                "make install &&"
                "cd .." % (IPHONE_SIMULATOR_COMMON_CONFIGURE)
