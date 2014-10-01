@@ -538,21 +538,21 @@ third_party_packages={
                "cd .." % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
           
-#        TPP("SDL_image",
+        TPP("SDL_image",
 # mercurial version needed for compatibilty with SDL2
 #           url="http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.13.tar.gz",
 #           url2="SDL-1.2.13-%s.tar.gz"%SDL_MIRRORDATE,
-#            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
-#            buildcmd=
-#                "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
-#                "cd SDL_image && sh autogen.sh && "
-#                "mkdir -p build && cd build && "
-#                "SDL_CONFIG=`pwd`/../../installed/bin/sdl2-config .%s &&"
-#                "make ${MAKEFLAGS} && "
-#                "make install &&"
-#                "cd .." % MAC106_COMMON_CONFIGURE
-#            ),
-#
+            checkcmd="pkg-config --atleast-version=1.2.13 SDL2_image",
+            buildcmd=
+                "if [ ! -e SDL_image ] ; then  hg clone http://hg.libsdl.org/SDL_image ; fi && "
+                "cd SDL_image && sh autogen.sh && "
+                "mkdir -p build && cd build && "
+                "SDL_CONFIG=`pwd`/../../installed/bin/sdl2-config .%s --disable-dependency-tracking --disable-webp &&"
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % MAC106_COMMON_CONFIGURE
+            ),
+
 #         TPP("SDL_Pango", # SDL interface for Pango glyph rendering system
 #             url="http://sourceforge.net/projects/sdlpango/files/latest/download",
 #             url2="SDL_Pango-0.1.2.tar.gz",
@@ -568,19 +568,32 @@ third_party_packages={
 #                 "make install &&"
 #                 "cd .." % (AMBULANT_DIR, AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
 #             ),
-#
-#        TPP("SDL2_ttf", # SDL2 interface for FreeType2 glyph rendering system
-#            url="https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz",
-#            url2="SDL2_ttf-2.0.12.tar.gz",
-#            checkcmd="pkg-config --atleast-version=2.0.12 SDL2_ttf",
-#            buildcmd=
-#                "unset PKG_CONFIG_LIBDIR &&"
-#                "cd SDL2_ttf-2.0.12 && "
-#                "%s && "
-#                "make ${MAKEFLAGS} && "
-#                "make install &&"
-#                "cd .." % MAC106_COMMON_CONFIGURE
-#            ),
+
+        TPP("FreeType2", # SDL2 interface for FreeType2 glyph rendering system needed for SDL2_ttf
+            url="http://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz",
+#           url2="freetype-2.5.3.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0 freetype",
+            buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
+                "cd freetype-2.* && "
+                "%s --disable-dependency-tracking && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % MAC106_COMMON_CONFIGURE
+            ),
+
+        TPP("SDL2_ttf", # SDL2 interface for FreeType2 glyph rendering system
+            url="https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz",
+#           url2="SDL2_ttf-2.0.12.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0.12 SDL2_ttf",
+            buildcmd=
+                "unset PKG_CONFIG_LIBDIR &&"
+                "cd SDL2_ttf-2.0.12 && "
+                "%s --disable-dependency-tracking && "
+                "make ${MAKEFLAGS} && "
+                "make install &&"
+                "cd .." % MAC106_COMMON_CONFIGURE
+            ),
 
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.2.tar.gz",

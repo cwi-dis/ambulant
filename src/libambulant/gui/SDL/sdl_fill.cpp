@@ -106,17 +106,17 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	Uint8 alpha = info ? info->get_mediaopacity()* 255 : 255;
 	Uint8 bgalpha = info ? info->get_bgopacity()* 255 : 255;
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body: clearing to %p", (long)color);
+	SDL_Rect sdl_src_rect = {0, 0, W, H};
 	SDL_Rect sdl_dst_rect = {L, T, W, H};
 	SDL_Color sdl_bgcolor = {redc(bgcolor), greenc(bgcolor), bluec(bgcolor), bgalpha};
 	// Draw the background for the region
-	err = SDL_FillRect (m_surface, &sdl_dst_rect, SDL_MapRGBA(m_surface->format, sdl_bgcolor.r, sdl_bgcolor.g, sdl_bgcolor.b, sdl_bgcolor.a));
+	err = SDL_FillRect (m_surface, &sdl_src_rect, SDL_MapRGBA(m_surface->format, sdl_bgcolor.r, sdl_bgcolor.g, sdl_bgcolor.b, sdl_bgcolor.a));
 	assert (err==0);
 	// Draw the foreground for the region
 	SDL_Color sdl_fgcolor = {redc(color), greenc(color), bluec(color), alpha};
-	err = SDL_FillRect (m_surface, &sdl_dst_rect, SDL_MapRGBA(m_surface->format, sdl_fgcolor.r, sdl_fgcolor.g, sdl_fgcolor.b, sdl_fgcolor.a));
+	err = SDL_FillRect (m_surface, &sdl_src_rect, SDL_MapRGBA(m_surface->format, sdl_fgcolor.r, sdl_fgcolor.g, sdl_fgcolor.b, sdl_fgcolor.a));
 	assert (err==0);
 	AM_DBG lib::logger::get_logger()->debug("sdl_fill_renderer.redraw_body(%p, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
-	SDL_Rect sdl_src_rect = {0, 0, W, H};
 	err = saw->copy_to_sdl_surface (m_surface, &sdl_src_rect, &sdl_dst_rect, 255);
 	assert (err==0);
 }

@@ -1,0 +1,104 @@
+<smil>
+ <head>
+  <layout>
+   <root-layout xml:id="Smil Anin Test" backgroundColor="aqua" width="640" height="608"/>
+<!-- Regions -->
+   <region xml:id="Main" left="0%" top="0%" width="100%" height="100%"  backgroundColor="fuchsia" fit="meet" z-index="0">
+    <region xml:id="Big-1"   left="0%"  width="100%" top="0%" height="80%" backgroundColor="maroon" fit="meet" z-index="0" />
+    <region xml:id="Small-1" left="0%"  width="20%" top="80%" height="20%" backgroundColor="yellow" fit="meet" z-index="0" />
+    <region xml:id="Small-2" left="20%" width="20%" top="80%" height="20%" backgroundColor="orange" fit="meet" z-index="0" />
+    <region xml:id="Small-3" left="40%" width="20%" top="80%" height="20%" backgroundColor="red"    fit="meet" z-index="0" />
+    <region xml:id="Small-4" left="60%" width="20%" top="80%" height="20%" backgroundColor="purple" fit="meet" z-index="1" />
+    <region xml:id="Small-5" left="80%" width="20%" top="80%" height="20%" backgroundColor="blue"   fit="meet" z-index="2" />
+   </region>
+  </layout>
+ </head>
+ <body>
+  <par begin="1" dur="17.4">
+<!-- Media -->
+   <brush      xml:id="Item-1" region="Small-1" color="teal" />
+   <text       xml:id="Item-2" region="Small-2" src="data:,Text" />
+   <smilText   xml:id="Item-3" region="Small-3" textColor="white" > The region is animated, but this smilText is not. </smilText>
+   <img	       xml:id="Item-4" region="Small-4" src="media/image-640x480.png" />
+   <video      xml:id="Item-5" region="Small-5" src="media/video-mp4-aac-h264-640x480.mp4" begin="At-11.begin" />
+
+<!-- Animators -->
+   <animate xml:id="Al-11" targetElement="Small-1" attributeName="left"   from="0%"  to="20%" begin="0" dur="1" /> 
+   <animate xml:id="At-11" targetElement="Small-1" attributeName="top"    from="80%" to="0%"  begin="0" dur="1" />
+   <animate xml:id="Aw-11" targetElement="Small-1" attributeName="width"  from="20%" to="80%" begin="0" dur="1" />
+   <animate xml:id="Ah-11" targetElement="Small-1" attributeName="height" from="20%" to="80%" begin="0" dur="1" />
+
+   <animate xml:id="Al-12" targetElement="Small-1" attributeName="left"   from="20%" to="20%" begin="Al-11.end"   dur="1" />
+   <animate xml:id="At-12" targetElement="Small-1" attributeName="top"    from="0%"  to="0%"  begin="Al-12.begin" dur="1" />
+   <animate xml:id="Aw-12" targetElement="Small-1" attributeName="width"  from="80%" to="80%" begin="Al-12.begin" dur="1" />
+   <animate xml:id="Ah-12" targetElement="Small-1" attributeName="height" from="80%" to="80%" begin="Al-12.begin" dur="1" />
+
+   <animate xml:id="Al-13" targetElement="Small-1" attributeName="left"   from="20%" to="0%"  begin="Al-12.end"   dur="1" />
+   <animate xml:id="At-13" targetElement="Small-1" attributeName="top"    from="0%"  to="80%" begin="Al-13.begin" dur="1" />
+   <animate xml:id="Aw-13" targetElement="Small-1" attributeName="width"  from="80%" to="20%" begin="Al-13.begin" dur="1" />
+   <animate xml:id="Ah-13" targetElement="Small-1" attributeName="height" from="80%" to="20%" begin="Al-13.begin" dur="1" />
+ 
+   <animate xml:id="Al-21" targetElement="Small-2" attributeName="left"   from="20%" to="20%" begin="Al-13.end"   dur="1" /> 
+   <animate xml:id="At-21" targetElement="Small-2" attributeName="top"    from="80%" to="0%"  begin="Al-21.begin" dur="1" />
+   <animate xml:id="Aw-21" targetElement="Small-2" attributeName="width"  from="20%" to="80%" begin="Al-21.begin" dur="1" />
+   <animate xml:id="Ah-21" targetElement="Small-2" attributeName="height" from="20%" to="80%" begin="Al-21.begin" dur="1" />
+
+   <animate xml:id="Al-22" targetElement="Small-2" attributeName="left"   from="20%" to="20%" begin="Al-21.end"   dur="1" />
+   <animate xml:id="At-22" targetElement="Small-2" attributeName="top"    from="0%"  to="0%"  begin="Al-22.begin" dur="1" />
+   <animate xml:id="Aw-22" targetElement="Small-2" attributeName="width"  from="80%" to="80%" begin="Al-22.begin" dur="1" />
+   <animate xml:id="Ah-22" targetElement="Small-2" attributeName="height" from="80%" to="80%" begin="Al-22.begin" dur="1" />
+
+   <animate xml:id="Al-23" targetElement="Small-2" attributeName="left"   from="20%" to="20%" begin="Al-22.end"   dur="1" />
+   <animate xml:id="At-23" targetElement="Small-2" attributeName="top"    from="0%"  to="80%" begin="Al-23.begin" dur="1" />
+   <animate xml:id="Aw-23" targetElement="Small-2" attributeName="width"  from="80%" to="20%" begin="Al-23.begin" dur="1" />
+   <animate xml:id="Ah-23" targetElement="Small-2" attributeName="height" from="80%" to="20%" begin="Al-23.begin" dur="1" />
+ 
+   <animate xml:id="Al-31" targetElement="Small-3" attributeName="left"   from="40%" to="20%" begin="Al-23.end"   dur="1" /> 
+   <animate xml:id="At-31" targetElement="Small-3" attributeName="top"    from="80%" to="0%"  begin="Al-31.begin" dur="1" />
+   <animate xml:id="Aw-31" targetElement="Small-3" attributeName="width"  from="20%" to="80%" begin="Al-31.begin" dur="1" />
+   <animate xml:id="Ah-31" targetElement="Small-3" attributeName="height" from="20%" to="80%" begin="Al-31.begin" dur="1" />
+
+   <animate xml:id="Al-32" targetElement="Small-3" attributeName="left"   from="20%" to="20%" begin="Al-31.end"   dur="1" />
+   <animate xml:id="At-32" targetElement="Small-3" attributeName="top"    from="0%"  to="0%"  begin="Al-32.begin" dur="1" />
+   <animate xml:id="Aw-32" targetElement="Small-3" attributeName="width"  from="80%" to="80%" begin="Al-32.begin" dur="1" />
+   <animate xml:id="Ah-32" targetElement="Small-3" attributeName="height" from="80%" to="80%" begin="Al-32.begin" dur="1" />
+
+   <animate xml:id="Al-33" targetElement="Small-3" attributeName="left"   from="20%" to="40%" begin="Al-32.end"   dur="1" />
+   <animate xml:id="At-33" targetElement="Small-3" attributeName="top"    from="0%"  to="80%" begin="Al-33.begin" dur="1" />
+   <animate xml:id="Aw-33" targetElement="Small-3" attributeName="width"  from="80%" to="20%" begin="Al-33.begin" dur="1" />
+   <animate xml:id="Ah-33" targetElement="Small-3" attributeName="height" from="80%" to="20%" begin="Al-33.begin" dur="1" />
+
+   <animate xml:id="Al-41" targetElement="Small-4" attributeName="left"   from="60%" to="20%" begin="Al-33.end"   dur="1" /> 
+   <animate xml:id="At-41" targetElement="Small-4" attributeName="top"    from="80%" to="0%"  begin="Al-41.begin" dur="1" />
+   <animate xml:id="Aw-41" targetElement="Small-4" attributeName="width"  from="20%" to="80%" begin="Al-41.begin" dur="1" />
+   <animate xml:id="Ah-41" targetElement="Small-4" attributeName="height" from="20%" to="80%" begin="Al-41.begin" dur="1" />
+
+   <animate xml:id="Al-42" targetElement="Small-4" attributeName="left"   from="20%" to="20%" begin="Al-41.end"   dur="1" />
+   <animate xml:id="At-42" targetElement="Small-4" attributeName="top"    from="0%"  to="0%"  begin="Al-42.begin" dur="1" />
+   <animate xml:id="Aw-42" targetElement="Small-4" attributeName="width"  from="80%" to="80%" begin="Al-42.begin" dur="1" />
+   <animate xml:id="Ah-42" targetElement="Small-4" attributeName="height" from="80%" to="80%" begin="Al-42.begin" dur="1" />
+
+   <animate xml:id="Al-43" targetElement="Small-4" attributeName="left"   from="20%" to="60%" begin="Al-42.end"   dur="1" />
+   <animate xml:id="At-43" targetElement="Small-4" attributeName="top"    from="0%"  to="80%" begin="Al-43.begin" dur="1" />
+   <animate xml:id="Aw-43" targetElement="Small-4" attributeName="width"  from="80%" to="20%" begin="Al-43.begin" dur="1" />
+   <animate xml:id="Ah-43" targetElement="Small-4" attributeName="height" from="80%" to="20%" begin="Al-43.begin" dur="1" />
+
+   <animate xml:id="Al-51" targetElement="Small-5" attributeName="left"   from="80%" to="20%" begin="Al-43.end"   dur="1" /> 
+   <animate xml:id="At-51" targetElement="Small-5" attributeName="top"    from="80%" to="0%"  begin="Al-51.begin" dur="1" />
+   <animate xml:id="Aw-51" targetElement="Small-5" attributeName="width"  from="20%" to="80%" begin="Al-51.begin" dur="1" />
+   <animate xml:id="Ah-51" targetElement="Small-5" attributeName="height" from="20%" to="80%" begin="Al-51.begin" dur="1" />
+
+   <animate xml:id="Al-52" targetElement="Small-5" attributeName="left"   from="20%" to="20%" begin="Al-51.end"   dur="1" />
+   <animate xml:id="At-52" targetElement="Small-5" attributeName="top"    from="0%"  to="0%"  begin="Al-52.begin" dur="1" />
+   <animate xml:id="Aw-52" targetElement="Small-5" attributeName="width"  from="80%" to="80%" begin="Al-52.begin" dur="1" />
+   <animate xml:id="Ah-52" targetElement="Small-5" attributeName="height" from="80%" to="80%" begin="Al-52.begin" dur="1" />
+
+   <animate xml:id="Al-53" targetElement="Small-5" attributeName="left"   from="20%" to="80%" begin="Al-52.end"   dur="1" />
+   <animate xml:id="At-53" targetElement="Small-5" attributeName="top"    from="0%"  to="80%" begin="Al-53.begin" dur="1" />
+   <animate xml:id="Aw-53" targetElement="Small-5" attributeName="width"  from="80%" to="20%" begin="Al-53.begin" dur="1" />
+   <animate xml:id="Ah-53" targetElement="Small-5" attributeName="height" from="80%" to="20%" begin="Al-53.begin" dur="1" />
+   <seq>
+   </seq>
+  </par>
+ </body>
+</smil>
