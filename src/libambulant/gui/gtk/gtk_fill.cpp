@@ -76,11 +76,12 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 #ifdef WITH_GTK3
-	cairo_surface_t* pm = agtkw->get_ambulant_surface();
+//	cairo_surface_t* pm = agtkw->get_ambulant_surface();
+	cairo_surface_t* pm = agtkw->get_target_surface();
 	GdkRGBA bgc;
-	bgc.red = redc(color)*0x101;
-	bgc.blue = bluec(color)*0x101;
-	bgc.green = greenc(color)*0x101;
+	bgc.red = redf(color);
+	bgc.blue = bluef(color);
+	bgc.green = greenf(color);
 	bgc.alpha = 1.0;
 #else
 	GdkColor bgc;
@@ -133,13 +134,15 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 #else
 		GdkColor bgc;
 #endif//WITH_GTK3
-		bgc.red = redc(bgcolor)*0x101;
-		bgc.blue = bluec(bgcolor)*0x101;
-		bgc.green = greenc(bgcolor)*0x101;
+		bgc.red = redf(bgcolor);
+		bgc.blue = bluef(bgcolor);
+		bgc.green = greenf(bgcolor);
 		if (opacity == 1.0) {
 #ifdef WITH_GTK3
-			cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
-			gdk_cairo_set_source_rgba (cr, &bgc);
+			cairo_t* cr = cairo_create(agtkw->get_target_surface());
+//			cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
+//			cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, bgc.alpha);
+			cairo_set_source_rgb (cr, bgc.red, bgc.green, bgc.blue);
 			cairo_rectangle (cr, L, T, W, H);
 			cairo_fill(cr);
 			cairo_destroy(cr);
