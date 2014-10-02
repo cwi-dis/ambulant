@@ -137,21 +137,20 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		bgc.red = redf(bgcolor);
 		bgc.blue = bluef(bgcolor);
 		bgc.green = greenf(bgcolor);
-		if (opacity == 1.0) {
 #ifdef WITH_GTK3
 			cairo_t* cr = cairo_create(agtkw->get_target_surface());
 //			cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
 //			cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, bgc.alpha);
-			cairo_set_source_rgb (cr, bgc.red, bgc.green, bgc.blue);
+			cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, opacity);
 			cairo_rectangle (cr, L, T, W, H);
 			cairo_fill(cr);
 			cairo_destroy(cr);
 #else
+		if (opacity == 1.0) {
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 			gdk_gc_set_rgb_fg_color (gc, &bgc);
 			gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 			g_object_unref (G_OBJECT (gc));
-#endif//WITH_GTK3
 		} else {  //XXXX adapted from gtk_transition. May be some code to be factored out
 			// Method:
 			// 1. Get the current on-screen image as a pixmap
@@ -175,8 +174,8 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			GdkPixmap* npm = gdk_pixmap_new(opm, width, height, -1);
 			GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
 			GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
-#endif//WITH_GTK3
-#ifdef WITH_GTK3
+#endif//WITH_GTK3XXXX
+#ifdef WITH_GTK3XXXX
 			// TBD
 #else
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (opm));
@@ -190,8 +189,9 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			g_object_unref (G_OBJECT (new_pixbuf));
 			g_object_unref (G_OBJECT (ngc));
 			g_object_unref (G_OBJECT (gc));
-#endif//WITH_GTK3
+#endif//WITH_GTK3XXXX
 		}
+#endif//WITH_GTK3
 		//gtk_widget_modify_bg (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), GTK_STATE_NORMAL, &bgc );
 #ifdef WITH_GTK3
 		if (m_background_surface) {
