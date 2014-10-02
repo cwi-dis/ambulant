@@ -638,7 +638,8 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 
 #ifdef WITH_GTK3
 	// TBD
-		cairo_surface_t* pixmap = window->get_ambulant_pixmap();
+//		cairo_surface_t* pixmap = window->get_ambulant_pixmap();
+		cairo_surface_t* pixmap = window->get_target_surface();
 #else
 		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
 		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
@@ -765,7 +766,8 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 //		GtkStateFlags flags;
 //		GdkRGBA rgba;
 		GdkColor gfcr; //TMP
-		cairo_t *cr = cairo_create (window->get_ambulant_pixmap());
+//		cairo_t *cr = cairo_create (window->get_ambulant_pixmap());
+		cairo_t *cr = cairo_create (window->get_target_surface());
 //		gdk_cairo_set_source_color (cr, &gfcr); //TMP
 		/* clip */
 //		gdk_cairo_rectangle (cr, &area);

@@ -113,6 +113,7 @@ class ambulant_gtk_window : public common::gui_window {
 	void set_ambulant_surface(cairo_surface_t* surf);
 	void set_target_surface(cairo_surface_t* surf) { m_target_surface = surf; }
 	cairo_surface_t* get_target_surface() { return m_target_surface; }
+	lib::rect get_bounds() { return m_bounds; }
 #else
 	GdkPixmap* get_ambulant_pixmap();
 	GdkPixmap* new_ambulant_surface();
