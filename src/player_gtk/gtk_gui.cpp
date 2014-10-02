@@ -43,7 +43,7 @@
 #include "ambulant/version.h"
 #endif
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -934,9 +934,12 @@ gtk_gui::_update_menus()
 		(m_mainloop != NULL));
 }
 
+#include <X11/Xlib.h>
+
 int
 main (int argc, char*argv[]) {
 
+	XInitThreads();
 #ifdef	WITH_GSTREAMER
 	/* initialize GStreamer */
 	gstreamer_player_initialize (&argc, &argv);

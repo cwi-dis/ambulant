@@ -160,10 +160,10 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			cairo_surface_t* opm = agtkw->get_ambulant_pixmap();
 			width = cairo_image_surface_get_width (opm);
 			height = cairo_image_surface_get_height (opm);
-			cairo_content_t content_type = cairo_surface_get_content (opm);
-			cairo_surface_t* npm = cairo_surface_create_similar (opm, content_type, width, height);
-//			gdk_pixmap_get_size(GDK_DRAWABLE (opm), &width, &height);
-//			cairo_surface_t* npm = gdk_pixmap_new(opm, width, height, -1);
+//X			cairo_content_t content_type = cairo_surface_get_content (opm);
+			cairo_surface_t* npm = cairo_surface_create_similar_image (opm, CAIRO_FORMAT_ARGB32, width, height);
+//X			gdk_pixmap_get_size(GDK_DRAWABLE (opm), &width, &height);
+//X			cairo_surface_t* npm = gdk_pixmap_new(opm, width, height, -1);
 			GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_surface (opm, L, T, width, height);
 			GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_surface (npm, L, T, width, height);
 #else

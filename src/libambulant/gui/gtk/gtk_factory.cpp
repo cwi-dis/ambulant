@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -476,13 +476,10 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = gtkaw;
 #ifdef WITH_GTK3
-	// TBD
 	GtkWidget* gtk_widget = gtkaw->get_gtk_widget();
-	m_pixmap = gdk_window_create_similar_surface (gtk_widget_get_window (gtk_widget),
-				      CAIRO_CONTENT_COLOR,
-				      gtk_widget_get_allocated_width (gtk_widget),
-				      gtk_widget_get_allocated_height (gtk_widget));
-
+	m_pixmap = gdk_window_create_similar_image_surface (gtk_widget_get_window (gtk_widget),
+							    CAIRO_FORMAT_ARGB32,
+							    m_bounds.w, m_bounds.h, 0);
 	/* Initialize the surface to white */
 	clear ();
 
@@ -754,8 +751,8 @@ ambulant_gtk_window::clear()
 	GdkColor bgc;
 #endif//WITH_GTK3
 	bgc.red = redc(color)*0x101;
-	bgc.blue = 0;//bluec(color)*0x101;
-	bgc.green = 0;//greenc(color)*0x101;
+	bgc.blue = bluec(color)*0x101;
+	bgc.green = greenc(color)*0x101;
 #ifdef WITH_GTK3
 	// TBD
 	cairo_t *cr;
@@ -894,12 +891,16 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	if (cr == NULL || cairo_status(cr) != CAIRO_STATUS_SUCCESS) {
 		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%p): wrong cairo status %s", (void*) this, cr == NULL ? "<null> ": cairo_status_to_string (cairo_status(cr)));
 	}
-	cairo_surface_t* target_surface = cairo_get_target (cr);
 
 	guint W = gtk_widget_get_allocated_width (widget);
 	guint H = gtk_widget_get_allocated_height (widget);
-//	int W = cairo_image_surface_get_width (target_surface);
-//	int H = cairo_image_surface_get_height (target_surface);
+	cairo_surface_t* target_surface = m_gtk_window->get_target_surface(); // cairo_get_target (cr);
+	if (target_surface == NULL) {
+		target_surface = gdk_window_create_similar_image_surface
+		  (gtk_widget_get_window (widget), CAIRO_FORMAT_ARGB32, W , H, 0);
+	}
+	int w = cairo_image_surface_get_width (target_surface);
+	int h = cairo_image_surface_get_height (target_surface);
 	lib::rect r = lib::rect(lib::point(0,0), lib::size(W, H));
 	if (m_gtk_window == NULL) {
 		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%x):  m_gtk_window==NULL",
@@ -908,6 +909,10 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	}
 	m_gtk_window->set_target_surface (target_surface);
 	m_gtk_window->redraw(r);
+	cairo_set_source_surface (cr, target_surface, 0, 0);
+	cairo_paint (cr);
+
+
 }
 
 #else

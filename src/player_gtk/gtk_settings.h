@@ -22,6 +22,7 @@
 #ifndef __AMBULANT_GTK_SETTINGS_H__
 #define __AMBULANT_GTK_SETTINGS_H__
 
+#include <X11/X.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
