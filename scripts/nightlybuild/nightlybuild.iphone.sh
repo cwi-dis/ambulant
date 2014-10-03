@@ -28,6 +28,13 @@ DESTINATION_HOST=sen5@ambulantplayer.org
 DESTINATION_DIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
+IOSVERSION=6.0	# Preferred iOS version to build for
+if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
+	IOSVERSION=7.1
+fi
+if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
+	IOSVERSION=8.0
+fi
 
 if [ -f $HOME/.bashrc ]; then
 	. $HOME/.bashrc
@@ -99,7 +106,7 @@ cd projects/xcode43
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos6.0 \
+	-sdk iphoneos$IOSVERSION \
 	build
 #
 # The keychain may have been locked again in the mean time
@@ -109,7 +116,7 @@ security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos6.0 \
+	-sdk iphoneos$IOSVERSION \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
