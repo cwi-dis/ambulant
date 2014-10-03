@@ -265,7 +265,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 //		cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
 		cairo_t* cr = cairo_create(agtkw->get_target_surface());
 		gdk_cairo_set_source_pixbuf(cr, new_image_pixbuf == NULL ? m_image : new_image_pixbuf, dstrect.left(), dstrect.top());
-		cairo_paint(cr);
+		cairo_paint_with_alpha(cr, alpha_media);
 		cairo_destroy(cr);
 #else
 		gdk_draw_pixbuf(
