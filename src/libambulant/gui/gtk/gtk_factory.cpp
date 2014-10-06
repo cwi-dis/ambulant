@@ -384,6 +384,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 	_screenTransitionPreRedraw();
 	clear();
+	DUMPSURFACE(m_target_surface,"trgt");
 	m_handler->redraw(r, this);
 	_screenTransitionPostRedraw(r);
 #ifdef WITH_GTK3
@@ -794,15 +795,10 @@ ambulant_gtk_window::clear()
 	bgc.green = greenc(color)*0x101;
 #ifdef WITH_GTK3
 	// TBD
-	cairo_t *cr;
-
-	cr = cairo_create (m_pixmap);
-  
+	cairo_t *cr  = cairo_create (m_target_surface);
 	cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, bgc.alpha);
 	cairo_paint (cr);
-
 	cairo_destroy (cr);
-
 #else
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
 	gdk_gc_set_rgb_fg_color (gc, &bgc);

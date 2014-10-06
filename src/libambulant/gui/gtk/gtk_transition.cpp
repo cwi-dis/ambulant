@@ -51,22 +51,30 @@ setup_transition(bool outtrans, ambulant_gtk_window *agw, GdkPixmap** oldpxmp, G
 #endif//WITH_GTK3
 {
 	if (outtrans) {
+#ifdef WITH_GTK3
 		if (agw->m_tmppixmap == NULL) {
 			// make a copy
-#ifdef WITH_GTK3
 			//agw->m_tmppixmap = agw->get_ambulant_oldpixmap();
-			agw->m_tmppixmap = agw->get_old_target_surface();
-#else
-			//agw->m_tmppixmap = new GdkPixmap(*agw->get_ambulant_oldpixmap());
-			agw->m_tmppixmap = agw->get_ambulant_oldpixmap();
-#endif//WITH_GTK3
+//			agw->m_tmppixmap = agw->get_old_target_surface();
 		}
-		*oldpxmp = agw->get_ambulant_surface();
-		*newpxmp = agw->m_tmppixmap;
+		*oldpxmp = agw->get_old_target_surface();
+		*newpxmp = agw->get_ambulant_surface();;
 	} else {
 		*oldpxmp = agw->get_old_target_surface();
 		*newpxmp = agw->get_ambulant_surface();
 	}
+#else
+		if (agw->m_tmppixmap == NULL) {
+			//agw->m_tmppixmap = new GdkPixmap(*agw->get_ambulant_oldpixmap());
+			agw->m_tmppixmap = agw->get_ambulant_oldpixmap();
+		}
+		*oldpxmp = agw->get_ambulant_surface();
+		*newpxmp = agw->m_tmppixmap;
+	} else {
+		*oldpxmp = agw->get_target_surface();
+		*newpxmp = agw->get_ambulant_surface();
+	}
+#endif//WITH_GTK3
 }
 static void
 finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *dest)
@@ -84,10 +92,10 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_pixmap=0x%x: temp_pixmap=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_pixmap, temp_pixmap,r.left(),r.top(),r.width(), r.height());
 #ifdef WITH_GTK3
 		// TBD
-//		cairo_t* cr = cairo_create (dest_pixmap);
-//		cairo_set_source_surface (cr, temp_pixmap, r.left(), r.top());
-//		cairo_paint (cr);
-//		cairo_destroy (cr);
+		cairo_t* cr = cairo_create (dest_pixmap);
+		cairo_set_source_surface (cr, temp_pixmap, r.left(), r.top());
+		cairo_paint (cr);
+		cairo_destroy (cr);
 #else
 		GdkGC *gc = gdk_gc_new (dest_pixmap);
 		gdk_draw_pixmap(dest_pixmap, gc, temp_pixmap, r.left(),r.top(),r.left(),r.top(),r.width(), r.height());
@@ -111,12 +119,12 @@ gtk_transition_blitclass_fade::update()
 	int L = newrect_whole.left(),  T = newrect_whole.top(),
 		W = newrect_whole.width(), H = newrect_whole.height();
 	setup_transition(m_outtrans, agw, &opm, &npm);
-	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f) agw=0x%x, opm=0x%x,npm0x%x", m_progress, agw, opm, npm);
 #ifdef WITH_GTK3
-	double alpha = m_progress;
+	double alpha = double(m_outtrans ? (1.0 -  m_progress) :  m_progress);
 #else
 	int alpha = static_cast<int>(round(255*m_progress));
 #endif//WITH_GTK3
+	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f) agw=%p, opm=%p,npm%p, alpha=%f", m_progress, agw, opm, npm, alpha);
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
 #ifdef WITH_GTK3
 	cairo_t* cr = cairo_create (opm);
