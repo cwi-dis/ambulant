@@ -54,16 +54,17 @@ setup_transition(bool outtrans, ambulant_gtk_window *agw, GdkPixmap** oldpxmp, G
 		if (agw->m_tmppixmap == NULL) {
 			// make a copy
 #ifdef WITH_GTK3
-			//agw->m_tmppixmap = new cairo_surface_t(*agw->get_ambulant_oldpixmap());
+			//agw->m_tmppixmap = agw->get_ambulant_oldpixmap();
+			agw->m_tmppixmap = agw->get_old_target_surface();
 #else
 			//agw->m_tmppixmap = new GdkPixmap(*agw->get_ambulant_oldpixmap());
-#endif//WITH_GTK3
 			agw->m_tmppixmap = agw->get_ambulant_oldpixmap();
+#endif//WITH_GTK3
 		}
 		*oldpxmp = agw->get_ambulant_surface();
 		*newpxmp = agw->m_tmppixmap;
 	} else {
-		*oldpxmp = agw->get_ambulant_pixmap();
+		*oldpxmp = agw->get_old_target_surface();
 		*newpxmp = agw->get_ambulant_surface();
 	}
 }
@@ -82,7 +83,11 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		const lib::rect &r=	 dest->get_clipped_screen_rect();
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_pixmap=0x%x: temp_pixmap=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_pixmap, temp_pixmap,r.left(),r.top(),r.width(), r.height());
 #ifdef WITH_GTK3
-	// TBD
+		// TBD
+//		cairo_t* cr = cairo_create (dest_pixmap);
+//		cairo_set_source_surface (cr, temp_pixmap, r.left(), r.top());
+//		cairo_paint (cr);
+//		cairo_destroy (cr);
 #else
 		GdkGC *gc = gdk_gc_new (dest_pixmap);
 		gdk_draw_pixmap(dest_pixmap, gc, temp_pixmap, r.left(),r.top(),r.left(),r.top(),r.width(), r.height());
@@ -108,12 +113,19 @@ gtk_transition_blitclass_fade::update()
 	setup_transition(m_outtrans, agw, &opm, &npm);
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f) agw=0x%x, opm=0x%x,npm0x%x", m_progress, agw, opm, npm);
 #ifdef WITH_GTK3
-	// TBD
+	double alpha = m_progress;
+#else
+	int alpha = static_cast<int>(round(255*m_progress));
+#endif//WITH_GTK3
+	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
+#ifdef WITH_GTK3
+	cairo_t* cr = cairo_create (opm);
+	cairo_set_source_surface (cr, npm, L, T);
+	cairo_paint_with_alpha (cr, alpha);
+	cairo_destroy (cr);
 #else
 	GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
 	GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
-	int alpha = static_cast<int>(round(255*m_progress));
-	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
 	gdk_pixbuf_composite(new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);

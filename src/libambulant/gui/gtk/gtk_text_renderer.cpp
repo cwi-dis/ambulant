@@ -158,6 +158,7 @@ gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 		pango_cairo_show_layout (cr, layout);
 		cairo_destroy(cr);
 #else
+		GdkColor gtk_color;
 		gtk_color.red = redc(m_text_color)*0x101;
 		gtk_color.blue = bluec(m_text_color)*0x101;
 		gtk_color.green = greenc(m_text_color)*0x101;

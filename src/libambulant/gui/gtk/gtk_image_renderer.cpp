@@ -170,7 +170,11 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
+#ifdef WITH_GTK3
+		}
+#else
 		} else alpha_chroma = alpha_media;
+#endif//WITH_GTK3
 	}
 	
 	// S_ for source image coordinates
@@ -239,6 +243,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 
 #ifdef WITH_GTK3
 //		cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
+		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(%p) target_surface=%p.",this,agtkw->get_target_surface());
 		cairo_t* cr = cairo_create(agtkw->get_target_surface());
 		gdk_cairo_set_source_pixbuf(cr, new_image_pixbuf, dstrect.left(), dstrect.top());
 		cairo_paint_with_alpha(cr, alpha_media);

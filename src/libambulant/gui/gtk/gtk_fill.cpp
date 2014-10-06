@@ -94,7 +94,7 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 		pm = agtkw->get_ambulant_pixmap();
 	}
 #ifdef WITH_GTK3
-	cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
+	cairo_t* cr = cairo_create(agtkw->get_target_surface());
 	gdk_cairo_set_source_rgba (cr, &bgc);
 	cairo_rectangle (cr, L, T, W, H);
 	cairo_fill(cr);

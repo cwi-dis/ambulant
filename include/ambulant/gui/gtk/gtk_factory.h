@@ -108,12 +108,14 @@ class ambulant_gtk_window : public common::gui_window {
 	cairo_surface_t* new_ambulant_surface();
 
 	cairo_surface_t* get_ambulant_surface();
-	cairo_surface_t* get_ambulant_oldpixmap();
+	cairo_surface_t* get_old_target_surface();
 	cairo_surface_t* get_pixmap_from_screen(const lib::rect &r);
-	void set_ambulant_surface(cairo_surface_t* surf);
-	void set_target_surface(cairo_surface_t* surf) { m_target_surface = surf; }
+	void set_target_surface(cairo_surface_t* surf);
+	void set_drawing_surface(cairo_surface_t* surf) { m_target_surface = surf; }
 	cairo_surface_t* get_target_surface() { return m_target_surface; }
 	lib::rect get_bounds() { return m_bounds; }
+	cairo_surface_t* create_similar_surface (cairo_surface_t* surface);
+	void reset_target_surface(void);
 #else
 	GdkPixmap* get_ambulant_pixmap();
 	GdkPixmap* new_ambulant_surface();
@@ -122,8 +124,8 @@ class ambulant_gtk_window : public common::gui_window {
 	GdkPixmap* get_ambulant_oldpixmap();
 	GdkPixmap* get_pixmap_from_screen(const lib::rect &r);
 	void set_ambulant_surface(GdkPixmap* surf);
-#endif//WITH_GTK3};
 	void reset_ambulant_surface(void);
+#endif//WITH_GTK3};
 	void delete_ambulant_surface();
 
 	void startScreenTransition();
@@ -140,8 +142,8 @@ class ambulant_gtk_window : public common::gui_window {
 #ifdef WITH_GTK3
 	cairo_surface_t* m_target_surface; // surface for final bitblt
 
-	cairo_surface_t* m_pixmap;
-	cairo_surface_t* m_oldpixmap;
+	cairo_surface_t* m_pixmap; //X
+	cairo_surface_t* m_old_target_surface;
 	cairo_surface_t* m_surface;
 #else
 	GdkPixmap* m_pixmap;
@@ -165,7 +167,12 @@ class ambulant_gtk_window : public common::gui_window {
 
   public:
 #ifdef WITH_GTK3
-	cairo_surface_t* m_tmppixmap;
+	cairo_surface_t* m_tmppixmap; //X
+	cairo_surface_t* m_transition_surface;//TBD
+	cairo_surface_t* get_transition_surface();//TBD
+	lib::rect m_target_bounds;
+	void set_target_bounds (lib::rect target_bounds) { m_target_bounds = target_bounds; }
+	lib::rect get_target_bounds() { return m_target_bounds; }
 #else
 	GdkPixmap* m_tmppixmap;
 #endif//WITH_GTK3};

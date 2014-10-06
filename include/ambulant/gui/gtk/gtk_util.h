@@ -56,6 +56,8 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 // #define	WITH_DUMPIMAGES
 #ifdef	WITH_DUMPIMAGES
 #ifdef WITH_GTK3
+#define DUMPSURFACE(surface, id)  cairo_surface_dump(surface, id)
+#else
 #define DUMPPIXBUF(gdkpixbuf, id)  gdk_pixbuf_dump(gdkpixbuf, id)
 #endif//WITH_GTK3
 #define DUMPPIXMAP(gdkpixmap, id)  gdk_pixmap_dump(gdkpixmap, id)
@@ -64,7 +66,7 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 // return the 4-digit number for identfication purposes 
 int
 #ifdef WITH_GTK3
-gdk_pixmap_dump(cairo_surface_t* gpm, std::string id);
+cairo_surface_dump(cairo_surface_t* srf, std::string id);
 #else
 gdk_pixmap_dump(GdkPixmap* gpm, std::string id);
 #endif//WITH_DUMPIMAGES
@@ -73,6 +75,8 @@ int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string id);
 #else
 #ifdef WITH_GTK3
+#define DUMPSURFACE(surface, id)
+#else
 #define DUMPPIXBUF(gdkpixbuf, id)
 #endif//WITH_GTK3
 #define DUMPPIXMAP(gdkpixmap, id)

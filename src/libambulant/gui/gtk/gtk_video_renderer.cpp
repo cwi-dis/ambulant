@@ -191,7 +191,11 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
+#ifdef WITH_GTK3
+		}
+#else
 		} else alpha_chroma = alpha_media;
+#endif//WITH_GTK3
 	}
 	
 	// S_ for source image coordinates

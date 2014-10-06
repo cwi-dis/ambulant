@@ -25,6 +25,7 @@
 
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
+#include "ambulant/gui/gtk/gtk_util.h" //X
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -140,7 +141,7 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 	// See whether we're in a transition
 	if (m_trans_engine && !m_fullscreen) {
 #ifdef WITH_GTK3
-		cairo_surface_t* gpm = agw->get_ambulant_pixmap();
+		cairo_surface_t* gpm = agw->get_target_surface();
 #else
 		GdkPixmap* gpm = agw->get_ambulant_pixmap();
 #endif//WITH_GTK3
@@ -157,15 +158,17 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 			cairo_set_source_surface(cr, gpm, dstrect.left(), dstrect.top());
 			cairo_paint(cr);
 			cairo_destroy(cr);
+			agw->set_target_surface(surf);
+//XX			DUMPSURFACE(gpm, "gpm");
+//XX			DUMPSURFACE(surf, "srf");
 #else
 			GdkGC *gc = gdk_gc_new (surf);
 			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
 					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
 			g_object_unref (G_OBJECT (gc));
-
+			agw->set_ambulant_surface(surf);
 #endif//WITH_GTK3
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
-			agw->set_ambulant_surface(surf);
 		}
 
 	}
@@ -179,15 +182,18 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
 #ifdef WITH_GTK3
-	cairo_surface_t* surf = agw->get_ambulant_surface();
+	cairo_surface_t* surf = agw->get_target_surface();
+
+	if (surf != NULL) {
+		agw->reset_target_surface();
+	}
 #else
 	GdkPixmap* surf = agw->get_ambulant_surface();
-#endif//WITH_GTK3
 
 	if (surf != NULL) {
 		agw->reset_ambulant_surface();
 	}
-
+#endif//WITH_GTK3
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {

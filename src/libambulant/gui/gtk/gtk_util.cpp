@@ -124,25 +124,27 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 #ifdef	WITH_DUMPIMAGES
 int
 #ifdef WITH_GTK3
-gdk_pixmap_dump(cairo_surface_t* gpm, std::string filename) {
-#else
-gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
-#endif//WITH_GTK3
-	if ( ! gpm) return -1;
-#ifdef WITH_GTK3
-	guint W = cairo_image_surface_get_width (gpm);
-	guint H = cairo_image_surface_get_height (gpm);
+cairo_surface_dump(cairo_surface_t* srf, std::string filename) {
+	if ( ! srf) return -1;
+	guint W = cairo_image_surface_get_width (srf);
+	guint H = cairo_image_surface_get_height (srf);
 	if (W == 0 || H == 0) {
 		return -1;
 	}
-	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface (gpm, 0, 0, W, H);
-#else
-	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, gpm, 0, 0, 0, 0, 0, -1, -1);
-#endif//WITH_GTK3
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface (srf, 0, 0, W, H);
 	int i = gdk_pixbuf_dump(pixbuf, filename);
 	g_object_unref(G_OBJECT(pixbuf));
 	return i;
 }
+#else
+gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
+	if ( ! gpm) return -1;
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, gpm, 0, 0, 0, 0, 0, -1, -1);
+	int i = gdk_pixbuf_dump(pixbuf, filename);
+	g_object_unref(G_OBJECT(pixbuf));
+	return i;
+}
+#endif//WITH_GTK3
 
 int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string filename) {
