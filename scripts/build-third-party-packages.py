@@ -1114,8 +1114,8 @@ def checkenv_mac(target):
         print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development on %s' % (target, build_platform)
         rv = False
     if target != build_platform and not os.environ.has_key('SDKROOT'):
-        print '** SDKROOT must be set for %s development on %s' % (target, build_platform)
-        rv = False
+        print 'Warning: SDKROOT not set for %s development on %s' % (target, build_platform)
+        #rv = False
         
     # We need gas-preprocessor, for ffmpeg
     if os.system("gas-preprocessor.pl 2>&1 | grep Unrecognized >/dev/null") != 0:
