@@ -262,9 +262,9 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 #ifdef WITH_GTK3
 			// TBD
 #else
-	g_object_unref(G_OBJECT(new_image_pixbuf));
 	g_object_unref(G_OBJECT(gc));
 #endif//WITH_GTK3
+	g_object_unref(G_OBJECT(new_image_pixbuf));
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
