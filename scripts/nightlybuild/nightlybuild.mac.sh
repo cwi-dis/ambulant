@@ -18,15 +18,15 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.5
-export MACOSX_DEPLOYMENT_TARGET=10.7
-export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
-if [ ! -d $SDKROOT ]; then
-	export SDKROOT=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
-fi
-if [ ! -d $SDKROOT ]; then
-	echo WARNING: No SDK for $MACOSX_DEPLOYMENT_TARGET, using default
-	unset SDKROOT
-fi
+# export MACOSX_DEPLOYMENT_TARGET=10.7
+# export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
+# if [ ! -d $SDKROOT ]; then
+# 	export SDKROOT=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
+# fi
+# if [ ! -d $SDKROOT ]; then
+# 	echo WARNING: No SDK for $MACOSX_DEPLOYMENT_TARGET, using default
+# 	unset SDKROOT
+# fi
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION_HOST=sen5@ambulantplayer.org
