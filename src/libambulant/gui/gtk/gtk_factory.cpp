@@ -324,6 +324,21 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_target_surface != NULL) {
 		cairo_surface_destroy(m_target_surface);
 	}
+	if (m_surface != NULL) {
+		cairo_surface_destroy(m_surface);
+	}
+	if (m_fullscreen_prev_pixmap != NULL) {
+		cairo_surface_destroy(m_fullscreen_prev_pixmap);
+	}
+	if (m_fullscreen_old_pixmap != NULL) {
+		cairo_surface_destroy(m_fullscreen_old_pixmap);
+	}
+	if (m_transition_surface != NULL) {
+		cairo_surface_destroy(m_transition_surface);
+	}
+	if (m_old_target_surface != NULL) {
+		cairo_surface_destroy(m_old_target_surface);
+	}
 #else	  
 #endif//WITH_GTK3
 }
@@ -618,6 +633,13 @@ ambulant_gtk_window::get_pixmap_from_screen(const lib::rect &r)
 #ifdef WITH_GTK3
 	// TBD
 	cairo_surface_t* rv = NULL;
+	int W = cairo_image_surface_get_width (m_target_surface);
+	int H = cairo_image_surface_get_height (m_target_surface);
+	rv = cairo_surface_create_similar_image (m_target_surface, CAIRO_FORMAT_ARGB32, W, H);
+	cairo_t* cr = cairo_create (rv);
+	cairo_set_source_surface (cr, m_target_surface, 0, 0);
+	cairo_paint (cr);
+	cairo_destroy (cr);
 #else
 	GdkPixmap *rv = gdk_pixmap_new(m_ambulant_widget->get_gtk_widget()->window, r.width(), r.height(), -1);
 	gdk_pixmap_bitblt(rv, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
@@ -692,7 +714,14 @@ ambulant_gtk_window::startScreenTransition()
 	if (m_fullscreen_count)
 		logger::get_logger()->trace("%s:multiple Screen transitions in progress (m_fullscreen_count=%d)","ambulant_gtk_window::startScreenTransition()",m_fullscreen_count);
 	m_fullscreen_count++;
+#ifdef WITH_GTK3
+	if (m_fullscreen_old_pixmap != NULL) {
+		cairo_surface_destroy (m_fullscreen_old_pixmap);
+		m_fullscreen_old_pixmap = NULL;
+	}
+#else
 	if (m_fullscreen_old_pixmap) g_object_unref(G_OBJECT(m_fullscreen_old_pixmap));
+#endif//WITH_GTK3
 	m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
 	m_fullscreen_prev_pixmap = NULL;
 }
@@ -731,7 +760,14 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: screen snapshot");
+#ifdef WITH_GTK3
+		if (m_fullscreen_prev_pixmap != NULL) {
+			cairo_surface_destroy (m_fullscreen_prev_pixmap);
+			m_fullscreen_prev_pixmap = NULL;
+		}
+#else
 		if (m_fullscreen_prev_pixmap) g_object_unref(G_OBJECT(m_fullscreen_prev_pixmap));
+#endif//WITH_GTK3
 
 		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
 //		DUMPPIXMAP(m_fullscreen_prev_pixmap, "snap");
@@ -745,12 +781,16 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_prev_pixmap = NULL;
 	}
 
-	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: bitblit");
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: bitblit, m_fullscreen_old_pixmap=%p", m_fullscreen_old_pixmap);
 	if (m_fullscreen_engine) {
 		// Do the transition step
 #ifdef WITH_GTK3
 		cairo_surface_t* new_src = get_ambulant_surface();
-		// TBD
+		if (new_src == NULL) {
+			new_src = new_ambulant_surface();
+		}
+		cairo_surface_bitblt(m_surface, 0, 0, m_target_surface, r.left(), r.top(), r.width(), r.height());
+		cairo_surface_bitblt(m_target_surface, 0, 0, m_fullscreen_old_pixmap, r.left(), r.top(), r.width(), r.height());
 #else
 		GdkPixmap* new_src = get_ambulant_surface();
 		if ( ! new_src) new_src = new_ambulant_surface();
@@ -758,17 +798,24 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		gdk_pixmap_bitblt(m_pixmap, 0, 0, m_fullscreen_old_pixmap, r.left(), r.top(), r.width(), r.height());
 #endif//WITH_GTK3
 
-//		DUMPPIXMAP(new_src, "fnew");
-//		DUMPPIXMAP(m_pixmap, "fold");
+//		DUMPSURFACE(new_src, "fnew");
+//		DUMPSURFACE(m_target_surface, "fold");
 		m_fullscreen_engine->step(m_fullscreen_now);
-//		DUMPPIXMAP(m_pixmap, "fres");
+//		DUMPSURFACE(m_target_surface, "fres");
 	}
 
 	if (m_fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: cleanup after transition done");
+#ifdef WITH_GTK3
+	if (m_fullscreen_old_pixmap != NULL) {
+		cairo_surface_destroy (m_fullscreen_old_pixmap);
+		m_fullscreen_old_pixmap = NULL;
+	}
+#else
 		if (m_fullscreen_old_pixmap) g_object_unref(G_OBJECT(m_fullscreen_old_pixmap));
 		m_fullscreen_old_pixmap = NULL;
+#endif//WITH_GTK3
 		m_fullscreen_engine = NULL;
 	}
 }
