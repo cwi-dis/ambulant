@@ -163,7 +163,6 @@ gtk_transition_blitclass_rect::update()
 		W = newrect_whole.width(), H = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rect: opm=0x%x, npm=0x%x, (L,T,W,H)=(%d,%d,%d,%d)",opm,npm,L,T,W,H);
 #ifdef WITH_GTK3
-	// TBD
 	cairo_t* cr = cairo_create(opm);
 	cairo_rectangle (cr, L, T, W, H);
 	cairo_clip(cr);
@@ -223,7 +222,25 @@ gtk_transition_blitclass_r1r2r3r4::update()
 		Hnewdst = newdstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_r1r2r3r4: (Lnewdst,Tnewdst,Wnewdst,Hnewdst)=(%d,%d,%d,%d)",Lnewdst,Tnewdst,Wnewdst,Hnewdst);
 #ifdef WITH_GTK3
-	// TBD
+	cairo_t* cr = NULL;
+	if (Loldsrc != Lolddst || Toldsrc != Tolddst) { // slideWipe
+		// need to create a full copy since cairo can't paint its surface on itself
+		cairo_surface_t* tpm = agw->copy_surface(opm);
+		cr = cairo_create(opm);
+		cairo_rectangle (cr, Lolddst, Tolddst, Wolddst, Holddst);
+		cairo_clip(cr);
+		cairo_set_source_surface (cr, tpm, Lolddst, Tolddst);
+		cairo_paint(cr);
+		cairo_surface_destroy (tpm);
+		cairo_destroy (cr);
+	}
+// need to destroy and re-create 'cr' to perform a 2nd paint operation on a different source
+	cr = cairo_create(opm);
+	cairo_rectangle (cr, Lnewdst, Tnewdst, Wnewdst, Hnewdst);
+	cairo_clip(cr);
+	cairo_set_source_surface (cr, npm, -Lnewsrc, -Tnewsrc);
+	cairo_paint(cr);
+	cairo_destroy (cr);
 #else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixmap(opm, gc, opm, Loldsrc, Toldsrc, Lolddst, Tolddst, Woldsrc, Hnewsrc);
