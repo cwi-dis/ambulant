@@ -268,6 +268,20 @@ gtk_transition_blitclass_rectlist::update()
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
 #ifdef WITH_GTK3
 	// TBD
+	cairo_t* cr = cairo_create(opm);
+	std::vector< rect >::iterator newrect;
+	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+		rect corner_rect = *newrect;
+		corner_rect.translate(m_dst->get_global_topleft());
+		corner_rect &= m_dst->get_clipped_screen_rect();
+		int L = corner_rect.left(), T = corner_rect.top(),
+			W = corner_rect.width(), H = corner_rect.height();
+		cairo_rectangle (cr, L, T, W, H);
+	}
+	cairo_clip(cr);
+	cairo_set_source_surface (cr, npm, 0, 0);
+	cairo_paint(cr);
+	cairo_destroy (cr);
 #else
 	GdkGC *gc = gdk_gc_new (opm);
 	GdkRegion* region = gdk_region_new();
