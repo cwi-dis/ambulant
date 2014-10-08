@@ -221,7 +221,7 @@ gtk_background_renderer::keep_as_background()
 		cairo_surface_destroy ( m_background_surface);
 		m_background_surface = NULL;
 	}
-	m_background_surface = agtkw->get_pixmap_from_screen(dstrect_whole);
+	m_background_surface = agtkw->get_surface_from_screen(dstrect_whole);
 #else
 	if (m_background_pixmap) {
 		delete m_background_pixmap;

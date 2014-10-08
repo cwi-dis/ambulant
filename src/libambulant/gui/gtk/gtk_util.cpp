@@ -125,7 +125,7 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 int
 #ifdef WITH_GTK3
 cairo_surface_dump(cairo_surface_t* srf, std::string filename) {
-	if ( ! srf) return -1;
+	if (srf == NULL) return -1;
 	guint W = cairo_image_surface_get_width (srf);
 	guint H = cairo_image_surface_get_height (srf);
 	if (W == 0 || H == 0) {

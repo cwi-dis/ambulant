@@ -52,13 +52,12 @@ setup_transition(bool outtrans, ambulant_gtk_window *agw, GdkPixmap** oldpxmp, G
 {
 	if (outtrans) {
 #ifdef WITH_GTK3
-		if (agw->m_tmppixmap == NULL) {
-			// make a copy
-			//agw->m_tmppixmap = agw->get_ambulant_oldpixmap();
-//			agw->m_tmppixmap = agw->get_old_target_surface();
+		if (agw->m_tmp_surface == NULL) {
+			// make a copy of the background pixels
+			agw->m_tmp_surface = agw->copy_surface(agw->get_old_target_surface());
 		}
-		*oldpxmp = agw->get_old_target_surface();
-		*newpxmp = agw->get_ambulant_surface();;
+		*oldpxmp = agw->get_ambulant_surface();
+		*newpxmp = agw->m_tmp_surface;
 	} else {
 		*oldpxmp = agw->get_old_target_surface();
 		*newpxmp = agw->get_ambulant_surface();
@@ -71,7 +70,7 @@ setup_transition(bool outtrans, ambulant_gtk_window *agw, GdkPixmap** oldpxmp, G
 		*oldpxmp = agw->get_ambulant_surface();
 		*newpxmp = agw->m_tmppixmap;
 	} else {
-		*oldpxmp = agw->get_target_surface();
+		*oldpxmp = agw->get_ambulant_pixmap();
 		*newpxmp = agw->get_ambulant_surface();
 	}
 #endif//WITH_GTK3
@@ -82,7 +81,7 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 	if (outtrans) {
 		// copy the pixels in m_tmppixmap to the on-screen pixmap
 #ifdef WITH_GTK3
-		cairo_surface_t* dest_pixmap = agw->get_ambulant_pixmap();
+		cairo_surface_t* dest_pixmap = agw->get_target_surface();
 		cairo_surface_t* temp_pixmap = agw->get_ambulant_surface();
 #else
 		GdkPixmap* dest_pixmap = agw->get_ambulant_pixmap();
@@ -96,6 +95,8 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		cairo_set_source_surface (cr, temp_pixmap, r.left(), r.top());
 		cairo_paint (cr);
 		cairo_destroy (cr);
+		cairo_surface_destroy (agw->m_tmp_surface);
+		agw->m_tmp_surface = NULL;
 #else
 		GdkGC *gc = gdk_gc_new (dest_pixmap);
 		gdk_draw_pixmap(dest_pixmap, gc, temp_pixmap, r.left(),r.top(),r.left(),r.top(),r.width(), r.height());
@@ -120,16 +121,15 @@ gtk_transition_blitclass_fade::update()
 		W = newrect_whole.width(), H = newrect_whole.height();
 	setup_transition(m_outtrans, agw, &opm, &npm);
 #ifdef WITH_GTK3
-	double alpha = double(m_outtrans ? (1.0 -  m_progress) :  m_progress);
 #else
 	int alpha = static_cast<int>(round(255*m_progress));
-#endif//WITH_GTK3
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f) agw=%p, opm=%p,npm%p, alpha=%f", m_progress, agw, opm, npm, alpha);
-	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(): ltwh=(%d,%d,%d,%d)",L,T,W,H);
+#endif//WITH_GTK3
+	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f): ltwh=(%d,%d,%d,%d)",m_progress,L,T,W,H);
 #ifdef WITH_GTK3
 	cairo_t* cr = cairo_create (opm);
 	cairo_set_source_surface (cr, npm, L, T);
-	cairo_paint_with_alpha (cr, alpha);
+	cairo_paint_with_alpha (cr, m_progress);
 	cairo_destroy (cr);
 #else
 	GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
@@ -164,6 +164,12 @@ gtk_transition_blitclass_rect::update()
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rect: opm=0x%x, npm=0x%x, (L,T,W,H)=(%d,%d,%d,%d)",opm,npm,L,T,W,H);
 #ifdef WITH_GTK3
 	// TBD
+	cairo_t* cr = cairo_create(opm);
+	cairo_rectangle (cr, L, T, W, H);
+	cairo_clip(cr);
+	cairo_set_source_surface (cr, npm, 0, 0);
+	cairo_paint(cr);
+	cairo_destroy (cr);
 #else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixmap(opm, gc,  npm, L, T, L, T, W, H);

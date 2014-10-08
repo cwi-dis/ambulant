@@ -109,7 +109,8 @@ class ambulant_gtk_window : public common::gui_window {
 
 	cairo_surface_t* get_ambulant_surface();
 	cairo_surface_t* get_old_target_surface();
-	cairo_surface_t* get_pixmap_from_screen(const lib::rect &r);
+	cairo_surface_t* copy_surface(cairo_surface_t* srf);
+	cairo_surface_t* get_surface_from_screen(const lib::rect &r);
 	void set_target_surface(cairo_surface_t* surf);
 	void set_drawing_surface(cairo_surface_t* surf) { m_target_surface = surf; }
 	cairo_surface_t* get_target_surface() { return m_target_surface; }
@@ -167,7 +168,7 @@ class ambulant_gtk_window : public common::gui_window {
 
   public:
 #ifdef WITH_GTK3
-	cairo_surface_t* m_tmppixmap; //X
+	cairo_surface_t* m_tmp_surface; //X
 	cairo_surface_t* m_transition_surface;//TBD
 	cairo_surface_t* get_transition_surface();//TBD
 	lib::rect m_target_bounds;
