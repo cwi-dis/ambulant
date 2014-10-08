@@ -324,28 +324,34 @@ gtk_transition_blitclass_poly::update()
 	if (n_points <= 2) { // cannot create polygon, maybe not yet implemented
 		return;
 	}
-	GdkPoint* points = (GdkPoint*) malloc (n_points*sizeof(GdkPoint));
-	uint idx = 0;
 	std::vector<point>::iterator newpoint;
+#ifdef WITH_GTK3
+	// TBD
+#else
+	GdkPoint* points = (GdkPoint*) malloc (n_points*sizeof(GdkPoint));
+	GdkRegion* region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
+	uint idx = 0;
+#endif//WITH_GTK3
+#ifdef WITH_GTK3
+	cairo_t* cr = cairo_create(opm);
+	for( newpoint=m_newpolygon.begin(); newpoint != m_newpolygon.end(); newpoint++) {
+		point p = *newpoint + dst_global_topleft;
+		cairo_line_to (cr, p.x, p.y);
+	}
+	cairo_clip(cr);
+	cairo_set_source_surface (cr, npm, 0, 0);
+	cairo_paint(cr);
+	cairo_destroy (cr);
+#else
 	for( newpoint=m_newpolygon.begin(); newpoint != m_newpolygon.end(); newpoint++) {
 		point p = *newpoint + dst_global_topleft;
 		points[idx].x = p.x;
 		points[idx].y = p.y;
 		idx++;
 	}
-#ifdef WITH_GTK3
-	// TBD
-#else
-	GdkRegion* region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
-#endif//WITH_GTK3
-	free(points);
-#ifdef WITH_GTK3
-	// TBD
-#else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_gc_set_clip_region(gc, region);
 #endif//WITH_GTK3
-
 	const rect& newrect_whole =	 m_dst->get_clipped_screen_rect();
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
 		Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
@@ -356,6 +362,7 @@ gtk_transition_blitclass_poly::update()
 	gdk_draw_pixmap(opm, gc, npm, Ldst, Tdst, Ldst, Tdst, Wdst, Hdst);
 	gdk_region_destroy(region);
 	g_object_unref (G_OBJECT (gc));
+	free(points);
 #endif//WITH_GTK3
 	finalize_transition(m_outtrans, agw, m_dst);
 }
@@ -374,7 +381,8 @@ gtk_transition_blitclass_polylist::update()
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
 	setup_transition(m_outtrans, agw, &opm, &npm);
 #ifdef WITH_GTK3
-	cairo_region_t* clip_region = cairo_region_create ();
+//X?	cairo_region_t* clip_region = cairo_region_create ();
+	cairo_t* cr = cairo_create(opm);
 #else
 	GdkRegion* clip_region = gdk_region_new();
 #endif//WITH_GTK3
@@ -385,23 +393,30 @@ gtk_transition_blitclass_polylist::update()
 		if (n_points <= 2) { // cannot create polygon
 			logger::get_logger()->warn("gtk_transition_blitclass_polylist: cannot create polygon, partpolygon.size()=%d", n_points);			break;
 		}
+#ifdef WITH_GTK3
+#else
 		GdkPoint* points = (GdkPoint*) malloc (n_points*sizeof(GdkPoint));
 		uint idx = 0;
+#endif//WITH_GTK3
 		std::vector<point>::iterator newpoint;
 		AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
 		for( newpoint=partpolygon->begin(); newpoint != partpolygon->end(); newpoint++) {
 			point p = *newpoint + dst_global_topleft;
+#ifdef WITH_GTK3
+			cairo_line_to (cr, p.x, p.y);
+#else
 			points[idx].x = p.x;
 			points[idx].y = p.y;
 			idx++;
 			AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
+#endif//WITH_GTK3
 		}
 #ifdef WITH_GTK3
 	// TBD
 #else
 		GdkRegion* next_region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
-#endif//WITH_GTK3
 		free(points);
+#endif//WITH_GTK3
 #ifdef WITH_GTK3
 	// TBD
 #else
@@ -417,7 +432,11 @@ gtk_transition_blitclass_polylist::update()
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
 #ifdef WITH_GTK3
 	// TBD
-	cairo_region_destroy(clip_region);
+//X?	cairo_region_destroy(clip_region);
+	cairo_clip(cr);
+	cairo_set_source_surface (cr, npm, 0, 0);
+	cairo_paint(cr);
+	cairo_destroy (cr);
 #else
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_gc_set_clip_region(gc, clip_region);
