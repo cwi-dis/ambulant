@@ -47,8 +47,8 @@ mac and iphone:
 	- Install convenience tools such as TextWrangler and its commandline tools
 	- Install XCode
 	- install command line tools
-	- install Mercurial
-	- run (or inspect) scripts/precheck-mac
+	- install Mercurial, copy or create ~/.hgrc
+	- create directory ~/packages and from there run (or inspect) scripts/precheck-mac
 	- Install certificates from ambulant-private/certificates/xcode
 	- run ambulant autogen.sh
 	- try building third-party-packages
