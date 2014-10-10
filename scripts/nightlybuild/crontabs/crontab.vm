@@ -4,3 +4,6 @@ PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 20 0 * * * prlctl start Win7-VS2010-Nightly
 20 2 * * * prlctl start Ubuntu-1404-32bit
 20 4 * * * prlctl start Ubuntu-1404-64bit
+20 6 * * * prlctl start Mac-107-Nightly
+20 8 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.check.sh
+20 23 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.clean.sh
