@@ -100,22 +100,22 @@ gtk_logger::gtk_logger()
 	m_logger_window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title (m_logger_window, "Ambulant-logger");
 	gtk_window_set_resizable (m_logger_window, false);
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 	g_signal_connect (G_OBJECT (m_logger_window), "delete-event",G_CALLBACK (gtk_widget_hide), GTK_WIDGET (m_logger_window));
 #else
 	gtk_signal_connect (GTK_OBJECT (m_logger_window), "delete-event",G_CALLBACK (gtk_widget_hide), GTK_WIDGET (m_logger_window));
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 	GtkWidget* sw = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (
 		GTK_SCROLLED_WINDOW (sw),
 		GTK_POLICY_AUTOMATIC,
 		GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(GTK_WIDGET (m_logger_window), 560, 240);
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 	gtk_window_set_position(m_logger_window, GTK_WIN_POS_CENTER);
 #else
 	gtk_widget_set_uposition(GTK_WIDGET (m_logger_window), 50, 50);
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 	gtk_container_add (GTK_CONTAINER (m_logger_window), sw);
 	gtk_widget_show(GTK_WIDGET (sw));
 	m_text_view =  (GtkTextView*) gtk_text_view_new();

@@ -63,7 +63,7 @@ esac
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=linux
-CONFIGOPTS="--with-sdl2 --with-gtk --with-xerces --with-xerces-plugin --with-npambulant CFLAGS=-fPIC CXXFLAGS=-fPIC"
+CONFIGOPTS="--with-sdl2 --with-xerces --with-xerces-plugin CFLAGS=-fPIC CXXFLAGS=-fPIC"
 MAKEOPTS=
 
 DESTINATION=$DESTINATION_HOST:$DESTINATION_DIR
@@ -146,9 +146,9 @@ ssh -n $DESTINATION_HOST mkdir -p $DESTINATION_SRC_DIR
 scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 
 #
-# configure, make, make install
+# configure, make, make install AmvulantPlayer_gtk
 #
-./configure $CONFIGOPTS
+./configure $CONFIGOPTS --with-gtk=gtk+-3.0
 make $MAKEOPTS
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 

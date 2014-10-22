@@ -123,7 +123,7 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 
 #ifdef	WITH_DUMPIMAGES
 int
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 cairo_surface_dump(cairo_surface_t* srf, std::string filename) {
 	if (srf == NULL) return -1;
 	guint W = cairo_image_surface_get_width (srf);
@@ -144,7 +144,7 @@ gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
 	g_object_unref(G_OBJECT(pixbuf));
 	return i;
 }
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 
 int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string filename) {
