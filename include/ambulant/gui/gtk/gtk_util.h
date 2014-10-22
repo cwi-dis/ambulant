@@ -22,7 +22,6 @@
 #ifndef AMBULANT_GUI_GTK_GTK_UTIL_H
 #define AMBULANT_GUI_GTK_GTK_UTIL_H
 
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
 
 #include <gtk/gtk.h>

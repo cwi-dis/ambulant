@@ -17,7 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
 #include "ambulant/gui/gtk/gtk_util.h"
