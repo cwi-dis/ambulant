@@ -229,10 +229,10 @@ class npambulant
 	CGAffineTransform m_ctm;	// current transformation matrix 
 
 	void init_cg_view(CGContextRef cg_ctx);
-	NPP get_NPP() { return m_pNPInstance; }
 #else
 	void *m_mainloop;
 #endif
+	NPP get_NPP() { return m_pNPInstance; }
 
 #ifdef	XP_WIN32
 #define strcasecmp(s1,s2) _stricmp(s1,s2)

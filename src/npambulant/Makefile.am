@@ -227,7 +227,7 @@ install-npambulant: $(NPAMBULANT_PLUGIN)
 		$(NPAMBULANT_PLUGIN)
 #	Check that internalization worked
 	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(NPAMBULANT_PLUGIN)
-#TBD	strip  npambulant_plugin_dir/plugins/npambulant/*.so*
+	strip  npambulant_plugin_dir/plugins/npambulant/*.so*
 
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
