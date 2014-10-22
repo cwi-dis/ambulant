@@ -28,6 +28,13 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#if GTK_MAJOR_VERSION >= 3
+#include <gtk/gtkx.h>
+#include <gdk/gdkx.h>
+#else
+#include <X11/X.h>
+#endif // GTK_MAJOR_VERSION
+
 
 #include "gtk_gui.h"
 #include "gtk_mainloop.h"
@@ -115,11 +122,11 @@ const char *helpfile_locations[] = {
 	NULL
 };
 
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 		// TBD
 #else
 static GdkPixmap *pixmap = NULL;
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 
 // callbacks for C++
 /* File */
@@ -327,14 +334,14 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	// Callback for the resize events
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 //	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "draw", G_CALLBACK (gtk_C_callback_resize), (void *) this);
 #else
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 
 	/* Initialization of the signals */
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 0, NULL);
 
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
@@ -346,7 +353,7 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER_POINTER_POINTER,GTK_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
 
 	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 
 	// Signal connections
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
@@ -681,11 +688,11 @@ gtk_gui::do_open_url() {
 	gtk_widget_show(GTK_WIDGET (label));
 
 	m_url_text_entry = GTK_ENTRY (gtk_entry_new());
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 	gtk_editable_set_editable((GtkEditable*) m_url_text_entry, true);
 #else
 	gtk_entry_set_editable(m_url_text_entry, true);
-#endif//WITH_GTK3
+#endif // GTK_MAJOR_VERSION
 
 	gtk_entry_set_text(m_url_text_entry,"http://www");
 	gtk_widget_show(GTK_WIDGET (m_url_text_entry));
@@ -939,7 +946,7 @@ gtk_gui::_update_menus()
 int
 main (int argc, char*argv[]) {
 
-	XInitThreads();
+//	XInitThreads();
 #ifdef	WITH_GSTREAMER
 	/* initialize GStreamer */
 	gstreamer_player_initialize (&argc, &argv);

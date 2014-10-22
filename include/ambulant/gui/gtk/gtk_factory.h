@@ -38,11 +38,11 @@ namespace ambulant {
 namespace gui {
 
 namespace gtk {
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 	void cairo_surface_bitblt(cairo_surface_t* dst, int dst_x, int dst_y, cairo_surface_t* src, int src_x, int src_y, int width, int height);
 #else
 	void gdk_pixmap_bitblt(GdkPixmap* dst, int dst_x, int dst_y, GdkPixmap* src, int src_x, int src_y, int width, int height);
-#endif//WITH_GTK3};
+#endif // GTK_MAJOR_VERSION
 
 class gtk_ambulant_widget;
 
@@ -102,9 +102,17 @@ class ambulant_gtk_window : public common::gui_window {
 	/// Return any of GDK cached cursortypes
 	GdkCursor* get_gdk_cursor(GdkCursorType);
 
+	void delete_ambulant_surface();
+
+	// Screen transitions
+	void startScreenTransition();
+	void endScreenTransition();
+	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
+	void _screenTransitionPreRedraw();
+	void _screenTransitionPostRedraw(const lib::rect &r);
 	// XXX These need to be documented...
-#ifdef WITH_GTK3
-	cairo_surface_t* get_ambulant_pixmap();
+
+#if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* new_ambulant_surface();
 
 	cairo_surface_t* get_ambulant_surface();
@@ -117,6 +125,13 @@ class ambulant_gtk_window : public common::gui_window {
 	lib::rect get_bounds() { return m_bounds; }
 	cairo_surface_t* create_similar_surface (cairo_surface_t* surface);
 	void reset_target_surface(void);
+
+	cairo_surface_t* m_tmp_surface; //X
+	cairo_surface_t* m_transition_surface;//TBD
+	cairo_surface_t* get_transition_surface();//TBD
+	lib::rect m_target_bounds;
+	void set_target_bounds (lib::rect target_bounds) { m_target_bounds = target_bounds; }
+	lib::rect get_target_bounds() { return m_target_bounds; }
 #else
 	GdkPixmap* get_ambulant_pixmap();
 	GdkPixmap* new_ambulant_surface();
@@ -126,58 +141,38 @@ class ambulant_gtk_window : public common::gui_window {
 	GdkPixmap* get_pixmap_from_screen(const lib::rect &r);
 	void set_ambulant_surface(GdkPixmap* surf);
 	void reset_ambulant_surface(void);
-#endif//WITH_GTK3};
-	void delete_ambulant_surface();
 
-	void startScreenTransition();
-	void endScreenTransition();
-	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
-
-	void _screenTransitionPreRedraw();
-	void _screenTransitionPostRedraw(const lib::rect &r);
+	GdkPixmap* m_tmppixmap;
+#endif // GTK_MAJOR_VERSION
+	guint signal_redraw_id;
 
   private:
 	void clear();
 	lib::rect  m_bounds;
 	gtk_ambulant_widget* m_ambulant_widget;
-#ifdef WITH_GTK3
-	cairo_surface_t* m_target_surface; // surface for final bitblt
-
-	cairo_surface_t* m_pixmap; //X
-	cairo_surface_t* m_old_target_surface;
-	cairo_surface_t* m_surface;
-#else
-	GdkPixmap* m_pixmap;
-	GdkPixmap* m_oldpixmap;
-	GdkPixmap* m_surface;
-#endif//WITH_GTK3};
 	gui_player* m_gui_player;
 	GdkCursor* m_arrow_cursor;
 	GdkCursor* m_hand1_cursor;
 	GdkCursor* m_hand2_cursor;
 	int m_fullscreen_count;
-#ifdef WITH_GTK3
-	cairo_surface_t* m_fullscreen_prev_pixmap;
-	cairo_surface_t* m_fullscreen_old_pixmap;
-#else
-	GdkPixmap* m_fullscreen_prev_pixmap;
-	GdkPixmap* m_fullscreen_old_pixmap;
-#endif//WITH_GTK3};
 	smil2::transition_engine* m_fullscreen_engine;
 	lib::transition_info::time_type m_fullscreen_now;
 
-  public:
-#ifdef WITH_GTK3
-	cairo_surface_t* m_tmp_surface; //X
-	cairo_surface_t* m_transition_surface;//TBD
-	cairo_surface_t* get_transition_surface();//TBD
-	lib::rect m_target_bounds;
-	void set_target_bounds (lib::rect target_bounds) { m_target_bounds = target_bounds; }
-	lib::rect get_target_bounds() { return m_target_bounds; }
+#if GTK_MAJOR_VERSION >= 3
+	cairo_surface_t* m_target_surface; // surface for final bitblt
+
+ //X	cairo_surface_t* m_pixmap;
+	cairo_surface_t* m_old_target_surface;
+	cairo_surface_t* m_surface;
+	cairo_surface_t* m_fullscreen_prev_surface;
+	cairo_surface_t* m_fullscreen_old_surface;
 #else
-	GdkPixmap* m_tmppixmap;
-#endif//WITH_GTK3};
-	guint signal_redraw_id;
+	GdkPixmap* m_pixmap;
+	GdkPixmap* m_oldpixmap;
+	GdkPixmap* m_surface;
+	GdkPixmap* m_fullscreen_prev_pixmap;
+	GdkPixmap* m_fullscreen_old_pixmap;
+#endif // GTK_MAJOR_VERSION
 };  // class ambulant_gtk_window
 
 /// gtk_ambulant_widget is the GTK-counterpart of ambulant_gtk_window: it is the
@@ -185,9 +180,6 @@ class ambulant_gtk_window : public common::gui_window {
 class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_screen
 {
   public:
-//	gtk_ambulant_widget(const std::string &name,
-//			   lib::rect* bounds,
-//			   GtkWidget* parent_widget);
 	gtk_ambulant_widget(GtkWidget* widget);
 	~gtk_ambulant_widget();
 
@@ -201,11 +193,11 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	GtkWidget* get_gtk_widget();
 
 	// GTKWidget API:
-#ifdef WITH_GTK3
+#if GTK_MAJOR_VERSION >= 3
 	void do_draw_event (GtkWidget *widget, cairo_t *cr);
 #else
 	void do_paint_event (GdkEventExpose * event);
-#endif//WITH_GTK3};
+#endif // GTK_MAJOR_VERSION
 	void do_motion_notify_event(GdkEventMotion *event);
 	void do_button_release_event(GdkEventButton *event);
 	void do_key_release_event(GdkEventKey *event);

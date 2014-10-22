@@ -149,9 +149,7 @@ gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
 		pango_layout_set_width(layout, W*1000);
 		// Foreground Color of the text
-#ifdef WITH_GTK3
-//		cairo_t* cr = cairo_create(agtkw->get_ambulant_pixmap());
-//		gdk_cairo_set_source_color (cr, &bgc);
+#if GTK_MAJOR_VERSION >= 3
 		cairo_t* cr = cairo_create(agtkw->get_target_surface());
 		cairo_set_source_rgb (cr, redf(m_text_color),greenf(m_text_color),bluef(m_text_color));
 		cairo_move_to (cr, L, T);
@@ -165,14 +163,10 @@ gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 		gdk_gc_set_rgb_fg_color (gc, &gtk_color);
 		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc , L, T, layout);
-#endif//WITH_GTK3
+		g_object_unref (G_OBJECT (gc));
+#endif // GTK_MAJOR_VERSION
 		pango_font_description_free(font_desc);
 		g_object_unref (G_OBJECT (context));
 		g_object_unref(layout);
-#ifdef WITH_GTK3
-	// TBD
-#else
-		g_object_unref (G_OBJECT (gc));
-#endif//WITH_GTK3
 	}
 }
