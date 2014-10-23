@@ -148,10 +148,9 @@ scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 #
 # configure, make, make install AmvulantPlayer_gtk
 #
-./configure $CONFIGOPTS --with-gtk=gtk+-3.0
+./configure $CONFIGOPTS --with-gtk=gtk+-3.0  --without-npambulant
 make $MAKEOPTS
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
-
 #
 # Create installer package, upload
 #
@@ -160,6 +159,13 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 #
 # Build plugin installer, upload
 #
+# npambulant cannot yet use gtk+-3.0, therefore fall back to gtk+-3`3.0
+make uninstall
+make distclean
+./configure $CONFIGOPTS --with-gtk=gtk+-2.0  --with-npambulant
+make $MAKEOPTS
+make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
+
 cd src/npambulant
 make installer
 case x$VERSIONSUFFIX in
