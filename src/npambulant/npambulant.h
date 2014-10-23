@@ -257,7 +257,7 @@ void npambulant_display_message(int level, const char *message);
 #ifndef	XP_WIN32
 #define LOG(formatAndArgs...) AM_DBG { \
 					fprintf (stderr, "%s(%p):  ", __PRETTY_FUNCTION__, this); \
-					fprintf(stderr, formatAndArgs); fprintf(stderr, "\n");	\
+					fprintf(stderr, formatAndArgs); fprintf(stderr, "\n"); \
 					}
 #else
 #define LOG AM_DBG ambulant::lib::logger::get_logger()->debug
