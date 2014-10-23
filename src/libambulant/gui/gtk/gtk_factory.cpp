@@ -366,9 +366,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_pixmap != NULL) {
 		g_object_unref(G_OBJECT(m_pixmap));
 	}
-	if (m_oldpixmap != NULL) {
-		g_object_unref(G_OBJECT(m_oldpixmap));
-	}
+/*	'm_oldpixmap' is a placeholder, not a managed object */
 	if (m_surface != NULL) {
 		g_object_unref(G_OBJECT(m_surface));
 	}
