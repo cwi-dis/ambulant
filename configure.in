@@ -920,7 +920,7 @@ AC_ARG_WITH([npambulant],
     AS_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers, like firefox (default: disabled)]),
 	[
 		case "${withval}" in
-		yes)  	
+		yes)
 			with_npambulant=true
 			# Determine where the include files should come from, as it hasn't been passed
 			# as an option.
@@ -941,10 +941,10 @@ AC_ARG_WITH([npambulant],
 				])
 			fi
 			;;
-		no)	
+		no)
 			with_npambulant=false
 			;;
-		*)	
+		*)
 			NPAMBULANT_INCLUDES=-I${withval}
 			with_npambulant=true
 			;;
