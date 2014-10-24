@@ -689,15 +689,17 @@ AC_MSG_RESULT($test_sdl_ttf)
 dnl Testing for GTK
 dnl ====================================================================
 
-test_gtk=gtk2
+test_gtk=gtk3
 AC_MSG_CHECKING(for gtk - the GIMP Toolkit)
 AC_ARG_WITH(gtk,
      AS_HELP_STRING([--with-gtk@<:@=gtk2|gtk3@:>@], [Enable/disable gtk+-2.0(*)/gtk+-3.0 support]),
      [
      	if test "x$withval" = "xno"; then
 		test_gtk=false	
-	elif test "x$withval" = "xgtk3" -o  "x$withval" = "xgtk+-3.0" ; then
-	     	test_gtk=gtk3
+	elif test "x$withval" = "xgtk2" -o  "x$withval" = "xgtk+-2.0" ; then
+	     	test_gtk=gtk2
+	elif test "x$withval" != "xyes" -a  "x$withval" != "xgtk3" -a  "x$withval" != "xgtk+-3.0" ; then
+	     	AC_MSG_ERROR("Unknown value for --with-gtk: $withval");
 	fi
      ])
 if test "x$test_gtk" = "xgtk3"; then
@@ -951,7 +953,10 @@ AC_ARG_WITH([npambulant],
 		esac],
 	[with_npambulant=false])
 
-
+if test $test_gtk = "gtk3"; then
+	AC_MSG_ERROR("--with-npambulant is not yet available for gtk3. Please use --with-gtk=gtk2.")
+	with_npambulant=false
+fi
 AC_SUBST(NPAMBULANT_INCLUDES)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
