@@ -39,6 +39,7 @@ public class AmbulantSDLPlayer extends SDLActivity {
 		System.loadLibrary("avutil-52");
 		System.loadLibrary("avcodec-55");
 		System.loadLibrary("avformat-55");
+		System.loadLibrary("swresample-0");
 		System.loadLibrary("swscale-2");
 		System.loadLibrary("ambulant");
 //		System.loadLibrary("AmbulantSDLPlayer");

@@ -4,7 +4,8 @@ components (such as certificates for signing installers) are obviously not avail
 outside the group. But if you want to fork Ambulant you'll just have to change
 references to use your own certificates:-)
 
-As of this writing, nightly builds run on the following machines:
+As of this writing, nightly builds run on VMs, which are all hosted
+on maunakea.
 
 debian and linux:
 	Various Parallels VMs on maunakea, user nightlybuilds.
@@ -40,29 +41,22 @@ debian and linux:
 	- Create correct crontab
 
 mac and iphone:
-	Another Parallels VM running OSX 10.8 currently, on maunakea. User nightlybuilds.
+	Another Parallels VM running OSX 10.7 currently, on maunakea. User nightlybuilds.
 	To prepare a new VM (for example a new OSX release):
 	- Create Parallels VM from recovery partition. Sign in to appstore/icloud
 	  using Jack's account (jackjansen@mac.com).
 	- Install convenience tools such as TextWrangler and its commandline tools
 	- Install XCode
 	- install command line tools
-	- install Mercurial
-	- run (or inspect) scripts/precheck-mac
+	- install Mercurial, copy or create ~/.hgrc
+	- create directory ~/packages and from there run (or inspect) scripts/precheck-mac
 	- Install certificates from ambulant-private/certificates/xcode
 	- run ambulant autogen.sh
 	- try building third-party-packages
 	- try building ambulant
 	- try running nightlybuild scripts (mac and iphone)
+	- Get mail working, fix /etc/postfix/main.cf (see maunakea or another mnightlybuild mac)
 	- add crontab
-	
-mac and iphone (old):
-	Jack's workstation, user nightlybuilds. Has especially crafter keychain file.
-	NOTE: the key used for signing must be accessible without password,
-	otherwise you will get an error when running from cron during code-signing.
-	Then you should find the key in keychain access and enable all access to it.
-	
-	XXX need more detailed instructions on setting up.
 	
 win32:
 	"Win7-VS2010-Nightly" Parallels VM on maunakea. This has the nightlyrun.win32.bat
@@ -73,10 +67,10 @@ win32:
 	There may be other things in this VM that are important that I forgot:-)
 
 nightlyclean:
-	Jack's workstation, user nightlybuilds. Runs end-of-day just before midnight.
+	Maunakea itself, user nightlybuilds. Runs end-of-day just before midnight.
 	
 nightlycheck:
-	Jack's workstation, user nightlybuilds. Runs after all other builds.
+	Maunakea itself, user nightlybuilds. Runs after all other builds.
 	
 nightlytestsuite:
 	XXX Don't think this is used at the moment.
