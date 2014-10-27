@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -50,8 +50,7 @@ copy $(firefox_plugin_dir)\avformat-54.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\avutil-51.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\SDL.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll $(IntDir)$(TargetName)
-copy $(firefox_plugin_dir)\swscale-2.dll $(IntDir)$(TargetName)
-copy $(firefox_plugin_dir)\swscale-2.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swresample-0.dll $(IntDir)$(TargetName)
 copy $(firefox_plugin_dir)\swscale-2.dll $(IntDir)$(TargetName)
 zip $(TargetPath) $(IntDir)$(TargetName)
 </NMakeBuildCommandLine>
@@ -81,6 +80,7 @@ copy "$(firefox_plugin_dir)libamplugin_state_xpath.dll" %intdir%%TargetName%\Plu
 copy "$(firefox_plugin_dir)avcodec-54.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)avformat-54.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)avutil-51.dll" %intdir%%TargetName%\Plugins
+copy "$(firefox_plugin_dir)swresample-0.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)swscale-2.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)SDL.dll" %intdir%%TargetName%\Plugins
 copy "$(firefox_plugin_dir)xerces-c_$(xerces_major)_$(xerces_minor).dll" %intdir%%TargetName%\Plugins
