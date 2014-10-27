@@ -1,6 +1,5 @@
 library_includedir=$(includedir)/ambulant/gui/gtk
 library_include_HEADERS=		\
-	gtk_includes.h			\
 	gtk_renderer.h			\
 	gtk_fill.h			\
 	gtk_image_renderer.h		\

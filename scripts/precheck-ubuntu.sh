@@ -16,6 +16,7 @@ packages="
   gettext
   libpango1.0-dev
   libgtk2.0-dev
+  libgtk-3-dev
   postfix
   mailutils
   curl

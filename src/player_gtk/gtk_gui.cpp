@@ -25,6 +25,17 @@
 #include <libgen.h>
 #include <stdlib.h>
 #include <fcntl.h>
+
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#if GTK_MAJOR_VERSION >= 3
+#include <gtk/gtkx.h>
+#include <gdk/gdkx.h>
+#else
+#include <X11/X.h>
+#endif // GTK_MAJOR_VERSION
+
+
 #include "gtk_gui.h"
 #include "gtk_mainloop.h"
 #include "gtk_logger.h"
@@ -111,7 +122,11 @@ const char *helpfile_locations[] = {
 	NULL
 };
 
+#if GTK_MAJOR_VERSION >= 3
+		// TBD
+#else
 static GdkPixmap *pixmap = NULL;
+#endif // GTK_MAJOR_VERSION
 
 // callbacks for C++
 /* File */
@@ -317,23 +332,35 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 //	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	deprecated
 	gtk_window_set_position(GTK_WINDOW (m_toplevelcontainer), GTK_WIN_POS_MOUSE);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	// Callback for the resize events
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+#if GTK_MAJOR_VERSION >= 3
+//	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "draw", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+#else
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
+#endif // GTK_MAJOR_VERSION
 
 	/* Initialization of the signals */
+#if GTK_MAJOR_VERSION >= 3
+	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 0, NULL);
+
+	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
+
+	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
+#else
 	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, g_cclosure_marshal_VOID__VOID,GTK_TYPE_NONE, 0, NULL);
 
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER_POINTER_POINTER,GTK_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
 
-	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER, GTK_TYPE_NONE, 1, G_TYPE_POINTER);
+	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
+#endif // GTK_MAJOR_VERSION
 
 	// Signal connections
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-internal-message",	G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-internal-message",	G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
 
 	/* VBox (m_guicontainer) to place the Menu bar in the correct place */
 	m_guicontainer = gtk_vbox_new(FALSE, 0);
@@ -520,7 +547,7 @@ gtk_gui::do_help() {
 void
 gtk_gui::do_logger_window() {
 	GtkWindow* logger_window =	gtk_logger::get_gtk_logger()->get_logger_window();
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (logger_window))) {
+	if (gtk_widget_get_visible (GTK_WIDGET (logger_window))) {
 		gtk_widget_hide(GTK_WIDGET (logger_window));
 	} else {
 		gtk_widget_show(GTK_WIDGET (logger_window));
@@ -640,7 +667,7 @@ gtk_gui::do_load_settings() {
 		"clicked",
 		G_CALLBACK (gtk_widget_hide),
 		m_settings_selector);
-	g_signal_connect_swapped (GTK_OBJECT ((m_settings_selector)->ok_button),"clicked", G_CALLBACK (gtk_C_callback_settings_selected),(void*) this);
+	g_signal_connect_swapped (G_OBJECT ((m_settings_selector)->ok_button),"clicked", G_CALLBACK (gtk_C_callback_settings_selected),(void*) this);
 */
 }
 
@@ -661,12 +688,17 @@ gtk_gui::do_open_url() {
 	gtk_widget_show(GTK_WIDGET (label));
 
 	m_url_text_entry = GTK_ENTRY (gtk_entry_new());
+#if GTK_MAJOR_VERSION >= 3
+	gtk_editable_set_editable((GtkEditable*) m_url_text_entry, true);
+#else
 	gtk_entry_set_editable(m_url_text_entry, true);
+#endif // GTK_MAJOR_VERSION
+
 	gtk_entry_set_text(m_url_text_entry,"http://www");
 	gtk_widget_show(GTK_WIDGET (m_url_text_entry));
 
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(url_dialog)->vbox), GTK_WIDGET (label));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(url_dialog)->vbox), GTK_WIDGET (m_url_text_entry));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(url_dialog))), GTK_WIDGET (label));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(url_dialog))), GTK_WIDGET (m_url_text_entry));
 
 	gint result = gtk_dialog_run (GTK_DIALOG (url_dialog));
 	if (result == GTK_RESPONSE_ACCEPT) {
@@ -701,12 +733,12 @@ gtk_gui::do_player_done() {
 void
 gtk_gui::need_redraw (const void* r, void* w, const void* pt) {
 
-	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_need_redraw_id, 0, r, w, pt);
+	g_signal_emit(G_OBJECT (m_toplevelcontainer), signal_need_redraw_id, 0, r, w, pt);
 }
 
 void
 gtk_gui::player_done() {
-	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_player_done_id, 0);
+	g_signal_emit(G_OBJECT (m_toplevelcontainer), signal_player_done_id, 0);
 }
 
 void
@@ -882,7 +914,7 @@ gtk_gui::internal_message(int level, char* msg) {
 
 	int msg_id = level+gtk_logger::CUSTOM_OFFSET;
 	gtk_message_event* event = new gtk_message_event(msg_id, msg);
-	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_internal_message_id, 0, event);
+	g_signal_emit(G_OBJECT (m_toplevelcontainer), signal_internal_message_id, 0, event);
 
 #ifdef	LOCK_MESSAGE
 	if (level >= ambulant::lib::logger::LEVEL_WARN
@@ -909,9 +941,12 @@ gtk_gui::_update_menus()
 		(m_mainloop != NULL));
 }
 
+#include <X11/Xlib.h>
+
 int
 main (int argc, char*argv[]) {
 
+//	XInitThreads();
 #ifdef	WITH_GSTREAMER
 	/* initialize GStreamer */
 	gstreamer_player_initialize (&argc, &argv);

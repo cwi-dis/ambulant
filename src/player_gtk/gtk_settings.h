@@ -19,10 +19,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GTK_SETTINGS_H__
-#define __GTK_SETTINGS_H__
+#ifndef __AMBULANT_GTK_SETTINGS_H__
+#define __AMBULANT_GTK_SETTINGS_H__
 
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
+#if GTK_MAJOR_VERSION >= 3
+#include <gtk/gtkx.h>
+#include <gdk/gdkx.h>
+#else
+#include <X11/X.h>
+#endif//GTK_MAJOR_VERSION
 
 class gtk_settings
 {
@@ -41,12 +48,20 @@ private:
 	// Log level
 	GtkHBox*	m_loglevel_hb; // the label and the combo box
 	GtkLabel*	m_loglevel_lb;
-	GtkComboBox* 	m_loglevel_co;
+#if GTK_MAJOR_VERSION >= 3
+	GtkComboBoxText* m_loglevel_co;
+#else
+	GtkComboBox*	m_loglevel_co;
+#endif//GTK_MAJOR_VERSION
 
 	// XML parser
 	GtkHBox*	m_parser_hb;
 	GtkLabel*	m_parser_lb;
+#if GTK_MAJOR_VERSION >= 3
+	GtkComboBoxText* m_parser_co;
+#else
 	GtkComboBox*	m_parser_co;
+#endif//GTK_MAJOR_VERSION
 
 	// xerces options:
 	GtkFrame*	m_xerces_fr; // the xerces frame
@@ -58,7 +73,11 @@ private:
 	// Enable XML validation
 	GtkHBox*	m_validation_hb;// Enable XML validation:
 	GtkLabel*	m_validation_lb;// Enable XML validation:
+#if GTK_MAJOR_VERSION >= 3
+	GtkComboBoxText* m_validation_co;// Enable XML validation:
+#else
 	GtkComboBox*	m_validation_co;// Enable XML validation:
+#endif//GTK_MAJOR_VERSION
 
 	// Using Schema / Using DTD
 	GtkHButtonBox*  m_schema_dtd_hb; // Placeholder of the radio buttons
@@ -84,4 +103,4 @@ private:
 
 	int index_in_string_array(const char* s, const char* sa[]);
 };
-#endif/*__GTK_SETTINGS_H__*/
+#endif/*__AMBULANT_GTK_SETTINGS_H__*/

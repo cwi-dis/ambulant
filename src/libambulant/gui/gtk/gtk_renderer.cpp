@@ -17,9 +17,15 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "ambulant/gui/gtk/gtk_includes.h"
+#include <gtk/gtk.h>
+#if GTK_MAJOR_VERSION >= 3
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+#endif // GTK_MAJOR_VERSION
+
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
+#include "ambulant/gui/gtk/gtk_util.h" //X
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -119,18 +125,20 @@ gtk_transition_renderer::stop()
 	m_view = NULL;
 }
 
+#if GTK_MAJOR_VERSION >= 3
+
 void
 gtk_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_transition_dest->get_rect();
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
-	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_pixmap());
+	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window);
 
-	GdkPixmap* surf = NULL;
+	cairo_surface_t* surf = NULL;
 	// See whether we're in a transition
 	if (m_trans_engine && !m_fullscreen) {
-		GdkPixmap* gpm = agw->get_ambulant_pixmap();
+		cairo_surface_t* gpm = agw->get_target_surface();
 		surf = agw->get_ambulant_surface();
 		if (surf == NULL)
 			surf = agw->new_ambulant_surface();
@@ -139,12 +147,12 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 			rect dstrect = r;
 			dstrect.translate(m_transition_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-			GdkGC *gc = gdk_gc_new (surf);
-			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
-					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
-			g_object_unref (G_OBJECT (gc));
+			cairo_t* cr = cairo_create(surf);
+			cairo_set_source_surface(cr, gpm, dstrect.left(), dstrect.top());
+			cairo_paint(cr);
+			cairo_destroy(cr);
+			agw->set_target_surface(surf);
 			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
-			agw->set_ambulant_surface(surf);
 		}
 
 	}
@@ -157,12 +165,11 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
-	GdkPixmap* surf = agw->get_ambulant_surface();
+	cairo_surface_t* surf = agw->get_target_surface();
 
 	if (surf != NULL) {
-		agw->reset_ambulant_surface();
+		agw->reset_target_surface();
 	}
-
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
@@ -193,6 +200,88 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	}
 	m_lock.leave();
 }
+
+#else// GTK_MAJOR_VERSION
+
+void
+gtk_transition_renderer::redraw_pre(gui_window *window)
+{
+	m_lock.enter();
+	const rect &r = m_transition_dest->get_rect();
+	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
+	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_pixmap());
+
+	GdkPixmap* surf = NULL;
+	// See whether we're in a transition
+	if (m_trans_engine && !m_fullscreen) {
+		GdkPixmap* gpm = agw->get_ambulant_pixmap();
+		surf = agw->get_ambulant_surface();
+		if (surf == NULL)
+			surf = agw->new_ambulant_surface();
+		if (surf != NULL) {
+			// Copy the background pixels
+			rect dstrect = r;
+			dstrect.translate(m_transition_dest->get_global_topleft());
+			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			GdkGC *gc = gdk_gc_new (surf);
+			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
+					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			g_object_unref (G_OBJECT (gc));
+			agw->set_ambulant_surface(surf);
+			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
+		}
+
+	}
+	m_lock.leave();
+}
+
+void
+gtk_transition_renderer::redraw_post(gui_window *window)
+{
+	m_lock.enter();
+
+	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
+#if GTK_MAJOR_VERSION >= 3
+	cairo_surface_t* surf = agw->get_target_surface();
+#else
+	GdkPixmap* surf = agw->get_ambulant_surface();
+
+	if (surf != NULL) {
+		agw->reset_ambulant_surface();
+	}
+#endif // ! GTK_MAJOR_VERSION
+	if(m_trans_engine) {
+		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
+		if (m_trans_engine->is_done()) {
+			if (m_fullscreen)
+				agw->screenTransitionStep(NULL, 0);
+			else
+				m_trans_engine->step(now);
+			typedef lib::no_arg_callback<gtk_transition_renderer> stop_transition_callback;
+			lib::event *ev = new stop_transition_callback(this, &gtk_transition_renderer::stop);
+			m_event_processor->add_event(ev, 0, lib::ep_med);
+		} else {
+			if ( 1 /* XXX was: surf */) {
+				AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to view");
+				if (m_fullscreen) {
+					agw->screenTransitionStep (m_trans_engine, now);
+				} else {
+					m_trans_engine->step(now);
+				}
+				typedef no_arg_callback<gtk_transition_renderer>transition_callback;
+				event *ev = new transition_callback (this, &gtk_transition_renderer::transition_step);
+				transition_info::time_type delay = m_trans_engine->next_step_delay();
+				if (delay < 33) delay = 33; // XXX band-aid
+	//				delay = 1000;
+				AM_DBG logger::get_logger()->debug("gtk_transition_renderer.redraw: now=%d, schedule step for %d",m_event_processor->get_timer()->elapsed(),m_event_processor->get_timer()->elapsed()+delay);
+				m_event_processor->add_event(ev, delay, lib::ep_low);
+			}
+		}
+	}
+	m_lock.leave();
+}
+
+#endif // GTK_MAJOR_VERSION
 
 void
 gtk_transition_renderer::transition_step()

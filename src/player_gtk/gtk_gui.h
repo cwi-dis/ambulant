@@ -22,12 +22,12 @@
 #ifndef __GTK_GUI_H__
 #define __GTK_GUI_H__
 
-#include "unix_preferences.h"
 //#include <iostream>
 //#include <fstream>
 
 #include "gtk_settings.h"
 #include "gtk_logger.h"
+#include "unix_preferences.h"
 
 class gtk_mainloop;
 class gtk_settings;

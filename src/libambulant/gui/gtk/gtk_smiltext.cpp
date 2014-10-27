@@ -17,7 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_smiltext.h"
@@ -26,6 +25,8 @@
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
 
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 //#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -592,6 +593,7 @@ gtk_smiltext_renderer::_gtk_set_color_attr(PangoAttrList* pal,
 	pango_attr_list_insert(pal, pango_attribute);
 }
 
+#if GTK_MAJOR_VERSION >= 3
 void
 gtk_smiltext_renderer::_gtk_smiltext_render(
 	const lib::rect r, 
@@ -610,16 +612,53 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		T = r.top()+p.y,
 		W = r.width(),
 		H = r.height();
+
+	// include the text
+	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
+	if (m_bg_layout) { //XXX TBD
+		g_object_unref(m_bg_layout);
+		m_bg_layout = NULL;
+	}
+
+	cairo_t *cr = cairo_create (window->get_target_surface());
+	/* clip */
+	cairo_rectangle (cr, L, T, W, H);
+	cairo_clip (cr);
+	/* set the correct source color */
+	/* draw the text */
+	cairo_move_to (cr, L-offset.x, T-offset.y);
+	pango_cairo_show_layout (cr, m_pango_layout);
+	cairo_destroy (cr);
+}
+#else
+void
+gtk_smiltext_renderer::_gtk_smiltext_render(
+	const lib::rect r, 
+	const lib::point offset,
+	ambulant_gtk_window* window)
+{
+	// Determine current position and size.
+	const lib::point p = m_dest->get_global_topleft();
+	const char* data = m_text_storage.c_str();
+
+	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
+	if ( ! (m_pango_layout && window))
+		return; // nothing to do
+	int L = r.left()+p.x,
+		T = r.top()+p.y,
+		W = r.width(),
+		H = r.height();
 	GdkRectangle gdk_rectangle;
 	gdk_rectangle.x = L;
 	gdk_rectangle.y = T;
 	gdk_rectangle.width = W;
 	gdk_rectangle.height = H;
+
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
 	gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
-
 	// include the text
 	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
+
 	if (m_bg_layout) {
 		// blending
 		pango_layout_set_width(m_bg_layout, m_wrap ? W*PANGO_SCALE : -1);
@@ -631,9 +670,10 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		gdk_rectangle.x = gdk_rectangle.y = 0;
 		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
 		gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
-
 		GdkPixmap* pixmap = window->get_ambulant_pixmap();
+
 		int PW = -1, PH = -1;
+
 		if (pixmap != NULL)
 			gdk_drawable_get_size (pixmap, &PW, &PH);
 		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
@@ -651,7 +691,6 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 		gdk_transparent.red = redc(m_transparent)*0x101;
 		gdk_transparent.blue = bluec(m_transparent)*0x101;
 		gdk_transparent.green = greenc(m_transparent)*0x101;
-
 		gdk_gc_set_rgb_bg_color (bg_gc, &gdk_transparent);
 		gdk_gc_set_rgb_fg_color (bg_gc, &gdk_transparent);
 		gdk_gc_set_rgb_bg_color (text_gc, &gdk_transparent);
@@ -729,6 +768,8 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 	}
 	g_object_unref (G_OBJECT (gc));
 }
+#endif // GTK_MAJOR_VERSION
+
 
 } // namespace gtk
 

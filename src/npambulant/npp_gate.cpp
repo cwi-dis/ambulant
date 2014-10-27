@@ -68,7 +68,7 @@ npambulant * s_npambulant = NULL;
 
 NPError NPP_Initialize(void)
 {
-	LOG("");
+	LOG("called.");
 	return NPERR_NO_ERROR;
 }
 
@@ -88,7 +88,7 @@ NPError NPP_New(NPMIMEType pluginType,
                 char* argv[],
                 NPSavedData* saved)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -132,7 +132,7 @@ NPError NPP_New(NPMIMEType pluginType,
 // here is the place to clean up and destroy the npambulant object
 NPError NPP_Destroy (NPP instance, NPSavedData** save)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -152,7 +152,7 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
 // initialization and shutdown
 NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -183,7 +183,7 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 // in the bin/components folder
 NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL || value == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -218,7 +218,7 @@ NPError NPP_NewStream(NPP instance,
                       NPBool seekable,
                       uint16* stype)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -240,7 +240,7 @@ NPError NPP_NewStream(NPP instance,
 
 int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -250,7 +250,7 @@ int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 
 int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, void *buffer)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -260,7 +260,7 @@ int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, 
 
 NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -270,7 +270,7 @@ NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
 
 void NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return;
 	}
@@ -278,7 +278,7 @@ void NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
 
 void NPP_Print (NPP instance, NPPrint* printInfo)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return;
 	}
@@ -286,7 +286,7 @@ void NPP_Print (NPP instance, NPPrint* printInfo)
 
 void NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return;
 	}
@@ -294,7 +294,7 @@ void NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyD
 
 NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return NPERR_INVALID_INSTANCE_ERROR;
 	}
@@ -304,7 +304,7 @@ NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 
 int16	NPP_HandleEvent(NPP instance, void* event)
 {
-	LOG("");
+	LOG("called.");
 	if (instance == NULL) {
 		return 0;
 	}
@@ -319,14 +319,14 @@ int16	NPP_HandleEvent(NPP instance, void* event)
 #ifdef OJI
 jref NPP_GetJavaClass (void)
 {
-	LOG("");
+	LOG("called.");
 	return NULL;
 }
 #endif//OJI
 
 NPObject *NPP_GetScriptableInstance(NPP instance)
 {
-	LOG("");
+	LOG("called.");
 	if (!instance) {
 		return 0;
 	}

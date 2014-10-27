@@ -17,7 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
@@ -86,7 +85,7 @@ gtk_text_renderer::~gtk_text_renderer() {
 }
 
 void
-gtk_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
+gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 // No m_lock needed, protected by base class
 	PangoContext *context;
 	PangoLanguage *language;
@@ -106,14 +105,18 @@ gtk_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		"gtk_text_renderer.redraw(0x%x):"
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):"
 		"font-family=(%s)",
-		(void *)this, r.left(), r.top(), r.width(), r.height(),
+		(void *)this, dirty.left(), dirty.top(), dirty.width(), dirty.height(),
 		m_text_storage == NULL ? "(null)": (const char*) m_text_storage,
 		p.x, p.y, m_text_font == NULL ? "(null)": (const char*) m_text_font);
 	if (m_text_storage) {
-		int L = r.left()+p.x,
-			T = r.top()+p.y,
-			W = r.width(),
-			H = r.height();
+	  	const lib::rect &r = m_dest->get_rect();
+		lib::rect dstrect_whole = r;
+		dstrect_whole.translate(m_dest->get_global_topleft());
+
+		int	L = dstrect_whole.left(),
+			T = dstrect_whole.top(),
+			W = dstrect_whole.width(),
+			H = dstrect_whole.height();
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
 		// initialize the pango context, layout...
@@ -145,6 +148,13 @@ gtk_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
 		pango_layout_set_width(layout, W*1000);
 		// Foreground Color of the text
+#if GTK_MAJOR_VERSION >= 3
+		cairo_t* cr = cairo_create(agtkw->get_target_surface());
+		cairo_set_source_rgb (cr, redf(m_text_color),greenf(m_text_color),bluef(m_text_color));
+		cairo_move_to (cr, L, T);
+		pango_cairo_show_layout (cr, layout);
+		cairo_destroy(cr);
+#else
 		GdkColor gtk_color;
 		gtk_color.red = redc(m_text_color)*0x101;
 		gtk_color.blue = bluec(m_text_color)*0x101;
@@ -152,9 +162,10 @@ gtk_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
 		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 		gdk_gc_set_rgb_fg_color (gc, &gtk_color);
 		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc , L, T, layout);
+		g_object_unref (G_OBJECT (gc));
+#endif // GTK_MAJOR_VERSION
 		pango_font_description_free(font_desc);
 		g_object_unref (G_OBJECT (context));
 		g_object_unref(layout);
-		g_object_unref (G_OBJECT (gc));
 	}
 }

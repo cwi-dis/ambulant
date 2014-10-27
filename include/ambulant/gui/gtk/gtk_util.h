@@ -22,10 +22,11 @@
 #ifndef AMBULANT_GUI_GTK_GTK_UTIL_H
 #define AMBULANT_GUI_GTK_GTK_UTIL_H
 
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
 
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
+
 namespace ambulant {
 
 namespace gui {
@@ -53,18 +54,30 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 // Enable by adding -DWITH_DUMPIMAGES to CXXFLAGS on the ./configure line
 // #define	WITH_DUMPIMAGES
 #ifdef	WITH_DUMPIMAGES
-#define DUMPPIXMAP(gdkpixmap, id)  gdk_pixmap_dump(gdkpixmap, id)
-// dump a pixmap or pixbuf on a file named 'nnnnid' where nnnn is a
+// dump a GDKPixmap/cairo_surface_t or pixbuf on a file named 'nnnnid' where nnnn is a
 // generated 4-digit number from 0000-9999 and id is parameter
 // return the 4-digit number for identfication purposes 
 int
+#if GTK_MAJOR_VERSION >= 3
+cairo_surface_dump(cairo_surface_t* srf, std::string id);
+#define DUMPSURFACE(surface, id)  cairo_surface_dump(surface, id)
+#else
 gdk_pixmap_dump(GdkPixmap* gpm, std::string id);
-
+#define DUMPPIXMAP(gdkpixmap, id)  gdk_pixmap_dump(gdkpixmap, id)
+#endif // GTK_MAJOR_VERSION
 int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string id);
+#define DUMPPIXBUF(gdkpixbuf, id)  gdk_pixbuf_dump(gdkpixbuf, id)
+
+#else// ! WITH_DUMPIMAGES
+// dummy macro's
+#if GTK_MAJOR_VERSION >= 3
+#define DUMPSURFACE(surface, id)
 #else
+#define DUMPPIXBUF(gdkpixbuf, id)
+#endif // GTK_MAJOR_VERSION
 #define DUMPPIXMAP(gdkpixmap, id)
-#endif//WITH_DUMPIMAGES
+#endif// ! WITH_DUMPIMAGES
 
 
 } // namespace gtk

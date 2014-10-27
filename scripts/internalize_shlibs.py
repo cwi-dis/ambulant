@@ -37,8 +37,12 @@ MACOSX_BUNDLE_DIRS = (
 DEFAULT_RPATH=[
 	'/lib',
 	'/lib64',
+	'/lib/i386-linux-gnu',
+	'/lib/x86_64-linux-gnu',
 	'/usr/lib',
 	'/usr/lib64',
+	'/usr/lib/i386-linux-gnu',
+	'/usr/lib/x86_64-linux-gnu',
 ]
 
 LINUX_BUNDLE_DIRS = (

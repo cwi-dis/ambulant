@@ -38,6 +38,11 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 #endif//XP_WIN32: Linux, Mac
 
 #ifdef WITH_GTK
+#include <gtk/gtk.h>
+#if GTK_MAJOR_VERSION >= 3
+#error "npambulant cannot yet use gtk+-3.0"
+#include <gtk/gtkx.h>
+#endif // GTK_MAJOR_VERSION
 #include "gtk_mainloop.h"
 #endif
 #ifdef WITH_CG
@@ -184,6 +189,9 @@ npambulant::~npambulant()
 bool
 npambulant::init_ambulant(NPP npp)
 {
+	// Check if browser already called NPP_SetWindow() to inform us where to draw
+	if (m_Window == NULL)
+		return TRUE;
 	//
 	// Step 1 - Initialize the logger and such
 	//
@@ -198,8 +206,6 @@ npambulant::init_ambulant(NPP npp)
 #else //NDEBUG
 	ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_SHOW);
 #endif // NDEBUG
-	if (m_Window == NULL)
-		return FALSE;
 	//
 	// Step 2 - Initialize preferences, including setting up for loading
 	// Ambulant plugins (which are needed for SMIL State and (on Windows) ffmpeg).
@@ -256,13 +262,18 @@ npambulant::init_ambulant(NPP npp)
 	//
 #ifdef WITH_GTK
 	long long ll_winid = reinterpret_cast<long long>(m_Window->window);
+#if GTK_MAJOR_VERSION >= 3
+	int i_winid = static_cast<int>(ll_winid);
+	GtkWidget* gtkwidget = gtk_plug_new((Window) i_winid);
+#else
 	int i_winid = static_cast<int>(ll_winid);
 	GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
 	if (gtkwidget->window == NULL) {
 		// a.o. google-chrome
 		ambulant::lib::logger::get_logger()->error( "ambulant not yet supported as plugin for this browser");
-		return FALSE;
+		return TRUE;
 	}
+#endif // GTK_MAJOR_VERSION
 #endif // WITH_GTK
 #ifdef	XP_WIN32
 	m_hwnd = (HWND)m_Window->window;
@@ -423,6 +434,7 @@ NPBool
 npambulant::setWindow(NPWindow* pNPWindow) {
 	if(pNPWindow == NULL)
 		return FALSE;
+	bool first_call = m_Window == NULL;
 	if (m_Window && m_Window != pNPWindow)
 		ambulant::lib::logger::get_logger()->trace("npambulant: NPWindow changed from %p to %p", m_Window, pNPWindow);
 #ifdef XP_WIN
@@ -459,6 +471,9 @@ npambulant::setWindow(NPWindow* pNPWindow) {
 		}
 	}				  
 #endif//WITH_CG
+	if (first_call) {
+		init_ambulant(get_NPP());
+	}
 	return TRUE;
 }
 
@@ -548,6 +563,9 @@ npambulant::getValue(const char *name) {
 
 int16
 npambulant::handleEvent(void* event) {
+#if GTK_MAJOR_VERSION >= 3
+	LOG("handleEvent: type = %d", ((XEvent*) event)->type);
+#endif // GTK_MAJOR_VERSION
 #ifdef WITH_CG
 	NPCocoaEvent cocoaEvent = *(NPCocoaEvent*)event;
 	LOG("event=%p, type=%d", event, cocoaEvent.type);
@@ -892,11 +910,16 @@ gtk_gui::gtk_gui(const char* s, const char* s2) {
 	memset (this, 0, sizeof(gtk_gui));
 	m_toplevelcontainer = (GtkWindow*) s;
 	m_documentcontainer = gtk_drawing_area_new();
-	gtk_widget_hide(m_documentcontainer);
+//	gtk_widget_hide(m_documentcontainer);
 //XXXX FIXME vbox only needed to give	m_documentcontainer a parent widget at *draw() callback time
+#if GTK_MAJOR_VERSION >= 3
+//	gtk_widget_set_parent (m_documentcontainer, (GtkWidget*) m_toplevelcontainer);
+	gtk_container_add((GtkContainer*) m_toplevelcontainer, m_documentcontainer);
+#else
 	m_guicontainer = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(m_toplevelcontainer), GTK_WIDGET (m_guicontainer));
 	gtk_box_pack_start (GTK_BOX(m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
+#endif // GTK_MAJOR_VERSION
 //XXXX not used:  m_guicontainer = menubar = NULL;
 //XXXX FIXME <EMBED src="xxx" ../> attr value is 2nd contructor arg.
 	m_smilfilename = s2;
@@ -959,3 +982,26 @@ npambulant::init_cg_view(CGContextRef cg_ctx)
 
 }
 #endif//WITH_CG
+/* Attic
+	GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((Window) i_winid));
+	if (gtk_widget_get_window(gtkwidget) == NULL) {
+
+	gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, url_str);
+	m_mainloop = new gtk_mainloop(m_gui);
+	if (url_str)
+		free((void*)url_str);
+	m_logger = lib::logger::get_logger();
+	m_ambulant_player = m_mainloop->get_player();
+	if (m_ambulant_player == NULL) return false;
+	if (m_autostart) m_ambulant_player->start();
+	gtk_widget_show_all(gtkwidget);
+	gtk_widget_realize(gtkwidget);
+z
+
+
+//	m_guicontainer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+//	gtk_container_add(GTK_CONTAINER(m_toplevelcontainer), GTK_WIDGET (m_guicontainer));
+//	gtk_box_pack_start (GTK_BOX(m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
+
+ */
+
