@@ -950,13 +950,14 @@ AC_ARG_WITH([npambulant],
 			NPAMBULANT_INCLUDES=-I${withval}
 			with_npambulant=true
 			;;
-		esac],
+		esac
+		if test $test_gtk = "gtk3"; then
+		   AC_MSG_ERROR("--with-npambulant is not yet available for gtk3. Please use --with-gtk=gtk2.")
+		   with_npambulant=false
+		fi
+	],
 	[with_npambulant=false])
 
-if test $test_gtk = "gtk3"; then
-	AC_MSG_ERROR("--with-npambulant is not yet available for gtk3. Please use --with-gtk=gtk2.")
-	with_npambulant=false
-fi
 AC_SUBST(NPAMBULANT_INCLUDES)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
