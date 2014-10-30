@@ -213,6 +213,13 @@ ffmpeg_demux::supported(const net::url& url)
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
 	std::string url_str(url.get_document().get_url());
+// Workaraound for: https://trac.ffmpeg.org/ticket/2702 (Faulty handling of file: protocol on Windows)
+#define FFMPEG_BUG_2702
+#if defined(_WINDOWS) && defined(FFMPEG_BUG_2702)
+	if (url.is_local_file()) {
+		url_str = url.get_file();
+	}
+#endif//defined(_WINDOWS) && defined(FFMPEG_BUG_2702)
 	const std::string& frag = url.get_ref();
 	bool is_live = (frag.find("is_live=1") != std::string::npos);
 	std::string ffmpeg_name = url_str;
