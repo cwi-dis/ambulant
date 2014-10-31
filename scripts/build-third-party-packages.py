@@ -987,7 +987,7 @@ third_party_packages={
 
         WinTPP("ffmpeg-bin",
             url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-2.0.2-win32-shared.7z" ,
-            checkcmd="if not exist ffmpeg-2.0.2-win32-shared\\bin\\avformat-53.dll exit 1" ,
+            checkcmd="if not exist ffmpeg-2.0.2-win32-shared\\bin\\avformat-55.dll exit 1" ,
             # No build needed
             ),
 
