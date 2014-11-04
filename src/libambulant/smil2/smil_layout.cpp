@@ -680,7 +680,9 @@ bgimage_loader::~bgimage_loader()
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::~bgimage_loader(): delete playables");
 	std::vector<common::playable*>::iterator ip;
 	for (ip=m_old_playables.begin(); ip != m_old_playables.end(); ip++) {
+		m_lock.leave();
 		(*ip)->stop();
+		m_lock.enter();
 		(*ip)->release();
 	}
 
