@@ -121,8 +121,8 @@ class ambulant_gtk_window : public common::gui_window {
 	void set_target_surface(cairo_surface_t* surf);
 	void set_drawing_surface(cairo_surface_t* surf) { m_target_surface = surf; }
 	cairo_surface_t* get_target_surface() { return m_target_surface; }
-	cairo_surface_t* get_bgimage_surface() { return m_bgimage_surface; }
-	cairo_surface_t* new_bgimage_surface();
+	cairo_surface_t* get_bgimage_surface(common::surface* s) { return m_bgimages[s]; }
+	cairo_surface_t* new_bgimage_surface(common::surface* s);
 	lib::rect get_bounds() { return m_bounds; }
 	cairo_surface_t* create_similar_surface (cairo_surface_t* surface);
 	void reset_target_surface(void);
@@ -163,6 +163,7 @@ class ambulant_gtk_window : public common::gui_window {
 	cairo_surface_t* m_target_surface; // surface for final bitblt
 
 	cairo_surface_t* m_bgimage_surface;
+	std::map<common::surface*,cairo_surface_t*> m_bgimages; // region, background image
 	cairo_surface_t* m_old_target_surface;
 	cairo_surface_t* m_surface;
 	cairo_surface_t* m_fullscreen_prev_surface;

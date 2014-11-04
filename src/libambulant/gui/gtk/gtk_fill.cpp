@@ -136,9 +136,9 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, opacity);
 		cairo_rectangle (cr, L, T, W, H);
 		cairo_fill(cr);
-		cairo_surface_t* bgimage = agtkw->get_bgimage_surface();
+		cairo_surface_t* bgimage = agtkw->get_bgimage_surface(m_dst);
 		if (bgimage != NULL) {
-			cairo_set_source_surface (cr, bgimage, L, T);
+			cairo_set_source_surface (cr, bgimage, 0, 0);
 			cairo_paint(cr);
 		}
 		cairo_destroy(cr);

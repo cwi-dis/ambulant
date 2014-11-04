@@ -752,13 +752,13 @@ ambulant_gtk_window::set_target_surface(cairo_surface_t* surf)
 }
 
 cairo_surface_t*
-ambulant_gtk_window::new_bgimage_surface()
+ambulant_gtk_window::new_bgimage_surface(common::surface*s)
 {
-	if (m_bgimage_surface == NULL) {
-		cairo_surface_destroy(m_bgimage_surface);
+	if (m_bgimages[s] != NULL) {
+		cairo_surface_destroy(m_bgimages[s]);
 	}
-	m_bgimage_surface =  cairo_image_surface_create (CAIRO_FORMAT_ARGB32, m_bounds.width(), m_bounds.height());
-	return m_bgimage_surface;
+	m_bgimages[s] = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, m_bounds.width(), m_bounds.height());
+	return m_bgimages[s];
 }
 
 #else

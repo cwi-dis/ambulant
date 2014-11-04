@@ -120,24 +120,21 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
 		// backgroundOpacity.
 		double alpha = ri->get_bgopacity();
-/*JNK
-		double alpha = 1.0 ri->get_region_opacity(
-		const char *backgroundopacity_attr = m_node->get_attribute("backgroundOpacity");
-		if (backgroundopacity_attr) {
-			char* lastp;
-			alpha = strtod(backgroundopacity_attr, &lastp);
-			if (*lastp == '%') {
-				alpha *= 0.01;
-			}
-		}
-*/
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		cairo_surface_t* bgimage_surface = agtkw->get_bgimage_surface();
+		cairo_surface_t* bgimage_surface = agtkw->get_bgimage_surface(m_dest);
 		if (bgimage_surface == NULL) {
-			bgimage_surface = agtkw->new_bgimage_surface();
+			bgimage_surface = agtkw->new_bgimage_surface(m_dest);
 		}
 		cairo_t* cr = cairo_create(bgimage_surface);
+		// set surface to all tranparent pixels
+		cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
+		cairo_paint (cr);
+		// set surface to draw over existing pixels
+		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+		
+		cairo_rectangle (cr, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+		cairo_clip(cr);
 		if (m_dest->is_tiled()) {
 			common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
 			common::tile_positions::iterator it;
@@ -155,6 +152,8 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 					D_W = dstrect.width(),
 					D_H = dstrect.height();
 				AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
+//				cairo_rectangle (cr, D_L, D_T, D_W, D_H);
+//				cairo_clip(cr);
 				gdk_cairo_set_source_pixbuf(cr, m_image, D_L, D_T);
 				cairo_paint_with_alpha(cr, alpha);
 			}
