@@ -136,6 +136,11 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, opacity);
 		cairo_rectangle (cr, L, T, W, H);
 		cairo_fill(cr);
+		cairo_surface_t* bgimage = agtkw->get_bgimage_surface();
+		if (bgimage != NULL) {
+			cairo_set_source_surface (cr, bgimage, L, T);
+			cairo_paint(cr);
+		}
 		cairo_destroy(cr);
 #else
 		GdkColor bgc;
@@ -146,7 +151,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 			gdk_gc_set_rgb_fg_color (gc, &bgc);
 			gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
-	DUMPPIXMAP(agtkw->get_ambulant_pixmap(), "bkgd");
+			DUMPPIXMAP(agtkw->get_ambulant_pixmap(), "bkgd");
 			g_object_unref (G_OBJECT (gc));
 
 		} else {  //XXXX adapted from gtk_transition. May be some code to be factored out

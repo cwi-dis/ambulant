@@ -114,7 +114,6 @@ class ambulant_gtk_window : public common::gui_window {
 
 #if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* new_ambulant_surface();
-
 	cairo_surface_t* get_ambulant_surface();
 	cairo_surface_t* get_old_target_surface();
 	cairo_surface_t* copy_surface(cairo_surface_t* srf);
@@ -122,6 +121,8 @@ class ambulant_gtk_window : public common::gui_window {
 	void set_target_surface(cairo_surface_t* surf);
 	void set_drawing_surface(cairo_surface_t* surf) { m_target_surface = surf; }
 	cairo_surface_t* get_target_surface() { return m_target_surface; }
+	cairo_surface_t* get_bgimage_surface() { return m_bgimage_surface; }
+	cairo_surface_t* new_bgimage_surface();
 	lib::rect get_bounds() { return m_bounds; }
 	cairo_surface_t* create_similar_surface (cairo_surface_t* surface);
 	void reset_target_surface(void);
@@ -161,7 +162,7 @@ class ambulant_gtk_window : public common::gui_window {
 #if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* m_target_surface; // surface for final bitblt
 
- //X	cairo_surface_t* m_pixmap;
+	cairo_surface_t* m_bgimage_surface;
 	cairo_surface_t* m_old_target_surface;
 	cairo_surface_t* m_surface;
 	cairo_surface_t* m_fullscreen_prev_surface;

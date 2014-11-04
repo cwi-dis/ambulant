@@ -116,31 +116,53 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// While rendering background images only, check for tiling. This code is
 	// convoluted, it knows that the node and the region we're painting to are
 	// really the same node.
-	if (m_node->get_attribute("backgroundImage") && m_dest->is_tiled()) {
+	if (m_node->get_attribute("backgroundImage")) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
+		// backgroundOpacity.
+		double alpha = ri->get_bgopacity();
+/*JNK
+		double alpha = 1.0 ri->get_region_opacity(
+		const char *backgroundopacity_attr = m_node->get_attribute("backgroundOpacity");
+		if (backgroundopacity_attr) {
+			char* lastp;
+			alpha = strtod(backgroundopacity_attr, &lastp);
+			if (*lastp == '%') {
+				alpha *= 0.01;
+			}
+		}
+*/
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
-		common::tile_positions::iterator it;
-
-		for(it=tiles.begin(); it!=tiles.end(); it++) {
-
-			srcrect = (*it).first;
-			dstrect = (*it).second;
-			int S_L = srcrect.left(),
-				S_T = srcrect.top(),
-				S_W = srcrect.width(),
-				S_H = srcrect.height();
-			int D_L = dstrect.left(),
-				D_T = dstrect.top(),
-				D_W = dstrect.width(),
-				D_H = dstrect.height();
-			AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
-			cairo_t* cr = cairo_create(agtkw->get_target_surface());
-			gdk_cairo_set_source_pixbuf(cr, m_image, D_L, D_T);
-			cairo_paint(cr);
-			cairo_destroy(cr);
+		cairo_surface_t* bgimage_surface = agtkw->get_bgimage_surface();
+		if (bgimage_surface == NULL) {
+			bgimage_surface = agtkw->new_bgimage_surface();
 		}
+		cairo_t* cr = cairo_create(bgimage_surface);
+		if (m_dest->is_tiled()) {
+			common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
+			common::tile_positions::iterator it;
+
+			for(it=tiles.begin(); it!=tiles.end(); it++) {
+
+				srcrect = (*it).first;
+				dstrect = (*it).second;
+				int	S_L = srcrect.left(),
+					S_T = srcrect.top(),
+					S_W = srcrect.width(),
+					S_H = srcrect.height();
+				int	D_L = dstrect.left(),
+					D_T = dstrect.top(),
+					D_W = dstrect.width(),
+					D_H = dstrect.height();
+				AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
+				gdk_cairo_set_source_pixbuf(cr, m_image, D_L, D_T);
+				cairo_paint_with_alpha(cr, alpha);
+			}
+		} else {
+			gdk_cairo_set_source_pixbuf(cr, m_image, dstrect.left(), dstrect.top());
+			cairo_paint_with_alpha(cr, alpha);
+		}
+		cairo_destroy(cr);
 		m_lock.leave();
 		return;
 	}
@@ -190,6 +212,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
 		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
+		//TBD
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(%p) target_surface=%p.",this,agtkw->get_target_surface());
 		cairo_t* cr = cairo_create(agtkw->get_target_surface());
