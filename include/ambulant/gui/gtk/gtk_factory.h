@@ -121,8 +121,8 @@ class ambulant_gtk_window : public common::gui_window {
 	void set_target_surface(cairo_surface_t* surf);
 	void set_drawing_surface(cairo_surface_t* surf) { m_target_surface = surf; }
 	cairo_surface_t* get_target_surface() { return m_target_surface; }
-	cairo_surface_t* get_bgimage_surface(common::surface* s) { return m_bgimages[s]; }
-	cairo_surface_t* new_bgimage_surface(common::surface* s);
+	cairo_surface_t* get_bgimage_surface(std::string s) { return m_bgimages[s]; }
+	cairo_surface_t* new_bgimage_surface(std::string s);
 	lib::rect get_bounds() { return m_bounds; }
 	cairo_surface_t* create_similar_surface (cairo_surface_t* surface);
 	void reset_target_surface(void);
@@ -163,7 +163,7 @@ class ambulant_gtk_window : public common::gui_window {
 	cairo_surface_t* m_target_surface; // surface for final bitblt
 
 	cairo_surface_t* m_bgimage_surface;
-	std::map<common::surface*,cairo_surface_t*> m_bgimages; // region, background image
+	std::map<std::string,cairo_surface_t*> m_bgimages; // region name, background image
 	cairo_surface_t* m_old_target_surface;
 	cairo_surface_t* m_surface;
 	cairo_surface_t* m_fullscreen_prev_surface;
@@ -236,6 +236,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	gulong m_motion_notify_handler_id;
 	gulong m_button_release_handler_id;
 	gulong m_key_release_handler_id;
+	lib::critical_section m_lock;
 
 };  // class gtk_ambulant_widget
 

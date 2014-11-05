@@ -116,15 +116,22 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// While rendering background images only, check for tiling. This code is
 	// convoluted, it knows that the node and the region we're painting to are
 	// really the same node.
-	if (m_node->get_attribute("backgroundImage")) {
+
+	std::string id = m_dest->get_info()->get_name();
+	logger::get_logger()->debug("%s: m_node=0x%x, m_dest=0x%x", __PRETTY_FUNCTION__, m_node, m_dest);
+	if (m_node != NULL && m_node->get_attribute("backgroundImage")) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
 		// backgroundOpacity.
 		double alpha = ri->get_bgopacity();
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		cairo_surface_t* bgimage_surface = agtkw->get_bgimage_surface(m_dest);
+		cairo_surface_t* bgimage_surface = agtkw->get_bgimage_surface(id);
 		if (bgimage_surface == NULL) {
-			bgimage_surface = agtkw->new_bgimage_surface(m_dest);
+			bgimage_surface = agtkw->new_bgimage_surface(id);
+		} else {
+			// don't init twice
+			m_lock.leave();
+			return;
 		}
 		cairo_t* cr = cairo_create(bgimage_surface);
 		// set surface to all tranparent pixels
