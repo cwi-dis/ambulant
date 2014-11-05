@@ -691,7 +691,11 @@ bgimage_loader::~bgimage_loader()
 	for (in=m_nodes.begin(); in != m_nodes.end(); in++)
 		delete *in;
 
+	m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::~bgimage_loader(): delete event processor");
+	// allow everything to finish
+	lib::sleep_msec(100);
+	m_lock.enter();
 	delete m_event_processor;
 	delete m_timer;
 	m_lock.leave();
