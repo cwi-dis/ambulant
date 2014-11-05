@@ -118,7 +118,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// really the same node.
 
 	std::string id = m_dest->get_info()->get_name();
-	logger::get_logger()->debug("%s: m_node=0x%x, m_dest=0x%x", __PRETTY_FUNCTION__, m_node, m_dest);
+	AM_DBG logger::get_logger()->debug("%s: m_node=0x%x, m_dest=0x%x", __PRETTY_FUNCTION__, m_node, m_dest);
 	if (m_node != NULL && m_node->get_attribute("backgroundImage")) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
 		// backgroundOpacity.

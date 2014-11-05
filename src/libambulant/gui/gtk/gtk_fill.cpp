@@ -138,7 +138,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		cairo_fill(cr);
 	}
 	std::string id = m_dst->get_info()->get_name();
-	logger::get_logger()->debug("%s: m_dst=0x%x", __PRETTY_FUNCTION__, id.c_str());
+	AM_DBG logger::get_logger()->debug("%s: m_dst=0x%x", __PRETTY_FUNCTION__, id.c_str());
 	cairo_surface_t* bgimage = agtkw->get_bgimage_surface(id);
 	if (bgimage != NULL) {
 		cairo_rectangle (cr, L, T, W, H);
