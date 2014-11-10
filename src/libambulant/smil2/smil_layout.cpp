@@ -215,7 +215,9 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			}
 
 			// See if the node uses background images
-			if (n->get_attribute("backgroundImage")) m_uses_bgimages = true;
+            if (n->get_attribute("backgroundImage")) {
+                m_uses_bgimages = true;   
+            }
 			// And finally into the node->region mapping (for animate)
 			m_node2region[n] = rn;
 
@@ -654,6 +656,7 @@ smil_layout_manager::load_bgimages(common::factories *factories)
 {
 //	if (!m_uses_bgimages) return;
 //	abort();
+    return; // disable bgimages, see bug #853
 	if (!m_layout_section || !m_uses_bgimages) return;
 	bgimage_loader *loader = new bgimage_loader(m_layout_section, factories);
 	loader->run(this);
@@ -680,9 +683,7 @@ bgimage_loader::~bgimage_loader()
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::~bgimage_loader(): delete playables");
 	std::vector<common::playable*>::iterator ip;
 	for (ip=m_old_playables.begin(); ip != m_old_playables.end(); ip++) {
-		m_lock.leave();
 		(*ip)->stop();
-		m_lock.enter();
 		(*ip)->release();
 	}
 
@@ -691,11 +692,7 @@ bgimage_loader::~bgimage_loader()
 	for (in=m_nodes.begin(); in != m_nodes.end(); in++)
 		delete *in;
 
-	m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::~bgimage_loader(): delete event processor");
-	// allow everything to finish
-	lib::sleep_msec(100);
-	m_lock.enter();
 	delete m_event_processor;
 	delete m_timer;
 	m_lock.leave();
