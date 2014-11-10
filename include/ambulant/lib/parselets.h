@@ -36,6 +36,9 @@
 
 #include <math.h>
 
+// used by wallclock_p
+#include <time.h>
+
 // This module defines a set of simple parsers.
 // All the parsers offer a common minimal interface
 // in order to simplify composition.
@@ -140,7 +143,13 @@ class int_p : public parselet {
 	typedef int_p self_type;
 	typedef int result_type;
 	result_type m_result;
-
+    result_type m_min;
+    result_type m_max;
+    
+    int_p (int min=INT_MIN, int max=INT_MAX) {
+        m_min = min;
+        m_max = max;
+    }
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
 		if(it == end || *it < '0' || *it > '9') return -1;
 		m_result = 0;
@@ -149,7 +158,10 @@ class int_p : public parselet {
 			m_result = m_result*10 + int(*it - '0');
 			len++;it++;
 		} while(it != end && *it >= '0' && *it <= '9');
-		return len;
+        if (m_result >= m_min && m_result <= m_max) {
+            return len;
+        }
+		return -1;
 	}
 };
 
@@ -725,6 +737,38 @@ class mediaclipping_p : public parselet {
 	int m_frame_rate;
 	bool m_drop;
 };
+
+
+class wallclock_p : public parselet {
+public:
+    std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+    long int get_time(); //returns the parsed time converted to ms.
+    long int m_result;
+};
+   
+    
+class datetime_p : public parselet {
+public:
+    std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+    struct tm get_time(); //returns the parsed time converted to ms.
+    struct tm m_result;
+};
+
+
+class walltime_p : public parselet {
+public:
+    std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+    struct tm get_time(); //returns the parsed time converted to ms.
+    struct tm m_result;
+};
+
+class date_p : public parselet {
+public:
+    std::ptrdiff_t parse(const_iterator& it, const const_iterator& end);
+    struct tm get_time(); //returns the parsed date
+    struct tm m_result;
+};
+
 
 } // namespace lib
 
