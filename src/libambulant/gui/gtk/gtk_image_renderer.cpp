@@ -125,16 +125,10 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		double alpha = ri->get_bgopacity();
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		cairo_surface_t* bgimage_surface = agtkw->get_bgimage_surface(id);
-		if (bgimage_surface == NULL) {
-			bgimage_surface = agtkw->new_bgimage_surface(id);
-		} else {
-			// don't init twice
-			m_lock.leave();
-			return;
-		}
-		cairo_t* cr = cairo_create(bgimage_surface);
+		cairo_t* cr = cairo_create(agtkw->get_target_surface());
 		// set surface to all tranparent pixels
+		cairo_rectangle (cr, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+		cairo_clip(cr);
 		cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
 		cairo_paint (cr);
 		// set surface to draw over existing pixels
@@ -161,6 +155,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 				AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
 //				cairo_rectangle (cr, D_L, D_T, D_W, D_H);
 //				cairo_clip(cr);
+				cairo_t* cr = cairo_create(agtkw->get_target_surface());
 				gdk_cairo_set_source_pixbuf(cr, m_image, D_L, D_T);
 				cairo_paint_with_alpha(cr, alpha);
 			}
@@ -192,11 +187,11 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// S_ for source image coordinates
 	// D_ for destination coordinates
 	// N_ for new (scaled) coordinates
-	int S_L = srcrect.left(),
+	int	S_L = srcrect.left(),
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
 		S_H = srcrect.height();
-	int D_L = dstrect.left(),
+	int	D_L = dstrect.left(),
 		D_T = dstrect.top(),
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
@@ -204,7 +199,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	float fact_W = (float)D_W/(float)S_W;
 	float fact_H = (float)D_H/(float)S_H;
 	// N_ for new (scaled) image coordinates
-	int N_L = (int)roundf(S_L*fact_W),
+	int	N_L = (int)roundf(S_L*fact_W),
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);

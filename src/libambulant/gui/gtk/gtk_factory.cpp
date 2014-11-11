@@ -291,7 +291,6 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	m_old_target_surface(NULL),
 	m_fullscreen_prev_surface(NULL),
 	m_fullscreen_old_surface(NULL),
-	m_bgimage_surface(NULL),
 	m_tmp_surface(NULL),
 	m_surface(NULL)
 {
@@ -337,9 +336,6 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	}
 	if (m_target_surface != NULL) {
 		cairo_surface_destroy(m_target_surface);
-	}
-	if (m_bgimage_surface != NULL) {
-		cairo_surface_destroy(m_bgimage_surface);
 	}
 	if (m_surface != NULL) {
 		cairo_surface_destroy(m_surface);
@@ -521,7 +517,6 @@ void
 ambulant_gtk_window::redraw_now()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw_now()");
-	redraw(m_bounds);
 }
 
 bool
@@ -749,16 +744,6 @@ ambulant_gtk_window::set_target_surface(cairo_surface_t* surf)
 		m_old_target_surface = m_target_surface;
 		m_target_surface = surf;
 	}
-}
-
-cairo_surface_t*
-ambulant_gtk_window::new_bgimage_surface(std::string s)
-{
-	if (m_bgimages[s] != NULL) {
-		cairo_surface_destroy(m_bgimages[s]);
-	}
-	m_bgimages[s] = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, m_bounds.width(), m_bounds.height());
-	return m_bgimages[s];
 }
 
 #else
@@ -1172,7 +1157,6 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	cairo_paint (cr);
 	m_lock.leave();
 }
-
 #else
 void
 gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
@@ -1246,7 +1230,6 @@ void gtk_ambulant_widget::get_size(int *width, int *height){
 #if GTK_MAJOR_VERSION >= 3
 	*width = gdk_window_get_width (gtk_widget_get_window (m_widget));
 	*height = gdk_window_get_height(gtk_widget_get_window (m_widget));
-
 #else
 	gdk_drawable_get_size(m_widget->window, width, height);
 #endif // GTK_MAJOR_VERSION
