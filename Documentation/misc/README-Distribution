@@ -109,6 +109,7 @@ Before creating the distribution
   - src/npambulant/install-*.rdf
   - src/npambulant/manifest-*.json
   - src/pyambulant/setup.py
+  - src/pyambulant/test/test_pyambulant.py
   - scripts/nightlybuilds/*
   - scripts/build-third-party-packages.py (MIRRORBASE variable)
   - scripts/autotest.linux.sh
