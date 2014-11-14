@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import re
 import getopt
+import platform
 
 # RE that matches dylib references in MacOSX otool output:
 OTOOL_MATCHER=re.compile(r'(.*) \(compatibility version .*, current version .*\)')
@@ -36,14 +37,14 @@ MACOSX_BUNDLE_DIRS = (
 
 DEFAULT_RPATH=[
 	'/lib',
-	'/lib64',
-	'/lib/i386-linux-gnu',
-	'/lib/x86_64-linux-gnu',
 	'/usr/lib',
-	'/usr/lib64',
-	'/usr/lib/i386-linux-gnu',
-	'/usr/lib/x86_64-linux-gnu',
 ]
+# Add library paths used by common Linux distributions (Ubuntu, Fedora)
+machine = platform.machine()
+if machine == 'i386':
+    DEFAULT_RPATH += [ '/lib/i386-linux-gnu', '/usr/lib/i386-linux-gnu' ]
+elif machine == 'x86_64':
+    DEFAULT_RPATH += [ '/lib/x86_64-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/lib64', '/usr/lib64']
 
 LINUX_BUNDLE_DIRS = (
 	'.',
@@ -109,6 +110,9 @@ if not hasattr(os.path, "relpath"):
 
 class Internalizer:
 	def __init__(self, bundle, (run_dir, framework_dir, plugin_dir, safe_prefixes)):
+		self.trace = False
+		if self.trace:
+                	print "%s: %s %s=%s %s=%s %s=%s %s=%s %s=%s "%(sys._getframe().f_code.co_name,"begin", "bundle",  bundle, "run_dir", run_dir, "framework_dir", framework_dir, "plugin_dir", plugin_dir, "safe_prefixes", safe_prefixes )
 		self.bundle_dir = bundle
 		self.run_dir = os.path.join(bundle, run_dir)
 		self.framework_dir = None
@@ -129,6 +133,7 @@ class Internalizer:
 				
 		self.norun = False
 		self.verbose = False
+		self.debug = False
 		self.work_done = False
 		
 		self.rpath = []
@@ -136,13 +141,19 @@ class Internalizer:
 		if env_rpath:
 			self.rpath += env_rpath.split(':')
 		self.rpath += DEFAULT_RPATH
-		#KB print "self.rpath:"
-		#KB print self.rpath
+		if self.debug:
+                	print "self.rpath:"
+			print self.rpath
 		
 	def add_standard(self):
-		#KB print "self.run_dir="+self.run_dir
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
+        	if self.debug:
+                	print "self.run_dir="+self.run_dir
 
 		for dirpath, dirnames, filenames in os.walk(self.run_dir):
+        		if self.debug:
+                		print "%s=%s %s=%s %s=%s"%(" dirpath", dirpath, "dirnames",  dirnames, "filenames", filenames)
 			for name in filenames:
 				name = os.path.join(dirpath, name)
 				self.add(name)
@@ -158,6 +169,8 @@ class Internalizer:
 					self.add(name)
 
 	def add(self, src, copy=False):
+		if self.trace:
+                	print "%s: %s %s=%s %s=%s"%(sys._getframe().f_code.co_name,"begin", "src", src, "copy", copy)
 		if 0:
 			while os.path.islink(src):
 				src = os.path.realpath(src)
@@ -177,6 +190,8 @@ class Internalizer:
 		self.todo[src] = dstname
 		
 	def run(self):
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 		while self.todo:
 			src, dst = self.todo.items()[0]
 			self.process(src, dst)
@@ -184,10 +199,14 @@ class Internalizer:
 			self.done[src] = dst
 		
 	def process(self, src, dst):
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 		if self.verbose: print '* process', src, dst
 		origin = os.path.dirname(src)
 		libraries, rpath = self.get_libs_rpath(src)
 		must_change = []
+		if self.debug:
+                	print "%s: %s=%s %s=%s %s=%s"%(sys._getframe().f_code.co_name,"origin",origin,"libraries",libraries,"rpath",rpath)
 		for lib in libraries:
 			libpath = self.find_library(lib, rpath, origin)
 			if not libpath:
@@ -199,14 +218,20 @@ class Internalizer:
 			self.copy(src, dst)
 			self.set_name(dst)
 			src = os.path.join(self.destination_dir, dst)
-		self.modify_rpath(src)
+                if not rpath is None:
+			self.modify_rpath(src)
 		for lib in must_change:
 			self.modify_reference(src, lib)
 		
 	def copy(self, src, dst):
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 		if '.framework/' in src:
 			print '** Warning: About to copy from framework:', src
 		dstfilename = os.path.join(self.destination_dir, dst)
+                if os.path.exists (dstfilename):
+                	# already present
+                	return
 		if self.verbose:
 			print 'copy', src, dstfilename
 		if not self.norun:
@@ -214,9 +239,13 @@ class Internalizer:
 			if not os.path.exists(dstdir):
 				os.mkdir(dstdir)
 			shutil.copy(src, dstfilename)
+                if self.debug:
+                	print "%s: %s %s=%s %s=%s" % (sys._getframe().f_code.co_name, "work_done", "src", src, "dstfilename", dstfilename )
 		self.work_done = True
 		
 	def find_library(self, lib, rpath, origin):
+		if self.trace:
+                	print "%s: %s %s=%s %s=%s %s=%s"%(sys._getframe().f_code.co_name,"begin", "lib", lib, "rpath", rpath, "origin", origin)
 		if os.path.isabs(lib):
 			return lib
 		#
@@ -229,6 +258,8 @@ class Internalizer:
 		searchdirs = self.rpath
 		for d in searchdirs:
 			if not d: continue
+			if self.trace:
+       	        		print "%s: %s %s=%s %s=%s"%(sys._getframe().f_code.co_name,"search", "d", d, "lib", lib)
 			if d.startswith('$ORIGIN') or d.startswith('${ORIGIN}'):
 				if d.startswith('$ORIGIN'):
 					real_d = origin + d[7:]
@@ -243,6 +274,8 @@ class Internalizer:
 		return None
 		
 	def get_libs_rpath(self, src):
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 		if 0:
 			proc = subprocess.Popen(['otool', '-L', src],
 				stdout=subprocess.PIPE)
@@ -254,7 +287,8 @@ class Internalizer:
 					rv.append(matches.group(1))
 			return rv, None
 		else:
-			#KB print "Executing: objdump -p %s" % src
+			if self.debug:
+                		print "Executing: objdump -p %s" % src
 			proc = subprocess.Popen(['objdump', '-p', src],
 				stdout = subprocess.PIPE)
 			rv = []
@@ -273,6 +307,8 @@ class Internalizer:
 			
 		
 	def set_name(self, dst):
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 		if 0:
 			dstfilename = os.path.join(self.destination_dir, dst)
 			dstfileid = os.path.join("@loader_path/../Frameworks/", os.path.basename(dst))
@@ -280,9 +316,13 @@ class Internalizer:
 				print 'setname', dstfilename, dstfileid
 			if not self.norun:
 				subprocess.check_call(['install_name_tool', '-id', dstfileid, dstfilename])
+                	if self.debug:
+                		print "%s: %s %s=%s %s=%s" % (sys._getframe().f_code.co_name, "work_done", "dstfileid", dstfileid, "dstfilename", dstfilename )
 			self.work_done = True
 			
 	def modify_reference(self, dst, lib):
+		if self.trace:
+                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 		if 0:
 			reallib = os.path.realpath(lib)
 			libid = os.path.join("@loader_path/../Frameworks/", os.path.basename(reallib))
@@ -295,12 +335,15 @@ class Internalizer:
 			self.work_done = True
 			
 	def modify_rpath(self, lib):
+		if self.trace:
+                	print "%s: %s=%s"%(sys._getframe().f_code.co_name,"lib",lib)
 		origin = '$ORIGIN'
 		libdir = os.path.dirname(lib)
 
-		#KB print "self.destination_dir="+self.destination_dir+"\n\tlibdir="+libdir
 		relpath = os.path.relpath(self.destination_dir, libdir)
-		#KB print "\trelpath="+relpath
+		if self.debug:
+			print "self.destination_dir="+self.destination_dir+"\n\tlibdir="+libdir
+                        print "\trelpath="+relpath
 		if relpath and relpath != '.':
 			origin = os.path.join(origin, relpath)
 		if self.verbose:
@@ -319,12 +362,16 @@ class Internalizer:
 			
 			
 	def must_copy(self, lib):
+		if self.trace:
+                	print "%s: %s=%s"%(sys._getframe().f_code.co_name, "lib", lib)
 		for prefix in self.safe_prefixes:
 			if  os.path.commonprefix([prefix, lib]) == prefix:
 				return False
 		return True
 		
 	def is_loadable(self, file):
+		if self.trace:
+                	print "%s: %s=%s"%(sys._getframe().f_code.co_name, "file", file)
 		proc = subprocess.Popen(['objdump', '-a', file], 
 				stdout=open('/dev/null', 'w'),
 				stderr=subprocess.STDOUT)
@@ -335,10 +382,14 @@ def main():
 	norun = False
 	verbose = False
 	check = False
+	debug = False
+	trace = False
 	instlibdir = None
 	reallibdir = None
+	if trace:
+               	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'vncs:')
+		opts, args = getopt.getopt(sys.argv[1:], 'vncdts:')
 		for o, v in opts:
 			if o == '-v':	
 				verbose = True
@@ -346,6 +397,10 @@ def main():
 				norun = True
 			if o == '-c':
 				check = True
+			if o == '-d':
+				debug = True
+			if o == '-t':
+				trace = True
 			if o == '-s':
 				if not ':' in v:
 					raise getopt.error
@@ -359,6 +414,8 @@ def main():
 		print '-v\tVerbose, print actions as well as doing them'
 		print '-c\tCheck, do nothing, print nothing, return nonzero exit status if there was work'
 		print '-s\tSet library directory substitution (for uninstalled libraries)'
+		print '-t\tTrace, print each function name and arguments when called '
+		print '-d\tDebug, print a lot of detailed information, e.g. to debug this script'
 		sys.exit(1)
 	internalizer = Internalizer(os.path.realpath(args[0]), LINUX_BUNDLE_DIRS)
 	if norun:
@@ -368,7 +425,16 @@ def main():
 		internalizer.verbose = True
 	elif check:
 		internalizer.norun = True
+	if debug:
+        	if verbose:
+			internalizer.verbose = True
+		internalizer.debug = True
 		
+	if trace:
+        	if verbose:
+			internalizer.verbose = True
+		internalizer.trace = True
+
 	internalizer.add_standard()
 	internalizer.run()
 	
@@ -378,4 +444,6 @@ def main():
 		
 if __name__ == '__main__':
 	main()
+#      	print "%s: debug = %s %s"%(sys._getframe().f_code.co_name,debug,internalizer.debug)
+#      	print "%s: self.debug = %s"%(sys._getframe().f_code.co_name,self.debug)
 	
