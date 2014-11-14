@@ -213,14 +213,15 @@ AM_CPPFLAGS = \
 	$(INCLTDL)
 
 lib_LTLIBRARIES = \
-	libambulant.la \
 	$(toolkit_gstreamer_libraries) \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_ffmpeg_libraries) \
 	$(toolkit_cg_libraries) \
-	$(toolkit_gtk_libraries)
+	$(toolkit_gtk_libraries) \
+	libambulant.la
 
 libambulant_la_LDFLAGS= \
+	-rpath $(libdir) \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
 	$(xerces_core_libs) \
