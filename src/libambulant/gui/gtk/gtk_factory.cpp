@@ -329,6 +329,9 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
+		if (m_ambulant_widget->m_screenshot_data != NULL (
+			g_free(m_ambulant_widget->m_screenshot_data);
+		}
 		m_ambulant_widget->set_gtk_window(NULL);
 //XXXX next delete Reload crashes with gtk, not with qt
 //		delete m_ambulant_widget;
@@ -349,6 +352,8 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_transition_surface != NULL) {
 		cairo_surface_destroy(m_transition_surface);
 	}
+	if (m_ambulant_widget->m_screenshot_data != NULL (
+		g_free(m_ambulant_widget->m_screenshot_data);
 }
 #else	  
 ambulant_gtk_window::~ambulant_gtk_window()
@@ -358,6 +363,9 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
+		if (m_ambulant_widget->m_screenshot_data != NULL) {
+			g_free(m_ambulant_widget->m_screenshot_data);
+		}
 		m_ambulant_widget->set_gtk_window(NULL);
 //XXXX next delete Reload crashes with gtk, not with qt
 //		delete m_ambulant_widget;
@@ -508,8 +516,8 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
 	}
-	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
+	g_object_unref (G_OBJECT (pixbuf));
 }
 #endif // GTK_MAJOR_VERSION
 
