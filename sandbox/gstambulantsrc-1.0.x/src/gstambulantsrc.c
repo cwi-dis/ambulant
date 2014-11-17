@@ -713,10 +713,12 @@ static GstFlowReturn gst_ambulantsrc_create (GstBaseSrc * bsrc, guint64 offset, 
 	asrc->locked = TRUE;
 	
 	if (buffer == NULL || asrc->frame == NULL) {
+		// This condition sometimes arises during negotiation, when a frame is wanted to determine width,height
+		// It was found when testing the python version of ambulant-recorder-plugin
 		GST_LOG_OBJECT(asrc, "OK: buffer=%p, frame=%p",buffer,asrc->frame);
 		asrc->locked = FALSE;
 		GST_OBJECT_UNLOCK (asrc);
-		return GST_FLOW_EOS;
+		return GST_FLOW_NOT_NEGOTIATED;
 	}
 	if (asrc->eos && (asrc->queue == NULL || g_queue_get_length(asrc->queue)) == 0) {
 		GST_LOG_OBJECT(asrc, "EOS: asrc->queue=%" G_GUINT32_FORMAT, asrc->queue ? asrc->queue->length : 0);
