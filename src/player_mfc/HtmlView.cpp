@@ -19,9 +19,8 @@
 
 // HtmlView.cpp : implementation of the HtmlView class
 //
-#pragma warning(disable: 4627) //  warning C4627: '#include "ambulant/config/config.h"': skipped when looking for precompiled header use
-#include "ambulant/config/config.h"
 #include "stdafx.h"
+#include "ambulant/config/config.h"
 #include "ambulant/gui/d2/html_bridge.h"
 
 #include "MmDoc.h"
