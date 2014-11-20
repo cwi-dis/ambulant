@@ -1,6 +1,7 @@
 // OpenUrlDlg.cpp : implementation file
 //
 
+#pragma warning(disable: 4627) //  warning C4627: '#include "ambulant/config/config.h"': skipped when looking for precompiled header use
 #include "ambulant/config/config.h"
 #include "stdafx.h"
 #include <wininet.h>
