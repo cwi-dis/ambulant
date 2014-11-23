@@ -329,7 +329,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
-		if (m_ambulant_widget->m_screenshot_data != NULL (
+		if (m_ambulant_widget->m_screenshot_data != NULL) {
 			g_free(m_ambulant_widget->m_screenshot_data);
 		}
 		m_ambulant_widget->set_gtk_window(NULL);
@@ -352,8 +352,9 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_transition_surface != NULL) {
 		cairo_surface_destroy(m_transition_surface);
 	}
-	if (m_ambulant_widget->m_screenshot_data != NULL (
+	if (m_ambulant_widget->m_screenshot_data != NULL) {
 		g_free(m_ambulant_widget->m_screenshot_data);
+	}
 }
 #else	  
 ambulant_gtk_window::~ambulant_gtk_window()
@@ -396,7 +397,6 @@ ambulant_gtk_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gd
 	case GDK_HAND2: m_hand2_cursor = gdk_cursor;
 	default:	return;
 	}
-
 }
 
 GdkCursor*
