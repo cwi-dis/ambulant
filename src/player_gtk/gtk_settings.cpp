@@ -146,6 +146,8 @@ gtk_settings::gtk_settings() {
 		gtk_combo_box_text_insert_text(m_validation_co, i, val_schemes[i]);
 	}
 	const char* scheme = m_preferences->m_validation_scheme.c_str();
+	id_nr = index_in_string_array(scheme, val_schemes);
+	gtk_combo_box_set_active( GTK_COMBO_BOX(m_validation_co), id_nr);
 
 	gtk_box_pack_start (GTK_BOX (m_validation_hb), GTK_WIDGET (m_validation_co), TRUE, FALSE, 0);
 
@@ -345,7 +347,10 @@ gtk_settings::settings_ok() {
 	if (m_namespace_cb) {
 		m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
 	}
-	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(GTK_COMBO_BOX(m_validation_co))];
+	char* validation_scheme = gtk_combo_box_text_get_active_text(m_validation_co);
+	if (validation_scheme != NULL) {
+		m_preferences->m_validation_scheme = validation_scheme;
+	}
 
 	if (m_dtd_rb){
 		m_preferences->m_do_schema = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_schema_rb));
