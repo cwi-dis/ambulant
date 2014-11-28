@@ -329,7 +329,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
-		if (m_ambulant_widget->m_screenshot_data != NULL (
+		if (m_ambulant_widget->m_screenshot_data != NULL) {
 			g_free(m_ambulant_widget->m_screenshot_data);
 		}
 		m_ambulant_widget->set_gtk_window(NULL);
