@@ -147,7 +147,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 bool
 ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 {
-	if (fmt.name != "ffmpeg") return false;
+	assert(fmt.name == "ffmpeg");
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 	if (enc->codec_type != AVMEDIA_TYPE_VIDEO) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::supported: not a video stream !(%d, %d)", enc->codec_type, AVMEDIA_TYPE_VIDEO);
@@ -937,76 +937,45 @@ bool
 ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 {
 	// private method - no need to lock
-	if (fmt.name == "ffmpeg") {
-		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-		m_con = enc;
-		m_con_owned = false;
-		m_time_base = m_con->time_base;
+	assert(fmt.name == "ffmpeg");
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+	m_con = enc;
+	m_con_owned = false;
+	m_time_base = m_con->time_base;
 
-		if (enc == NULL) {
-			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Parameters missing for %s(%p)", fmt.name.c_str(), fmt.parameters);
-			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-			return false;
-		}
-		if (enc->codec_type != AVMEDIA_TYPE_VIDEO) {
-			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Non-video stream for %s(%d)", fmt.name.c_str(), enc->codec_type);
-			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-			return false;
-		}
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = %d", enc->codec_id);
-		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
-
-		if (codec == NULL) {
-			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Failed to find codec for %s(%d)", fmt.name.c_str(),  enc->codec_id);
-			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-			return false;
-		}
-		//m_con = avcodec_alloc_context();
-        if (m_is_live && m_con) {
-            m_con->flags |= CODEC_FLAG_LOW_DELAY;
-            m_con->has_b_frames = 0;
-        }
-
-		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock->enter();
-		  if(avcodec_open2(m_con,codec,NULL) < 0) {
-			ffmpeg_lock->leave();
-			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Failed to open avcodec for %s(%d)", fmt.name.c_str(), enc->codec_id);
-			return false;
-		}
-		ffmpeg_lock->leave();
-		if (fmt.width == 0) fmt.width = m_con->width;
-		if (fmt.height == 0) fmt.width = m_con->height;
-		return true;
-	} else if (fmt.name == "live") {
-		const char* codec_name = (char*) fmt.parameters;
-
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_select_decoder: video codec : %s", codec_name);
-		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
-		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
-		if( !codec) {
-			return false;
-		}
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_select_decoder: codec found!");
-
-		m_con = avcodec_alloc_context3(codec);
-		m_con_owned = true;
-		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock->enter();
-		  if(avcodec_open2(m_con,codec,NULL) < 0) {
-			ffmpeg_lock->leave();
-			//lib::logger::get_logger()->error(gettext("%s: Cannot open video codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
-			return false;
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_select_decoder: succesfully opened codec");
-		}
-		ffmpeg_lock->leave();
-
-		m_con->codec_type = AVMEDIA_TYPE_VIDEO;
-		// We doe a fmt update here to sure that we have the correct values.
-		_need_fmt_uptodate();
-		return true;
+	if (enc == NULL) {
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Parameters missing for %s(%p)", fmt.name.c_str(), fmt.parameters);
+		lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+		return false;
 	}
-	// Could add support here for raw mp3, etc.
-	return false;
+	if (enc->codec_type != AVMEDIA_TYPE_VIDEO) {
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Non-video stream for %s(%d)", fmt.name.c_str(), enc->codec_type);
+		lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+		return false;
+	}
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = %d", enc->codec_id);
+	AVCodec *codec = avcodec_find_decoder(enc->codec_id);
+
+	if (codec == NULL) {
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Failed to find codec for %s(%d)", fmt.name.c_str(),  enc->codec_id);
+		lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+		return false;
+	}
+	//m_con = avcodec_alloc_context();
+	if (m_is_live && m_con) {
+		m_con->flags |= CODEC_FLAG_LOW_DELAY;
+		m_con->has_b_frames = 0;
+	}
+
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+	ffmpeg_lock->enter();
+	  if(avcodec_open2(m_con,codec,NULL) < 0) {
+		ffmpeg_lock->leave();
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: Internal error: Failed to open avcodec for %s(%d)", fmt.name.c_str(), enc->codec_id);
+		return false;
+	}
+	ffmpeg_lock->leave();
+	if (fmt.width == 0) fmt.width = m_con->width;
+	if (fmt.height == 0) fmt.width = m_con->height;
+	return true;
 }
