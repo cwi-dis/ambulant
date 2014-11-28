@@ -15,7 +15,8 @@ BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=linux
 #X CONFIGOPTS="--with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
-CONFIGOPTS="--prefix=$PWD/$DESTDIR --with-gtk --with-xerces --with-xerces-plugin --with-npambulant -with-python --with-python-plugin"
+# CONFIGOPTS="--prefix=$PWD/$DESTDIR --with-gtk --with-xerces --with-xerces-plugin --with-npambulant -with-python --with-python-plugin"
+CONFIGOPTS="--prefix=$PWD/$DESTDIR --with-gtk --with-xerces --with-xerces-plugin -with-python --with-python-plugin"
 MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
 DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds

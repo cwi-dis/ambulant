@@ -59,7 +59,7 @@ static const char* loglevels[] =
 static const char* parsers[]   = { "any", "expat", "xerces"};
 static const char* val_schemes[] = {"never", "always", "auto"};
 
-
+#if GTK_MAJOR_VERSION >= 3
 gtk_settings::gtk_settings() {
 
 	GType *types;
@@ -71,12 +71,11 @@ gtk_settings::gtk_settings() {
 
 	m_dialog = GTK_DIALOG (gtk_dialog_new_with_buttons
 	("AmbulantPlayer", NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL));
-
-	gtk_widget_set_uposition (GTK_WIDGET (m_dialog), 160, 120);
+//	gtk_window_set_position(GTK_WIDGET (m_dialog), GTK_WIN_POS_CENTER);
 
 	// Settings frame
 	m_settings_fr = GTK_FRAME (gtk_frame_new(gettext("Preferences")));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_settings_fr));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(m_dialog))), GTK_WIDGET (m_settings_fr));
 
 	// HBox to include: loglevel, XML parsers.plugins | Xerces Options
 	GtkHBox *m_settings_hb = GTK_HBOX (gtk_hbox_new(true, 10));
@@ -94,11 +93,142 @@ gtk_settings::gtk_settings() {
 	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_lb), FALSE, FALSE, 0);
 
 	n_entries = G_N_ELEMENTS(loglevels);
+	m_loglevel_co =  GTK_COMBO_BOX_TEXT(gtk_combo_box_text_new());
+	for (int i=0; i<n_entries;i++){
+		gtk_combo_box_text_insert_text(m_loglevel_co, i, loglevels[i]);
+	}
+	gtk_combo_box_set_active( GTK_COMBO_BOX(m_loglevel_co), m_preferences->m_log_level);
+	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_co), TRUE, TRUE, 0);
 
+	// This part takes care of the XML parsers...
+	m_parser_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
+	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET (m_parser_hb), FALSE, FALSE, 0);
+
+	m_parser_lb = GTK_LABEL (gtk_label_new(gettext("XML parser:")));
+	gtk_box_pack_start (GTK_BOX (m_parser_hb), GTK_WIDGET (m_parser_lb), FALSE, FALSE, 0);
+
+	n_entries = G_N_ELEMENTS(parsers);
+	m_parser_co = GTK_COMBO_BOX_TEXT(gtk_combo_box_text_new());
+
+	for (int i=0; i<n_entries;i++){
+		gtk_combo_box_text_insert_text(m_parser_co, i, parsers[i]);
+	}
+	const char* id	= m_preferences->m_parser_id.c_str();
+	int id_nr = index_in_string_array(id, parsers);
+	gtk_combo_box_set_active( GTK_COMBO_BOX(m_parser_co), id_nr);
+	gtk_box_pack_start (GTK_BOX (m_parser_hb), GTK_WIDGET (m_parser_co), TRUE, TRUE, 0);
+
+	// Xerces Options
+	m_xerces_fr = GTK_FRAME (gtk_frame_new(gettext("Xerces Options:")));
+//	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET(m_xerces_fr), TRUE, TRUE, 10);
+
+	// vbox for the Xerces Options: checkbox, radiobutton...
+	GtkVBox *m_xerces_vb = GTK_VBOX (gtk_vbox_new(false, 10));
+	gtk_container_add(GTK_CONTAINER(m_settings_hb), GTK_WIDGET (m_xerces_fr));
+	gtk_container_add(GTK_CONTAINER(m_xerces_fr), GTK_WIDGET (m_xerces_vb));
+
+	// Enable XML namespace checkbutton
+	m_namespace_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label (gettext("Enable XML namespace support")));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_namespace_cb), m_preferences->m_do_namespaces);
+	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_namespace_cb), FALSE, FALSE, 0);
+
+	// Enable XML validation combobox
+	m_validation_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
+	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_validation_hb), FALSE, FALSE, 0);
+
+	m_validation_lb	= GTK_LABEL (gtk_label_new(gettext("Enable XML Validation:")));
+	gtk_box_pack_start (GTK_BOX (m_validation_hb), GTK_WIDGET (m_validation_lb), FALSE, TRUE, 0);
+
+	n_entries = G_N_ELEMENTS(val_schemes);
+	m_validation_co = GTK_COMBO_BOX_TEXT(gtk_combo_box_text_new());
+
+	for (int i=0; i<n_entries;i++){
+		gtk_combo_box_text_insert_text(m_validation_co, i, val_schemes[i]);
+	}
+	const char* scheme = m_preferences->m_validation_scheme.c_str();
+
+	gtk_box_pack_start (GTK_BOX (m_validation_hb), GTK_WIDGET (m_validation_co), TRUE, FALSE, 0);
+
+	// Radio Buttons: using Schema Vs. DTD
+	m_schema_dtd_hb = GTK_HBUTTON_BOX (gtk_hbutton_box_new()); // Placeholder of the buttons
+	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_schema_dtd_hb), FALSE, TRUE, 0);
+	m_schema_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(NULL, gettext("Using Schema")));
+	m_dtd_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(gtk_radio_button_get_group (m_schema_rb), gettext("Using DTD")));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_dtd_rb), ! m_preferences->m_do_schema);
+	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_schema_rb), FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_dtd_rb), FALSE, TRUE, 0);
+
+
+	// Validation schema full checking checkbox
+	m_full_check_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label (gettext("Validation Schema full checking")));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_full_check_cb), m_preferences->m_validation_schema_full_checking);
+	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_full_check_cb), FALSE, TRUE, 0);
+
+	// Plugin options frame
+	m_plugins_fr = GTK_FRAME (gtk_frame_new(gettext("Plugin Options:")));
+//	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_plugins_fr));
+	gtk_container_add(GTK_CONTAINER(m_settings_vb), GTK_WIDGET (m_plugins_fr));
+
+	// the vbox needed for the items of this frame
+	GtkVBox *m_plugins_vb = GTK_VBOX (gtk_vbox_new(false, 10));
+	gtk_container_add(GTK_CONTAINER(m_plugins_fr), GTK_WIDGET (m_plugins_vb));
+
+	// Use Plugins check button
+	m_use_plugins_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label (gettext("Use plugins")));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb), m_preferences->m_use_plugins);
+	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_use_plugins_cb), FALSE, FALSE, 0);
+
+	// Plugin Directory Label
+	m_plugins_dir_lb = GTK_LABEL(gtk_label_new(gettext("Plugin Directory:")));
+	gtk_misc_set_alignment (GTK_MISC (m_plugins_dir_lb), 0, 0);
+	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_plugins_dir_lb), FALSE, FALSE, 0);
+
+	// Plugin Directory Text Entry
+	m_plugins_dir_te = GTK_ENTRY (gtk_entry_new());
+	gtk_editable_set_editable((GtkEditable*)m_plugins_dir_te, true);
+	gtk_entry_set_text(m_plugins_dir_te, m_preferences->m_plugin_path.c_str());
+	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_plugins_dir_te), FALSE, FALSE, 0);
+
+	// show all the widgets
+	gtk_widget_show_all(GTK_WIDGET (m_dialog));
+}
+#else
+gtk_settings::gtk_settings() {
+
+	GType *types;
+	int n_entries;
+	int i;
+
+	unix_preferences* m_preferences = (unix_preferences*)
+		common::preferences::get_preferences();
+
+	m_dialog = GTK_DIALOG (gtk_dialog_new_with_buttons
+	("AmbulantPlayer", NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL));
+	gtk_widget_set_uposition (GTK_WIDGET (m_dialog), 160, 120);
+
+	// Settings frame
+	m_settings_fr = GTK_FRAME (gtk_frame_new(gettext("Preferences")));
+	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area (GTK_DIALOG(m_dialog))), GTK_WIDGET (m_settings_fr));
+
+	// HBox to include: loglevel, XML parsers.plugins | Xerces Options
+	GtkHBox *m_settings_hb = GTK_HBOX (gtk_hbox_new(true, 10));
+	gtk_container_add(GTK_CONTAINER(m_settings_fr), GTK_WIDGET (m_settings_hb));
+
+	// VBox to include loglevel, XML parsers...
+	GtkVBox *m_settings_vb = GTK_VBOX (gtk_vbox_new(false, 10));
+	gtk_container_add(GTK_CONTAINER(m_settings_hb), GTK_WIDGET (m_settings_vb));
+
+	// This part takes care of the loglevel
+	m_loglevel_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
+	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET (m_loglevel_hb), FALSE, FALSE, 0);
+
+	m_loglevel_lb	= GTK_LABEL (gtk_label_new(gettext("Log level:")));
+	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_lb), FALSE, FALSE, 0);
+
+	n_entries = G_N_ELEMENTS(loglevels);
 	m_loglevel_co = GTK_COMBO_BOX(gtk_combo_box_new_text());
 	for (int i=0; i<n_entries;i++){
-		gtk_combo_box_insert_text(GTK_COMBO_BOX (m_loglevel_co),
-		i,loglevels[i]);
+		gtk_combo_box_insert_text(m_loglevel_co, i, loglevels[i]);
 	}
 	gtk_combo_box_set_active(m_loglevel_co, m_preferences->m_log_level);
 	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_co), TRUE, TRUE, 0);
@@ -111,11 +241,10 @@ gtk_settings::gtk_settings() {
 	gtk_box_pack_start (GTK_BOX (m_parser_hb), GTK_WIDGET (m_parser_lb), FALSE, FALSE, 0);
 
 	n_entries = G_N_ELEMENTS(parsers);
+	m_parser_co = GTK_COMBO_BOX(gtk_combo_box_text_new());
 
-	m_parser_co = GTK_COMBO_BOX(gtk_combo_box_new_text());
 	for (int i=0; i<n_entries;i++){
-		gtk_combo_box_insert_text(GTK_COMBO_BOX (m_parser_co),
-		i,parsers[i]);
+		gtk_combo_box_insert_text(m_parser_co, i, parsers[i]);
 	}
 	const char* id	= m_preferences->m_parser_id.c_str();
 	int id_nr = index_in_string_array(id, parsers);
@@ -144,12 +273,10 @@ gtk_settings::gtk_settings() {
 	gtk_box_pack_start (GTK_BOX (m_validation_hb), GTK_WIDGET (m_validation_lb), FALSE, TRUE, 0);
 
 	n_entries = G_N_ELEMENTS(val_schemes);
+	m_validation_co = GTK_COMBO_BOX(gtk_combo_box_text_new());
 
-	m_validation_co = GTK_COMBO_BOX(gtk_combo_box_new_text());
 	for (int i=0; i<n_entries;i++){
-		gtk_combo_box_insert_text(GTK_COMBO_BOX (m_validation_co),
-		i,val_schemes[i]);
-
+		gtk_combo_box_insert_text(m_validation_co, i, val_schemes[i]);
 	}
 	const char* scheme = m_preferences->m_validation_scheme.c_str();
 	gtk_combo_box_set_active(m_validation_co, index_in_string_array(scheme, val_schemes));
@@ -191,15 +318,53 @@ gtk_settings::gtk_settings() {
 
 	// Plugin Directory Text Entry
 	m_plugins_dir_te = GTK_ENTRY (gtk_entry_new());
-	gtk_entry_set_editable(m_plugins_dir_te, true);
+	gtk_entry_set_editable(m_plugins_dir_te, true);			
 	gtk_entry_set_text(m_plugins_dir_te, m_preferences->m_plugin_path.c_str());
 	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_plugins_dir_te), FALSE, FALSE, 0);
 
 	// show all the widgets
 	gtk_widget_show_all(GTK_WIDGET (m_dialog));
-
 }
+#endif // GTK_MAJOR_VERSION
 
+#if GTK_MAJOR_VERSION >= 3
+void
+gtk_settings::settings_ok() {
+	unix_preferences* m_preferences = (unix_preferences*)
+		common::preferences::get_preferences();
+
+	int current_log_level = gtk_combo_box_get_active (GTK_COMBO_BOX (m_loglevel_co));
+	if (m_preferences->m_log_level != current_log_level) {
+		m_preferences->m_log_level = current_log_level;
+		lib::logger::get_logger()->set_level(current_log_level);
+	}
+	m_preferences->m_log_level  = gtk_combo_box_get_active (GTK_COMBO_BOX (m_loglevel_co));
+
+	m_preferences->m_parser_id = parsers[gtk_combo_box_get_active(GTK_COMBO_BOX (m_parser_co))];
+
+	if (m_namespace_cb) {
+		m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
+	}
+	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(GTK_COMBO_BOX(m_validation_co))];
+
+	if (m_dtd_rb){
+		m_preferences->m_do_schema = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_schema_rb));
+	}
+
+	if (m_schema_rb)
+		m_preferences->m_do_schema = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_schema_rb));
+
+	if (m_full_check_cb)
+		m_preferences->m_validation_schema_full_checking = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_full_check_cb));
+
+	if (m_use_plugins_cb)
+		m_preferences->m_use_plugins = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb));
+
+	m_preferences->m_plugin_path = std::string((const char*) gtk_entry_get_text(m_plugins_dir_te));
+
+	m_preferences->save_preferences();
+}
+#else
 void
 gtk_settings::settings_ok() {
 	unix_preferences* m_preferences = (unix_preferences*)
@@ -217,7 +382,6 @@ gtk_settings::settings_ok() {
 	if (m_namespace_cb) {
 		m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
 	}
-
 	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(m_validation_co)];
 
 	if (m_dtd_rb){
@@ -237,6 +401,7 @@ gtk_settings::settings_ok() {
 
 	m_preferences->save_preferences();
 }
+#endif // GTK_MAJOR_VERSION
 
 GtkDialog*
 gtk_settings::getWidget(){

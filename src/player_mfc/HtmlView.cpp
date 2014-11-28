@@ -17,11 +17,10 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-// MmView.cpp : implementation of the MmView class
+// HtmlView.cpp : implementation of the HtmlView class
 //
-
-#include "ambulant/config/config.h"
 #include "stdafx.h"
+#include "ambulant/config/config.h"
 #include "ambulant/gui/d2/html_bridge.h"
 
 #include "MmDoc.h"

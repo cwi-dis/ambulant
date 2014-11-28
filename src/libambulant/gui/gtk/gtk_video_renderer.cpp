@@ -20,7 +20,6 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/gui/gtk/gtk_factory.h"
-#include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_video_renderer.h"
 #include "ambulant/gui/gtk/gtk_util.h"
@@ -113,6 +112,8 @@ gtk_video_renderer::_push_frame(char* frame, size_t size)
 }
 
 
+#if GTK_MAJOR_VERSION >= 3
+
 void
 gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 {
@@ -133,8 +134,102 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	const common::region_info *ri = m_dest->get_info();
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw: info=0x%x", ri);
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
+	//
+	// Convert to a gdk_pixbuf
+	//
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): width = %d, height = %d",(void *)this, m_size.w, m_size.h);
+	m_image =  gdk_pixbuf_new_from_data ((const guchar*) m_data, GDK_COLORSPACE_RGB, MY_HASALPHA, 8, m_size.w, m_size.h, (m_size.w*MY_BPP), NULL, NULL);
 
-#if 0
+	if (m_image == NULL) {
+		lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): gdk_pixbuf_new_from_data returned NULL",(void *)this);
+		m_lock.leave();
+		return;
+	}
+	
+	int width = gdk_pixbuf_get_width(m_image);
+	int height = gdk_pixbuf_get_height(m_image);
+	size srcsize = size(width, height);
+	lib::rect croprect = m_dest->get_crop_rect(srcsize);
+	lib::rect srcrect = lib::rect(lib::size(0,0));
+	lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+	dstrect.translate(m_dest->get_global_topleft());
+	
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
+		}
+	}	
+	// S_ for source image coordinates
+	// D_ for destination coordinates
+	int S_L = srcrect.left(),
+		S_T = srcrect.top(),
+		S_W = srcrect.width(),
+		S_H = srcrect.height();
+	int D_L = dstrect.left(),
+		D_T = dstrect.top(),
+		D_W = dstrect.width(),
+		D_H = dstrect.height();
+	AM_DBG lib::logger::get_logger()->debug("gtk_videorenderer.redraw_body(0x%x): gtk_draw_pixbuf at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
+	float fact_W = (float)D_W/(float)S_W;
+	float fact_H = (float)D_H/(float)S_H;
+
+	// N_ for new (scaled) image coordinates
+	int N_L = (int)roundf(S_L*fact_W),
+		N_T = (int)roundf(S_T*fact_H),
+		N_W = (int)roundf(width*fact_W),
+		N_H = (int)roundf(height*fact_H);
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+	GdkPixbuf* new_image_pixbuf = NULL;
+	if (S_L != 0 || S_T != 0 || S_W != D_W || S_H != D_H) {
+		GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
+		new_image_pixbuf = gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
+		g_object_unref(G_OBJECT(partial_pixbuf));
+	}
+	N_L = N_T = 0;
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
+// ignore chroma, for now
+//	if (alpha_chroma != 1.0) {
+//	} else {
+		cairo_t* cr = cairo_create(agtkw->get_target_surface());
+		gdk_cairo_set_source_pixbuf(cr, new_image_pixbuf == NULL ? m_image : new_image_pixbuf, dstrect.left(), dstrect.top());
+		cairo_paint_with_alpha(cr, alpha_media);
+		cairo_destroy(cr);
+//	}
+	if (new_image_pixbuf != NULL) {
+		g_object_unref(G_OBJECT (new_image_pixbuf));
+	}
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x done.", (void *)this);
+	m_lock.leave();
+}
+
+#else // --------------------------
+
+void
+gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
+{
+	//XXXX locking at this point may result in deadly embrace with internal lock,
+	//XXXX but as far as we know this has never happened
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x)",(void*) this);
+	if (m_data == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw(0x%x): no video image data",(void*) this);
+		m_lock.leave();
+		return;
+	}
+	_frame_was_displayed();
+	const lib::point p = m_dest->get_global_topleft();
+	const lib::rect &r = m_dest->get_rect();
+	AM_DBG logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): m_data=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
+
+	const common::region_info *ri = m_dest->get_info();
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw: info=0x%x", ri);
+	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 	// Jack thinks this isn't needed... Done by the background draw method...
 	// background drawing
 	if (ri && (ri->get_bgopacity() > 0.5)) {
@@ -158,7 +253,6 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
 		g_object_unref (G_OBJECT (gc));
 	}
-#endif
 
 	//
 	// Convert to a gdk_pixbuf
@@ -190,8 +284,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
-	}
-	
+	}	
 	// S_ for source image coordinates
 	// D_ for destination coordinates
 	int S_L = srcrect.left(),
@@ -212,10 +305,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
-
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-
-#if 1
 	GdkPixbuf* new_image_pixbuf = NULL;
 	if (S_L != 0 || S_T != 0 || S_W != D_W || S_H != D_H) {
 		GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
@@ -263,22 +353,9 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	if (new_image_pixbuf != NULL) {
 		g_object_unref(G_OBJECT (new_image_pixbuf));
 	}
-#else
-	// Old (non-alpha) code, left here for reference and possible performance comparisons, for now.
-	GdkPixbuf* scaled_image_pixbuf = NULL;
-	if (S_W != D_W || S_H != D_H) {
-		scaled_image_pixbuf = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR);
-		g_object_unref (m_image);
-	} else {
-		// no need for scaling
-		scaled_image_pixbuf = m_image;
-	}
-//			gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE, 0, 0);
-	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, scaled_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
-	g_object_unref (G_OBJECT (scaled_image_pixbuf));
-	m_image = NULL;
-#endif
 	g_object_unref (G_OBJECT (gc));
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
+
+#endif // GTK_MAJOR_VERSION

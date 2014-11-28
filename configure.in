@@ -689,25 +689,30 @@ AC_MSG_RESULT($test_sdl_ttf)
 dnl Testing for GTK
 dnl ====================================================================
 
-test_gtk=true
+test_gtk=gtk3
 AC_MSG_CHECKING(for gtk - the GIMP Toolkit)
 AC_ARG_WITH(gtk,
-     AS_HELP_STRING([--with-gtk], [Enable/disable GTK support]),
+     AS_HELP_STRING([--with-gtk@<:@=gtk2|gtk3@:>@], [Enable/disable gtk+-2.0(*)/gtk+-3.0 support]),
      [
      	if test "x$withval" = "xno"; then
-			test_gtk=false	
-		  fi
-     ])
-if test "x$test_gtk" = "xtrue"; then
-	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
-	if test $test_gtk = false; then
-	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
-	else
-		with_frontend=true
+		test_gtk=false	
+	elif test "x$withval" = "xgtk2" -o  "x$withval" = "xgtk+-2.0" ; then
+	     	test_gtk=gtk2
+	elif test "x$withval" != "xyes" -a  "x$withval" != "xgtk3" -a  "x$withval" != "xgtk+-3.0" ; then
+	     	AC_MSG_ERROR("Unknown value for --with-gtk: $withval");
 	fi
+     ])
+if test "x$test_gtk" = "xgtk3"; then
+	PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=$test_gtk, test_gtk=false)
+elif  test "x$test_gtk" = "xgtk2"; then
+	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=$test_gtk, test_gtk=false)
 fi
-
-AM_CONDITIONAL(WITH_GTK, test x$test_gtk = xtrue)
+if test $test_gtk = false; then
+	AC_MSG_WARN([gtk+-3.0 or gthread-2.0 not found, or too old])
+else
+	with_frontend=true
+fi
+AM_CONDITIONAL(WITH_GTK, test x$test_gtk != xfalse)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_MSG_RESULT($test_gtk)
@@ -917,7 +922,7 @@ AC_ARG_WITH([npambulant],
     AS_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers, like firefox (default: disabled)]),
 	[
 		case "${withval}" in
-		yes)  	
+		yes)
 			with_npambulant=true
 			# Determine where the include files should come from, as it hasn't been passed
 			# as an option.
@@ -938,16 +943,20 @@ AC_ARG_WITH([npambulant],
 				])
 			fi
 			;;
-		no)	
+		no)
 			with_npambulant=false
 			;;
-		*)	
+		*)
 			NPAMBULANT_INCLUDES=-I${withval}
 			with_npambulant=true
 			;;
-		esac],
+		esac
+		if test $test_gtk = "gtk3"; then
+		   AC_MSG_ERROR("--with-npambulant is not yet available for gtk3. Please use --with-gtk=gtk2.")
+		   with_npambulant=false
+		fi
+	],
 	[with_npambulant=false])
-
 
 AC_SUBST(NPAMBULANT_INCLUDES)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)

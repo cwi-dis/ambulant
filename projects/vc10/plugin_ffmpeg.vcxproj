@@ -70,7 +70,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;swresample.lib;avutil.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swresample.lib;swscale.lib;swresample.lib;avutil.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;$(WindowsSdkDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;libcmt.lib;libcpmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -97,14 +97,14 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;swresample.lib;avutil.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swresample.lib;swscale.lib;avutil.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcpmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -138,8 +138,6 @@
     <ClInclude Include="..\..\include\ambulant\net\ffmpeg_factory.h" />
     <ClInclude Include="..\..\include\ambulant\net\ffmpeg_raw.h" />
     <ClInclude Include="..\..\include\ambulant\net\ffmpeg_video.h" />
-    <ClInclude Include="..\..\include\ambulant\net\rtsp_datasource.h" />
-    <ClInclude Include="..\..\include\ambulant\net\rtsp_factory.h" />
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_audio.h" />
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_factory.h" />
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_gui.h" />

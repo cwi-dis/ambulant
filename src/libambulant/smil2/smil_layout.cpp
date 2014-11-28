@@ -215,7 +215,9 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			}
 
 			// See if the node uses background images
-			if (n->get_attribute("backgroundImage")) m_uses_bgimages = true;
+            if (n->get_attribute("backgroundImage")) {
+                m_uses_bgimages = true;   
+            }
 			// And finally into the node->region mapping (for animate)
 			m_node2region[n] = rn;
 
@@ -654,6 +656,7 @@ smil_layout_manager::load_bgimages(common::factories *factories)
 {
 //	if (!m_uses_bgimages) return;
 //	abort();
+    return; // disable bgimages, see bug #853
 	if (!m_layout_section || !m_uses_bgimages) return;
 	bgimage_loader *loader = new bgimage_loader(m_layout_section, factories);
 	loader->run(this);

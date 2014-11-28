@@ -15,7 +15,8 @@ libamplugin_ffmpeg.dll=libamplugin_ffmpeg.dll
 libamplugin_state_xpath.dll=libamplugin_state_xpath.dll
 avcodec-54.dll=avcodec-54.dll
 avformat-54.dll=avformat-54.dll
-avutil-51.dll=avutil-51.dll
+avutil-52.dll=avutil-52.dll
+swresample-0.dll=swresample-0.dll
 swscale-2.dll=swscale-2.dll
 SDL.dll=SDL.dll
 xerces-c_3_1.dll=xerces-c_3_1.dll
@@ -57,11 +58,15 @@ FileVersion=1,0,0,1
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
+[swresample-0.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
 [swscale-2.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
-[avutil-51.dll]
+[avutil-52.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 

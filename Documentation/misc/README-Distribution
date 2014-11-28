@@ -106,9 +106,11 @@ Before creating the distribution
   - src/player_macosx/*.lproj/InfoPlist.strings
   - src/player_macosx/Resources/Info.plist
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
+  - src/pyambulant/Makefile.am
   - src/npambulant/install-*.rdf
   - src/npambulant/manifest-*.json
   - src/pyambulant/setup.py
+  - src/pyambulant/test/test_pyambulant.py
   - scripts/nightlybuilds/*
   - scripts/build-third-party-packages.py (MIRRORBASE variable)
   - scripts/autotest.linux.sh

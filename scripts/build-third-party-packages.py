@@ -573,7 +573,7 @@ third_party_packages={
 
         TPP("FreeType2", # SDL2 interface for FreeType2 glyph rendering system needed for SDL2_ttf
             url="http://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz",
-#           url2="freetype-2.5.3.tar.gz",
+            url2="freetype-2.5.3.tar.gz",
             checkcmd="pkg-config --atleast-version=2.0 freetype",
             buildcmd=
                 "unset PKG_CONFIG_LIBDIR &&"
@@ -987,7 +987,7 @@ third_party_packages={
 
         WinTPP("ffmpeg-bin",
             url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-2.0.2-win32-shared.7z" ,
-            checkcmd="if not exist ffmpeg-2.0.2-win32-shared\\bin\\avformat-53.dll exit 1" ,
+            checkcmd="if not exist ffmpeg-2.0.2-win32-shared\\bin\\avformat-55.dll exit 1" ,
             # No build needed
             ),
 

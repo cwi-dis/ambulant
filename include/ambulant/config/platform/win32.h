@@ -46,7 +46,8 @@
 #ifdef AMBULANT_USE_DLL
 #define AMBULANTAPI __declspec(dllimport)
 #endif
-
+#pragma warning(disable: 4275) //  warning C4275: non dll-interface class 'ambulant::...' used as base for dll-interface class 
+#pragma warning(disable: 4251) //  warning C4251: 'ambulant::...' : class 'std::...' needs to have dll-interface to be used by clients
 /////////////////////////////
 // BEGIN WIN32 WINCE SECTION
 #if defined(_WIN32_WCE)
