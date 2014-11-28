@@ -486,7 +486,7 @@ video_renderer::data_avail()
 		m_lock.leave();
 		return;
 	}
-	net::timestamp_t frame_duration = m_src->frameduration(); // XXX For now: assume 30fps
+	net::timestamp_t frame_duration = m_src->frameduration();
 
 	// If we are at the end of the clip we stop and signal the scheduler..
 	AM_DBG {

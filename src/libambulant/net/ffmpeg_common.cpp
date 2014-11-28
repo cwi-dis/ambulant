@@ -155,8 +155,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_
 		AVStream *stream = m_con->streams[video_stream_nr()];
 		AVCodecContext *codec = stream->codec;
 		m_video_fmt.parameters = (void *)codec;
+#if 0
+		// Jack removed this (27-Nov-2014) because actually this forestalls converting timestamps in the decoder...
 		// Make the timebases match, so we can correcty convert timestamps in the video_decoder
 		codec->time_base = stream->time_base;
+#endif
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): video_codec_name=%s", m_con->streams[video_stream_nr()]->codec->codec_name);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): No Video stream ?");
