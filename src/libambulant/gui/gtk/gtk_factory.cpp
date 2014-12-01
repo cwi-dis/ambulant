@@ -352,7 +352,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_transition_surface != NULL) {
 		cairo_surface_destroy(m_transition_surface);
 	}
-	if (m_ambulant_widget->m_screenshot_data != NULL (
+	if (m_ambulant_widget->m_screenshot_data != NULL) {
 		g_free(m_ambulant_widget->m_screenshot_data);
 }
 #else	  
