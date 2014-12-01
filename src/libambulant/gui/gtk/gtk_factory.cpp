@@ -354,6 +354,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	}
 	if (m_ambulant_widget->m_screenshot_data != NULL) {
 		g_free(m_ambulant_widget->m_screenshot_data);
+	}
 }
 #else	  
 ambulant_gtk_window::~ambulant_gtk_window()
