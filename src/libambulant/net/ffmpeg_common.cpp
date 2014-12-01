@@ -542,7 +542,14 @@ ffmpeg_demux::run()
 		// Keep statistics
 		m_data_consumed[pkt->stream_index] += pkt->size;
 		
-		demux_datasink *sink = m_sinks[pkt->stream_index];
+        // We convert pts/dts/duration to Ambulant units. This is so the downstream video decoder can
+        // use the duration to guess at the frame duration
+        pkt->duration = av_rescale_q(pkt->duration, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+        pkt->pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+        pkt->dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+        
+        // Determine where we should send the packet (if anywhere)
+        demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 		} else {
@@ -557,8 +564,8 @@ ffmpeg_demux::run()
 				}
 #ifdef LOGGER_VIDEOLATENCY
                 {
-                    timestamp_t pr_pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
-                    timestamp_t pr_dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+                    timestamp_t pr_pts = pkt->pts;
+                    timestamp_t pr_dts = pkt->dts;
                     lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 0-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
                 }
 #endif
@@ -573,13 +580,12 @@ ffmpeg_demux::run()
 				// pts instead of the invalid AV_NOPTS_VALUE
 
 				if (pts != (int64_t)AV_NOPTS_VALUE) {
-					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 
 					if (pkt->stream_index == audio_streamnr) {
 						last_valid_audio_pts = pts;
 					}
 				} else {
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
 					last_valid_audio_pts++;
 					pts = last_valid_audio_pts;

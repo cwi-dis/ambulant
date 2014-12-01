@@ -361,7 +361,7 @@ ffmpeg_video_decoder_datasource::frame_processed_keepdata(timestamp_t now, char 
 	m_lock.enter();
 	m_oldest_timestamp_wanted = now;
 
-	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource::frame_processed_keepdata: now=%lld, m_oldest_timestamp_wanted = %lld", now, m_oldest_timestamp_wanted);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource::frame_processed_keepdata: now=%lld, m_oldest_timestamp_wanted = %lld", now, m_oldest_timestamp_wanted);
 	assert(m_frames.size() > 0);
 	assert(m_frames.front().first == now);
 	assert(m_frames.front().second == buf);
@@ -583,6 +583,7 @@ ffmpeg_video_decoder_datasource::data_avail()
         if (inSize > 1 || outSize > 1) {
             lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: backlog: %d packets before decoder, %d frames after decoder", inSize, outSize);
             m_con->skip_frame = AVDISCARD_NONREF;
+        }
     }
 #endif
 
@@ -591,7 +592,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	assert(avpkt);
 	got_pic = 0;
 	len = avcodec_decode_video2(m_con, frame, &got_pic, avpkt);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: gotpic = %d, ipts = %lld, packet_pts=%lld, packet_dts=%lld", got_pic, ipts, av_rescale_q(frame->pkt_pts, m_con->time_base, AMBULANT_TIMEBASE), av_rescale_q(frame->pkt_dts, m_con->time_base, AMBULANT_TIMEBASE));
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: gotpic = %d, ipts = %lld, packet_pts=%lld, packet_dts=%lld", got_pic, ipts, frame->pkt_pts, frame->pkt_dts);
 
 	if (len < 0) {
 		lib::logger::get_logger()->trace(gettext("ffmpeg_video_decoder_datasource.data_avail: error decoding video packet (timestamp=%lld)"), ipts);
@@ -616,22 +617,22 @@ ffmpeg_video_decoder_datasource::data_avail()
 	// sizes, durations, etc.
 	_need_fmt_uptodate();
 	
-	// Compute timestamp of this frame, in case it is missing, and updated the
-	// video clock so we can compute future missing timestamps.
-	timestamp_t frame_delay = av_rescale_q(avpkt->duration, m_con->time_base, AMBULANT_TIMEBASE);
+    // avpkt->duration has been scaled to the Ambulant timebase in ffmpeg_demux::run()
+	timestamp_t frame_delay = avpkt->duration;
 	if (m_fmt.frameduration <= 0) {
+        /*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame_duration set to to %lld", frame_delay);
+        
 		m_fmt.frameduration = frame_delay;
 	} else if (m_fmt.frameduration != frame_delay) {
 		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame_duration changed from %lld to %lld", m_fmt.frameduration, frame_delay);
 		m_fmt.frameduration = frame_delay;
 	}
 
-#if 0
-	pts = ipts;
-#else
-    pts = av_rescale_q(frame->pkt_pts, m_con->time_base, AMBULANT_TIMEBASE);
-#endif
-	if (pts != 0) {
+    // Compute timestamp of this frame, in case it is missing, and updated the
+    // video clock so we can compute future missing timestamps.
+        
+    pts = frame->pkt_pts;
+	if (pts != (int64_t)AV_NOPTS_VALUE) {
 		m_video_clock = pts;
 	} else {
 		pts = m_video_clock;
@@ -642,7 +643,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	if (frame->repeat_pict)
 		frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 	m_video_clock += frame_delay;
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 	m_frame_count++;
 
 	// In some special cases we want to drop the frame here, after decoding.
@@ -673,7 +674,7 @@ ffmpeg_video_decoder_datasource::_should_fast_forward(timestamp_t ipts)
 {
 	bool ff = false;
 	if (ipts != (int64_t)AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 		ff = true;
 	}
 	if (m_is_live) {
