@@ -22,7 +22,18 @@
   <video2>media-video-copy.mpg</video2>
 </data>
 -->
+<!-- Local playback, Ogg/Vorbis/Theora video. Uncomment to enable. -->
+<data>
+  <av1>media-av.ogg</av1>
+  <av2>media-av-copy.ogg</av2>
+  <audio1>media-audio.ogg</audio1>
+  <audio2>media-audio-copy.ogg</audio2>
+  <audiomod>media-audio-modified.ogg</audiomod>
+  <video1>media-video.ogg</video1>
+  <video2>media-video-copy.ogg</video2>
+</data>
 <!-- Local playback, H264 video. Uncomment to enable. -->
+<!--
 <data>
   <av1>media-av.mp4</av1>
   <av2>media-av-copy.mp4</av2>
@@ -32,6 +43,7 @@
   <video1>media-video.mp4</video1>
   <video2>media-video-copy.mp4</video2>
 </data>
+-->
 <!-- HTTP playback, MPEG-1 video. Uncomment to enable. -->
 <!--
 <data>
