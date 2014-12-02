@@ -45,11 +45,9 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_local_epoch(0),
 	m_speed(speed),
 	m_running(run),
-	m_drift(0)
-#ifdef WITH_REMOTE_SYNC
-    , m_observer(NULL)
-	, m_slaved(false)
-#endif
+	m_drift(0),
+    m_observer(NULL),
+	m_slaved(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }
@@ -272,13 +270,13 @@ lib::timer_control_impl::skew(signed_time_type skew_) {
 	m_lock.leave();
 }
 
-#ifdef WITH_REMOTE_SYNC
 void
 lib::timer_control_impl::set_observer(timer_observer *obs) {
+#ifdef WITH_REMOTE_SYNC
 	if (obs) {
 		assert(m_observer == NULL);
 	}
 	m_observer = obs;
-}
-
+    
 #endif
+}

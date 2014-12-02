@@ -25,6 +25,8 @@
 #include "ambulant/lib/timer.h"
 #ifdef WITH_REMOTE_SYNC
 #include "ambulant/lib/timer_sync.h"
+#else
+typedef void ambulant::lib::timer_sync;
 #endif
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
@@ -84,9 +86,7 @@ class smil_player :
 	bool is_playing() const { return m_state == common::ps_playing;}
 	bool is_pausing() const { return m_state == common::ps_pausing;}
 	bool is_done() const { return m_state == common::ps_done;}
-#ifdef WITH_REMOTE_SYNC
     bool uses_external_sync() const { return m_timer_sync && m_timer_sync->uses_external_sync(); }
-#endif
 
 	common::play_state get_state() const {return m_state;}
 
@@ -123,9 +123,7 @@ class smil_player :
 	virtual void pointed(int n, double t);
 	virtual void transitioned(int n, double t);
 	virtual void marker_seen(cookie_type n, const char *name, double t);
-#ifdef WITH_REMOTE_SYNC
     virtual void clicked_external(lib::node *n, lib::timer::time_type t);
-#endif
 // Defined below
 //	virtual void playable_stalled(const playable *p, const char *reason);
 //	virtual void playable_unstalled(const playable *p);
