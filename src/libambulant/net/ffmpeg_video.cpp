@@ -173,7 +173,6 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(demux_video_dat
 	m_img_convert_ctx(NULL),
 
 	m_oldest_timestamp_wanted(0),
-	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 
 	m_start_input(true),
     m_complete_frame_seen(false),
@@ -327,8 +326,6 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_prefetch: (this = %p)", (void*) this);
-
-	m_video_clock = 0;
 
 	m_event_processor = evp;
 
@@ -633,18 +630,12 @@ ffmpeg_video_decoder_datasource::data_avail()
     // video clock so we can compute future missing timestamps.
 
 	pts = av_frame_get_best_effort_timestamp(frame);
-	if (pts != (int64_t)AV_NOPTS_VALUE) {
-		m_video_clock = pts;
-	} else {
-		pts = m_video_clock;
-	}
 #ifdef LOGGER_VIDEOLATENCY
 	lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 4-decoded %lld %lld %s", 0LL, pts, m_url.get_url().c_str());
 #endif
 	if (frame->repeat_pict)
 		frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
-	m_video_clock += frame_delay;
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: ipts=%lld pts=%lld frame_delay=%lld", ipts, pts, frame_delay);
 	m_frame_count++;
 
 	// In some special cases we want to drop the frame here, after decoding.
