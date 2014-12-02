@@ -50,6 +50,7 @@ class timer_sync_factory {
 };
 #else
 typedef void timer_sync;
+    typedef void timer_sync_factory;
 #endif // WITH_REMOTE_SYNC
 } // namespace lib
 

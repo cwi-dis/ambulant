@@ -159,6 +159,7 @@ class MyScanner(CxxScanner):
             "single_playable_factory_ptr",
             "sdl_window_factory_ptr", # XXX For now
             "sdl_window_factory",
+            "cairo_surface_t_ptr",
             
         ]
 
