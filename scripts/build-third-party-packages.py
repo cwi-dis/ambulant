@@ -574,7 +574,7 @@ third_party_packages={
         TPP("FreeType2", # SDL2 interface for FreeType2 glyph rendering system needed for SDL2_ttf
             url="http://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz",
             url2="freetype-2.5.3.tar.gz",
-            checkcmd="pkg-config --atleast-version=2.0 freetype",
+            checkcmd="pkg-config --atleast-version=2.0 freetype2",
             buildcmd=
                 "unset PKG_CONFIG_LIBDIR &&"
                 "cd freetype-2.* && "
