@@ -30,6 +30,7 @@ namespace ambulant {
 
 namespace lib {
 
+#ifdef WITH_REMOTE_SYNC
 class timer_sync : public timer_observer {
   public:
     virtual ~timer_sync() {}
@@ -47,6 +48,9 @@ class timer_sync_factory {
   public:
     virtual timer_sync *new_timer_sync(document *doc) = 0;
 };
+#else
+typedef void timer_sync;
+#endif // WITH_REMOTE_SYNC
 } // namespace lib
 
 } // namespace ambulant

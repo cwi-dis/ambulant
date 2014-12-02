@@ -23,11 +23,7 @@
 #define AMBULANT_SMIL2_SMIL_PLAYER_H
 
 #include "ambulant/lib/timer.h"
-#ifdef WITH_REMOTE_SYNC
 #include "ambulant/lib/timer_sync.h"
-#else
-typedef void ambulant::lib::timer_sync;
-#endif
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/mtsync.h"
@@ -86,7 +82,13 @@ class smil_player :
 	bool is_playing() const { return m_state == common::ps_playing;}
 	bool is_pausing() const { return m_state == common::ps_pausing;}
 	bool is_done() const { return m_state == common::ps_done;}
-    bool uses_external_sync() const { return m_timer_sync && m_timer_sync->uses_external_sync(); }
+    bool uses_external_sync() const {
+#ifdef WITH_EXTERNAL_SYNC
+        return m_timer_sync && m_timer_sync->uses_external_sync();
+#else
+        return false;
+#endif
+    }
 
 	common::play_state get_state() const {return m_state;}
 
@@ -244,9 +246,7 @@ class smil_player :
 	const lib::node *m_focus;
 	std::set<int> *m_focussed_nodes;
 	std::set<int> *m_new_focussed_nodes;
-#ifdef WITH_REMOTE_SYNC
     lib::timer_sync *m_timer_sync;
-#endif
 	lib::critical_section m_lock;
 	
 	// Calling time_node members must be done while locking

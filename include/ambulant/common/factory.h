@@ -29,11 +29,7 @@
 #include "ambulant/common/recorder.h"
 #include "ambulant/common/state.h"
 #include "ambulant/lib/node.h"
-#ifdef WITH_REMOTE_SYNC
 #include "ambulant/lib/timer_sync.h"
-#else
-typedef void *ambulant::lib::timer_sync_factory;
-#endif
 
 namespace ambulant {
 
