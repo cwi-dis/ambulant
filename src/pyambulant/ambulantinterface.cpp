@@ -2476,7 +2476,6 @@ void timer_control::skew(ambulant::lib::timer::signed_time_type skew)
 	PyGILState_Release(_GILState);
 }
 
-#ifdef WITH_REMOTE_SYNC
 void timer_control::set_observer(ambulant::lib::timer_observer* obs)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -2494,9 +2493,7 @@ void timer_control::set_observer(ambulant::lib::timer_observer* obs)
 
 	PyGILState_Release(_GILState);
 }
-#endif
 
-#ifdef WITH_REMOTE_SYNC
 void timer_control::set_slaved(bool slaved)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -2514,7 +2511,6 @@ void timer_control::set_slaved(bool slaved)
 
 	PyGILState_Release(_GILState);
 }
-#endif
 
 bool timer_control::is_slaved() const
 {

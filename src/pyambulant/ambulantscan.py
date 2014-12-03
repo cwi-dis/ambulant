@@ -209,8 +209,6 @@ class MyScanner(CxxScanner):
                 'timer_observer',
                 'timer_sync',
                 'timer_sync_factory',
-                'set_observer',
-                'set_slaved',
                 'init_timer_sync_factory',
                 'get_timer_sync_factory',
                 'set_timer_sync_factory',

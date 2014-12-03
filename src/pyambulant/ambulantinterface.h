@@ -368,12 +368,8 @@ public:
 	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
 	ambulant::lib::timer::signed_time_type get_drift() const;
 	void skew(ambulant::lib::timer::signed_time_type skew);
-#ifdef WITH_REMOTE_SYNC
 	void set_observer(ambulant::lib::timer_observer* obs);
-#endif
-#ifdef WITH_REMOTE_SYNC
 	void set_slaved(bool slaved);
-#endif
 	bool is_slaved() const;
   private:
 	PyObject *py_timer_control;

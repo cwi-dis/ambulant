@@ -657,13 +657,11 @@ smil_player::clicked_async(async_arg aa) {
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
-#ifdef WITH_REMOTE_SYNC
 void
 smil_player::clicked_external(lib::node *n, lib::timer::time_type t)
 {
 	clicked(n->get_numid(), (double)t/1000000.0);
 }
-#endif // WITH_REMOTE_SYNC
 
 void
 smil_player::before_mousemove(int cursorid)

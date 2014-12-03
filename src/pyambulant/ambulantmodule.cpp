@@ -4323,8 +4323,6 @@ static PyObject *timer_controlObj_skew(timer_controlObject *_self, PyObject *_ar
 	return _res;
 }
 
-#ifdef WITH_REMOTE_SYNC
-
 static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -4339,9 +4337,6 @@ static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObj
 	_res = Py_None;
 	return _res;
 }
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 
 static PyObject *timer_controlObj_set_slaved(timer_controlObject *_self, PyObject *_args)
 {
@@ -4357,7 +4352,6 @@ static PyObject *timer_controlObj_set_slaved(timer_controlObject *_self, PyObjec
 	_res = Py_None;
 	return _res;
 }
-#endif
 
 static PyObject *timer_controlObj_is_slaved(timer_controlObject *_self, PyObject *_args)
 {
@@ -4401,16 +4395,10 @@ static PyMethodDef timer_controlObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_controlObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_observer", (PyCFunction)timer_controlObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_slaved", (PyCFunction)timer_controlObj_set_slaved, 1,
 	 PyDoc_STR("(bool slaved) -> None")},
-#endif
 	{"is_slaved", (PyCFunction)timer_controlObj_is_slaved, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
@@ -4767,8 +4755,6 @@ static PyObject *timer_control_implObj_skew(timer_control_implObject *_self, PyO
 	return _res;
 }
 
-#ifdef WITH_REMOTE_SYNC
-
 static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -4783,9 +4769,6 @@ static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_s
 	_res = Py_None;
 	return _res;
 }
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 
 static PyObject *timer_control_implObj_set_slaved(timer_control_implObject *_self, PyObject *_args)
 {
@@ -4801,7 +4784,6 @@ static PyObject *timer_control_implObj_set_slaved(timer_control_implObject *_sel
 	_res = Py_None;
 	return _res;
 }
-#endif
 
 static PyObject *timer_control_implObj_is_slaved(timer_control_implObject *_self, PyObject *_args)
 {
@@ -4845,16 +4827,10 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_control_implObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew_) -> None")},
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_observer", (PyCFunction)timer_control_implObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_slaved", (PyCFunction)timer_control_implObj_set_slaved, 1,
 	 PyDoc_STR("(bool slaved) -> None")},
-#endif
 	{"is_slaved", (PyCFunction)timer_control_implObj_is_slaved, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
