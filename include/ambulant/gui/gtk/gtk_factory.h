@@ -144,7 +144,6 @@ class ambulant_gtk_window : public common::gui_window {
 #endif // GTK_MAJOR_VERSION
 	guint signal_redraw_id;
 
-	guint signal_redraw_id;
   private:
 	void clear();
 	lib::rect  m_bounds;
@@ -163,7 +162,6 @@ class ambulant_gtk_window : public common::gui_window {
 	cairo_surface_t* m_old_target_surface;
 	cairo_surface_t* m_surface;
 	cairo_surface_t* m_fullscreen_prev_surface;
-	cairo_surface_t* m_fullscreen_old_surface;
 	cairo_surface_t* m_fullscreen_old_surface;
 #else
 	GdkPixmap* m_pixmap;
