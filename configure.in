@@ -689,33 +689,59 @@ AC_MSG_RESULT($test_sdl_ttf)
 dnl Testing for GTK
 dnl ====================================================================
 
-test_gtk=gtk3
+probe_for_gtk=yes
+test_gtk=false
 AC_MSG_CHECKING(for gtk - the GIMP Toolkit)
 AC_ARG_WITH(gtk,
-     AS_HELP_STRING([--with-gtk@<:@=gtk2|gtk3@:>@], [Enable/disable gtk+-2.0(*)/gtk+-3.0 support]),
+     AS_HELP_STRING([--with-gtk@<:@=gtk2|gtk3@:>@], [Enable/disable gtk2 or gtk3 support]),
      [
-     	if test "x$withval" = "xno"; then
-		test_gtk=false	
-	elif test "x$withval" = "xgtk2" -o  "x$withval" = "xgtk+-2.0" ; then
-	     	test_gtk=gtk2
-	elif test "x$withval" != "xyes" -a  "x$withval" != "xgtk3" -a  "x$withval" != "xgtk+-3.0" ; then
-	     	AC_MSG_ERROR("Unknown value for --with-gtk: $withval");
-	fi
+     	case ${withval} in
+     	no)
+     		test_gtk=false
+     		probe_for_gtk=no
+     		;;
+     	gtk3)
+     		PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=gtk3, test_gtk=false)
+			if test $test_gtk = false; then
+				AC_MSG_WARN([gtk+-3.0 or gthread-2.0 not found, or too old])
+			fi
+			probe_for_gtk=no
+     		;;
+     	gtk2)
+			PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=gtk2, test_gtk=false)
+			if test $test_gtk = false; then
+				AC_MSG_WARN([gtk+-2.0 or gthread-2.0 not found, or too old])
+			fi
+			probe_for_gtk=no
+     		;;
+     	yes)
+     		probe_for_gtk=yes
+     		;;
+     	*)
+     		AC_MSG_WARN([Unknown value for --with-gtk: ${withval}])
+     		probe_for_gtk=no
+     		test_gtk=false
+     		;;
+		esac
+     ],[
+     	probe_for_gtk=yes
      ])
-if test "x$test_gtk" = "xgtk3"; then
-	PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=$test_gtk, test_gtk=false)
-elif  test "x$test_gtk" = "xgtk2"; then
-	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=$test_gtk, test_gtk=false)
+if test x$probe_for_gtk = xyes ; then
+	# GTK2 is preferred over GTK3, for now
+	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], [
+		test_gtk=gtk2
+	],[
+		PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=gtk3, test_gtk=false)
+	])
 fi
-if test $test_gtk = false; then
-	AC_MSG_WARN([gtk+-3.0 or gthread-2.0 not found, or too old])
-else
+if test $test_gtk != false; then
 	with_frontend=true
 fi
 AM_CONDITIONAL(WITH_GTK, test x$test_gtk != xfalse)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_MSG_RESULT($test_gtk)
+
 dnl Testing for gstreamer
 dnl ====================================================================
 
