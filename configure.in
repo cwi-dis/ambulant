@@ -559,12 +559,12 @@ dnl WITH_SDL_PANGO - True if WITH_SDL2 is set, Linux is used and SDL_Pango is av
 dnl WITH_SDL_TTF - True if WITH_SDL2 is set, WITH_SDL_PANGO is not set, Linux is used and SDL2_ttf is available
 
 dnl ======================================================================
-
+set -x
 # Prefer sdl2
 test_sdl=false
 test_sdl1=false
 test_sdl2=false
-test_sdl2_player=false
+test_sdl2_frontend=false
 test_sdl_audio=false
 test_sdl_video=false
 test_sdl_image=false
@@ -577,7 +577,7 @@ SDL_LIBS=
 if test "x$on_linux" = "xtrue" -o "x$on_macosx" = "xtrue"; then
    test_sdl2=true # use SDL2 by default on linux and macosx, if possible
    if test "x$on_linux" = "xtrue" ; then
-      test_sdl2_player=true # use SDL2 Player  by default on linux, if possible
+      test_sdl2_frontend=true # use SDL2 Player  by default on linux, if possible
    fi
 fi
 
@@ -587,14 +587,6 @@ AC_ARG_WITH(sdl2,
 	[
 		if test "x$withval" = "xno"; then
 		   test_sdl2=false
-		fi
-	] )
-
-AC_ARG_WITH(sdl2-player,
-	AS_HELP_STRING([--with-sdl2-player], [Turn on/off SDL2 player and video support]),
-	[
-		if test "x$withval" = "xyes"; then
-		   test_sdl2_player=true
 		fi
 	] )
 
@@ -629,12 +621,26 @@ if test "x$test_sdl2" = "xtrue" -o  "x$test_sdl1" = "xtrue"; then
    	test_sdl_audio=true
 fi
 
-if test "x$test_sdl2_player"  = "xtrue"; then
+AC_ARG_WITH(sdl2-frontend,
+        AS_HELP_STRING([--with-sdl2-frontend], [Turn on/off SDL2 player and video support]),
+        [
+                if test "x$withval" = "xyes"; then
+						if test "x$test_sdl2" = "xfalse"; then
+						   		set +x
+						      	AC_MSG_ERROR("--with-sdl2-frontend needs --with-sdl2");
+						fi   
+                   		test_sdl2_frontend=true
+                fi
+        ] ,
+		[
+				test_sdl2_frontend = $test_sdl2
+		])
+
+if test "x$test_sdl2" = "xtrue" -a "x$test_sdl2_frontend"  = "xtrue"; then
    	# want these as well
    	test_sdl_image=true
    	test_sdl_video=true
    	test_sdl_pango=true
-   	with_sdl_frontend=true
 	with_frontend=true    # have AmbulantPlayer_sdl too
 fi
 
@@ -656,7 +662,7 @@ fi
 if test "x$test_sdl_pango" = "xtrue" ; then
 	SDL_CFLAGS="$SDL_CFLAGS -DWITH_SDL_PANGO `pkg-config --cflags SDL_Pango`"
 	SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
-elif  test "x$test_sdl2_player"  = "xtrue"; then 
+elif  test "x$test_sdl2"  = "xtrue"; then 
 	# Alternatively SDL2_ttf can be used instead of SDL_Pango
 	test_sdl_ttf=true
 fi
@@ -685,7 +691,7 @@ AC_MSG_RESULT($test_sdl_video)
 AC_MSG_RESULT($test_sdl_image)
 AC_MSG_RESULT($test_sdl_pango)
 AC_MSG_RESULT($test_sdl_ttf)
-
+set +x
 dnl Testing for GTK
 dnl ====================================================================
 
@@ -1280,8 +1286,8 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with SDL2_ttf:    	${test_sdl_ttf}
-    Build SDL frontend:		${with_sdl_frontend}
+    Build with SDL2_ttf:            ${test_sdl_ttf}
+    Build SDL frontend:             ${with_sdl_frontend}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}
