@@ -37,7 +37,11 @@ MACOSX_BUNDLE_DIRS = (
 
 DEFAULT_RPATH=[
 	'/lib',
+	'/lib/i386-linux-gnu',
+	'/lib/x86_64-linux-gnu',
 	'/usr/lib',
+	'/usr/lib/i386-linux-gnu',
+	'/usr/lib/x86_64-linux-gnu',
 ]
 # Add library paths used by common Linux distributions (Ubuntu, Fedora)
 machine = platform.machine()

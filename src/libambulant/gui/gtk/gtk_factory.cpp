@@ -366,6 +366,8 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_ambulant_widget ) {
 		if (m_ambulant_widget->m_screenshot_data != NULL) {
 			g_free(m_ambulant_widget->m_screenshot_data);
+//		delete m_ambulant_widget;
+		m_ambulant_widget = NULL;
 		}
 		m_ambulant_widget->set_gtk_window(NULL);
 //XXXX next delete Reload crashes with gtk, not with qt
@@ -374,6 +376,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	}
 	if (m_pixmap != NULL) {
 		g_object_unref(G_OBJECT(m_pixmap));
+		g_object_unref(G_OBJECT(m_surface));
 	}
 /*	'm_oldpixmap' is a placeholder, not a managed object */
 	if (m_surface != NULL) {
@@ -450,7 +453,6 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	clear();
 	m_handler->redraw(r, this);
 	_screenTransitionPostRedraw(r);
-#ifdef WITH_SCREENSHOTS
 	width = gdk_window_get_width (gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
 	height = gdk_window_get_height(gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
 	cairo_surface_t* surf = get_target_surface();
@@ -478,6 +480,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	}
 	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
+}
 }
 #else
 void
