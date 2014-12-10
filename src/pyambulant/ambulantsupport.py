@@ -31,6 +31,9 @@ includestuff = includestuff + """
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
+#if GTK_MAJOR_VERSION < 3
+#define WITH_GTK2
+#endif
 #endif
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
@@ -107,14 +110,14 @@ extern "C" void initambulant();
 
 initstuff = """
 PyEval_InitThreads();
-#ifdef WITH_GTK
+#ifdef WITH_GTK2
 init_pygobject();
 init_pygtk();
 PyObject *module = PyImport_ImportModule("gobject");
 if (module)
     PyGObject_Type = (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
 Py_XDECREF(module);
-#endif // WITH_GTK
+#endif // WITH_GTK2
 """
 
 variablestuff="""
