@@ -352,7 +352,7 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_transition_surface != NULL) {
 		cairo_surface_destroy(m_transition_surface);
 	}
-	if (m_ambulant_widget->m_screenshot_data != NULL) {
+	if (m_ambulant_widget != NULL && m_ambulant_widget->m_screenshot_data != NULL) {
 		g_free(m_ambulant_widget->m_screenshot_data);
 	}
 }
@@ -376,7 +376,6 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	}
 	if (m_pixmap != NULL) {
 		g_object_unref(G_OBJECT(m_pixmap));
-		g_object_unref(G_OBJECT(m_surface));
 	}
 /*	'm_oldpixmap' is a placeholder, not a managed object */
 	if (m_surface != NULL) {
