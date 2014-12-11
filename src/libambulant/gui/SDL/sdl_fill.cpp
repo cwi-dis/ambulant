@@ -22,7 +22,6 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/transition.h"
 #include "ambulant/gui/none/none_gui.h"
