@@ -683,7 +683,7 @@ AM_CONDITIONAL(WITH_SDL_VIDEO, test x$test_sdl_video = xtrue)
 AM_CONDITIONAL(WITH_SDL_IMAGE, test x$test_sdl_image = xtrue)
 AM_CONDITIONAL(WITH_SDL_PANGO, test x$test_sdl_pango = xtrue)
 AM_CONDITIONAL(WITH_SDL_TTF, test x$test_sdl_ttf = xtrue)
-AM_CONDITIONAL(WITH_SDL_FRONTEND, test x$with_sdl2_frontend = xtrue)
+AM_CONDITIONAL(WITH_SDL_FRONTEND, test x$with_sdl_frontend = xtrue)
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 
