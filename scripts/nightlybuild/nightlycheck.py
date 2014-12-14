@@ -6,6 +6,8 @@ import time
 
 USERS=["Jack.Jansen@cwi.nl", "Kees.Blom@cwi.nl"]
 
+LOG_URL="http://ambulantplayer.org/nightlybuilds/logs/%(ydate)s-default/%(platform)s.txt"
+
 URLS={
     'mac' : [
         "http://ambulantplayer.org/nightlybuilds/default/mac-intel-desktop-cg/Ambulant-2.5.%(ydate)s-default-mac.dmg",
@@ -96,7 +98,8 @@ class BuildChecker:
     
     def checkPlatform(self, name, urls):
         vars = {
-            "ydate" : time.strftime("%Y%m%d")
+            "ydate" : time.strftime("%Y%m%d"),
+            "platform" : name
             }
         urlsOK = []
         urlsNotOK = []
@@ -108,8 +111,12 @@ class BuildChecker:
                 urlsNotOK.append(url)
         rv = ""
         if urlsNotOK:
+            thislogfile = LOG_URL % vars
+            lastgoodbuild = self.lastGoodBuild.get(name, "unknown")
+            lastgoodlogfile = LOG_URL % dict(ydate=lastgoodbuild, platform=name)
             rv = "Platform %s did not build correctly.\n" % name
-            rv += "(Last correct build: %s)\n" % self.lastGoodBuild.get(name, "unknown")
+            rv += "Log: %s\n" % thislogfile
+            rv += "Last correct build: %s, log: %s\n" % (lastgoodbuild, lastgoodlogfile)
             rv += "Missing files:\n"
             for url in urlsNotOK:
                 rv += "\t%s\n" % url
