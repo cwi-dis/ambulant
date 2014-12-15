@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #
 # This script should receive all the mail that contains cron error reports
 # from nightly builds.
