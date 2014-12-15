@@ -13,7 +13,7 @@ import os
 import sys
 import rfc822
 
-SAVE_PATHNAME="/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds/logs/%(logLocation)s.txt"
+SAVE_PATHNAME="/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds/logs/%(logLocation)s"
 
 def parseAndSave(fp):
     msg = rfc822.Message(fp)

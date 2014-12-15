@@ -43,7 +43,7 @@ rem
 
 rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
-rem LogLocation=%TODAY%/win32
+echo LogLocation=%BRANCH%-win32-%TODAY%.txt
 
 rem
 rem Other settable parameters
