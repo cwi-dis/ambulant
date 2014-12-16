@@ -27,9 +27,9 @@
 #if GTK_MAJOR_VERSION >= 3
 #include <gtk/gtkx.h>
 #include <gdk/gdkx.h>
-#else
+#else // GTK_MAJOR_VERSION < 3
 #include <X11/X.h>
-#endif//GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 class gtk_settings
 {
@@ -37,9 +37,21 @@ class gtk_settings
 public:
 	void settings_ok();
 	gtk_settings();
-	GtkDialog* getWidget();
+	GtkWidget* getWidget();
 
 private:
+#if GTK_MAJOR_VERSION >= 3
+	GtkWidget*	m_dialog; // this is the main window
+
+	// settings
+	GtkFrame*	m_settings_fr; // the settings frame
+	GtkWidget*	m_settings_hb;
+
+	// Log level
+	GtkWidget*	m_loglevel_hb; // the label and the combo box
+	GtkLabel*	m_loglevel_lb;
+	GtkComboBoxText* m_loglevel_co;
+#else // GTK_MAJOR_VERSION < 3
 	GtkDialog*	m_dialog; // this is the main window
 
 	// settings
@@ -48,20 +60,19 @@ private:
 	// Log level
 	GtkHBox*	m_loglevel_hb; // the label and the combo box
 	GtkLabel*	m_loglevel_lb;
-#if GTK_MAJOR_VERSION >= 3
-	GtkComboBoxText* m_loglevel_co;
-#else
 	GtkComboBox*	m_loglevel_co;
-#endif//GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 	// XML parser
+#if GTK_MAJOR_VERSION >= 3
+	GtkWidget*	m_parser_hb;
+	GtkLabel*	m_parser_lb;
+	GtkComboBoxText* m_parser_co;
+#else // GTK_MAJOR_VERSION < 3
 	GtkHBox*	m_parser_hb;
 	GtkLabel*	m_parser_lb;
-#if GTK_MAJOR_VERSION >= 3
-	GtkComboBoxText* m_parser_co;
-#else
 	GtkComboBox*	m_parser_co;
-#endif//GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 	// xerces options:
 	GtkFrame*	m_xerces_fr; // the xerces frame
@@ -71,16 +82,22 @@ private:
 	bool		m_namespace_val;
 
 	// Enable XML validation
+#if GTK_MAJOR_VERSION >= 3
+	GtkWidget*	m_validation_hb;// Enable XML validation:
+	GtkLabel*	m_validation_lb;// Enable XML validation:
+	GtkComboBoxText* m_validation_co;// Enable XML validation:
+#else // GTK_MAJOR_VERSION < 3
 	GtkHBox*	m_validation_hb;// Enable XML validation:
 	GtkLabel*	m_validation_lb;// Enable XML validation:
-#if GTK_MAJOR_VERSION >= 3
-	GtkComboBoxText* m_validation_co;// Enable XML validation:
-#else
 	GtkComboBox*	m_validation_co;// Enable XML validation:
-#endif//GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 	// Using Schema / Using DTD
-	GtkHButtonBox*  m_schema_dtd_hb; // Placeholder of the radio buttons
+#if GTK_MAJOR_VERSION >= 3
+	GtkWidget*	m_schema_dtd_hb; // Placeholder of the radio buttons
+#else // GTK_MAJOR_VERSION < 3
+	GtkHButtonBox*	m_schema_dtd_hb; // Placeholder of the radio buttons
+#endif // GTK_MAJOR_VERSION < 3
 	GtkRadioButton* m_schema_rb;	// Using Schema
 	bool		m_schema_val;
 	GtkRadioButton*	m_dtd_rb;	// Using DTD
@@ -96,7 +113,7 @@ private:
 	// plugin options
 	GtkFrame*	m_plugins_fr; // the plugin frame
 
-	GtkVBox* 	m_plugins_hb;
+	GtkWidget* 	m_plugins_vb;
 	GtkCheckButton* m_use_plugins_cb;
 	GtkLabel*	m_plugins_dir_lb;
 	GtkEntry*	m_plugins_dir_te;

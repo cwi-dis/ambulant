@@ -62,6 +62,10 @@ FileVersion=1,0,0,1
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
+[swresample-0.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
 [swscale-2.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1

@@ -1018,3 +1018,235 @@ lib::date_p::get_time()
 {
     return m_result;
 }
+
+// Wallclock-sync-value  ::= "wallclock(" S? (DateTime | WallTime | Date)  S? ")"
+std::ptrdiff_t
+lib::wallclock_p::parse(const_iterator& it, const const_iterator& end)
+{
+    const_iterator tit = it;
+    std::ptrdiff_t d;
+
+    lib::datetime_p datetime_parser;
+    lib::walltime_p walltime_parser;
+    lib::date_p date_parser;
+    struct tm tm;
+    
+    tm.tm_wday = tm.tm_yday = tm.tm_sec = tm.tm_min= tm.tm_hour = tm.tm_isdst = 0;
+   
+    m_result = -1;
+    
+    d = literal_cstr_p("wallclock(").parse(tit,end);
+    if (d == -1) {
+        return -1;
+    }
+    std::ptrdiff_t sd = d;
+    
+    delimiter_p space(" \t\r\n");
+    star_p<delimiter_p> opt_space_inst = make_star(space);
+    
+    // S?
+    d = opt_space_inst.parse(tit, end);
+    sd += (d == -1)?0:d;
+    
+    if (( d = datetime_parser.parse(tit, end)) != -1) {
+        tm = datetime_parser.get_time();
+    } else if (( d = walltime_parser.parse(tit,end)) != -1) {
+        tm = walltime_parser.get_time();
+    } else if (( d = date_parser.parse(tit, end)) != -1) {
+        tm = date_parser.get_time();
+    } else {
+        return -1;
+    }
+    sd += d;
+    
+    //  optional TZD (Time Zone Designator): "Z" | (("+" | "-") hours:minutes)
+    bool use_UTC = false;
+    bool has_plus = false, has_min= false;
+    if ((d = literal_p<'Z'>().parse(tit,end)) != -1) {
+        use_UTC = true;
+        sd += d;
+    } else if ((d = literal_p<'+'>().parse(tit,end)) != -1) {
+            has_plus = true;
+            sd += d;
+    } else if ((d = literal_p<'-'>().parse(tit,end)) != -1) {
+            has_min = true;
+            sd += d;
+    }
+    int tzd_hour = 0, tzd_min = 0;
+    if (has_min || has_plus) {
+        lib::int_p hour_parser(0,23);
+        lib::int_p min_parser(0,59);
+
+        if ((d = hour_parser.parse(tit, end)) == -1) {
+            return -1;
+        }
+        tzd_hour = hour_parser.m_result;
+        sd += d;
+        if ((d = literal_p<':'>().parse(tit, end)) == -1) {
+            return -1;
+        }
+        sd += d;
+        if ((d = min_parser.parse(tit, end)) == -1) {
+            return -1;
+        }
+        tzd_min = min_parser.m_result;
+        sd += d;
+    }
+    d = opt_space_inst.parse(tit, end);
+    sd += (d == -1)?0:d;
+
+    d = literal_p<')'>().parse(tit,end);
+    if (d == -1) {
+        return -1;
+    }
+    sd += d;
+    
+    // TBD compute m_result w.r.t. document begin time, including TZD
+    m_result = 0;
+    return (it = tit, sd);
+}
+
+long int
+lib::wallclock_p::get_time()
+{
+    return m_result;
+}
+
+std::ptrdiff_t
+lib::datetime_p::parse(const_iterator& it, const const_iterator& end)
+{
+    const_iterator tit = it;
+    std::ptrdiff_t d, sd = 0;
+    lib::date_p date_parser;
+    
+    if (( d = date_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    m_result = date_parser.get_time();
+
+    d = literal_p<'T'>().parse(tit,end);
+    if (d == -1) {
+        return -1;
+    }
+    sd += d;
+    
+    lib::walltime_p walltime_parser;
+    if (( d = walltime_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    struct tm walltime = walltime_parser.get_time();
+    m_result.tm_hour = walltime.tm_hour;
+    m_result.tm_min  = walltime.tm_min;
+    m_result.tm_sec  = walltime.tm_sec;
+
+    return (it = tit, sd);
+}
+
+struct tm
+lib::datetime_p::get_time()
+{
+    return m_result;
+}
+
+std::ptrdiff_t
+lib::walltime_p::parse(const_iterator& it, const const_iterator& end)
+{
+    const_iterator tit = it;
+    std::ptrdiff_t d, sd = 0;
+    lib::full_clock_value_p full_clock_value_parser;
+    lib::int_p hour_parser(0,23);
+    lib::int_p min_parser(0,59);
+
+    //XX need proper initaliazation for tm_year,tm_mon, tm_wday etc.
+    memset(&m_result, 0, sizeof(m_result));
+    // first try HH:MM
+    if ((d = hour_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    m_result.tm_hour = hour_parser.m_result;
+    sd += d;
+    if ((d = literal_p<':'>().parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    if ((d = min_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    m_result.tm_min = min_parser.m_result;
+    if ((d = literal_p<':'>().parse(tit, end)) != -1) {
+        // ':' found, try HH:MM:SS
+        tit = it;
+        d = full_clock_value_parser.parse(tit, end);
+        if (d != -1) {
+            full_clock_value_p::result_type res = full_clock_value_parser.m_result;
+            m_result.tm_hour = res.hours;
+            m_result.tm_min = res.minutes;
+            m_result.tm_sec = res.seconds;
+            // TBD: optional fraction
+            sd = d;
+        } else {
+           return -1;
+        }
+    } else {
+        m_result.tm_sec = 0;
+    }
+    return (it = tit, sd);
+}
+
+struct tm
+lib::walltime_p::get_time()
+{
+    return m_result;
+}
+
+std::ptrdiff_t
+lib::date_p::parse(const_iterator& it, const const_iterator& end)
+{
+    const_iterator tit = it;
+    std::ptrdiff_t d, sd = 0;
+    lib::int_p year_parser;
+    lib::int_p month_parser(1,12);
+    lib::int_p day_parser(1,31);
+    struct tm tm;
+    //XX need proper initaliazation for tm_year,tm_mon, tm_wday etc.
+    memset(&tm, 0, sizeof(tm));
+    if ((d = year_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    tm.tm_year = year_parser.m_result - 1900;
+    
+    d = literal_p<'-'>().parse(tit, end);
+    if (d == -1) {
+        return -1;
+    }
+    sd += d;
+    if ((d = month_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    tm.tm_mon = month_parser.m_result - 1;
+    
+    d = literal_p<'-'>().parse(tit, end);
+    if (d == -1) {
+        return -1;
+    }
+    sd += d;
+    if ((d = day_parser.parse(tit, end)) == -1) {
+        return -1;
+    }
+    sd += d;
+    tm.tm_mday = day_parser.m_result;
+    m_result = tm;
+    
+    return (it = tit, sd);
+}
+
+struct tm
+lib::date_p::get_time()
+{
+    return m_result;
+}

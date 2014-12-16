@@ -108,7 +108,7 @@ AmbulantPlayer_gtk_LDADD = $(libambulant_gtk) \
 	$(PTHREAD_LIBS)
 
 AM_LDFLAGS= \
-	   -export-dynamic
+	   -export-dynamic -lgmodule-2.0
 
 AM_CPPFLAGS = \
 		$(extra_gstreamer_CPPFLAGS) \
@@ -155,9 +155,11 @@ uninstall-local:
 #XXXX quick fix to make distcheck work: remove make check results
 	-rm -fr AM_TEST-output.txt 
 	-rm -f $(DESTDIR)$(datadir)/applications/ambulant-gtk.desktop
+	-rm -f $(DESTDIR)$(datadir)/ambulant/ambulant-gtk_gui.xml
 
 install-data-local:
+	-cp $(srcdir)/ambulant-gtk_gui.xml $(DESTDIR)$(datadir)/ambulant/
 	mkdir -p  $(DESTDIR)$(datadir)/applications
 	-cp $(srcdir)/ambulant-gtk.desktop $(DESTDIR)$(datadir)/applications
 
-EXTRA_DIST=ambulant-gtk.desktop ambulant.schemas
+EXTRA_DIST=ambulant-gtk.desktop ambulant.schemas ambulant-gtk_gui.xml

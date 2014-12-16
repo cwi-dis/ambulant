@@ -399,7 +399,6 @@ ambulant_gtk_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gd
 	case GDK_HAND2: m_hand2_cursor = gdk_cursor;
 	default:	return;
 	}
-
 }
 
 GdkCursor*
@@ -427,6 +426,9 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	dirty_area_widget* dirty = new dirty_area_widget();
 	dirty->widget = (gtk_ambulant_widget*) gtk_widget_get_parent(this_widget);
 	dirty->area = r;
+	if (this_widget == NULL || dirty->widget == NULL) {
+		return;
+	}
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
@@ -447,6 +449,9 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	GError *error = NULL;
 	gint width; gint height;
 
+	if (m_ambulant_widget == NULL) {
+		return; // not yet set
+	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 	_screenTransitionPreRedraw();
 	clear();
@@ -478,8 +483,8 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
 	}
-	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
+	g_object_unref (G_OBJECT (pixbuf));
 }
 #else
 void
@@ -1167,6 +1172,7 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	cairo_set_source_surface (cr, agw->get_target_surface(), 0, 0);
 	cairo_paint (cr);
 	m_lock.leave();
+	m_lock.leave();
 }
 #else
 void
@@ -1221,6 +1227,7 @@ gtk_ambulant_widget::do_button_release_event(GdkEventButton *e) {
 		lib::point amwhere = lib::point((int)e->x, (int)e->y);
 		m_gtk_window->user_event(amwhere);
 	}
+	m_lock.leave();
 }
 
 void

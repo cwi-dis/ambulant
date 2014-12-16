@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "stdafx.h"
 #include "ambulant/config/config.h"
 #include <wininet.h>
 

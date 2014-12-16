@@ -55,7 +55,11 @@ class gtk_gui : public GtkWidget{
 	// major containers
 	GtkWidget* get_gui_container();
 	GtkWidget* get_document_container();
+#if GTK_MAJOR_VERSION >= 3
+	GtkWidget* get_toplevel_container();
+#else  // GTK_MAJOR_VERSION < 3
 	GtkWindow* get_toplevel_container();
+#endif // GTK_MAJOR_VERSION < 3
 
 /*TMP*/	gtk_mainloop* m_mainloop;
 
@@ -63,11 +67,18 @@ class gtk_gui : public GtkWidget{
 	const char* m_programfilename;
 	const char* m_smilfilename;
 	gtk_settings* m_settings;
+#if GTK_MAJOR_VERSION >= 3
+	GtkWidget* m_toplevelcontainer; // the actual top level window
+#else  // GTK_MAJOR_VERSION < 3
 	GtkWindow* m_toplevelcontainer; // the actual top level window
-	GtkWidget* menubar;		 // The UI (menubar)
+#endif // GTK_MAJOR_VERSION < 3
 	GtkWidget* m_guicontainer;	// The container (menubar + documentcontainer)
 	GtkWidget* m_documentcontainer; // The drawable area
+#if GTK_MAJOR_VERSION >= 3
+#else  // GTK_MAJOR_VERSION < 3
+	GtkWidget* menubar;		 // The UI (menubar)
 	GtkActionGroup *m_actions;
+#endif // GTK_MAJOR_VERSION < 3
 
 #define	LOCK_MESSAGE
 #ifdef	LOCK_MESSAGE
@@ -82,6 +93,12 @@ class gtk_gui : public GtkWidget{
 	void fileError(const gchar* smilfilename);
 
 	void setDocument(const char* string);
+
+	GtkWidget* m_play;
+	GtkWidget* m_pause;
+	GtkWidget* m_stop;
+	GtkWidget* m_reload;
+
   public:
 	void do_file_selected();
 	void do_url_selected();
@@ -115,7 +132,10 @@ class gtk_gui : public GtkWidget{
 
 	void _update_menus();
 
+#if GTK_MAJOR_VERSION >= 3
+#else // GTK_MAJOR_VERSION < 3
 	GMainLoop* main_loop;
+#endif // GTK_MAJOR_VERSION < 3
 
 };
 #endif/*__GTK_GUI_H__*/
