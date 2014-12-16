@@ -23,6 +23,8 @@ EXTRA_DIST=setup.py \
 	ambulantinterface.h ambulantinterface.cpp \
 	player_pygtk test
 
+ambulant_lib=libambulant.so
+
 # Various flags for optional features
 
 if WITH_GTK
@@ -49,7 +51,7 @@ endif
 # Get all the extra bits together
 extra_cflags=$(extra_gtk_cflags) $(extra_ffmpeg_cflags) $(extra_sdl_cflags)
 extra_ldflags=$(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LIBINTL)
-all_ldflags=-L$$a $(extra_ldflags) $(LDFLAGS)
+all_ldflags=-L$$a $(extra_ldflags) $(LDFLAGS) $(ambulantlib)
 all_cflags=$(extra_cflags) $(DEFS) $(CFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 
 # These targets are magic for automake
@@ -62,8 +64,8 @@ install-exec-hook: install-pyambulant
 
 uninstall-local:
 #XXXX quick fix to make distcheck work from nightly build
-	-rm -fr  $(DESTDIR)/$(prefix)/lib64/python/ambulant.so $(DESTDIR)/$(prefix)/lib64/python/ambulant-2.4*.egg-info
-	-rm -fr  $(DESTDIR)/$(prefix)/lib/python/ambulant.so $(DESTDIR)/$(prefix)/lib/python/ambulant-2.4*.egg-info
+	-rm -fr  $(DESTDIR)/$(prefix)/lib64/python/ambulant.so $(DESTDIR)/$(prefix)/lib64/python/ambulant-2.5*.egg-info
+	-rm -fr  $(DESTDIR)/$(prefix)/lib/python/ambulant.so $(DESTDIR)/$(prefix)/lib/python/ambulant-2.5*.egg-info
 	echo Cannot uninstall pyambulant module, please remove manually $(DESTDIR)/$(prefix)
 
 # This target re-creates the cpp files. Use only when you know what you
@@ -117,7 +119,7 @@ mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
 	-rm -r $(srcdir)/build
 
-DISTCLEANFILES=ambulant.so ambulant-2.4-py2.7.egg-info
+DISTCLEANFILES=ambulant.so ambulant-2.5-py2.7.egg-info
 
 # Targets to regenerate ambulantmodule.cpp and ambulantinterface.cpp
 

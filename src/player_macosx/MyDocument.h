@@ -41,6 +41,7 @@ class document_embedder : public ambulant::common::embedder {
 	void show_file(const ambulant::net::url& href);
 	void close(ambulant::common::player *p);
 	void open(ambulant::net::url newdoc, bool start, ambulant::common::player *old=NULL);
+	void done(ambulant::common::player *p);
 #ifdef WITH_OVERLAY_WINDOW
 	bool aux_open(const ambulant::net::url& href);
 #endif
@@ -106,7 +107,6 @@ class document_embedder : public ambulant::common::embedder {
 - (IBAction)autoPlay:(id)sender;
 - (IBAction)stop:(id)sender;
 - (void *)view;
-- (void)startPlay: (id)dummy;
 - (void)close;
 - (void)close: (id)dummy;
 - (void)fixMouse: (id)dummy;

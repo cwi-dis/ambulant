@@ -82,6 +82,12 @@ document_embedder::close(ambulant::common::player *p)
 }
 
 void
+document_embedder::done(ambulant::common::player *p)
+{
+	[m_mydocument performSelectorOnMainThread: @selector(validateButtons:) withObject: nil waitUntilDone: NO];
+}
+
+void
 document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common::player *old)
 {
 #ifdef WITH_OVERLAY_WINDOW
@@ -532,8 +538,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (IBAction)play:(id)sender
 {
 	if (!myMainloop) return;
-	
-	[NSThread detachNewThreadSelector: @selector(startPlay:) toTarget: self withObject: NULL];
+
+	myMainloop->play();
 	[self validateButtons: nil];
 }
 
@@ -544,29 +550,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
     if (myMainloop->uses_external_sync()) return;
 #endif // WITH_REMOTE_SYNC
     [self play: self];
-}
-
-- (void)startPlay: (id)dummy
-{
-	// XXXX Jack thinks that this extra thread is no longer needed (20060124)
-	if (!myMainloop) return;
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-	assert([NSThread isMultiThreaded]);
-	myMainloop->play();
-	// We don't use refcounting on myMainloop, because
-	// otherwise our player infrastructure will be destructed in this
-	// thread, and at that time the window (and the ambulantWidget) is
-	// gone. So the main thread does the cleanup and zaps myMainloop.
-	while (myMainloop && (myMainloop->is_play_active()||myMainloop->is_pause_active())) {
-//		AM_DBG NSLog(@"validating in separate thread");
-		[self validateButtons: nil];
-		sleep(1);
-	}
-//	AM_DBG NSLog(@"validating in separate thread - final");
-	[self validateButtons: nil];
-	[pool release];
-	// myMainloop->release();
 }
 
 - (IBAction)stop:(id)sender

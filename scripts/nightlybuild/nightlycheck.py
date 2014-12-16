@@ -6,15 +6,12 @@ import time
 
 USERS=["Jack.Jansen@cwi.nl", "Kees.Blom@cwi.nl"]
 
+LOG_URL="http://ambulantplayer.org/nightlybuilds/logs/default-%(platform)s-%(ydate)s.txt"
+
 URLS={
     'mac' : [
         "http://ambulantplayer.org/nightlybuilds/default/mac-intel-desktop-cg/Ambulant-2.5.%(ydate)s-default-mac.dmg",
         "http://ambulantplayer.org/nightlybuilds/default/mac-intel-firefoxplugin/npambulant-2.5.%(ydate)s-default-mac.dmg",
-    ],
-    'linux' : [
-        "http://ambulantplayer.org/nightlybuilds/default/src/ambulant-2.5.%(ydate)s-default.tar.gz",
-        "http://ambulantplayer.org/nightlybuilds/default/linux-i686-firefoxplugin/npambulant-2.5.%(ydate)s-default-linux-i686.xpi",
-        "http://ambulantplayer.org/nightlybuilds/default/linux-x86_64-firefoxplugin/npambulant-2.5.%(ydate)s-default-linux-x86_64.xpi",
     ],
     'win32' : [
         "http://ambulantplayer.org/nightlybuilds/default/win32-intel-desktop/Ambulant-2.5.%(ydate)s-win32.exe",
@@ -26,6 +23,16 @@ URLS={
         "http://ambulantplayer.org/nightlybuilds/default/iphone/iAmbulant-2.5.%(ydate)s-default.ipa",
     ],
 
+    'linux-i686' : [
+        "http://ambulantplayer.org/nightlybuilds/default/src/ambulant-2.5.%(ydate)s-default.tar.gz",
+        "http://ambulantplayer.org/nightlybuilds/default/linux-i686-firefoxplugin/npambulant-2.5.%(ydate)s-default-linux-i686.xpi",
+    ],
+    'linux-x86_64' : [
+        "http://ambulantplayer.org/nightlybuilds/default/src/ambulant-2.5.%(ydate)s-default.tar.gz",
+        "http://ambulantplayer.org/nightlybuilds/default/linux-i686-firefoxplugin/npambulant-2.5.%(ydate)s-default-linux-i686.xpi",
+        "http://ambulantplayer.org/nightlybuilds/default/linux-x86_64-firefoxplugin/npambulant-2.5.%(ydate)s-default-linux-x86_64.xpi",
+    ],
+    
     'Ubuntu-14.04-source' : [
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty.dsc",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty.tar.gz",
@@ -33,7 +40,6 @@ URLS={
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty_source.build",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/source/debian-%(ydate)s/ambulant_2.5.%(ydate)s%%7Etrusty_source.changes",
     ],
-    
     'Ubuntu-14.04-amd64' : [
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant-common_2.5.%(ydate)s%%7Etrusty_amd64.deb",
         "http://ambulantplayer.org/nightlybuilds/default/deb/dists/14.04/ambulant/binary-amd64/debian-%(ydate)s/ambulant-gtk_2.5.%(ydate)s%%7Etrusty_amd64.deb",
@@ -96,7 +102,8 @@ class BuildChecker:
     
     def checkPlatform(self, name, urls):
         vars = {
-            "ydate" : time.strftime("%Y%m%d")
+            "ydate" : time.strftime("%Y%m%d"),
+            "platform" : name
             }
         urlsOK = []
         urlsNotOK = []
@@ -108,8 +115,12 @@ class BuildChecker:
                 urlsNotOK.append(url)
         rv = ""
         if urlsNotOK:
+            thislogfile = LOG_URL % vars
+            lastgoodbuild = self.lastGoodBuild.get(name, "unknown")
+            lastgoodlogfile = LOG_URL % dict(ydate=lastgoodbuild, platform=name)
             rv = "Platform %s did not build correctly.\n" % name
-            rv += "(Last correct build: %s)\n" % self.lastGoodBuild.get(name, "unknown")
+            rv += "Log: %s\n" % thislogfile
+            rv += "Last correct build: %s, log: %s\n" % (lastgoodbuild, lastgoodlogfile)
             rv += "Missing files:\n"
             for url in urlsNotOK:
                 rv += "\t%s\n" % url

@@ -448,11 +448,12 @@ third_party_packages={
         #DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
         
         # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
-        DebianTPP("libavutil-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libswscale-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libswresample-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libavcodec-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libavformat-ffmpeg-dev", ppa="ppa:samrog131/ppa"),
+        # The -opti- has been added in Dec-2014, as samrog moved to ffmpeg 2.5
+        DebianTPP("libavutil-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libswscale-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libswresample-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavcodec-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavformat-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
 
     ],
  
@@ -573,8 +574,8 @@ third_party_packages={
 
         TPP("FreeType2", # SDL2 interface for FreeType2 glyph rendering system needed for SDL2_ttf
             url="http://download.savannah.gnu.org/releases/freetype/freetype-2.5.3.tar.gz",
-#           url2="freetype-2.5.3.tar.gz",
-            checkcmd="pkg-config --atleast-version=2.0 freetype",
+            url2="freetype-2.5.3.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.0 freetype2",
             buildcmd=
                 "unset PKG_CONFIG_LIBDIR &&"
                 "cd freetype-2.* && "
@@ -987,7 +988,7 @@ third_party_packages={
 
         WinTPP("ffmpeg-bin",
             url="http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-2.0.2-win32-shared.7z" ,
-            checkcmd="if not exist ffmpeg-2.0.2-win32-shared\\bin\\avformat-53.dll exit 1" ,
+            checkcmd="if not exist ffmpeg-2.0.2-win32-shared\\bin\\avformat-55.dll exit 1" ,
             # No build needed
             ),
 

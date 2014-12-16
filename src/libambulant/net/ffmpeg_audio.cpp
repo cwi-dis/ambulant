@@ -221,26 +221,11 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, const audio_
 bool
 ffmpeg_decoder_datasource::supported(const audio_format& fmt)
 {
-	if (fmt.name == "ffmpeg") {
-		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-		if (enc->codec_type != AVMEDIA_TYPE_AUDIO) return false;
-		if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
-		return true;
-	}
-	if (fmt.name == "live") {
-		//AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-		const char* codec_name = (char*) fmt.parameters;
-
-		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
-		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
-
-		if(!codec) {
-			return false;
-		}
-
-		return true;
-	}
-	return false;
+	assert(fmt.name == "ffmpeg");
+	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+	if (enc->codec_type != AVMEDIA_TYPE_AUDIO) return false;
+	if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
+	return true;
 }
 
 // Hack, hack. Get extension of a URL.
@@ -839,75 +824,39 @@ bool
 ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 {
 	// private method - no need to lock
-	if (fmt.name == "ffmpeg") {
-		m_con = (AVCodecContext *)fmt.parameters;
-		m_con_owned = false;
+	assert(fmt.name == "ffmpeg");
+	m_con = (AVCodecContext *)fmt.parameters;
+	m_con_owned = false;
 
-		if (m_con == NULL) {
-			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
-			return false;
-		}
-		if (m_con->codec_type != AVMEDIA_TYPE_AUDIO) {
-			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), m_con->codec_type);
-			return false;
-		}
+	if (m_con == NULL) {
+		lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
+		return false;
+	}
+	if (m_con->codec_type != AVMEDIA_TYPE_AUDIO) {
+		lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), m_con->codec_type);
+		return false;
+	}
 
-		AVCodec *codec = avcodec_find_decoder(m_con->codec_id);
-		if (codec == NULL) {
-			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
-			return false;
-		}
+	AVCodec *codec = avcodec_find_decoder(m_con->codec_id);
+	if (codec == NULL) {
+		lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
+		return false;
+	}
 //		m_con = avcodec_alloc_context();
 
-		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock->enter();
-		if(avcodec_open2(m_con,codec,NULL) < 0) {
-			ffmpeg_lock->leave();
-			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
-			av_free(m_con);
-			m_con = NULL;
-			return false;
-		}
+	lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
+	ffmpeg_lock->enter();
+	if(avcodec_open2(m_con,codec,NULL) < 0) {
 		ffmpeg_lock->leave();
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
-		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
-		return true;
-	} else if (fmt.name == "live") {
-		const char* codec_name = (char*) fmt.parameters;
-
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::selectdecoder(): audio codec : %s", codec_name);
-		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
-		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
-
-		if( !codec) {
-			//lib::logger::get_logger()->error(gettext("%s: Audio codec %d(%s) not supported"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
-			return false;
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::selectdecoder(): codec found!");
-		}
-
-		m_con = avcodec_alloc_context3(codec);
-		m_con_owned = true;
-		m_con->channels = 0;
-		lib::critical_section* ffmpeg_lock = ffmpeg_global_critical_section();
-		ffmpeg_lock->enter();
-	    if((avcodec_open2(m_con,codec, NULL) < 0) ) {
-			ffmpeg_lock->leave();
-			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
-			av_free(m_con);
-			m_con = NULL;
-			return false;
-		} else {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(): succesfully opened codec");
-		}
-		ffmpeg_lock->leave();
-
-		m_con->codec_type = AVMEDIA_TYPE_AUDIO;
-		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
-		return true;
+		lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
+		av_free(m_con);
+		m_con = NULL;
+		return false;
 	}
-	// Could add support here for raw mp3, etc.
-	return false;
+	ffmpeg_lock->leave();
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
+	m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
+	return true;
 }
 
 audio_format&
@@ -931,7 +880,7 @@ ffmpeg_decoder_datasource::_need_fmt_uptodate()
 		m_fmt.channels = m_con->channels;
 	}
 	if (m_fmt.channels == 0 || m_fmt.samplerate == 0) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
+		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
 	}
 }
 

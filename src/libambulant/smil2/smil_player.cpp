@@ -75,10 +75,8 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_wait_for_eom_flag(true),
 	m_focus(0),
 	m_focussed_nodes(new std::set<int>()),
-	m_new_focussed_nodes(0)
-#ifdef WITH_REMOTE_SYNC
-    , m_timer_sync(NULL)
-#endif
+	m_new_focussed_nodes(0),
+    m_timer_sync(NULL)
 {
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player(0x%x)", this);
@@ -659,13 +657,11 @@ smil_player::clicked_async(async_arg aa) {
 //XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
-#ifdef WITH_REMOTE_SYNC
 void
 smil_player::clicked_external(lib::node *n, lib::timer::time_type t)
 {
 	clicked(n->get_numid(), (double)t/1000000.0);
 }
-#endif // WITH_REMOTE_SYNC
 
 void
 smil_player::before_mousemove(int cursorid)

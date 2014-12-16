@@ -26,7 +26,7 @@
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/lib/timer_sync.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

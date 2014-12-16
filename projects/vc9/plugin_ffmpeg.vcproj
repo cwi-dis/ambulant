@@ -66,7 +66,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swresample.lib swscale.lib avutil.lib"
 				OutputFile="../../bin/win32/libampluginD_ffmpeg.dll"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
@@ -147,7 +147,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swresample.lib swscale.lib avutil.lib"
 				OutputFile="../../bin/win32/libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"

@@ -114,7 +114,6 @@ class ambulant_gtk_window : public common::gui_window {
 
 #if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* new_ambulant_surface();
-
 	cairo_surface_t* get_ambulant_surface();
 	cairo_surface_t* get_old_target_surface();
 	cairo_surface_t* copy_surface(cairo_surface_t* srf);
@@ -141,7 +140,6 @@ class ambulant_gtk_window : public common::gui_window {
 	GdkPixmap* get_pixmap_from_screen(const lib::rect &r);
 	void set_ambulant_surface(GdkPixmap* surf);
 	void reset_ambulant_surface(void);
-
 	GdkPixmap* m_tmppixmap;
 #endif // GTK_MAJOR_VERSION
 	guint signal_redraw_id;
@@ -161,7 +159,6 @@ class ambulant_gtk_window : public common::gui_window {
 #if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* m_target_surface; // surface for final bitblt
 
- //X	cairo_surface_t* m_pixmap;
 	cairo_surface_t* m_old_target_surface;
 	cairo_surface_t* m_surface;
 	cairo_surface_t* m_fullscreen_prev_surface;
@@ -234,6 +231,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	gulong m_motion_notify_handler_id;
 	gulong m_button_release_handler_id;
 	gulong m_key_release_handler_id;
+	lib::critical_section m_lock;
 
 };  // class gtk_ambulant_widget
 

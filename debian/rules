@@ -15,9 +15,10 @@ export DH_OPTIONS
 # default configure options
 CONFIGARGS= --with-gnu-ld --with-expat --with-xerces --with-xerces-plugin --with-third-party-packages=
 # enable interfaces
-CONFIGARGS+= --with-gtk
+# GTK is configured for GTK+-2.0 for compatibility with 'firefox' and 'python-gtk2'
+CONFIGARGS+= --with-gtk=gtk2
 # configure the backends plugins
-CONFIGARGS+= --with-sdl --with-gstreamer
+CONFIGARGS+= --with-sdl2-frontend --with-gstreamer
 # enabl extra backends
 CONFIGARGS+= --with-ffmpeg
 # enable python plguins
@@ -38,7 +39,6 @@ override_dh_auto_configure:
 	dh_auto_configure -- CFLAGS="$(CFLAGS)"  $(CONFIGARGS)
 
 override_dh_auto_test:
-	
 
 override_dh_install:
 	dh_install --list-missing --sourcedir=debian/tmp

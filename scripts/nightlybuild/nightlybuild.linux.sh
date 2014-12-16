@@ -75,7 +75,7 @@ DESTINATION_NPAMBULANT=$DESTINATION_HOST:$DESTINATION_NPAMBULANT_DIR
 echo
 echo ==========================================================
 echo Ambulant nightly build for Linux, $ARCH, $USER@`hostname`, `date`
-echo LogLocation=$TODAY/linux
+echo LogLocation=$BRANCH-linux-$ARCH-$TODAY.txt
 echo ==========================================================
 echo
 
@@ -148,7 +148,7 @@ scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 #
 # configure, make, make install AmvulantPlayer_gtk
 #
-./configure $CONFIGOPTS --with-gtk=gtk+-3.0  --without-npambulant
+./configure $CONFIGOPTS --with-gtk=gtk2  --without-npambulant
 make $MAKEOPTS
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 #
@@ -162,7 +162,7 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 # npambulant cannot yet use gtk+-3.0, therefore fall back to gtk+-3`3.0
 make uninstall
 make distclean
-./configure $CONFIGOPTS --with-gtk=gtk+-2.0  --with-npambulant
+./configure $CONFIGOPTS --with-gtk=gtk2  --with-npambulant
 make $MAKEOPTS
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 

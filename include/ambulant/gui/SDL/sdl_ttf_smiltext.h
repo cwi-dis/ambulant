@@ -31,6 +31,7 @@
 #ifndef AMBULANT_GUI_SDL_TTF_SMILTEXT_H
 #define AMBULANT_GUI_SDL_TTF_SMILTEXT_H
 
+#ifdef  WITH_SDL_IMAGE
 #ifdef  WITH_SDL_TTF
 //TBD: font family impl., offscreen rendering
 #include "ambulant/config/config.h"
@@ -142,5 +143,7 @@ class sdl_ttf_smiltext_renderer :
 } // namespace ambulant
 
 #endif //WITH_SDL_TTF
+
+#endif // WITH_SDL_IMAGE
 
 #endif // AMBULANT_GUI_SDL_TTF_SMILTEXT_H

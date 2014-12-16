@@ -141,7 +141,6 @@ class timer_control : public timer {
 	/// Skew the clock.
 	virtual void skew(signed_time_type skew) = 0;
 	
-#ifdef WITH_REMOTE_SYNC
 	/// Set the observer.
 	virtual void set_observer(timer_observer *obs) = 0;
 	
@@ -151,7 +150,6 @@ class timer_control : public timer {
 	
 	/// Returns true if this clock is slaved to another one.
 	virtual bool is_slaved() const = 0;
-#endif
 
 };
 
@@ -231,7 +229,6 @@ class timer_control_impl : public timer_control {
 	/// Skew the clock.
 	void skew(signed_time_type skew_);
 
-#ifdef WITH_REMOTE_SYNC
 	/// Set the observer.
 	void set_observer(timer_observer *obs);
 	
@@ -241,7 +238,6 @@ class timer_control_impl : public timer_control {
 	
 	/// Returns true if this clock is slaved to another one.
 	bool is_slaved() const { return m_slaved || m_parent->is_slaved(); }
-#endif
 
   private:
 	void _start(time_type t = 0);
@@ -259,10 +255,8 @@ class timer_control_impl : public timer_control {
 	double m_speed;
 	bool m_running;
 	signed_time_type m_drift;
-#ifdef WITH_REMOTE_SYNC
 	timer_observer *m_observer;
 	bool m_slaved;
-#endif
 	critical_section m_lock;
 };
 

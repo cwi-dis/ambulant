@@ -43,6 +43,9 @@
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
+#if GTK_MAJOR_VERSION < 3
+#define WITH_GTK2
+#endif
 #endif
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
@@ -4323,8 +4326,6 @@ static PyObject *timer_controlObj_skew(timer_controlObject *_self, PyObject *_ar
 	return _res;
 }
 
-#ifdef WITH_REMOTE_SYNC
-
 static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -4339,9 +4340,6 @@ static PyObject *timer_controlObj_set_observer(timer_controlObject *_self, PyObj
 	_res = Py_None;
 	return _res;
 }
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 
 static PyObject *timer_controlObj_set_slaved(timer_controlObject *_self, PyObject *_args)
 {
@@ -4357,7 +4355,6 @@ static PyObject *timer_controlObj_set_slaved(timer_controlObject *_self, PyObjec
 	_res = Py_None;
 	return _res;
 }
-#endif
 
 static PyObject *timer_controlObj_is_slaved(timer_controlObject *_self, PyObject *_args)
 {
@@ -4401,16 +4398,10 @@ static PyMethodDef timer_controlObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_controlObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_observer", (PyCFunction)timer_controlObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_slaved", (PyCFunction)timer_controlObj_set_slaved, 1,
 	 PyDoc_STR("(bool slaved) -> None")},
-#endif
 	{"is_slaved", (PyCFunction)timer_controlObj_is_slaved, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
@@ -4767,8 +4758,6 @@ static PyObject *timer_control_implObj_skew(timer_control_implObject *_self, PyO
 	return _res;
 }
 
-#ifdef WITH_REMOTE_SYNC
-
 static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -4783,9 +4772,6 @@ static PyObject *timer_control_implObj_set_observer(timer_control_implObject *_s
 	_res = Py_None;
 	return _res;
 }
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 
 static PyObject *timer_control_implObj_set_slaved(timer_control_implObject *_self, PyObject *_args)
 {
@@ -4801,7 +4787,6 @@ static PyObject *timer_control_implObj_set_slaved(timer_control_implObject *_sel
 	_res = Py_None;
 	return _res;
 }
-#endif
 
 static PyObject *timer_control_implObj_is_slaved(timer_control_implObject *_self, PyObject *_args)
 {
@@ -4845,16 +4830,10 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
 	{"skew", (PyCFunction)timer_control_implObj_skew, 1,
 	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew_) -> None")},
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_observer", (PyCFunction)timer_control_implObj_set_observer, 1,
 	 PyDoc_STR("(ambulant::lib::timer_observer* obs) -> None")},
-#endif
-
-#ifdef WITH_REMOTE_SYNC
 	{"set_slaved", (PyCFunction)timer_control_implObj_set_slaved, 1,
 	 PyDoc_STR("(bool slaved) -> None")},
-#endif
 	{"is_slaved", (PyCFunction)timer_control_implObj_is_slaved, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
@@ -19011,14 +18990,14 @@ void initambulant(void)
 
 
 	PyEval_InitThreads();
-#ifdef WITH_GTK
+#ifdef WITH_GTK2
 	init_pygobject();
 	init_pygtk();
 	PyObject *module = PyImport_ImportModule("gobject");
 	if (module)
 	    PyGObject_Type = (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
 	Py_XDECREF(module);
-#endif // WITH_GTK
+#endif // WITH_GTK2
 
 
 	m = Py_InitModule("ambulant", PyAm_methods);

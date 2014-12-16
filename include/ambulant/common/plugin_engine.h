@@ -25,11 +25,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
-#ifdef WITH_REMOTE_SYNC
-#define AMBULANT_PLUGIN_API_VERSION 13
-#else
-#define AMBULANT_PLUGIN_API_VERSION 12
-#endif
+#define AMBULANT_PLUGIN_API_VERSION 14
 
 namespace ambulant {
 

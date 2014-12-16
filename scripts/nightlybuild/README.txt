@@ -56,6 +56,7 @@ mac and iphone:
 	- try building ambulant
 	- try running nightlybuild scripts (mac and iphone)
 	- Get mail working, fix /etc/postfix/main.cf (see maunakea or another mnightlybuild mac)
+	- try nightlyrun scripts, which do funky things with ssh localhost
 	- add crontab
 	
 win32:

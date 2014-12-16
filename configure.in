@@ -559,12 +559,12 @@ dnl WITH_SDL_PANGO - True if WITH_SDL2 is set, Linux is used and SDL_Pango is av
 dnl WITH_SDL_TTF - True if WITH_SDL2 is set, WITH_SDL_PANGO is not set, Linux is used and SDL2_ttf is available
 
 dnl ======================================================================
-
 # Prefer sdl2
+sdl_version="<none>"
 test_sdl=false
 test_sdl1=false
 test_sdl2=false
-test_sdl2_player=false
+test_sdl2_frontend=false
 test_sdl_audio=false
 test_sdl_video=false
 test_sdl_image=false
@@ -577,7 +577,7 @@ SDL_LIBS=
 if test "x$on_linux" = "xtrue" -o "x$on_macosx" = "xtrue"; then
    test_sdl2=true # use SDL2 by default on linux and macosx, if possible
    if test "x$on_linux" = "xtrue" ; then
-      test_sdl2_player=true # use SDL2 Player  by default on linux, if possible
+      test_sdl2_frontend=true # use SDL2 Player  by default on linux, if possible
    fi
 fi
 
@@ -590,14 +590,6 @@ AC_ARG_WITH(sdl2,
 		fi
 	] )
 
-AC_ARG_WITH(sdl2-player,
-	AS_HELP_STRING([--with-sdl2-player], [Turn on/off SDL2 player and video support]),
-	[
-		if test "x$withval" = "xyes"; then
-		   test_sdl2_player=true
-		fi
-	] )
-
 AC_ARG_WITH(sdl1,
 	AS_HELP_STRING([--with-sdl1], [Turn on/off SDL1.x audio support]),
 	[
@@ -606,19 +598,24 @@ AC_ARG_WITH(sdl1,
 		fi
 	] )
 
-if test "x$test_sdl2" = "xtrue"; then
+if test "x$test_sdl2" = "xtrue" ; then
 	if sdl2-config --version > /dev/null; then
 		SDL_CFLAGS="`sdl2-config --cflags`"
 		SDL_LIBS=`sdl2-config --libs`
+		sdl_version=`sdl2-config --version`
 	else
 		test_sdl1=true
 		test_sdl2=false
-	fi   	
+	fi
+else	
+	test_sdl1=true
+	test_sdl2=false
 fi
 if test "x$test_sdl1" = "xtrue"; then
 	if sdl-config --version > /dev/null; then
 		SDL_CFLAGS="`sdl-config --cflags`"
 		SDL_LIBS=`sdl-config --libs`
+		sdl_version=`sdl-config --version`
 	else
 		# for 1.3 we need to use pkg-config
 		PKG_CHECK_MODULES(SDL, [sdl >= 1.2.0], test_sdl1=true, test_sdl1=false)
@@ -629,13 +626,24 @@ if test "x$test_sdl2" = "xtrue" -o  "x$test_sdl1" = "xtrue"; then
    	test_sdl_audio=true
 fi
 
-if test "x$test_sdl2_player"  = "xtrue"; then
+AC_ARG_WITH(sdl2-frontend,
+        AS_HELP_STRING([--with-sdl2-frontend], [Turn on/off SDL2 player]),
+        [
+                if test "x$withval" = "xyes"; then
+			if test "x$test_sdl2" = "xfalse"; then
+			      	AC_MSG_ERROR("--with-sdl2-frontend needs --with-sdl2");
+			fi   
+               		test_sdl2_frontend=true
+                fi
+        ] )
+
+if test "x$test_sdl2" = "xtrue" -a "x$test_sdl2_frontend" = "xtrue"; then
    	# want these as well
    	test_sdl_image=true
    	test_sdl_video=true
    	test_sdl_pango=true
-   	with_sdl_frontend=true
-	with_frontend=true    # have AmbulantPlayer_sdl too
+	with_sdl_frontend=true    # have AmbulantPlayer_sdl too
+	with_frontend=true
 fi
 
 if test "x$test_sdl_image" = "xtrue"; then
@@ -652,13 +660,12 @@ fi
 if test "x$test_sdl_pango" = "xtrue"; then
 	# need SDL_Pango for smiltext layout
 	PKG_CHECK_MODULES(SDL_Pango, [SDL_Pango >= 0.1.3], test_sdl_pango=true, test_sdl_pango=false)
-fi
-if test "x$test_sdl_pango" = "xtrue" ; then
-	SDL_CFLAGS="$SDL_CFLAGS -DWITH_SDL_PANGO `pkg-config --cflags SDL_Pango`"
-	SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
-elif  test "x$test_sdl2_player"  = "xtrue"; then 
-	# Alternatively SDL2_ttf can be used instead of SDL_Pango
-	test_sdl_ttf=true
+	if test "x$test_sdl_pango" = "xtrue" ; then
+	   	SDL_CFLAGS="$SDL_CFLAGS -DWITH_SDL_PANGO `pkg-config --cflags SDL_Pango`"
+	   	SDL_LIBS="$SDL_LIBS `pkg-config --libs SDL_Pango`"
+	else    # Alternatively SDL2_ttf can be used instead of SDL_Pango
+		test_sdl_ttf=true
+	fi
 fi
 if test "x$test_sdl_ttf" = "xtrue" ; then
 	PKG_CHECK_MODULES(SDL2_ttf, [SDL2_ttf >= 2.0.0], test_sdl_ttf=true, test_sdl_ttf=false)
@@ -685,37 +692,62 @@ AC_MSG_RESULT($test_sdl_video)
 AC_MSG_RESULT($test_sdl_image)
 AC_MSG_RESULT($test_sdl_pango)
 AC_MSG_RESULT($test_sdl_ttf)
-
 dnl Testing for GTK
 dnl ====================================================================
 
-test_gtk=gtk3
+probe_for_gtk=yes
+test_gtk=false
 AC_MSG_CHECKING(for gtk - the GIMP Toolkit)
 AC_ARG_WITH(gtk,
-     AS_HELP_STRING([--with-gtk@<:@=gtk2|gtk3@:>@], [Enable/disable gtk+-2.0(*)/gtk+-3.0 support]),
+     AS_HELP_STRING([--with-gtk@<:@=gtk2|gtk3@:>@], [Enable/disable gtk2 or gtk3 support]),
      [
-     	if test "x$withval" = "xno"; then
-		test_gtk=false	
-	elif test "x$withval" = "xgtk2" -o  "x$withval" = "xgtk+-2.0" ; then
-	     	test_gtk=gtk2
-	elif test "x$withval" != "xyes" -a  "x$withval" != "xgtk3" -a  "x$withval" != "xgtk+-3.0" ; then
-	     	AC_MSG_ERROR("Unknown value for --with-gtk: $withval");
-	fi
+     	case ${withval} in
+     	no)
+     		test_gtk=false
+     		probe_for_gtk=no
+     		;;
+     	gtk3)
+     		PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=gtk3, test_gtk=false)
+			if test $test_gtk = false; then
+				AC_MSG_WARN([gtk+-3.0 or gthread-2.0 not found, or too old])
+			fi
+			probe_for_gtk=no
+     		;;
+     	gtk2)
+			PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=gtk2, test_gtk=false)
+			if test $test_gtk = false; then
+				AC_MSG_WARN([gtk+-2.0 or gthread-2.0 not found, or too old])
+			fi
+			probe_for_gtk=no
+     		;;
+     	yes)
+     		probe_for_gtk=yes
+     		;;
+     	*)
+     		AC_MSG_WARN([Unknown value for --with-gtk: ${withval}])
+     		probe_for_gtk=no
+     		test_gtk=false
+     		;;
+		esac
+     ],[
+     	probe_for_gtk=yes
      ])
-if test "x$test_gtk" = "xgtk3"; then
-	PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=$test_gtk, test_gtk=false)
-elif  test "x$test_gtk" = "xgtk2"; then
-	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=$test_gtk, test_gtk=false)
+if test x$probe_for_gtk = xyes ; then
+	# GTK2 is preferred over GTK3, for now
+	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], [
+		test_gtk=gtk2
+	],[
+		PKG_CHECK_MODULES(GTK,[gtk+-3.0 >= 3.10.0 gthread-2.0 >= 2.2], test_gtk=gtk3, test_gtk=false)
+	])
 fi
-if test $test_gtk = false; then
-	AC_MSG_WARN([gtk+-3.0 or gthread-2.0 not found, or too old])
-else
+if test $test_gtk != false; then
 	with_frontend=true
 fi
 AM_CONDITIONAL(WITH_GTK, test x$test_gtk != xfalse)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_MSG_RESULT($test_gtk)
+
 dnl Testing for gstreamer
 dnl ====================================================================
 
@@ -950,13 +982,14 @@ AC_ARG_WITH([npambulant],
 			NPAMBULANT_INCLUDES=-I${withval}
 			with_npambulant=true
 			;;
-		esac],
+		esac
+		if  test x$with_npambulant = xtrue -a $test_gtk = "gtk3"; then
+		   AC_MSG_ERROR("--with-npambulant is not yet available for gtk3. Please use --with-gtk=gtk2.")
+		   with_npambulant=false
+		fi
+	],
 	[with_npambulant=false])
 
-if test $test_gtk = "gtk3"; then
-	AC_MSG_ERROR("--with-npambulant is not yet available for gtk3. Please use --with-gtk=gtk2.")
-	with_npambulant=false
-fi
 AC_SUBST(NPAMBULANT_INCLUDES)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
@@ -1249,12 +1282,13 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Enable Xerces as plugin:        ${xerces_plugin}
     Use libxml2 XML library:        ${test_libxml2}
     Build with ffmpeg:              ${test_ffmpeg}
+    Build with SDL version:         ${sdl_version}
     Build with SDL audio:           ${test_sdl_audio}
     Build with SDL2 video:          ${test_sdl_video}
     Build with SDL2_image:          ${test_sdl_image}
     Build with SDL_Pango:           ${test_sdl_pango}
-    Build with SDL2_ttf:    	${test_sdl_ttf}
-    Build SDL frontend:		${with_sdl_frontend}
+    Build with SDL2_ttf:            ${test_sdl_ttf}
+    Build SDL frontend:             ${with_sdl_frontend}
     Build with gstreamer:           ${test_gstreamer}
 
     Build with GTK:                 ${test_gtk}

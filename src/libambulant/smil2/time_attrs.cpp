@@ -73,8 +73,14 @@ bool time_attr_parser::parse_plain_offset(const std::string& s, sync_value_struc
 
 bool time_attr_parser::parse_wallclock(const std::string& s, sync_value_struct& svs) {
 	svs.type = sv_wallclock;
-	m_logger->warn(gettext("Ignoring wallclock in document"));
-	return false;
+    lib::wallclock_p parser;
+    if (! parser.matches(s)) {
+        m_logger->warn(gettext("Ignoring wallclock in document"));
+        return false;
+
+    }
+    svs.offset = parser.m_result;
+    return true;
 }
 
 // statechange-value  ::= "stateChange(" ref ")"

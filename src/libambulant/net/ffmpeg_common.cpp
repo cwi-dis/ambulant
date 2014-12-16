@@ -155,8 +155,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, const net::url& url, timestamp_
 		AVStream *stream = m_con->streams[video_stream_nr()];
 		AVCodecContext *codec = stream->codec;
 		m_video_fmt.parameters = (void *)codec;
+#if 0
+		// Jack removed this (27-Nov-2014) because actually this forestalls converting timestamps in the decoder...
 		// Make the timebases match, so we can correcty convert timestamps in the video_decoder
 		codec->time_base = stream->time_base;
+#endif
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): video_codec_name=%s", m_con->streams[video_stream_nr()]->codec->codec_name);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): No Video stream ?");
@@ -213,6 +216,13 @@ ffmpeg_demux::supported(const net::url& url)
 	AVInputFormat *fmt;
 	AVProbeData probe_data;
 	std::string url_str(url.get_document().get_url());
+// Workaraound for: https://trac.ffmpeg.org/ticket/2702 (Faulty handling of file: protocol on Windows)
+#define FFMPEG_BUG_2702
+#if defined(_WINDOWS) && defined(FFMPEG_BUG_2702)
+	if (url.is_local_file()) {
+		url_str = url.get_file();
+	}
+#endif//defined(_WINDOWS) && defined(FFMPEG_BUG_2702)
 	const std::string& frag = url.get_ref();
 	bool is_live = (frag.find("is_live=1") != std::string::npos);
 	std::string ffmpeg_name = url_str;
@@ -532,7 +542,14 @@ ffmpeg_demux::run()
 		// Keep statistics
 		m_data_consumed[pkt->stream_index] += pkt->size;
 		
-		demux_datasink *sink = m_sinks[pkt->stream_index];
+        // We convert pts/dts/duration to Ambulant units. This is so the downstream video decoder can
+        // use the duration to guess at the frame duration
+        pkt->duration = av_rescale_q(pkt->duration, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+        pkt->pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+        pkt->dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+        
+        // Determine where we should send the packet (if anywhere)
+        demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 		} else {
@@ -547,8 +564,8 @@ ffmpeg_demux::run()
 				}
 #ifdef LOGGER_VIDEOLATENCY
                 {
-                    timestamp_t pr_pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
-                    timestamp_t pr_dts = av_rescale_q(pkt->dts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+                    timestamp_t pr_pts = pkt->pts;
+                    timestamp_t pr_dts = pkt->dts;
                     lib::logger::get_logger(LOGGER_VIDEOLATENCY)->trace("videolatency 0-received %lld %lld %s", pr_dts, pr_pts, m_url.get_url().c_str());
                 }
 #endif
@@ -563,13 +580,12 @@ ffmpeg_demux::run()
 				// pts instead of the invalid AV_NOPTS_VALUE
 
 				if (pts != (int64_t)AV_NOPTS_VALUE) {
-					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 
 					if (pkt->stream_index == audio_streamnr) {
 						last_valid_audio_pts = pts;
 					}
 				} else {
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
 					last_valid_audio_pts++;
 					pts = last_valid_audio_pts;

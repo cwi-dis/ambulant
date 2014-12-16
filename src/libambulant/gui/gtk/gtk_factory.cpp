@@ -329,6 +329,9 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
+		if (m_ambulant_widget->m_screenshot_data != NULL) {
+			g_free(m_ambulant_widget->m_screenshot_data);
+		}
 		m_ambulant_widget->set_gtk_window(NULL);
 //XXXX next delete Reload crashes with gtk, not with qt
 //		delete m_ambulant_widget;
@@ -349,6 +352,9 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	if (m_transition_surface != NULL) {
 		cairo_surface_destroy(m_transition_surface);
 	}
+	if (m_ambulant_widget != NULL && m_ambulant_widget->m_screenshot_data != NULL) {
+		g_free(m_ambulant_widget->m_screenshot_data);
+	}
 }
 #else	  
 ambulant_gtk_window::~ambulant_gtk_window()
@@ -358,6 +364,11 @@ ambulant_gtk_window::~ambulant_gtk_window()
 	// Note that we don't destroy the widget, only sver the connection.
 	// the widget itself is destroyed independently.
 	if (m_ambulant_widget ) {
+		if (m_ambulant_widget->m_screenshot_data != NULL) {
+			g_free(m_ambulant_widget->m_screenshot_data);
+//		delete m_ambulant_widget;
+		m_ambulant_widget = NULL;
+		}
 		m_ambulant_widget->set_gtk_window(NULL);
 //XXXX next delete Reload crashes with gtk, not with qt
 //		delete m_ambulant_widget;
@@ -441,13 +452,17 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	clear();
 	m_handler->redraw(r, this);
 	_screenTransitionPostRedraw(r);
+#ifdef WITH_SCREENSHOTS
 	width = gdk_window_get_width (gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
 	height = gdk_window_get_height(gtk_widget_get_window (m_ambulant_widget->get_gtk_widget()));
 	cairo_surface_t* surf = get_target_surface();
+	if (surf == NULL) {
+		// target surface not yet known
+		return;
+	}
 	guint W = cairo_image_surface_get_width (surf);
 	guint H = cairo_image_surface_get_height (surf);
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_surface (surf, 0, 0, W, H);
-#ifdef WITH_SCREENSHOTS
 	if (m_ambulant_widget->m_screenshot_data) {
 		g_free(m_ambulant_widget->m_screenshot_data);
 		m_ambulant_widget->m_screenshot_data = NULL;
@@ -504,8 +519,8 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
 	}
-	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
+	g_object_unref (G_OBJECT (pixbuf));
 }
 #endif // GTK_MAJOR_VERSION
 
@@ -741,6 +756,7 @@ ambulant_gtk_window::set_target_surface(cairo_surface_t* surf)
 		m_target_surface = surf;
 	}
 }
+
 #else
 
 void
@@ -1057,6 +1073,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 #endif // GTK_MAJOR_VERSION
 gtk_ambulant_widget::~gtk_ambulant_widget()
 {
+	m_lock.enter();
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets--;
 	if ( ! m_draw_area_tags.empty()) {
@@ -1086,6 +1103,7 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 		m_screenshot_data = NULL;
 		m_screenshot_size = 0;
 	}
+	m_lock.leave();
 }
 
 void
@@ -1113,6 +1131,7 @@ gtk_ambulant_widget::get_gtk_widget()
 #if GTK_MAJOR_VERSION >= 3
 void
 gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(%p): widget=%p cr=%p", this, widget, cr);
 	if (cr == NULL || cairo_status(cr) != CAIRO_STATUS_SUCCESS) {
 		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%p): wrong cairo status %s", (void*) this, cr == NULL ? "<null> ": cairo_status_to_string (cairo_status(cr)));
@@ -1140,15 +1159,15 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 		agw->set_drawing_surface (target_surface);
 	}
 	if (m_gtk_window == NULL) {
-		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%x):  m_gtk_window==NULL",
-			(void*) this);
+		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(0x%x):  m_gtk_window==NULL", (void*) this);
+		m_lock.leave();
 		return;
 	}
 	agw->redraw(agw->get_target_bounds());
 	cairo_set_source_surface (cr, agw->get_target_surface(), 0, 0);
 	cairo_paint (cr);
+	m_lock.leave();
 }
-
 #else
 void
 gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
@@ -1222,7 +1241,6 @@ void gtk_ambulant_widget::get_size(int *width, int *height){
 #if GTK_MAJOR_VERSION >= 3
 	*width = gdk_window_get_width (gtk_widget_get_window (m_widget));
 	*height = gdk_window_get_height(gtk_widget_get_window (m_widget));
-
 #else
 	gdk_drawable_get_size(m_widget->window, width, height);
 #endif // GTK_MAJOR_VERSION
