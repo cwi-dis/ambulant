@@ -197,12 +197,15 @@ class MyScanner(CxxScanner):
                 'get_screenshot'
                 ]
             ),
-            ('#ifdef WITH_SDL2', [
+            ('#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)', [
                 'create_sdl_video_playable_factory',
                 'create_sdl_text_playable_factory',
-                'create_sdl_smiltext_playable_factory',
                 'create_sdl_image_playable_factory',
                 'create_sdl_fill_playable_factory',
+                ]
+            ),
+            ('#if defined(WITH_SDL2) && (defined(WITH_SDL_TTF) || defined(WITH_SDL_PANGO))', [
+                'create_sdl_smiltext_playable_factory',
                 ]
             ),
             ('#ifdef WITH_REMOTE_SYNC', [
