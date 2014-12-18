@@ -278,7 +278,10 @@ void plugin_engine::load_plugin(const char *filename)
 {
 	// Load the plugin
 	lib::logger::get_logger()->trace("plugin_engine: loading %s", filename);
-	lt_dlhandle handle = lt_dlopen(filename);
+	lt_dladvise advise;
+	lt_dladvise_init(&advise);
+	lt_dladvise_global(&advise);
+	lt_dlhandle handle = lt_dlopenadvise(filename, advise);
 	if (handle) {
 		AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
 		AM_DBG lib::logger::get_logger()->debug("Registering  plugin's factory");
