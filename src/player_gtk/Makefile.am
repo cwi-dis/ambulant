@@ -108,7 +108,8 @@ AmbulantPlayer_gtk_LDADD = $(libambulant_gtk) \
 	$(PTHREAD_LIBS)
 
 AM_LDFLAGS= \
-	   -export-dynamic
+	   -export-dynamic \
+	   -R $(libdir)
 
 AM_CPPFLAGS = \
 		$(extra_gstreamer_CPPFLAGS) \
