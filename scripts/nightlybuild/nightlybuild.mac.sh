@@ -114,6 +114,8 @@ cd ..
 ../configure $CONFIGOPTS
 make $MAKEOPTS
 cd src/player_macosx
+# Enable next line to sign AmbulantPlayer:
+# make $MAKEOPTS signedapp
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 cd ../.. # Back to build dir
 cd .. # Back to source dir
