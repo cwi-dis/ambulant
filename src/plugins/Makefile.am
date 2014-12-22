@@ -33,7 +33,7 @@ xerces_plugin = libamplugin_xerces.la
 xerces_includes = $(XERCES_CFLAGS)
 libamplugin_xerces_la_LDFLAGS = -module $(XERCES_LIBS)
 libamplugin_xerces_la_LIBADD = $(libambulant_core)
-libamplugin_xerces_la_SOURCES = xercesplugin.cpp
+libamplugin_xerces_la_SOURCES = xercesplugin.cpp xerces_parser.cpp
 else
 xerces_plugin=
 xerces_include=
