@@ -119,13 +119,13 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 
 	std::string id = m_dest->get_info()->get_name();
 	AM_DBG logger::get_logger()->debug("%s: m_node=0x%x, m_dest=0x%x", __PRETTY_FUNCTION__, m_node, m_dest);
+	cairo_t* cr = cairo_create(agtkw->get_target_surface());
 	if (m_node != NULL && m_node->get_attribute("backgroundImage")) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
 		// backgroundOpacity.
 		double alpha = ri->get_bgopacity();
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		cairo_t* cr = cairo_create(agtkw->get_target_surface());
 		// set surface to all tranparent pixels
 		cairo_rectangle (cr, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 		cairo_clip(cr);
@@ -225,7 +225,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
-#else
+#else //  GTK_MAJOR_VERSION < 3
 
 void
 gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
@@ -283,31 +283,13 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// While rendering background images only, check for tiling. This code is
 	// convoluted, it knows that the node and the region we're painting to are
 	// really the same node.
-
-	std::string id = m_dest->get_info()->get_name();
-	AM_DBG logger::get_logger()->debug("%s: m_node=0x%x, m_dest=0x%x", __PRETTY_FUNCTION__, m_node, m_dest);
-	if (m_node != NULL && m_node->get_attribute("backgroundImage")) {
+	if (m_node->get_attribute("backgroundImage") && m_dest->is_tiled()) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
-		// backgroundOpacity.
-		double alpha = ri->get_bgopacity();
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		cairo_t* cr = cairo_create(agtkw->get_target_surface());
-		// set surface to all tranparent pixels
-		cairo_rectangle (cr, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-		cairo_clip(cr);
-		cairo_set_operator (cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint (cr);
-		// set surface to draw over existing pixels
-		cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-		
-		cairo_rectangle (cr, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-		cairo_clip(cr);
-		if (m_dest->is_tiled()) {
-			common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
-			common::tile_positions::iterator it;
-			for(it=tiles.begin(); it!=tiles.end(); it++) {
-
+		common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
+		common::tile_positions::iterator it;
+		for(it=tiles.begin(); it!=tiles.end(); it++) {
 
 			srcrect = (*it).first;
 			dstrect = (*it).second;
@@ -334,7 +316,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 			g_object_unref (G_OBJECT(m_image));
 			g_object_unref (G_OBJECT (gc));
 		}
-		cairo_destroy(cr);
 		m_lock.leave();
 		return;
 	}
@@ -426,4 +407,4 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
-#endif // GTK_MAJOR_VERSION
+#endif //  GTK_MAJOR_VERSION < 3
