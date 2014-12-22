@@ -61,9 +61,9 @@ class gtk_background_renderer : public common::background_renderer {
 	:	common::background_renderer(src),
 #if GTK_MAJOR_VERSION >= 3
 		m_background_surface(NULL) {}
-#else
+#else // GTK_MAJOR_VERSION < 3
 		m_background_pixmap(NULL) {}
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 	void redraw(const lib::rect &dirty, common::gui_window *windo);
 	void highlight(gui_window *window);
@@ -72,9 +72,9 @@ class gtk_background_renderer : public common::background_renderer {
   private:
 #if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* m_background_surface;
-#else
+#else // GTK_MAJOR_VERSION < 3
 	GdkPixmap *m_background_pixmap;
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 };
 
 } // namespace gtk

@@ -154,7 +154,7 @@ gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 		cairo_move_to (cr, L, T);
 		pango_cairo_show_layout (cr, layout);
 		cairo_destroy(cr);
-#else
+#else // GTK_MAJOR_VERSION < 3
 		GdkColor gtk_color;
 		gtk_color.red = redc(m_text_color)*0x101;
 		gtk_color.blue = bluec(m_text_color)*0x101;
@@ -163,7 +163,7 @@ gtk_text_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) {
 		gdk_gc_set_rgb_fg_color (gc, &gtk_color);
 		gdk_draw_layout(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()),gc , L, T, layout);
 		g_object_unref (G_OBJECT (gc));
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 		pango_font_description_free(font_desc);
 		g_object_unref (G_OBJECT (context));
 		g_object_unref(layout);

@@ -53,42 +53,6 @@ gui::gtk::create_gtk_fill_playable_factory(common::factories *factory, common::p
 
 #if GTK_MAJOR_VERSION >= 3
 void
-gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
-{
-	if ( !	(m_src && m_dst))
-		return;
-	const lib::rect &r = m_dst->get_rect();
-	AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw(0x%x)", (void *)this);
-	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) window;
-	cairo_t* cr = cairo_create(agtkw->get_target_surface());
-	// First find our whole area to be cleared to background color
-	lib::rect dstrect_whole = r;
-	dstrect_whole.translate(m_dst->get_global_topleft());
-	int	L = dstrect_whole.left(),
-		T = dstrect_whole.top(),
-		W = dstrect_whole.width(),
-		H = dstrect_whole.height();
-		// Fill with background color
-		lib::color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: clearing to %x, agtkw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)agtkw,L,T,W,H);
-	double opacity = m_src->get_bgopacity();
-	if (opacity > 0.0) {
-		GdkRGBA bgc;
-		bgc.alpha = 1.0;
-		bgc.red = redf(bgcolor);
-		bgc.blue = bluef(bgcolor);
-		bgc.green = greenf(bgcolor);
-
-		cairo_set_source_rgba (cr, bgc.red, bgc.green, bgc.blue, opacity);
-		cairo_rectangle (cr, L, T, W, H);
-		cairo_fill(cr);
-	}
-	std::string id = m_dst->get_info()->get_name();
-	AM_DBG logger::get_logger()->debug("%s: m_dst=0x%x", __PRETTY_FUNCTION__, id.c_str());
-	cairo_destroy(cr);
-}
-#else
-void
 gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
 
 	const common::region_info *info = m_dest->get_info();
@@ -112,8 +76,6 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	color_t color = lib::to_color(color_attr);
 	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
-#if GTK_MAJOR_VERSION >= 3
-//	cairo_surface_t* pm = agtkw->get_ambulant_surface();
 	cairo_surface_t* pm = agtkw->get_target_surface();
 	GdkRGBA bgc;
 	bgc.red = redf(color);
@@ -125,7 +87,30 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	cairo_rectangle (cr, L, T, W, H);
 	cairo_fill(cr);
 	cairo_destroy(cr);
-#else
+	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
+}
+#else // GTK_MAJOR_VERSION < 3
+void
+gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
+
+	const common::region_info *info = m_dest->get_info();
+	const lib::rect &r = m_dest->get_rect();
+	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) window;
+	// <brush> drawing
+	// First find our whole area to be cleared to <brush> color
+	lib::rect dstrect_whole = r;
+	dstrect_whole.translate(m_dest->get_global_topleft());
+	int L = dstrect_whole.left(),
+		T = dstrect_whole.top(),
+		W = dstrect_whole.width(),
+		H = dstrect_whole.height();
+	// Fill with  color
+	const char *color_attr = m_node->get_attribute("color");
+	if (!color_attr) {
+		lib::logger::get_logger()->trace("<brush> element without color attribute");
+		return;
+	}
+	// Fill with <brush> color
 	GdkColor bgc;
 	bgc.red = redc(color)*0x101;
 	bgc.blue = bluec(color)*0x101;
@@ -138,9 +123,9 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	gdk_gc_set_rgb_fg_color (gc, &bgc);
 	gdk_draw_rectangle (GDK_DRAWABLE (pm), gc, TRUE, L, T, W, H);
 	g_object_unref (G_OBJECT (gc));
-#endif // GTK_MAJOR_VERSION
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 }
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
 void
@@ -178,7 +163,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 	AM_DBG logger::get_logger()->debug("%s: m_dst=0x%x", __PRETTY_FUNCTION__, id.c_str());
 	cairo_destroy(cr);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
@@ -236,8 +221,8 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		}
 	}
 }
-#endif // GTK_MAJOR_VERSION
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
+#endif // GTK_MAJOR_VERSION < 3
 
 void gtk_background_renderer::highlight(gui_window *window)
 {
@@ -257,12 +242,11 @@ gtk_background_renderer::keep_as_background()
 		m_background_surface = NULL;
 	}
 	m_background_surface = agtkw->get_surface_from_screen(dstrect_whole);
-#else
+#else // GTK_MAJOR_VERSION < 3
 	if (m_background_pixmap) {
 		delete m_background_pixmap;
 		m_background_pixmap = NULL;
 	}
 	m_background_pixmap = agtkw->get_pixmap_from_screen(dstrect_whole);
-#endif // GTK_MAJOR_VERSION
-//XXXX	dumpPixmap(m_background_pixmap, "/tmp/keepbg");
+#endif // GTK_MAJOR_VERSION < 3
 }

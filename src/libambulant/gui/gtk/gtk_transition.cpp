@@ -58,7 +58,7 @@ setup_transition(bool outtrans, ambulant_gtk_window *agw, cairo_surface_t** olds
 		*newsrf = agw->get_ambulant_surface();
 	}
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 setup_transition(bool outtrans, ambulant_gtk_window *agw, GdkPixmap** oldpxmp, GdkPixmap** newpxmp)
 {
 	if (outtrans) {
@@ -73,7 +73,7 @@ setup_transition(bool outtrans, ambulant_gtk_window *agw, GdkPixmap** oldpxmp, G
 		*newpxmp = agw->get_ambulant_surface();
 	}
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
 static void
@@ -93,7 +93,7 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		agw->m_tmp_surface = NULL;
 	}
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 static void
 finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *dest)
 {
@@ -109,7 +109,8 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		g_object_unref (G_OBJECT (gc));
 	}
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
+
 
 #if GTK_MAJOR_VERSION >= 3
 void
@@ -132,7 +133,7 @@ gtk_transition_blitclass_fade::update()
 	cairo_destroy (cr);
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_transition_blitclass_fade::update()
 {
@@ -159,7 +160,7 @@ gtk_transition_blitclass_fade::update()
 	g_object_unref (G_OBJECT (old_pixbuf));
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
 void
@@ -185,7 +186,7 @@ gtk_transition_blitclass_rect::update()
 	cairo_destroy (cr);
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_transition_blitclass_rect::update()
 {
@@ -206,9 +207,9 @@ gtk_transition_blitclass_rect::update()
 	g_object_unref (G_OBJECT (gc));
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#endif // GTK_MAJOR_VERSION
-#if GTK_MAJOR_VERSION >= 3
+#endif // GTK_MAJOR_VERSION < 3
 
+#if GTK_MAJOR_VERSION >= 3
 void
 gtk_transition_blitclass_r1r2r3r4::update()
 {
@@ -273,7 +274,7 @@ gtk_transition_blitclass_r1r2r3r4::update()
 
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 
 void
 gtk_transition_blitclass_r1r2r3r4::update()
@@ -324,7 +325,7 @@ gtk_transition_blitclass_r1r2r3r4::update()
 
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
 void
@@ -358,7 +359,7 @@ gtk_transition_blitclass_rectlist::update()
 
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_transition_blitclass_rectlist::update()
 {
@@ -393,7 +394,7 @@ gtk_transition_blitclass_rectlist::update()
 	g_object_unref (G_OBJECT (gc)); // clears region as well
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
 void
@@ -423,7 +424,7 @@ gtk_transition_blitclass_poly::update()
 
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_transition_blitclass_poly::update()
 {
@@ -459,7 +460,7 @@ gtk_transition_blitclass_poly::update()
 	free(points);
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
 void
@@ -509,7 +510,7 @@ gtk_transition_blitclass_polylist::update()
 	cairo_destroy (cr);
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_transition_blitclass_polylist::update()
 {
@@ -560,7 +561,7 @@ gtk_transition_blitclass_polylist::update()
 	g_object_unref (G_OBJECT (gc));
 	finalize_transition(m_outtrans, agw, m_dst);
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 smil2::transition_engine *
 gtk_transition_engine(common::surface *dst, bool is_outtrans, const transition_info *info)

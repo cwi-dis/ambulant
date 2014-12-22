@@ -21,7 +21,7 @@
 #if GTK_MAJOR_VERSION >= 3
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION >= 3
 
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
@@ -201,7 +201,7 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	m_lock.leave();
 }
 
-#else// GTK_MAJOR_VERSION
+#else // GTK_MAJOR_VERSION < 3
 
 void
 gtk_transition_renderer::redraw_pre(gui_window *window)
@@ -243,13 +243,13 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
 #if GTK_MAJOR_VERSION >= 3
 	cairo_surface_t* surf = agw->get_target_surface();
-#else
+#else // GTK_MAJOR_VERSION < 3
 	GdkPixmap* surf = agw->get_ambulant_surface();
 
 	if (surf != NULL) {
 		agw->reset_ambulant_surface();
 	}
-#endif // ! GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
@@ -280,8 +280,7 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	}
 	m_lock.leave();
 }
-
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 void
 gtk_transition_renderer::transition_step()
