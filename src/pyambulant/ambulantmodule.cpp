@@ -18549,7 +18549,7 @@ static PyObject *PyAm_create_sdl_playable_factory(PyObject *_self, PyObject *_ar
 }
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 static PyObject *PyAm_create_sdl_video_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -18569,7 +18569,7 @@ static PyObject *PyAm_create_sdl_video_playable_factory(PyObject *_self, PyObjec
 }
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 static PyObject *PyAm_create_sdl_text_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -18589,7 +18589,7 @@ static PyObject *PyAm_create_sdl_text_playable_factory(PyObject *_self, PyObject
 }
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && (defined(WITH_SDL_TTF) || defined(WITH_SDL_PANGO))
 
 static PyObject *PyAm_create_sdl_smiltext_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -18609,7 +18609,7 @@ static PyObject *PyAm_create_sdl_smiltext_playable_factory(PyObject *_self, PyOb
 }
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 static PyObject *PyAm_create_sdl_image_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -18629,7 +18629,7 @@ static PyObject *PyAm_create_sdl_image_playable_factory(PyObject *_self, PyObjec
 }
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 
 static PyObject *PyAm_create_sdl_fill_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -18887,27 +18887,27 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 	{"create_sdl_video_playable_factory", (PyCFunction)PyAm_create_sdl_video_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 	{"create_sdl_text_playable_factory", (PyCFunction)PyAm_create_sdl_text_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && (defined(WITH_SDL_TTF) || defined(WITH_SDL_PANGO))
 	{"create_sdl_smiltext_playable_factory", (PyCFunction)PyAm_create_sdl_smiltext_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 	{"create_sdl_image_playable_factory", (PyCFunction)PyAm_create_sdl_image_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
-#ifdef WITH_SDL2
+#if defined(WITH_SDL2) && defined(WITH_SDL_IMAGE)
 	{"create_sdl_fill_playable_factory", (PyCFunction)PyAm_create_sdl_fill_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
