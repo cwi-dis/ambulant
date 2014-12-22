@@ -25,8 +25,6 @@ EXTRA_DIST=setup.py \
 
 ambulant_lib=libambulant.so
 
-ambulant_lib=libambulant.so
-
 # Various flags for optional features
 
 if WITH_GTK
@@ -59,7 +57,7 @@ all_cflags=$(extra_cflags) $(DEFS) $(CFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 # These targets are magic for automake
 
 all-am: build-pyambulant
-'
+
 check-am: check-pyambulant
 
 install-exec-hook: install-pyambulant
