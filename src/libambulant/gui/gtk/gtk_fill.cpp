@@ -74,16 +74,15 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	}
 	// Fill with <brush> color
 	color_t color = lib::to_color(color_attr);
-	lib::color_t bgcolor = info ? info->get_bgcolor() : lib::rrggbb_to_color(0xffffff);
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	cairo_surface_t* pm = agtkw->get_target_surface();
-	GdkRGBA bgc;
-	bgc.red = redf(color);
-	bgc.blue = bluef(color);
-	bgc.green = greenf(color);
-	bgc.alpha = 1.0;
+	GdkRGBA gcol;
+	gcol.red = redf(color);
+	gcol.blue = bluef(color);
+	gcol.green = greenf(color);
+	gcol.alpha = 1.0;
 	cairo_t* cr = cairo_create(agtkw->get_target_surface());
-	gdk_cairo_set_source_rgba (cr, &bgc);
+	gdk_cairo_set_source_rgba (cr, &gcol);
 	cairo_rectangle (cr, L, T, W, H);
 	cairo_fill(cr);
 	cairo_destroy(cr);
@@ -111,16 +110,19 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 		return;
 	}
 	// Fill with <brush> color
-	GdkColor bgc;
-	bgc.red = redc(color)*0x101;
-	bgc.blue = bluec(color)*0x101;
-	bgc.green = greenc(color)*0x101;
+	color_t color = lib::to_color(color_attr);
+	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
+	// Fill with <brush> color
+	GdkColor gcol;
+	gcol.red = redc(color)*0x101;
+	gcol.blue = bluec(color)*0x101;
+	gcol.green = greenc(color)*0x101;
 	GdkPixmap* pm = agtkw->get_ambulant_surface();
 	if (pm == NULL) {
 		pm = agtkw->get_ambulant_pixmap();
 	}
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (pm));
-	gdk_gc_set_rgb_fg_color (gc, &bgc);
+	gdk_gc_set_rgb_fg_color (gc, &gcol);
 	gdk_draw_rectangle (GDK_DRAWABLE (pm), gc, TRUE, L, T, W, H);
 	g_object_unref (G_OBJECT (gc));
 	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
@@ -221,7 +223,6 @@ gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wind
 		}
 	}
 }
-#endif // GTK_MAJOR_VERSION < 3
 #endif // GTK_MAJOR_VERSION < 3
 
 void gtk_background_renderer::highlight(gui_window *window)

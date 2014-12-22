@@ -483,8 +483,8 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
 	}
-#endif //WITH_SCREENSHOTS
 	g_object_unref (G_OBJECT (pixbuf));
+#endif //WITH_SCREENSHOTS
 }
 #else // GTK_MAJOR_VERSION < 3
 void
@@ -1175,7 +1175,6 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	agw->redraw(agw->get_target_bounds());
 	cairo_set_source_surface (cr, agw->get_target_surface(), 0, 0);
 	cairo_paint (cr);
-	m_lock.leave();
 	m_lock.leave();
 }
 #else // GTK_MAJOR_VERSION < 3
