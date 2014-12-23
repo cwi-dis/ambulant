@@ -40,9 +40,9 @@ namespace gui {
 namespace gtk {
 #if GTK_MAJOR_VERSION >= 3
 	void cairo_surface_bitblt(cairo_surface_t* dst, int dst_x, int dst_y, cairo_surface_t* src, int src_x, int src_y, int width, int height);
-#else
+#else //  GTK_MAJOR_VERSION < 3
 	void gdk_pixmap_bitblt(GdkPixmap* dst, int dst_x, int dst_y, GdkPixmap* src, int src_x, int src_y, int width, int height);
-#endif // GTK_MAJOR_VERSION
+#endif //  GTK_MAJOR_VERSION < 3
 
 class gtk_ambulant_widget;
 
@@ -131,7 +131,7 @@ class ambulant_gtk_window : public common::gui_window {
 	lib::rect m_target_bounds;
 	void set_target_bounds (lib::rect target_bounds) { m_target_bounds = target_bounds; }
 	lib::rect get_target_bounds() { return m_target_bounds; }
-#else
+#else //  GTK_MAJOR_VERSION < 3
 	GdkPixmap* get_ambulant_pixmap();
 	GdkPixmap* new_ambulant_surface();
 
@@ -141,7 +141,7 @@ class ambulant_gtk_window : public common::gui_window {
 	void set_ambulant_surface(GdkPixmap* surf);
 	void reset_ambulant_surface(void);
 	GdkPixmap* m_tmppixmap;
-#endif // GTK_MAJOR_VERSION
+#endif //  GTK_MAJOR_VERSION < 3
 	guint signal_redraw_id;
 
   private:
@@ -163,13 +163,13 @@ class ambulant_gtk_window : public common::gui_window {
 	cairo_surface_t* m_surface;
 	cairo_surface_t* m_fullscreen_prev_surface;
 	cairo_surface_t* m_fullscreen_old_surface;
-#else
+#else //  GTK_MAJOR_VERSION < 3
 	GdkPixmap* m_pixmap;
 	GdkPixmap* m_oldpixmap;
 	GdkPixmap* m_surface;
 	GdkPixmap* m_fullscreen_prev_pixmap;
 	GdkPixmap* m_fullscreen_old_pixmap;
-#endif // GTK_MAJOR_VERSION
+#endif //  GTK_MAJOR_VERSION < 3
 };  // class ambulant_gtk_window
 
 /// gtk_ambulant_widget is the GTK-counterpart of ambulant_gtk_window: it is the
@@ -192,9 +192,9 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	// GTKWidget API:
 #if GTK_MAJOR_VERSION >= 3
 	void do_draw_event (GtkWidget *widget, cairo_t *cr);
-#else
+#else //  GTK_MAJOR_VERSION < 3
 	void do_paint_event (GdkEventExpose * event);
-#endif // GTK_MAJOR_VERSION
+#endif //  GTK_MAJOR_VERSION < 3
 	void do_motion_notify_event(GdkEventMotion *event);
 	void do_button_release_event(GdkEventButton *event);
 	void do_key_release_event(GdkEventKey *event);

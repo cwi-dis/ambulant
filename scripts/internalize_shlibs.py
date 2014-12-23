@@ -49,6 +49,12 @@ if machine == 'i386':
     DEFAULT_RPATH += [ '/lib/i386-linux-gnu', '/usr/lib/i386-linux-gnu' ]
 elif machine == 'x86_64':
     DEFAULT_RPATH += [ '/lib/x86_64-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/lib64', '/usr/lib64']
+# Add library paths used by common Linux distributions (Ubuntu, Fedora)
+machine = platform.machine()
+if machine == 'i386':
+    DEFAULT_RPATH += [ '/lib/i386-linux-gnu', '/usr/lib/i386-linux-gnu' ]
+elif machine == 'x86_64':
+    DEFAULT_RPATH += [ '/lib/x86_64-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/lib64', '/usr/lib64']
 
 LINUX_BUNDLE_DIRS = (
 	'.',
@@ -156,6 +162,8 @@ class Internalizer:
                 	print "self.run_dir="+self.run_dir
 
 		for dirpath, dirnames, filenames in os.walk(self.run_dir):
+        		if self.debug:
+                		print "%s=%s %s=%s %s=%s"%(" dirpath", dirpath, "dirnames",  dirnames, "filenames", filenames)
         		if self.debug:
                 		print "%s=%s %s=%s %s=%s"%(" dirpath", dirpath, "dirnames",  dirnames, "filenames", filenames)
 			for name in filenames:
@@ -388,8 +396,12 @@ def main():
 	check = False
 	debug = False
 	trace = False
+	debug = False
+	trace = False
 	instlibdir = None
 	reallibdir = None
+	if trace:
+               	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 	if trace:
                	print "%s: %s"%(sys._getframe().f_code.co_name,"begin")
 	try:
@@ -433,7 +445,16 @@ def main():
         	if verbose:
 			internalizer.verbose = True
 		internalizer.debug = True
+	if debug:
+        	if verbose:
+			internalizer.verbose = True
+		internalizer.debug = True
 		
+	if trace:
+        	if verbose:
+			internalizer.verbose = True
+		internalizer.trace = True
+
 	if trace:
         	if verbose:
 			internalizer.verbose = True
@@ -448,6 +469,8 @@ def main():
 		
 if __name__ == '__main__':
 	main()
+#      	print "%s: debug = %s %s"%(sys._getframe().f_code.co_name,debug,internalizer.debug)
+#      	print "%s: self.debug = %s"%(sys._getframe().f_code.co_name,self.debug)
 #      	print "%s: debug = %s %s"%(sys._getframe().f_code.co_name,debug,internalizer.debug)
 #      	print "%s: self.debug = %s"%(sys._getframe().f_code.co_name,self.debug)
 	

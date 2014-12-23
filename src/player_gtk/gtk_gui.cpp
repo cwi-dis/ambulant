@@ -31,9 +31,9 @@
 #if GTK_MAJOR_VERSION >= 3
 #include <gtk/gtkx.h>
 #include <gdk/gdkx.h>
-#else
+#else // GTK_MAJOR_VERSION < 3
 #include <X11/X.h>
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 
 #include "gtk_gui.h"
@@ -100,7 +100,7 @@ const char *ui_description =
 const char *about_text =
 	"Ambulant SMIL 3.0 player.\n"
 	"Version: %s\n"
-	"Copyright Stichting CWI, 2003-2012.\n\n"
+	"Copyright Stichting CWI, 2003-2015.\n\n"
 	"License: LGPL";
 
 
@@ -124,9 +124,9 @@ const char *helpfile_locations[] = {
 
 #if GTK_MAJOR_VERSION >= 3
 		// TBD
-#else
+#else  // GTK_MAJOR_VERSION < 3
 static GdkPixmap *pixmap = NULL;
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 // callbacks for C++
 /* File */
@@ -164,7 +164,9 @@ void gtk_C_callback_settings_select(void *userdata)
 }
 void gtk_C_callback_quit(void *userdata)
 {
-	((gtk_gui*) userdata)->do_quit();
+	if (userdata != NULL) {
+		((gtk_gui*) userdata)->do_quit();
+	}
 }
 /* Play */
 void gtk_C_callback_play(void *userdata)
@@ -182,11 +184,11 @@ void gtk_C_callback_stop(void *userdata)
 /* View */
 void gtk_C_callback_full_screen(void *userdata)
 {
-	gtk_window_fullscreen(((gtk_gui*) userdata)->get_toplevel_container());
+	gtk_window_fullscreen((GtkWindow*)((gtk_gui*) userdata)->get_toplevel_container());
 }
 void gtk_C_callback_normal_screen(void *userdata)
 {
-	gtk_window_unfullscreen(((gtk_gui*) userdata)->get_toplevel_container());
+	gtk_window_unfullscreen((GtkWindow*)((gtk_gui*) userdata)->get_toplevel_container());
 }
 void gtk_C_callback_load_settings(void *userdata)
 {
@@ -212,6 +214,9 @@ void gtk_C_callback_homepage(void *userdata)
 void gtk_C_callback_welcome(void *userdata)
 {
 	((gtk_gui*) userdata)->do_welcome();
+}
+void gtk_C_callback_noop(void *userdata)
+{
 }
 }
 extern "C" {
@@ -243,16 +248,71 @@ find_datafile(const char **locations)
 	return NULL;
 }
 
+#if GTK_MAJOR_VERSION >= 3
+// From: http://stackoverflow.com/questions/5401327/finding-children-of-a-gtkwidget
+// Find first widget in a widget tree by its name
+GtkWidget*
+gtk_widget_find_by_name(GtkWidget* root, const gchar* name)
+{
+	int len = strlen(name);
+	const gchar* widget_name = gtk_widget_get_name((GtkWidget*)root);
+	if (g_ascii_strncasecmp(widget_name, (gchar*)name, len) == 0) { 
+		return root;
+	}
+	if (GTK_IS_BIN(root)) {
+		GtkWidget *child = gtk_bin_get_child(GTK_BIN(root));
+		return gtk_widget_find_by_name(child, name);
+	}
+	if (GTK_IS_CONTAINER(root)) {
+		GList *children = gtk_container_get_children(GTK_CONTAINER(root));
+		while ((children = g_list_next(children)) != NULL) {
+			GtkWidget* widget = gtk_widget_find_by_name((GtkWidget*)children->data, name);
+			if (widget != NULL) {
+				return widget;
+			}
+		}
+	}
+	return NULL;
+}
+
+GtkWidget*
+gtk_builder_find_menu_item(GtkBuilder* builder, const gchar* name)
+{
+	GSList* objects = gtk_builder_get_objects(builder);
+	GSList* object = objects;
+	GtkWidget* rv = NULL;
+	while (object != NULL) {
+		const gchar* type_name = G_OBJECT_TYPE_NAME ((GObject*) object->data);
+		GtkWidget* gtw = (GtkWidget*) object->data;
+//X		printf("name=%s node=%s\n", name,  gtk_widget_get_name(gtw));
+		if (strcmp (name, gtk_widget_get_name(gtw)) == 0) {
+			rv = gtw;
+			break;
+		}
+		object = object->next;
+	}
+	g_slist_free (objects);
+	return rv;
+}      
+#endif // GTK_MAJOR_VERSION < 3
+
 gtk_gui::gtk_gui(const char* title, const char* initfile)
 :
 	m_programfilename(NULL),
 	m_smilfilename(NULL),
 	m_settings(NULL),
 	m_toplevelcontainer(NULL),
-	menubar(NULL),
 	m_guicontainer(NULL),
 	m_documentcontainer(NULL),
+#if  GTK_MAJOR_VERSION >= 3
+	m_play(NULL),
+	m_pause(NULL),
+	m_stop(NULL),
+	m_reload(NULL),
+#else // GTK_MAJOR_VERSION < 3
+	menubar(NULL),
 	m_actions(NULL),
+#endif // GTK_MAJOR_VERSION < 3
 #ifdef	LOCK_MESSAGE
 	m_gui_thread(0),
 #endif/*LOCK_MESSAGE*/
@@ -266,6 +326,8 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
+#if  GTK_MAJOR_VERSION >= 3
+#else // GTK_MAJOR_VERSION < 3
 	static GtkActionEntry entries[] = {
 	{ "FileMenu", NULL, gettext_noop("_File")},
 	{ "open", GTK_STOCK_OPEN, gettext_noop("_Open..."),
@@ -308,8 +370,8 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	{ "welcome", GTK_STOCK_HOME, gettext_noop("_Play Welcome Document"),
 		"<Control><shift>H", gettext_noop("Plays a simple SMIL file"), NULL}
 	};
-
 	int n_entries = G_N_ELEMENTS(entries);
+#endif  // GTK_MAJOR_VERSION < 3
 
 	m_programfilename = title;
 #ifdef	LOCK_MESSAGE
@@ -325,6 +387,8 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 		m_smilfilename = strdup(initfile);
 
 	/*Initialization of the Main Window */
+#if GTK_MAJOR_VERSION >= 3
+#else // GTK_MAJOR_VERSION < 3
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(m_toplevelcontainer, initfile);
 	gtk_window_set_resizable(m_toplevelcontainer, true);
@@ -334,11 +398,9 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	// Callback for the resize events
-#if GTK_MAJOR_VERSION >= 3
 //	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "draw", G_CALLBACK (gtk_C_callback_resize), (void *) this);
-#else
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);
-#endif // GTK_MAJOR_VERSION
+#endif  // GTK_MAJOR_VERSION < 3
 
 	/* Initialization of the signals */
 #if GTK_MAJOR_VERSION >= 3
@@ -347,25 +409,61 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
 
 	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
-#else
+#else // GTK_MAJOR_VERSION < 3
 	signal_player_done_id = g_signal_new ("signal-player-done", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, g_cclosure_marshal_VOID__VOID,GTK_TYPE_NONE, 0, NULL);
 
 	signal_need_redraw_id = g_signal_new ("signal-need-redraw", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, gtk_marshal_NONE__POINTER_POINTER_POINTER,GTK_TYPE_NONE, 3, G_TYPE_POINTER, G_TYPE_POINTER, G_TYPE_POINTER);
 
 	signal_internal_message_id = g_signal_new ("signal-internal-message", gtk_window_get_type(), G_SIGNAL_RUN_LAST, 0, 0, 0, 0, G_TYPE_NONE, 1, G_TYPE_POINTER);
-#endif // GTK_MAJOR_VERSION
 
 	// Signal connections
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
 	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
-	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-internal-message",	G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-internal-message", G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
 
 	/* VBox (m_guicontainer) to place the Menu bar in the correct place */
 	m_guicontainer = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(m_toplevelcontainer), GTK_WIDGET (m_guicontainer));
+#endif // GTK_MAJOR_VERSION < 3
 
+#if GTK_MAJOR_VERSION >= 3
+	GtkBuilder* builder = gtk_builder_new ();
+	// The layout of the GUI is made using 'glade'
+        gtk_builder_add_from_file (builder, AMBULANT_DATADIR "/ambulant-gtk_gui.xml", NULL);
+       
+	m_toplevelcontainer = GTK_WIDGET (gtk_builder_get_object (builder, "window"));
+        gtk_builder_connect_signals (builder, NULL);          
+	// The remove window button
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
+	// The actual activation calls for selected menu items, as found by name in the processed .xml file
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "open_menu_item")), "activate", G_CALLBACK (gtk_C_callback_open), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "url_menu_item")), "activate", G_CALLBACK (gtk_C_callback_open_url), (void *) this );
+	g_signal_connect_swapped ((GObject*)(m_reload = gtk_builder_find_menu_item(builder, "reload_menu_item")), "activate", G_CALLBACK (gtk_C_callback_reload), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "preferences_menu_item")), "activate", G_CALLBACK (gtk_C_callback_settings_select), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "settings_menu_item")), "activate", G_CALLBACK (gtk_C_callback_load_settings), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "quit_menu_item")), "activate", G_CALLBACK (gtk_C_callback_quit), (void *) this );
+	g_signal_connect_swapped ((GObject*)(m_play = gtk_builder_find_menu_item(builder, "play_menu_item")), "activate", G_CALLBACK (gtk_C_callback_play), (void *) this );
+	g_signal_connect_swapped ((GObject*)(m_pause = gtk_builder_find_menu_item(builder, "pause_menu_item")), "activate", G_CALLBACK (gtk_C_callback_pause), (void *) this );
+	g_signal_connect_swapped ((GObject*)(m_stop = gtk_builder_find_menu_item(builder, "stop_menu_item")), "activate", G_CALLBACK (gtk_C_callback_stop), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "fullscreen_menu_item")), "activate", G_CALLBACK (gtk_C_callback_full_screen), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "normalscreen_menu_item")), "activate", G_CALLBACK (gtk_C_callback_normal_screen), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "logger_window_menu_item")), "activate", G_CALLBACK (gtk_C_callback_logger_window), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "about_menu_item")), "activate", G_CALLBACK (gtk_C_callback_about), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "help_menu_item")), "activate", G_CALLBACK (gtk_C_callback_help), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "homepage_menu_item")), "activate", G_CALLBACK (gtk_C_callback_homepage), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (gtk_builder_find_menu_item(builder, "play_welcome_menu_item")), "activate", G_CALLBACK (gtk_C_callback_welcome), (void *) this );
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-player-done",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
+	g_signal_connect_swapped (G_OBJECT (m_toplevelcontainer), "signal-internal-message", G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
+        
+        gtk_widget_show (m_toplevelcontainer);       
+	/* VBox (m_guicontainer) to place the Menu bar in the correct place */
+	m_guicontainer = gtk_builder_find_menu_item (builder, "topbox");
+        g_object_unref (G_OBJECT (builder));
+	gtk_box_set_homogeneous ((GtkBox*) m_guicontainer, false);
+#else // GTK_MAJOR_VERSION < 3
 	/* The Action Group that includes the menu bar */
 	m_actions = gtk_action_group_new("Actions");
 	gtk_action_group_set_translation_domain(m_actions, PACKAGE);
@@ -378,7 +476,6 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 		g_error("Could not merge UI, error was: %s\n", error->message);
 	gtk_ui_manager_insert_action_group(ui, m_actions, 0);
 	gtk_window_add_accel_group(m_toplevelcontainer, gtk_ui_manager_get_accel_group(ui));
-
 
 	// The actual activation calls
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "open"), "activate",	G_CALLBACK (gtk_C_callback_open), (void *) this );
@@ -406,18 +503,21 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	menubar = gtk_ui_manager_get_widget (ui, "/MenuBar");
 	gtk_box_pack_start (GTK_BOX (m_guicontainer), menubar, FALSE, FALSE, 0);
 	gtk_widget_show_all(GTK_WIDGET (m_toplevelcontainer));
-
+#endif // GTK_MAJOR_VERSION < 3
 
 	/* Creation of the document area */
 	m_documentcontainer = gtk_drawing_area_new();
 	gtk_widget_hide(m_documentcontainer);
 	gtk_box_pack_start (GTK_BOX (m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
 
+#if GTK_MAJOR_VERSION >= 3
+	_update_menus();
+#else // GTK_MAJOR_VERSION < 3
 	// creates the main loop
 	main_loop = g_main_loop_new(NULL, FALSE);
 	_update_menus();
+#endif // GTK_MAJOR_VERSION < 3
 }
-
 
 gtk_gui::~gtk_gui() {
 
@@ -432,7 +532,14 @@ gtk_gui::~gtk_gui() {
 		delete m_settings;
 		m_settings = NULL;
 	}
+#if GTK_MAJOR_VERSION >= 3
 	if (m_toplevelcontainer) {
+		gtk_widget_destroy (m_toplevelcontainer); 
+		m_toplevelcontainer = NULL;
+	}
+#else // GTK_MAJOR_VERSION < 3
+	if (m_toplevelcontainer) {
+		gtk_widget_destroy (GTK_WIDGET(m_toplevelcontainer));
 		m_toplevelcontainer = NULL;
 	}
 	if (menubar) {
@@ -453,6 +560,7 @@ gtk_gui::~gtk_gui() {
 		g_object_unref(G_OBJECT (m_actions));
 		m_actions = NULL;
 	}
+#endif // GTK_MAJOR_VERSION < 3
 	if (m_file_chooser) {
 		gtk_widget_destroy(GTK_WIDGET (m_file_chooser));
 		m_file_chooser = NULL;
@@ -466,18 +574,21 @@ gtk_gui::~gtk_gui() {
 		m_url_text_entry = NULL;
 	}
 	if (m_mainloop) {
+		m_mainloop->stop();
 		delete m_mainloop;
 		m_mainloop = NULL;
 	}
 }
 
+#if GTK_MAJOR_VERSION >= 3
+GtkWidget*
+#else // GTK_MAJOR_VERSION < 3
 GtkWindow*
+#endif // GTK_MAJOR_VERSION < 3
 gtk_gui::get_toplevel_container()
 {
 	return this->m_toplevelcontainer;
 }
-
-
 
 GtkWidget*
 gtk_gui::get_gui_container()
@@ -590,7 +701,11 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 
 void
 gtk_gui::do_open(){
-  m_file_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
+#if GTK_MAJOR_VERSION >= 3
+	m_file_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, "_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL));
+#else // GTK_MAJOR_VERSION < 3
+	m_file_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
+#endif // GTK_MAJOR_VERSION < 3
 
 	GtkFileFilter *filter_smil = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter_smil, gettext("SMIL files"));
@@ -642,7 +757,7 @@ gtk_gui::do_load_settings() {
 	if (m_mainloop && m_mainloop->is_open())
 		do_stop();
 
-	m_settings_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a settings file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
+	m_settings_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a settings file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN,"Cancel", GTK_RESPONSE_CANCEL, "Open", GTK_RESPONSE_ACCEPT, NULL));
 
 	GtkFileFilter *filter_xml = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter_xml, gettext("XML files"));
@@ -677,10 +792,17 @@ gtk_gui::do_open_url() {
 		"AmbulantPlayer",
 		NULL,
 		GTK_DIALOG_DESTROY_WITH_PARENT,
+#if GTK_MAJOR_VERSION >= 3
+		"OK",
+		GTK_RESPONSE_ACCEPT,
+		"Cancel",
+		GTK_RESPONSE_REJECT,
+#else   // GTK_MAJOR_VERSION < 3
 		GTK_STOCK_OK,
 		GTK_RESPONSE_ACCEPT,
 		GTK_STOCK_CANCEL,
 		GTK_RESPONSE_REJECT,
+#endif  // GTK_MAJOR_VERSION < 3
 		NULL));
 
 	GtkLabel* label = GTK_LABEL (gtk_label_new(gettext("URL to open:")));
@@ -690,9 +812,9 @@ gtk_gui::do_open_url() {
 	m_url_text_entry = GTK_ENTRY (gtk_entry_new());
 #if GTK_MAJOR_VERSION >= 3
 	gtk_editable_set_editable((GtkEditable*) m_url_text_entry, true);
-#else
+#else   // GTK_MAJOR_VERSION < 3
 	gtk_entry_set_editable(m_url_text_entry, true);
-#endif // GTK_MAJOR_VERSION
+#endif  // GTK_MAJOR_VERSION < 3
 
 	gtk_entry_set_text(m_url_text_entry,"http://www");
 	gtk_widget_show(GTK_WIDGET (m_url_text_entry));
@@ -801,7 +923,12 @@ gtk_gui::do_quit() {
 		delete m_mainloop;
 		m_mainloop = NULL;
 	}
+#if GTK_MAJOR_VERSION >= 3
+	gtk_main_quit ();
+#else // GTK_MAJOR_VERSION < 3
 	g_main_loop_quit (main_loop);
+#endif // GTK_MAJOR_VERSION < 3
+	m_toplevelcontainer = NULL; // widget tree destroyed by gtk_main_(loop_)quit()
 }
 
 void
@@ -931,6 +1058,14 @@ gtk_gui::internal_message(int level, char* msg) {
 void
 gtk_gui::_update_menus()
 {
+#if  GTK_MAJOR_VERSION >= 3
+	gtk_widget_set_sensitive (m_play, m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
+	gtk_widget_set_sensitive (m_pause, m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_pause_active());
+	gtk_widget_set_sensitive (m_stop, m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_stop_active());
+	gtk_widget_set_sensitive (m_reload, m_mainloop != NULL);
+
+#else // GTK_MAJOR_VERSION < 3
+
 	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
 		m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
 	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
@@ -939,6 +1074,7 @@ gtk_gui::_update_menus()
 		m_mainloop && m_mainloop->is_stop_enabled() && ! m_mainloop->is_stop_active());
 	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "reload"),
 		(m_mainloop != NULL));
+#endif // GTK_MAJOR_VERSION < 3
 }
 
 #include <X11/Xlib.h>
@@ -979,6 +1115,10 @@ main (int argc, char*argv[]) {
 
 	/* Setup widget */
 	gtk_gui *mywidget = new gtk_gui(argv[0], argc > 1 ? argv[1] : "AmbulantPlayer");
+#if GTK_MAJOR_VERSION >= 3
+	GtkApplication* app = gtk_application_new ("org.ambulantplayer.AmbulantPlayer_gtk", (GApplicationFlags) 0);
+	g_signal_connect (app, "activate", G_CALLBACK (gtk_C_callback_noop), NULL);
+#endif // GTK_MAJOR_VERSION < 3
 
 	// take log level from preferences
 	gtk_logger::set_gtk_logger_gui(mywidget);
@@ -1021,6 +1161,10 @@ main (int argc, char*argv[]) {
 		}
 		exec_flag = true;
 	}
+#if GTK_MAJOR_VERSION >= 3
+        gtk_main ();
+// 	delete mywidget;
+#else // GTK_MAJOR_VERSION < 3
 	g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
 //#define TEST_G_MAIN_CONTEXT_ITERATION
 #ifndef TEST_G_MAIN_CONTEXT_ITERATION
@@ -1033,11 +1177,16 @@ main (int argc, char*argv[]) {
 		g_main_context_iteration(context, false);
 	}
 #endif//TEST_G_MAIN_CONTEXT_ITERATION
+#endif // GTK_MAJOR_VERSION < 3
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
+#if GTK_MAJOR_VERSION >= 3
+ 	delete mywidget;
+#else // GTK_MAJOR_VERSION < 3
 	mywidget->do_quit();
-	delete mywidget;
+ 	delete mywidget;
 	gdk_threads_leave ();
+#endif // GTK_MAJOR_VERSION >= 3
 #ifdef	WITH_GSTREAMER
 	/* finalize GStreamer */
 	AM_DBG fprintf(stderr, "finalize GStreamer\n");

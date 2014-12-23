@@ -86,7 +86,7 @@ class singleton_initfuncs
 
 void ambulant::common::register_static_plugin(initfuncptr ifp)
 {
-    singleton_initfuncs::singleton().m_all_initfuncs.push_back(ifp);
+	singleton_initfuncs::singleton().m_all_initfuncs.push_back(ifp);
 }
 #endif
 
@@ -116,12 +116,12 @@ plugin_engine::plugin_engine()
 	lib::logger::get_logger()->trace("plugin_engine: using Windows plugin loader");
 #endif // WITH_WINDOWS_PLUGINS
 #ifdef WITH_STATIC_PLUGINS
-    lib::logger::get_logger()->trace("plugin_engine: using statically-linked pseudo-plugins");
-    use_plugins = true;
+	lib::logger::get_logger()->trace("plugin_engine: using statically-linked pseudo-plugins");
+	use_plugins = true;
 #endif // WITH_STATIC_PLUGINS
 	if (use_plugins) {
 #ifdef WITH_STATIC_PLUGINS
-        load_plugins("");
+        	load_plugins("");
 #else
 		int count = 0;
 		std::vector< std::string >::iterator i;
@@ -505,8 +505,8 @@ plugin_engine::load_plugins(std::string dirname)
 void
 plugin_engine::load_plugins(std::string dirname)
 {
-    m_initfuncs = singleton_initfuncs::singleton().m_all_initfuncs;
-    lib::logger::get_logger()->trace("plugin_engine: %d statically linked plugins", m_initfuncs.size());
+	m_initfuncs = singleton_initfuncs::singleton().m_all_initfuncs;
+	lib::logger::get_logger()->trace("plugin_engine: %d statically linked plugins", m_initfuncs.size());
 }
 
 #else
@@ -545,4 +545,3 @@ plugin_engine::get_python_plugins() const
 	return empty;
 #endif // WITH_PYTHON_PLUGIN
 }
-

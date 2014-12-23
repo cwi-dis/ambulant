@@ -222,6 +222,7 @@ lib_LTLIBRARIES = \
 
 libambulant_la_LDFLAGS= \
 	-rpath $(libdir) \
+	-rpath $(libdir) \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
 	$(xerces_core_libs) \

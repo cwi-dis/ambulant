@@ -136,7 +136,7 @@ cairo_surface_dump(cairo_surface_t* srf, std::string filename) {
 	g_object_unref(G_OBJECT(pixbuf));
 	return i;
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
 	if ( ! gpm) return -1;
 	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, gpm, 0, 0, 0, 0, 0, -1, -1);
@@ -144,7 +144,7 @@ gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
 	g_object_unref(G_OBJECT(pixbuf));
 	return i;
 }
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3
 
 int
 gdk_pixbuf_dump(GdkPixbuf* gpb, std::string filename) {

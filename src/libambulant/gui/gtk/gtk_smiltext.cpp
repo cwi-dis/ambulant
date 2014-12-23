@@ -630,7 +630,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 	pango_cairo_show_layout (cr, m_pango_layout);
 	cairo_destroy (cr);
 }
-#else
+#else // GTK_MAJOR_VERSION < 3
 void
 gtk_smiltext_renderer::_gtk_smiltext_render(
 	const lib::rect r, 
@@ -768,8 +768,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(
 	}
 	g_object_unref (G_OBJECT (gc));
 }
-#endif // GTK_MAJOR_VERSION
-
+#endif // GTK_MAJOR_VERSION < 3
 
 } // namespace gtk
 

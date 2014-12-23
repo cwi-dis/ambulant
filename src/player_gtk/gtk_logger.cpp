@@ -57,6 +57,7 @@ gtk_logger_ostream::write(std::string s)
 
 void
 gtk_logger_ostream::close() {
+	g_string_free (m_string, TRUE);
 	std::string id("gtk_logger_ostream::close()");
 }
 
@@ -131,6 +132,7 @@ gtk_logger::gtk_logger()
 gtk_logger::~gtk_logger() {
 	if(m_log_FILE) fclose (m_log_FILE);
 	m_log_FILE = NULL;
+	gtk_widget_destroy (GTK_WIDGET(m_logger_window));
 	m_logger_window = NULL;
 }
 
