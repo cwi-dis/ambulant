@@ -1230,7 +1230,6 @@ gtk_ambulant_widget::do_button_release_event(GdkEventButton *e) {
 		lib::point amwhere = lib::point((int)e->x, (int)e->y);
 		m_gtk_window->user_event(amwhere);
 	}
-	m_lock.leave();
 }
 
 void

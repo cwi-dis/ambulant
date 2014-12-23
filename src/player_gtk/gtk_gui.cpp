@@ -827,6 +827,7 @@ gtk_gui::do_open_url() {
 		do_url_selected();
 	}
 	gtk_widget_destroy (GTK_WIDGET (url_dialog));
+	m_url_text_entry = NULL;
 /*
 	g_signal_connect_swapped (url_dialog,"response", G_CALLBACK (gtk_C_callback_url_selected), (void*) this);
 
