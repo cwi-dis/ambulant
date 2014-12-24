@@ -13,8 +13,8 @@ AmbulantActiveX.dll=AmbulantActiveX.dll
 libambulant_shwin32.dll=libambulant_shwin32.dll
 libamplugin_ffmpeg.dll=libamplugin_ffmpeg.dll
 libamplugin_state_xpath.dll=libamplugin_state_xpath.dll
-avcodec-54.dll=avcodec-54.dll
-avformat-54.dll=avformat-54.dll
+avcodec-55.dll=avcodec-55.dll
+avformat-55.dll=avformat-55.dll
 avutil-52.dll=avutil-52.dll
 swresample-0.dll=swresample-0.dll
 swscale-2.dll=swscale-2.dll
@@ -50,11 +50,11 @@ FileVersion=1,0,0,1
 
 ; third-party-packages
 ; ffmpeg audio, video
-[avcodec-54.dll]
+[avcodec-55.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
-[avformat-54.dll]
+[avformat-55.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
