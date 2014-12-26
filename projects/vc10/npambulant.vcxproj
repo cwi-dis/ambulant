@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -117,8 +117,8 @@ copy /y ..\..\bin\win32\libambulant_shwin32.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_xerces.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avcodec-54.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avformat-54.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avcodec-55.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avformat-55.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avutil-52.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\swresample-0.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\swscale-2.dll "$(firefox_plugin_dir)\"
@@ -182,8 +182,8 @@ copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\plugi
 copy /y ..\..\bin\win32\libambulant_shwin32.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avcodec-54.dll "$(firefox_plugin_dir)\"
-copy /y ..\..\bin\win32\avformat-54.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avcodec-55.dll "$(firefox_plugin_dir)\"
+copy /y ..\..\bin\win32\avformat-55.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\avutil-52.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\swresample-0.dll "$(firefox_plugin_dir)\"
 copy /y ..\..\bin\win32\swscale-2.dll "$(firefox_plugin_dir)\"
