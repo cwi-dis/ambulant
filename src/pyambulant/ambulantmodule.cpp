@@ -18795,7 +18795,7 @@ static PyObject *PyAm_get_ffmpeg_audio_decoder_finder(PyObject *_self, PyObject 
 }
 #endif
 
-#ifdef WITH_FFMPEG
+#if defined(WITH_FFMPEG) && defined(WITH_RESAMPLE_DATASOURCE)
 
 static PyObject *PyAm_get_ffmpeg_audio_filter_finder(PyObject *_self, PyObject *_args)
 {
@@ -18943,7 +18943,7 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("() -> (ambulant::net::audio_decoder_finder* _rv)")},
 #endif
 
-#ifdef WITH_FFMPEG
+#if defined(WITH_FFMPEG) && defined(WITH_RESAMPLE_DATASOURCE)
 	{"get_ffmpeg_audio_filter_finder", (PyCFunction)PyAm_get_ffmpeg_audio_filter_finder, 1,
 	 PyDoc_STR("() -> (ambulant::net::audio_filter_finder* _rv)")},
 #endif

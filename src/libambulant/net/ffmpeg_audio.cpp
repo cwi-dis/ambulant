@@ -43,7 +43,9 @@ using namespace ambulant;
 using namespace net;
 
 typedef lib::no_arg_callback<ffmpeg_decoder_datasource> readdone_callback;
+#ifdef WITH_RESAMPLE_DATASOURCE
 typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
+#endif // WITH_RESAMPLE_DATASOURCE
 
 #define INBUF_SIZE 4096
 
@@ -92,6 +94,7 @@ ambulant::net::get_ffmpeg_audio_decoder_finder()
 #endif
 }
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 audio_filter_finder *
 ambulant::net::get_ffmpeg_audio_filter_finder()
 {
@@ -106,6 +109,7 @@ ambulant::net::get_ffmpeg_audio_filter_finder()
 	return new ffmpeg_audio_filter_finder();
 #endif
 }
+#endif // WITH_RESAMPLE_DATASOURCE
 
 audio_datasource*
 ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)
@@ -165,6 +169,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: matches!");
 		return dds;
 	}
+#ifdef WITH_RESAMPLE_DATASOURCE
 	audio_datasource *rds = new ffmpeg_resample_datasource(dds, fmts);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: resample ds = 0x%x", (void*)rds);
 	if (rds == NULL)  {
@@ -181,6 +186,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	rds->stop();
 	long rem = rds->release();
 	assert(rem == 0);
+#endif // WITH_RESAMPLE_DATASOURCE
 	return NULL;
 }
 
@@ -200,6 +206,7 @@ ffmpeg_audio_decoder_finder::new_audio_decoder(pkt_datasource *src, const audio_
 	return ds;
 }
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 audio_datasource*
 ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, const audio_format_choices& fmts)
 {
@@ -216,6 +223,7 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, const audio_
 	// XXXX Check that there is at least one destination format we understand too
 	return new ffmpeg_resample_datasource(src, fmts);
 }
+#endif // WITH_RESAMPLE_DATASOURCE
 
 // **************************** ffpmeg_decoder_datasource *****************************
 bool
@@ -890,6 +898,7 @@ ffmpeg_decoder_datasource::get_dur()
 	return m_src->get_dur();
 }
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 // **************************** ffmpeg_resample_datasource *****************************
 
 ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, audio_format_choices fmts)
@@ -1285,3 +1294,4 @@ ffmpeg_resample_datasource::get_dur()
 	m_lock.leave();
 	return rv;
 }
+#endif

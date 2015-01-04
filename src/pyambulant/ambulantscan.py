@@ -187,7 +187,11 @@ class MyScanner(CxxScanner):
                 'get_ffmpeg_audio_filter_finder',
                 'get_ffmpeg_audio_decoder_finder',
                 ]
-            ),
+             ),
+            ('#if defined(WITH_FFMPEG) && defined(WITH_RESAMPLE_DATASOURCE)', [
+                'get_ffmpeg_audio_filter_finder',
+                ]
+             ),
             ('#ifndef AMBULANT_PLATFORM_WIN32', [
                 'create_posix_datasource_factory',
                 

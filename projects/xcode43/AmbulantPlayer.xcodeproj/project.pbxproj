@@ -673,7 +673,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ x$CONFIGURATION = xRelease ]; then python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${TARGET_BUILD_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"; fi";
+			shellScript = "if [ x$CONFIGURATION = xRelease ]; then\n    echo '+' python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${TARGET_BUILD_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"\n    python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${TARGET_BUILD_DIR}\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"\nelse\n    echo 'Skip dylib internalization: not a Release build'\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

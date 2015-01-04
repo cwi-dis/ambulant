@@ -62,11 +62,13 @@ class ffmpeg_audio_decoder_finder : public audio_decoder_finder {
 	audio_datasource* new_audio_decoder(pkt_datasource *src, const audio_format_choices& hint);
 };
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
   public:
 	~ffmpeg_audio_filter_finder() {};
 	audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts);
 };
+#endif // WITH_RESAMPLE_DATASOURCE
 
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
@@ -134,6 +136,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 
 };
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 class ffmpeg_resample_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
 	ffmpeg_resample_datasource(audio_datasource *src, audio_format_choices fmts);
@@ -189,7 +192,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	audio_format m_out_fmt;
     bool m_is_live;
 };
-
+#endif
 }	// end namespace net
 }	// end namespace ambulant
 
