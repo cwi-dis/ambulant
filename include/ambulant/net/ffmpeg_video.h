@@ -90,7 +90,7 @@ class ffmpeg_video_decoder_datasource:
 	int width();
 	int height();
 	timestamp_t frameduration();
-	audio_datasource *get_audio_datasource();
+	audio_datasource *get_audio_datasource(audio_format_choices fmts);
 
 	void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);
 	void stop();

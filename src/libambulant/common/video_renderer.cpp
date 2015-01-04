@@ -106,7 +106,11 @@ video_renderer::video_renderer(
 #endif
     }
 	if (m_src->has_audio()) {
-		m_audio_ds = m_src->get_audio_datasource();
+        // Note: this is a nasty shortcut. We should really collect the audio formats supported by all
+        // aux renderers, and join these into an audio_format_choices. But we know the only renderer we'll
+        // really use is the sdl renderer, which currently uses this format. To be fixed when needed.
+        net::audio_format_choices fmts(44100, 2, 16);
+		m_audio_ds = m_src->get_audio_datasource(fmts);
 
 		if (m_audio_ds) {
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::video_renderer: creating audio renderer !");

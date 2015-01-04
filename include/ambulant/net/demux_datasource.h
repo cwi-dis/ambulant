@@ -116,7 +116,7 @@ class demux_video_datasource:
 
 	audio_format& get_audio_format() { assert(0); static audio_format a; return a;}
 	bool has_audio();
-	audio_datasource* get_audio_datasource();
+	audio_datasource* get_audio_datasource(audio_format_choices fmts);
 
 //	char* get_read_ptr();
 //	int size() const;

@@ -157,7 +157,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: parser ds = 0x%x", (void*)pds);
 	// XXXX This code should become generalized in datasource_factory
 	// XXXX It is also unclear whether this code will work for, say, wav or aiff streams.
-	audio_datasource *dds = new ffmpeg_decoder_datasource(pds);
+	audio_datasource *dds = new ffmpeg_decoder_datasource(pds, fmts);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
 	if (dds == NULL) {
 		pds->stop();
@@ -199,7 +199,7 @@ ffmpeg_audio_decoder_finder::new_audio_decoder(pkt_datasource *src, const audio_
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_parser_finder::new_audio_parser: no support for format");
 		return NULL;
 	}
-	ds = new ffmpeg_decoder_datasource(src);
+	ds = new ffmpeg_decoder_datasource(src, fmts);
 	if (ds == NULL) {
 		return NULL;
 	}
@@ -254,7 +254,7 @@ ffmpeg_decoder_datasource::supported(const net::url& url)
 	return true;
 }
 
-ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *const src)
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *const src, audio_format_choices fmts)
 :	m_con(NULL),
 	m_con_owned(false),
 #ifdef WITH_SWRESAMPLE
@@ -275,7 +275,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_da
 		lib::logger::get_logger()->error(gettext("%s: audio decoder \"%s\" not supported"), url.get_url().c_str(), ext);
 }
 
-ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_datasource *const src)
+ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_datasource *const src, audio_format_choices fmts)
 :	m_con(NULL),
 	m_con_owned(false),
 #ifdef WITH_SWRESAMPLE

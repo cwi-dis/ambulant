@@ -347,7 +347,7 @@ public:
 	virtual bool has_audio() = 0;
     
 	/// Return corresponding audio datasource. Video-specific.
-	virtual audio_datasource *get_audio_datasource() = 0;
+	virtual audio_datasource *get_audio_datasource(audio_format_choices fmts) = 0;
     
 };
     
@@ -449,7 +449,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual bool has_audio() = 0;
 
 	/// Returns an audio_datasource object for the audio data.
-	virtual audio_datasource *get_audio_datasource() = 0;
+	virtual audio_datasource *get_audio_datasource(audio_format_choices fmts) = 0;
 
 	/// Called by the client to indicate it wants a new frame.
 	/// When the data is available (or end of file reached) exactly one

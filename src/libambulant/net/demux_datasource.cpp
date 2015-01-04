@@ -462,7 +462,7 @@ demux_video_datasource::has_audio()
 }
 
 audio_datasource*
-demux_video_datasource::get_audio_datasource()
+demux_video_datasource::get_audio_datasource(audio_format_choices fmts)
 {
 	m_lock.enter();
 	if (m_audio_src) {
@@ -470,7 +470,7 @@ demux_video_datasource::get_audio_datasource()
 		audio_format fmt = m_audio_src->get_audio_format();
 		audio_datasource *dds = NULL;
 		if (ffmpeg_decoder_datasource::supported(fmt))
-			dds = new ffmpeg_decoder_datasource(m_audio_src);
+			dds = new ffmpeg_decoder_datasource(m_audio_src, fmts);
 		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_audio_datasource: decoder ds = 0x%x", (void*)dds);
 		if (dds == NULL) {
 			lib::logger::get_logger()->warn(gettext("%s: Ignoring audio, unsupported encoding"), m_url.get_url().c_str());

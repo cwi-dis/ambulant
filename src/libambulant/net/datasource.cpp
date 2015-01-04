@@ -387,7 +387,11 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 	datasource *rawsrc = new_raw_datasource(url);
 	if (rawsrc == NULL) return NULL;
 
-	//next create a raw_audio_datasource;
+	//next create a raw_audio_datasource if we have audio parsers
+    if (m_audio_parser_finders.begin() == m_audio_parser_finders.end()) {
+        lib::logger::get_logger()->warn(gettext("%s: Cannot open, no compatible audio datasource"), repr(url).c_str());
+        return NULL;
+    }
 
 	audio_datasource *raw_audio_src = new raw_audio_datasource(rawsrc);
 
@@ -400,7 +404,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 		rawsrc->stop();
 		long rem = rawsrc->release();
 		assert(rem == 0);
-		lib::logger::get_logger()->warn(gettext("%s: Cannot open, no compatible parser"), repr(url).c_str());
+		lib::logger::get_logger()->warn(gettext("%s: Cannot open, no compatible audio parser"), repr(url).c_str());
 		return NULL;
 	}
 	// Check whether the format happens to match already.

@@ -259,11 +259,11 @@ ffmpeg_video_decoder_datasource::has_audio()
 }
 
 audio_datasource *
-ffmpeg_video_decoder_datasource::get_audio_datasource()
+ffmpeg_video_decoder_datasource::get_audio_datasource(audio_format_choices fmts)
 {
 	m_lock.enter();
 	audio_datasource *rv = NULL;
-	if (m_src) rv = m_src->get_audio_datasource();
+	if (m_src) rv = m_src->get_audio_datasource(fmts);
 	m_lock.leave();
 	return rv;
 }

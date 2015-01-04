@@ -75,8 +75,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	static bool supported(const audio_format& fmt);
 	static bool supported(const net::url& url);
 
-	ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *src);
-	ffmpeg_decoder_datasource(pkt_datasource *src);
+	ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *src, audio_format_choices fmts);
+	ffmpeg_decoder_datasource(pkt_datasource *src, audio_format_choices fmts);
 	~ffmpeg_decoder_datasource();
 
 
