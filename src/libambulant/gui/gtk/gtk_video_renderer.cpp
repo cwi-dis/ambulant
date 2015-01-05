@@ -207,8 +207,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
-
-#else // --------------------------
+#else // GTK_MAJOR_VERSION < 3
 
 void
 gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
@@ -357,5 +356,4 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
-
-#endif // GTK_MAJOR_VERSION
+#endif // GTK_MAJOR_VERSION < 3

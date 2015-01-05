@@ -119,13 +119,13 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 
 	std::string id = m_dest->get_info()->get_name();
 	AM_DBG logger::get_logger()->debug("%s: m_node=0x%x, m_dest=0x%x", __PRETTY_FUNCTION__, m_node, m_dest);
+	cairo_t* cr = cairo_create(agtkw->get_target_surface());
 	if (m_node != NULL && m_node->get_attribute("backgroundImage")) {
 		AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw: drawing tiled image");
 		// backgroundOpacity.
 		double alpha = ri->get_bgopacity();
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		cairo_t* cr = cairo_create(agtkw->get_target_surface());
 		// set surface to all tranparent pixels
 		cairo_rectangle (cr, dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 		cairo_clip(cr);
@@ -225,7 +225,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
-#else
+#else //  GTK_MAJOR_VERSION < 3
 
 void
 gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
@@ -291,7 +291,6 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 		common::tile_positions::iterator it;
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 
-
 			srcrect = (*it).first;
 			dstrect = (*it).second;
 			int S_L = srcrect.left(),
@@ -341,11 +340,11 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	// S_ for source image coordinates
 	// D_ for destination coordinates
 	// N_ for new (scaled) coordinates
-	int S_L = srcrect.left(),
+	int	S_L = srcrect.left(),
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
 		S_H = srcrect.height();
-	int D_L = dstrect.left(),
+	int	D_L = dstrect.left(),
 		D_T = dstrect.top(),
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
@@ -353,7 +352,7 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	float fact_W = (float)D_W/(float)S_W;
 	float fact_H = (float)D_H/(float)S_H;
 	// N_ for new (scaled) image coordinates
-	int N_L = (int)roundf(S_L*fact_W),
+	int	N_L = (int)roundf(S_L*fact_W),
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);
@@ -408,4 +407,4 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x done.", (void *)this);
 	m_lock.leave();
 }
-#endif // GTK_MAJOR_VERSION
+#endif //  GTK_MAJOR_VERSION < 3
