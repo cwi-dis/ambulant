@@ -112,7 +112,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   private:
 	bool _clip_end() const;
 	bool _end_of_file();
-	void _need_fmt_uptodate();
 #ifdef  WITH_AVCODEC_DECODE_AUDIO4
 	//  decode_audio_data_from_AVPacket: copy-paste avcodec_decode_audio3() from ffmpeg-1.0
 	int decode_audio_data_from_AVPacket(AVCodecContext* avctx, AVPacket* avpkt,  uint8_t* outbuf, int* outsize);
@@ -122,7 +121,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 #ifdef WITH_SWRESAMPLE
 	SwrContext *m_swr_con;
 #endif
-	audio_format m_fmt;
+    audio_format_choices m_downstream_formats;  // What our donstream can handle
+	audio_format m_fmt; // What we are actually giving our downstream
 	lib::event_processor *m_event_processor;
 	pkt_datasource* m_src;
 	timestamp_t m_elapsed;      // Timestamp of the very last sample in the buffer

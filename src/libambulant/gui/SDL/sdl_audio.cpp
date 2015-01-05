@@ -348,13 +348,15 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	} else {
 		m_audio_src = factory->get_datasource_factory()->new_audio_datasource(url, supported, m_clip_begin, m_clip_end);
 	}
-	if (!m_audio_src)
+    if (!m_audio_src) {
 		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), url.get_url().c_str());
-	else if (!supported.contains(m_audio_src->get_audio_format())) {
+#ifdef WITH_RESAMPLE_DATASOURCE
+    } else if (!supported.contains(m_audio_src->get_audio_format())) {
 		lib::logger::get_logger()->error(gettext("%s: audio format not supported"), url.get_url().c_str());
 		m_audio_src->stop();
 		m_audio_src->release();
 		m_audio_src = NULL;
+#endif
 	}
 	if (factory->get_recorder_factory() != NULL) {
 		m_recorder = factory->get_recorder_factory()->new_recorder(net::pixel_unknown, lib::size(0,0));

@@ -165,11 +165,15 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 		assert(rem == 0);
 		return NULL;
 	}
-	if (fmts.contains(dds->get_audio_format())) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: matches!");
-		return dds;
-	}
-#ifdef WITH_RESAMPLE_DATASOURCE
+#ifndef WITH_RESAMPLE_DATASOURCE
+    // We have to chance it: we have to assume ffmpeg can do a rate/format conversion,
+    // because we cannot actually know this until the first frames have been read.
+    return dds;
+#else
+    if (fmts.contains(dds->get_audio_format())) {
+        AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: matches!");
+        return dds;
+    }
 	audio_datasource *rds = new ffmpeg_resample_datasource(dds, fmts);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: resample ds = 0x%x", (void*)rds);
 	if (rds == NULL)  {
@@ -186,8 +190,8 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	rds->stop();
 	long rem = rds->release();
 	assert(rem == 0);
+    return NULL;
 #endif // WITH_RESAMPLE_DATASOURCE
-	return NULL;
 }
 
 audio_datasource*
@@ -260,6 +264,7 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_da
 #ifdef WITH_SWRESAMPLE
 	m_swr_con(NULL),
 #endif
+    m_downstream_formats(fmts),
 	m_fmt(audio_format(0,0,0)),
 	m_event_processor(NULL),
 	m_src(src),
@@ -281,7 +286,8 @@ ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(pkt_datasource *const src, 
 #ifdef WITH_SWRESAMPLE
 	m_swr_con(NULL),
 #endif
-	m_fmt(src->get_audio_format()),
+    m_downstream_formats(fmts),
+	m_fmt(audio_format(0,0,0)),
 	m_event_processor(NULL),
 	m_src(src),
 	m_elapsed(m_src->get_start_time()),
@@ -478,7 +484,7 @@ ffmpeg_decoder_datasource::data_avail()
             if (!got_frame) {
                 if (tmp_pkt.data == NULL) {
                     // If we got nothing after passing nothing in we are done with flushing
-                    // XXXJACK should we check for CODEC_CAP_DELAY??
+                    // XXXJACK I think we should also check m_con->codec->capabilities & CODEC_CAP_DELAY
                     decoder_finished = true;
                     AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: decoder is done");
                    break;
@@ -492,32 +498,67 @@ ffmpeg_decoder_datasource::data_avail()
             // We have data, which also means our decoder is now up to speed.
             // Get our decoder parameters, and possibly interleave
             // the data.
-            _need_fmt_uptodate();
             
             uint8_t *allocated_ptr = NULL;
             uint8_t *forwarding_ptr = NULL;
             size_t decoded_size = av_samples_get_buffer_size(NULL, av_frame_get_channels(outframe), outframe->nb_samples, (AVSampleFormat)outframe->format, 1);
 
 #ifdef WITH_SWRESAMPLE
-			bool usableAsIs = (m_con->sample_fmt == AV_SAMPLE_FMT_S16);
+            // Convert the ffmpet audio format to an audio_format, so we can check whether
+            // this is okay for our downstream consumer.
+            audio_format decodedFormat = audio_format(); // Incompatible with anything.
+            int gotChannels = av_get_channel_layout_nb_channels(outframe->channel_layout);
+            if (outframe->channel_layout != av_get_default_channel_layout(gotChannels)) {
+                // If we have a layout that is non-default for this number of channels
+                // we should convert. Trigger by breaking #channels
+                gotChannels = 0;
+            }
+            int gotBits = 0;
+            switch(m_con->sample_fmt) {
+                case AV_SAMPLE_FMT_U8: gotBits = 8; break;
+                case AV_SAMPLE_FMT_S16: gotBits = 16; break;
+                case AV_SAMPLE_FMT_S32: gotBits = 32; break;
+                default: break;
+            }
+            bool usableAsIs = false;
+            if (gotBits && gotChannels) {
+                decodedFormat = audio_format(outframe->sample_rate, gotChannels, gotBits);
+            
+            
+                usableAsIs = m_downstream_formats.contains(decodedFormat);
+            }
 			if (usableAsIs) {
 				// 16 bit signed integers, interleaved. Our code understands this, pass through as-is.
 				forwarding_ptr = outframe->extended_data[0];
+                m_fmt = decodedFormat;
 			} else {
-				// Anything else needs to be converted. Note that this code actually means
-				// that this code could actually do the work of resample_datasource as well.
-				// To be fixed later.
+				// Anything else needs to be converted.
 				if (m_swr_con == NULL) {
-					int64_t wanted_layout = av_get_default_channel_layout(av_frame_get_channels(outframe));
+                    const audio_format &best = m_downstream_formats.best();
+                    assert(best.name == "");
+                    // best.samplerate, best.channels, best.bits
+                    AVSampleFormat wtdFormat = AV_SAMPLE_FMT_NONE;
+                    switch(best.bits) {
+                        case 8: wtdFormat = AV_SAMPLE_FMT_U8; break;
+                        case 16: wtdFormat = AV_SAMPLE_FMT_S16; break;
+                        case 32: wtdFormat = AV_SAMPLE_FMT_S32; break;
+                    }
+                    int wtdChannels = best.channels;
+                    int wtdSampleRate = best.samplerate;
+					int64_t wtdLayout = av_get_default_channel_layout(wtdChannels);
 					m_swr_con = swr_alloc_set_opts(NULL,
-						wanted_layout, AV_SAMPLE_FMT_S16, outframe->sample_rate,
+						wtdLayout, wtdFormat, wtdSampleRate,
 						outframe->channel_layout, m_con->sample_fmt, outframe->sample_rate,
 						0, NULL);
 
 					if (m_swr_con == NULL || swr_init(m_swr_con) < 0) {
-						lib::logger::get_logger()->error("ffmpeg_decoder_datasource.data_avail: cannot allocate SwrContext for conversion");
+                        lib::logger::get_logger()->trace("ffmpeg_decoder_datasource.data_avail: Cannot create sample rate converter for conversion of %d Hz %s %d channels to %d Hz %s %d channels!\n",
+                                                         outframe->sample_rate, av_get_sample_fmt_name((AVSampleFormat)outframe->format), av_frame_get_channels(outframe),
+                                                         wtdSampleRate, av_get_sample_fmt_name(wtdFormat), wtdChannels);
+                        lib::logger::get_logger()->error("ffmpeg_decoder_datasource.data_avail: Cannot convert audio to supported format. Log window may have details.");
 						break;
 					}
+                    m_fmt = best;
 				}
 
 				decoded_size = av_samples_get_buffer_size(NULL, av_frame_get_channels(outframe), outframe->nb_samples, AV_SAMPLE_FMT_S16, 1);
@@ -792,7 +833,6 @@ timestamp_t
 ffmpeg_decoder_datasource::get_elapsed()
 {
 	m_lock.enter();
-	_need_fmt_uptodate();
 	int bps = m_fmt.samplerate* m_fmt.channels * m_fmt.bits;
 	timestamp_t buffer_duration = 0;
 	if (bps != 0)
@@ -863,33 +903,14 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 	}
 	ffmpeg_lock->leave();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
-	m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
 	return true;
 }
 
 audio_format&
 ffmpeg_decoder_datasource::get_audio_format()
 {
-	m_lock.enter();
-	_need_fmt_uptodate();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_audio_format: rate=%d, bits=%d,channels=%d",m_fmt.samplerate, m_fmt.bits, m_fmt.channels);
-	m_lock.leave();
 	return m_fmt;
-}
-
-void
-ffmpeg_decoder_datasource::_need_fmt_uptodate()
-{
-	// Private method - no locking
-	if (m_fmt.samplerate == 0) {
-		m_fmt.samplerate = m_con->sample_rate;
-	}
-	if (m_fmt.channels == 0) {
-		m_fmt.channels = m_con->channels;
-	}
-	if (m_fmt.channels == 0 || m_fmt.samplerate == 0) {
-		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
-	}
 }
 
 common::duration
