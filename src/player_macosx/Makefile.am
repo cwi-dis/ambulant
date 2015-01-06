@@ -110,6 +110,10 @@ TESTDEP=$(srcdir)/testdependencies
 # The target all-am is magic for automake
 
 all-am: $(BUILDAPPNAME).app
+
+signedapp: $(BUILDAPPNAME).app
+	codesign -s "Developer ID Application" -f --deep -v $(BUILDAPPNAME).app
+	
 $(BUILDAPPNAME).app: ambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
