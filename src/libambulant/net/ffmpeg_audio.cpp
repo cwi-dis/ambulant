@@ -502,7 +502,7 @@ ffmpeg_decoder_datasource::data_avail()
             uint8_t *allocated_ptr = NULL;
             uint8_t *forwarding_ptr = NULL;
             size_t decoded_size = av_samples_get_buffer_size(NULL, av_frame_get_channels(outframe), outframe->nb_samples, (AVSampleFormat)outframe->format, 1);
-            size_t convLen = 0;
+            int convLen = 0;
 #ifdef WITH_SWRESAMPLE
             // Convert the ffmpet audio format to an audio_format, so we can check whether
             // this is okay for our downstream consumer.
@@ -560,8 +560,8 @@ ffmpeg_decoder_datasource::data_avail()
 					}
                     m_fmt = best;
 				}
-
-				decoded_size = av_samples_get_buffer_size(NULL, m_fmt.channels, outframe->nb_samples, AV_SAMPLE_FMT_S16, 1);
+                int outSampleCount = 256 + (outframe->nb_samples * m_fmt.samplerate / outframe->sample_rate);
+				decoded_size = av_samples_get_buffer_size(NULL, m_fmt.channels, outSampleCount, AV_SAMPLE_FMT_S16, 1);
 				allocated_ptr = (uint8_t *)malloc(decoded_size);
                 if (allocated_ptr == NULL) {
                     lib::logger::get_logger()->error("ffmpeg_decoder_datasource.data_avail: alloc failed for intermediate buffer");
@@ -571,22 +571,16 @@ ffmpeg_decoder_datasource::data_avail()
 
 				const uint8_t **inBuf = (const uint8_t **)outframe->extended_data;
 				uint8_t **outBuf = &allocated_ptr;
-				convLen = swr_convert(m_swr_con, outBuf, outframe->nb_samples, inBuf, outframe->nb_samples);
+				convLen = swr_convert(m_swr_con, outBuf, outSampleCount, inBuf, outframe->nb_samples);
 				if (convLen < 0) {
 					lib::logger::get_logger()->error("fmpeg_decoder_datasource.data_avail: swr_convert failed");
 					break;
 				}
 
-				if (convLen != outframe->nb_samples) {
-					// Say this only once...
-					lib::logger::get_logger()->trace("fmpeg_decoder_datasource.data_avail: swr_convert returned %d samples in stead of %d", convLen, outframe->nb_samples);
-					static bool errorShown = false;
-					if (!errorShown)
-						lib::logger::get_logger()->error("fmpeg_decoder_datasource.data_avail: swr_convert returned %d samples in stead of %d", convLen, outframe->nb_samples);
-					errorShown = true;
-					break;
-				}
-                assert(convLen * m_fmt.channels * m_fmt.bits == 8*decoded_size);
+                AM_DBG lib::logger::get_logger()->debug("fmpeg_decoder_datasource.data_avail: swr_convert returned %d samples of max %d (from %d input samples)", convLen, outSampleCount, outframe->nb_samples);
+                assert(convLen * m_fmt.channels * m_fmt.bits <= 8*decoded_size);
+                decoded_size = convLen * m_fmt.channels * m_fmt.bits / 8;
+            
 			}
 #else
             if (av_sample_fmt_is_planar(m_con->sample_fmt) && m_con->channels > 1) {

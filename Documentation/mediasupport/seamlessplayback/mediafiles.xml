@@ -1,13 +1,15 @@
 <!-- Audio testing. Uncomment to enable. -->
+<!--
 <data>
   <av1></av1>
   <av2></av2>
-  <audio1>media-audio-float.aif</audio1>
+  <audio1>media-audio-8Khz.aif</audio1>
   <audio2></audio2>
   <audiomod></audiomod>
   <video1></video1>
   <video2></video2>
 </data>
+-->
 <!-- Local playback, MPEG-1 video. Uncomment to enable. -->
 <!--
 <data>
@@ -45,7 +47,6 @@
 </data>
 -->
 <!-- Local playback, H264 video. Uncomment to enable. -->
-<!--
 <data>
   <av1>media-av.mp4</av1>
   <av2>media-av-copy.mp4</av2>
@@ -55,7 +56,6 @@
   <video1>media-video.mp4</video1>
   <video2>media-video-copy.mp4</video2>
 </data>
--->
 <!-- HTTP playback, MPEG-1 video. Uncomment to enable. -->
 <!--
 <data>
