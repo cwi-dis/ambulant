@@ -112,8 +112,10 @@ TESTDEP=$(srcdir)/testdependencies
 all-am: $(BUILDAPPNAME).app
 
 signedapp: $(BUILDAPPNAME).app
-	codesign -s "Developer ID Application" -f --deep -v $(BUILDAPPNAME).app
-	
+# For Code Signing, the key needs to be imported into the KeyChain
+#	codesign -s "Developer ID Application" -f --deep -v $(BUILDAPPNAME).app
+	codesign -s "Stichting CWI" -f --deep -v $(BUILDAPPNAME).app
+
 $(BUILDAPPNAME).app: ambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
@@ -229,11 +231,11 @@ install-exec-hook: $(BUILDAPPNAME).app
 		mkdir -p $(DESTDIR)/$(prefix)/Applications ; \
 		cp -R $(BUILDAPPNAME).app $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
 	fi
-	
+
 clean-local:
 	-rm -fr AM_TEST-output.txt
 	-rm -fr $(BUILDAPPNAME).app
-	
+
 uninstall-hook:
 	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
 		rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
