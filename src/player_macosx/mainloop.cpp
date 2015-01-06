@@ -142,8 +142,10 @@ mainloop::init_datasource_factory()
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
+#ifdef WITH_RESAMPLE_DATASOURCE
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+#endif // WITH_RESAMPLE_DATASOURCE
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // WITH_FFMPEG

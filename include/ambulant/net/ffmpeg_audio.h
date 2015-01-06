@@ -62,19 +62,21 @@ class ffmpeg_audio_decoder_finder : public audio_decoder_finder {
 	audio_datasource* new_audio_decoder(pkt_datasource *src, const audio_format_choices& hint);
 };
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 class ffmpeg_audio_filter_finder : public audio_filter_finder {
   public:
 	~ffmpeg_audio_filter_finder() {};
 	audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts);
 };
+#endif // WITH_RESAMPLE_DATASOURCE
 
 class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
 	static bool supported(const audio_format& fmt);
 	static bool supported(const net::url& url);
 
-	ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *src);
-	ffmpeg_decoder_datasource(pkt_datasource *src);
+	ffmpeg_decoder_datasource(const net::url& url, pkt_datasource *src, audio_format_choices fmts);
+	ffmpeg_decoder_datasource(pkt_datasource *src, audio_format_choices fmts);
 	~ffmpeg_decoder_datasource();
 
 
@@ -110,7 +112,6 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
   private:
 	bool _clip_end() const;
 	bool _end_of_file();
-	void _need_fmt_uptodate();
 #ifdef  WITH_AVCODEC_DECODE_AUDIO4
 	//  decode_audio_data_from_AVPacket: copy-paste avcodec_decode_audio3() from ffmpeg-1.0
 	int decode_audio_data_from_AVPacket(AVCodecContext* avctx, AVPacket* avpkt,  uint8_t* outbuf, int* outsize);
@@ -120,7 +121,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 #ifdef WITH_SWRESAMPLE
 	SwrContext *m_swr_con;
 #endif
-	audio_format m_fmt;
+    audio_format_choices m_downstream_formats;  // What our donstream can handle
+	audio_format m_fmt; // What we are actually giving our downstream
 	lib::event_processor *m_event_processor;
 	pkt_datasource* m_src;
 	timestamp_t m_elapsed;      // Timestamp of the very last sample in the buffer
@@ -134,6 +136,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 
 };
 
+#ifdef WITH_RESAMPLE_DATASOURCE
 class ffmpeg_resample_datasource: virtual public audio_datasource, virtual public lib::ref_counted_obj {
   public:
 	ffmpeg_resample_datasource(audio_datasource *src, audio_format_choices fmts);
@@ -189,7 +192,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	audio_format m_out_fmt;
     bool m_is_live;
 };
-
+#endif
 }	// end namespace net
 }	// end namespace ambulant
 

@@ -34,8 +34,9 @@ AMBULANTAPI raw_datasource_factory *get_ffmpeg_raw_datasource_factory();
 AMBULANTAPI video_datasource_factory *get_ffmpeg_video_datasource_factory();
 AMBULANTAPI audio_datasource_factory *get_ffmpeg_audio_datasource_factory();
 AMBULANTAPI audio_decoder_finder *get_ffmpeg_audio_decoder_finder();
+#ifdef WITH_RESAMPLE_DATASOURCE
 AMBULANTAPI audio_filter_finder *get_ffmpeg_audio_filter_finder();
-
+#endif
 }	// end namespace net
 }	// end namespace ambulant
 
