@@ -148,7 +148,7 @@ sdl_gui_player::init_datasource_factory()
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
 	AM_DBG m_logger->debug("sdl_gui_player::sdl_gui_player: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-#idef WITH_RESAMPLE_DATASOURCE
+#ifdef WITH_RESAMPLE_DATASOURCE
 	AM_DBG m_logger->debug("sdl_gui_player::sdl_gui_player: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
 #endif
