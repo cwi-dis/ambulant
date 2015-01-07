@@ -46,7 +46,7 @@ mac and iphone:
 	- Create Parallels VM from recovery partition. Sign in to appstore/icloud
 	  using Jack's account (jackjansen@mac.com).
 	- Install convenience tools such as TextWrangler and its commandline tools
-	- Install XCode
+	- Install XCode, open, accept license, download updates
 	- install command line tools
 	- install Mercurial, copy or create ~/.hgrc
 	- create directory ~/packages and from there run (or inspect) scripts/precheck-mac
