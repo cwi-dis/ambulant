@@ -294,7 +294,8 @@ $(INSTALLER_ARCHIVE): npambulant_plugin_dir
 		zip -r ../$(INSTALLER_ARCHIVE) *
 
 signed_installer: installer
-	codesign -s "Stichting CWI" -f --deep -v $(INSTALLER_ARCHIVE)
+	codesign -s "Developer ID Application" -f --deep -v $(INSTALLER_ARCHIVE)
+#	codesign -s "Stichting CWI" -f --deep -v $(INSTALLER_ARCHIVE)
 
 npambulant-$(VERSION)-linux-$(ARCH).crx: npambulant_plugin_dir
 	which google-chrome; \
