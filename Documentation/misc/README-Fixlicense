@@ -6,6 +6,8 @@ more-or-less worked for me:
 
 1. Check out a clean copy of the repository.
 
+1a. Temporarily make .hg (or whatever) mode 0.
+
 2. Make a list of all files that should have the license. Grepping for something
    like that should be in those files worked for me:
    
