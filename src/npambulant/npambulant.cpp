@@ -158,7 +158,7 @@ m_url = net::url();
 
 	const char *ua = NPN_UserAgent(m_pNPInstance);
 	strncpy(m_String, ua, sizeof m_String);
-	extern NPP s_npambulant_last_instance;
+	NPP s_npambulant_last_instance;
 	/* copy argument names and values, as some browers (Chrome) re-use their space */
 	m_argn = (char**) malloc (sizeof(char*)*argc);
 	m_argv = (char**) malloc (sizeof(char*)*argc);
