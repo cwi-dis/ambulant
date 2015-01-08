@@ -60,7 +60,6 @@ using namespace net;
 
 typedef lib::no_arg_callback<ffmpeg_video_decoder_datasource> framedone_callback;
 
-const AVRational AMBULANT_TIMEBASE = {1, 1000000};
 
 video_datasource_factory *
 ambulant::net::get_ffmpeg_video_datasource_factory()
