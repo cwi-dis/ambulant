@@ -15,7 +15,7 @@ In the left region, you should see the animated score of Vader Jacob.
 <br/>
 In the right region, you should see the Karaoke-style words to it.
 <br/>
-On the speakers, you should hear the audio.
+There is no audio.
 <clear begin="16s"/>
 </smilText>
 <smilText xml:space="preserve" region="right">
