@@ -494,6 +494,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 	if (!m_src) {
 		// Cleaning up, apparently
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: no m_src, bailing out");
 		m_lock.leave();
 		return;
 	}
@@ -514,6 +515,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
     // Check for end-of-file inconsistency
 	if(dspacket.flag == datasource_packet_flag_eof) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasource_packet_flag_oef received, bailing out");
 		if (!m_src->end_of_file() ) {
 			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasource_packet_flag_eof, but not eof?");
 			// Unsure whether we have to restart input in this case...
