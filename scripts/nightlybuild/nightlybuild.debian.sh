@@ -36,7 +36,7 @@ x)
 esac
 
 # Tunable parameters, to some extent
-AMBULANTVERSION=2.5
+AMBULANTVERSION=2.6
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"

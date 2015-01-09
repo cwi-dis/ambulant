@@ -1,4 +1,4 @@
-AC_INIT([ambulant],[2.5])
+AC_INIT([ambulant],[2.6])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
 AC_CONFIG_AUX_DIR([libltdl/config])
 AC_CONFIG_MACRO_DIR([libltdl/m4])
@@ -10,7 +10,7 @@ AM_INIT_AUTOMAKE([subdir-objects])
 # Is this better? m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 AM_SILENT_RULES([yes])
 AM_PATH_PYTHON
-AMBULANT_VERSION=2.5
+AMBULANT_VERSION=2.6
 #
 # Platform specific setup
 #

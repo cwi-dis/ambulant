@@ -59,7 +59,7 @@ else:
     LIBRARIES.append('ambulant')
         
 setup(name='ambulant',
-      version='2.5',
+      version='2.6',
       ext_modules=[
         Extension('ambulant',
             ['ambulantmodule.cpp', 'ambulantinterface.cpp', 'ambulantutilities.cpp'],

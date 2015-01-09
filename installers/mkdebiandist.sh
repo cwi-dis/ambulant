@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e -x
 source=false
-VERSION=2.5
+VERSION=2.6
 
 if [ ! -f include/ambulant/version.h ]; then
 	echo "Please run only in a toplevel ambulant directory"

@@ -21,7 +21,7 @@ x)
 esac
 
 # Tunable parameters, to some extent
-AMBULANTVERSION=2.5
+AMBULANTVERSION=2.6
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 DESTINATION_HOST=sen5@ambulantplayer.org
