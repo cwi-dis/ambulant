@@ -12,15 +12,14 @@ Prerequisites
 -------------
 
 Obviously you will need a compiler/linker/development environment.
-For Windows you need Microsoft Visual Studio .NET 2008 SP2 or Visual
-Studio 2010.
+For Windows you need Microsoft Visual Studio 2010 (2008 may still work, untested).
 
 For Linux desktop you need at least autoconf, automake, libtool, gettext,
 GNU gcc++ (at least version 4.0), gtk2-devel and/or qt-devel (for graphics),
 yasm and alsa-devel (for sound). For SDL2 (video) you need also libxext-devel,
 asound2-devel, pulse-devel, mercurial, libjpeg-devel and pango-devel. 
 
-For MacOSX and iOS you need the Apple Developer tools (XCode 3.2 or later).
+For MacOSX and iOS you need the Apple Developer tools (XCode 5 or later).
 
 You also need to build and install several third party packages that
 Ambulant depends on. We have a script to download/build/install these. In
@@ -32,7 +31,12 @@ become available.
 Building for Linux
 ------------------
 
-After unpacking Ambulant you should first download and build the required
+After unpacking Ambulant you should first check that various packages needed for
+building Ambulant are available (such as autotools). For Ubuntu there is a script
+"scripts/precheck-ubuntu.sh" that checks this (and when you have sudo rights can
+help you install them).
+
+Next you should download and build the required
 3rd party packages. In third_party_packages, run one of the following commands:
 
 	python ../scripts/build-third-party-packages.py linux
@@ -54,7 +58,7 @@ You could also use "debian" in stead of "linux", then the third party
 packages will be installed system-wide through the package manager.
 This is actually preferred for most users, as components like the
 Ambulant Python module will now automatically pick up the packages
-without needing LD_LIBRARY_PATH or such tricks.
+without needing LD_LIBRARY_PATH or such tricks. You need sudo rights for this.
 
 After this, the normal "configure"/"make"/"make install" combo can be used here
 in the toplevel directory to create the player, see further down
@@ -80,22 +84,26 @@ Building for Mac OS X, configure/make style
 -------------------------------------------
 
 First there are some packages that need to be installed system-wide, i.e.
-in /usr/local (or /opt, or whereever you want to put them). Eventually we will
-put these in the next category, but for now you need to download, build and
-install them manually:
-- gettext, version 0.17 or later
-- libtool, version 2.2.6 or later
-- pkg-config, version 0.19 or later
+in /usr/local (or /opt, or whereever you want to put them). The script
+"scripts/precheck-macosx.sh" may be of help installing these.
+Or build and install them manually:
+- autoconf, version 2.69 or later
+- automake, version 1.14 or later
+- gettext, version 0.18.3 or later
+- libtool, version 2.4.2 or later
+- pkg-config, version 0.28 or later
+- yasm, version 1.3 or later
+- gas-preprocessor
 
 Next, make sure you install the third party packages on which Ambulant
 depends. These will be installed locally, for ambulant only (in
 directory third_party_packages/installed). Go to third_party_packages
 and run
 
-	python ../scripts/build-third-party-packages.py mac10.6
+	python ../scripts/build-third-party-packages.py macosx
 	
 Then the normal "configure"/"make"/"sudo make install" combo can be used
-here in the toplevel directory to create the player. For MacOSX 10.6 you
+here in the toplevel directory to create the player. You
 can build a universal 32-bit/64-bit Ambulant, by running configure as:
 	./configure --with-macfat --disable-dependency-tracking
 
@@ -108,30 +116,21 @@ should first run make in the toplevel build directory and then
 "sudo make install" in src/player_macosx. This will not install anything
 into /usr/local.
 
-Building for Mac OS X 10.7 using XCode
---------------------------------------
+Building for Mac OS X using XCode
+---------------------------------
 
 [Not sure the next paragraph is still true]
 
 First there are some packages that need to be installed system-wide, i.e.
-in /usr/local (or /opt, or whereever you want to put them). Eventually we will
-put these in the next category, but for now you need to download, build and
-install them manually:
-- gettext, version 0.17 or later
-- libtool, version 2.2.6 or later
-- pkg-config, version 0.19 or later
+in /usr/local (or /opt, or whereever you want to put them). See the section above
+for the list of prerequisites.
 
 XCode projects are available in projects/xcode43. For some components
 such as the iOS player or the Safari plugin you must use these, for
 the desktop player you can use either the configure/make scheme described
-above or the projects. To build using the projects you may need to do first
-do one initial step (in the toplevel ambulant directory):
-	$ mkdir build-3264
-	$ mkdir build-3264/third_party_packages
-This should be automated through a subproject that builds this, but as of this
-writing (january 2013) that doesn't work.
+above or the projects.
 
-Then, you open any of the projects in project/xcode43, and it will build
+To use xcode, you open any of the projects in project/xcode43, and it will build
 not only that product but also everything it depends on (including third
 party packages).
 
@@ -139,23 +138,6 @@ The projects are parameterized, so if something like the pathname of a
 third party package changes you should inspect the files in
 projects/xcode43/config and change things there (possibly in addition to
 changing the build-third-party-packages.py script).
-
-Building for older MacOSX releases
-----------------------------------
-
-Support for MacOSX older than 10.6 is deprecated, but may still work.
-We will not actively break it, but also not go out of our way to keep
-it working.
-
-For MacOSX 10.4 or 10.5 you can build a universal PowerPC/Intel Ambulant,
-by running configure as:
-	./configure --with-universalsdk --disable-dependency-tracking
-	
-You can pass an SDK to the --with-universalsdk option to enable doing a
-10.4 compatible build on 10.5 (or 10.6), but then you must also set the
-MACOSX_DEPLOYMENT_TARGET=10.4 environment variable.
-
-Building the Safari plugin will probably not work for 10.4 anymore.
 
 Building for Windows
 --------------------
@@ -217,21 +199,11 @@ If you want to build the Firefox or IE plugin you may need to install some
 additional tools such as CabArc. Also, to build the IE plugin you must run
 Visual Studio (sic!) with Administrator permissions.
 
-Building for iPhone iOS5
-------------------------
+Building for iOS
+----------------
 
-First there are some packages that need to be installed system-wide, i.e.
-in /usr/local (or /opt, or whereever you want to put them). Eventually we will
-put these in the next category, but for now you need to download, build and
-install them manually:
-- gettext, version 0.17 or later
-- libtool, version 2.2.6 or later
-- pkg-config, version 0.19 or later
-
-Before opening the XCode projects, do the following (at the toplevel Ambulant
-directory):
-	$ mkdir build-{iOS,iOS-Simulator}
-	$ mkdir build-{iOS,iOS-Simulator}/third_party_packages
+First there are some packages that need to be installed system-wide, see the section
+on building for MacOSX for the list.
 
 Now you can open projects/xcode43/iAmbulant.xcodeproj and it will build everything
 needed.
@@ -240,9 +212,3 @@ The projects are parameterized, so if something like the pathname of a
 third party package changes you should inspect the files in
 projects/xcode43/config and change things there (possibly in addition to
 changing the build-third-party-packages.py script).
-
-Finally a word of warning: if you do both MacOSX and iOS development the
-projects (or XCode?) sometimes get confused. If you can't build, or debug, this
-may be the issue. Usually, removing all user.mode1v3 and user.pbxuser from
-the projects and removing the "build" subdirectory in projects/xcode32 will
-clean things up.

@@ -1,19 +1,21 @@
-What's new in Ambulant Player 2.2?
+What's new in Ambulant Player 2.6?
 ----------------------------------
 
 - This is mainly a cleanup release, incorporating all fixes we have made in the
-  last 2 years. It will also be the last release for Windows XP and older MacOSX
-  releases (10.6 or earlier).
-  
-- Windows drawing code is now based on Direct2D, giving alpha blending,
-  transparency scalable windows and fullscreen support.
-  
-- Mac drawing code is now based on CoreGraphics, giving scalable windows and
-  fullscreen support.
-  
-- Media playback is a lot smoother, especially in the case of back-to-back
-  videos, and when trying to get data from a slow webserver.
-  
-- RTSP playback will automatically fallback to TCP if UDP does not work.
+  last 3 years. It will also probably be the last release with browser plugins.
 
-As usual, many bugs have been fixed too. The details can be found in ChangeLog.
+- Binary (PPA) installers for Linux are available.
+
+- Hooks for distributed synchronisation of presentations.
+
+- Handling of video playback has improved.
+
+- SDL-based player for Linux (especilly for embedding) has been added.
+
+- Framework for recording/retransmitting presentations added.
+
+- Live streaming latency greatly reduced.
+
+- Updated all external packages (gtk, ffmpeg, sdl) to modern versions.
+
+- Preliminary support for Android is available.
