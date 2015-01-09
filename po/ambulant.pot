@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ambulant 2.5\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2014-12-22 13:46+0100\n"
+"POT-Creation-Date: 2015-01-09 10:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Cannot play document: no player"
 msgstr ""
 
 #: src/libambulant/common/gui_player.cpp:134
-#: src/npambulant/cg_mainloop.cpp:189 src/player_macosx/mainloop.cpp:199
+#: src/npambulant/cg_mainloop.cpp:191 src/player_macosx/mainloop.cpp:201
 #, c-format
 msgid "Failed to parse document %s"
 msgstr ""
@@ -93,7 +93,7 @@ msgstr ""
 msgid "%s: node ID not found"
 msgstr ""
 
-#: src/libambulant/gui/d2/d2_player.cpp:1382
+#: src/libambulant/gui/d2/d2_player.cpp:1384
 #, c-format
 msgid "%s:multiple screen transitions in progress (m_fullscreen_count=%d)"
 msgstr ""
@@ -127,12 +127,12 @@ msgstr ""
 msgid "%s: cannot open audio file"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:354
+#: src/libambulant/gui/SDL/sdl_audio.cpp:355
 #, c-format
 msgid "%s: audio format not supported"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:395
+#: src/libambulant/gui/SDL/sdl_audio.cpp:397
 #, c-format
 msgid "%s: cannot open"
 msgstr ""
@@ -153,11 +153,11 @@ msgstr ""
 msgid "expected: `%s', got: `%s'."
 msgstr ""
 
-#: src/libambulant/lib/parser_factory.cpp:68
+#: src/libambulant/lib/parser_factory.cpp:67
 msgid "No XML parser configured"
 msgstr ""
 
-#: src/libambulant/lib/parser_factory.cpp:134
+#: src/libambulant/lib/parser_factory.cpp:133
 #, c-format
 msgid "Parser \"%s\" not available, using \"%s\""
 msgstr ""
@@ -206,23 +206,28 @@ msgstr ""
 msgid "%s: Cannot open, not supported by any datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:403
+#: src/libambulant/net/datasource.cpp:392
 #, c-format
-msgid "%s: Cannot open, no compatible parser"
+msgid "%s: Cannot open, no compatible audio datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:423
-#: src/libambulant/net/datasource.cpp:448
+#: src/libambulant/net/datasource.cpp:407
+#, c-format
+msgid "%s: Cannot open, no compatible audio parser"
+msgstr ""
+
+#: src/libambulant/net/datasource.cpp:427
+#: src/libambulant/net/datasource.cpp:452
 #, c-format
 msgid "%s: Cannot open, cannot find conversion filter"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:463
+#: src/libambulant/net/datasource.cpp:467
 #, c-format
 msgid "%s: Cannot open, not supported by any video datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:542
+#: src/libambulant/net/datasource.cpp:546
 msgid "datasource_reader: out of memory"
 msgstr ""
 
@@ -233,11 +238,11 @@ msgid "%s: no more audio streams"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:146
-#: src/libambulant/net/ffmpeg_audio.cpp:349
-#: src/libambulant/net/ffmpeg_audio.cpp:416
-#: src/libambulant/net/ffmpeg_audio.cpp:983
-#: src/libambulant/net/ffmpeg_audio.cpp:1021
-#: src/libambulant/net/ffmpeg_audio.cpp:1231
+#: src/libambulant/net/ffmpeg_audio.cpp:363
+#: src/libambulant/net/ffmpeg_audio.cpp:430
+#: src/libambulant/net/ffmpeg_audio.cpp:1009
+#: src/libambulant/net/ffmpeg_audio.cpp:1047
+#: src/libambulant/net/ffmpeg_audio.cpp:1257
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
@@ -246,33 +251,33 @@ msgstr ""
 msgid "%s: Ignoring audio, unsupported encoding"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:180
+#: src/libambulant/net/ffmpeg_audio.cpp:189
 #, c-format
 msgid "%s: unable to create audio resampler"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:209
+#: src/libambulant/net/ffmpeg_audio.cpp:220
 #, c-format
 msgid "No support for %d-bit audio, only 16"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:267
+#: src/libambulant/net/ffmpeg_audio.cpp:280
 #, c-format
 msgid "%s: audio decoder \"%s\" not supported"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:288
+#: src/libambulant/net/ffmpeg_audio.cpp:302
 #, c-format
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:805
-#: src/libambulant/net/ffmpeg_audio.cpp:816
+#: src/libambulant/net/ffmpeg_audio.cpp:849
+#: src/libambulant/net/ffmpeg_audio.cpp:860
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:970
+#: src/libambulant/net/ffmpeg_audio.cpp:996
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 
@@ -449,13 +454,13 @@ msgstr ""
 msgid "Error in SMIL transition info in document"
 msgstr ""
 
-#: src/npambulant/cg_mainloop.cpp:80 src/player_gtk/gtk_mainloop.cpp:274
+#: src/npambulant/cg_mainloop.cpp:80 src/player_gtk/gtk_mainloop.cpp:276
 #: src/player_macosx/mainloop.cpp:83
 #, c-format
 msgid "%s: Cannot build DOM tree"
 msgstr ""
 
-#: src/npambulant/npambulant.cpp:285
+#: src/npambulant/npambulant.cpp:287
 msgid "Ambulant plugin loaded"
 msgstr ""
 
@@ -644,18 +649,18 @@ msgstr ""
 msgid "URL to open:"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1128 src/player_macosx/MyAppDelegate.mm:171
+#: src/player_gtk/gtk_gui.cpp:1129 src/player_macosx/MyAppDelegate.mm:171
 #: src/player_mfc/MmView.cpp:237
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1129
+#: src/player_gtk/gtk_gui.cpp:1130
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1131 src/player_mfc/MmView.cpp:256
+#: src/player_gtk/gtk_gui.cpp:1132 src/player_mfc/MmView.cpp:256
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""
 
