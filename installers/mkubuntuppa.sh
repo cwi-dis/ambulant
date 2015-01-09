@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e -x
 
-VERSION=2.4.1
+VERSION=2.6
 UVERSION=precise
 
 PPANAME=$1

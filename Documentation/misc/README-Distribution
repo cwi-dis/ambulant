@@ -106,16 +106,16 @@ Before creating the distribution
   - src/player_macosx/*.lproj/InfoPlist.strings
   - src/player_macosx/Resources/Info.plist
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
-  - src/pyambulant/Makefile.am
+  - src/pyambulant/Makefile.am (multiple places)
   - src/npambulant/install-*.rdf
   - src/npambulant/manifest-*.json
+  - src/npambulant/manifest.json
   - src/pyambulant/setup.py
   - src/pyambulant/test/test_pyambulant.py
   - scripts/nightlybuilds/*
   - scripts/build-third-party-packages.py (MIRRORBASE variable)
   - scripts/autotest.linux.sh
   - installers/nsis-win32/setup-ambulant-installer.nsi
-  - installers/nsis-win32/setup-ambulant-installer-xp.nsi
   - installers/mkdebiandist.sh
   - projects/vc9/npambulant-installer.vcproj
   - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
@@ -127,6 +127,7 @@ Before creating the distribution
   - README
   - INSTALL
   - Documentation/misc/README-Distribution (this file)
+  - installers/sh-macos/npambulant-installer-README (is this file used?)
 - Update the icons in the following files:
   - src/player_mfc/res/AmbulantPlayer.ico
   - src/player_mfc/res/AmbulantPlayerDoc.ico
