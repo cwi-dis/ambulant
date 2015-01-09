@@ -15,7 +15,7 @@ TRYMIRROR=True
 # Before cutting a release, update this directory name, and run
 #   python build-third-party-packages.py -m
 # in the directory on the server.
-MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.5/"
+MIRRORBASE="http://www.ambulantplayer.org/thirdpartymirror/2.6/"
 LIVE_MIRRORDATE="2012.02.29"
 SDL_MIRRORDATE="20120306"
 
