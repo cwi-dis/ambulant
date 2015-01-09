@@ -622,6 +622,8 @@ ffmpeg_decoder_datasource::data_avail()
                 forwarding_ptr += bytes_unwanted;
                 decoded_size -= bytes_unwanted;
             }
+			// We can now update our timer to coincide with end-of-buffer
+			m_elapsed = old_elapsed + duration;
             
             // Ready to push decoded data forward.
             char *outbuf = m_buffer.get_write_ptr(decoded_size);
@@ -702,8 +704,9 @@ ffmpeg_decoder_datasource::_clip_end() const
 	// private method - no need to lock
 	timestamp_t clip_end = m_src->get_clip_end();
 	if (clip_end == -1) return false;
-
-	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+	long long bitsPerSecond = (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+	if (bitsPerSecond == 0) return false;
+	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / bitsPerSecond;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
 	if (buffer_begin_elapsed > clip_end) {
 		return true;
