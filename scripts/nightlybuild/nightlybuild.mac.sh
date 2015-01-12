@@ -117,6 +117,8 @@ cd src/player_macosx
 # Enable next lines to sign AmbulantPlayer:
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
 security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
+# Temporary, to find out why signing doesn't work:
+security find-identity
 make $MAKEOPTS signedapp
 
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
