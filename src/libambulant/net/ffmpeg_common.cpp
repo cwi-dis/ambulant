@@ -509,7 +509,12 @@ ffmpeg_demux::run()
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
 			m_clip_begin_changed = false;
-			// XXXJACK: Must push flush packet down all streams, so decoders can call avcodec_flush_buffers().
+			// Must also push flush packet down all streams, so decoders can call avcodec_flush_buffers().
+            for (int i=0; i<AMBULANT_MAX_FFMPEG_STREAMS; i++) {
+                if (m_sinks[i]) {
+                    m_sinks[i]->push_data(0, 0, datasource_packet_flag_flush);
+                }
+            }
 		}
 		m_lock.leave();
 		int ret = av_read_frame(m_con, pkt);
@@ -585,7 +590,7 @@ ffmpeg_demux::run()
 						last_valid_audio_pts = pts;
 					}
 				} else {
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
 					last_valid_audio_pts++;
 					pts = last_valid_audio_pts;
