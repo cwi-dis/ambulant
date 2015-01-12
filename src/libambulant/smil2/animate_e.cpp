@@ -106,7 +106,7 @@ void animation_engine::_stopped(animate_node *animator) {
     int old_size = aa.size();
 	aa.remove(animator);
     if (aa.size() == old_size) {
-        /*AM_DBG*/ lib::logger::get_logger()->debug("animation_engine::stopped(%s): not in animations for %s attr=%s",animator->dom_node()->get_sig().c_str(), target->get_sig().c_str(), aattr.c_str());
+        AM_DBG lib::logger::get_logger()->debug("animation_engine::stopped(%s): not in animations for %s attr=%s",animator->dom_node()->get_sig().c_str(), target->get_sig().c_str(), aattr.c_str());
         return;
     }
 	m_counter--;
