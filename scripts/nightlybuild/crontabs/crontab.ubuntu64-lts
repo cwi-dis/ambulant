@@ -1,5 +1,5 @@
 NAME=jack@cwi.nl
-MAILTO=jack@cwi.nl
+MAILTO=nightlybuilds@ambulantplayer.org
 PATH=/home/jack/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 30 4 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.linux.sh 
 30 5 * * * sh $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.debian.sh 

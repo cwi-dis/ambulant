@@ -4,9 +4,9 @@ import urllib2
 import time
 
 
-USERS=["Jack.Jansen@cwi.nl", "Kees.Blom@cwi.nl"]
+USERS=["nightlybuilds@ambulantplayer.org"]
 
-LOG_URL="http://ambulantplayer.org/nightlybuilds/logs/default-%(platform)s-%(ydate)s.txt"
+LOG_URL="http://ambulantplayer.org/nightlybuilds/logs/%(platform)s-%(ydate)s-default.txt"
 
 URLS={
     'mac' : [

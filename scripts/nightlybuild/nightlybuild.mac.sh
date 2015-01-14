@@ -65,7 +65,7 @@ DESTINATION_PLUGIN=$DESTINATION_HOST:$DESTINATION_PLUGIN_DIR
 echo
 echo ==========================================================
 echo Ambulant nightly build for MacOSX, $USER@`hostname`, `date`
-echo LogLocation=$BRANCH-mac-$TODAY.txt
+echo LogLocation=mac-$TODAY.txt
 echo ==========================================================
 echo
 
@@ -118,6 +118,7 @@ cd src/player_macosx
 security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
 security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 # Temporary, to find out why signing doesn't work:
+security list-keychains
 security find-identity
 make $MAKEOPTS signedapp
 

@@ -49,8 +49,12 @@ mac and iphone:
 	- Install XCode, open, accept license, download updates
 	- install command line tools
 	- install Mercurial, copy or create ~/.hgrc
+	- copy .ssh from another nightlybuilds machine
+	- clone ssh://hg@ambulantplayer.org/hg/ambulant into src/ambulant
+	- clone ssh://hg@ambulantplayer.org/hgpriv/ambulant-private into src/ambulant-private
 	- create directory ~/packages and from there run (or inspect) scripts/precheck-mac
 	- Install certificates from ambulant-private/certificates/xcode
+	- Create nightlybuilds keychain, fix password, copy certificates across, set keychain optiosn to never lock.
 	- run ambulant autogen.sh
 	- try building third-party-packages
 	- try building ambulant

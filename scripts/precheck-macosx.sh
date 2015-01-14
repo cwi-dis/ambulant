@@ -45,5 +45,5 @@ cd yasm-1.3.0
 
 (
 curl -OL https://raw.githubusercontent.com/yuvi/gas-preprocessor/master/gas-preprocessor.pl
-sudo install -m 755 gas-proprocessor.pl /usr/local/bin
+sudo install -m 755 gas-preprocessor.pl /usr/local/bin
 )
