@@ -1,5 +1,5 @@
 NAME=jack@cwi.nl
-MAILTO=jack@cwi.nl
+MAILTO=nightlybuilds@ambulantplayer.org
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 20 0 * * * prlctl start Win7-VS2010-Nightly
 20 2 * * * prlctl start Ubuntu-1404-32bit

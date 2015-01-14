@@ -75,7 +75,7 @@ FULLAMBULANTVERSION=$AMBULANTVERSION$VERSIONSUFFIX~$DISTRIB_CODENAME
 echo
 echo ==========================================================
 echo Ambulant nightly build for Debian, $ARCH, $USER@`hostname`, `date`
-echo LogLocation=$BRANCH-Ubuntu-$DISTRIB_RELEASE-$DEBARCH-$TODAY.txt
+echo LogLocation=Ubuntu-$DISTRIB_RELEASE-$DEBARCH-$TODAY.txt
 echo ==========================================================
 echo
 
