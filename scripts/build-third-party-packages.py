@@ -611,12 +611,12 @@ third_party_packages={
             ),
             
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
-                "%s --disable-dependency-tracking && "
+                "cd libxml2-2.9.2 && "
+                "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
@@ -719,11 +719,11 @@ third_party_packages={
 #             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
+                "cd libxml2-2.9.2 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
@@ -808,11 +808,11 @@ third_party_packages={
             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
+                "cd libxml2-2.9.2 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
@@ -941,12 +941,12 @@ third_party_packages={
             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
-                "%s && "
+                "cd libxml2-2.9.2 && "
+                "%s --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
@@ -1011,9 +1011,9 @@ third_party_packages={
             ),
 
         WinTPP("libxml2",
-            url="http://ambulantplayer.org/our/mirror/has/essential/fixes",
-            url2="libxml2-2.7.7-modforVC10.zip",
-            checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
+            checkcmd="if not exist libxml2-2.9.2\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
 
