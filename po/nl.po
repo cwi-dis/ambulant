@@ -100,7 +100,7 @@ msgstr "%s: Node ID niet gevonden"
 #: src/libambulant/gui/d2/d2_player.cpp:1384
 #, c-format
 msgid "%s:multiple screen transitions in progress (m_fullscreen_count=%d)"
-msgstr "%s: meerdere schermtransities tegelijk bezig (m_fullscreen_count=%d)""
+msgstr "%s: meerdere schermtransities tegelijk bezig (m_fullscreen_count=%d)"
 
 #: src/libambulant/gui/gtk/gtk_smiltext.cpp:686
 #, c-format
