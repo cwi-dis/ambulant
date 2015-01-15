@@ -206,6 +206,8 @@ typedef CGRect NSRect;
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;
 - (void)pseudoMouseMove: (id)dummy;
+- (NSImage *)_getOnScreenImage;
+
 #endif //! WITH_UIKIT
 
 - (BOOL)wantsDefaultClipping;

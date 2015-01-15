@@ -1155,7 +1155,7 @@ void handle_event_AmbulantView(void* obj, CGContext* ctx, void* NSEventTypeRef, 
 	NSPoint p = {e_data.x, e_data.y};
 	v.plugin_mainloop = (ambulant::common::gui_player*) mainloop; //X needed for cursor appearance change
 	NSGraphicsContext* ns_ctx = [NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES];
-	AM_DBG NSLog(@"handle_event_AmbulantView(%p): e_type=%d e_data=(%f,%f) p=(%f,%f)", obj, e_type, e_data.x, e_data.y, p.x, p.y);
+	AM_DBG NSLog(@"handle_event_AmbulantView(%p): e_type=%u e_data=(%f,%f) p=(%f,%f)", obj, (UInt) e_type, e_data.x, e_data.y, p.x, p.y);
 	// NSEvent mouseEventWithType will crash on type=NSMouseEntered or NSMouseExited showing:
 	// Invalid parameter not satisfying: NSEventMaskFromType(type) & (MouseMask|NSMouseMovedMask)
 	// The idea is to just update the cursor shape in these cases, so make it an NSMouseMoved instead.
