@@ -1011,9 +1011,10 @@ third_party_packages={
             ),
 
         WinTPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
-            url2="libxml2-2.9.2.tar.gz",
-            checkcmd="if not exist libxml2-2.9.2\\xml2-config.in exit 1",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz",
+            url2="libxml2-2.9.1.tar.gz",
+            extractcmd="%s libxml2-2.9.1.tar.gz ; %s libxml2-2.9.2.tar" % (WINDOWS_UNZIP, WINDOWS_UNZIP),
+            checkcmd="if not exist libxml2-2.9.1\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
 
