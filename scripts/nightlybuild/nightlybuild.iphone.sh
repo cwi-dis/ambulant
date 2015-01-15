@@ -8,8 +8,12 @@ set -x
 export PATH=/usr/local/bin:`xcode-select -print-path`/usr/bin:$PATH
 
 # Unlock the nightly build keychain
-security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
-security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
+security default-keychain -s
+security default-keychain -s nightlybuilds.keychain login.keychain
+security unlock-keychain -p ambulant nightlybuilds.keychain
+# Temporary, to find out why signing doesn't work:
+security list-keychains
+security find-identity
 
 # An optional parameter is the branch name, which also sets destination directory
 BRANCH=
@@ -108,11 +112,8 @@ xcodebuild -project libambulant.xcodeproj \
 	-configuration Release \
 	-sdk iphoneos$IOSVERSION \
 	build
+
 #
-# The keychain may have been locked again in the mean time
-#
-security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
-security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
