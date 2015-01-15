@@ -18,3 +18,6 @@ for dir in $subdirs; do
 	cd $dir
 	ls -t | grep '20[0-9][0-9][0-9][0-9][0-9][0-9]' | tail -n +6 | xargs --no-run-if-empty rm -r
 done
+cd $BUILDDIR
+cd logs
+ls -t | tail -n +20 | xargs --no-run-if-empty rm 
