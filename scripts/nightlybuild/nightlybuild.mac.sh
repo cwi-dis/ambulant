@@ -18,7 +18,7 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.5
-# export MACOSX_DEPLOYMENT_TARGET=10.7
+export MACOSX_DEPLOYMENT_TARGET=10.7
 # export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
 # if [ ! -d $SDKROOT ]; then
 # 	export SDKROOT=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
@@ -145,7 +145,7 @@ rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
 xcodebuild -project npambulant.xcodeproj \
 	-target npambulant \
-	-configuration Release -sdk macosx10.7 \
+	-configuration Release \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
