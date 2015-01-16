@@ -148,6 +148,7 @@ demux_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 	} else {
 		// We have no data available. Start our source, and in our data available callback we
 		// will signal the client.
+        AM_DBG lib::logger::get_logger()->debug("demux_datasource::start: record client callback for later");
 		m_client_callback = callbackk;
 		m_event_processor = evp;
 	}
@@ -266,12 +267,12 @@ demux_datasource::push_data(timestamp_t pts, struct AVPacket *pkt, datasource_pa
     
 	if ( m_frames.size() > 0 || _end_of_file()  ) {
 		if ( m_client_callback && m_event_processor) {
-			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
+			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(pts=%lld): calling client callback (eof=%d)", pts, m_src_end_of_file);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
 		} else {
-			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(): No client callback");
+			AM_DBG lib::logger::get_logger()->debug("demux_datasource::push_data(pts=%lld): No client callback", pts);
 		}
 	}
 	m_lock.leave();

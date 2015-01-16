@@ -56,6 +56,8 @@ mypreferences::load_preferences()
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = (int)[prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
+	// On the mac, we currently determine the directories to search for plugins
+	// using the standard OSX search, not a preference anymore.
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSArray *as_paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES);
 	NSMutableArray *plugin_paths = [NSMutableArray arrayWithCapacity:[as_paths count]];
@@ -69,6 +71,7 @@ mypreferences::load_preferences()
 	}
 	NSString *plugin_path = [plugin_paths componentsJoinedByString: @":"];
 	m_plugin_path = [plugin_path UTF8String];
+
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	m_prefer_rtsp_tcp = [prefs boolForKey: @"prefer_rtsp_tcp"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];

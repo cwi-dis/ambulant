@@ -43,7 +43,6 @@ rem
 
 rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
-echo LogLocation=%BRANCH%-win32-%TODAY%.txt
 
 rem
 rem Other settable parameters
@@ -51,6 +50,8 @@ rem
 
 set AMBULANTVERSION=2.6
 set BRANCH=default
+
+echo LogLocation=win32-%TODAY%-%BRANCH%.txt
 
 rem
 rem Set VERSIONSUFFIX to empty for distribution builds

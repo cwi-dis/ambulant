@@ -434,7 +434,7 @@ ffmpeg_decoder_datasource::data_avail()
 		AVPacket *real_pkt_ptr = NULL;
         AVPacket tmp_pkt;
         AVFrame *outframe = NULL;
-		timestamp_t old_elapsed;
+		timestamp_t packet_pts;
         
         av_init_packet(&tmp_pkt);
         tmp_pkt.data = NULL;
@@ -447,7 +447,7 @@ ffmpeg_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: end of file");
 		} else {
 			datasource_packet audio_packet = m_src->get_packet();
-			old_elapsed = audio_packet.pts;
+			packet_pts = audio_packet.pts;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed %lld, pts=%lld pkt=%p flag=%d", m_elapsed, audio_packet.pts, audio_packet.pkt, (int)audio_packet.flag);
 			if (audio_packet.flag == datasource_packet_flag_avpacket) {
 				real_pkt_ptr = audio_packet.pkt;
@@ -493,7 +493,7 @@ ffmpeg_decoder_datasource::data_avail()
                 }
             }
             
-            // XXXJACK we should set old_elapsed here, from outframe->pts and such.
+            // XXXJACK we should set packet_pts here, from outframe->pts and such.
             
             // We have data, which also means our decoder is now up to speed.
             // Get our decoder parameters, and possibly interleave
@@ -603,25 +603,27 @@ ffmpeg_decoder_datasource::data_avail()
             // maybe our clip-begin falls inside this buffer.
             timestamp_t duration = ((timestamp_t) convLen * 1000000LL) / m_fmt.samplerate;
 
-            if (old_elapsed < m_elapsed) {
+            if (packet_pts < m_elapsed) {
                 // Old data. Warn.
-                lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: got old data for timestamp %lld. Reset from %lld", old_elapsed, m_elapsed);
+                lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: got old data for timestamp %lld. Reset from %lld", packet_pts, m_elapsed);
             }
             
-            if (old_elapsed + duration < m_src->get_clip_begin()) {
+            if (packet_pts + duration < m_src->get_clip_begin()) {
                 // All this data ca be dropped, it all falls before clip-begin.
-                m_elapsed = old_elapsed + duration;
+                m_elapsed = packet_pts + duration;
                 continue;
             }
-            if (old_elapsed < m_src->get_clip_begin()) {
+            if (packet_pts < m_src->get_clip_begin()) {
                 // Part of this data falls before clip-begin. Skip it.
-                timestamp_t delta_t_unwanted = m_src->get_clip_begin() - old_elapsed;
+                timestamp_t delta_t_unwanted = m_src->get_clip_begin() - packet_pts;
                 assert(delta_t_unwanted > 0);
                 size_t bytes_unwanted = (size_t)(delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8))/1000000);
                 bytes_unwanted &= ~3;
                 forwarding_ptr += bytes_unwanted;
                 decoded_size -= bytes_unwanted;
             }
+			// We can now update our timer to coincide with end-of-buffer
+			m_elapsed = packet_pts + duration;
             
             // Ready to push decoded data forward.
             char *outbuf = m_buffer.get_write_ptr(decoded_size);
@@ -702,8 +704,9 @@ ffmpeg_decoder_datasource::_clip_end() const
 	// private method - no need to lock
 	timestamp_t clip_end = m_src->get_clip_end();
 	if (clip_end == -1) return false;
-
-	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+	long long bitsPerSecond = (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+	if (bitsPerSecond == 0) return false;
+	timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / bitsPerSecond;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_clip_end(): m_elapsed=%lld, buffer_begin_elapsed=%lld , clip_end=%lld", m_elapsed, buffer_begin_elapsed, clip_end);
 	if (buffer_begin_elapsed > clip_end) {
 		return true;

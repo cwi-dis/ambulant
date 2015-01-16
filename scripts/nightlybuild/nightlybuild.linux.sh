@@ -75,7 +75,7 @@ DESTINATION_NPAMBULANT=$DESTINATION_HOST:$DESTINATION_NPAMBULANT_DIR
 echo
 echo ==========================================================
 echo Ambulant nightly build for Linux, $ARCH, $USER@`hostname`, `date`
-echo LogLocation=$BRANCH-linux-$ARCH-$TODAY.txt
+echo LogLocation=linux-$ARCH-$TODAY.txt
 echo ==========================================================
 echo
 

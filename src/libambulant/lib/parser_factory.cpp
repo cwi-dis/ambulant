@@ -86,8 +86,8 @@ global_parser_factory::~global_parser_factory()
 void
 global_parser_factory::add_factory(parser_factory *pf)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("global_parser_factory::add_factory(0x%x) called", (void*) pf);
-	/*AM_DBG*/ {
+	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::add_factory(0x%x) called", (void*) pf);
+	AM_DBG {
 		std::string name = pf->get_parser_name();
 		lib::logger::get_logger()->debug("global_parser_factory::add_factory: parser %s", name.c_str());
 	}

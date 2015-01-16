@@ -49,8 +49,12 @@ mac and iphone:
 	- Install XCode, open, accept license, download updates
 	- install command line tools
 	- install Mercurial, copy or create ~/.hgrc
+	- copy .ssh from another nightlybuilds machine
+	- clone ssh://hg@ambulantplayer.org/hg/ambulant into src/ambulant
+	- clone ssh://hg@ambulantplayer.org/hgpriv/ambulant-private into src/ambulant-private
 	- create directory ~/packages and from there run (or inspect) scripts/precheck-mac
 	- Install certificates from ambulant-private/certificates/xcode
+	- Create nightlybuilds keychain, fix password, copy certificates across, set keychain optiosn to never lock.
 	- run ambulant autogen.sh
 	- try building third-party-packages
 	- try building ambulant
@@ -58,6 +62,8 @@ mac and iphone:
 	- Get mail working, fix /etc/postfix/main.cf (see maunakea or another mnightlybuild mac)
 	- try nightlyrun scripts, which do funky things with ssh localhost
 	- add crontab
+	- Note that Mac and iPhone builds need to be run with ssh, because this somehow sets up the
+	  certificate infrastructure in a correct way (which sh execution from cron does not do).
 	
 win32:
 	"Win7-VS2010-Nightly" Parallels VM on maunakea. This has the nightlyrun.win32.bat

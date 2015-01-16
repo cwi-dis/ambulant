@@ -101,7 +101,7 @@ Before creating the distribution
   - Check that we get the most recent versions of all packages
   - Check that Ambulant builds with those packages
 - change the version number (and possibly year) in:
-  - configure.in (2 places!)
+  - configure.ac (2 places!)
   - include/ambulant/version.h
   - src/player_macosx/*.lproj/InfoPlist.strings
   - src/player_macosx/Resources/Info.plist

@@ -60,7 +60,6 @@ using namespace net;
 
 typedef lib::no_arg_callback<ffmpeg_video_decoder_datasource> framedone_callback;
 
-const AVRational AMBULANT_TIMEBASE = {1, 1000000};
 
 video_datasource_factory *
 ambulant::net::get_ffmpeg_video_datasource_factory()
@@ -495,6 +494,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 	if (!m_src) {
 		// Cleaning up, apparently
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: no m_src, bailing out");
 		m_lock.leave();
 		return;
 	}
@@ -515,6 +515,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
     // Check for end-of-file inconsistency
 	if(dspacket.flag == datasource_packet_flag_eof) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasource_packet_flag_eof received, bailing out");
 		if (!m_src->end_of_file() ) {
 			lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: datasource_packet_flag_eof, but not eof?");
 			// Unsure whether we have to restart input in this case...
@@ -522,6 +523,11 @@ ffmpeg_video_decoder_datasource::data_avail()
 		}
 		// XXXJACK Or should we pass dummy packets to flush the buffer?
 		_restart_queues();
+#if 1
+        // Added by Jack, because hitting end-of-file and seeking backwards doesn't
+        // restart input...
+        m_start_input = true;
+#endif
 		m_lock.leave();
 		return;
 	}

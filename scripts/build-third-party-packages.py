@@ -81,7 +81,7 @@ class TPP(CommonTPP):
     DEFAULT_BUILD_COMMAND="cd %s && ./configure && make && make install"
     DEFAULT_EXTRACT_COMMAND="tar xf %s"
     
-    def __init__(self, name, url=None, url2=None, downloadedfile=None, extractcmd=None, checkcmd=None, buildcmd=None):
+    def __init__(self, name, url=None, url2=None, downloadedfile=None, extractcmd=None, extract2cmd=None, checkcmd=None, buildcmd=None):
         CommonTPP.__init__(self, name)
         
         self.url = url
@@ -94,6 +94,7 @@ class TPP(CommonTPP):
         if not extractcmd:
             extractcmd = self.DEFAULT_EXTRACT_COMMAND % self.downloadedfile
         self.extractcmd = extractcmd
+        self.extract2cmd = extract2cmd
         self.buildcmd = buildcmd
         if not buildcmd:
             buildcmd = self.DEFAULT_BUILD_COMMAND
@@ -153,7 +154,10 @@ class TPP(CommonTPP):
             return True
             
     def extract(self):
-        return self._command(self.extractcmd)
+        ok = self._command(self.extractcmd)
+        if ok and self.extract2cmd:
+            ok = self._command(self.extract2cmd)
+        return ok
         
     def build(self):
         return self._command(self.buildcmd)
@@ -246,14 +250,14 @@ if override_3pp:
 # Locate ambulant base directory
 dir = os.getenv('AMBULANT_DIR')
 if dir:
-    if not os.path.exists(os.path.join(dir, 'configure.in')):
+    if not os.path.exists(os.path.join(dir, 'configure.ac')):
         print 'ERROR: AMBULANT_DIR=%s, but it does not look like an Ambulant toplevel directory' % dir
         sys.exit(1)
 else:
     dir = os.getcwd()
     while dir != '/':
         dir = os.path.dirname(dir)
-        if os.path.exists(os.path.join(dir, 'configure.in')):
+        if os.path.exists(os.path.join(dir, 'configure.ac')):
             break
     if dir == '/':
         print 'ERROR: cannot find Ambulant toplevel directory'
@@ -611,12 +615,12 @@ third_party_packages={
             ),
             
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
-                "%s --disable-dependency-tracking && "
+                "cd libxml2-2.9.2 && "
+                "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
@@ -719,11 +723,11 @@ third_party_packages={
 #             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
+                "cd libxml2-2.9.2 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
@@ -808,11 +812,11 @@ third_party_packages={
             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
+                "cd libxml2-2.9.2 && "
                 "%s --disable-dependency-tracking --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
@@ -941,12 +945,12 @@ third_party_packages={
             ),
 
         TPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            url2="libxml2-2.7.7.tar.gz",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
+            url2="libxml2-2.9.2.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
-                "cd libxml2-2.7.7 && "
-                "%s && "
+                "cd libxml2-2.9.2 && "
+                "%s --without-python && "
                 "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
@@ -1011,9 +1015,11 @@ third_party_packages={
             ),
 
         WinTPP("libxml2",
-            url="http://ambulantplayer.org/our/mirror/has/essential/fixes",
-            url2="libxml2-2.7.7-modforVC10.zip",
-            checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz",
+            url2="libxml2-2.9.1.tar.gz",
+            extractcmd=WINDOWS_UNZIP + " libxml2-2.9.1.tar.gz",
+            extract2cmd=WINDOWS_UNZIP + " libxml2-2.9.1.tar",
+            checkcmd="if not exist libxml2-2.9.1\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
 
