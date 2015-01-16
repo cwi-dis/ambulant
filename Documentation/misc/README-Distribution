@@ -14,12 +14,6 @@ work for everyone (including you:-).
 Version numbers, release branches and tags
 ==========================================
 
-!!=============================================================================!!
-!!=============================================================================!!
-
-NOTE: this information is outdated, it is for CVS. Things are much simpler with Mercurial.
-
-
 We use a strict numbering scheme for versions. Development versions have
 an odd minor number, releases an even one. For example, "1.5" is a development
 version, and is a moving target. Once development is finished and we're
@@ -31,47 +25,21 @@ described below. Once everything has been tested and the distributions created
 propagated to the trunk at this point.
 
 Now we need to merge the changes to the trunk. Set your working copy
-to the trunk and "cvs up -jrelease-ambulant-16-branch". Test and commit.
-
-Next, we want to tag the _branch_ to show that we have merged up to here:
-set your working copy to the branch, and tag with "release-ambulant-16-merge".
-
-
-Now go back to the trunk, and tag it too with  "release-ambulant-16-merge-trunk"
-Next set ALL version numbers manually to "1.7"(see below which files)
-and start working on wonderful new ideas.
-But first: do all the tests you did for the release on the trunk as well,
-to make sure that all fixes you made on the release branch have been propagated
-to the trunk correctly.
+to the default branch "hg up default" and "hg merge release-ambulant-16-branch". Test and commit.
 
 Some time later a bug fix release "1.6.1" will have to be done. Switch your working
 copy to the "release-ambulant-16-branch" and fix the bugs. Do not add new features,
 and only fix critical bugs! Go through the whole distribution and testing
 rigamarole explained below. When the releases have been created tag
-the branch with "release-ambulant-161". Again, don't propagate fixes to the
-trunk just yet.
+the branch with "release-ambulant-161". Merge the fixes to the trunk also.
 
 If at some point you fix something on the trunk but later decide you want that
-fix on the release branch too you need to do a bit more. First you merge the
-fix to the branch, by doing (on the branch) something like "cvs up -j1.42 xxx.c" (or
-a "cvs diff" on the trunk and a "patch" on the branch).
-Then you test the fix and check it in (still on the branch). Finally you have to
-update the "release-ambulant-16-merge" tag so the fix doesn't get sent back to the
-trunk later (which would apply it twice) by doing
-"cvs tag -F release-ambulant-16-merge xxx.c".
+fix on the release branch too you need to do a bit more. Google for "hg cherry pick"
+to see how to do this.
 
-After the release you need to merge the changes again, but only the ones
-you didn't merge previously. Set working copy to the trunk, and
-"cvs up -jrelease-ambulant-16-merge -jrelease-ambulant-16-branch".
-Now, check in, and record the fact that you've merged to the trunk up to this point:
-"cvs tag -F remease-ambulant-16-merge-trunk".
-
-Next, switch back to the release branch. It's best to update version numbers at
-this point (will forestall conflicts later, when merging to the trunk).
-Finally we need to move the "-merge" tag to
-show up to which point the branch has been merged: set your working
-copy to the branch, and "cvs tag -F release-ambulant-16-merge" to move
-the tag.
+After the release you need to merge the changes again, but luckily Mercurial
+remembers what we've merged earlier, so the convoluted procedure we had to follow
+for cvs and svn is no longer needed, we simply merge again.
 
 Two final notes: 
 - release 1.8 is named release-new-ambulant-18-branch
