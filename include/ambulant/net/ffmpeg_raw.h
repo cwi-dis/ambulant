@@ -120,7 +120,7 @@ class ffmpeg_raw_datasource:
 	size_t get_sinkbuffer(uint8_t **datap);
 	void pushdata(size_t size);
 
-    long get_bandwidth_usage_data(const char **resource) { return m_thread->get_bandwidth_usage_data(resource); }
+    long get_bandwidth_usage_data(const char **resource) { return m_thread ? m_thread->get_bandwidth_usage_data(resource) : 0; }
   private:
 	bool _end_of_file();
 	const net::url m_url;
