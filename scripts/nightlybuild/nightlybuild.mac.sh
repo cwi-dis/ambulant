@@ -149,6 +149,7 @@ xcodebuild -project npambulant.xcodeproj \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
+	PLATFORM_NAME=macosx \
 	INSTALL_PATH="/Library/Internet Plug-ins" \
 	install
 cd ../..
