@@ -145,8 +145,9 @@ class gtk_renderer : public RP_Base {
 	}
 	virtual void redraw_body(const rect &dirty, gui_window *window) = 0;
 
-  private:
 	gtk_transition_renderer *m_transition_renderer;
+
+  private:
 };
 
 } // namespace gtk

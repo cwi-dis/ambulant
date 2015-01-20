@@ -129,6 +129,19 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 }
 #endif // GTK_MAJOR_VERSION < 3
 
+void
+gtk_fill_renderer::start(double t)
+{
+    if (m_transition_renderer != NULL) {
+        m_transition_renderer->start(t);
+    }
+    if (m_context != NULL) {
+        m_context->started(m_cookie);
+        m_context->stopped(m_cookie);
+    }
+    renderer_playable::start(t);
+}
+
 #if GTK_MAJOR_VERSION >= 3
 void
 gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
