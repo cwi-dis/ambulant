@@ -95,6 +95,7 @@ BUILDLIBDIR=`echo ./build/lib.*`
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; chmod +w . ; \
+	  unset MACOSX_DEPLOYMENT_TARGET ; \
 	  LDFLAGS="$(all_ldflags)" CFLAGS="$(all_cflags)" CC=$(CC) $(PYTHON) setup.py build ; \
 	)
 

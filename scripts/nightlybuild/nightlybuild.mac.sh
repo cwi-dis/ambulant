@@ -18,7 +18,7 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.5
-# export MACOSX_DEPLOYMENT_TARGET=10.7
+export MACOSX_DEPLOYMENT_TARGET=10.7
 # export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
 # if [ ! -d $SDKROOT ]; then
 # 	export SDKROOT=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
@@ -115,8 +115,10 @@ cd ..
 make $MAKEOPTS
 cd src/player_macosx
 # Enable next lines to sign AmbulantPlayer:
-security unlock-keychain -p ambulant $HOME/Library/Keychains/nightlybuilds.keychain
-security default-keychain -s $HOME/Library/Keychains/nightlybuilds.keychain
+security list-keychains -s
+security list-keychains -s nightlybuilds.keychain login.keychain
+security default-keychain -s nightlybuilds.keychain
+security unlock-keychain -p ambulant nightlybuilds.keychain
 # Temporary, to find out why signing doesn't work:
 security list-keychains
 security find-identity
@@ -143,10 +145,11 @@ rm -rf "$HOME/Library/Internet Plug-Ins/npambulant.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
 xcodebuild -project npambulant.xcodeproj \
 	-target npambulant \
-	-configuration Release -sdk macosx10.7 \
+	-configuration Release \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
+	PLATFORM_NAME=macosx \
 	INSTALL_PATH="/Library/Internet Plug-ins" \
 	install
 cd ../..

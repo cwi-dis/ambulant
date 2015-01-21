@@ -62,6 +62,8 @@ mac and iphone:
 	- Get mail working, fix /etc/postfix/main.cf (see maunakea or another mnightlybuild mac)
 	- try nightlyrun scripts, which do funky things with ssh localhost
 	- add crontab
+	- Note that Mac and iPhone builds need to be run with ssh, because this somehow sets up the
+	  certificate infrastructure in a correct way (which sh execution from cron does not do).
 	
 win32:
 	"Win7-VS2010-Nightly" Parallels VM on maunakea. This has the nightlyrun.win32.bat

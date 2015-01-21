@@ -281,11 +281,19 @@ initialize_logger()
 - (IBAction)loadFilter:(id)sender
 {
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
+#if 0
 	NSInteger result = [panel runModalForDirectory: nil file: nil types: nil];
 	if (result != NSOKButton) return;
 	NSString *filename = [[panel filenames] objectAtIndex: 0];
 	std::string path([filename UTF8String]);
 	mainloop::load_test_attrs(path);
+#else
+    NSInteger result = [panel runModal];
+    if (result != NSOKButton) return;
+    NSURL *nsurl = [[panel URLs] objectAtIndex: 0];
+    std::string path([[nsurl path] UTF8String]);
+    mainloop::load_test_attrs(path);
+#endif
 }
 
 - (IBAction)playWelcome:(id)sender

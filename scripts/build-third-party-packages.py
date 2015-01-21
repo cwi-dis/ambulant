@@ -81,7 +81,7 @@ class TPP(CommonTPP):
     DEFAULT_BUILD_COMMAND="cd %s && ./configure && make && make install"
     DEFAULT_EXTRACT_COMMAND="tar xf %s"
     
-    def __init__(self, name, url=None, url2=None, downloadedfile=None, extractcmd=None, checkcmd=None, buildcmd=None):
+    def __init__(self, name, url=None, url2=None, downloadedfile=None, extractcmd=None, extract2cmd=None, checkcmd=None, buildcmd=None):
         CommonTPP.__init__(self, name)
         
         self.url = url
@@ -94,6 +94,7 @@ class TPP(CommonTPP):
         if not extractcmd:
             extractcmd = self.DEFAULT_EXTRACT_COMMAND % self.downloadedfile
         self.extractcmd = extractcmd
+        self.extract2cmd = extract2cmd
         self.buildcmd = buildcmd
         if not buildcmd:
             buildcmd = self.DEFAULT_BUILD_COMMAND
@@ -153,7 +154,10 @@ class TPP(CommonTPP):
             return True
             
     def extract(self):
-        return self._command(self.extractcmd)
+        ok = self._command(self.extractcmd)
+        if ok and self.extract2cmd:
+            ok = self._command(self.extract2cmd)
+        return ok
         
     def build(self):
         return self._command(self.buildcmd)
@@ -1011,9 +1015,11 @@ third_party_packages={
             ),
 
         WinTPP("libxml2",
-            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz",
-            url2="libxml2-2.9.2.tar.gz",
-            checkcmd="if not exist libxml2-2.9.2\\xml2-config.in exit 1",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz",
+            url2="libxml2-2.9.1.tar.gz",
+            extractcmd=WINDOWS_UNZIP + " libxml2-2.9.1.tar.gz",
+            extract2cmd=WINDOWS_UNZIP + " libxml2-2.9.1.tar",
+            checkcmd="if not exist libxml2-2.9.1\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
 
