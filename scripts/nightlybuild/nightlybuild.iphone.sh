@@ -33,13 +33,14 @@ DESTINATION_HOST=sen5@ambulantplayer.org
 DESTINATION_DIR=/scratch/www/vhosts/ambulantplayer.org/public_html/nightlybuilds
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
-IOSVERSION=6.0	# Preferred iOS version to build for
-if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
-	IOSVERSION=7.1
-fi
-if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
-	IOSVERSION=8.0
-fi
+# IOSVERSION=6.0	# Preferred iOS version to build for
+# if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
+# 	IOSVERSION=7.1
+# fi
+# if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
+# 	IOSVERSION=8.0
+# fi
+export IPHONEOS_DEPLOYMENT_TARGET=7.0
 
 if [ -f $HOME/.bashrc ]; then
 	. $HOME/.bashrc
@@ -111,14 +112,12 @@ cd projects/xcode43
 xcodebuild -project libambulant.xcodeproj \
 	-target libambulantiPhone \
 	-configuration Release \
-	-sdk iphoneos$IOSVERSION \
 	build
 
 #
 xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
-	-sdk iphoneos$IOSVERSION \
 	build
 ## DSTROOT=$BUILDHOME/$DESTDIR \
 ## INSTALL_PATH=/Applications \
