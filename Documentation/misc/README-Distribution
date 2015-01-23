@@ -71,7 +71,7 @@ Before creating the distribution
 - change the version number (and possibly year) in:
   - configure.ac (2 places!)
   - include/ambulant/version.h
-  - src/player_macosx/*.lproj/InfoPlist.strings
+  - src/player_macosx/InfoPlist.strings
   - src/player_macosx/Resources/Info.plist
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/pyambulant/Makefile.am (multiple places)
