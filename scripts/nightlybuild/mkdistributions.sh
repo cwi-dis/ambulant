@@ -1,6 +1,6 @@
 #!/bin/bash
-
-case x$1 of
+set -x
+case x$1 in
 x)
 	echo Usage: $0 branchname
 	exit
