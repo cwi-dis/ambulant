@@ -60,7 +60,7 @@ mkdistribution ${IHOST} linux
 mkdistribution ${IHOST} debian
 unboot ${PHOST}
 
-PHOST=Win7-VS1010-Nightly
+PHOST=Win7-VS2010-Nightly
 echo "Ready to stop normal Windows nightlybuild and run yours?"
 read a
 boot ${PHOST}
