@@ -33,7 +33,7 @@ mkdistribution() {
 	scriptname=nightlybuild.${distribution}.sh
 	curl  -o /tmp/${scriptname} http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant/raw-file/${BRANCHNAME}/scripts/nightlybuild/${scriptname}
 	scp /tmp/${scriptname} ${hostname}:/tmp/${scriptname}
-	ssh ${hostname} /tmp/${scriptname} ${BRANCHNAME}
+	ssh ${hostname} sh /tmp/${scriptname} ${BRANCHNAME}
 }
 
 PHOST=Mac-1010-Nightly
