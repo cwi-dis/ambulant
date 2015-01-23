@@ -311,6 +311,10 @@ IOS_VERSION_TO_PARAMETERS = {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
         },
+    '7.0' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
+        },
     '7.1' : {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',

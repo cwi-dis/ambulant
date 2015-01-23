@@ -40,7 +40,7 @@ TODAY=`date +%Y%m%d`
 # if [ ! -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS$IOSVERSION.sdk ]; then
 # 	IOSVERSION=8.0
 # fi
-export IPHONEOS_DEPLOYMENT_TARGET=7.0
+export IPHONEOS_DEPLOYMENT_TARGET=7.1
 
 if [ -f $HOME/.bashrc ]; then
 	. $HOME/.bashrc
