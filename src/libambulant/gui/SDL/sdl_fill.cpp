@@ -120,6 +120,30 @@ sdl_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	assert (err==0);
 }
 
+void
+sdl_fill_renderer::start(double where)
+{
+	start_transition(where);
+	m_lock.enter();
+	AM_DBG logger::get_logger()->debug("sdl_fill_renderer.start(0x%x)", (void *)this);
+	if (m_activated) {
+		logger::get_logger()->trace("sdl_fill_renderer.start(0x%x): already started", (void*)this);
+		m_lock.leave();
+		return;
+	}
+	m_activated = true;
+	if (!m_dest) {
+		logger::get_logger()->trace("sdl_fill_renderer.start(0x%x): no surface", (void *)this);
+		return;
+	}
+	m_dest->show(this);
+	m_context->started(m_cookie);
+	m_context->stopped(m_cookie);
+	m_lock.leave();
+}
+
+/*** sdl_background_renderer ***
+ */
 sdl_background_renderer::~sdl_background_renderer()
 {
 }

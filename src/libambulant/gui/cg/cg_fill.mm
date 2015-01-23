@@ -24,6 +24,7 @@
 #include "ambulant/smil2/test_attrs.h"
 //#include <CoreGraphics/CoreGraphics.h>
 
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -97,6 +98,19 @@ cg_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	m_lock.leave();
 }
 
+void
+cg_fill_renderer::start(double t)
+{
+    if (m_transition_renderer != NULL) {
+        m_transition_renderer->start(t);
+    }
+    if (m_context != NULL) {
+        m_context->started(m_cookie);
+        m_context->stopped(m_cookie);
+    }
+    renderer_playable::start(t);
+}
+    
 cg_background_renderer::~cg_background_renderer()
 {
 	if (m_bgimage)

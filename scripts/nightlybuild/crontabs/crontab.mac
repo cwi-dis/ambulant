@@ -3,5 +3,5 @@ MAILTO=nightlybuilds@ambulantplayer.org
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 30 6 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.mac.sh
 30 7 * * * bash $HOME/src/ambulant/scripts/nightlybuild/nightlyrun.iphone.sh
-15 8 * * * ssh nightlybuilds@maunakea.cwi.ta2 prlctl stop Mac-107-Nightly
+15 8 * * * ssh nightlybuilds@maunakea.cwi.ta2 prlctl stop Mac-1010-Nightly
 

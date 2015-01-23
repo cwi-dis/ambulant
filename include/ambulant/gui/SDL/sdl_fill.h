@@ -66,6 +66,7 @@ create_sdl_fill_playable_factory(common::factories *factory, common::playable_fa
 	{};
 	~sdl_fill_renderer();
 
+	void start(double where);
 	void seek(double t) {} // ignore seek()
 
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);

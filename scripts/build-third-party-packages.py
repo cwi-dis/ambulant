@@ -311,6 +311,10 @@ IOS_VERSION_TO_PARAMETERS = {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
         },
+    '7.0' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
+        },
     '7.1' : {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
@@ -319,9 +323,14 @@ IOS_VERSION_TO_PARAMETERS = {
         'arch' : '-arch armv7 -arch armv7s',
         'simarch' : '-arch i386',
         },
+    '8.1' : {
+        'arch' : '-arch armv7 -arch armv7s',
+        'simarch' : '-arch i386',
+        },
 }
 
 if not IOS_VERSION in IOS_VERSION_TO_PARAMETERS:
+    print '** Warning: IOS_VERSION "%s" not known, guessing arch and simarch (which will probably fail)' % IOS_VERSION
     IOS_VERSION=''
 
 IPHONE_DEVICE_COMMON_CFLAGS="%s -isysroot %s" % (IOS_VERSION_TO_PARAMETERS[IOS_VERSION]['arch'], IOS_SDK)
