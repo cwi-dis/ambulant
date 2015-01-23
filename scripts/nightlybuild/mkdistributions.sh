@@ -1,6 +1,14 @@
 #!/bin/bash
 
-BRANCHNAME=xxxxxx
+case x$1 of
+x)
+	echo Usage: $0 branchname
+	exit
+	;;
+*)
+	BRANCHNAME=$1
+	;;
+esac
 
 boot() {
 	# Usage: boot parallelsname
