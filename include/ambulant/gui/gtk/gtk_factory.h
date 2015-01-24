@@ -116,7 +116,8 @@ class ambulant_gtk_window : public common::gui_window {
 	cairo_surface_t* new_ambulant_surface();
 	cairo_surface_t* get_ambulant_surface();
 	cairo_surface_t* get_old_target_surface();
-	cairo_surface_t* copy_surface(cairo_surface_t* srf);
+	/// return copy of (recctangle 'rp' in ) surface 'srf'
+	cairo_surface_t* copy_surface(cairo_surface_t* srf, rect* rp = NULL);
 	cairo_surface_t* get_surface_from_screen(const lib::rect &r);
 	void set_target_surface(cairo_surface_t* surf);
 	void set_drawing_surface(cairo_surface_t* surf) { m_target_surface = surf; }
