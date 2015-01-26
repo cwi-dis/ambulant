@@ -144,9 +144,10 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 			surf = agw->new_ambulant_surface();
 		if (surf != NULL) {
 			// Copy the background pixels
-			rect dstrect = r;
-			dstrect.translate(m_transition_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			rect dstrect = rect(point(0,0),size(r.width(),r.height()));
+//			rect dstrect = r;
+//			dstrect.translate(m_transition_dest->get_global_topleft());
+			/*AM_DBG*/ logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			cairo_t* cr = cairo_create(surf);
 			cairo_set_source_surface(cr, gpm, dstrect.left(), dstrect.top());
 			cairo_paint(cr);
@@ -158,6 +159,42 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 	}
 	m_lock.leave();
 }
+#else // GTK_MAJOR_VERSION < 3
+
+void
+gtk_transition_renderer::redraw_pre(gui_window *window)
+{
+	m_lock.enter();
+	const rect &r = m_transition_dest->get_rect();
+	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
+	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_pixmap());
+
+	GdkPixmap* surf = NULL;
+	// See whether we're in a transition
+	if (m_trans_engine && !m_fullscreen) {
+		GdkPixmap* gpm = agw->get_ambulant_pixmap();
+		surf = agw->get_ambulant_surface();
+		if (surf == NULL)
+			surf = agw->new_ambulant_surface();
+		if (surf != NULL) {
+			// Copy the background pixels
+			rect dstrect = r;
+			dstrect.translate(m_transition_dest->get_global_topleft());
+			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			GdkGC *gc = gdk_gc_new (surf);
+			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
+					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			g_object_unref (G_OBJECT (gc));
+			agw->set_ambulant_surface(surf);
+			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
+		}
+
+	}
+	m_lock.leave();
+}
+#endif // GTK_MAJOR_VERSION >= 3
+
+#if GTK_MAJOR_VERSION >= 3
 
 void
 gtk_transition_renderer::redraw_post(gui_window *window)
@@ -204,52 +241,16 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 #else // GTK_MAJOR_VERSION < 3
 
 void
-gtk_transition_renderer::redraw_pre(gui_window *window)
-{
-	m_lock.enter();
-	const rect &r = m_transition_dest->get_rect();
-	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
-	AM_DBG logger::get_logger()->debug("gtk_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d) gui_window=0x%x qpm=0x%x",(void*)this,r.left(),r.top(),r.right(),r.bottom(),window,agw->get_ambulant_pixmap());
-
-	GdkPixmap* surf = NULL;
-	// See whether we're in a transition
-	if (m_trans_engine && !m_fullscreen) {
-		GdkPixmap* gpm = agw->get_ambulant_pixmap();
-		surf = agw->get_ambulant_surface();
-		if (surf == NULL)
-			surf = agw->new_ambulant_surface();
-		if (surf != NULL) {
-			// Copy the background pixels
-			rect dstrect = r;
-			dstrect.translate(m_transition_dest->get_global_topleft());
-			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-			GdkGC *gc = gdk_gc_new (surf);
-			gdk_draw_pixmap(surf, gc,  gpm, dstrect.left(),dstrect.top(),
-					dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
-			g_object_unref (G_OBJECT (gc));
-			agw->set_ambulant_surface(surf);
-			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: drawing to transition surface");
-		}
-
-	}
-	m_lock.leave();
-}
-
-void
 gtk_transition_renderer::redraw_post(gui_window *window)
 {
 	m_lock.enter();
 
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
-#if GTK_MAJOR_VERSION >= 3
-	cairo_surface_t* surf = agw->get_target_surface();
-#else // GTK_MAJOR_VERSION < 3
 	GdkPixmap* surf = agw->get_ambulant_surface();
 
 	if (surf != NULL) {
 		agw->reset_ambulant_surface();
 	}
-#endif // GTK_MAJOR_VERSION < 3
 	if(m_trans_engine) {
 		lib::transition_info::time_type now = m_event_processor->get_timer()->elapsed();
 		if (m_trans_engine->is_done()) {
