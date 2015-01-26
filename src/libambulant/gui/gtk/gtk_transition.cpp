@@ -120,7 +120,7 @@ gtk_transition_blitclass_fade::update()
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_gtk_window *agw = (ambulant_gtk_window *)m_dst->get_gui_window();
 	cairo_surface_t *nsf, *osf;
-	const rect& newrect_whole =	 m_dst->get_clipped_screen_rect();
+	const rect& newrect_whole = agw->get_bounds();	// m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(),  T = newrect_whole.top(),
 		W = newrect_whole.width(), H = newrect_whole.height();
 
@@ -128,7 +128,7 @@ gtk_transition_blitclass_fade::update()
 
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f): ltwh=(%d,%d,%d,%d)",m_progress,L,T,W,H);
 	cairo_t* cr = cairo_create (osf);
-	cairo_set_source_surface (cr, nsf, L, T);
+	cairo_set_source_surface (cr, nsf, 0, 0);
 	cairo_paint_with_alpha (cr, m_progress);
 	cairo_destroy (cr);
 	finalize_transition(m_outtrans, agw, m_dst);
@@ -253,24 +253,24 @@ gtk_transition_blitclass_r1r2r3r4::update()
 		Hnewdst = newdstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_r1r2r3r4: (Lnewdst,Tnewdst,Wnewdst,Hnewdst)=(%d,%d,%d,%d)",Lnewdst,Tnewdst,Wnewdst,Hnewdst);
 	cairo_t* cr = NULL;
-	if (Loldsrc != Lolddst || Toldsrc != Tolddst) { // slideWipe
-		// need to create a full copy since cairo can't paint its surface on itself
-		cairo_surface_t* tsf = agw->copy_surface(osf);
+	if (Loldsrc != Lolddst || Toldsrc != Tolddst) { // pushWipe
+		cairo_surface_t* tosf = agw->copy_surface(osf, &oldsrcrect_whole);
 		cr = cairo_create(osf);
+		cairo_set_source_surface (cr, tosf, 0, 0); //Lolddst, Tolddst);
 		cairo_rectangle (cr, Lolddst, Tolddst, Wolddst, Holddst);
 		cairo_clip(cr);
-		cairo_set_source_surface (cr, tsf, Lolddst, Tolddst);
 		cairo_paint(cr);
-		cairo_surface_destroy (tsf);
+		cairo_surface_destroy (tosf);
 		cairo_destroy (cr);
 	}
-// need to destroy and re-create 'cr' to perform a 2nd paint operation on a different source
 	cr = cairo_create(osf);
+	cairo_surface_t* tnsf = agw->copy_surface(nsf, &newsrcrect_whole);
+	cairo_set_source_surface (cr, tnsf, 0, 0); //Lnewsrc, Tnewsrc);
 	cairo_rectangle (cr, Lnewdst, Tnewdst, Wnewdst, Hnewdst);
 	cairo_clip(cr);
-	cairo_set_source_surface (cr, nsf, -Lnewsrc, -Tnewsrc);
 	cairo_paint(cr);
 	cairo_destroy (cr);
+	cairo_surface_destroy (tnsf);
 
 	finalize_transition(m_outtrans, agw, m_dst);
 }

@@ -712,22 +712,34 @@ ambulant_gtk_window::get_ambulant_surface()
 
 #if GTK_MAJOR_VERSION >= 3
 cairo_surface_t*
-ambulant_gtk_window::copy_surface(cairo_surface_t* srf)
+ambulant_gtk_window::copy_surface(cairo_surface_t* srf, rect* rp)
 {
 	cairo_surface_t* rv = NULL;
+	int L = 0, T = 0, W, H;
+
 	if (srf != NULL) {
-		int W = cairo_image_surface_get_width (srf);
-		int H = cairo_image_surface_get_height (srf);
-		rv = cairo_surface_create_similar_image (srf, CAIRO_FORMAT_ARGB32, W, H);
+		if (rp == NULL) {
+			W = cairo_image_surface_get_width (srf);
+			H = cairo_image_surface_get_height (srf);
+		} else {
+			L = rp->left();
+			T = rp->top();
+			W = rp->width();
+			H = rp->height();
+		}
+
+ 		rv = cairo_surface_create_similar_image (srf, CAIRO_FORMAT_ARGB32, W, H);
 		if (rv != NULL) {
 			cairo_t* cr = cairo_create (rv);
-			cairo_set_source_surface (cr, srf, 0, 0);
+			cairo_rectangle (cr, L, T, W, H);
+			cairo_set_source_surface (cr, srf, -L, -T);
 			cairo_paint (cr);
 			cairo_destroy (cr);
 		}
 	}
 	return rv;
 }
+
 cairo_surface_t*
 ambulant_gtk_window::get_surface_from_screen(const lib::rect &r)
 {
@@ -1154,7 +1166,7 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	if (ls_type_known == false) {
 		ls_type_known = true;
 		ls_surface_type = cairo_surface_get_type (target_surface);
-		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(%p): surface_type=%d", this, ls_surface_type);
+		AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(%p): surface_type=%d", this, ls_surface_type);
 	}
 	ambulant_gtk_window* agw = gtk_window();
 	target_surface = agw->get_target_surface();
