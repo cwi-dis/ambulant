@@ -126,7 +126,6 @@ gtk_transition_renderer::stop()
 }
 
 #if GTK_MAJOR_VERSION >= 3
-
 void
 gtk_transition_renderer::redraw_pre(gui_window *window)
 {
@@ -145,9 +144,7 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 		if (surf != NULL) {
 			// Copy the background pixels
 			rect dstrect = rect(point(0,0),size(r.width(),r.height()));
-//			rect dstrect = r;
-//			dstrect.translate(m_transition_dest->get_global_topleft());
-			/*AM_DBG*/ logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			AM_DBG logger::get_logger()->debug("gtk_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), gpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			cairo_t* cr = cairo_create(surf);
 			cairo_set_source_surface(cr, gpm, dstrect.left(), dstrect.top());
 			cairo_paint(cr);
@@ -160,7 +157,6 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 	m_lock.leave();
 }
 #else // GTK_MAJOR_VERSION < 3
-
 void
 gtk_transition_renderer::redraw_pre(gui_window *window)
 {
@@ -192,10 +188,9 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 	}
 	m_lock.leave();
 }
-#endif // GTK_MAJOR_VERSION >= 3
+#endif // GTK_MAJOR_VERSION < 3
 
 #if GTK_MAJOR_VERSION >= 3
-
 void
 gtk_transition_renderer::redraw_post(gui_window *window)
 {
@@ -237,9 +232,7 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 	}
 	m_lock.leave();
 }
-
 #else // GTK_MAJOR_VERSION < 3
-
 void
 gtk_transition_renderer::redraw_post(gui_window *window)
 {

@@ -415,7 +415,7 @@ ambulant_gtk_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
 void
 ambulant_gtk_window::need_redraw(const lib::rect &r)
 {
-//	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
 	if (m_ambulant_widget == NULL) {
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
@@ -432,14 +432,14 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
-//	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
 	dirty->ambulant_widget = m_ambulant_widget;
 	gtk_ambulant_widget::s_lock.enter();
 	guint draw_area_tag = g_timeout_add_full(G_PRIORITY_DEFAULT, 1, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
 	dirty->tag = draw_area_tag;
 	dirty->ambulant_widget->m_draw_area_tags.insert(draw_area_tag);
 	gtk_ambulant_widget::s_lock.leave();
-//	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=0x%x", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, gtk_C_callback_helper_queue_draw_area);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=0x%x", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, gtk_C_callback_helper_queue_draw_area);
 }
 
 #if GTK_MAJOR_VERSION >= 3
@@ -716,6 +716,7 @@ ambulant_gtk_window::copy_surface(cairo_surface_t* srf, rect* rp)
 {
 	cairo_surface_t* rv = NULL;
 	int L = 0, T = 0, W, H;
+
 	if (srf != NULL) {
 		if (rp == NULL) {
 			W = cairo_image_surface_get_width (srf);
@@ -726,13 +727,12 @@ ambulant_gtk_window::copy_surface(cairo_surface_t* srf, rect* rp)
 			W = rp->width();
 			H = rp->height();
 		}
-		rv = cairo_surface_create_similar_image (srf, CAIRO_FORMAT_ARGB32, W, H);
+
+ 		rv = cairo_surface_create_similar_image (srf, CAIRO_FORMAT_ARGB32, W, H);
 		if (rv != NULL) {
 			cairo_t* cr = cairo_create (rv);
 			cairo_rectangle (cr, L, T, W, H);
-			if (L != 0 || T != 0) {
-				cairo_set_source_surface (cr, srf, -L, -T);
-			}
+			cairo_set_source_surface (cr, srf, -L, -T);
 			cairo_paint (cr);
 			cairo_destroy (cr);
 		}
@@ -1166,7 +1166,7 @@ gtk_ambulant_widget::do_draw_event (GtkWidget *widget, cairo_t *cr) {
 	if (ls_type_known == false) {
 		ls_type_known = true;
 		ls_surface_type = cairo_surface_get_type (target_surface);
-		lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(%p): surface_type=%d", this, ls_surface_type);
+		AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::do_draw_event(%p): surface_type=%d", this, ls_surface_type);
 	}
 	ambulant_gtk_window* agw = gtk_window();
 	target_surface = agw->get_target_surface();
