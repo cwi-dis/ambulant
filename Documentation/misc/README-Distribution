@@ -134,6 +134,9 @@ These all take a "branch" argument, which will make them build that branch. More
 they understand that if the word "release" occurs in the branch name they are doing
 a release build and will adapt filenames and such accordingly.
 
+There is a script scripts/nightlybuilds/mkdistribution.sh that tries to do everything
+for you by starting all the VMs and running the scripts and such.
+
 The next few paragraphs about building distributions are kept here mainly for
 historical interest.
 
