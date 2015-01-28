@@ -1,0 +1,21 @@
+Debugging npambulant using Xcode 6.
+
+1. In 'Xcode' open project 'npambulant.xcodeproj' and select 'Product->Scheme->Edit Scheme..'.
+   This opens the Scheme Editor. In there, select 'Info' tab and adjust settings:
+   - Build Configuration: Debug
+   - Executable:	  Firefox.app
+   - Debug execuatble:	  Y
+   - Debug Process As:	  Me
+   - Launch:	   	  Wait for executable to be launched
+
+2. Start 'Firefox' and go to 'about:config' (assume 64 bit binary) and set:
+  - dom.ipc.plugins.enabled.x86_64 false
+  This disables OOP (out-of-process) plugins.
+  Then go to 
+
+3. In 'Xcode' click 'Debug->Attach to Process' and select 'Firefox.app' that was started in the
+   previous step. Set a breakpoint in your code, e.g. in 'NPP_New'.
+
+4. In 'Firefox', select a webpage that will use the 'npambulant' plugin, e.g.
+   http://ambulantplayer.org/Demo-Welcome-PlugIn.shtml
+   Now in Xcode, the breakpoint that was set in the previous step will be hit.

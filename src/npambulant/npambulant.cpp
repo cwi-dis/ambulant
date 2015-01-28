@@ -289,6 +289,7 @@ npambulant::init_ambulant(NPP npp)
 	// Step 5 - Argument processing, and obtaining the document URL.
 	//
 	const char* arg_str = NULL;
+    int width = 0, height = 0;
 	if (m_argc > 1) {
 		for (int i =0; i < m_argc; i++) {
 			// Uncomment next line to see the <EMBED/> attr values
@@ -297,8 +298,12 @@ npambulant::init_ambulant(NPP npp)
 			const char* value = m_argv[i];
 			if (strcasecmp(name, "data") == 0 && arg_str == NULL)
 				arg_str = value;
-			if (strcasecmp(name,"src") == 0 && arg_str == NULL)
-				arg_str = value;
+            if (strcasecmp(name,"src") == 0 && arg_str == NULL)
+                arg_str = value;
+            if (strcasecmp(name,"width") == 0)
+                width = atoi(value);
+            if (strcasecmp(name,"height") == 0)
+                height = atoi(value);
 			if (strcasecmp(name,"autostart") == 0 && strcasecmp(value , "false") == 0)
 				m_autostart = false;
 		}
@@ -346,11 +351,13 @@ npambulant::init_ambulant(NPP npp)
 #ifdef WITH_CG
 	if (url_str != NULL)
  		free(url_str);
-	if (m_view == NULL && m_cgcontext != NULL) {
+    m_nprect.right = width;
+    m_nprect.bottom = height;
+	if (m_view == NULL) {
 		m_nprect_window = m_nprect; // Save the window rectangle for NPN_InvalidateRect 
 		NPN_InvalidateRect (npp, &m_nprect);	// Ask for draw event 
 		LOG("NPN_InvalidateRect(%p,{l=%d,t=%d,b=%d,r=%d}",npp,m_nprect.top,m_nprect.left,m_nprect.bottom,m_nprect.right);
-	}
+    }
 #endif // WITH_CG
 
 #ifdef	XP_WIN32
