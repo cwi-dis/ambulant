@@ -160,9 +160,6 @@ rsync -r $DESTINATION_STAGING $DESTINATION_DEBIAN
 #
 # Upload to PPA
 #
-# XXXJACK while we are testing the disrtibution we don't generate a PPA
-echo WARNING, skipping PPA upload
-exit
 
 case x$UBUNTUPPA in
 x)
