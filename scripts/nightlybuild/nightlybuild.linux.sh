@@ -165,7 +165,7 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 make uninstall
 make distclean
 # turn off pkg-config standard lib search path and use our versions before the default ones
-PKG_CONFIG_LIBDIR= PKG_CONFIG_PATH=$BUILDDIR/third_party_packages/installed/lib/pkgconfig:$PKG_CONFIG_LIB_PATH ./configure $CONFIGOPTS --with-gtk=gtk2  --with-npambulant
+PKG_CONFIG_LIBDIR= PKG_CONFIG_PATH=$BUILDDIR/third_party_packages/installed/lib/pkgconfig:$PKG_CONFIG_DEFAULT_LIB_PATH ./configure $CONFIGOPTS --with-gtk=gtk2  --with-npambulant --without-gcd-event-processor
 make $MAKEOPTS
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 
