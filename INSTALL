@@ -99,13 +99,7 @@ Next, make sure you install the third party packages on which Ambulant
 depends. These will be installed locally, for ambulant only (in
 directory third_party_packages/installed). 
 
-First in the toplevel run
-	
-	sh autogen.sh
-
-which will (among other things) populate the libtool directory.
-
-Then, go to third_party_packages and run
+Go to third_party_packages and run
 
 	python ../scripts/build-third-party-packages.py macosx
 	
