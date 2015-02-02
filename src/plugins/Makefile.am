@@ -1,6 +1,6 @@
 EXTRA_DIST=plugin.cpp plugin_ffmpeg.cpp pyamplugin_state pythonplugin.cpp \
     wkdombridge.h wkdombridge.m wkdombridge.mm wkdomplugin.cpp \
-    xercesplugin.cpp xpath_stateplugin.cpp
+    xercesplugin.cpp xpath_stateplugin.cpp plugin_timesync.cpp
     
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
