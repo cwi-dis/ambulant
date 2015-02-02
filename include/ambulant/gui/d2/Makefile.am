@@ -12,4 +12,5 @@ library_include_HEADERS= \
 	d2_text.h \
 	d2_transition.h \
 	d2_window.h \
-	html_bridge.h
+	html_bridge.h \
+	wmuser.h
