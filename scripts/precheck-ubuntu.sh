@@ -29,17 +29,11 @@ debpackages="
   mercurial
   postfix
   mailutils
-  libxml2-dev 
-  libsdl2-dev 
-  libsdl2-image-dev 
-  libavformat-dev 
-  libavcodec-dev 
-  libswscale-dev 
-  libswresample-dev 
-  libxerces-c-dev 
   python-dev 
   python-gtk2-dev 
   python-gobject-dev
+  libdispatch-dev
+  libsdl2-image-dev
 "
 
 case x$1 in

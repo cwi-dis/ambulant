@@ -288,13 +288,24 @@ AC_MSG_RESULT($with_dummy_plugin)
 AC_MSG_CHECKING(for --with-gcd-event-processor)
 AC_ARG_WITH([gcd-event-processor],
     AS_HELP_STRING([--with-gcd-event-processor],[Enable gcd event processor]),
-    [
-    	with_gcd_event_processor=yes
-    	GCD_LIBS=${withval}
-    ],[
+	[
+		case "${withval}" in    
+		yes) 
+			with_gcd_event_processor=yes	
+			;;
+		no)
+			with_gcd_event_processor=no
+
+			;;
+		*)
+			with_gcd_event_processor=yes	
+    			GCD_LIBS=${withval}
+			;;
+		esac
+	],[
 		# On MacOSX we don't need any special libraries.
 		GCD_LIBS=
-    	AC_TRY_LINK([#include "dispatch/dispatch.h"], [(void)dispatch_group_create();], with_gcd_event_processor=yes, with_gcd_event_processor=no)
+    		AC_TRY_LINK([#include "dispatch/dispatch.h"], [(void)dispatch_group_create();], with_gcd_event_processor=yes, with_gcd_event_processor=no)
 		if test "x$with_gcd_event_processor" = xno; then
 			oldLIBS=$LIBS
 			GCD_LIBS=-ldispatch
@@ -302,7 +313,7 @@ AC_ARG_WITH([gcd-event-processor],
 			AC_TRY_LINK([#include "dispatch/dispatch.h"], [(void)dispatch_group_create();], with_gcd_event_processor=yes, with_gcd_event_processor=no)
 			LIBS=$oldLIBS
 		fi
-    ])
+	])
     
 if test "x$with_gcd_event_processor" = xyes;
 then

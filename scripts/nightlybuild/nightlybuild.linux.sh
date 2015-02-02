@@ -123,6 +123,8 @@ x)	;;
 esac
 sh autogen.sh
 cd third_party_packages
+# Remember the standard pkg-config library search directories, we need it for npambulant
+PKG_CONFIG_DEFAULT_LIB_PATH=`pkg-config --variable pc_path pkg-config`
 # We are building for distribution, so we want to force local copies of packages.
 # But we do want to obtain packages we don't buil ourselves (such as gtk).
 PKG_CONFIG_LIBDIR=`pwd`/installed/lib/pkgconfig python ../scripts/build-third-party-packages.py -x $BUILD3PPARGS
@@ -162,7 +164,8 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 # npambulant cannot yet use gtk+-3.0, therefore fall back to gtk+-3`3.0
 make uninstall
 make distclean
-./configure $CONFIGOPTS --with-gtk=gtk2  --with-npambulant
+# turn off pkg-config standard lib search path and use our versions before the default ones
+PKG_CONFIG_LIBDIR= PKG_CONFIG_PATH=$BUILDDIR/third_party_packages/installed/lib/pkgconfig:$PKG_CONFIG_DEFAULT_LIB_PATH ./configure $CONFIGOPTS --with-gtk=gtk2  --with-npambulant --without-gcd-event-processor
 make $MAKEOPTS
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 

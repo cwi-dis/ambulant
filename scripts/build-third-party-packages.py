@@ -474,8 +474,7 @@ third_party_packages={
         TPP("libltdl", # Workaround/hack for missing libltdl on 10.8 and later
             checkcmd="test -f ../libltdl/.libs/libltdlc.a",
             buildcmd=
-                "rm -rf ../libltdl &&"
-                "mkdir ../libltdl &&"
+                "mkdir -p ../libltdl &&"
                 "cd ../libltdl &&"
                 "%s/libltdl/%s --enable-ltdl-install --disable-dependency-tracking &&"
                 "make &&"
