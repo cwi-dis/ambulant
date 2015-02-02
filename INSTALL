@@ -97,8 +97,15 @@ Or build and install them manually:
 
 Next, make sure you install the third party packages on which Ambulant
 depends. These will be installed locally, for ambulant only (in
-directory third_party_packages/installed). Go to third_party_packages
-and run
+directory third_party_packages/installed). 
+
+First in the toplevel run
+	
+	sh autogen.sh
+
+which will (among other things) populate the libtool directory.
+
+Then, go to third_party_packages and run
 
 	python ../scripts/build-third-party-packages.py macosx
 	
@@ -134,6 +141,11 @@ To use xcode, you open any of the projects in project/xcode43, and it will build
 not only that product but also everything it depends on (including third
 party packages).
 
+The toplevel projects are as follows:
+- AmbulantPlayer.xcodeproj builds the desktop player
+- iAmbulant.xcodeproj builds the iOS player
+- npambulant.xcodeproj builds the browser plugin
+
 The projects are parameterized, so if something like the pathname of a
 third party package changes you should inspect the files in
 projects/xcode43/config and change things there (possibly in addition to
@@ -160,8 +172,6 @@ You also need 7-Zip and Python 2.6 or 2.7.
 First, you build the third party packages, by opening a "cmd" command window
 and navigating to ambulant/third_party_packages. You now run the following
 commands:
-	xxx> call "c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\vcvars.bat"
-or
 	xxx> call "c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat"
 and
 	xxx> call "c:\PythonXX\python.exe" ..\scripts\build-third-party-packages.py win32
