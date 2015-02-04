@@ -94,6 +94,7 @@ Before creating the distribution
 - check the following files for being up-to-date:
   - README
   - INSTALL
+  - debian/changelog
   - Documentation/misc/README-Distribution (this file)
   - installers/sh-macos/npambulant-installer-README (is this file used?)
 - Update the icons in the following files:

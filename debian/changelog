@@ -1,3 +1,11 @@
+ambulant (2.6) trusty; urgency=low
+
+  * 2 years worth of fixes
+  * gtk3 support
+  * sdl2 support
+  
+ -- Jack Jansen <Jack.Jansen@cwi.nl>  Wed, 04 Feb 2015 09:18:58 -0100
+
 ambulant (2.4.1) precise; urgency=low
 
   * Various tweaks to support Ubuntu PPA
