@@ -48,7 +48,7 @@ rem
 rem Other settable parameters
 rem
 
-set AMBULANTVERSION=2.5
+set AMBULANTVERSION=2.6
 set BRANCH=default
 
 echo LogLocation=win32-%TODAY%-%BRANCH%.txt

@@ -36,7 +36,7 @@ x)
 esac
 
 # Tunable parameters, to some extent
-AMBULANTVERSION=2.5
+AMBULANTVERSION=2.6
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
@@ -45,6 +45,10 @@ BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 
 # The rest should be automatic
+DISTRIB_RELEASE=unknown
+DISTRIB_CODENAME=unknown
+. /etc/lsb-release
+DEBARCH=`dpkg-architecture -qDEB_HOST_ARCH`
 case x$BRANCH in
 x)	
 	;;
@@ -52,26 +56,23 @@ xrelease*)
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=
 	UBUNTUPPA=ppa:ambulant/ambulant
+	FULLAMBULANTVERSION=$AMBULANTVERSION
 	release=yes
 	;;
 *)
 	DESTINATION=$DESTINATION/$BRANCH
 	VERSIONSUFFIX=.$TODAY
 	UBUNTUPPA=ppa:ambulant/ambulant-nightly
+	FULLAMBULANTVERSION=$AMBULANTVERSION$VERSIONSUFFIX~$DISTRIB_CODENAME
 	release=no
 esac
 CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
 
-DISTRIB_RELEASE=unknown
-DISTRIB_CODENAME=unknown
-. /etc/lsb-release
-DEBARCH=`dpkg-architecture -qDEB_HOST_ARCH`
 DESTINATION_DEBIAN=$DESTINATION/deb/
 DESTINATION_STAGING=dists
 RELPATH_SRC=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/source
 RELPATH_BIN=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/binary-$DEBARCH
-FULLAMBULANTVERSION=$AMBULANTVERSION$VERSIONSUFFIX~$DISTRIB_CODENAME
 echo
 echo ==========================================================
 echo Ambulant nightly build for Debian, $ARCH, $USER@`hostname`, `date`
@@ -160,6 +161,7 @@ rsync -r $DESTINATION_STAGING $DESTINATION_DEBIAN
 #
 # Upload to PPA
 #
+
 case x$UBUNTUPPA in
 x)
 	;;

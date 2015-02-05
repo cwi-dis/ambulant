@@ -14,12 +14,6 @@ work for everyone (including you:-).
 Version numbers, release branches and tags
 ==========================================
 
-!!=============================================================================!!
-!!=============================================================================!!
-
-NOTE: this information is outdated, it is for CVS. Things are much simpler with Mercurial.
-
-
 We use a strict numbering scheme for versions. Development versions have
 an odd minor number, releases an even one. For example, "1.5" is a development
 version, and is a moving target. Once development is finished and we're
@@ -31,47 +25,21 @@ described below. Once everything has been tested and the distributions created
 propagated to the trunk at this point.
 
 Now we need to merge the changes to the trunk. Set your working copy
-to the trunk and "cvs up -jrelease-ambulant-16-branch". Test and commit.
-
-Next, we want to tag the _branch_ to show that we have merged up to here:
-set your working copy to the branch, and tag with "release-ambulant-16-merge".
-
-
-Now go back to the trunk, and tag it too with  "release-ambulant-16-merge-trunk"
-Next set ALL version numbers manually to "1.7"(see below which files)
-and start working on wonderful new ideas.
-But first: do all the tests you did for the release on the trunk as well,
-to make sure that all fixes you made on the release branch have been propagated
-to the trunk correctly.
+to the default branch "hg up default" and "hg merge release-ambulant-16-branch". Test and commit.
 
 Some time later a bug fix release "1.6.1" will have to be done. Switch your working
 copy to the "release-ambulant-16-branch" and fix the bugs. Do not add new features,
 and only fix critical bugs! Go through the whole distribution and testing
 rigamarole explained below. When the releases have been created tag
-the branch with "release-ambulant-161". Again, don't propagate fixes to the
-trunk just yet.
+the branch with "release-ambulant-161". Merge the fixes to the trunk also.
 
 If at some point you fix something on the trunk but later decide you want that
-fix on the release branch too you need to do a bit more. First you merge the
-fix to the branch, by doing (on the branch) something like "cvs up -j1.42 xxx.c" (or
-a "cvs diff" on the trunk and a "patch" on the branch).
-Then you test the fix and check it in (still on the branch). Finally you have to
-update the "release-ambulant-16-merge" tag so the fix doesn't get sent back to the
-trunk later (which would apply it twice) by doing
-"cvs tag -F release-ambulant-16-merge xxx.c".
+fix on the release branch too you need to do a bit more. Google for "hg cherry pick"
+to see how to do this.
 
-After the release you need to merge the changes again, but only the ones
-you didn't merge previously. Set working copy to the trunk, and
-"cvs up -jrelease-ambulant-16-merge -jrelease-ambulant-16-branch".
-Now, check in, and record the fact that you've merged to the trunk up to this point:
-"cvs tag -F remease-ambulant-16-merge-trunk".
-
-Next, switch back to the release branch. It's best to update version numbers at
-this point (will forestall conflicts later, when merging to the trunk).
-Finally we need to move the "-merge" tag to
-show up to which point the branch has been merged: set your working
-copy to the branch, and "cvs tag -F release-ambulant-16-merge" to move
-the tag.
+After the release you need to merge the changes again, but luckily Mercurial
+remembers what we've merged earlier, so the convoluted procedure we had to follow
+for cvs and svn is no longer needed, we simply merge again.
 
 Two final notes: 
 - release 1.8 is named release-new-ambulant-18-branch
@@ -103,19 +71,19 @@ Before creating the distribution
 - change the version number (and possibly year) in:
   - configure.ac (2 places!)
   - include/ambulant/version.h
-  - src/player_macosx/*.lproj/InfoPlist.strings
+  - src/player_macosx/InfoPlist.strings
   - src/player_macosx/Resources/Info.plist
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
-  - src/pyambulant/Makefile.am
+  - src/pyambulant/Makefile.am (multiple places)
   - src/npambulant/install-*.rdf
   - src/npambulant/manifest-*.json
+  - src/npambulant/manifest.json
   - src/pyambulant/setup.py
   - src/pyambulant/test/test_pyambulant.py
   - scripts/nightlybuilds/*
   - scripts/build-third-party-packages.py (MIRRORBASE variable)
   - scripts/autotest.linux.sh
   - installers/nsis-win32/setup-ambulant-installer.nsi
-  - installers/nsis-win32/setup-ambulant-installer-xp.nsi
   - installers/mkdebiandist.sh
   - projects/vc9/npambulant-installer.vcproj
   - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
@@ -126,7 +94,9 @@ Before creating the distribution
 - check the following files for being up-to-date:
   - README
   - INSTALL
+  - debian/changelog
   - Documentation/misc/README-Distribution (this file)
+  - installers/sh-macos/npambulant-installer-README (is this file used?)
 - Update the icons in the following files:
   - src/player_mfc/res/AmbulantPlayer.ico
   - src/player_mfc/res/AmbulantPlayerDoc.ico
@@ -136,18 +106,9 @@ Before creating the distribution
 - Make sure Documentation/API/{refman,html} are empty: we don't want the
   full doxygen output in our source distribution
 - You must update NEWS, give a high-level overview of what has changed.
-- You must update Changelog. Nowadays this happens automatically through a cron
-  job, but for historical reference here is the manual procedure, should
-  you ever need it:
-  There is a tool cvs2cl that does this
-  more-or-less automatically, something like the following command line should
-  do the trick:
-  
-  % cvs log -b -d '>'2004-07-01 | cvs2cl.pl --hide-filenames --stdout --stdin
-  (the perl script is on http://www.red-bean.com/cvs2cl/cvs2cl.pl).
-  
-  Note that if we're preparing for a micro-release you should replace the '-b'
-  with -rrelease-ambulant-xxx-branch and merge the output into ChangeLog.
+- You must update Changelog. Something like this should work:
+
+	hg --quiet log -M --style=changelog > ChangeLog
 
 - Update the API documentation in Documentation/API by running doxygen
   Read and check the documentation for consistency, errors and missing items.
@@ -165,6 +126,20 @@ Before creating the distribution
     and the same for all other languages.
   - Edit the various ".po" files. Especially check empty strings
     and fuzzy matches.
+
+Creating the distributions
+==========================
+
+Creating the distributions is done most easily with the nightly build scripts.
+These all take a "branch" argument, which will make them build that branch. Moreover,
+they understand that if the word "release" occurs in the branch name they are doing
+a release build and will adapt filenames and such accordingly.
+
+There is a script scripts/nightlybuilds/mkdistribution.sh that tries to do everything
+for you by starting all the VMs and running the scripts and such.
+
+The next few paragraphs about building distributions are kept here mainly for
+historical interest.
 
 To create the linux source distribution
 =======================================
@@ -186,11 +161,6 @@ To create the linux source distribution
   but not in the new distribution (and vice versa). For each of those
   determine that this is intended.
 
-Creating the third_party_packages-WIN32 distribution
-====================================================
-
-To be supplied.
-
 Binary distribution contents
 ============================
 
@@ -207,8 +177,8 @@ Windows desktop also needs:
 Windows CE needs:
 - Welcome from Extras
 
-Creating the MacOSX 10.6 installer
-==================================
+Creating the MacOSX installer
+=============================
 
 - Create a directory to build in, for example "build-dist-106".
 - Create a third_party_packages in there.
@@ -235,70 +205,6 @@ Creating the MacOSX 10.6 installer
   - cd $HOME
   - unmount, and continue the script.
   
-Creating the WebKit/Safari 10.6 plugin
-======================================
-
-- Make sure the prerequisites are built, as above.
-- Make sure the 10.6 desktop build has been done.
-- Make a link to the desktop build directory:
-
-    rm -f build-webkitplugin
-    ln -s build-dist-106 build-webkitplugin
-- Open src/webkitplugin/AmbulantWebKitPlugin.xcodeproj
-- Build target "Release-10.6".
-- You will find the plugin in "~/Library/Internet Plugins".
-- Put into a zipfile Ambulant-1.0-webkit-mac.zip (replacing
-  1.0 with current version number, of course)
-
-Creating the MacOSX 10.4 installer
-==================================
-
-These instructions assume you are building on an Intel 10.5 mac.
-
-- Create a directory to build in, for example "build-dist-104".
-- Create a third_party_packages in there.
-- In third_party_packages, build the required third party packages, with
-
-    export MACOSX_DEPLOYMENT_TARGET=10.4
-    python ../../scripts/build-third-party-packages.py mac10.4
-    
-- Configure (in build-dist-104) with
-
-    export MACOSX_DEPLOYMENT_TARGET=10.4
-    ../configure --with-universalsdk=/Developer/SDKs/MacOSX10.4u.sdk  --with-xerces-plugin --disable-dependency-tracking
-  
-- make:
-    export MACOSX_DEPLOYMENT_TARGET=10.4
-    make
-    
-- Install the player, "sudo make install" in src/player_macos.
-  IMPORTANT: at the end of make install, a few calls to "testdependencies"
-  are made. These check that you don't link to non-standard libraries.
-  Make sure these calls produce no output.
-- To create the installer, run the script in installers/sh-macos.
-  Getting the background picture correct is a bit of a trick:
-  - After the disk is mounted, cd to it (terminal window)
-  - mv .folderbg/folderbg.png folderbg.png
-  - In the finder, set it as background picture (View->Show View Options->Background: Picture-Select)
-  - mv folderbg.png .folderbg/folderbg.png
-  - align the icons, select View->Hide Toolbar, etc.
-  - cd $HOME
-  - unmount, and continue the script.
-  
-Creating the WebKit/Safari 10.4 plugin
-======================================
-
-- Make sure the prerequisites are built, as above.
-- Make sure the 10.4 desktop build has been done.
-- Make a link to the desktop build directory:
-
-    rm -f build-webkitplugin
-    ln -s build-dist-104 build-webkitplugin
-- Open src/webkitplugin/AmbulantWebKitPlugin.xcodeproj
-- Build target "Release-10.4".
-- You will find the plugin in "~/Library/Internet Plugins".
-- Put into a zipfile Ambulant-1.0-webkit-mac104.zip (replacing
-  1.0 with current version number, of course)
 
 Creating the Linux installer
 ============================
@@ -384,7 +290,7 @@ be done.
   mac: ~/Library/Preferences/org.ambulantplayer.ambulantplayer.plist;
   windows: HKEY_CURRENT_USER\Software\Ambulant\AmbulantPlayer in the registry).
   
-- On windows, test on at least WinXP, Vista, Windows7.
+- On windows, test on at least Windows 7 and Windows 8.
   
 - Make sure Welcome plays at first run. Check that the preferences have
   sensible defaults (log level: trace, parser: expat, log window: closed).
@@ -419,9 +325,7 @@ web browser. The important toplevel directories are:
 - Ambulant Player Source
 - Ambulant Player for Windows
 - Ambulant Player for MacOSX
-- Ambulant Player for MacOSX 10.4
 - Ambulant Safari Plugin (mac)
-- Ambulant Safari Plugin (mac 10.4)
 - Ambulant Firefox Plugin (win)
 - Ambulant Firefox Plugin (Linux)
 - Ambulant Firefox Plugin (Linux 64bit)
@@ -476,4 +380,5 @@ To be supplied. Some ideas, plus who knows how to submit things:
 -   http://www.macupdate.com (jack)
 -   http://www.tucows.com (jack, username ambulant)
 -	http://freshmeat.net (jackjansen)
+- Google for "ambulant" and see which other download sharing sites show up.
 

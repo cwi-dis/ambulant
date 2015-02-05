@@ -1,18 +1,14 @@
 Ambulant Player README
 ======================
 
-This directory contains version 2.5 of the Ambulant Player,
+This directory contains version 2.6 of the Ambulant Player,
 a playback engine for SMIL 3.0 (or earlier) documents.
-
-NOTE: odd-numbered versions, such as this one, are moving targets: they
-are the current state of our development tree. Tomorrow may have a completely
-different player with the same version number.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers and
 a number of player applications. The core library is also available
 for embedding into C++ or Python programs. The player is also available
-as a plugin for Safari (Mac) or Firefox (Linux and Windows).
+as a plugin for various browsers.
 
 Ambulant is distributed as either a source distribution or a
 binary installer for a specific platform. This README file
@@ -48,19 +44,14 @@ Supported platforms
 
 Currently we have support for:
 - Windows 7
-- Windows XP (deprecated, this is the last release supporting XP)
-- MacOSX 10.6 and later
-- MacOSX 10.4/10.5 (deprecated)
-- Linux
+- MacOSX 10.7 and later
 
 The specific platforms that have been used for testing are:
-- Windows: Windows XP, Windows Vista and Windows 7 on fairly recent Intel hardware
-- MacOSX 10.6: Recent Core 2 Duo or newer
-- Linux: Ubuntu 12.04 on fairly recent Intel hardware
+- Windows: Windows 7 and 8 on fairly recent Intel hardware
+- MacOSX 10.7: Core 2 Duo or newer
+- Linux: Ubuntu 14.04 on fairly recent Intel hardware
 
-We have preliminary code for the Apple iPhone and iPod Touch.
-
-Maemo (Nokia) and Windows Mobile are no longer supported.
+We have preliminary code for iOS and Android.
 
 Supported media types
 ---------------------
@@ -70,23 +61,18 @@ Supported media types
   platforms. Other formats are supported on some platforms.
 - Audio:
   - All platforms support audio through ffmpeg and SDL. This allows use
-    of all common audio formats (mp3, aac, ogg, wav, wma, etc). Access can
+    of all common audio formats (mp4, mp3, aac, ogg, wav, wma, etc). Access can
     be from local file or over http or rtsp.
   - Windows also supports audio through DirectShow, which allows protected
     WMA file playback and a few less common formats.
 - Video:
   - All platforms support video through ffmpeg. This allows use of all
-    common formats (mpeg-1/2/4, ogg, some quicktime and wm9).
+    common formats (h264, mpeg-1/2/4, ogg, some quicktime and wm9).
   - Windows also supports video through DirectShow.
 
 With audio and video there are some issues with specific combinations of
 containers, codecs, platforms and access protocols. See the website
 (or Documentation/mediasupport in a source distribution) for details.
-
-For video, the native renderers (QuickTime and DirectX) may give better
-performance, due to hardware acceleration and vendor-optimized code.
-However, there may be issues with SMIL features like transparency,
-overlay regions, fit behaviour, etc.
 
 Networking support
 ------------------
@@ -98,18 +84,12 @@ RTSP support is available, but there are issues with which server
 can actually serve which media types. This seems to be a marketing issue
 on the side of server manufacturers, and is outside our control.
 TCP fallback for RTSP (if UDP is firewalled) is available.
-RTSP is supported through ffmpeg, if you build from source you can also
-opt for supporting rtsp through the live555 libraries.
+RTSP is supported through ffmpeg.
 
 SMIL support
 ------------
 
 This release includes full support for SMIL 3.0 (along with 2.1 and 2.0).
-All new SMIL 3.0 features are implemented on all platforms.
-
-As SMIL 3.0 is a big language there are undoubtedly areas where
-we have overseen something. Please let us know if you encounter
-problems.
 
 User interface
 --------------
