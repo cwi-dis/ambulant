@@ -5,7 +5,7 @@
 #
 #set -e
 #set -x
-AMBULANTVERSION=2.6
+AMBULANTVERSION=2.7
 ARCH=`uname -p`
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"

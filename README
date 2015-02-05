@@ -1,8 +1,12 @@
 Ambulant Player README
 ======================
 
-This directory contains version 2.6 of the Ambulant Player,
+This directory contains version 2.7 of the Ambulant Player,
 a playback engine for SMIL 3.0 (or earlier) documents.
+
+ *  Please note that Ambulant 2.7 is an unstable (nightly build) distribution.
+ *  Visit ambulantplayer.org and download version 2.6 if you prefer the most
+ *  recent stable release.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers and

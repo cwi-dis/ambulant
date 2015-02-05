@@ -55,7 +55,7 @@
 %40echo on
 
 ;; VS2010 no longer seems to set this...
-set TargetPath=$(OutDir)ieambulant-2.6-win32.cab
+set TargetPath=$(OutDir)ieambulant-2.7-win32.cab
 ;;
 %40echo "copying all files for the cab into this directory"
 del /q $(IntDir)*.*
@@ -103,7 +103,7 @@ set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 %40echo on
 
 ;; VS2010 no longer seems to set this...
-set TargetPath=$(OutDir)ieambulant-2.6-win32.cab
+set TargetPath=$(OutDir)ieambulant-2.7-win32.cab
 ;;
 %40echo "copying all files for the cab into this directory"
 del /q $(IntDir)*.*
@@ -136,7 +136,7 @@ set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 
 </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)ieambulant(debug)-2.6-win32.cab</NMakeOutput>
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)ieambulant(debug)-2.7-win32.cab</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
@@ -161,7 +161,7 @@ set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 @echo on
 
 :: VS2010 no longer seems to set this...
-set TargetPath=$(OutDir)ieambulant-2.6-win32.cab
+set TargetPath=$(OutDir)ieambulant-2.7-win32.cab
 
 @echo "copying all files for the cab into this directory"
 del $(IntDir)\*.*
@@ -195,7 +195,7 @@ set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)ieambulant-2.6-win32.cab</NMakeOutput>
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)ieambulant-2.7-win32.cab</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>

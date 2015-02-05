@@ -5,7 +5,7 @@ import time
 import os
 import urllib
 
-VERSION="2.6" # Ambulant version
+VERSION="2.7" # Ambulant version
 WELCOME="../../Extras/Welcome/Welcome.smil"
 DOCUMENT="""<?xml version="1.0"?>
 <!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"

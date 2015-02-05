@@ -1,5 +1,9 @@
-npambulant version 2.6
+npambulant version 2.7
 ======================
+
+ *  Please note that this is an unstable nightlybuild distribution. Visit
+ *  ambulantplayer.org if you prefer to download version 2.6, the most
+ *  recent stable version.
 
 AmbulantPlayer SMIL plugin for Web browsers on MacOS 10.7 or later.
 
