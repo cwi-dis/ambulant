@@ -139,7 +139,8 @@ There is a script scripts/nightlybuilds/mkdistribution.sh that tries to do every
 for you by starting all the VMs and running the scripts and such.
 
 The next few paragraphs about building distributions are kept here mainly for
-historical interest.
+historical interest, but do see the "After the distribution" section at the
+end of this file.
 
 To create the linux source distribution
 =======================================
@@ -378,3 +379,10 @@ To be supplied. Some ideas, plus who knows how to submit things:
 -	http://freshmeat.net (jackjansen)
 - Google for "ambulant" and see which other download sharing sites show up.
 
+After the distribution
+======================
+
+- Merge the release-ambulant-XX-branch back into the trunk
+- Update all version numbers to the next odd version, do the mirror, etc.
+  In short, repeat most of the steps in "Before creating the distribution"
+  above.

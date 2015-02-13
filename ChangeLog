@@ -1,4 +1,237 @@
+2015-02-06  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Updating
+
+2015-02-05  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Upped version numbers to 2.7
+
+2015-02-04  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Tweaks for building debian distribtuion
+
+2015-02-02  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Exclude gcd-event-processor from npambulant and corrected the
+	standard search path for pkg-config
+
+	* Search our own libraries first to get them in the bundle
+
+	* Fixed building npambulant_installer s.t. libraries we build
+	ourselves are also included in the bundle
+
+	* Fixed s.t. --without-gcd-event-prpcessor works properly
+
+2015-02-02  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fix for in-tree builds of libltdl
+
+	* Another fix to OSX build instructions
+
+	* gettext-xcode.patch was missing from source distributions
+
+	* Slight updates to OSX and Windows build procedures
+
+	* Windows sourcefiles that were missing from source distributions
+
+2015-02-01  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Re-added libdispatch-dev libsdl2-image-dev
+
+2015-01-30  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Disabled maxVersion, since it seems not to be used anymore (atleast
+	on Ubuntu14.04-64
+
+	* Updated to current Firefox version
+
+2015-01-29  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Re-enable uploading of PPA
+
+2015-01-30  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Nightlybuild Ubuntu machines contained libSDL2_image and
+	libdispatch, and they shoulnd't
+
+2015-01-29  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Fix for #879: color conversion was wrong for gtk2 (gtk3 impl. was
+	used).
+
+2015-01-28  Kees Blom  <kees@cwi.nl>
+
+	* Fix for #877: make sure initially 'NPN_InvalidateRect' is called to
+	get a 'draw' event
+
+2015-01-26  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Added fixes for #876 once again
+
+	* Close branch because of irrecoverable merge errors
+
+	* Fix 9107 redone (lost by merge ?). Fixes#876.
+
+2015-01-26  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Details
+
+2015-01-24  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Added an optional argument 'rect' to copy_surface to seledt a
+	rectangular area
+
+2015-01-23  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Typo
+
+	* Temporarily disable PPA upload
+
+	* One more version number/copyright date found
+
+	* Fixes
+
+	* Fixes
+
+	* More iOS version mods
+
+	* Added IOS 8.1
+
+	* Always supply branch name
+
+2015-01-22  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Script to create all distributions. Untested.
+
+	* Use IPHONEOS_DEPLOYMENT_TARGET, not -sdk
+
+2015-01-21  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Impl.start() methods in gtk_fill and gtk_sdl (repalce fix in 9088).
+	Fixes #875.
+
+	* Impl.start() methods in gtk_fill and gtk_sdl (repalce fix in 9088).
+	Fixes #875.
+
+2015-01-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Moving mac/iphone nightlybuilds to 10.10 mac
+
+	* Undoing faulty merge 9087 which threw away half the changes. Will
+	have to redo 9088. Also loses history of 9062-9086. Sigh.
+
+	* For some reason 9077 is not here? Re-applying: use ssh for mac
+	builds also
+
+2015-01-20  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
+
+	* Impl. stop() in gtk_fill (fix for #875), not yet tested
+
+2015-01-20  Kees Blom  <kees@cwi.nl>
+
+	* Implemented a start() method for cg_fill_renderer (fix for: #875)
+
+2015-01-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Add PLATFORM_NAME to npambulant xcodebuild, now we no longer set
+	SDKROOT
+
+2015-01-19  Kees Blom  <kees@cwi.nl>
+
+	* Added a test for m_thread == NULL (fix for:874)
+
+2015-01-16  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Unset MACOSX_DEPLOYMENT_TARGET when building pyambulant. Not great,
+	but I do not see another solution.
+
+	* Unset MACOSX_DEPLOYMENT_TARGET when building pyambulant. Not great,
+	but I do not see another solution.
+
+	* Detail
+
+	* Updated branch instructions
+
+	* Fiddling with osx deployment target and sdk
+
+	* Use ssh also for mac nightlybuilds
+
+2015-01-15  Kees Blom  <kees@cwi.nl>
+
+	* Fixed some deprecated warnings (#865)
+
+2015-01-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* More keychain manilupation
+
+	* Fixed typo.
+
+	* fIXED TYPO.
+
+	* Support for double-unzipping of tar.gz on windows
+
+	* Fix win32 log location, and clean out old log files
+
+	* libxml 2.9.2 doesn't work on windows, try 2.9.1. Also double-unpack
+	libxml2 tarbal
+
+	* Pick up windows build output
+
+2015-01-14  Kees Blom  <kees@cwi.nl>
+
+	* Upgrade libxml to 2.9.2
+
+	* Close branch exp-kees-autoconf
+
+2015-01-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Another mod to keychain searching
+
+2015-01-14  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Attempting upgrade of libxml2 to 2.9.2 to see whterh this fixes bug
+	725
+
+	* Got rid of plugin path preference (which is now automatic)
+
+	* More debugging
+
+	* Use new nightlybuilds alias, fixed log logations
+
+	* Removed extra quote
+
+2015-01-13  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* More details on creating night build mac
+
+2015-01-12  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Print all available identities (debugging)
+
+	* Getting rid of debug prints
+
+	* Video didn't always restart after hitting eof and a subsequent seek.
+
+	* Send flush packet to all streams when seeking
+
+	* Slightly more detail in debug prints
+
 2015-01-09  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Getting a resampler for an aux audio datasource no longer works.
+	Disabled.
+
+	* Updated descriptions
+
+	* Tests to play sections of the same file in reverse
+
+	* Renamed old_elapsed to packet_pts which is more self-documenting
+
+	* Updating audio clock got lost in 2013, in rev 8425. Put back in.
+
+	* More instructions
+
+	* Updated
 
 	* Upped a few more version numbers
 
@@ -9,6 +242,8 @@
 	* Translations updated
 
 2015-01-08  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Squashed warning
 
 	* Removed wrong ffmpeg component:-)
 
@@ -28,10 +263,6 @@
 
 	* Codesign with Developer ID Application
 
-2015-01-07  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Get rid of ffmpeg_audio_decoder_finder
-
 2015-01-07  Kees Blom  <kees@cwi.nl>
 
 	* On MacOSX, using 'extern' here produces elsewhere: error:
@@ -45,6 +276,8 @@
 	* Renamed 'configure.in' to 'configure.ac' (fix for: #865)
 
 2015-01-07  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Get rid of ffmpeg_audio_decoder_finder
 
 	* Get rid of ffmpeg_audio_decoder_finder
 
@@ -64,19 +297,24 @@
 
 	* Fixed nonstandard copyright
 
-2015-01-06  Kees Blom  <kees@cwi.nl>
-
-	* Attempt to sign the macos-desktop-cg app
-
-2015-01-06  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* Closing branch.
 
 	* Rate conversion works too. Ready to merge and close branch.
 
 	* Mono and float formats work. Rate conversion not yet
 
+2015-01-06  Kees Blom  <kees@cwi.nl>
+
+	* Attempt to sign the macos-desktop-cg app
+
+2015-01-06  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Format conversion in place, but now we hit a memory error
+
+2014-12-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Preparing for signing Ambulant for the Mac. Not enabled yet until
+	after christmas
 
 2015-01-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -141,11 +379,6 @@
 
 	* Adapted gtk_gui to gtk+-3.10 (use GetkBuider i.o. GtkUIManager etc.
 	to avoid 'deprecated' warnings
-
-2014-12-21  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Preparing for signing Ambulant for the Mac. Not enabled yet until
-	after christmas
 
 2014-12-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -264,10 +497,6 @@
 	right place.
 
 	* Decoders can only handle ffmpeg, reflect that in the code
-
-2014-10-14  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* One more instuction
 
 2014-11-28  Kees Blom  <kees@cwi.nl>
 
@@ -437,6 +666,10 @@
 
 	* Adapted for GTK+-3.0, as controlled by GTK_VERSION_MAJOR
 
+2014-10-14  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* One more instuction
+
 2014-10-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added note about fixing mail config
@@ -483,13 +716,6 @@
 	* Implemented transIn="fade". All drawing goes now to
 	'target_surface', which
 
-2014-10-03  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Sigh. Cater for different ios version
-
-	* Grrrr... yet another bug fix to ios-specific code because things
-	break on other platforms
-
 2014-10-03  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* Implemeted mdeoOPacity for image, video in GTK3
@@ -505,6 +731,13 @@
 
 	* Everything starts to work. Missing: a.o. drawing loop opimizations,
 	menu clicks, opacity, blending, transitions.
+
+2014-10-03  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Sigh. Cater for different ios version
+
+	* Grrrr... yet another bug fix to ios-specific code because things
+	break on other platforms
 
 2014-10-01  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
@@ -564,10 +797,6 @@
 
 	* iphone device builds starting to work, somewhat
 
-2014-09-26  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Branch to try and get iOS builds more modernized
-
 2014-09-26  Kees Blom  <kees@cwi.nl>
 
 	* Closed branch 'exp-kees-sdl2-macosx' after merge into 'default'
@@ -603,6 +832,10 @@
 	* Changed sdl_text_renderer to do proper lins wrapping, when using
 	TTF.
 
+2014-09-26  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Branch to try and get iOS builds more modernized
+
 2014-09-19  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* merge
@@ -620,14 +853,6 @@
 
 	* More instructions
 
-	* Slightly cleaned up video frame handling. More to be done
-
-	* More logfile saving preparations
-
-	* Started on mac-vm instructions
-
-	* Reordered ffmpeg packages
-
 	* Script to prepare OSX machine for Ambulant development
 
 2014-09-18  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
@@ -635,9 +860,21 @@
 	* Branch closed because of may wrong settings in lots of nightlybuild
 	files, caused by to wrong components delicered by MacPort
 
+2014-09-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Slightly cleaned up video frame handling. More to be done
+
+	* More logfile saving preparations
+
+	* Started on mac-vm instructions
+
 2014-09-17  Kees Blom  <kees@cwi.nl>
 
 	* gtk_video: avoid unnessesary scaling
+
+2014-09-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Reordered ffmpeg packages
 
 2014-09-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -987,6 +1224,9 @@
 	* Use libswresample to convert all the ffmpeg sample formats. Should
 	be used for resampling too, later.
 
+	* Bo removed a need_redraw() (in Jan-2012) which basically killed
+	fill=remove. And we never noticed.... Put back in.
+
 2014-07-15  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* Added '-i' flag to autoreconf to copy missing files (./compile was
@@ -996,11 +1236,6 @@
 
 	* Removed xerces_parser from ..SOURCES, since it's a source in
 	libambulant/
-
-2014-07-15  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Bo removed a need_redraw() (in Jan-2012) which basically killed
-	fill=remove. And we never noticed.... Put back in.
 
 2014-07-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1060,6 +1295,9 @@
 	surfaced in vconect) that the second time you start a node it starts
 	late. Fixed by clearing m_rad and friends in set_interval
 
+	* Fix for crash during end of video playback: when stopping the source
+	also delete it, so any pending data_avail calls will exit cleanly
+
 2014-07-03  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* Added tests for videobridge in:
@@ -1070,18 +1308,9 @@
 	* Disabled frame dropping in ffmpeg_video.cpp (frames do not always
 	appear in 'pts' order)
 
-2014-07-03  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fix for crash during end of video playback: when stopping the source
-	also delete it, so any pending data_avail calls will exit cleanly
-
 2014-07-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Mmore dfebug
-
-2014-06-30  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Mail installation instructions
 
 2014-07-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1105,6 +1334,12 @@
 
 	* Since gtk_fill_renderer doesn't have own variables any more, removed
 	its m_lock
+
+2014-06-30  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Mail installation instructions
+
+2014-06-30  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* cleanup
 
@@ -1136,16 +1371,6 @@
 	* Made the 'Depends' section for libgstreamer1.0 architecture
 	dependent
 
-2014-06-26  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Tweaks to video renderer statistics: do display count in actual
-	redraw callback
-
-	* Give error message on non-nodeset arguments to want_state_change
-	only once
-
-2014-06-26  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
-
 	* increment micro version
 
 	* Made scripts executable
@@ -1153,6 +1378,14 @@
 2014-06-25  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* added: in each approriate file header, a sumaary of TBD items
+
+2014-06-26  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Tweaks to video renderer statistics: do display count in actual
+	redraw callback
+
+	* Give error message on non-nodeset arguments to want_state_change
+	only once
 
 2014-06-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1162,17 +1395,24 @@
 
 	* Merge
 
+	* 10.9 builds work, trick was to set deployment target to 10.7
+
+	* Instructions for creating nightlybuild machines
+
+2014-06-23  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Starting on 10.9 xcode support, finally
+
+2014-06-22  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed to enable installation of libltdl, needed for 10.9 XCode
+	builds
+
 2014-06-25  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* added: in each approriate file header, a sumaary of TBD items
 
 	* added: in each approriate file header, a sumaary of TBD items
-
-2014-06-25  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* 10.9 builds work, trick was to set deployment target to 10.7
-
-	* Instructions for creating nightlybuild machines
 
 2014-06-23  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1181,12 +1421,7 @@
 	* Found aac decoding problem: the output is 4 bytes/sample, we can
 	only handle 2. Added an assert, to be fixed later
 
-	* Starting on 10.9 xcode support, finally
-
 2014-06-22  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fixed to enable installation of libltdl, needed for 10.9 XCode
-	builds
 
 	* Fixed various issues with SDL ifdefs
 
@@ -1270,9 +1505,6 @@
 
 	* vs2010sp1 is more strict about return values.
 
-	* Do windows build at a different time to see whether that makes the
-	hg clone error go away
-
 2014-05-12  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* Make 'AndroidSDLPlayer' seemless react on orientation changes,
@@ -1311,9 +1543,10 @@
 
 	* Some last (?) corrections and updates for Android
 
-2014-05-09  Jack Jansen  <Jack.Jansen@cwi.nl>
+2014-05-12  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Also check 12.04 builds
+	* Do windows build at a different time to see whether that makes the
+	hg clone error go away
 
 2014-05-09  Kees Blom  <kees@cwi.nl>
 
@@ -1323,6 +1556,8 @@
 	Ambulant.
 
 2014-05-09  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Also check 12.04 builds
 
 	* Reverted previouw change: breaks nightly builds
 
@@ -1391,10 +1626,6 @@
 	* oops: iphone is still built with SDL1.3, only mac moved to SDL2
 
 	* SDL include path should have SDL2, not SDL
-
-2014-05-02  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Add list of correct builds, fix last correct build date
 
 2014-05-02  Kees Blom  <kees@cwi.nl>
 
@@ -1504,6 +1735,10 @@
 	* Added some files and modified some others s.t. we have a working apk
 	and no more 'Invalid indirect reference' runtime crashes
 
+2014-05-02  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Add list of correct builds, fix last correct build date
+
 2014-04-02  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* made C++ builds working
@@ -1547,6 +1782,10 @@
 	* Implemented alpha blending for videos and brought video and image
 	renderers more in line
 
+2014-03-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Make distinction ubuntu/debian
+
 2014-03-04  Kees Blom <Kees.Blom.cwi.nl>  <Kees.Blom.cwi.nl>
 
 	* Added an initial eclipse-android project, contributed by Hans-Georg
@@ -1554,10 +1793,6 @@
 	<robi@ubinam.de>, not tested yet
 
 	* Incremented micro version for Launchpad install fro Ubuntu 13.10
-
-2014-03-20  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Make distinction ubuntu/debian
 
 2014-03-03  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1590,15 +1825,19 @@
 
 	* Added version number to libsdl2 packages (sigh)
 
-	* Increase reorder queue size for live streams
-
-	* New compiler for Ubuntu 13.10
-
 2014-01-31  Kees Blom  <kees@cwi.nl>
 
 	* Revised sdl_text_renderer to compile and work properly when either
 	SDL_Pango/SDL_ttf is present, or both, or none. Tested for the
 	latter only,
+
+2014-01-31  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Increase reorder queue size for live streams
+
+	* New compiler for Ubuntu 13.10
+
+2014-01-31  Kees Blom  <kees@cwi.nl>
 
 	* Added a log line for sdl_background_renderer
 
@@ -1636,6 +1875,9 @@
 	streams
 
 2014-01-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Disable video latency logging. It destabilizes things for Vconect,
+	because computing the URLs there is expensive (due to use of state)
 
 	* Fixed typos
 
@@ -1685,10 +1927,9 @@
 	frame after 'start()' and substract from subsequent timestamps;
 	reorganized some other code in 'start()' and 'get_next_frame()'
 
-2014-01-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+2013-12-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Disable video latency logging. It destabilizes things for Vconect,
-	because computing the URLs there is expensive (due to use of state)
+	* include is relative to top_srcdir
 
 2013-12-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1699,8 +1940,6 @@
 	* Use top-srcdir, not srcdir, as anchor for include
 
 2013-12-09  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* include is relative to top_srcdir
 
 	* Added a pkgconfig file for building against uninstalled Ambulant
 
@@ -1743,6 +1982,11 @@
 
 	* Changed Ambulant_sdl s.t. init_plugins() is called only once
 
+2013-11-01  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Cater for files linked from .usr/local/lib that are not part of
+	ambulant
+
 2013-10-31  Kees Blom  <kees@cwi.nl>
 
 	* Added a forgotten reference to the new configure variable
@@ -1751,11 +1995,6 @@
 2013-10-31  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Minor fix
-
-2013-11-01  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Cater for files linked from .usr/local/lib that are not part of
-	ambulant
 
 2013-10-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -1800,6 +2039,12 @@
 	* Print warning if there is backlog before or after the decoder, for
 	live video streams
 
+2013-10-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Added locking to one more avcodec_close location
+
+2013-10-16  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Typo
 
 	* Typo
@@ -1815,8 +2060,6 @@
 	* Yet another place where we have to lock ffmpeg access
 
 2013-10-15  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Added locking to one more avcodec_close location
 
 	* Added libdispatch to debian dependencies
 
@@ -1860,8 +2103,6 @@
 
 2013-10-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Attempt to make ppa builds go with the flow
-
 	* Relaxed ffmpeg minimum version a bit, so builds on Ubuntu 12.04
 	still work
 
@@ -1870,6 +2111,8 @@
 	* Ported to avcodec_decode_audio3()
 
 2013-10-02  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Attempt to make ppa builds go with the flow
 
 	* Closing
 
@@ -1882,11 +2125,6 @@
 	* Importing bgen sources into Ambulant: they have pretty much
 	disappeared from Python distributions
 
-2013-09-30  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Pass stream timebase to video_decoder, and use that to recompute
-	timestamps
-
 2013-09-30  Kees Blom  <kees@cwi.nl>
 
 	* Optimized SDL blit and replaced sws_scale() by SDL_BlitScaled
@@ -1896,6 +2134,9 @@
 	* Fixed a bug for fit="meet"
 
 2013-09-30  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Pass stream timebase to video_decoder, and use that to recompute
+	timestamps
 
 	* Use pts from decoded frame as downstream timestamp
 
@@ -2035,10 +2276,6 @@
 	think the timestamp invention is needed (any more?), but we nedd to
 	test that removing it doesn't have adverse consequences elsewhere.
 
-2013-07-15  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Minor fixes for recovering from errors
-
 2013-08-14  Kees Blom  <kees@cwi.nl>
 
 	* Implemented 'show_file' (link with using external $BROWSER)
@@ -2091,6 +2328,8 @@
 2013-07-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Some code cleanup
+
+	* Minor fixes for recovering from errors
 
 2013-07-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -2340,13 +2579,13 @@
 
 	* Adapted to API changes w.r.t. recorder in rev.8274
 
+	* Undid accidental commit of experimens
+
 2013-05-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed up recorder Python interface
 
 2013-05-01  Kees Blom  <kees@cwi.nl>
-
-	* Undid accidental commit of experimens
 
 	* Added an empty recorder plugin rewritten in python. Does not
 	initialize yet.
@@ -2425,6 +2664,12 @@
 	* Dangerous bug fix: do state callbacks outside lock. Unsure about
 	this, but we get deadlocks otherwise
 
+2013-04-11  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Implement mediaOpacity
+
+	* Do some error checking on opacity value syntax
+
 2013-04-11  Kees Blom  <kees@cwi.nl>
 
 	* $DSTROOT was added twice to the path
@@ -2457,16 +2702,14 @@
 
 	* Propagate is_live flag all the way up to the demux
 
-2013-04-11  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Implement mediaOpacity
-
-	* Do some error checking on opacity value syntax
-
 2013-04-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Added a param "live_feedback". If set, it points to a state variable
 	which
+
+2013-03-30  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Let's try automake 1.11 as minimum version
 
 2013-04-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -2478,12 +2721,6 @@
 2013-03-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* state plugin needs locking, if multiple threads are involved
-
-2013-03-30  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Let's try automake 1.11 as minimum version
-
-2013-03-29  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Slight changes to live-stream detection
 
@@ -2532,12 +2769,6 @@
 
 	* Added locking for global factory
 
-2013-03-19  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Make archival build work, somewhat
-
-	* Removed a few more references to Cocoa builds
-
 2013-03-19  Kees Blom  <kees@cwi.nl>
 
 	* Adapted recorder plugin s.t. configure/build/install wrotks on
@@ -2545,6 +2776,12 @@
 
 	* Adapted libambulant.pc.in s.t. ambulant finds its own includes, e.g.
 	'ambulant/version.h'
+
+2013-03-19  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Make archival build work, somewhat
+
+	* Removed a few more references to Cocoa builds
 
 2013-03-07  Kees Blom  <kees@cwi.nl>
 
@@ -2775,11 +3012,11 @@
 
 	* Getting xcode build for ios/simulator to work again
 
-	* Added config file for simulator
-
 	* Also works for Simulator again, when run from shell
 
 	* building third party packages for iOS works again
+
+	* Added config file for simulator
 
 	* Rationalizing settings for iOS builds. Unfinished
 
@@ -2852,6 +3089,12 @@
 
 	* Repair after merge with 'default' branch
 
+	* Removed merge_iphone-3pp.sh
+
+2013-01-17  Kees Blom  <kees@cwi.nl>
+
+	* Added the initial copyright notice for all source files
+
 2013-01-21  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Fixed some minor bugs
@@ -2860,14 +3103,6 @@
 
 	* renderrer_select methods weren't included in the Python interface.
 	Fixed.
-
-2013-01-21  Kees Blom  <kees@cwi.nl>
-
-	* Removed merge_iphone-3pp.sh
-
-2013-01-17  Kees Blom  <kees@cwi.nl>
-
-	* Added the initial copyright notice for all source files
 
 2013-01-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -2893,25 +3128,9 @@
 
 	* Moved to iOS 5.1
 
-2013-01-18  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Get plugin path from the system (Library/Application
-	Support/Ambulant Player/PlugIns) in stead of from the preferences.
-
-2013-01-18  Kees Blom  <kees@cwi.nl>
-
 	* Create libltdl/m4 directory for aclocal
 
 	* Create m4 directory for aclocal
-
-2013-01-18  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Also treat plugin preference as a path
-
-	* Replaced AMBULANT_PLUGIN_DIR by AMBULANT_PLUGIN_PATH. Tested only on
-	OSX.
-
-2013-01-18  Kees Blom  <kees@cwi.nl>
 
 	* Added Xcode 3 autotools to PATH
 
@@ -2930,6 +3149,16 @@
 
 	* Adapted to the new API for auto rotate in iOS 6.
 
+2013-01-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Get plugin path from the system (Library/Application
+	Support/Ambulant Player/PlugIns) in stead of from the preferences.
+
+	* Also treat plugin preference as a path
+
+	* Replaced AMBULANT_PLUGIN_DIR by AMBULANT_PLUGIN_PATH. Tested only on
+	OSX.
+
 2013-01-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Removed reference to gettext patch
@@ -2945,6 +3174,13 @@
 
 	* Re-instated unubtuversion line
 
+2013-01-15  Kees Blom  <kees@cwi.nl>
+
+	* Adapted files s.t. build for Simulator with iOS 6.0.1 succeeds using
+	Xcode 4.5
+
+2013-01-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Closed branch ambulant-2.2-exp-zivkokic-patch
 
 	* Closed branch exp-shahab-wallclock
@@ -2959,14 +3195,7 @@
 
 	* Getting rid of qt and live
 
-2013-01-11  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* More tweaks for Ubuntu
-
 2013-01-15  Kees Blom  <kees@cwi.nl>
-
-	* Adapted files s.t. build for Simulator with iOS 6.0.1 succeeds using
-	Xcode 4.5
 
 	* Removed build-iOS-Fat and adapted files s.t. build for device with
 	iOS 6.0.1 succeeds using Xcode 4.5
@@ -3032,6 +3261,8 @@
 
 2013-01-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
+	* More tweaks for Ubuntu
+
 	* Build binary and source packages separately
 
 	* Removed Lenz McKAY Gerardo's name, by request
@@ -3084,10 +3315,6 @@
 
 	* Adding debian stuff by Lenz McKAY Gerardo (experimental)
 
-2013-01-09  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Clean up locating the npapi header files
-
 2013-01-09  Kees Blom  <kees@cwi.nl>
 
 	* Cleared a number of compiler warnings
@@ -3097,6 +3324,10 @@
 	* Mangled the project files s.t. everything compiles except python
 	plugin (due to REMOTE_SYNC anomalies)
 
+2013-01-09  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Clean up locating the npapi header files
+
 2013-01-08  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Getting rid of Qt and regenerating
@@ -3104,19 +3335,15 @@
 	* Some pure virtual classes should always be declared even if not
 	wbuilding WITH_REMOTE_SYNC
 
-2013-01-07  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Removing dead wood
-
-	* Removing dead wood
-
-2013-01-08  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* Getting rid of Qt support
 
 2013-01-07  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Removed turd
+
+	* Removing dead wood
+
+	* Removing dead wood
 
 	* Get rid of DX projects
 
@@ -3353,8 +3580,6 @@
 
 	* Added a crontab to split running of mac/ios and vm builds
 
-	* Added a crontab to split running of mac/ios and vm builds
-
 2012-11-22  Kees Blom  <kees@cwi.nl>
 
 	* Disabled debugging code to draw rectangle araound window
@@ -3363,11 +3588,15 @@
 
 	* Fixed drawing problem w. Firefox 17 by always redrawing whole window
 
+2012-11-23  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Added a crontab to split running of mac/ios and vm builds
+
 2012-11-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Preparing to move nightly builds to maunakea
-
 	* vcproj files are no longer needed.
+
+	* Preparing to move nightly builds to maunakea
 
 2012-11-20  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -3626,11 +3855,6 @@
 
 	* Adapted for new ffmpeg on windows.
 
-	* Implemented rtsp-over-tcp option handling
-
-	* we could run out of output buffer space while decoding additional
-	data
-
 2012-10-05  Kees Blom  <kees@cwi.nl>
 
 	* Updated linenumbers
@@ -3641,11 +3865,12 @@
 
 2012-10-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
+	* Implemented rtsp-over-tcp option handling
+
+	* we could run out of output buffer space while decoding additional
+	data
+
 	* Backwards compatibility added
-
-2012-10-04  Kees Blom  <kees@cwi.nl>
-
-	* Fixed another problem with nightly build of sdl_renderer
 
 2012-10-04  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3655,6 +3880,10 @@
 
 	* Fixed projects to not include live555, and for Python include file
 	blabla
+
+2012-10-04  Kees Blom  <kees@cwi.nl>
+
+	* Fixed another problem with nightly build of sdl_renderer
 
 2012-10-03  Kees Blom  <kees@cwi.nl>
 
@@ -3871,6 +4100,9 @@
 	* Build ltdl convenience library for mac 10.6 (needed to run binaries
 	on 10.8)
 
+	* Use ltdl convenience library, this should allow running the app on
+	OSX 10.8
+
 2012-08-29  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Get SDL_image from repository for SDL2 compatability
@@ -3896,16 +4128,16 @@
 
 	* Alpha blending now works, also for background drawing.
 
+2012-08-27  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Solved correct background drawing by maintaning a mapping between
+	SDL_WindowID and the corresponding sdl_ambulant_window*
+
 2012-08-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Hack to fix 10.7 builds for 10.6
 
 	* More path tweaking
-
-2012-08-27  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Solved correct background drawing by maintaning a mapping between
-	SDL_WindowID and the corresponding sdl_ambulant_window*
 
 2012-08-27  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -3916,11 +4148,6 @@
 2012-08-27  Kees Blom  <kees@cwi.nl>
 
 	* Added the correct clipping rect to the SDL_Surface brefore drwing
-
-2012-08-29  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Use ltdl convenience library, this should allow running the app on
-	OSX 10.8
 
 2012-08-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4057,10 +4284,6 @@
 
 	* Duration=0 is used by (some?) rtsp servers to denote a live stream.
 
-2012-06-25  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Ignore some more xcode user files
-
 2012-06-29  Kees Blom  <kees@cwi.nl>
 
 	* Added xcode 4.3 project files.
@@ -4074,11 +4297,9 @@
 
 2012-06-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
+	* Ignore some more xcode user files
+
 	* Adding 2nd test doc, for navigation
-
-2012-06-19  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Reset default keychain
 
 2012-06-19  Kees Blom  <kees@cwi.nl>
 
@@ -4101,14 +4322,20 @@
 	* Changed class declaration order bcause of errors from xcode 4.3.3
 	compiler
 
-2012-06-12  Jack Jansen  <Jack.Jansen@cwi.nl>
+2012-06-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Adding test document
+	* Reset default keychain
 
 2012-06-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Send clicked() events to the timer sync, and added APIs to allow it
 	to insert those events on the slave side
+
+2012-06-12  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Adding test document
+
+2012-06-09  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Partial
 
@@ -4160,13 +4387,15 @@
 
 	* Squashed debug output
 
-	* Fix for #351842 and a secon bug that showed up while fixing it.
-
-	* Don't resume playables on resume for WITH_REMOTE_SYNC
-
 2012-06-04  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Fixed major problems. 2 video's not OK.
+
+2012-06-04  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fix for #351842 and a secon bug that showed up while fixing it.
+
+	* Don't resume playables on resume for WITH_REMOTE_SYNC
 
 2012-06-03  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -4182,15 +4411,15 @@
 
 	* Fixed region position for video
 
+2012-05-31  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* sdl_video now has proper window factory etc.
+
 2012-06-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Typo
 
 	* More trying to get nightly build to work
-
-2012-05-31  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* sdl_video now has proper window factory etc.
 
 2012-05-31  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4294,6 +4523,12 @@
 
 	* Fix crash on exit of ncl_plugin
 
+2012-04-13  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Added AMBULANT_LOGGER_NOWINDOW environment variable.
+
+	* ncl_plugin works on non-virtual machines
+
 2012-04-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* As we are building on win7 again, revert the stupid workaround
@@ -4307,12 +4542,6 @@
 
 	* Attempting to use a secondary keychain (and unlock it) for the
 	nightly builds
-
-2012-04-13  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Added AMBULANT_LOGGER_NOWINDOW environment variable.
-
-	* ncl_plugin works on non-virtual machines
 
 2012-04-13  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4348,10 +4577,6 @@
 
 	* Use bash, which has correct PATH settings
 
-2012-03-22  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Build DX player with gcd too.
-
 2012-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Got Ambulant to build on 10.7, for 10.6
@@ -4382,6 +4607,10 @@
 2012-03-23  Kees Blom  <kees@cwi.nl>
 
 	* Using SDL, must now move to renderer_playable
+
+2012-03-22  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Build DX player with gcd too.
 
 2012-03-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4429,14 +4658,6 @@
 
 2012-03-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Fixed the way we patch live
-
-2012-03-06  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Trying to fix the mirror date
-
-2012-03-15  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* Mirror version 2012.02.29 for live.
 
 	* Added RTSPCLIENT_SYNCHRONOUS_INTERFACE define so the old API is re-
@@ -4459,6 +4680,14 @@
 2012-03-06  Kees Blom  <kees@cwi.nl>
 
 	* NCl port value is now used to set a Smil-State variable
+
+2012-03-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed the way we patch live
+
+2012-03-06  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Trying to fix the mirror date
 
 2012-03-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4506,15 +4735,13 @@
 
 	* Stupid swap_adl again
 
-	* Adapted for new feedback interfaces
-
-2012-02-20  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Animate per-node bandwidth
-
 2012-02-21  Kees Blom  <kees@cwi.nl>
 
 	* Fixed 3489746
+
+2012-02-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Adapted for new feedback interfaces
 
 2012-02-20  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4527,6 +4754,8 @@
 
 	* Video now also reports bandwidth usage
 
+	* Animate per-node bandwidth
+
 	* Per-node bandwidth somewhat shown
 
 	* Store max bandwidth on dom node
@@ -4536,14 +4765,6 @@
 2012-02-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Gather bandwidth in bins
-
-2012-02-17  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Bandwidth getting a bit closer to reality
-
-	* Show max bandwidth
-
-	* Fixed bandwidth orientation
 
 2012-02-17  Kees Blom  <kees@cwi.nl>
 
@@ -4556,6 +4777,12 @@
 
 2012-02-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
+	* Bandwidth getting a bit closer to reality
+
+	* Show max bandwidth
+
+	* Fixed bandwidth orientation
+
 	* Disable Python distribution for XP build too
 
 	* Yet another attempt at not building libdispatch on vs2008
@@ -4563,8 +4790,6 @@
 	* Fixed guidelines
 
 2012-02-16  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Different approach at guidelines
 
 	* Installer for vs2008 build. Includes Python and the right runtime
 	system.
@@ -4583,6 +4808,10 @@
 2012-02-12  Kees Blom  <kees@cwi.nl>
 
 	* pause/play/stop now works (with modified IPresentationEngineManager)
+
+2012-02-16  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Different approach at guidelines
 
 2012-02-15  Bo Gao  <Bo.Gao@cwi.nl>
 
@@ -4632,13 +4861,11 @@
 
 	* Added legend to graph
 
+	* Next steps in resource monitoring
+
 2012-02-12  Kees Blom  <kees@cwi.nl>
 
 	* Adapted 'basic_plugin::pause()' to 'playable' interface, as intended
-
-2012-02-13  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Next steps in resource monitoring
 
 2012-02-11  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4721,6 +4948,8 @@
 
 	* Visualize fill period
 
+	* Getting started with playables
+
 2012-02-05  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added npambulant build to the nightly test script (but no tests yet)
@@ -4730,10 +4959,6 @@
 	* configure pyambulant WITH_GTK=True and WITH_QT=False
 
 	* Upgraded maxVersion to Firefox 11
-
-2012-02-06  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Getting started with playables
 
 2012-02-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4772,10 +4997,6 @@
 
 	* Make sure old packages aren't copied along with the new ones
 
-2012-01-27  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Undid %@#%^ windows stl fix again
-
 2012-01-27  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* ting
@@ -4783,6 +5004,8 @@
 	* experiments for comparison with vlc-dash
 
 2012-01-27  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Undid %@#%^ windows stl fix again
 
 	* Fixed nasty issue with Python plugin when building with VS2010:
 
@@ -4801,6 +5024,8 @@
 
 	* Use Python 2.7
 
+	* Use Python2.7 for building, not 2.6
+
 2012-01-25  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* For safty reason, Changing the buffer time for prefetch node from
@@ -4816,10 +5041,6 @@
 2012-01-24  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* remmove the flash between two video clips for MyVideos.
-
-2012-01-25  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Use Python2.7 for building, not 2.6
 
 2012-01-24  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -4872,6 +5093,9 @@
 	* devenv can return negative errorlevel when nothing is wrong. Cater
 	for this.
 
+	* devenv can return negative errorlevel when nothing is wrong. Cater
+	for this.
+
 2012-01-20  Kees Blom  <kees@cwi.nl>
 
 	* Prepended std:: in frons of ptrdiff_t declatations .
@@ -4913,11 +5137,6 @@
 
 	* Fixes to the Python interface
 
-2012-01-21  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* devenv can return negative errorlevel when nothing is wrong. Cater
-	for this.
-
 2012-01-17  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Starting on Python timer sync implementation
@@ -4932,17 +5151,15 @@
 
 	* Getting timesync plugin to work on Windows.
 
+	* Adding timesync_plugin, moved debug code there
+
+	* Added timer_sync factory and debug implementation
+
 2012-01-17  Kees Blom  <kees@cwi.nl>
 
 	* Reverted build 3pp for SDL to original settings
 
-	* Since latest SDL refuses to compile, force cached version instead.
-
 2012-01-17  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Adding timesync_plugin, moved debug code there
-
-	* Added timer_sync factory and debug implementation
 
 	* Reverted the SDL configure changes for MacOS, they were a stupid
 	idea
@@ -4950,6 +5167,10 @@
 	* Adapted python interface for external sync
 
 	* Got rid of without-x options for SDL build again
+
+2012-01-17  Kees Blom  <kees@cwi.nl>
+
+	* Since latest SDL refuses to compile, force cached version instead.
 
 2012-01-16  Kees Blom  <kees@cwi.nl>
 
@@ -5347,6 +5568,10 @@
 
 	* More changes for olpc
 
+2011-09-05  Kees Blom  <kees@cwi.nl>
+
+	* Added scripts to build and use olpc installer
+
 2011-09-06  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Notes on how to run
@@ -5356,10 +5581,6 @@
 	* Don't shutdown, reverted crlf's
 
 	* This script needs windows newlines (sigh)
-
-2011-09-05  Kees Blom  <kees@cwi.nl>
-
-	* Added scripts to build and use olpc installer
 
 2011-09-02  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5400,12 +5621,6 @@
 
 	* Tweaks
 
-2011-08-02  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Better behaviour of open dialog
-
-2011-08-05  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* Fixed names for import libraries and pdb files.
 
 	* Got rid of dx_img_wic.h (non-existent), which was one of the reasons
@@ -5415,6 +5630,8 @@
 
 	* Build DX without GCD, and with v90 API. The previous installers
 	didn't work under XP, hope this fixes it.
+
+	* Better behaviour of open dialog
 
 	* Generate webpage for IE plugin installer
 
@@ -5450,17 +5667,17 @@
 
 	* Fixed another pathname typo
 
-	* Install VC10 runtime system
-
 	* 7-zip has different command line from zip.
 
-	* More fixes to vs2010 nighty build procedure
+	* Install VC10 runtime system
 
-	* Note about version number in vc10 projects
+	* More fixes to vs2010 nighty build procedure
 
 	* Got ff/ie plugins to work in VS2010.
 
 	* npambulant installers works under vc10.
+
+	* Note about version number in vc10 projects
 
 	* Stop correct VM
 
@@ -5575,9 +5792,9 @@
 
 	* Closing branch.
 
-	* Added note on Windows SDK with Samples
-
 	* Getting rid of dead wood.
+
+	* Added note on Windows SDK with Samples
 
 	* Getting rid of dead wood
 
@@ -5589,11 +5806,13 @@
 
 	* Update individual projects to vs2010
 
-	* Trying nightly build with VS2010
-
 2011-07-25  Kees Blom  <kees@cwi.nl>
 
 	* Fixes for make distcheck
+
+2011-07-26  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Trying nightly build with VS2010
 
 2011-07-25  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -5610,6 +5829,12 @@
 	* Use modified event_processor.cpp in stead of
 	lib_gcd_event_processor.cpp.
 
+2011-07-22  Kees Blom  <kees@cwi.nl>
+
+	* Fixed #3353697: tap now always works.
+
+2011-07-22  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Added dispatch group, and waiting for event drain in the destructor
 
 	* Refactored: event_processor_impl is no longer in event_processor.h
@@ -5618,15 +5843,7 @@
 	* Starting work on Bo's GCD code. Use Ambulant event queue, but GCD
 	only for executing events
 
-2011-07-22  Kees Blom  <kees@cwi.nl>
-
-	* Fixed #3353697: tap now always works.
-
-2011-07-22  Jack Jansen  <Jack.Jansen@cwi.nl>
-
 	* F***ed around with the certificates and such. Hope it works again.
-
-	* More wishes implemented:
 
 2011-07-21  Kees Blom  <kees@cwi.nl>
 
@@ -5634,6 +5851,8 @@
 	fail in nightly builds).
 
 2011-07-22  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* More wishes implemented:
 
 	* A bit more comments at the start of the debian build script
 
@@ -5661,6 +5880,15 @@
 
 	* More cleanup, better ordering of resources
 
+2011-07-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fix for #3353690: iAmbulant doesn't play automatically.
+
+	* For device builds, iOS version get hard-set to 4.3 (as opposed to
+	latest). Fixed.
+
+2011-07-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Fix to default poster code
 
 	* Tweaks to the input dialog: no correction, URL keyboard auto-shown,
@@ -5686,15 +5914,13 @@
 
 	* Added ambulant-kde.desktop
 
-2011-07-19  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Started on UI changes for history and favorites
-
 2011-07-19  Bo Gao  <gao@cwi.nl>
 
 	* Refined the old event processor
 
 2011-07-19  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Started on UI changes for history and favorites
 
 	* Add webserver that delays all requests
 
@@ -5709,11 +5935,6 @@
 	* Icons for kde now work too.
 
 2011-07-18  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fix for #3353690: iAmbulant doesn't play automatically.
-
-	* For device builds, iOS version get hard-set to 4.3 (as opposed to
-	latest). Fixed.
 
 	* HTTPSink.cpp and MPEG1or2VideoHTTPSink.cpp are no longer part of
 	live555.
@@ -5766,6 +5987,8 @@
 
 	* Some of the on_bom/on_eom mods had goten lost. Redone.
 
+	* Cleaned up debug output, and enabled a lot more
+
 2011-07-14  Bo Gao  <gao@cwi.nl>
 
 	* Got starting with creating custom queue and implementing pause and
@@ -5773,13 +5996,11 @@
 
 2011-07-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
+	* Got rid of debug
+
 	* Also change document icons for XP
 
 	* Removed turd
-
-	* Cleaned up debug output, and enabled a lot more
-
-	* Got rid of debug
 
 	* Remove old files fixed
 
@@ -6048,17 +6269,17 @@
 
 	* Turned of AM_DBG debug flag
 
+2011-06-15  Administrator  <Administrator@BOGAOF017.localdomain>
+
+	* first try with libdispatch (the second libdispatch for windows)
+
 2011-06-15  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Cleanup
 
 	* - Added "reset zoom" command
 
-2011-06-15  Administrator  <Administrator@BOGAOF017.localdomain>
-
-	* first try with libdispatch (the second libdispatch for windows)
-
-2011-06-15  Jack Jansen  <Jack.Jansen@cwi.nl>
+	* Tried various things, all unsuccessful
 
 	* Finished nightly clean script
 
@@ -6068,8 +6289,6 @@
 
 	* Build for iOS 4.3
 
-	* Tried various things, all unsuccessful
-
 2011-06-14  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* First try with libxdispatch
@@ -6077,6 +6296,21 @@
 2011-06-14  Kees Blom  <kees@cwi.nl>
 
 	* Fixed #3315947 (crash cg player)
+
+2011-06-14  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Minor tweak
+
+2011-06-13  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Initial sizing of window works again, resize keeps document in
+	original size, anchored botleft
+
+	* Experimenting with resize, with mixed results so far
+
+2011-06-01  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* First responder was wrong in fullscreen. Fixed.
 
 2011-06-13  Kees Blom  <kees@cwi.nl>
 
@@ -6110,20 +6344,7 @@
 
 	* Installed iPhoneOS4.3.sdk
 
-2011-06-14  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Minor tweak
-
-2011-06-13  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Initial sizing of window works again, resize keeps document in
-	original size, anchored botleft
-
-	* Experimenting with resize, with mixed results so far
-
 2011-06-01  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* First responder was wrong in fullscreen. Fixed.
 
 	* Make check tests both 64 and 32 bit
 
@@ -6133,9 +6354,9 @@
 
 	* Make sure copy_tpp_win32 is built last.
 
-	* Adding props to libxml2 project
-
 	* Attempt to fix debian build, after adding branchname to destination
+
+	* Adding props to libxml2 project
 
 2011-05-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6175,9 +6396,9 @@
 
 	* Got rid of WITH_SMIL_TEST
 
-2011-05-24  Jack Jansen  <Jack.Jansen@cwi.nl>
+	* Put getTransitionTmpSurface back in
 
-	* WITH_PYTHON_PLUGIN no longer changes API
+	* More cleanup. I seem to have broking iOS transitions, though...
 
 2011-05-26  Kees Blom  <Kees.Blom@cwi.nl>
 
@@ -6189,12 +6410,6 @@
 	* skip comment lines starting with '#'
 
 	* Incorporated testoutputcomre.py
-
-2011-05-27  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Put getTransitionTmpSurface back in
-
-	* More cleanup. I seem to have broking iOS transitions, though...
 
 2011-05-26  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6225,6 +6440,8 @@
 	* WITH_CLOCK_SYNC bites the dust
 
 2011-05-24  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* WITH_PYTHON_PLUGIN no longer changes API
 
 	* WITH_EXTERNAL_DOM now completely gone
 
@@ -6289,15 +6506,25 @@
 
 	* Fixes for make distcheck:
 
+	* iMake distcheck does not like it if there are files in the standard
+
 	* Got rid of sdl-config call
 
 2011-05-19  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added new script to run test suites
 
-2011-05-20  Jack Jansen  <Jack.Jansen@cwi.nl>
+2011-05-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* iMake distcheck does not like it if there are files in the standard
+	* Fixed stupid po checkin
+
+2011-05-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* regenerated
+
+2011-04-29  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Reformatted some text, clarified some things
 
 2011-05-19  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6320,16 +6547,6 @@
 2011-05-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Hack for make distcheck
-
-2011-05-19  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fixed stupid po checkin
-
-2011-05-18  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* regenerated
-
-2011-05-18  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Applied Aleksandar Zivkovic's patch on ambulant-2.2
 
@@ -6401,10 +6618,6 @@
 
 	* Added 'make check' entry for MacOS player
 
-2011-04-29  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Reformatted some text, clarified some things
-
 2011-04-28  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Tweaked API documentation generation
@@ -6465,17 +6678,15 @@
 
 	* Exp. added library directory
 
-2011-04-21  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fixed a few more documentation omissions
-
-	* Fixed a few more documentation omissions
-
 2011-04-21  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* defined WITH_GDC_EVENT_PROCESSOR for release version
 
 2011-04-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed a few more documentation omissions
+
+	* Fixed a few more documentation omissions
 
 	* More ignored files
 
@@ -6643,6 +6854,10 @@
 
 	* Make argc/argv available in applicationwillfinishlaunching
 
+2011-04-10  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed cocoa out-transitions being upside down
+
 2011-04-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Turned off AM_DBG in qt_gui.
@@ -6676,13 +6891,11 @@
 
 	* Merged
 
-2011-04-10  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fixed cocoa out-transitions being upside down
-
 2011-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Started on end-of-line fixing for windows
+
+	* Cleanup for nightly builds
 
 	* Added OnEraseBkgnd methods, this reduces flicker for D2D player.
 
@@ -6701,12 +6914,6 @@
 
 	* Fixed end-of-line chars
 
-2011-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Fixed windows linefeeds
-
-2011-04-05  Kees Blom  <kees@cwi.nl>
-
 	* Corrected pushWipe for window size change.
 
 	* Added some comments how d2 transitions work.
@@ -6721,10 +6928,6 @@
 
 	* Little bit of cleanup. Transition freq. set at 25x/sec.
 
-2011-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Cleanup for nightly builds
-
 2011-04-04  Bo Gao  <Bo.Gao@cwi.nl>
 
 	* put ifdef arountd my video static code
@@ -6738,6 +6941,10 @@
 2011-04-01  Kees Blom  <kees@cwi.nl>
 
 	* Finished fullscreen in transitions for d2
+
+2011-04-05  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Fixed windows linefeeds
 
 2011-04-01  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6785,6 +6992,8 @@
 
 	* writing dropping infomation into files
 
+	* added frame analysis output for measureing
+
 2011-03-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Making regpoint a first class citizen
@@ -6792,12 +7001,6 @@
 	* Animating a regPoint element would crash. Fixed
 
 	* regAlign attribute on regPoint element was not honored. Fixed
-
-2011-03-30  Bo Gao  <Bo.Gao@cwi.nl>
-
-	* added frame analysis output for measureing
-
-2011-03-30  Jack Jansen  <Jack.Jansen@cwi.nl>
 
 	* Dependencies for webkit plugin fixed, added CG target, fixed some
 	plugin filenames
@@ -6920,6 +7123,12 @@
 
 	* iPhone joins the nightly build family
 
+2011-03-16  Kees Blom  <Kees.Blom@cwi.nl>
+
+	* Implemented d2...rectlist, giving fourBox,snake,waterfall wipes.
+
+2011-03-17  Jack Jansen  <Jack.Jansen@cwi.nl>
+
 	* Changed distribution profile, not sure why this is needed
 
 	* SDL workaround for iPhone no longer needed
@@ -6931,10 +7140,6 @@
 	* Changed date format again, sigh
 
 	* Debugging win32 nightly build
-
-2011-03-16  Kees Blom  <Kees.Blom@cwi.nl>
-
-	* Implemented d2...rectlist, giving fourBox,snake,waterfall wipes.
 
 2011-03-16  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6954,15 +7159,13 @@
 
 	* Tweaking key usage
 
+	* Try windows nightly builds again
+
 2011-03-14  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* 1st d2 transition (bar, box) works.
 
 	* All d2 renderers ID2D1RenderTarget* parameter in redraw_body().
-
-2011-03-15  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Try windows nightly builds again
 
 2011-03-14  Jack Jansen  <Jack.Jansen@cwi.nl>
 
@@ -6984,11 +7187,11 @@
 
 	* Changelog date format fixed
 
+	* Fiddling version number
+
 	* Tweaking the debian build
 
 	* tail sytax is diffferent on Linux
-
-	* Fiddling version number
 
 	* Preparing for nightly builds of debian packages
 
@@ -7250,9 +7453,9 @@
 
 	* Cater for installing apps with a different name (such as CG player)
 
-	* Tweaks
-
 	* Safari plugin tried to link with xpath plugin
+
+	* Tweaks
 
 	* Tweaking internalize_dylibs to work with DSTROOT
 
@@ -7293,15 +7496,15 @@
 
 	* Slight reorganization so we can add display-based animation later
 
+	* Adding more animation debug output (disabled)
+
+	* Reverting 5681:35b919a1cd58, it causes fill=freeze to stop working
+
 2011-03-09  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Added some code for dumping bitmaps (experimental).
 
 2011-03-09  Jack Jansen  <Jack.Jansen@cwi.nl>
-
-	* Adding more animation debug output (disabled)
-
-	* Reverting 5681:35b919a1cd58, it causes fill=freeze to stop working
 
 	* Fixed a divide-by-zero if sample rate wasn't available yet
 
@@ -7375,10 +7578,10 @@
 
 	* Detail
 
+	* Use OutputDebgStr only on Windows
+
 	* Fixed problem with building libambulant for iOS simulator.
 	Unfortunately,
-
-	* Use OutputDebgStr only on Windows
 
 	* cg_gui builds again
 
@@ -7390,11 +7593,15 @@
 
 	* Getting rid of dead wood.
 
-	* - libxml2 is in /usr, not /usr/ocal
-
 2011-02-28  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Made AmbulantCG link and work, no transitions.
+
+2011-03-01  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* - libxml2 is in /usr, not /usr/ocal
+
+2011-02-28  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Most of the transitions on iOS now work, except push and fullscreen-
 	transout. Also compiles for CG on desktop.
@@ -7451,15 +7658,15 @@
 	* Added new avcore-0.dll to the files that need to be copied by
 	installer.
 
-	* Patches from Bo (dated 10-Dec-2010), finally checked in. These
-	should seriously decrease
-
 2011-02-21  Kees Blom  <Kees.Blom@cwi.nl>
 
 	* Turned the hexagon 45 degree to make it horizontal, which is the
 	default.
 
 2011-02-21  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Patches from Bo (dated 10-Dec-2010), finally checked in. These
+	should seriously decrease
 
 	* Fixup of third_party_packages project
 
@@ -7504,8 +7711,6 @@
 
 2011-02-18  Jack Jansen  <Jack.Jansen@cwi.nl>
 
-	* Another ignore pattern
-
 	* Detail
 
 	* Getting started with signing debian distribution
@@ -7515,6 +7720,8 @@
 	* Test notification mail
 
 2011-02-18  Jack Jansen  <Jack.Jansen@cwi.nl>
+
+	* Another ignore pattern
 
 	* More tweaks to debian packages
 
