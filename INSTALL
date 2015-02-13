@@ -12,7 +12,7 @@ Prerequisites
 -------------
 
 Obviously you will need a compiler/linker/development environment.
-For Windows you need Microsoft Visual Studio 2010 (2008 may still work, untested).
+For Windows you need Microsoft Visual Studio 2010.
 
 For Linux desktop you need at least autoconf, automake, libtool, gettext,
 GNU gcc++ (at least version 4.0), gtk2-devel and/or qt-devel (for graphics),
@@ -149,8 +149,7 @@ Building for Windows
 --------------------
 
 All projects are located in the "projects" folder
-at the toplevel folder. "vc9" is for Visual Studio 2008, SP2, "vc10" for
-Visual Studio 2010.
+at the toplevel folder, "vc10" for Visual Studio 2010.
 
 You must not only have Visual Studio, but also the Microsoft DirectX SDK. This
 can be downloaded from the Microsoft site. NOTE: the version of June 2010 does
@@ -170,20 +169,14 @@ commands:
 and
 	xxx> call "c:\PythonXX\python.exe" ..\scripts\build-third-party-packages.py win32
 
-If you have both VC9 and VC10 installed and you want to use VC10 to build you must unset
-the VC9 environment var:
-	xxx> set VS90COMNTOOLS=
-Failing to do so will result in an error trying to build libdispatch-vs2008.
-
 This should build all third party packages and put them where the Ambulant
 build expects them. If you have to change anything in this python script, for
 example because a new version of some package has replaced an older one,
 you will probably also have to change the project properties files. Sometimes
 you need to re-run the Python script after fixing the property files.
   
-At this point you may want to inspect projects/vc9/Ambulant-win32.vsprops
-and/or projects/vc10/Ambulant-win32.props. These files
-have the pathnames of all the components, etc. Change things here to reflect
+At this point you may want to inspect projects/vc10/Ambulant-win32.props. This file
+has the pathnames of all the components, etc. Change things here to reflect
 your setup.
 
 After these steps you are ready to build AmbulantPlayer itself. Open
@@ -191,10 +184,6 @@ Ambulant-win32.sln and select "Ambulant Player" as the default
 project (right-click on it for the context menu that allows you to do this).
 Select the build type, for example "Release" for Direct2D (Windows 7 only) or
 "ReleaseDX" for DirectDraw (XP or later).
-
-NOTE: if you are building with VS2008 you may get errors on _Swap_adl. If you do:
-search the solution for _Swap_adl, you will need to make a small change in two
-locations. The gory details of this problem are explained in a comment there.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.

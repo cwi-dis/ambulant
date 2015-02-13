@@ -85,8 +85,6 @@ Before creating the distribution
   - scripts/autotest.linux.sh
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - installers/mkdebiandist.sh
-  - projects/vc9/npambulant-installer.vcproj
-  - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
   - projects/vc10/npambulant-installer.vcxproj (many places)
   - projects/vc10/AmbulantActiveX-installer.vcxproj (many places)
   - projects/xcode43/iAmbulant-Info.plist
@@ -255,7 +253,7 @@ Creating the Windows desktop/FF/IE installers
 Build the player. Make sure you are building a *ReleaseShlib* player,
 not a *Debug* or *Release* player.
 If you have downloaded all the required packages, and you are using Visual
-Studio 2008 then building Ambulant-win32.sln will not only build the desktop
+Studio 2010 then building Ambulant-win32.sln will not only build the desktop
 player but also the Firefox plugin, the Firefox plugin installer and the
 IE plugin and its installer. The installers for the plugins are deposited
 in the bin\win32 folder (the .xpi and .cab files, respectively).

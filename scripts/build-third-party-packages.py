@@ -385,14 +385,11 @@ else:
     vsdir = os.getenv("DevEnvDir")
     if not vsdir:
         print "** This script needs the Visual Studio environment vars to be able to run"
-        print '** Run "call ....Microsoft Visual Studio X.Y\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
+        print '** Run "call ....Microsoft Visual Studio 2010\\VC\\bin\\vcvars32.bat" first.'
         sys.exit(1)
     if '10.0' in vsdir:
         WIN32_VCVERSION="vc10"
         WIN32_VSVERSION="vs2010"
-    elif '9.0' in vsdir:
-        WIN32_VCVERSION="vc9"
-        WIN32_VSVERSION="vs2008"
     else:
         print "** Unknown version of Visual Studio:", vsdir
         sysexit(1)
@@ -1040,15 +1037,6 @@ third_party_packages={
                 "devenv libdispatch.sln /build StaticDebug /project libdispatch "
             ),
 
-        WinTPP("libdispatch-vs2008",
-            url="http://ambulantplayer.org/only/our/mirror/is/available/as/zip",
-            url2="libdispatch-jack-hg284.zip",
-            checkcmd="if defined VS90COMNTOOLS if not exist libdispatch-jack-hg284\\VS2008\\StaticRelease\\libdispatch.lib exit 1",
-            buildcmd="cd libdispatch-jack-hg284\\VS2008 && " +
-                "devenv libdispatch.sln /build StaticRelease /project libdispatch && " +
-                "devenv libdispatch.sln /build StaticDebug /project libdispatch "
-           ),
-            
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
