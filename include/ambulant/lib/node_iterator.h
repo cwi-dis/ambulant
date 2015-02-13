@@ -36,7 +36,7 @@ namespace lib {
 /// Traverses a constant XML tree.
 ///
 /// Root designates the container to be traversed and remains const.
-/// Each node is visited twice: once in the 'down' writing_mode and once in the 'up-next'.
+/// Each node is visited twice: once in the 'down' direction and once in the 'up' or 'next'.
 ///
 /// the first element is: (true, root)
 /// the last element is: (false, root)
@@ -93,8 +93,8 @@ class const_tree_iterator  {
 	const Node *m_root;	///< Container traversed by this iterator.
 
 	const Node *m_cur;	///< Current node.
-	bool m_is_down;  ///< Direction of traversal
 	void (const_tree_iterator::*m_move)();	///< Method to get at next node.
+	bool m_is_down;  ///< True iff. 'm_move' holds a pointer to 'down' (Bug #881).
 };
 
 ////////////////////////
