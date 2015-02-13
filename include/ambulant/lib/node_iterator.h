@@ -40,10 +40,11 @@ namespace lib {
 ///
 /// the first element is: (true, root)
 /// the last element is: (false, root)
-/// incrementing last element results to the universal 'end' element (0, *).
+/// incrementing last element results to the universal 'end' element (0, NULL).
 ///
-/// (*it).first is true or false depending on the writing_mode
+/// (*it).first is true or false depending on the direction of traversal ('true' for 'down')
 /// (*it).second is a pointer to the node.
+
 template <class Node>
 class const_tree_iterator  {
 
@@ -54,17 +55,17 @@ class const_tree_iterator  {
 	typedef std::pair<bool, const Node*> const_deref_type;
 
 	const_tree_iterator()
-	:	m_root(0), m_cur(0), m_move(&const_tree_iterator::down) {}
+	  :	m_root(0), m_cur(0), m_move(&const_tree_iterator::down), m_is_down(true) {}
 
 	/// Constructs a const_tree_iterator for the subtree rooted at the given node.
 	const_tree_iterator(const Node *p)
-	:	m_root(p), m_cur(p), m_move(&const_tree_iterator::down) {}
+	:	m_root(p), m_cur(p), m_move(&const_tree_iterator::down), m_is_down(true) {}
 
 	const_tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}	///< Operator
 
 	const_tree_iterator operator++(int) { const_tree_iterator temp(*this); ++*this; return temp;}	///< Operator
 
-	const_deref_type operator*() { return const_deref_type((m_move == &const_tree_iterator::down), m_cur);}	///< Operator
+	const_deref_type operator*() { return const_deref_type(m_is_down, m_cur);}	///< Operator
 
 	// an instance of this object acts like a pointer to a const_deref_type
 	// it->m_cur is the node, it->m_move is true if 'down'
@@ -92,6 +93,7 @@ class const_tree_iterator  {
 	const Node *m_root;	///< Container traversed by this iterator.
 
 	const Node *m_cur;	///< Current node.
+	bool m_is_down;  ///< Direction of traversal
 	void (const_tree_iterator::*m_move)();	///< Method to get at next node.
 };
 
@@ -132,7 +134,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	// dereferencing this returns a pair of deref_type
 	deref_type operator*()
-		{ return deref_type( (this->m_move == &tree_iterator::down), const_cast<Node*>(this->m_cur));}
+	{ return deref_type(this->const_tree_iterator<Node>::m_is_down, const_cast<Node*>(this->m_cur));}
 
 	// an instance of this object acts like a pointer to a deref_type
 	// it->m_cur is the node, it->m_move is true if 'down'
@@ -145,7 +147,10 @@ class tree_iterator : public const_tree_iterator<Node> {
 template<class Node>
 inline void const_tree_iterator<Node>::down() {
 	const Node *p = m_cur->down();
-	if(!p) m_move = &const_tree_iterator::next;
+	if(!p) {
+		m_move = &const_tree_iterator::next;
+		m_is_down = false;
+	}
 	else m_cur = p;
 }
 
@@ -155,9 +160,11 @@ inline void const_tree_iterator<Node>::next() {
 		const Node* it = m_cur->next();
 	if(it) {
 		m_move = &const_tree_iterator::down;
+		m_is_down = true;
 		m_cur = it;
 	} else {
 		m_move = &const_tree_iterator::up;
+		m_is_down = false;
 		(this->*m_move)();
 	}
 }
@@ -169,6 +176,7 @@ inline void const_tree_iterator<Node>::up() {
 	assert(it);
 	if(it) {
 		m_move = &const_tree_iterator::next;
+		m_is_down = false;
 		m_cur = it;
 	}
 }
