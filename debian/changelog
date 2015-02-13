@@ -1,3 +1,9 @@
+ambulant (2.7) trusty; urgency=low
+
+  * Unstable nightly build, for testing purposes only
+  
+ -- Jack Jansen <Jack.Jansen@cwi.nl>  Fri, 13 Feb 2015 09:18:58 -0100
+
 ambulant (2.6) trusty; urgency=low
 
   * 2 years worth of fixes

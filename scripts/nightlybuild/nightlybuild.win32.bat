@@ -24,10 +24,6 @@ rem
 set hg="C:\Program Files\TortoiseHg\hg.exe"
 set pageant="C:\Program Files\PuTTY\pageant.exe"
 
-rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
-rem ALTERNATIVE set vcdir="vc9"
-rem ALTERNATIVE set VS100COMNTOOLS=
-
 set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
 set vcdir="vc10"
 set VS90COMNTOOLS=
@@ -58,8 +54,6 @@ rem Set VERSIONSUFFIX to empty for distribution builds
 rem
 
 set VERSIONSUFFIX=.%TODAY%
-rem For the non-standard build, add vs2008 or vs2010
-rem set VERSIONSUFFIX=.%TODAY%-vs2010
 
 set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"

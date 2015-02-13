@@ -5,7 +5,7 @@ TODAY=`date +%Y%m%d`
 echo
 echo ==========================================================
 echo Ambulant nightly clean, $USER@`hostname`, `date`
-echo LogLocation=$TODAY/clean
+echo LogLocation=clean-$TODAY.txt
 echo ==========================================================
 echo
 
