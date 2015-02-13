@@ -980,8 +980,10 @@ third_party_packages={
             ),
             
         WinTPP("xerces-c",
-            url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.zip",
-            url2="xerces-c-3.1.1.zip",
+            url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
+            url2="xerces-c-3.1.1.tar.gz",
+            extractcmd=WINDOWS_UNZIP + " xerces-c-3.1.1.tar.gz",
+            extract2cmd=WINDOWS_UNZIP + " xerces-c-3.1.1.tar",
             checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VCVERSION, WIN32_COMMON_CONFIG),
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\%s\\xerces-all && "
@@ -990,9 +992,7 @@ third_party_packages={
             ),
             
         WinTPP("xulunner-sdk",
-            #url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.17/sdk/xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-	    #url2="xulrunner-1.9.2.17.en-US.win32.sdk.zip",
-	    url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
+			url="%s%s.en-US.win32.sdk.zip" % (XULRUNNER_URL, XULRUNNER_VERSION), 
             url2="%s.en-US.win32.sdk.zip" % XULRUNNER_VERSION,
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
