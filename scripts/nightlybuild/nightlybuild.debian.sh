@@ -76,7 +76,7 @@ RELPATH_BIN=$DESTINATION_STAGING/$DISTRIB_RELEASE/ambulant/binary-$DEBARCH
 echo
 echo ==========================================================
 echo Ambulant nightly build for Debian, $ARCH, $USER@`hostname`, `date`
-echo LogLocation=Ubuntu-$DISTRIB_RELEASE-$DEBARCH-$TODAY.txt
+echo LogLocation=Ubuntu-$DISTRIB_RELEASE-$DEBARCH-$TODAY-$BRANCH.txt
 echo ==========================================================
 echo
 
