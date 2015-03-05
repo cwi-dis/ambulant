@@ -18,7 +18,7 @@ esac
 
 # Tunable parameters, to some extent
 AMBULANTVERSION=2.7
-export MACOSX_DEPLOYMENT_TARGET=10.7
+export MACOSX_DEPLOYMENT_TARGET=10.8
 # export SDKROOT=/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
 # if [ ! -d $SDKROOT ]; then
 # 	export SDKROOT=/Application/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk
