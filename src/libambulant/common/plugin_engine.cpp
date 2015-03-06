@@ -139,6 +139,7 @@ plugin_engine::plugin_engine()
 			} else {
 				// Load the Python engine. It will use get_python_plugins() to get at the
 				// pathnames for the plugins and load those.
+				lib::logger::get_logger()->trace("plugin_engine: loading Python plugins with %s", m_python_plugin_engine.c_str());
 				load_plugin(m_python_plugin_engine.c_str());
 			}
 		}
@@ -323,7 +324,7 @@ plugin_engine::load_plugins(std::string dirname)
 				strcmp(namelist[nr_of_files]->d_name, ".."))
 			{
 				char *pluginname = namelist[nr_of_files]->d_name;
-				lib::logger::get_logger()->trace("plugin_engine: examining Python plugin %s", pluginname);
+				lib::logger::get_logger()->trace("plugin_engine: examining possible plugin %s", pluginname);
 #ifdef WITH_PYTHON_PLUGIN
 				bool is_python_plugin = false;
 				bool is_python_engine = false;
@@ -333,8 +334,9 @@ plugin_engine::load_plugins(std::string dirname)
 				if (strncmp(PYTHON_PLUGIN_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
 					is_python_plugin = true;
+					lib::logger::get_logger()->trace("plugin_engine: No Python support, but found a Python plugin %s", pluginname);
 #else
-					lib::logger::get_logger()->trace("plugin_engine: skipping Python plugin %s", pluginname);
+					lib::logger::get_logger()->trace("plugin_engine: No Python support, but found a Python plugin %s", pluginname);
 					continue;
 #endif // WITH_PYTHON_PLUGIN
 				} else if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
@@ -347,7 +349,7 @@ plugin_engine::load_plugins(std::string dirname)
 #ifdef WITH_PYTHON_PLUGIN
 					is_python_engine = true;
 #else
-					lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
+					lib::logger::get_logger()->trace("plugin_engine: remembering Python engine %s", pluginname);
 					free(namelist[nr_of_files]);
 					continue;
 #endif // WITH_PYTHON_PLUGIN
@@ -375,7 +377,7 @@ plugin_engine::load_plugins(std::string dirname)
 					std::string filename_str = filename;
 					// ignore if filename ends with '.pyc'
 					if (filename_str.compare(filename_str.length()-4,4,".pyc") == 0) {
-					      lib::logger::get_logger()->trace("plugin_engine: ignoring Python plugin %s", pluginname);
+					      lib::logger::get_logger()->trace("plugin_engine: ignoring compiled Python plugin %s", pluginname);
 					} else {
 					      m_python_plugins.push_back(filename_str);
 					}
