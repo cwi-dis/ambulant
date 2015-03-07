@@ -1051,7 +1051,7 @@ third_party_packages={
     
 }
 
-third_party_packages['macosx10.8'] = third_party_packages['macosx10.7'] = third_party_packages['macosx10.6'] = third_party_packages['macosx']
+third_party_packages['macosx10.10'] = third_party_packages['macosx10.9'] = third_party_packages['macosx10.8'] = third_party_packages['macosx10.7'] = third_party_packages['macosx10.6'] = third_party_packages['macosx']
 
 def checkenv_win32(target):
     ok = True
