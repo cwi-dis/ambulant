@@ -1195,6 +1195,8 @@ def checkenv_iphone(target):
         
 environment_checkers = {
     'macosx' : checkenv_mac,
+    'macosx10.10' : checkenv_mac,
+    'macosx10.9' : checkenv_mac,
     'macosx10.8' : checkenv_mac,
     'macosx10.7' : checkenv_mac,
     'macosx10.6' : checkenv_mac,
