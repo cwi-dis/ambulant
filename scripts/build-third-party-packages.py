@@ -213,7 +213,11 @@ class DebianTPP(CommonTPP):
         cur_release = os.popen("lsb_release -cs", "r").read().strip()
         ppaname = self.ppa[len("ppa:"):]
         ppaname = ppaname.replace('/', '-')
-        if not os.path.exists('/etc/apt/sources.list.d/%s-%s.list' % (ppaname, cur_release)):
+        ok = os.path.exists('/etc/apt/sources.list.d/%s-%s.list' % (ppaname, cur_release)) # Ubuntu 14.04 and earlier
+        if not ok:
+            ppaname = ppaname.replace('-ppa', '-ubuntu-ppa')    # Ubuntu 15.04???
+            ok = os.path.exists('/etc/apt/sources.list.d/%s-%s.list' % (ppaname, cur_release))
+        if not ok:
             print >>self.output, '* Missing PPA %s' % self.ppa
             return False
         return True
