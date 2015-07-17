@@ -166,7 +166,7 @@ case x$UBUNTUPPA in
 x)
 	;;
 *)
-	dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${FULLAMBULANTVERSION}_source.changes
+#	dput $UBUNTUPPA $RELPATH_SRC/debian-$TODAY/ambulant_${FULLAMBULANTVERSION}_source.changes
 	;;
 esac
 cd ..
