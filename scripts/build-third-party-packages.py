@@ -455,19 +455,11 @@ third_party_packages={
         DebianTPP("python-gobject-dev"),
         DebianTPP("libdispatch-dev"),
         
-        # The following come from ppa:zoogie/sdl2-snapshots (as of 06-Oct-2013).
-        # Unfortunately they don't work on 13.10...
-        #DebianTPP("libsdl2-dev", ppa="ppa:zoogie/sdl2-snapshots"),
-        #DebianTPP("libsdl2-image-dev", ppa="ppa:zoogie/sdl2-snapshots"),
-        #DebianTPP("libsdl2-ttf-dev", ppa="ppa:zoogie/sdl2-snapshots"),
-        
-        # The following are from ppa:samrog131/ppa (as of 12-Oct-2013)
-        # The -opti- has been added in Dec-2014, as samrog moved to ffmpeg 2.5
-        DebianTPP("libavutil-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libswscale-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libswresample-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libavcodec-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
-        DebianTPP("libavformat-ffmpeg-opti-dev", ppa="ppa:samrog131/ppa"),
+        DebianTPP("libavutil-dev"),
+        DebianTPP("libswscale-dev"),
+        DebianTPP("libswresample-dev"),
+        DebianTPP("libavcodec-dev"),
+        DebianTPP("libavformat-dev"),
 
     ],
  
